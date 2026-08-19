@@ -1,4 +1,5 @@
 import 'package:auto_route/auto_route.dart';
+import 'package:balady_plus/app/core/utils/utils_exports.dart';
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
@@ -6,10 +7,14 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:mapness/_features/common/widgets/dragger.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
+import 'package:mapness/features/favorite_lists/data/favorite_lists_api_exception.dart';
 import 'package:mapness/features/favorite_lists/data/favorite_lists_remote_datasource.dart';
 import 'package:mapness/features/favorite_lists/providers/aggregated_favorite_markers.dart';
 import 'package:mapness/features/favorite_lists/providers/favorite_lists.dart';
+import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/hooks/toggle_sheet_controller_hook.dart';
+import 'package:mapness/shared/providers/app_language.dart';
+import 'package:mapness/shared/ui/toast/toast_overlay.dart';
 import 'package:sheetify/sheetify.dart';
 
 @RoutePage()
@@ -45,8 +50,29 @@ class FavoriteListMenuPage extends HookConsumerWidget {
                 title: 'Share list',
               ),
               onTap: () async {
-                // TODO(claude): call share list api
-                context.router.pop();
+                if (isSubmitting.value) {
+                  return;
+                }
+                isSubmitting.value = true;
+                try {
+                  final dataSource = await ref.read(favoriteListsRemoteDataSourceProvider.future);
+                  final shareLink = await dataSource.generateShareLink(listId);
+                  if (context.mounted) {
+                    await safeShareText(shareLink.shareUrl, context: context);
+                  }
+                } catch (e) {
+                  if (context.mounted) {
+                    final errorMessage = e is FavoriteListsApiException
+                        ? e.localizedMessage(ref.read(appLanguageProvider))
+                        : context.l10n.somethingWentWrongPleaseTryAgainLater;
+                    ToastOverlay.of(context).show(title: errorMessage, isDismissible: true);
+                  }
+                } finally {
+                  isSubmitting.value = false;
+                  if (context.mounted) {
+                    context.router.pop();
+                  }
+                }
               },
             ),
             ContentRow(
