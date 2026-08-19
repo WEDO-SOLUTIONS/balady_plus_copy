@@ -78,10 +78,14 @@ class _FavouriteMarkers extends _$FavouriteMarkers {
     final point = marker.point;
     if (point != null) {
       final position = GeoPointWithElevationMessage(latitude: point.lat, longitude: point.lon, elevation: 1);
-      // The API doesn't return a name — resolve it via the directory lookup,
-      // but a failure there no longer removes the marker: its position is
-      // already known from the API.
-      final title = await _resolveTitle(dgisController, marker.placeId);
+      // The API returns a name for most markers; for the rest (legacy/unresolved
+      // places) fall back to the directory lookup, same as before `name` existed.
+      // A lookup failure no longer removes the marker: its position is already
+      // known from the API.
+      final apiName = marker.name;
+      final title = (apiName != null && apiName.isNotEmpty)
+          ? apiName
+          : await _resolveTitle(dgisController, marker.placeId);
       final resolved = (position: position, title: title ?? '');
       _resolvedPlaces[marker.placeId] = resolved;
       return resolved;

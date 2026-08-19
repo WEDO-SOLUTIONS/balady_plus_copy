@@ -32,6 +32,9 @@ abstract class MapMarkerDto with _$MapMarkerDto {
     // Absent for some markers (e.g. legacy/unresolved places) — resolve lazily via
     // searchByObjectId when null, same as before this field existed.
     final MapMarkerPointDto? point,
+    // Absent for some markers (e.g. legacy/unresolved places) — falls back to a
+    // native searchByObjectId lookup when null, same as before this field existed.
+    final String? name,
   }) = _MapMarkerDto;
 
   factory MapMarkerDto.fromJson(Map<String, dynamic> json) => _$MapMarkerDtoFromJson(json);
