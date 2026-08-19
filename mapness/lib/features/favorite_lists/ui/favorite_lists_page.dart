@@ -11,6 +11,7 @@ import 'package:intl/intl.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/features/favorite_lists/data/favorite_lists_api_exception.dart';
 import 'package:mapness/features/favorite_lists/data/models/favorite_list_dto.dart';
+import 'package:mapness/features/favorite_lists/data/models/icon_type.dart';
 import 'package:mapness/features/favorite_lists/data/models/marker_color_code.dart';
 import 'package:mapness/features/favorite_lists/providers/favorite_lists.dart';
 import 'package:mapness/features/favorite_lists/ui/widgets/favorite_list_places_content.dart';
@@ -88,7 +89,7 @@ class FavoriteListsPage extends HookConsumerWidget {
                   color: context.colors.backgroundSurface1,
                   children: [
                     ContentRow(
-                      leading: Icon(SystemIcons.zoomPlus, color: context.colors.accentDefault),
+                      leading: Icon(SystemIcons.zoomPlus, color: context.colors.accentDefault, size: 24),
                       // TODO(claude): localize string
                       text: ContentRowTextOptions(
                         title: 'Create a new list',
@@ -100,7 +101,7 @@ class FavoriteListsPage extends HookConsumerWidget {
                       },
                     ),
                     ContentRow(
-                      leading: Icon(SystemIcons.bookmarkAdd, color: context.colors.accentDefault),
+                      leading: Icon(SystemIcons.bookmarkAdd, color: context.colors.accentDefault, size: 24),
                       text: ContentRowTextOptions(
                         title: context.l10n.addPlace,
                         titleOptions: ContentRowTextOption(baseColor: context.colors.accentDefault),
@@ -112,9 +113,8 @@ class FavoriteListsPage extends HookConsumerWidget {
                     ),
                     ...favoriteListsAsync.when(
                       data: (lists) => lists.map((list) {
-                        final leading = Icon(
-                          SystemIcons.bookmarkFill,
-                          color: list.markerColorCode.getColor(context.colors),
+                        final leading = (list.iconType ?? FavoriteIconType.$default).getIcon().svg(
+                          colorFilter: ColorFilter.mode(list.markerColorCode.getColor(context.colors), BlendMode.srcIn),
                         );
                         final text = ContentRowTextOptions(
                           title: list.name,
