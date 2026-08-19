@@ -16,7 +16,6 @@ import 'package:mapness/widgets/landing/dashboard_header.dart';
 import 'package:mapness/widgets/landing/follow_control.dart';
 import 'package:mapness/widgets/landing/layers_control.dart';
 import 'package:mapness/widgets/landing/tifo_control.dart';
-import 'package:mapness/widgets/landing/traffic_control.dart';
 import 'package:mapness/widgets/map_dimensions_control/dimension_contrtol.dart';
 import 'package:mapness/widgets/weather/weather_control.dart';
 import 'package:sheetify/sheetify.dart';
