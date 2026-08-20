@@ -258,8 +258,8 @@ class AppRouter extends RootStackRouter {
           customRouteBuilder: RouteBuilders.modalSheetBuilder,
         ),
         CustomRoute(
-          path: 'delete_favorite_list_submit',
-          page: DeleteFavoriteListSubmitRoute.page,
+          path: 'confirmation_sheet',
+          page: ConfirmationSheetRoute.page,
           customRouteBuilder: RouteBuilders.modalSheetBuilder,
         ),
         CustomRoute(

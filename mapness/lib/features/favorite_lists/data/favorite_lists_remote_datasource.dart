@@ -6,6 +6,7 @@ import 'package:mapness/features/favorite_lists/data/models/favorite_list_dto.da
 import 'package:mapness/features/favorite_lists/data/models/favorite_list_place_dto.dart';
 import 'package:mapness/features/favorite_lists/data/models/health_check_dto.dart';
 import 'package:mapness/features/favorite_lists/data/models/map_marker_dto.dart';
+import 'package:mapness/features/favorite_lists/data/models/migrate_legacy_favorites_result_dto.dart';
 import 'package:mapness/features/favorite_lists/data/models/place_type.dart';
 import 'package:mapness/features/favorite_lists/data/models/share_link_dto.dart';
 import 'package:mapness/shared/utils/logger/logger.dart';
@@ -64,8 +65,7 @@ abstract class FavoriteListsRemoteDataSource {
 
   Future<AcceptShareLinkResultDto> acceptShareLink(String shareToken);
 
-  /// Response schema is not documented yet — kept raw until a real payload is confirmed.
-  Future<Map<String, dynamic>> migrateLegacyFavorites(List<String> legacyPlaceIds);
+  Future<MigrateLegacyFavoritesResultDto> migrateLegacyFavorites(List<String> legacyPlaceIds);
 }
 
 class _FavoriteListsRemoteDataSource implements FavoriteListsRemoteDataSource {
@@ -230,10 +230,10 @@ class _FavoriteListsRemoteDataSource implements FavoriteListsRemoteDataSource {
   );
 
   @override
-  Future<Map<String, dynamic>> migrateLegacyFavorites(List<String> legacyPlaceIds) => _request(
+  Future<MigrateLegacyFavoritesResultDto> migrateLegacyFavorites(List<String> legacyPlaceIds) => _request(
     'migrateLegacyFavorites',
     () => dio.post('/favorites/migrate', data: {'legacyPlaceIds': legacyPlaceIds}),
-    (json) => json,
+    MigrateLegacyFavoritesResultDto.fromJson,
   );
 }
 

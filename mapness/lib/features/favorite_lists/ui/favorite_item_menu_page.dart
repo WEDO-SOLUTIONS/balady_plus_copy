@@ -13,6 +13,7 @@ import 'package:mapness/features/favorite_lists/data/models/favorite_list_place_
 import 'package:mapness/features/favorite_lists/providers/aggregated_favorite_markers.dart';
 import 'package:mapness/features/favorite_lists/providers/favorite_list_detail.dart';
 import 'package:mapness/features/favorite_lists/providers/favorite_lists.dart';
+import 'package:mapness/features/favorite_lists/ui/models/sheet_action_button.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/hooks/toggle_sheet_controller_hook.dart';
 import 'package:mapness/shared/lib/share_util.dart';
@@ -81,19 +82,28 @@ class FavoriteItemMenuPage extends HookConsumerWidget {
               ),
               onTap: () async {
                 final shouldClose = await context.router.push(
-                  DeleteFavoriteListSubmitRoute(
+                  ConfirmationSheetRoute(
                     // TODO(claude): localize string
                     title: 'Delete from list',
                     // TODO(claude): localize string
                     message: 'Are you sure you want to delete this place from the list?',
-                    onConfirm: () async {
-                      final dataSource = await ref.read(favoriteListsRemoteDataSourceProvider.future);
-                      await dataSource.removePlaceFromList(listId, place.placeId);
-                      ref
-                        ..invalidate(favoriteListsProvider)
-                        ..invalidate(favoriteListDetailProvider(listId: listId))
-                        ..invalidate(aggregatedFavoriteMarkersProvider);
-                    },
+                    buttons: [
+                      SheetActionButton(label: context.l10n.cancel, onTap: () async => context.router.pop()),
+                      SheetActionButton(
+                        label: context.l10n.delete,
+                        buttonColorScheme: ButtonColorScheme.error,
+                        buttonType: ButtonType.primary,
+                        showsLoadingAndHandlesErrors: true,
+                        onTap: () async {
+                          final dataSource = await ref.read(favoriteListsRemoteDataSourceProvider.future);
+                          await dataSource.removePlaceFromList(listId, place.placeId);
+                          ref
+                            ..invalidate(favoriteListsProvider)
+                            ..invalidate(favoriteListDetailProvider(listId: listId))
+                            ..invalidate(aggregatedFavoriteMarkersProvider);
+                        },
+                      ),
+                    ],
                   ),
                 );
                 if (shouldClose == true) {

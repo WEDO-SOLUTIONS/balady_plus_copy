@@ -6,6 +6,7 @@ import 'package:balady_uikit/core/colorsV2/themes.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
@@ -13,7 +14,10 @@ import 'package:mapness/features/favorite_lists/data/favorite_lists_api_exceptio
 import 'package:mapness/features/favorite_lists/data/models/favorite_list_dto.dart';
 import 'package:mapness/features/favorite_lists/data/models/icon_type.dart';
 import 'package:mapness/features/favorite_lists/data/models/marker_color_code.dart';
+import 'package:mapness/features/favorite_lists/data/models/migrate_legacy_favorites_result_dto.dart';
 import 'package:mapness/features/favorite_lists/providers/favorite_lists.dart';
+import 'package:mapness/features/favorite_lists/providers/favorite_lists_migration.dart';
+import 'package:mapness/features/favorite_lists/ui/models/sheet_action_button.dart';
 import 'package:mapness/features/favorite_lists/ui/widgets/favorite_list_places_content.dart';
 import 'package:mapness/features/favorite_lists/ui/widgets/favorite_progress_indicator.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
@@ -25,6 +29,38 @@ class FavoriteListsPage extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final hasHandledMigrationBanner = useRef(false);
+    ref.listen<AsyncValue<MigrateLegacyFavoritesResultDto?>>(
+      favoriteListsMigrationProvider,
+      (previous, next) {
+        if (hasHandledMigrationBanner.value) {
+          return;
+        }
+        final result = next.value;
+        if (result == null || !result.showMigrationBanner) {
+          return;
+        }
+        hasHandledMigrationBanner.value = true;
+        context.router.push(
+          ConfirmationSheetRoute(
+            // TODO(claude): localize string
+            title: 'Favorites migrated successfully',
+            // TODO(claude): localize string
+            message: 'Your existing favorites have been migrated to the new Favorites list.',
+            buttons: [
+              SheetActionButton(
+                // TODO(claude): localize string
+                label: 'Got it',
+                buttonColorScheme: ButtonColorScheme.accent,
+                buttonType: ButtonType.primary,
+                onTap: () async => context.router.pop(),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+
     final favoriteListsAsync = ref.watch(favoriteListsProvider);
     final favoriteListLimitsAsync = ref.watch(favoriteListLimitsProvider);
     final canCreateMoreLists = favoriteListsAsync.maybeWhen(

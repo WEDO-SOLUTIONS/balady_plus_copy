@@ -6,6 +6,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:mapness/_features/common/widgets/dragger.dart';
 import 'package:mapness/features/favorite_lists/data/favorite_lists_api_exception.dart';
+import 'package:mapness/features/favorite_lists/ui/models/sheet_action_button.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/hooks/toggle_sheet_controller_hook.dart';
 import 'package:mapness/shared/providers/app_language.dart';
@@ -13,35 +14,39 @@ import 'package:mapness/shared/ui/toast/toast_overlay.dart';
 import 'package:sheetify/sheetify.dart';
 
 @RoutePage()
-class DeleteFavoriteListSubmitPage extends HookConsumerWidget {
+class ConfirmationSheetPage extends HookConsumerWidget {
   final String title;
   final String message;
-  final Future<void> Function() onConfirm;
+  final List<SheetActionButton> buttons;
 
-  const DeleteFavoriteListSubmitPage({
+  const ConfirmationSheetPage({
     required this.title,
     required this.message,
-    required this.onConfirm,
+    required this.buttons,
     super.key,
   });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final scrollController = useToggleSheetController(onClose: (_) => context.router.pop());
-    final isSubmitting = useState(false);
+    final submittingIndex = useState<int?>(null);
 
-    Future<void> confirm() async {
-      if (isSubmitting.value) {
+    Future<void> handleTap(int index, SheetActionButton button) async {
+      if (!button.showsLoadingAndHandlesErrors) {
+        await button.onTap();
         return;
       }
-      isSubmitting.value = true;
+      if (submittingIndex.value != null) {
+        return;
+      }
+      submittingIndex.value = index;
       try {
-        await onConfirm();
+        await button.onTap();
         if (context.mounted) {
           context.router.pop(true);
         }
       } catch (e) {
-        isSubmitting.value = false;
+        submittingIndex.value = null;
         if (context.mounted) {
           final errorMessage = e is FavoriteListsApiException
               ? e.localizedMessage(ref.read(appLanguageProvider))
@@ -95,22 +100,16 @@ class DeleteFavoriteListSubmitPage extends HookConsumerWidget {
         Row(
           spacing: Spacing.$3x,
           children: [
-            Expanded(
-              child: BaladyAppButton(
-                primaryLabel: context.l10n.cancel,
-                buttonColorScheme: ButtonColorScheme.accentSecondary,
-                buttonType: ButtonType.secondary,
-                onTap: context.router.pop,
+            for (final (index, button) in buttons.indexed)
+              Expanded(
+                child: BaladyAppButton(
+                  primaryLabel: button.label,
+                  buttonColorScheme: button.buttonColorScheme,
+                  buttonType: button.buttonType,
+                  buttonState: submittingIndex.value == index ? ButtonState.loading : ButtonState.defaultState,
+                  onTap: () => handleTap(index, button),
+                ),
               ),
-            ),
-            Expanded(
-              child: BaladyAppButton(
-                primaryLabel: context.l10n.delete,
-                buttonColorScheme: ButtonColorScheme.error,
-                buttonState: isSubmitting.value ? ButtonState.loading : ButtonState.defaultState,
-                onTap: confirm,
-              ),
-            ),
           ],
         ),
       ],
