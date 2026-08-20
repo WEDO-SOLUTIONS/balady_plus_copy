@@ -20,6 +20,7 @@ import ru.dgis.sdk.ScreenSize
 import ru.dgis.sdk.coordinates.Bearing
 import ru.dgis.sdk.geometry.ComplexGeometry
 import ru.dgis.sdk.geometry.PointGeometry
+import ru.dgis.sdk.map.BearingSource
 import ru.dgis.sdk.map.CalloutVisualizationMode
 import ru.dgis.sdk.map.CameraBehaviour
 import ru.dgis.sdk.map.Map
@@ -308,6 +309,7 @@ class NavigationHandler(
                                         context = this.context,
                                         controllerSettings =
                                                 MyLocationControllerSettings(
+                                                        bearingSource = BearingSource.AUTO,
                                                         coordinatesThreshold = Meter(10.0f),
                                                         bearingThreshold = Bearing(90.0)
                                                 )
