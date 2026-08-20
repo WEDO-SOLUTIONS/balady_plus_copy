@@ -23,6 +23,7 @@ class TifoSessionState {
     this.clubs = const [],
     this.config = TifoGameConfig.fallback,
     this.isLoading = false,
+    this.hasLoaded = false,
     this.isGuest = true,
     this.error,
   });
@@ -31,6 +32,14 @@ class TifoSessionState {
   final List<TifoClubInfo> clubs;
   final TifoGameConfig config;
   final bool isLoading;
+
+  /// True once [TifoSessionController.load] has finished at least once
+  /// (success OR failure). Before that the state is UNKNOWN, not "gates
+  /// unmet": `profile` is null on a fresh build, so [nextStep] answers
+  /// `tutorial` for everyone — including a fully onboarded player right after
+  /// a relaunch. Any UI that decides what to show from the gate state has to
+  /// wait for this flag (see [shouldOfferJoin]).
+  final bool hasLoaded;
 
   /// True while requests run on the guest device bearer (no host SSO login).
   /// Staging lazily registers a profile for any bearer, so [profile] being
@@ -78,15 +87,32 @@ class TifoSessionState {
   }
 
   /// True once every play-gate is cleared (tutorial seen, logged in, club
-  /// picked). Drives "Dominate with your team" — that pill targets players
-  /// who still have a gate left, not just first-ever-launch users.
+  /// picked).
   bool get isPlayReady => nextStep == TifoJourneyStep.ready;
+
+  /// Whether to show the "Dominate with your team" pill: only for a SIGNED-IN
+  /// player whose gate state is actually KNOWN and still has a gate left.
+  ///
+  /// * [hasLoaded] + non-null [profile] — [nextStep] cannot distinguish "not
+  ///   loaded yet" / "`/me` failed" from "tutorial not done", since it reads a
+  ///   null profile as the first gate. Without these the pill appeared over
+  ///   the map on every relaunch for an onboarded player, and tapping it
+  ///   merely forced the session load it was waiting on (which also repainted
+  ///   the map). An unknown gate state shows no CTA rather than the wrong one.
+  /// * `!isGuest` — the pill is not offered while signed out at all. Note this
+  ///   makes [TifoJourneyStep.login] unreachable THROUGH THIS PILL by
+  ///   construction; a signed-out player reaches the tutorial gate via the ⚽
+  ///   entry popup's CTA instead, and `isGuest` (not `profile`) is the only
+  ///   trustworthy sign-in signal — staging lazily registers a profile for
+  ///   any bearer, guest bearers included.
+  bool get shouldOfferJoin => hasLoaded && profile != null && !isGuest && !isPlayReady;
 
   TifoSessionState copyWith({
     TifoProfile? profile,
     List<TifoClubInfo>? clubs,
     TifoGameConfig? config,
     bool? isLoading,
+    bool? hasLoaded,
     bool? isGuest,
     Object? error = _sentinel,
   }) => TifoSessionState(
@@ -94,6 +120,7 @@ class TifoSessionState {
     clubs: clubs ?? this.clubs,
     config: config ?? this.config,
     isLoading: isLoading ?? this.isLoading,
+    hasLoaded: hasLoaded ?? this.hasLoaded,
     isGuest: isGuest ?? this.isGuest,
     error: identical(error, _sentinel) ? this.error : error as String?,
   );
@@ -155,6 +182,7 @@ class TifoSessionController extends Notifier<TifoSessionState> {
         clubs: clubs,
         config: config,
         isLoading: false,
+        hasLoaded: true,
         isGuest: isGuest,
         error: error,
       );
@@ -162,6 +190,7 @@ class TifoSessionController extends Notifier<TifoSessionState> {
       state = state.copyWith(
         profile: profile,
         isLoading: false,
+        hasLoaded: true,
         isGuest: isGuest,
         error: error ?? (e is TifoApiException ? e.message : e.toString()),
       );

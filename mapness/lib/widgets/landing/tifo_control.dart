@@ -200,7 +200,18 @@ class TifoJoinPill extends ConsumerWidget {
         borderRadius: BorderRadius.circular(16),
         child: InkWell(
           borderRadius: BorderRadius.circular(16),
-          onTap: () => unawaited(TifoJourney(ref).ensurePlayReady(context)),
+          // Gate screens go on the ROOT navigator: from this pill's own
+          // context `Navigator.of` resolves to the landing tab's nested
+          // router, so the guided tutorial and team-select were pushed
+          // INSIDE the tab instead of over the app — same reason the
+          // leaderboard CTA reaches for `rootNavigatorKey`.
+          onTap: () {
+            final gateCtx = rootNavigatorKey.currentContext;
+            if (gateCtx == null) {
+              return;
+            }
+            unawaited(TifoJourney(ref).ensurePlayReady(gateCtx));
+          },
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 14),
             child: Row(

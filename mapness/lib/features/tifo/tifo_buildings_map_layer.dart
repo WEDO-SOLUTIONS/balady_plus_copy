@@ -29,10 +29,25 @@ final tifoAvailableProvider = Provider<bool>((ref) {
   return env?.tifoDateRange.isVisibleNow ?? false;
 });
 
+/// Level of detail the TIFO layer renders at, picked from the camera zoom.
+enum _TifoLod {
+  /// Zoomed far out: every district painted in the SEASON leader's single
+  /// color, so the whole city reads as one standing instead of a 413-polygon
+  /// mosaic that carries no signal at that scale.
+  cluster,
+
+  /// Mid range: each district in its own leading club's color.
+  districts,
+
+  /// Street level: individual buildings, colored by owner and tappable.
+  buildings,
+}
+
 /// Renders the TIFO layer on the dgis map with a zoom-based level of detail
-/// (API v2.4 §3):
-///   * zoom < 16  → district polygons tinted by the leading club;
-///   * zoom >= 16 → individual buildings colored by owner, tappable to play.
+/// (API v2.4 §3, plus the city-wide cluster tier below it):
+///   * zoom <= 11 → all district polygons in the season leader's color;
+///   * zoom < 15  → district polygons tinted by each district's leading club;
+///   * zoom >= 15 → individual buildings colored by owner, tappable to play.
 ///
 /// Owns two independent [MapObjectManagerMessage]s so the two layers can be
 /// cleared/redrawn without touching each other or the debug district layer.
@@ -42,7 +57,13 @@ class TifoBuildingsMapLayer extends Notifier<bool> {
   StreamSubscription<VisibleRectEvent>? _visibleSub;
   Timer? _debounce;
   String? _lastBbox;
-  bool _districtsDrawn = false;
+
+  /// LOD the district layer is currently painted at, or null when it isn't
+  /// painted. LOD-aware rather than a plain bool because [_TifoLod.cluster]
+  /// and [_TifoLod.districts] draw the SAME polygons in different colors — a
+  /// bool would let a zoom across the cluster threshold hit the
+  /// "already drawn, nothing to do" early-out and never repaint.
+  _TifoLod? _drawnDistrictsLod;
 
   /// Camera tilt the player had before the overlay forced the 2D view, so it
   /// can be restored on [disable]. Null once restored / never tilted.
@@ -86,13 +107,35 @@ class TifoBuildingsMapLayer extends Notifier<bool> {
   /// street-level threshold here.
   static const double _buildingMinZoom = 15;
 
+  /// At/below this zoom the district layer collapses into one city-wide color
+  /// (see [_TifoLod.cluster]). Same `visibleRectEvent.zoom` units as
+  /// [_buildingMinZoom] above — i.e. roughly one lower than camera zoom.
+  static const double _districtClusterMaxZoom = 11;
+
+  /// Fallback district fill when nobody leads it (or the server sent no
+  /// paint-ready color): the neutral palette grey.
+  static const int _neutralDistrictArgb = 0xFFFCFBF2;
+
   /// Safety cap on TOTAL buildings kept on the map, to bound the bridge/render
   /// cost on long sessions. Viewport-aware: on-screen buildings evict
   /// off-screen ones when the cap is hit (see [_syncBuildings]). Sized above a
   /// dense single viewport — ~1500 buildings observed live at z16 in Riyadh.
   static const int _maxRendered = 2000;
 
-  bool get _buildingsMode => _zoom >= _buildingMinZoom;
+  _TifoLod get _lod {
+    if (_zoom >= _buildingMinZoom) {
+      return _TifoLod.buildings;
+    }
+    // `_zoom == 0` means "the camera never reported a zoom" (see `enable`),
+    // not "zoomed all the way out" — painting the entire city one color off
+    // that guess would be a worse first frame than per-district paint.
+    if (_zoom > 0 && _zoom <= _districtClusterMaxZoom) {
+      return _TifoLod.cluster;
+    }
+    return _TifoLod.districts;
+  }
+
+  bool get _buildingsMode => _lod == _TifoLod.buildings;
 
   /// Hive box + key the ⚽ toggle is persisted under, so a killed/relaunched
   /// app comes back up with the layer in the state the player left it in
@@ -113,17 +156,23 @@ class TifoBuildingsMapLayer extends Notifier<bool> {
           unawaited(_redrawDistricts(next));
         }
       })
-      // Building fill color is resolved from `session.clubById` at draw time
-      // (see `_syncBuildings`), but the clubs roster loads asynchronously and
-      // can still be empty on the very first draw — those buildings get
-      // stamped into `_drawnFill` as neutral and the diff redraw then skips
-      // them forever, since nothing else re-triggers a sync until buildings
-      // state itself changes (e.g. after finishing a game). Re-sync once the
-      // roster actually changes so already-claimed buildings pick up their
-      // owner's color as soon as it's known, without waiting on a game.
+      // Fill colors are resolved from `session.clubById` at draw time (see
+      // `_syncBuildings`, and `_seasonLeaderColor` for the cluster LOD), but
+      // the clubs roster loads asynchronously and can still be empty on the
+      // very first draw — those polygons get stamped into the `_drawn*` maps
+      // as neutral and the diff redraw then skips them forever, since nothing
+      // else re-triggers a sync until the game state itself changes (e.g.
+      // after finishing a game). Repaint once the roster actually changes, so
+      // claimed buildings and the cluster tint pick up their club's color as
+      // soon as it's known, without waiting on a game.
       ..listen<TifoSessionState>(tifoSessionProvider, (prev, next) {
-        if (state && _buildingsMode && !identical(prev?.clubs, next.clubs)) {
+        if (!state || identical(prev?.clubs, next.clubs)) {
+          return;
+        }
+        if (_buildingsMode) {
           unawaited(_syncBuildings(ref.read(tifoBuildingsProvider)));
+        } else {
+          unawaited(_redrawDistricts(ref.read(tifoDistrictsProvider)));
         }
       })
       // The Remote Config schedule can close mid-session (an admin ends the
@@ -177,6 +226,20 @@ class TifoBuildingsMapLayer extends Notifier<bool> {
     }
     state = true;
     unawaited(_persistEnabled(true));
+    // Polygon colors are resolved from the clubs roster (`session.clubById`
+    // in `_syncBuildings`, `_seasonLeaderColor` for the cluster tint), and
+    // turning the layer on is not itself a play-intent — so nothing else in
+    // this path loads the session. A player who dismissed the entry popup
+    // with (X), or came back to a Hive-restored layer after a relaunch, was
+    // left staring at an all-neutral map until some sheet happened to call
+    // `load()`; pressing a CTA then "repainted the map", which reads as the
+    // colors being a reward for tapping. Roster and config are public (the
+    // guest bearer works), so this is safe while signed out.
+    // Fire-and-forget: the `tifoSessionProvider` listener in `build` repaints
+    // whatever is already drawn once the roster lands.
+    if (ref.read(tifoSessionProvider).clubs.isEmpty) {
+      unawaited(ref.read(tifoSessionProvider.notifier).load());
+    }
     try {
       final controller = await ref.read(dgisControllerProvider.future);
       _buildingsManager ??= await controller.createMapObjectManager(layerId: MapObjectLayers.defaultLayerId);
@@ -196,7 +259,7 @@ class TifoBuildingsMapLayer extends Notifier<bool> {
       } catch (_) {
         // Leave zoom at 0 → districts mode until the first visibleRectEvent.
       }
-      logger.log('[tifo-map] enabled: zoom=$_zoom → ${_buildingsMode ? "buildings" : "districts"} mode');
+      logger.log('[tifo-map] enabled: zoom=$_zoom → ${_lod.name} mode');
       // BRD V2 US-05 BR-05: "The map should be shown in 2D view (bird eye
       // view)". A tilted camera also hides the flat capture polygons behind
       // the host map's 3D buildings, so this is functional, not just visual.
@@ -232,7 +295,7 @@ class TifoBuildingsMapLayer extends Notifier<bool> {
     await _visibleSub?.cancel();
     _visibleSub = null;
     _lastBbox = null;
-    _districtsDrawn = false;
+    _drawnDistrictsLod = null;
     _drawnFill.clear();
     _drawnRings.clear();
     _drawnDistrictFill.clear();
@@ -314,16 +377,17 @@ class TifoBuildingsMapLayer extends Notifier<bool> {
   /// Routes the current viewport to the right layer for the zoom level.
   ///
   /// Buildings depend on the viewport (fetch per bbox); districts are a
-  /// city-wide static layer, so they're drawn once on entry — NOT on every pan
-  /// (413 polygons/frame would flood the bridge and jank the map).
+  /// city-wide static layer, so they're drawn once per LOD on entry — NOT on
+  /// every pan (413 polygons/frame would flood the bridge and jank the map).
   Future<void> _applyForViewport(String? bbox) async {
     if (!state) {
       return;
     }
-    if (_buildingsMode) {
-      if (_districtsDrawn) {
+    final lod = _lod;
+    if (lod == _TifoLod.buildings) {
+      if (_drawnDistrictsLod != null) {
         await _clearDistricts();
-        _districtsDrawn = false;
+        _drawnDistrictsLod = null;
       }
       // Repaint whatever geometry is already cached (persists across pans /
       // district-mode round-trips), then discover new buildings for the bbox.
@@ -338,17 +402,17 @@ class TifoBuildingsMapLayer extends Notifier<bool> {
         await _clearBuildings();
         _lastBbox = null;
       }
-      if (_districtsDrawn) {
-        return; // already painted; panning within districts mode is a no-op
+      if (_drawnDistrictsLod == lod) {
+        return; // already painted at this LOD; panning within it is a no-op
       }
-      logger.log('[tifo-map] districts mode (zoom=$_zoom): loading…');
+      logger.log('[tifo-map] ${lod.name} mode (zoom=$_zoom): loading…');
       await ref.read(tifoDistrictsProvider.notifier).ensureLoaded();
       final st = ref.read(tifoDistrictsProvider);
       logger.log(
         '[tifo-map] districts loaded: ${st.districts.length} geom, ${st.summaries.length} summaries, err=${st.error}',
       );
       await _redrawDistricts(st);
-      _districtsDrawn = st.districts.isNotEmpty;
+      _drawnDistrictsLod = st.districts.isNotEmpty ? lod : null;
     }
   }
 
@@ -494,7 +558,79 @@ class TifoBuildingsMapLayer extends Notifier<bool> {
     unawaited(showTifoBuildingSheet(context, building).whenComplete(() => _sheetShowing = false));
   }
 
-  // ─── Districts (zoom < 16) ─────────────────────────────────────────────────
+  // ─── Districts (zoom < 15) ─────────────────────────────────────────────────
+
+  /// Paint-ready ARGB of the club leading the SEASON, for the cluster LOD.
+  ///
+  /// Derived from the district standings this layer already loads — the
+  /// `/leaderboards?scope=clubs` endpoint is deliberately NOT called here, so
+  /// the cluster tier costs zero extra requests and always agrees with the
+  /// polygons around it (both read the same `summaries` snapshot).
+  ///
+  /// Ranked by BUILDINGS claimed city-wide (`summary.counts` summed across
+  /// every district, not just the ones a club leads — a club can hold the most
+  /// buildings overall while leading no district at all), tie-broken by
+  /// districts led and then by slug. That last tie-break isn't cosmetic: an
+  /// unbroken tie would repaint the whole city a different color on every
+  /// poll, purely from `Map` iteration order.
+  ///
+  /// Null when nothing is claimed yet (pre-season / fresh reset), which the
+  /// caller paints neutral.
+  int? _seasonLeaderColor(TifoDistrictsState districtsState) {
+    final buildingsHeld = <String, int>{};
+    final districtsLed = <String, int>{};
+    final colorBySlug = <String, int>{};
+    for (final summary in districtsState.summaries.values) {
+      for (final entry in summary.counts.entries) {
+        buildingsHeld[entry.key] = (buildingsHeld[entry.key] ?? 0) + entry.value;
+      }
+      final slug = summary.leaderClub;
+      if (slug == null || slug.isEmpty) {
+        continue; // neutral district — contributes claims, but leads nobody
+      }
+      districtsLed[slug] = (districtsLed[slug] ?? 0) + 1;
+      final color = summary.leaderColorArgb;
+      if (color != null) {
+        colorBySlug[slug] ??= color;
+      }
+    }
+    var leader = '';
+    for (final entry in buildingsHeld.entries) {
+      if (entry.value <= 0) {
+        continue; // an explicit `{'club': 0}` is not a claim
+      }
+      if (leader.isEmpty || _outranks(entry.key, leader, buildingsHeld, districtsLed)) {
+        leader = entry.key;
+      }
+    }
+    if (leader.isEmpty) {
+      return null;
+    }
+    // Prefer the server's paint-ready color from a district this club leads;
+    // the city-wide leader may lead none, so fall back to the clubs roster
+    // (same source the building polygons use). Roster still loading → null,
+    // and the `tifoSessionProvider` listener repaints once it arrives.
+    final color = colorBySlug[leader] ?? ref.read(tifoSessionProvider).clubById(leader)?.colorArgb;
+    logger.log(
+      '[tifo-map] season leader: $leader '
+      '(${buildingsHeld[leader]} buildings, ${districtsLed[leader] ?? 0} districts led)',
+    );
+    return color;
+  }
+
+  /// Strict "a beats b" for [_seasonLeaderColor]'s ranking, so the winner is
+  /// found in one pass without allocating a sorted list.
+  bool _outranks(String a, String b, Map<String, int> buildingsHeld, Map<String, int> districtsLed) {
+    final byBuildings = (buildingsHeld[a] ?? 0).compareTo(buildingsHeld[b] ?? 0);
+    if (byBuildings != 0) {
+      return byBuildings > 0;
+    }
+    final byDistricts = (districtsLed[a] ?? 0).compareTo(districtsLed[b] ?? 0);
+    if (byDistricts != 0) {
+      return byDistricts > 0;
+    }
+    return a.compareTo(b) < 0; // stable tie-break on slug
+  }
 
   /// Pointwise diff repaint, mirroring the buildings path: a summaries refresh
   /// repaints ONLY the districts whose leader color actually changed (usually
@@ -507,13 +643,18 @@ class TifoBuildingsMapLayer extends Notifier<bool> {
     }
     try {
       final controller = await ref.read(dgisControllerProvider.future);
+      final lod = _lod;
+      // One color for the whole city at the cluster LOD, resolved once per
+      // repaint rather than per polygon.
+      final clusterArgb = lod == _TifoLod.cluster ? (_seasonLeaderColor(districtsState) ?? _neutralDistrictArgb) : null;
       final toAdd = <Polygon>[];
       final toRemove = <String>[];
       for (final district in districtsState.districts) {
         final summary = districtsState.summaries[district.id];
         // leaderColor is server-side paint-ready — the leader's hex OR the
         // neutral palette color — so use it directly (fallback grey if absent).
-        final baseArgb = summary?.leaderColorArgb ?? 0xFFFCFBF2;
+        // At the cluster LOD the season leader's color overrides it wholesale.
+        final baseArgb = clusterArgb ?? summary?.leaderColorArgb ?? _neutralDistrictArgb;
         final fill = (baseArgb & 0x00FFFFFF) | 0xE6000000;
         final prev = _drawnDistrictFill[district.id];
         if (prev == fill) {
@@ -553,7 +694,7 @@ class TifoBuildingsMapLayer extends Notifier<bool> {
       }
       if (toAdd.isNotEmpty) {
         logger.log(
-          '[tifo-map] districts diff: ${toAdd.length} polygons repainted, '
+          '[tifo-map] districts diff (${lod.name}): ${toAdd.length} polygons repainted, '
           '${districtsState.districts.length} total',
         );
         await controller.addPolygons(toAdd, toManager: manager);

@@ -158,9 +158,12 @@ class MapDashboardControls extends ConsumerWidget {
                         ),
                       ],
                     ),
-                    // Any session where the player hasn't cleared every play gate yet.
+                    // Any session where the gate state is known AND the
+                    // player still has a gate left — see `shouldOfferJoin`.
+                    // Gating on `!isPlayReady` alone put the pill on screen
+                    // after every relaunch, before the session had loaded.
                     if (ref.watch(tifoBuildingsMapLayerProvider) &&
-                        !ref.watch(tifoSessionProvider.select((s) => s.isPlayReady)))
+                        ref.watch(tifoSessionProvider.select((s) => s.shouldOfferJoin)))
                       const TifoJoinPill(),
                   ],
                 ),
