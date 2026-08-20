@@ -1,6 +1,9 @@
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/_generated/assets/assets.gen.dart';
+import 'package:mapness/features/tifo/data/tifo_models.dart';
+import 'package:mapness/features/tifo/providers/tifo_session_provider.dart';
 import 'package:mapness/features/tifo/ui/tifo_theme.dart';
 import 'package:mapness/l10n/generated/app_localizations.dart';
 
@@ -19,6 +22,68 @@ const _amber = Color(0xFFD97706);
 const _purple = Color(0xFF7C3AED);
 
 // ─── Shared bits ─────────────────────────────────────────────────────────────
+
+/// Slot order for the demo screens — the design's five teams in the order the
+/// tour has always shown them. Fixed on purpose: the canned stats are laid
+/// over these slots, so reordering them would silently reassign the demo
+/// standings.
+const List<Color> _demoSlotColors = [_black, _blue, _red, _sand, _yellow];
+
+/// Teams for the demo screens: the REAL season clubs (name + crest color from
+/// `/clubs`) whenever the roster is loaded, so the tour doesn't teach five
+/// anonymized colors that exist nowhere in the live game.
+///
+/// Clubs are placed into [_demoSlotColors] by nearest crest color, each club
+/// used at most once — that keeps the tour's long-standing slot ORDER (and
+/// therefore which team leads the demo table) while the labels become real.
+/// Matching by color rather than by slug or roster position follows
+/// `tifoNearestStrikerColor`'s reasoning: nothing here may assume which club
+/// the backend calls "blue".
+///
+/// The design palette stays as the FALLBACK for an empty roster — the tour can
+/// be opened before `/clubs` answers, or with no network at all, and a demo
+/// screen must never render an empty table. A season with more than five clubs
+/// shows the five closest to the design slots, exactly as many rows as before.
+List<(String, Color)> _demoTeams(BuildContext context, List<TifoClubInfo> clubs) {
+  if (clubs.isEmpty) {
+    final l10n = AppLocalizations.of(context);
+    return [
+      (l10n.blackTeam, _black),
+      (l10n.blueTeam, _blue),
+      (l10n.redTeam, _red),
+      (l10n.sandTeam, _sand),
+      (l10n.yellowTeam, _yellow),
+    ];
+  }
+  final pool = [...clubs];
+  final teams = <(String, Color)>[];
+  for (final slot in _demoSlotColors) {
+    if (pool.isEmpty) {
+      break;
+    }
+    var best = 0;
+    var bestDistance = double.infinity;
+    for (var i = 0; i < pool.length; i++) {
+      final distance = _rgbDistance(slot.toARGB32(), pool[i].colorArgb);
+      if (distance < bestDistance) {
+        bestDistance = distance;
+        best = i;
+      }
+    }
+    final club = pool.removeAt(best);
+    teams.add((club.name, Color(club.colorArgb)));
+  }
+  return teams;
+}
+
+/// Squared RGB distance between two ARGB values (alpha ignored) — same
+/// primitive `_nearestColorBucket` uses in `penalty_game.dart`.
+double _rgbDistance(int a, int b) {
+  final dr = ((a >> 16) & 0xFF) - ((b >> 16) & 0xFF);
+  final dg = ((a >> 8) & 0xFF) - ((b >> 8) & 0xFF);
+  final db = (a & 0xFF) - (b & 0xFF);
+  return (dr * dr + dg * dg + db * db).toDouble();
+}
 
 BoxDecoration _card({Color? bg, Color? border, double radius = TifoRadii.l}) => BoxDecoration(
   color: bg ?? TifoColors.surface,
@@ -583,22 +648,31 @@ class TifoDemoPenaltyHud extends StatelessWidget {
 
 // ─── 09 · Leaderboard (Table tab) ───────────────────────────────────────────
 
-class TifoDemoLeaderboard extends StatelessWidget {
+class TifoDemoLeaderboard extends ConsumerWidget {
   const TifoDemoLeaderboard({super.key});
 
-  List<(int, String, Color, int, int, int)> _rows(BuildContext context) {
-    final l10n = AppLocalizations.of(context);
+  /// Canned standings (the tour never asks the backend for numbers) laid over
+  /// the real clubs from [_demoTeams]. Capped by the shorter of the two lists,
+  /// so a season running fewer than five clubs renders a shorter table rather
+  /// than teams with no stats — or stats with no team.
+  static const List<(int, int, int)> _stats = [
+    (18, 342, 32),
+    (14, 268, 25),
+    (11, 205, 19),
+    (8, 142, 13),
+    (6, 98, 11),
+  ];
+
+  List<(int, String, Color, int, int, int)> _rows(BuildContext context, WidgetRef ref) {
+    final teams = _demoTeams(context, ref.watch(tifoSessionProvider.select((s) => s.clubs)));
     return [
-      (1, l10n.blackTeam, _black, 18, 342, 32),
-      (2, l10n.blueTeam, _blue, 14, 268, 25),
-      (3, l10n.redTeam, _red, 11, 205, 19),
-      (4, l10n.sandTeam, _sand, 8, 142, 13),
-      (5, l10n.yellowTeam, _yellow, 6, 98, 11),
+      for (var i = 0; i < teams.length && i < _stats.length; i++)
+        (i + 1, teams[i].$1, teams[i].$2, _stats[i].$1, _stats[i].$2, _stats[i].$3),
     ];
   }
 
   @override
-  Widget build(BuildContext context) => TifoDemoPanel(
+  Widget build(BuildContext context, WidgetRef ref) => TifoDemoPanel(
     child: Column(
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -662,7 +736,7 @@ class TifoDemoLeaderboard extends StatelessWidget {
                   ],
                 ),
               ),
-              for (final (rank, name, color, districts, buildings, pct) in _rows(context))
+              for (final (rank, name, color, districts, buildings, pct) in _rows(context, ref))
                 Padding(
                   padding: const EdgeInsets.symmetric(vertical: 7),
                   child: Row(
