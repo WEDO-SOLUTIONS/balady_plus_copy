@@ -288,7 +288,7 @@ class CreateOrUpdateFavoriteListPage extends HookConsumerWidget {
                         ref.invalidate(favoriteListDetailProvider(listId: listId));
                     }
                     ref
-                      ..invalidate(favoriteListsProvider)
+                      ..invalidate(favoriteListsResponseProvider)
                       ..invalidate(aggregatedFavoriteMarkersProvider);
                     if (context.mounted) {
                       context.router.pop(true);

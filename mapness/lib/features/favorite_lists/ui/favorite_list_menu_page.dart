@@ -123,7 +123,7 @@ class FavoriteListMenuPage extends HookConsumerWidget {
                           final dataSource = await ref.read(favoriteListsRemoteDataSourceProvider.future);
                           await dataSource.deleteFavoriteList(listId);
                           ref
-                            ..invalidate(favoriteListsProvider)
+                            ..invalidate(favoriteListsResponseProvider)
                             ..invalidate(aggregatedFavoriteMarkersProvider);
                         },
                       ),

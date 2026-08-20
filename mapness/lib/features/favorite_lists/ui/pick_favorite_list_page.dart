@@ -84,7 +84,7 @@ class PickFavoriteListPage extends HookConsumerWidget {
           removeFromListIds: removeFromListIds,
         );
         ref
-          ..invalidate(favoriteListsProvider)
+          ..invalidate(favoriteListsResponseProvider)
           ..invalidate(aggregatedFavoriteMarkersProvider);
         for (final list in lists) {
           ref.invalidate(favoriteListDetailProvider(listId: list.id));

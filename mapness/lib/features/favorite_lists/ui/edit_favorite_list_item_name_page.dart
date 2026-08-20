@@ -101,7 +101,7 @@ class EditFavoriteListItemNamePage extends HookConsumerWidget {
               final dataSource = await ref.read(favoriteListsRemoteDataSourceProvider.future);
               await dataSource.setCustomPlaceNickname(place.placeId, name, placeType: place.placeType);
               ref
-                ..invalidate(favoriteListsProvider)
+                ..invalidate(favoriteListsResponseProvider)
                 ..invalidate(favoriteListDetailProvider(listId: listId))
                 ..invalidate(customPlaceNicknameProvider(place.placeId));
               if (context.mounted) {
