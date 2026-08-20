@@ -21,8 +21,6 @@ part 'leap.g.dart';
 class Leap extends _$Leap {
   static const _config = LeapConfig();
 
-  static const double _minVisibleZoom = 12;
-
   static const double _poiCardZoom = 17;
   static const double _iconWidth = 56;
 
@@ -82,13 +80,6 @@ class Leap extends _$Leap {
     await ref.read(dgisControllerProvider.future);
     if (!_markerAdded) {
       await initializeGlobalMarker();
-    }
-
-    final zoom = ref.read(cameraPositionProvider)?.zoom ?? 0.0;
-
-    if (zoom < _minVisibleZoom) {
-      await hideGlobalMarker();
-      return;
     }
 
     await mapManager?.setMarkerOptions(
