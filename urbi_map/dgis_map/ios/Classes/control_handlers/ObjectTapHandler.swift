@@ -87,6 +87,7 @@ class ObjectTapHandler {
     private var iconCache: Dictionary<String, Image> = [:]
 
     private var selectedPanorama: Marker?
+    private static let overlayPoiSearchRadius = ScreenDistance(value: 5)
     
     init(
         map: Map,
@@ -142,10 +143,12 @@ class ObjectTapHandler {
                 }
             case let polyline as Polyline:
                 if let id = polyline.userData as? PolylineId {
-                    eventChannel.success([
-                        "event": Events.onPolylineTap,
-                        "id": id.id,
-                    ] as [String : Any])
+                    self.dispatchPoiUnderOverlay(objectInfo) { [weak self] in
+                        self?.eventChannel.success([
+                            "event": Events.onPolylineTap,
+                            "id": id.id,
+                        ] as [String : Any])
+                    }
                     return
                 }
             case is GeometryMapObject:
@@ -1183,6 +1186,33 @@ class ObjectTapHandler {
                 "longitude": position.longitude.value,
             ],
         ] as [String : Any?])
+    }
+
+    private func dispatchPoiUnderOverlay(
+        _ objectInfo: DGis.RenderedObjectInfo,
+        onNoObjectFound: @escaping () -> Void
+    ) {
+        guard let screenPoint = map.camera.projection.mapToScreen(point: objectInfo.closestMapPoint) else {
+            onNoObjectFound()
+            return
+        }
+
+        self.cancelable.append(
+            map.getRenderedObjects(
+                centerPoint: screenPoint,
+                radius: Self.overlayPoiSearchRadius
+            ).sink { [weak self] renderedObjects in
+                guard let poi = renderedObjects.first(where: { $0.item.item is DgisMapObject }),
+                      let mapObject = poi.item.item as? DgisMapObject else {
+                    onNoObjectFound()
+                    return
+                }
+
+                self?.onDgisObjectTap(mapObject, poi)
+            } failure: { _ in
+                onNoObjectFound()
+            }
+        )
     }
 
     private func sendDgisMyLocationEvent(_ position: GeoPointWithElevation) {
