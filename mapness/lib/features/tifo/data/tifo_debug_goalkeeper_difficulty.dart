@@ -6,15 +6,17 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 /// testers have settled on numbers. The defaults below are QA's current
 /// baseline, which is deliberately EASIER than the values originally
 /// hardcoded in `PenaltyGame` (0.4 / 2.1 / 2.0 / 4.8): the keeper commits
-/// later, aims worse and closes on the ball more slowly. Read once when the
-/// game screen is built, same as `tifoDebugColliderOverlayProvider`.
+/// later, aims worse and closes on the ball more slowly. [maxApproachDistance]
+/// has no such predecessor — it was uncapped, so its 2.0 default is a real
+/// behavior change and not a port of an old constant. Read once when the game
+/// screen is built, same as `tifoDebugColliderOverlayProvider`.
 class TifoGoalkeeperDifficulty {
   const TifoGoalkeeperDifficulty({
     this.reactionDelayFraction = 0.55,
     this.aimError = 3.0,
     this.centerDiveSpeedFactor = 1.45,
     this.lateralDiveSpeed = 3.25,
-    this.maxApproachDistance = 9,
+    this.maxApproachDistance = 2.0,
   });
 
   /// Fraction of the ball's flight time the keeper waits before starting to
@@ -48,8 +50,13 @@ class TifoGoalkeeperDifficulty {
   /// off. Lower = he stays short of a far ball = easier for the striker.
   ///
   /// Only binds when the ball is far: a target inside the cap is unaffected.
-  /// The goal is 9 pitch units wide, so the default 9 is "no cap" — the
-  /// keeper behaves exactly as he did before this knob existed.
+  ///
+  /// Scale: the goal is 9 pitch units wide, the dive target is clamped to
+  /// ±3.75, and idle sway leaves him within ±1.65 of center — so the widest
+  /// gap he can ever face is 5.4, and any value above that is "no cap". The
+  /// default 2.0 therefore bites on genuinely wide placement (a far corner
+  /// hit while he leans the other way stays out of reach) and leaves shots
+  /// near his standing position untouched.
   final double maxApproachDistance;
 
   TifoGoalkeeperDifficulty copyWith({
