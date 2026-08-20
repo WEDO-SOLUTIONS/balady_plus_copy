@@ -8,17 +8,15 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:mapness/_features/common/widgets/dragger.dart';
-import 'package:mapness/features/favorite_lists/data/favorite_lists_api_exception.dart';
 import 'package:mapness/features/favorite_lists/data/favorite_lists_remote_datasource.dart';
 import 'package:mapness/features/favorite_lists/data/models/favorite_list_dto.dart';
 import 'package:mapness/features/favorite_lists/data/models/favorite_list_place_dto.dart';
 import 'package:mapness/features/favorite_lists/providers/custom_place_nickname.dart';
 import 'package:mapness/features/favorite_lists/providers/favorite_list_detail.dart';
 import 'package:mapness/features/favorite_lists/providers/favorite_lists.dart';
+import 'package:mapness/features/favorite_lists/ui/show_favorite_lists_error_sheet.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/hooks/toggle_sheet_controller_hook.dart';
-import 'package:mapness/shared/providers/app_language.dart';
-import 'package:mapness/shared/ui/toast/toast_overlay.dart';
 import 'package:sheetify/sheetify.dart';
 
 @RoutePage()
@@ -112,10 +110,7 @@ class EditFavoriteListItemNamePage extends HookConsumerWidget {
             } catch (e) {
               isSubmitting.value = false;
               if (context.mounted) {
-                final message = e is FavoriteListsApiException
-                    ? e.localizedMessage(ref.read(appLanguageProvider))
-                    : context.l10n.somethingWentWrongPleaseTryAgainLater;
-                ToastOverlay.of(context).show(title: message, isDismissible: true);
+                showFavoriteListsErrorSheet(context, ref, e);
               }
             }
           },

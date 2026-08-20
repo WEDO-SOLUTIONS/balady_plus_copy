@@ -73,8 +73,16 @@ class _FavoriteListsRemoteDataSource implements FavoriteListsRemoteDataSource {
 
   final Dio dio;
 
-  Map<String, dynamic> _unwrap(Response<dynamic> response) =>
-      (response.data as Map<String, dynamic>)['data'] as Map<String, dynamic>;
+  Map<String, dynamic> _unwrap(Response<dynamic> response) {
+    final body = response.data as Map<String, dynamic>;
+    if (body['success'] == false) {
+      // Some endpoints signal business errors (e.g. DUPLICATE_LIST_NAME) with HTTP 200 and
+      // `success: false` rather than a non-2xx status, so DioException-based handling alone
+      // would miss them and fall through to a generic error below.
+      throw FavoriteListsApiException.fromErrorBody(body);
+    }
+    return body['data'] as Map<String, dynamic>;
+  }
 
   Future<T> _request<T>(
     String label,

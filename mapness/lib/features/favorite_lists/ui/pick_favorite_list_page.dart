@@ -14,13 +14,13 @@ import 'package:mapness/features/favorite_lists/providers/aggregated_favorite_ma
 import 'package:mapness/features/favorite_lists/providers/favorite_list_detail.dart';
 import 'package:mapness/features/favorite_lists/providers/favorite_list_membership_map.dart';
 import 'package:mapness/features/favorite_lists/providers/favorite_lists.dart';
+import 'package:mapness/features/favorite_lists/ui/show_favorite_lists_error_sheet.dart';
 import 'package:mapness/features/favorite_lists/ui/widgets/favorite_progress_indicator.dart';
 import 'package:mapness/features/favourites/mappers/directory_object_message_mapper.dart';
 import 'package:mapness/features/favourites/providers/favourite_cache.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/hooks/multi_state_sheet_controller_hook.dart';
 import 'package:mapness/shared/providers/app_language.dart';
-import 'package:mapness/shared/ui/toast/toast_overlay.dart';
 import 'package:sheetify/sheetify.dart';
 
 /// Простой экран «добавить в избранное»: отметить чекбоксами один или несколько
@@ -96,10 +96,7 @@ class PickFavoriteListPage extends HookConsumerWidget {
       } catch (e) {
         isSubmitting.value = false;
         if (context.mounted) {
-          final message = e is FavoriteListsApiException
-              ? e.localizedMessage(ref.read(appLanguageProvider))
-              : context.l10n.somethingWentWrongPleaseTryAgainLater;
-          ToastOverlay.of(context).show(title: message, isDismissible: true);
+          showFavoriteListsErrorSheet(context, ref, e);
         }
       }
     }
@@ -123,9 +120,7 @@ class PickFavoriteListPage extends HookConsumerWidget {
       } catch (e) {
         isSubmitting.value = false;
         if (context.mounted) {
-          ToastOverlay.of(
-            context,
-          ).show(title: context.l10n.somethingWentWrongPleaseTryAgainLater, isDismissible: true);
+          showFavoriteListsErrorSheet(context, ref, e);
         }
       }
     }
