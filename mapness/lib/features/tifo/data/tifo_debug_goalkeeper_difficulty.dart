@@ -3,15 +3,17 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 /// Debug-only goalkeeper tuning knobs, exposed as raw numbers (not named
 /// difficulty presets) so QA can dial each one in and report back which
 /// combinations feel easy/medium/hard — named presets get added later, once
-/// testers have settled on numbers. Off/default values match the values that
-/// were previously hardcoded in `PenaltyGame`. Read once when the game screen
-/// is built, same as `tifoDebugColliderOverlayProvider`.
+/// testers have settled on numbers. The defaults below are QA's current
+/// baseline, which is deliberately EASIER than the values originally
+/// hardcoded in `PenaltyGame` (0.4 / 2.1 / 2.0 / 4.8): the keeper commits
+/// later, aims worse and closes on the ball more slowly. Read once when the
+/// game screen is built, same as `tifoDebugColliderOverlayProvider`.
 class TifoGoalkeeperDifficulty {
   const TifoGoalkeeperDifficulty({
-    this.reactionDelayFraction = 0.4,
-    this.aimError = 2.1,
-    this.centerDiveSpeedFactor = 2.0,
-    this.lateralDiveSpeed = 4.8,
+    this.reactionDelayFraction = 0.55,
+    this.aimError = 3.0,
+    this.centerDiveSpeedFactor = 1.45,
+    this.lateralDiveSpeed = 3.25,
   });
 
   /// Fraction of the ball's flight time the keeper waits before starting to
