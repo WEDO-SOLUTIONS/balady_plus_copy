@@ -15,6 +15,10 @@ class SearchHandler: NSObject {
     // would drop the SDK's required strong reference to the earlier one and its completion
     // would never fire (surfacing as a client-side timeout).
     private var objectSearchCancelables: [UUID: Cancellable] = [:]
+    // Guards objectSearchCancelables: the SDK fires sink success/failure closures on its own
+    // concurrent job queue, so concurrent removeValue(forKey:) calls (and the write in
+    // searchByDirectoryObjectId) must be serialized to avoid corrupting the Dictionary.
+    private let objectSearchCancelablesQueue = DispatchQueue(label: "dgis_map.SearchHandler.objectSearchCancelables")
     private var searchCancelable: Cancellable?
     private var itemMarkerInfosCancellable: Cancellable?
     private var suggestCancelable: Cancellable?
@@ -46,8 +50,12 @@ class SearchHandler: NSObject {
     }
 
     func cancel() {
-        self.objectSearchCancelables.values.forEach { $0.cancel() }
-        self.objectSearchCancelables.removeAll()
+        let cancelables = objectSearchCancelablesQueue.sync {
+            let values = Array(self.objectSearchCancelables.values)
+            self.objectSearchCancelables.removeAll()
+            return values
+        }
+        cancelables.forEach { $0.cancel() }
         self.searchCancelable?.cancel()
         self.suggestCancelable?.cancel()
         self.itemMarkerInfosCancellable?.cancel()
@@ -55,9 +63,9 @@ class SearchHandler: NSObject {
 
     func searchByDirectoryObjectId(objectId: DgisObjectId, completion: @escaping (Result<DirectoryObjectMessage, any Error>) -> Void) {
         let requestId = UUID()
-        objectSearchCancelables[requestId] = searchManager.searchByDirectoryObjectId(objectId: objectId).sink {
+        let cancelable = searchManager.searchByDirectoryObjectId(objectId: objectId).sink {
             [weak self] directoryObject in
-            self?.objectSearchCancelables.removeValue(forKey: requestId)
+            self?.objectSearchCancelablesQueue.sync { self?.objectSearchCancelables.removeValue(forKey: requestId) }
             guard let response = directoryObject else {
                 completion(
                     Result.failure(
@@ -74,8 +82,11 @@ class SearchHandler: NSObject {
                 response.toMessage())
             )
         } failure: { [weak self] error in
-            self?.objectSearchCancelables.removeValue(forKey: requestId)
+            self?.objectSearchCancelablesQueue.sync { self?.objectSearchCancelables.removeValue(forKey: requestId) }
             completion(Result.failure(FlutterError(code: "FutureError", message: error.description, details: nil)))
+        }
+        objectSearchCancelablesQueue.sync {
+            self.objectSearchCancelables[requestId] = cancelable
         }
     }
     
