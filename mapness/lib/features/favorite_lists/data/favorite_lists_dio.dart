@@ -35,9 +35,6 @@ Future<Dio> favoriteListsDio(Ref ref) async {
       'X-App-Version': version ?? '1.0.0',
       'X-Locale': appLanguage == Language.arabic ? 'ar_SA' : 'en_SA',
       'X-Language': appLanguage == Language.arabic ? 'ar' : 'en',
-      // todo(claude): get token from user auth
-      'Authorization':
-          'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJkOWI4N2I0ZS0zM2YxLTRhYzEtOWEzZC1mOTkyMzRjNWY2YTciLCJjbGllbnRfdHlwZSI6Im1vYmlsZSIsImlhdCI6MTc2OTcyMzIwMH0.sampleSignatureTokenStringForTestingOnly',
     },
   );
 
