@@ -11,6 +11,7 @@ import 'package:mapness/features/favorite_lists/data/models/icon_type.dart';
 import 'package:mapness/features/favorite_lists/providers/favorite_list_membership.dart';
 import 'package:mapness/features/favourites/helpers/construct_marker.dart';
 import 'package:mapness/features/favourites/mappers/directory_object_message_mapper.dart';
+import 'package:mapness/shared/constants/constants.dart';
 import 'package:mapness/shared/extensions/change_marker_options_ext.dart';
 import 'package:mapness/shared/extensions/directory_object_message_ext.dart';
 import 'package:mapness/shared/extensions/string_ext.dart';
@@ -28,8 +29,6 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 part 'point_of_interest.g.dart';
 
 const poiPinId = 'poi_pin_id';
-const poiMapFontAr = 'IBMPlexSansArabic-Bold';
-const poiMapFontEn = 'GolosText_SemiBold';
 
 @riverpod
 Future<DirectoryObjectMessage?> pointOfInterest(
@@ -96,7 +95,9 @@ Future<DirectoryObjectMessage?> pointOfInterest(
     color: dark.isDark ? 0xD3FFFFFF : 0xff1B1B1B,
     strokeColor: dark.isDark ? 0xff1B1B1B : 0xD3FFFFFF,
     strokeWidth: 1,
-    fontName: directoryObject.title.containsArabic() || isRtl ? poiMapFontAr : poiMapFontEn,
+    fontName: directoryObject.title.containsArabic() || isRtl
+        ? MapnessConstants.poiMapFontAr
+        : MapnessConstants.poiMapFontEn,
     textPlacement: MarkerTextPlacementMessage(placement: TextPlacementMessage.bottomCenter),
   );
   final isDark = ref.read(darkModeProvider).value?.isDark ?? false;
