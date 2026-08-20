@@ -1891,9 +1891,17 @@ class PenaltyGame extends FlameGame with TapCallbacks, DragCallbacks {
     );
 
     final keeperError = (_random.nextDouble() - 0.5) * goalkeeperDifficulty.aimError;
-    _keeperTargetX = (flightTarget.x * 0.72 + keeperError)
+    final desiredX = (flightTarget.x * 0.72 + keeperError)
         .clamp(-_goalHalfWidth + 0.75, _goalHalfWidth - 0.75)
         .toDouble();
+    // Cap the DISTANCE he may cover, measured from wherever the idle sway left
+    // him at the instant of the shot (`_keeperX` hasn't started diving yet).
+    // `lateralDiveSpeed` alone only delays his arrival — with enough flight
+    // time he reaches any corner from any starting point, which made wide
+    // placement pointless. See `maxApproachDistance`; its default spans the
+    // whole goal, so this clamp is a no-op unless QA dials it down.
+    final maxTravel = goalkeeperDifficulty.maxApproachDistance;
+    _keeperTargetX = desiredX.clamp(_keeperX - maxTravel, _keeperX + maxTravel).toDouble();
     _keeperDive = _chooseKeeperDive(flightTarget.y);
     // Fix the dive side once per shot — the render picks a native
     // left/right/center animation from it. This MUST be judged against the
@@ -1905,9 +1913,10 @@ class PenaltyGame extends FlameGame with TapCallbacks, DragCallbacks {
     // animation phase had the keeper leaning away from center at that
     // instant — i.e. side selection was driven by animation noise, not by
     // where the ball was actually going, which read as "always dives sideways".
-    _keeperSide = _keeperTargetX.abs() < 1.0
-        ? _KeeperSide.center
-        : (_keeperTargetX > 0 ? _KeeperSide.right : _KeeperSide.left);
+    // Judged on `desiredX`, i.e. BEFORE the travel cap: the dive still has to
+    // go toward the ball even when he can't get there, otherwise a capped
+    // keeper plays a center dive while the ball flies into the corner.
+    _keeperSide = desiredX.abs() < 1.0 ? _KeeperSide.center : (desiredX > 0 ? _KeeperSide.right : _KeeperSide.left);
   }
 
   _KeeperDive _chooseKeeperDive(double targetY) {

@@ -14,6 +14,7 @@ class TifoGoalkeeperDifficulty {
     this.aimError = 3.0,
     this.centerDiveSpeedFactor = 1.45,
     this.lateralDiveSpeed = 3.25,
+    this.maxApproachDistance = 9,
   });
 
   /// Fraction of the ball's flight time the keeper waits before starting to
@@ -36,16 +37,33 @@ class TifoGoalkeeperDifficulty {
   /// gets there sooner = harder for the striker.
   final double lateralDiveSpeed;
 
+  /// Hard cap, in pitch units, on how far the keeper may travel sideways from
+  /// wherever he was standing at the moment of the shot — i.e. how close he is
+  /// allowed to get to a ball that was already far from him.
+  ///
+  /// [lateralDiveSpeed] only controls how FAST he closes the gap; given enough
+  /// flight time he still arrives, so a shot into the far corner could be
+  /// saved by a keeper who started at the opposite post. This bounds the
+  /// distance instead of the speed, which is what makes wide placement pay
+  /// off. Lower = he stays short of a far ball = easier for the striker.
+  ///
+  /// Only binds when the ball is far: a target inside the cap is unaffected.
+  /// The goal is 9 pitch units wide, so the default 9 is "no cap" — the
+  /// keeper behaves exactly as he did before this knob existed.
+  final double maxApproachDistance;
+
   TifoGoalkeeperDifficulty copyWith({
     double? reactionDelayFraction,
     double? aimError,
     double? centerDiveSpeedFactor,
     double? lateralDiveSpeed,
+    double? maxApproachDistance,
   }) => TifoGoalkeeperDifficulty(
     reactionDelayFraction: reactionDelayFraction ?? this.reactionDelayFraction,
     aimError: aimError ?? this.aimError,
     centerDiveSpeedFactor: centerDiveSpeedFactor ?? this.centerDiveSpeedFactor,
     lateralDiveSpeed: lateralDiveSpeed ?? this.lateralDiveSpeed,
+    maxApproachDistance: maxApproachDistance ?? this.maxApproachDistance,
   );
 }
 
@@ -60,6 +78,8 @@ class TifoDebugGoalkeeperDifficultyController extends Notifier<TifoGoalkeeperDif
   void setCenterDiveSpeedFactor(double value) => state = state.copyWith(centerDiveSpeedFactor: value);
 
   void setLateralDiveSpeed(double value) => state = state.copyWith(lateralDiveSpeed: value);
+
+  void setMaxApproachDistance(double value) => state = state.copyWith(maxApproachDistance: value);
 
   void reset() => state = const TifoGoalkeeperDifficulty();
 }
