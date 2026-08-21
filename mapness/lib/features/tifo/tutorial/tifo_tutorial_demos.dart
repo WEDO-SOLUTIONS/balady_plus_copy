@@ -457,7 +457,10 @@ class TifoDemoPenaltyPreview extends StatelessWidget {
         child: Column(
           children: [
             const SizedBox(height: 12),
-            Text('Penalty Challenge', style: TifoText.h3.copyWith(color: TifoColors.accentMuted)),
+            Text(
+              AppLocalizations.of(context).tifoPenaltyChallenge,
+              style: TifoText.h3.copyWith(color: TifoColors.accentMuted),
+            ),
             const SizedBox(height: 16),
             Expanded(
               child: ClipRRect(
@@ -1076,8 +1079,6 @@ class TifoDemoSupport extends StatelessWidget {
             children: [
               Row(
                 children: [
-                  Icon(Icons.arrow_back_ios_new_rounded, size: 18, color: context.colors.foregroundDefault),
-                  const SizedBox(width: 12),
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
