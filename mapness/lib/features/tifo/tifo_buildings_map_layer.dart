@@ -181,23 +181,38 @@ class TifoBuildingsMapLayer extends Notifier<bool> {
 
   /// Corner-cutting passes applied to the region silhouette. [kTifoRegionOutline]
   /// is 21 coarse vertices straight out of the season GeoJSON, so unsmoothed it
-  /// reads as an angular shard rather than a region. Three passes take it to
-  /// 168 points — nothing for one polygon — with no corner left visible.
-  static const int _regionSmoothPasses = 3;
+  /// reads as an angular shard rather than a region. Two passes take it to 84
+  /// points — nothing for one polygon — rounding the corners while leaving the
+  /// long edges recognisably straight. A third pass smooths the segments away
+  /// entirely, which read as too soft for a region boundary.
+  static const int _regionSmoothPasses = 2;
 
-  /// How far along each edge a corner is cut, per pass. 0.25 is the classic
-  /// Chaikin ratio; it moves the season region's sharpest corner ~8.7 km,
-  /// which at the cluster zoom (the ~200 km region spanning the screen, so
-  /// roughly 500 m/px) is a 15-ish pixel rounding, and changes the enclosed
-  /// area by ~1%. Lower it toward 0.15 for corners that stay tighter — that,
-  /// not the pass count, is the knob for how much shape is given up.
-  static const double _regionSmoothRatio = 0.25;
+  /// How far along each edge a corner is cut, per pass — the real knob for how
+  /// much shape is given up, more so than the pass count.
+  ///
+  /// 0.25 is the classic Chaikin ratio and rounded the region's sharpest corner
+  /// by ~8.7 km, which at the cluster zoom (the ~200 km region spanning the
+  /// screen, so roughly 500 m/px) is a ~17 px cut — soft enough that the
+  /// silhouette stopped looking like a boundary. 0.10 takes that down to
+  /// ~4.5 km (~9 px): the sharp pikes are gone but every corner still sits
+  /// visibly where the source GeoJSON put it.
+  ///
+  /// Do NOT reach for a single pass to get rougher still — one pass cuts MORE
+  /// (12.6 km at 0.25), because it is the later passes that pull the curve back
+  /// toward the original edges while the corner stays cut. Lower this instead.
+  static const double _regionSmoothRatio = 0.10;
 
-  /// How far the border is taken down from its fill, per channel. Small enough
-  /// to stay recognisably the same colour, large enough to actually show up:
-  /// the previous stroke was the fill's own hue at a slightly lower alpha,
-  /// which is invisible once the fill is painted underneath it.
-  static const double _borderShade = 0.7;
+  /// Alpha both the fill and its border are painted at. Sharing it is the
+  /// point: a fully opaque border over a 90%-alpha fill reads as a DIFFERENT
+  /// colour rather than a darker edge of the same one, because only the fill
+  /// picks up the basemap showing through it.
+  static const int _polygonAlpha = 0xE6000000;
+
+  /// How far the border is taken down from its fill, per channel. 0.85 is a
+  /// 15% darkening — enough to separate the edge from its own fill, little
+  /// enough to still read as the same colour. At 0.7 it read as a different
+  /// colour entirely; raise toward 0.92 to soften it further.
+  static const double _borderShade = 0.85;
 
   /// Nominal screen width in logical pixels, used to turn the visible rect
   /// into a degrees-per-pixel figure without reaching for a `BuildContext`.
@@ -1136,7 +1151,7 @@ class TifoBuildingsMapLayer extends Notifier<bool> {
     final r = ((baseArgb >> 16) & 0xFF) * _borderShade;
     final g = ((baseArgb >> 8) & 0xFF) * _borderShade;
     final b = (baseArgb & 0xFF) * _borderShade;
-    return 0xFF000000 | (r.round() << 16) | (g.round() << 8) | b.round();
+    return _polygonAlpha | (r.round() << 16) | (g.round() << 8) | b.round();
   }
 
   /// Chaikin corner cutting on a CLOSED ring: each pass replaces every vertex
@@ -1186,7 +1201,7 @@ class TifoBuildingsMapLayer extends Notifier<bool> {
       return; // only the cluster tier shows the region
     }
     final baseArgb = _seasonLeaderColor(districtsState) ?? _neutralDistrictArgb;
-    final fill = (baseArgb & 0x00FFFFFF) | 0xE6000000;
+    final fill = (baseArgb & 0x00FFFFFF) | _polygonAlpha;
     if (_drawnRegionFill == fill) {
       return; // already painted in this color
     }
