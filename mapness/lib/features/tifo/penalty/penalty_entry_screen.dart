@@ -155,9 +155,13 @@ class _Header extends StatelessWidget {
 
 class _Caption extends StatelessWidget {
   @override
-  Widget build(BuildContext context) => const Text(
-    'PENALTY CHALLENGE · تحدي التيفو',
-    style: TextStyle(
+  Widget build(BuildContext context) => Text(
+    // Was a hardcoded bilingual caption whose Arabic half read "تحدي التيفو".
+    // `tifoPenaltyChallenge` carries the reviewed wording in both locales
+    // ("تحدي ركلات الترجيح"), and uppercasing is a no-op on Arabic, so the
+    // Figma treatment (9pt, 1.8 letter spacing, all-caps) survives either way.
+    AppLocalizations.of(context).tifoPenaltyChallenge.toUpperCase(),
+    style: const TextStyle(
       fontWeight: FontWeight.bold,
       fontSize: 9,
       height: 13.5 / 9,

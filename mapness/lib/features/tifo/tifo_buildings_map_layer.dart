@@ -179,6 +179,26 @@ class TifoBuildingsMapLayer extends Notifier<bool> {
   /// Single polygon id for the cluster tier's region silhouette.
   static const String _regionPolygonId = 'tifo-region';
 
+  /// Corner-cutting passes applied to the region silhouette. [kTifoRegionOutline]
+  /// is 21 coarse vertices straight out of the season GeoJSON, so unsmoothed it
+  /// reads as an angular shard rather than a region. Three passes take it to
+  /// 168 points — nothing for one polygon — with no corner left visible.
+  static const int _regionSmoothPasses = 3;
+
+  /// How far along each edge a corner is cut, per pass. 0.25 is the classic
+  /// Chaikin ratio; it moves the season region's sharpest corner ~8.7 km,
+  /// which at the cluster zoom (the ~200 km region spanning the screen, so
+  /// roughly 500 m/px) is a 15-ish pixel rounding, and changes the enclosed
+  /// area by ~1%. Lower it toward 0.15 for corners that stay tighter — that,
+  /// not the pass count, is the knob for how much shape is given up.
+  static const double _regionSmoothRatio = 0.25;
+
+  /// How far the border is taken down from its fill, per channel. Small enough
+  /// to stay recognisably the same colour, large enough to actually show up:
+  /// the previous stroke was the fill's own hue at a slightly lower alpha,
+  /// which is invisible once the fill is painted underneath it.
+  static const double _borderShade = 0.7;
+
   /// Nominal screen width in logical pixels, used to turn the visible rect
   /// into a degrees-per-pixel figure without reaching for a `BuildContext`.
   /// Deliberately on the wide side: overestimating the screen makes the
@@ -195,13 +215,17 @@ class TifoBuildingsMapLayer extends Notifier<bool> {
   /// are already on the map instead of waiting for the next redraw.
   static const double _districtCullPadding = 0.35;
 
-  /// Polygons per `addPolygons` call. The bridge serializes the whole batch
-  /// before the map draws any of it, so one 2000-polygon call means nothing
-  /// appears until all of it has crossed — while chunking paints the first
-  /// screenful almost immediately and streams the rest in behind it. Both
-  /// layers order their batch on-screen-first, so chunk #1 is what the player
-  /// is actually looking at.
-  static const int _addChunkSize = 80;
+  /// Polygons per `addPolygons` call, ordered on-screen-first by both layers
+  /// so chunk #1 is what the player is actually looking at.
+  ///
+  /// Deliberately large. `urbi_map`'s `ObjectTapHandler.addPolygons` builds
+  /// every SDK polygon object on the CALLING thread — which pigeon delivers on
+  /// the platform main thread — and only the `addObjects` call goes to its
+  /// background executor. So each chunk costs a main-thread hop, and small
+  /// chunks trade total time away for a finer progressive reveal. Now that the
+  /// previous tier stays on screen until the new one is painted, the player is
+  /// never looking at a bare map, so fewer/bigger calls is the better trade.
+  static const int _addChunkSize = 250;
 
   /// Viewport debounce while the player stays inside one tier. Long, on
   /// purpose: this is what stops a pan/fling from firing a
@@ -532,41 +556,29 @@ class TifoBuildingsMapLayer extends Notifier<bool> {
     final lod = _lod;
     final tierChanged = _drawnDistrictsLod != lod;
     if (lod == _TifoLod.buildings) {
-      if (_drawnDistrictsLod != null) {
-        // Fire-and-forget, mirroring `_clearBuildings` in the other branch:
-        // this is a `removeAllPolygons` over ~405 district polygons and the
-        // buildings must not queue behind it. The two tiers own separate
-        // object managers, so the removal cannot touch what we add below, and
-        // `_clearDistricts` drops its `_drawn*` bookkeeping synchronously.
-        _drawnDistrictsLod = null;
-        unawaited(_clearDistricts());
-      }
+      final hadDistricts = _drawnDistrictsLod != null;
+      _drawnDistrictsLod = null;
       // Repaint whatever geometry is already cached (persists across pans /
       // district-mode round-trips), then discover new buildings for the bbox.
       await _syncBuildings(ref.read(tifoBuildingsProvider));
+      if (hadDistricts) {
+        // Only NOW does the district mosaic go, and unawaited at that: it stays
+        // under the buildings while they paint, so the player never sees an
+        // empty map. Separate object managers, so it cannot touch the polygons
+        // just added.
+        unawaited(_clearDistricts());
+      }
       if (bbox != null && bbox != _lastBbox) {
         _lastBbox = bbox;
         logger.log('[tifo-map] buildings mode (zoom=$_zoom): fetch $bbox');
         await ref.read(tifoBuildingsProvider.notifier).fetchForBbox(bbox);
       }
     } else {
-      if (_lastBbox != null) {
-        // Fire-and-forget: this is a `removeAllPolygons` over up to
-        // [_maxRendered] building polygons, and the district mosaic must not
-        // queue behind it. Safe because the two tiers own separate object
-        // managers — this removal cannot touch what we are about to add — and
-        // because `_clearBuildings` drops its `_drawn*` bookkeeping
-        // synchronously, before its first await.
-        _lastBbox = null;
-        unawaited(_clearBuildings());
-      }
-      if (tierChanged) {
-        // The tier changed, so whatever the other one left in this manager
-        // goes (district polygons, or the region silhouette). Awaited, unlike
-        // the cross-tier clears above: both district tiers share ONE manager,
-        // so this must land before the new tier paints into it.
-        await _clearDistricts();
-      } else if (lod == _TifoLod.cluster) {
+      // Both retirements below are deferred until after the new tier is on the
+      // map — see [_districtPolygonIds].
+      final hadBuildings = _lastBbox != null;
+      _lastBbox = null;
+      if (!tierChanged && lod == _TifoLod.cluster) {
         return; // one silhouette over the whole region — panning changes nothing
       }
       if (lod == _TifoLod.cluster) {
@@ -578,10 +590,28 @@ class TifoBuildingsMapLayer extends Notifier<bool> {
         // never the ~413 district polygons, so it must not block on them (the
         // enable-time prefetch already has them coming in the background).
         logger.log('[tifo-map] cluster mode (zoom=$_zoom): painting region outline');
+        // Snapshot the outgoing mosaic's ids and drop its bookkeeping BEFORE
+        // painting, so a redraw racing in behind us doesn't think those
+        // polygons are still live — but delete them from the map only after
+        // the silhouette is up.
+        final staleDistricts = _districtPolygonIds();
+        _drawnDistrictFill.clear();
+        _drawnDistrictRings.clear();
+        _drawnDistrictExp.clear();
         await _redrawRegion(ref.read(tifoDistrictsProvider));
+        unawaited(_removeDistrictPolygons(staleDistricts));
+        if (hadBuildings) {
+          unawaited(_clearBuildings());
+        }
         unawaited(ref.read(tifoDistrictsProvider.notifier).refreshSummaries());
         return;
       }
+      // Entering the mosaic: the region silhouette is what has to go, and the
+      // fill bookkeeping is reset now so `_redrawRegion` doesn't later decide
+      // the silhouette is "already painted in this color" and skip re-adding
+      // it on the way back out.
+      final regionWasDrawn = _drawnRegionFill != null;
+      _drawnRegionFill = null;
       final districts = ref.read(tifoDistrictsProvider.notifier);
       // Standings are live, so entering the tier always refetches them — but
       // fire-and-forget: the polygons go up in their last known colors right
@@ -615,6 +645,12 @@ class TifoBuildingsMapLayer extends Notifier<bool> {
         '${st.summaries.length} summaries, err=${st.error}',
       );
       await _redrawDistricts(st);
+      if (regionWasDrawn) {
+        unawaited(_removeDistrictPolygons(const [_regionPolygonId]));
+      }
+      if (hadBuildings) {
+        unawaited(_clearBuildings());
+      }
     }
   }
 
@@ -1094,6 +1130,47 @@ class TifoBuildingsMapLayer extends Notifier<bool> {
     }
   }
 
+  /// Border colour for a TIFO polygon: its own fill taken a few steps darker
+  /// and fully opaque, so the outline reads against the fill it encloses.
+  static int _borderArgb(int baseArgb) {
+    final r = ((baseArgb >> 16) & 0xFF) * _borderShade;
+    final g = ((baseArgb >> 8) & 0xFF) * _borderShade;
+    final b = (baseArgb & 0xFF) * _borderShade;
+    return 0xFF000000 | (r.round() << 16) | (g.round() << 8) | b.round();
+  }
+
+  /// Chaikin corner cutting on a CLOSED ring: each pass replaces every vertex
+  /// with two points a quarter and three quarters along its outgoing edge,
+  /// converging on a quadratic B-spline. Chosen over a spline fit because a
+  /// closed ring needs no end-condition handling and no control points — and
+  /// over simply subdividing, which would add points without rounding
+  /// anything.
+  static List<(double, double)> _chaikin(List<(double, double)> ring, int passes) {
+    const t = _regionSmoothRatio;
+    var pts = ring;
+    for (var pass = 0; pass < passes; pass++) {
+      final out = <(double, double)>[];
+      for (var i = 0; i < pts.length; i++) {
+        final (aLat, aLng) = pts[i];
+        final (bLat, bLng) = pts[(i + 1) % pts.length]; // wraps: the ring is closed
+        out
+          ..add((aLat * (1 - t) + bLat * t, aLng * (1 - t) + bLng * t))
+          ..add((aLat * t + bLat * (1 - t), aLng * t + bLng * (1 - t)));
+      }
+      pts = out;
+    }
+    return pts;
+  }
+
+  /// The smoothed region ring, built once — the source outline is a
+  /// compile-time constant, so there is nothing to invalidate.
+  static List<GeoPointMessage>? _smoothRegionRing;
+
+  static List<GeoPointMessage> _regionRing() => _smoothRegionRing ??= [
+    for (final (latitude, longitude) in _chaikin(kTifoRegionOutline, _regionSmoothPasses))
+      GeoPointMessage(latitude: latitude, longitude: longitude),
+  ];
+
   /// Cluster tier: one polygon over the whole season region, tinted with the
   /// season leader's color (neutral until standings say otherwise).
   ///
@@ -1128,28 +1205,51 @@ class TifoBuildingsMapLayer extends Notifier<bool> {
         Polygon(
           id: _regionPolygonId,
           options: PolygonOptionsMessage(
-            contours: [
-              PolylineGeometryMessage(
-                points: [
-                  for (final (latitude, longitude) in kTifoRegionOutline)
-                    GeoPointMessage(latitude: latitude, longitude: longitude),
-                ],
-              ),
-            ],
+            contours: [PolylineGeometryMessage(points: _regionRing())],
             color: fill,
-            // Same border treatment as the district polygons, one step wider:
-            // it's the only outline on screen at this zoom, so it carries the
-            // region's shape on its own.
-            strokeColor: (baseArgb & 0x00FFFFFF) | 0xCC000000,
-            strokeWidth: 2,
+            // This is the only outline on screen at this zoom, so it carries
+            // the region's shape on its own: a darker shade of the fill rather
+            // than the fill's own hue at lower alpha, and wider than the
+            // district borders.
+            strokeColor: _borderArgb(baseArgb),
+            strokeWidth: 3,
           ),
         ),
       ], toManager: manager);
       _drawnRegionFill = fill;
       _drawnDistrictsLod = _TifoLod.cluster;
-      logger.log('[tifo-map] region painted (${kTifoRegionOutline.length} pts, fill 0x${fill.toRadixString(16)})');
+      logger.log(
+        '[tifo-map] region painted (${_regionRing().length} pts smoothed from ${kTifoRegionOutline.length}, '
+        'fill 0x${fill.toRadixString(16)}, border 0x${_borderArgb(baseArgb).toRadixString(16)})',
+      );
     } catch (error, stackTrace) {
       logger.log('[tifo-map] region redraw failed: $error\n$stackTrace');
+    }
+  }
+
+  /// Every polygon id the district mosaic currently owns. Lets a tier swap
+  /// remove exactly the outgoing tier's objects AFTER the incoming one is
+  /// painted, instead of `removeAllPolygons` up front — both district tiers
+  /// share one manager, so clearing first is what left the player staring at a
+  /// bare map for as long as the new tier took to cross the bridge.
+  List<String> _districtPolygonIds() => [
+    for (final entry in _drawnDistrictRings.entries)
+      for (var i = 0; i < entry.value; i++) 'tifo-dist:${entry.key}#$i',
+  ];
+
+  Future<void> _removeDistrictPolygons(List<String> ids) async {
+    if (ids.isEmpty) {
+      return;
+    }
+    final manager = _districtsManager;
+    if (manager == null) {
+      return;
+    }
+    try {
+      final controller = await ref.read(dgisControllerProvider.future);
+      await Future.wait(ids.map((id) => controller.removePolygon(id, fromManager: manager)));
+    } catch (error) {
+      logger.log('[tifo-map] stale district removal failed: $error');
     }
   }
 
