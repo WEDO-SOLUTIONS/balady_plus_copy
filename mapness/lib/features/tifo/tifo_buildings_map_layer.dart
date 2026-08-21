@@ -1,6 +1,8 @@
 import 'dart:async';
+import 'dart:math' as math;
 
 import 'package:dgis_map/library.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/app/auto_route/app_routes.dart';
 import 'package:mapness/features/tifo/building_sheet.dart';
@@ -44,6 +46,34 @@ enum _TifoLod {
 
   /// Street level: individual buildings, colored by owner and tappable.
   buildings,
+}
+
+/// Axis-aligned lat/lng box, used both for the visible rect and for each
+/// district's own extent so the district layer can be culled to what is
+/// actually on screen.
+@immutable
+class _Bounds {
+  const _Bounds({required this.minLat, required this.maxLat, required this.minLng, required this.maxLng});
+
+  final double minLat;
+  final double maxLat;
+  final double minLng;
+  final double maxLng;
+
+  /// Grown by [fraction] of its own size on each axis.
+  _Bounds padded(double fraction) {
+    final padLat = (maxLat - minLat) * fraction;
+    final padLng = (maxLng - minLng) * fraction;
+    return _Bounds(
+      minLat: minLat - padLat,
+      maxLat: maxLat + padLat,
+      minLng: minLng - padLng,
+      maxLng: maxLng + padLng,
+    );
+  }
+
+  bool intersects(_Bounds other) =>
+      minLat <= other.maxLat && maxLat >= other.minLat && minLng <= other.maxLng && maxLng >= other.minLng;
 }
 
 /// Renders the TIFO layer on the dgis map with a zoom-based level of detail
@@ -93,6 +123,27 @@ class TifoBuildingsMapLayer extends Notifier<bool> {
   final Map<String, int> _drawnDistrictFill = {};
   final Map<String, int> _drawnDistrictRings = {};
 
+  /// Last viewport the camera reported, parsed out of the bbox string. Drives
+  /// district culling; null until the camera has reported once, which means
+  /// "draw everything" rather than "draw nothing".
+  _Bounds? _viewBounds;
+
+  /// Bounding box per district id, computed once from its rings. 405 boxes is
+  /// nothing to hold, and it turns the cull test into four comparisons instead
+  /// of a walk over every point on every viewport event.
+  final Map<String, _Bounds> _districtBounds = {};
+
+  /// District rings snapped to a coordinate grid, keyed `id@exponent`. See
+  /// [_ringsFor]: at the zoom where the whole region is on screen a district
+  /// is a few dozen pixels wide, so most of its vertices land in the same
+  /// grid cell and collapse away.
+  final Map<String, List<List<GeoPointMessage>>> _simplifiedRings = {};
+
+  /// Grid exponent each drawn district was built at, so zooming IN can refine
+  /// a district that was first painted coarsely. Never coarsens: precision
+  /// already on the map is free to keep.
+  final Map<String, int?> _drawnDistrictExp = {};
+
   /// Single-flight gate for tap-opened sheets. dgis fires onTap for EVERY
   /// polygon under the finger (overlapping rings, shared district borders)
   /// and iOS occasionally double-delivers the event — without the gate one
@@ -128,20 +179,60 @@ class TifoBuildingsMapLayer extends Notifier<bool> {
   /// Single polygon id for the cluster tier's region silhouette.
   static const String _regionPolygonId = 'tifo-region';
 
+  /// Nominal screen width in logical pixels, used to turn the visible rect
+  /// into a degrees-per-pixel figure without reaching for a `BuildContext`.
+  /// Deliberately on the wide side: overestimating the screen makes the
+  /// simplification grid FINER than strictly needed, which is the safe
+  /// direction to be wrong in.
+  static const double _nominalScreenPx = 1600;
+
+  /// Grid cell size as a fraction of one screen pixel. Below 1 the
+  /// quantization cannot move a vertex by a distance anybody can see.
+  static const double _gridPixelFraction = 0.5;
+
+  /// How far past the visible rect the district layer is drawn, as a fraction
+  /// of the rect's own size. A margin means a short pan reveals districts that
+  /// are already on the map instead of waiting for the next redraw.
+  static const double _districtCullPadding = 0.35;
+
+  /// Polygons per `addPolygons` call. The bridge serializes the whole batch
+  /// before the map draws any of it, so one 2000-polygon call means nothing
+  /// appears until all of it has crossed — while chunking paints the first
+  /// screenful almost immediately and streams the rest in behind it. Both
+  /// layers order their batch on-screen-first, so chunk #1 is what the player
+  /// is actually looking at.
+  static const int _addChunkSize = 80;
+
+  /// Viewport debounce while the player stays inside one tier. Long, on
+  /// purpose: this is what stops a pan/fling from firing a
+  /// `GET /buildings?bbox=` per frame.
+  static const Duration _panDebounce = Duration(milliseconds: 400);
+
+  /// Debounce for a viewport event that CHANGES the tier. A tier change is a
+  /// visual jump the player is actively waiting on (the district mosaic
+  /// appearing), so it must not queue behind [_panDebounce] — the geometry is
+  /// already in memory by then, and a ~400 ms wait on top of the paint reads
+  /// as "districts don't show up when I zoom out". Non-zero only to coalesce
+  /// the burst of events a pinch emits while the zoom oscillates around the
+  /// threshold, so the tier isn't cleared and repainted several times.
+  static const Duration _tierChangeDebounce = Duration(milliseconds: 80);
+
   /// Safety cap on TOTAL buildings kept on the map, to bound the bridge/render
   /// cost on long sessions. Viewport-aware: on-screen buildings evict
   /// off-screen ones when the cap is hit (see [_syncBuildings]). Sized above a
   /// dense single viewport — ~1500 buildings observed live at z16 in Riyadh.
   static const int _maxRendered = 2000;
 
-  _TifoLod get _lod {
-    if (_zoom >= _buildingMinZoom) {
+  _TifoLod get _lod => _lodFor(_zoom);
+
+  _TifoLod _lodFor(double zoom) {
+    if (zoom >= _buildingMinZoom) {
       return _TifoLod.buildings;
     }
-    // `_zoom == 0` means "the camera never reported a zoom" (see `enable`),
+    // `zoom == 0` means "the camera never reported a zoom" (see `enable`),
     // not "zoomed all the way out" — painting the entire city one color off
     // that guess would be a worse first frame than per-district paint.
-    if (_zoom > 0 && _zoom <= _districtClusterMaxZoom) {
+    if (zoom > 0 && zoom <= _districtClusterMaxZoom) {
       return _TifoLod.cluster;
     }
     return _TifoLod.districts;
@@ -267,10 +358,10 @@ class TifoBuildingsMapLayer extends Notifier<bool> {
       _districtsManager ??= await controller.createMapObjectManager(layerId: MapObjectLayers.defaultLayerId);
 
       _visibleSub = controller.visibleRectEvents.listen((event) {
+        final rect = event.visibleRect;
+        final delay = _lodFor(rect.zoom) == _lod ? _panDebounce : _tierChangeDebounce;
         _debounce?.cancel();
-        _debounce = Timer(const Duration(milliseconds: 400), () {
-          unawaited(_onViewport(event.visibleRect));
-        });
+        _debounce = Timer(delay, () => unawaited(_onViewport(rect)));
       });
 
       // Seed zoom + first render from the current camera.
@@ -301,6 +392,18 @@ class TifoBuildingsMapLayer extends Notifier<bool> {
       if (state) {
         await _applyForViewport(bbox);
       }
+      // Warm the district layer in the background. Its geometry
+      // (`GET /districts`, ~413 polygons) is static for the whole season, so
+      // pulling it once when the game turns on means a later pinch-out paints
+      // from cache on the same frame instead of facing an empty map for a
+      // round-trip. Fired AFTER the first render so it doesn't compete with the
+      // visible tier's own request, and unawaited because nothing on screen
+      // waits for it: this only loads data — it never moves the camera, and the
+      // `tifoDistrictsProvider` listener in `build` skips the repaint entirely
+      // while the player is at building zoom.
+      if (state) {
+        unawaited(ref.read(tifoDistrictsProvider.notifier).prefetch());
+      }
     } catch (error, stackTrace) {
       logger.log('TIFO layer enable failed: $error\n$stackTrace');
     }
@@ -322,6 +425,7 @@ class TifoBuildingsMapLayer extends Notifier<bool> {
     _drawnRings.clear();
     _drawnDistrictFill.clear();
     _drawnDistrictRings.clear();
+    _drawnDistrictExp.clear();
     ref.read(tifoBuildingsPollerProvider.notifier).stop();
     try {
       final controller = await ref.read(dgisControllerProvider.future);
@@ -342,18 +446,35 @@ class TifoBuildingsMapLayer extends Notifier<bool> {
   }
 
   Future<void> _onViewport(VisibleRect rect) async {
+    final sw = Stopwatch()..start();
+    final from = _lod;
     _zoom = rect.zoom;
-    // Keep the game view flat (BR-05). Re-asserted here rather than on a
-    // camera stream: this runs debounced, after the gesture settles, so a
-    // tilt gesture is undone once instead of being fought frame by frame.
-    try {
-      await _forceTopDown(await ref.read(dgisControllerProvider.future));
-    } catch (_) {
-      // Map gone — the redraw below will fail loudly enough.
-    }
     await _applyForViewport(
       '${rect.southWestLon},${rect.southWestLat},${rect.northEastLon},${rect.northEastLat}',
     );
+    if (from != _lod) {
+      // End to end, from the debounced camera event to the last polygon
+      // crossing the bridge — the number that actually matches what the
+      // player perceives on a tier change.
+      logger.log('[tifo-map] ${from.name} → ${_lod.name} painted in ${sw.elapsedMilliseconds}ms');
+    }
+    // Keep the game view flat (BR-05). Re-asserted here rather than on a
+    // camera stream: this runs debounced, after the gesture settles, so a
+    // tilt gesture is undone once instead of being fought frame by frame.
+    //
+    // Runs AFTER the redraw, unawaited: it costs a `getCameraPosition` round
+    // trip plus a 0.25 s camera animation whenever the player actually
+    // tilted, and the polygons must not wait on that. Nothing in the redraw
+    // path depends on the tilt.
+    unawaited(_reassertTopDown());
+  }
+
+  Future<void> _reassertTopDown() async {
+    try {
+      await _forceTopDown(await ref.read(dgisControllerProvider.future));
+    } catch (_) {
+      // Map gone — the redraw already logged whatever went wrong.
+    }
   }
 
   /// Flattens the camera to a bird-eye view, remembering the tilt the player
@@ -405,11 +526,20 @@ class TifoBuildingsMapLayer extends Notifier<bool> {
     if (!state) {
       return;
     }
+    if (bbox != null) {
+      _viewBounds = _parseBbox(bbox) ?? _viewBounds;
+    }
     final lod = _lod;
+    final tierChanged = _drawnDistrictsLod != lod;
     if (lod == _TifoLod.buildings) {
       if (_drawnDistrictsLod != null) {
-        await _clearDistricts();
+        // Fire-and-forget, mirroring `_clearBuildings` in the other branch:
+        // this is a `removeAllPolygons` over ~405 district polygons and the
+        // buildings must not queue behind it. The two tiers own separate
+        // object managers, so the removal cannot touch what we add below, and
+        // `_clearDistricts` drops its `_drawn*` bookkeeping synchronously.
         _drawnDistrictsLod = null;
+        unawaited(_clearDistricts());
       }
       // Repaint whatever geometry is already cached (persists across pans /
       // district-mode round-trips), then discover new buildings for the bbox.
@@ -421,45 +551,203 @@ class TifoBuildingsMapLayer extends Notifier<bool> {
       }
     } else {
       if (_lastBbox != null) {
-        await _clearBuildings();
+        // Fire-and-forget: this is a `removeAllPolygons` over up to
+        // [_maxRendered] building polygons, and the district mosaic must not
+        // queue behind it. Safe because the two tiers own separate object
+        // managers — this removal cannot touch what we are about to add — and
+        // because `_clearBuildings` drops its `_drawn*` bookkeeping
+        // synchronously, before its first await.
         _lastBbox = null;
+        unawaited(_clearBuildings());
       }
-      if (_drawnDistrictsLod == lod) {
-        return; // already painted at this LOD; panning within it is a no-op
+      if (tierChanged) {
+        // The tier changed, so whatever the other one left in this manager
+        // goes (district polygons, or the region silhouette). Awaited, unlike
+        // the cross-tier clears above: both district tiers share ONE manager,
+        // so this must land before the new tier paints into it.
+        await _clearDistricts();
+      } else if (lod == _TifoLod.cluster) {
+        return; // one silhouette over the whole region — panning changes nothing
       }
-      // The tier changed, so whatever the other one left in this manager goes
-      // (413 district polygons, or the region silhouette).
-      await _clearDistricts();
       if (lod == _TifoLod.cluster) {
         // Region geometry is bundled ([kTifoRegionOutline]), so paint FIRST
         // and ask the network after: the far-out view fills in on the same
         // frame instead of after a `/districts` round-trip, and standings —
         // which only pick the tint — arrive on their own schedule. No
-        // `ensureLoaded()` here on purpose: the cluster tier never needs the
-        // ~413 district geometries, so it must not pay for fetching them.
+        // `ensureGeometry()` here on purpose: this tier draws one silhouette,
+        // never the ~413 district polygons, so it must not block on them (the
+        // enable-time prefetch already has them coming in the background).
         logger.log('[tifo-map] cluster mode (zoom=$_zoom): painting region outline');
         await _redrawRegion(ref.read(tifoDistrictsProvider));
-        _drawnDistrictsLod = lod;
         unawaited(ref.read(tifoDistrictsProvider.notifier).refreshSummaries());
         return;
       }
-      logger.log('[tifo-map] ${lod.name} mode (zoom=$_zoom): loading…');
-      await ref.read(tifoDistrictsProvider.notifier).ensureLoaded();
-      // `ensureLoaded` is a network round-trip: the player can keep pinching
-      // out and cross into the cluster tier while it runs. Without this check
-      // the 413 district polygons landed ON TOP of the region silhouette the
-      // cluster branch had already painted, and neither side cleared the
-      // other — the overlap then survived until the next tier change.
-      if (!state || _lod != lod) {
-        logger.log('[tifo-map] districts draw dropped: tier moved to ${_lod.name} while loading');
-        return;
+      final districts = ref.read(tifoDistrictsProvider.notifier);
+      // Standings are live, so entering the tier always refetches them — but
+      // fire-and-forget: the polygons go up in their last known colors right
+      // away and the `tifoDistrictsProvider` listener recolors the 0–2
+      // districts whose leader actually changed once `/districts/summary`
+      // answers. Only on tier ENTRY: panning within the tier must not fire a
+      // request per camera move.
+      if (tierChanged) {
+        unawaited(districts.refreshSummaries());
+      }
+      if (!ref.read(tifoDistrictsProvider).hasGeometry) {
+        // Cold cache — only reachable if the player pinches out within the few
+        // seconds the enable-time prefetch is still in flight (`ensureGeometry`
+        // hands back that same request rather than firing a second one), or if
+        // that prefetch failed.
+        logger.log('[tifo-map] ${lod.name} mode (zoom=$_zoom): geometry cold, loading…');
+        await districts.ensureGeometry();
+        // That fetch is a network round-trip: the player can keep pinching out
+        // and cross into the cluster tier while it runs. Without this check the
+        // 413 district polygons landed ON TOP of the region silhouette the
+        // cluster branch had already painted, and neither side cleared the
+        // other — the overlap then survived until the next tier change.
+        if (!state || _lod != lod) {
+          logger.log('[tifo-map] districts draw dropped: tier moved to ${_lod.name} while loading');
+          return;
+        }
       }
       final st = ref.read(tifoDistrictsProvider);
       logger.log(
-        '[tifo-map] districts loaded: ${st.districts.length} geom, ${st.summaries.length} summaries, err=${st.error}',
+        '[tifo-map] ${lod.name} mode (zoom=$_zoom): ${st.districts.length} geom, '
+        '${st.summaries.length} summaries, err=${st.error}',
       );
       await _redrawDistricts(st);
-      _drawnDistrictsLod = st.districts.isNotEmpty ? lod : null;
+    }
+  }
+
+  /// `minLng,minLat,maxLng,maxLat` — the same string the buildings endpoint
+  /// takes, reused as the cull rect so there is one source of truth for
+  /// "what the camera is looking at".
+  static _Bounds? _parseBbox(String bbox) {
+    final parts = bbox.split(',');
+    if (parts.length != 4) {
+      return null;
+    }
+    final v = [for (final part in parts) double.tryParse(part)];
+    if (v.any((n) => n == null)) {
+      return null;
+    }
+    return _Bounds(minLng: v[0]!, minLat: v[1]!, maxLng: v[2]!, maxLat: v[3]!);
+  }
+
+  static _Bounds _boundsOf(TifoDistrict district) {
+    var minLat = double.infinity, maxLat = double.negativeInfinity;
+    var minLng = double.infinity, maxLng = double.negativeInfinity;
+    for (final ring in district.rings) {
+      for (final p in ring) {
+        minLat = p.latitude < minLat ? p.latitude : minLat;
+        maxLat = p.latitude > maxLat ? p.latitude : maxLat;
+        minLng = p.longitude < minLng ? p.longitude : minLng;
+        maxLng = p.longitude > maxLng ? p.longitude : maxLng;
+      }
+    }
+    return _Bounds(minLat: minLat, maxLat: maxLat, minLng: minLng, maxLng: maxLng);
+  }
+
+  /// Whether [district] is worth putting on the map right now. At z12–14 the
+  /// visible rect holds a fraction of the ~405 districts, and the ones outside
+  /// it cost bridge time and render time for something nobody can see.
+  bool _districtInView(TifoDistrict district) {
+    final view = _viewBounds;
+    if (view == null) {
+      return true; // camera hasn't reported yet — better all than none
+    }
+    return view.padded(_districtCullPadding).intersects(_districtBounds[district.id] ??= _boundsOf(district));
+  }
+
+  /// Exponent of the coordinate grid (step = 2^exp degrees) that is still
+  /// sub-pixel at the current viewport, or null when the camera hasn't
+  /// reported yet — in which case nothing is snapped.
+  ///
+  /// Derived from the visible rect rather than from the zoom number, so it
+  /// needs no assumptions about this map's zoom units (`visibleRect.zoom`
+  /// already reads ~1 lower than the camera's).
+  int? _gridExponent() {
+    final view = _viewBounds;
+    if (view == null) {
+      return null;
+    }
+    final target = (view.maxLng - view.minLng) / _nominalScreenPx * _gridPixelFraction;
+    if (target <= 0 || !target.isFinite) {
+      return null;
+    }
+    return (math.log(target) / math.ln2).floor();
+  }
+
+  /// Whether geometry built at [drawn] is coarser than [needed] — i.e. worth
+  /// re-adding at higher precision. null means full precision.
+  static bool _coarserThan(int? drawn, int? needed) {
+    if (drawn == null) {
+      return false;
+    }
+    if (needed == null) {
+      return true;
+    }
+    return drawn > needed;
+  }
+
+  /// [district]'s rings, with every vertex snapped to a global grid of
+  /// 2^[exp] degrees and consecutive duplicates dropped.
+  ///
+  /// A GLOBAL grid, not per-polygon simplification, and that is the whole
+  /// point: districts form a mosaic of shared borders, and Douglas–Peucker
+  /// run per polygon would move each side of a shared border differently,
+  /// opening hairline gaps and overlaps between neighbours. Snapping to a
+  /// grid every district shares moves both sides of a border to the same
+  /// place, so the mosaic stays sealed.
+  List<List<GeoPointMessage>> _ringsFor(TifoDistrict district, int? exp) {
+    if (exp == null) {
+      return [
+        for (final ring in district.rings)
+          [for (final p in ring) GeoPointMessage(latitude: p.latitude, longitude: p.longitude)],
+      ];
+    }
+    final key = '${district.id}@$exp';
+    final cached = _simplifiedRings[key];
+    if (cached != null) {
+      return cached;
+    }
+    final step = math.pow(2.0, exp).toDouble();
+    final out = <List<GeoPointMessage>>[];
+    for (final ring in district.rings) {
+      final pts = <GeoPointMessage>[];
+      double? lastLat, lastLng;
+      for (final p in ring) {
+        final lat = (p.latitude / step).roundToDouble() * step;
+        final lng = (p.longitude / step).roundToDouble() * step;
+        if (lat == lastLat && lng == lastLng) {
+          continue; // collapsed onto the previous vertex's cell
+        }
+        pts.add(GeoPointMessage(latitude: lat, longitude: lng));
+        lastLat = lat;
+        lastLng = lng;
+      }
+      // Under 3 distinct vertices there is no polygon left to draw — keep the
+      // original ring so a small district doesn't silently vanish.
+      out.add(
+        pts.length >= 3 ? pts : [for (final p in ring) GeoPointMessage(latitude: p.latitude, longitude: p.longitude)],
+      );
+    }
+    _simplifiedRings[key] = out;
+    return out;
+  }
+
+  /// Pushes [polygons] across the bridge in [_addChunkSize] batches, so the
+  /// first (on-screen) ones render while the rest are still being serialized.
+  Future<void> _addChunked(
+    DgisMapController controller,
+    List<Polygon> polygons,
+    MapObjectManagerMessage? manager,
+  ) async {
+    for (var i = 0; i < polygons.length; i += _addChunkSize) {
+      final end = i + _addChunkSize < polygons.length ? i + _addChunkSize : polygons.length;
+      await controller.addPolygons(polygons.sublist(i, end), toManager: manager);
+      if (!state) {
+        return; // layer turned off mid-stream
+      }
     }
   }
 
@@ -577,7 +865,15 @@ class TifoBuildingsMapLayer extends Notifier<bool> {
         await Future.wait(toRemove.map((id) => controller.removePolygon(id, fromManager: manager)));
       }
       if (toAdd.isNotEmpty) {
-        await controller.addPolygons(toAdd, toManager: manager);
+        // `ordered` puts on-screen buildings first, so the first chunk is the
+        // screenful the player is looking at — the rest of the cache streams
+        // in behind it instead of holding up the whole paint.
+        final sw = Stopwatch()..start();
+        await _addChunked(controller, toAdd, manager);
+        logger.log(
+          '[tifo-map] buildings sync: ${toAdd.length} polygons in ${sw.elapsedMilliseconds}ms '
+          '(${toRemove.length} removed, ${st.byId.length} cached, ${visible.length} on screen)',
+        );
       }
     } catch (error, stackTrace) {
       logger.log('[tifo-map] buildings sync failed: $error\n$stackTrace');
@@ -713,15 +1009,36 @@ class TifoBuildingsMapLayer extends Notifier<bool> {
       }
       final toAdd = <Polygon>[];
       final toRemove = <String>[];
+      final exp = _gridExponent();
+      var culled = 0;
+      var refined = 0;
+      var srcPoints = 0;
+      var outPoints = 0;
       for (final district in districtsState.districts) {
+        if (!_districtInView(district)) {
+          // Off-screen: not drawn, and not recolored either. Nothing is
+          // removed, so a district already on the map stays there; when a pan
+          // brings it back into view the fill diff below repaints it if its
+          // leader changed in the meantime.
+          culled++;
+          continue;
+        }
         final summary = districtsState.summaries[district.id];
         // leaderColor is server-side paint-ready — the leader's hex OR the
         // neutral palette color — so use it directly (fallback grey if absent).
         final baseArgb = summary?.leaderColorArgb ?? _neutralDistrictArgb;
         final fill = (baseArgb & 0x00FFFFFF) | 0xE6000000;
         final prev = _drawnDistrictFill[district.id];
-        if (prev == fill) {
-          continue; // unchanged → keep the drawn polygons
+        // A district first painted at the region-wide zoom carries coarse
+        // geometry; zooming in re-adds it at the finer grid so it never looks
+        // blocky. The narrower viewport is what keeps this cheap — by the time
+        // fine precision matters, culling has cut the set to a screenful.
+        final refine = prev != null && _coarserThan(_drawnDistrictExp[district.id], exp);
+        if (prev == fill && !refine) {
+          continue; // unchanged, and precise enough → keep the drawn polygons
+        }
+        if (refine) {
+          refined++;
         }
         if (prev != null) {
           final rings = _drawnDistrictRings[district.id] ?? 0;
@@ -729,19 +1046,16 @@ class TifoBuildingsMapLayer extends Notifier<bool> {
             toRemove.add('tifo-dist:${district.id}#$i'); // recolor → replace
           }
         }
-        for (var i = 0; i < district.rings.length; i++) {
+        final rings = _ringsFor(district, exp);
+        for (var i = 0; i < rings.length; i++) {
+          srcPoints += district.rings[i].length;
+          outPoints += rings[i].length;
           toAdd.add(
             Polygon(
               id: 'tifo-dist:${district.id}#$i',
               onTap: () => _onDistrictTap(district),
               options: PolygonOptionsMessage(
-                contours: [
-                  PolylineGeometryMessage(
-                    points: [
-                      for (final p in district.rings[i]) GeoPointMessage(latitude: p.latitude, longitude: p.longitude),
-                    ],
-                  ),
-                ],
+                contours: [PolylineGeometryMessage(points: rings[i])],
                 color: fill,
                 strokeColor: (baseArgb & 0x00FFFFFF) | 0xCC000000,
                 strokeWidth: 1.5,
@@ -750,18 +1064,31 @@ class TifoBuildingsMapLayer extends Notifier<bool> {
           );
         }
         _drawnDistrictFill[district.id] = fill;
-        _drawnDistrictRings[district.id] = district.rings.length;
+        _drawnDistrictRings[district.id] = rings.length;
+        _drawnDistrictExp[district.id] = exp;
       }
       if (toRemove.isNotEmpty) {
         await Future.wait(toRemove.map((id) => controller.removePolygon(id, fromManager: manager)));
       }
       if (toAdd.isNotEmpty) {
+        // Timed because this bulk add is now the only thing left between a
+        // zoom-out and the mosaic appearing — geometry comes from memory and
+        // the standings no longer block the paint.
+        final sw = Stopwatch()..start();
+        await _addChunked(controller, toAdd, manager);
         logger.log(
-          '[tifo-map] districts diff: ${toAdd.length} polygons repainted, '
-          '${districtsState.districts.length} total',
+          '[tifo-map] districts diff: ${toAdd.length} polygons in ${sw.elapsedMilliseconds}ms, '
+          'grid 2^$exp cut $srcPoints→$outPoints pts, '
+          '$culled/${districtsState.districts.length} culled, $refined refined',
         );
-        await controller.addPolygons(toAdd, toManager: manager);
       }
+      // Recorded here rather than in `_applyForViewport`, because the district
+      // layer also gets painted straight off the provider listener — geometry
+      // landing from the enable-time prefetch while the player already sits at
+      // this tier. Leaving the bookkeeping to the viewport path would let that
+      // paint go unrecorded, and the next camera move would then read
+      // "nothing drawn", clear the layer and re-add all ~413 polygons.
+      _drawnDistrictsLod = _TifoLod.districts;
     } catch (error, stackTrace) {
       logger.log('[tifo-map] districts redraw failed: $error\n$stackTrace');
     }
@@ -819,6 +1146,7 @@ class TifoBuildingsMapLayer extends Notifier<bool> {
         ),
       ], toManager: manager);
       _drawnRegionFill = fill;
+      _drawnDistrictsLod = _TifoLod.cluster;
       logger.log('[tifo-map] region painted (${kTifoRegionOutline.length} pts, fill 0x${fill.toRadixString(16)})');
     } catch (error, stackTrace) {
       logger.log('[tifo-map] region redraw failed: $error\n$stackTrace');
@@ -828,6 +1156,7 @@ class TifoBuildingsMapLayer extends Notifier<bool> {
   Future<void> _clearDistricts() async {
     _drawnDistrictFill.clear();
     _drawnDistrictRings.clear();
+    _drawnDistrictExp.clear();
     _drawnRegionFill = null;
     final manager = _districtsManager;
     if (manager == null) {
