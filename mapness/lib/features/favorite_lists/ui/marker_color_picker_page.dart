@@ -63,7 +63,7 @@ class MarkerColorPickerPage extends HookConsumerWidget {
                   padding: const EdgeInsets.all(1),
                   decoration: BoxDecoration(
                     border: Border.all(
-                      color: isSelected ? code.getColor(context.colors) : Colors.transparent,
+                      color: isSelected ? code.color : Colors.transparent,
                       width: 2,
                     ),
                     borderRadius: BorderRadius.circular(Spacing.$1x + 2),
@@ -72,7 +72,7 @@ class MarkerColorPickerPage extends HookConsumerWidget {
                     width: 24,
                     height: 24,
                     decoration: BoxDecoration(
-                      color: code.getColor(context.colors),
+                      color: code.color,
                       borderRadius: BorderRadius.circular(Spacing.$1x),
                     ),
                   ),

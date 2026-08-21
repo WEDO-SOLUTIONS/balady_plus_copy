@@ -158,7 +158,7 @@ class FavoriteListsPage extends HookConsumerWidget {
                     ...favoriteListsAsync.when(
                       data: (lists) => lists.map((list) {
                         final leading = (list.iconType ?? FavoriteIconType.$default).getIcon().svg(
-                          colorFilter: ColorFilter.mode(list.markerColorCode.getColor(context.colors), BlendMode.srcIn),
+                          colorFilter: ColorFilter.mode(list.markerColorCode.color, BlendMode.srcIn),
                         );
                         final text = ContentRowTextOptions(
                           title: list.name,

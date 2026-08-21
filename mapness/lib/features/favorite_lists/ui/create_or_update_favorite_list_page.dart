@@ -155,7 +155,7 @@ class CreateOrUpdateFavoriteListPage extends HookConsumerWidget {
                 child: selectedIcon.value.getIcon().svg(
                   width: 24,
                   height: 24,
-                  colorFilter: ColorFilter.mode(color.value.getColor(context.colors), BlendMode.srcIn),
+                  colorFilter: ColorFilter.mode(color.value.color, BlendMode.srcIn),
                 ),
               ),
             ),
@@ -188,9 +188,7 @@ class CreateOrUpdateFavoriteListPage extends HookConsumerWidget {
                                   width: 24,
                                   height: 24,
                                   colorFilter: ColorFilter.mode(
-                                    e == selectedIcon.value
-                                        ? color.value.getColor(context.colors)
-                                        : context.colors.foregroundSoft,
+                                    e == selectedIcon.value ? color.value.color : context.colors.foregroundSoft,
                                     BlendMode.srcIn,
                                   ),
                                 ),
@@ -224,7 +222,7 @@ class CreateOrUpdateFavoriteListPage extends HookConsumerWidget {
                   height: 24,
                   margin: const EdgeInsets.only(right: Spacing.$4x),
                   decoration: BoxDecoration(
-                    color: color.value.getColor(context.colors),
+                    color: color.value.color,
                     borderRadius: BorderRadius.circular(Spacing.$1x),
                   ),
                 ),

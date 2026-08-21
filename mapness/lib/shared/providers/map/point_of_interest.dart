@@ -1,6 +1,5 @@
 import 'dart:typed_data';
 
-import 'package:balady_uikit/core/colorsV2/app_theme.dart';
 import 'package:balady_uikit/core/colorsV2/themes.dart';
 import 'package:collection/collection.dart';
 import 'package:dgis_map/library.dart';
@@ -63,7 +62,7 @@ Future<DirectoryObjectMessage?> pointOfInterest(
   if (favoriteMarker != null) {
     final devicePixelRatio = WidgetsBinding.instance.platformDispatcher.views.first.devicePixelRatio;
     favoriteIconBytes = await favoritePinBitmap.renderTeardropPin(
-      tint: favoriteMarker.markerColorCode.getColor(AppColorsThemeV3.palette(themes: theme)),
+      tint: favoriteMarker.markerColorCode.color,
       icon: favoriteMarker.iconType ?? FavoriteIconType.$default,
       devicePixelRatio: devicePixelRatio,
     );

@@ -1444,6 +1444,31 @@ class FavouriteItemMessage {
   final GeoPointMessage coordinates;
 }
 
+class FavoriteListItemMessage {
+  FavoriteListItemMessage(this.id, this.subtitle, this.title, this.coordinates);
+
+  final String id;
+  final String? subtitle;
+  final String title;
+  final GeoPointMessage coordinates;
+}
+
+class FavoriteListMessage {
+  FavoriteListMessage(this.id, this.name, this.colorHex, this.subtitle, this.items);
+
+  final String id;
+  final String name;
+  final String colorHex;
+  final String subtitle;
+  final List<FavoriteListItemMessage> items;
+}
+
+class FavoriteListsStateMessage {
+  FavoriteListsStateMessage(this.lists);
+
+  final List<FavoriteListMessage> lists;
+}
+
 class SearchHistoryDirectoryObjectMessage {
   SearchHistoryDirectoryObjectMessage({required this.title, required this.address, this.id});
 
@@ -1899,6 +1924,9 @@ abstract class HostFlutterApi {
 
   @async
   FavouritesStateMessage getFavourites();
+
+  @async
+  FavoriteListsStateMessage getFavoriteLists();
 
   @async
   bool isAuthorized();

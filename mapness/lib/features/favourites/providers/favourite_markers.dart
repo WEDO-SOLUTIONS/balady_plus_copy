@@ -1,4 +1,3 @@
-import 'package:balady_uikit/core/colorsV2/app_theme.dart';
 import 'package:balady_uikit/core/colorsV2/themes.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/widgets.dart';
@@ -206,8 +205,6 @@ class _FavouriteMarkers extends _$FavouriteMarkers {
     if (!ref.mounted) {
       return;
     }
-    final colors = AppColorsThemeV3.palette(themes: theme);
-
     final favoriteListMarkers = await Future.wait(
       aggregatedMarkers.map((marker) async {
         final resolved = await _resolvePlace(dgisController, marker);
@@ -218,7 +215,7 @@ class _FavouriteMarkers extends _$FavouriteMarkers {
           final iconBytes = await ref
               .read(favoritePinMarkerBitmapProvider)
               .render(
-                tint: marker.markerColorCode.getColor(colors),
+                tint: marker.markerColorCode.color,
                 icon: marker.iconType ?? FavoriteIconType.$default,
                 devicePixelRatio: devicePixelRatio,
               );

@@ -27,7 +27,6 @@ import 'package:flutter_insider/enum/InsiderCallbackAction.dart';
 import 'package:flutter_insider/flutter_insider.dart';
 import 'package:mapness/features/app_analytics/insider_custom_action_handler.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_uxcam/flutter_uxcam.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:hive_ce_flutter/hive_flutter.dart';
 import 'package:mapness/_features/common/providers/shared_prefs.dart';
@@ -53,6 +52,7 @@ import 'package:mapness/features/city_event/active_city_event.dart';
 import 'package:mapness/features/cityscape/cityscape.dart';
 import 'package:mapness/features/dynamic_poi/dynamic_poi_layer_provider.dart';
 import 'package:mapness/features/favorite_lists/data/favorite_lists_remote_datasource.dart';
+import 'package:mapness/features/favorite_lists/providers/favorite_lists_carplay_bridge.dart';
 import 'package:mapness/features/favorite_lists/ui/models/favorite_list_form_params.dart';
 import 'package:mapness/features/favourites/data/models/favorite_cache_item.dart';
 import 'package:mapness/features/favourites/mappers/favourite_item_mapper.dart';
@@ -147,6 +147,9 @@ class MapnessProviderScope extends StatelessWidget {
   Widget build(BuildContext context) => ProviderScope(
     child: Consumer(
       builder: (context, ref, child) {
+        // Hands the CarPlay Pigeon bridge (`_HostFlutterApi`, a singleton created before this
+        // tree exists) a reference to this tree's own container — no separate container needed.
+        _hostFlutterApi?.attachProviderContainer(ProviderScope.containerOf(context, listen: false));
         // Must run before [EagerInitWidget] — eager init shows a spinner instead of [child].
         ref.watch(appIconQuickActionsInitializerProvider);
         return EagerInitWidget(child: child!);
@@ -718,23 +721,10 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> with Widg
         ..log('StackTrace: $stackTrace', logLevel: MapnessLogLevel.error);
     }
 
-    try {
-      final config = FlutterUxConfig(
-        enableAdvancedGestureRecognition: true,
-        enableCrashHandling: true,
-        enableMultiSessionRecord: true,
-        enableNetworkLogging: kDebugMode,
-        userAppKey: '2w1otnta9bvvhzo',
-        enableAutomaticScreenNameTagging: false,
-      );
-      await FlutterUxcam.startWithConfiguration(config);
-      logger.log('UXCam started with configuration');
-    } catch (e, stackTrace) {
-      logger
-        ..log('Error initializing UXCam: $e', logLevel: MapnessLogLevel.error)
-        ..log('StackTrace: $stackTrace', logLevel: MapnessLogLevel.error);
-      // Continue without UXCam - it's not critical for app functionality
-    }
+    // DIAGNOSTIC: this used to call FlutterUxcam.startWithConfiguration(...) again here,
+    // unconditionally, right as the map's UiKitView is being created in initState. UXCam is
+    // already started once (gated) in app.dart; this redundant, ungated second start is being
+    // tested as the cause of the map freezing/not responding to gestures from the first frame.
   }
 
   Future<void> initDeepLinks() async {
@@ -1633,6 +1623,7 @@ Future<void> runMapnessApp(
     _startupLog('runMapnessApp: Hive initialized');
 
     final hostFlutterApi = _HostFlutterApi();
+    _hostFlutterApi = hostFlutterApi;
     HostFlutterApi.setUp(hostFlutterApi);
     _startupLog('runMapnessApp: HostFlutterApi set up, waiting for runMain()...');
 
@@ -1694,12 +1685,22 @@ Future<void> initHive() async {
   }
 }
 
+// Reference to the single `_HostFlutterApi` instance created in [runMapnessApp], so
+// [MapnessProviderScope] can hand it the widget tree's provider container once it exists.
+_HostFlutterApi? _hostFlutterApi;
+
 class _HostFlutterApi extends HostFlutterApi {
   final appRunCompleter = Completer();
 
   _HostFlutterApi();
 
   bool isAppRun = false;
+
+  ProviderContainer? _providerContainer;
+
+  void attachProviderContainer(ProviderContainer container) {
+    _providerContainer = container;
+  }
 
   @override
   void analyticsTrack(String event) {
@@ -1737,6 +1738,23 @@ class _HostFlutterApi extends HostFlutterApi {
       work: favouritesState.work?.message,
       items: favouritesState.items.map((item) => item.message).toList(),
     );
+  }
+
+  @override
+  Future<FavoriteListsStateMessage> getFavoriteLists() async {
+    final container = _providerContainer;
+    // TODO(debug): revert to `if (container == null || !await isAuthorized())` —
+    // auth gate temporarily disabled for CarPlay testing without logging in,
+    // since favorite_lists_dio.dart currently uses a hardcoded test token anyway.
+    if (container == null) {
+      return FavoriteListsStateMessage(lists: const []);
+    }
+    try {
+      return await buildFavoriteListsStateMessage(container);
+    } catch (e) {
+      logger.log('getFavoriteLists failed: $e', logLevel: MapnessLogLevel.error);
+      return FavoriteListsStateMessage(lists: const []);
+    }
   }
 
   @override

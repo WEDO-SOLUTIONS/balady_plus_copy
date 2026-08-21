@@ -1,5 +1,4 @@
 import CarPlay
-import Combine
 import DGis
 
 class FavoritesScreen {
@@ -7,23 +6,20 @@ class FavoritesScreen {
     private let interfaceController: CPInterfaceController
     private let hostFlutterApi: HostFlutterApi
     private let searchNavigation: SearchNavigation
-    private let trafficRouter: TrafficRouter
-    private let locationService: LocationService
+
+    private var lists: [FavoriteListMessage] = []
+    private var expandedListIds: Set<String> = []
 
     init(
         listTemplate: CPListTemplate,
         interfaceController: CPInterfaceController,
         hostFlutterApi: HostFlutterApi,
-        searchNavigation: SearchNavigation,
-        trafficRouter: TrafficRouter,
-        locationService: LocationService
+        searchNavigation: SearchNavigation
     ) {
         self.listTemplate = listTemplate
         self.interfaceController = interfaceController
         self.hostFlutterApi = hostFlutterApi
         self.searchNavigation = searchNavigation
-        self.trafficRouter = trafficRouter
-        self.locationService = locationService
     }
 
     static func createTemplate() -> CPListTemplate {
@@ -41,19 +37,16 @@ class FavoritesScreen {
         listTemplate.emptyViewTitleVariants = [
             NSLocalizedString("favouritesScreenLoadingPlaceholder", comment: "")
         ]
-        hostFlutterApi.getFavourites(completion: onResult)
+        hostFlutterApi.getFavoriteLists(completion: onResult)
         listTemplate.show(with: interfaceController)
     }
 
-    private func onResult(result: Result<FavouritesStateMessage, PigeonError>) {
+    private func onResult(result: Result<FavoriteListsStateMessage, PigeonError>) {
         switch result {
-        case .success(let favouritesStateMessage):
-            Task {
-                showFavorites(
-                    favouritesStateMessage,
-                    await findHomeWorkBriefRouteInfo(favouritesStateMessage)
-                )
-            }
+        case .success(let favoriteListsState):
+            self.lists = favoriteListsState.lists
+            self.expandedListIds = []
+            renderSections()
         case .failure(let error):
             self.listTemplate.emptyViewTitleVariants = [
                 String(describing: error)
@@ -61,170 +54,103 @@ class FavoritesScreen {
         }
     }
 
-    private func findHomeWorkBriefRouteInfo(
-        _ favouritesStateMessage: FavouritesStateMessage
-    ) async -> HomeWorkBriefRouteInfo {
-        let none: HomeWorkBriefRouteInfo = (home: nil, work: nil)
-
-        guard let lastLocation = locationService.lastLocation else {
-            return none
+    private func renderSections() {
+        guard !lists.isEmpty else {
+            listTemplate.updateSections([emptyStateSection()])
+            return
         }
 
-        let homeWorkGeoPoints = [
-            favouritesStateMessage.home?.coordinates.geoPoint,
-            favouritesStateMessage.work?.coordinates.geoPoint,
-        ]
-
-        let searchPoints = homeWorkGeoPoints.compactMap { $0 }.map {
-            geoPoint in
-            let startSearchPoint = RouteSearchPoint(
-                coordinates: lastLocation.coordinates.value
-            )
-            let endSearchPoint = RouteSearchPoint(coordinates: geoPoint)
-            return BriefRouteInfoSearchPoints(
-                startPoint: startSearchPoint, finishPoint: endSearchPoint
-            )
-        }
-
-        let future = trafficRouter.findBriefRouteInfos(
-            searchPoints: searchPoints,
-            routeSearchOptions: RouteSearchOptions.car(
-                CarRouteSearchOptions()
-            )
-        )
-
-        guard
-            let briefRouteInfos = try? await future.asAsync(),
-            !briefRouteInfos.isEmpty
-        else { return none }
-
-        if briefRouteInfos.count == 2 {
-            return (home: briefRouteInfos[0], work: briefRouteInfos[1])
-        }
-
-        if favouritesStateMessage.home != nil {
-            return (home: briefRouteInfos[0], work: nil)
-        }
-
-        if favouritesStateMessage.work != nil {
-            return (home: nil, work: briefRouteInfos[0])
-        }
-
-        return none
-    }
-
-    private func formatBriefRouteInfo(_ briefRouteInfo: BriefRouteInfo)
-        -> String
-    {
-        let millimeters =
-            switch briefRouteInfo.extraInfo {
-            case .car(let car):
-                car.length.millimeters
-            default:
-                Int64(0)
+        let sections = lists.enumerated().map { index, list -> CPListSection in
+            let isExpanded = expandedListIds.contains(list.id)
+            var items = [makeListHeaderItem(for: list, isExpanded: isExpanded)]
+            if isExpanded {
+                items += list.items.isEmpty
+                    ? [makeEmptyListPlaceholderItem()]
+                    : list.items.map(makePlaceItem)
             }
-
-        let distanceMeasurement = Measurement<UnitLength>(
-            value: Double(millimeters), unit: .millimeters
-        )
-
-        let delimiter = " • "
-
-        return briefRouteInfo.duration.minutesWithinHourOrHoursAndMinutes()
-            + delimiter + distanceMeasurement.formatMeters.formatWithComma()
-            + delimiter
-    }
-
-    private func showFavorites(
-        _ favouritesStateMessage: FavouritesStateMessage,
-        _ homeWorkBriefRouteInfo: HomeWorkBriefRouteInfo
-    ) {
-        let emptyItemPlaceHolder = CPListItem(
-            text: "favouritesScreenPlaceholderEmptyTitle".localized,
-            detailText: "favouritesScreenPlaceholderEmptySubtitle".localized
-        )
-        emptyItemPlaceHolder.handler = onItemTap
-
-        let sections = [
-            CPListSection(
-                items: [
-                    mapCPListItem(
-                        from: favouritesStateMessage.home,
-                        briefRouteInfo: homeWorkBriefRouteInfo.home,
-                        title: "favouritesScreenItemTitleHome".localized,
-                        image: UIImage(named: "Home")!
-                    ),
-                    mapCPListItem(
-                        from: favouritesStateMessage.work,
-                        briefRouteInfo: homeWorkBriefRouteInfo.work,
-                        title: "favouritesScreenItemTitleWork".localized,
-                        image: UIImage(named: "Work")!
-                    ),
-                ],
-                header: "favouritesScreenSectionHomeAndWork".localized,
+            return CPListSection(
+                items: items,
+                header: index == 0 ? NSLocalizedString("favouritesScreenMyListsHeader", comment: "") : nil,
                 sectionIndexTitle: nil
-            ),
-            CPListSection(
-                items: favouritesStateMessage.items.isEmpty
-                    ? [emptyItemPlaceHolder]
-                    : favouritesStateMessage.items.map(mapCPListItem),
-                header: "favouritesScreenSectionFavourites".localized,
-                sectionIndexTitle: nil
-            ),
-        ]
+            )
+        }
         listTemplate.updateSections(sections)
     }
 
-    private func mapCPListItem(
-        from favouriteItemMessage: FavouriteItemMessage?,
-        briefRouteInfo: BriefRouteInfo? = nil,
-        title: String? = nil,
-        image: UIImage? = nil
-    )
-        -> CPListItem
-    {
-        let estimates =
-            if let briefRouteInfo = briefRouteInfo {
-                formatBriefRouteInfo(briefRouteInfo)
-            } else {
-                ""
-            }
+    // CarPlay re-tints CPListItem's leading `image` with its own system accent color when the
+    // image still carries SF Symbol "template" semantics — even after `.alwaysOriginal`
+    // tinting. Rasterizing it into a plain bitmap strips that residual template-ness so the
+    // per-list color actually shows.
+    private func flatBookmarkImage(colorHex: String) -> UIImage? {
+        let config = UIImage.SymbolConfiguration(pointSize: 18, weight: .regular)
+        guard
+            let symbol = UIImage(systemName: "bookmark.fill", withConfiguration: config)?
+                .withTintColor(UIColor(hex: colorHex), renderingMode: .alwaysOriginal)
+        else { return nil }
 
-        let title = title ?? favouriteItemMessage?.title ?? ""
+        return UIGraphicsImageRenderer(size: symbol.size).image { _ in
+            symbol.draw(at: .zero)
+        }
+    }
 
-        let address =
-            favouriteItemMessage?.subtitle
-            ?? "favouritesScreenItemSubtitlePlaceholder".localized
+    private func makeListHeaderItem(for list: FavoriteListMessage, isExpanded: Bool) -> CPListItem {
+        let bookmarkImage = flatBookmarkImage(colorHex: list.colorHex)
+        let chevronImage = UIImage(systemName: isExpanded ? "chevron.down" : "chevron.right")
 
         let item = CPListItem(
-            text: title,
-            detailText: estimates + address,
-            image: image
+            text: list.name,
+            detailText: list.subtitle,
+            image: bookmarkImage,
+            accessoryImage: chevronImage,
+            accessoryType: .none
         )
-        item.userInfo = favouriteItemMessage
-        item.handler = onItemTap
+        item.userInfo = ToggleListUserInfo(listId: list.id)
+        item.handler = onHeaderTap
         return item
     }
 
-    private func mapCPListItem(favouriteItemMessage: FavouriteItemMessage)
-        -> CPListItem
-    {
-        mapCPListItem(from: favouriteItemMessage)
+    private func onHeaderTap(listItem: CPSelectableListItem, completion: @escaping () -> Void) {
+        defer { completion() }
+        guard let info = listItem.userInfo as? ToggleListUserInfo else { return }
+        if expandedListIds.contains(info.listId) {
+            expandedListIds.remove(info.listId)
+        } else {
+            expandedListIds.insert(info.listId)
+        }
+        renderSections()
     }
 
-    private func onItemTap(
-        listItem: CPSelectableListItem, completion: @escaping () -> Void
-    ) {
-        if let favouriteItemMessage = listItem.userInfo as? FavouriteItemMessage
-        {
-            searchNavigation.navigate(
-                to: favouriteItemMessage.coordinates.geoPoint,
-                destinationName: listItem.text ?? favouriteItemMessage.title,
-                additionalInformation: favouriteItemMessage.subtitle
-            )
-            interfaceController.popToRootTemplate(animated: true) { _, __ in }
-        }
-        completion()
+    private func makePlaceItem(_ item: FavoriteListItemMessage) -> CPListItem {
+        let listItem = CPListItem(text: item.title, detailText: item.subtitle ?? "")
+        listItem.userInfo = item
+        listItem.handler = onPlaceItemTap
+        return listItem
+    }
+
+    private func onPlaceItemTap(listItem: CPSelectableListItem, completion: @escaping () -> Void) {
+        defer { completion() }
+        guard let item = listItem.userInfo as? FavoriteListItemMessage else { return }
+        searchNavigation.navigate(
+            to: item.coordinates.geoPoint,
+            destinationName: listItem.text ?? item.title,
+            additionalInformation: item.subtitle ?? ""
+        )
+        interfaceController.popToRootTemplate(animated: true) { _, __ in }
+    }
+
+    private func emptyStateSection() -> CPListSection {
+        let placeholder = CPListItem(
+            text: NSLocalizedString("favouritesScreenPlaceholderEmptyTitle", comment: ""),
+            detailText: NSLocalizedString("favouritesScreenPlaceholderEmptySubtitle", comment: "")
+        )
+        return CPListSection(items: [placeholder])
+    }
+
+    private func makeEmptyListPlaceholderItem() -> CPListItem {
+        CPListItem(
+            text: NSLocalizedString("favouritesScreenListEmptyPlaceholder", comment: ""),
+            detailText: nil
+        )
     }
 
     private func onBackTap(_: CPBarButton) {
@@ -232,6 +158,23 @@ class FavoritesScreen {
     }
 }
 
-private typealias HomeWorkBriefRouteInfo = (
-    home: BriefRouteInfo?, work: BriefRouteInfo?
-)
+private struct ToggleListUserInfo {
+    let listId: String
+}
+
+private extension UIColor {
+    convenience init(hex: String) {
+        var hexString = hex.trimmingCharacters(in: .whitespacesAndNewlines)
+        hexString = hexString.hasPrefix("#") ? String(hexString.dropFirst()) : hexString
+
+        var rgbValue: UInt64 = 0
+        Scanner(string: hexString).scanHexInt64(&rgbValue)
+
+        self.init(
+            red: CGFloat((rgbValue & 0xFF0000) >> 16) / 255,
+            green: CGFloat((rgbValue & 0x00FF00) >> 8) / 255,
+            blue: CGFloat(rgbValue & 0x0000FF) / 255,
+            alpha: 1
+        )
+    }
+}

@@ -225,7 +225,7 @@ class PickFavoriteListPage extends HookConsumerWidget {
                         final isSelected = overrides.value[list.id] ?? actualMembership(list);
 
                         return ContentRow(
-                          leading: Icon(SystemIcons.bookmarkFill, color: list.markerColorCode.getColor(context.colors)),
+                          leading: Icon(SystemIcons.bookmarkFill, color: list.markerColorCode.color),
                           text: ContentRowTextOptions(
                             title: list.name,
                             // TODO(claude): localize string and handle Arabic plural forms properly
