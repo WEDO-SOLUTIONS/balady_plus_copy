@@ -115,10 +115,15 @@ class _LeaderboardSheetState extends ConsumerState<_LeaderboardSheet> {
             TifoPrimaryButton(
               label: AppLocalizations.of(context).dominateWithYourTeam,
               trailingArrow: true,
-              // Play-intent CTA (BRD FR-03/FR-04): walk the gates (login →
-              // tutorial → team select) on top of the sheet — popping first
-              // would dispose this ref mid-journey. Close to the map only
-              // once the player is play-ready; on cancel stay on the sheet.
+              // Play-intent CTA (BRD FR-03/FR-04): walk the gates on top of
+              // the sheet — popping first would dispose this ref mid-journey.
+              // Close to the map only once the player is play-ready; on cancel
+              // stay on the sheet.
+              //
+              // The order is tutorial → login → team select (see
+              // `TifoSessionState.nextStep`), NOT login first as this comment
+              // used to claim: BRD V2 puts the tour ahead of the login wall
+              // even for a logged-out player.
               onPressed: () async {
                 final gateCtx = rootNavigatorKey.currentContext;
                 if (gateCtx == null) {
@@ -344,7 +349,7 @@ class _LeaderboardSheetState extends ConsumerState<_LeaderboardSheet> {
                 const SizedBox(width: 12),
                 Expanded(
                   child: Text(
-                    club?.name ?? 'No team selected',
+                    club?.name ?? AppLocalizations.of(context).tifoNoTeamSelected,
                     style: TifoText.bodyLSemi.copyWith(color: TifoColors.accent),
                   ),
                 ),
@@ -609,12 +614,12 @@ class _ActivityRow extends StatelessWidget {
       return l10n.tifoJustNow;
     }
     if (diff.inHours < 1) {
-      return l10n.tifoMinutesAgo(tifoLocalizedDigits(context, diff.inMinutes));
+      return l10n.tifoMinutesAgo(diff.inMinutes);
     }
     if (diff.inDays < 1) {
-      return l10n.tifoHoursAgo(tifoLocalizedDigits(context, diff.inHours));
+      return l10n.tifoHoursAgo(diff.inHours);
     }
-    return l10n.tifoDaysAgo(tifoLocalizedDigits(context, diff.inDays));
+    return l10n.tifoDaysAgo(diff.inDays);
   }
 }
 

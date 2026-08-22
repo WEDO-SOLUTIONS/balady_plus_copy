@@ -5,14 +5,22 @@ import 'package:mapness/features/tifo/data/tifo_models.dart';
 import 'package:mapness/features/tifo/providers/tifo_session_provider.dart';
 import 'package:mapness/features/tifo/ui/tifo_theme.dart';
 import 'package:mapness/l10n/generated/app_localizations.dart';
+import 'package:mapness/shared/utils/logger/logger.dart';
 
 /// Two-step onboarding flow (BRD US-04), rebuilt to the Figma light design:
 ///   STEP 1 — Choose your team (roster data-driven from `GET /clubs`, rendered
 ///            as solid team-color cards; season-lock banner);
 ///   STEP 2 — Your Tokens (welcome-bonus acknowledgement).
 /// Confirming calls `POST /clubs/select` (grants the welcome bonus) then shows
-/// step 2; "Claim the map" pops `true`. "Maybe Later"/back pops `false`
-/// (browse-only).
+/// step 2; "Claim the map" pops `true`. On step 1 "Maybe Later"/back pop
+/// `false` (browse-only).
+///
+/// Step 2 has NO way back to step 1 and no "Maybe Later", on purpose: the club
+/// pick is a one-time season commitment the server has already honoured by the
+/// time step 2 renders (`POST /clubs/select` granted the welcome bonus). Every
+/// exit from step 2 therefore reports success — the alternative was offering a
+/// choice that cannot be remade, where picking a different team just failed
+/// against the server.
 class TifoTeamSelectScreen extends ConsumerStatefulWidget {
   const TifoTeamSelectScreen({super.key});
 
@@ -54,10 +62,13 @@ class _TifoTeamSelectScreenState extends ConsumerState<TifoTeamSelectScreen> {
         });
       }
     } catch (e) {
+      logger.log('[tifo] club select failed: $e');
       if (mounted) {
         setState(() {
           _isBusy = false;
-          _error = e.toString();
+          // Not `e.toString()`: that put a raw Dart exception on screen, in
+          // English, for an Arabic build too. The detail belongs in the log.
+          _error = AppLocalizations.of(context).tifoSomethingWentWrongBody;
         });
       }
     }
@@ -75,7 +86,12 @@ class _TifoTeamSelectScreenState extends ConsumerState<TifoTeamSelectScreen> {
             step: _step,
             total: 2,
             title: _step == 1 ? AppLocalizations.of(context).chooseYourTeam : AppLocalizations.of(context).yourTokens,
-            onBack: () => _step == 1 ? _pop(false) : setState(() => _step = 1),
+            // Step 2 exits, it does not rewind. The club is committed
+            // server-side by then, so going "back" to the team list showed a
+            // live-looking choice whose confirm hit `POST /clubs/select` a
+            // second time and failed — the player could neither change teams
+            // nor understand why.
+            onBack: () => _pop(_step != 1),
           ),
           Expanded(child: _step == 1 ? _buildTeamList(clubs) : _buildWelcomeBonus()),
           _buildBottom(),
@@ -141,7 +157,7 @@ class _TifoTeamSelectScreenState extends ConsumerState<TifoTeamSelectScreen> {
                     ),
                     const SizedBox(height: 2),
                     Text(
-                      AppLocalizations.of(context).tokensCount(tifoLocalizedDigits(context, balance ?? 10)),
+                      AppLocalizations.of(context).tokensCount(balance ?? 10),
                       style: TifoText.h3.copyWith(color: TifoColors.accentSoft),
                     ),
                   ],
@@ -173,11 +189,16 @@ class _TifoTeamSelectScreenState extends ConsumerState<TifoTeamSelectScreen> {
               )
             else
               TifoPrimaryButton(label: AppLocalizations.of(context).claimTheMap, onPressed: () => _pop(true)),
-            const SizedBox(height: 4),
-            TifoGhostButton(
-              label: AppLocalizations.of(context).maybeLater,
-              onPressed: _isBusy ? null : () => _pop(false),
-            ),
+            // Only on step 1: there is nothing left to defer once the club is
+            // granted, and popping `false` from step 2 told `TifoJourney` the
+            // player wasn't play-ready — discarding a completed onboarding.
+            if (_step == 1) ...[
+              const SizedBox(height: 4),
+              TifoGhostButton(
+                label: AppLocalizations.of(context).maybeLater,
+                onPressed: _isBusy ? null : () => _pop(false),
+              ),
+            ],
           ],
         ),
       ),

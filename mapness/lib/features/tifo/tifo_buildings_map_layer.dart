@@ -35,7 +35,7 @@ final tifoAvailableProvider = Provider<bool>((ref) {
 /// Level of detail the TIFO layer renders at, picked from the camera zoom.
 enum _TifoLod {
   /// Zoomed far out: a single bundled region-outline polygon
-  /// ([kTifoRegionOutline]) painted in the SEASON leader's color. At that
+  /// ([kTifoRegionPolygons]) painted in the SEASON leader's color. At that
   /// scale district borders aren't legible, so the region silhouette carries
   /// the same information as a 413-polygon mosaic — and it needs no
   /// `GET /districts` round-trip to appear.
@@ -87,6 +87,14 @@ class _Bounds {
 class TifoBuildingsMapLayer extends Notifier<bool> {
   MapObjectManagerMessage? _buildingsManager;
   MapObjectManagerMessage? _districtsManager;
+
+  /// The administrative boundary gets its OWN manager, not the district one.
+  /// The two district tiers swap objects in and out of `_districtsManager` on
+  /// every zoom across a threshold; the boundary is the same geometry at both
+  /// of them, so keeping it separate means a tier swap can't take it down and
+  /// it needs no diff bookkeeping at all.
+  MapObjectManagerMessage? _boundaryManager;
+  bool _boundaryDrawn = false;
   StreamSubscription<VisibleRectEvent>? _visibleSub;
   Timer? _debounce;
   String? _lastBbox;
@@ -177,30 +185,15 @@ class TifoBuildingsMapLayer extends Notifier<bool> {
   static const int _neutralDistrictArgb = 0xFFFCFBF2;
 
   /// Single polygon id for the cluster tier's region silhouette.
-  static const String _regionPolygonId = 'tifo-region';
+  static String _regionPolygonId(int index) => 'tifo-region#$index';
 
-  /// Corner-cutting passes applied to the region silhouette. [kTifoRegionOutline]
-  /// is 21 coarse vertices straight out of the season GeoJSON, so unsmoothed it
-  /// reads as an angular shard rather than a region. Two passes take it to 84
-  /// points — nothing for one polygon — rounding the corners while leaving the
-  /// long edges recognisably straight. A third pass smooths the segments away
-  /// entirely, which read as too soft for a region boundary.
-  static const int _regionSmoothPasses = 2;
+  static String _boundaryPolygonId(int index) => 'tifo-boundary#$index';
 
-  /// How far along each edge a corner is cut, per pass — the real knob for how
-  /// much shape is given up, more so than the pass count.
-  ///
-  /// 0.25 is the classic Chaikin ratio and rounded the region's sharpest corner
-  /// by ~8.7 km, which at the cluster zoom (the ~200 km region spanning the
-  /// screen, so roughly 500 m/px) is a ~17 px cut — soft enough that the
-  /// silhouette stopped looking like a boundary. 0.10 takes that down to
-  /// ~4.5 km (~9 px): the sharp pikes are gone but every corner still sits
-  /// visibly where the source GeoJSON put it.
-  ///
-  /// Do NOT reach for a single pass to get rougher still — one pass cuts MORE
-  /// (12.6 km at 0.25), because it is the later passes that pull the curve back
-  /// toward the original edges while the corner stays cut. Lower this instead.
-  static const double _regionSmoothRatio = 0.10;
+  /// Stroke for the administrative boundary drawn over the district mosaic.
+  /// Neutral and dark on purpose: it crosses polygons in every club colour, so
+  /// deriving it from a fill (the way [_borderArgb] does) would make it vanish
+  /// against some of them.
+  static const int _boundaryStrokeArgb = 0xFF2B2B2B;
 
   /// Alpha both the fill and its border are painted at. Sharing it is the
   /// point: a fully opaque border over a 90%-alpha fill reads as a DIFFERENT
@@ -349,7 +342,14 @@ class TifoBuildingsMapLayer extends Notifier<bool> {
       if (!ref.mounted) {
         return;
       }
-      if (box.get(_persistKey) == true && ref.read(tifoAvailableProvider)) {
+      // TFS 86083: absent means "never chosen", and that used to read as OFF —
+      // so a new install sat on a plain map through a live season until the
+      // player found the ⚽ control. Only an explicit `false` (the player having
+      // turned the layer off themselves) keeps it off now; the season schedule
+      // still has the final say through `tifoAvailableProvider`.
+      final stored = box.get(_persistKey);
+      if (stored != false && ref.read(tifoAvailableProvider)) {
+        logger.log('[tifo-map] restoring layer: stored=${stored ?? 'unset (default on)'}');
         await enable();
       }
     } catch (error, stackTrace) {
@@ -395,6 +395,7 @@ class TifoBuildingsMapLayer extends Notifier<bool> {
       final controller = await ref.read(dgisControllerProvider.future);
       _buildingsManager ??= await controller.createMapObjectManager(layerId: MapObjectLayers.defaultLayerId);
       _districtsManager ??= await controller.createMapObjectManager(layerId: MapObjectLayers.defaultLayerId);
+      _boundaryManager ??= await controller.createMapObjectManager(layerId: MapObjectLayers.defaultLayerId);
 
       _visibleSub = controller.visibleRectEvents.listen((event) {
         final rect = event.visibleRect;
@@ -460,6 +461,7 @@ class TifoBuildingsMapLayer extends Notifier<bool> {
     _lastBbox = null;
     _drawnDistrictsLod = null;
     _drawnRegionFill = null;
+    _boundaryDrawn = false;
     _drawnFill.clear();
     _drawnRings.clear();
     _drawnDistrictFill.clear();
@@ -473,6 +475,9 @@ class TifoBuildingsMapLayer extends Notifier<bool> {
       }
       if (_districtsManager != null) {
         await controller.removeAllPolygons(fromManager: _districtsManager);
+      }
+      if (_boundaryManager != null) {
+        await controller.removeAllPolygons(fromManager: _boundaryManager);
       }
       // The 2D view is a TIFO rule, not the host map's — give the player
       // their tilted view back when the overlay goes away.
@@ -570,6 +575,9 @@ class TifoBuildingsMapLayer extends Notifier<bool> {
     }
     final lod = _lod;
     final tierChanged = _drawnDistrictsLod != lod;
+    // The city limit belongs to the two low-zoom tiers: at street level it is
+    // either off-screen or a stray line through the buildings.
+    await _syncBoundary(visible: lod != _TifoLod.buildings);
     if (lod == _TifoLod.buildings) {
       final hadDistricts = _drawnDistrictsLod != null;
       _drawnDistrictsLod = null;
@@ -597,7 +605,7 @@ class TifoBuildingsMapLayer extends Notifier<bool> {
         return; // one silhouette over the whole region — panning changes nothing
       }
       if (lod == _TifoLod.cluster) {
-        // Region geometry is bundled ([kTifoRegionOutline]), so paint FIRST
+        // Region geometry is bundled ([kTifoRegionPolygons]), so paint FIRST
         // and ask the network after: the far-out view fills in on the same
         // frame instead of after a `/districts` round-trip, and standings —
         // which only pick the tint — arrive on their own schedule. No
@@ -661,7 +669,7 @@ class TifoBuildingsMapLayer extends Notifier<bool> {
       );
       await _redrawDistricts(st);
       if (regionWasDrawn) {
-        unawaited(_removeDistrictPolygons(const [_regionPolygonId]));
+        unawaited(_removeDistrictPolygons([for (var i = 0; i < _regionGeometry().length; i++) _regionPolygonId(i)]));
       }
       if (hadBuildings) {
         unawaited(_clearBuildings());
@@ -1154,36 +1162,26 @@ class TifoBuildingsMapLayer extends Notifier<bool> {
     return _polygonAlpha | (r.round() << 16) | (g.round() << 8) | b.round();
   }
 
-  /// Chaikin corner cutting on a CLOSED ring: each pass replaces every vertex
-  /// with two points a quarter and three quarters along its outgoing edge,
-  /// converging on a quadratic B-spline. Chosen over a spline fit because a
-  /// closed ring needs no end-condition handling and no control points — and
-  /// over simply subdividing, which would add points without rounding
-  /// anything.
-  static List<(double, double)> _chaikin(List<(double, double)> ring, int passes) {
-    const t = _regionSmoothRatio;
-    var pts = ring;
-    for (var pass = 0; pass < passes; pass++) {
-      final out = <(double, double)>[];
-      for (var i = 0; i < pts.length; i++) {
-        final (aLat, aLng) = pts[i];
-        final (bLat, bLng) = pts[(i + 1) % pts.length]; // wraps: the ring is closed
-        out
-          ..add((aLat * (1 - t) + bLat * t, aLng * (1 - t) + bLng * t))
-          ..add((aLat * t + bLat * (1 - t), aLng * t + bLng * (1 - t)));
-      }
-      pts = out;
-    }
-    return pts;
-  }
-
-  /// The smoothed region ring, built once — the source outline is a
+  /// [kTifoRegionPolygons] as bridge contours, built once — the source is a
   /// compile-time constant, so there is nothing to invalidate.
-  static List<GeoPointMessage>? _smoothRegionRing;
+  ///
+  /// Outer index is the polygon, inner list its contours: index 0 the outer
+  /// ring, the rest holes. Nothing is smoothed here, unlike the 21-vertex
+  /// placeholder this replaced — that was a crude sketch that needed rounding
+  /// to stop reading as a shard, whereas these 2252 vertices ARE the
+  /// administrative boundary, and corner-cutting would only misplace it.
+  static List<List<PolylineGeometryMessage>>? _regionContours;
 
-  static List<GeoPointMessage> _regionRing() => _smoothRegionRing ??= [
-    for (final (latitude, longitude) in _chaikin(kTifoRegionOutline, _regionSmoothPasses))
-      GeoPointMessage(latitude: latitude, longitude: longitude),
+  static List<List<PolylineGeometryMessage>> _regionGeometry() => _regionContours ??= [
+    for (final polygon in kTifoRegionPolygons)
+      [
+        for (final ring in polygon)
+          PolylineGeometryMessage(
+            points: [
+              for (final (latitude, longitude) in ring) GeoPointMessage(latitude: latitude, longitude: longitude),
+            ],
+          ),
+      ],
   ];
 
   /// Cluster tier: one polygon over the whole season region, tinted with the
@@ -1212,33 +1210,85 @@ class TifoBuildingsMapLayer extends Notifier<bool> {
       if (!state || _lod != _TifoLod.cluster) {
         return;
       }
+      final geometry = _regionGeometry();
       if (_drawnRegionFill != null) {
-        await controller.removePolygon(_regionPolygonId, fromManager: manager);
+        await Future.wait([
+          for (var i = 0; i < geometry.length; i++) controller.removePolygon(_regionPolygonId(i), fromManager: manager),
+        ]);
         _drawnRegionFill = null;
       }
-      await controller.addPolygons([
-        Polygon(
-          id: _regionPolygonId,
-          options: PolygonOptionsMessage(
-            contours: [PolylineGeometryMessage(points: _regionRing())],
-            color: fill,
-            // This is the only outline on screen at this zoom, so it carries
-            // the region's shape on its own: a darker shade of the fill rather
-            // than the fill's own hue at lower alpha, and wider than the
-            // district borders.
-            strokeColor: _borderArgb(baseArgb),
-            strokeWidth: 3,
+      await _addChunked(controller, [
+        for (var i = 0; i < geometry.length; i++)
+          Polygon(
+            id: _regionPolygonId(i),
+            options: PolygonOptionsMessage(
+              // Contour 0 is the outer ring, the rest are holes — the region has
+              // three enclaves, and passing them through means they read as
+              // holes instead of being painted over.
+              contours: geometry[i],
+              color: fill,
+              // This is the only outline on screen at this zoom, so it carries
+              // the region's shape on its own: a darker shade of the fill rather
+              // than the fill's own hue at lower alpha, and wider than the
+              // district borders.
+              strokeColor: _borderArgb(baseArgb),
+              strokeWidth: 3,
+            ),
           ),
-        ),
-      ], toManager: manager);
+      ], manager);
       _drawnRegionFill = fill;
       _drawnDistrictsLod = _TifoLod.cluster;
       logger.log(
-        '[tifo-map] region painted (${_regionRing().length} pts smoothed from ${kTifoRegionOutline.length}, '
+        '[tifo-map] region painted (${geometry.length} polygons, '
         'fill 0x${fill.toRadixString(16)}, border 0x${_borderArgb(baseArgb).toRadixString(16)})',
       );
     } catch (error, stackTrace) {
       logger.log('[tifo-map] region redraw failed: $error\n$stackTrace');
+    }
+  }
+
+  /// Draws or removes the administrative boundary — outline only, no fill, so
+  /// it reads as a limit over whatever the district tier painted underneath.
+  /// Idempotent: called on every viewport event, does nothing when already in
+  /// the requested state.
+  Future<void> _syncBoundary({required bool visible}) async {
+    if (visible == _boundaryDrawn) {
+      return;
+    }
+    final manager = _boundaryManager;
+    if (manager == null) {
+      return;
+    }
+    try {
+      final controller = await ref.read(dgisControllerProvider.future);
+      if (!state) {
+        return;
+      }
+      if (!visible) {
+        _boundaryDrawn = false;
+        await controller.removeAllPolygons(fromManager: manager);
+        return;
+      }
+      final geometry = _regionGeometry();
+      _boundaryDrawn = true;
+      await _addChunked(controller, [
+        for (var i = 0; i < geometry.length; i++)
+          Polygon(
+            id: _boundaryPolygonId(i),
+            options: PolygonOptionsMessage(
+              contours: geometry[i],
+              // Fully transparent fill: the mosaic underneath must stay
+              // readable, so this contributes an outline and nothing else.
+              color: 0x00000000,
+              strokeColor: _boundaryStrokeArgb,
+              strokeWidth: 2.5,
+            ),
+          ),
+      ], manager);
+      logger.log('[tifo-map] boundary drawn (${geometry.length} polygons, outline only)');
+    } catch (error, stackTrace) {
+      _boundaryDrawn = false;
+      logger.log('[tifo-map] boundary sync failed: $error\n$stackTrace');
     }
   }
 

@@ -11,6 +11,7 @@ class TifoFlowState {
     required this.hasSelectedTeam,
     required this.hasSeenTutorial,
     required this.hasSeenEntry,
+    this.tutorialShownUnreported = false,
   });
 
   final bool hasSelectedTeam;
@@ -20,6 +21,16 @@ class TifoFlowState {
   /// second ⚽ tap just toggles the map layer instead of re-showing the intro.
   final bool hasSeenEntry;
 
+  /// The guided tour ran in THIS app session but the backend never recorded it
+  /// (offline — see [TifoSessionController.markTutorialStarted]).
+  ///
+  /// Deliberately NOT persisted, unlike the Hive `tutorialCompleted` flag:
+  /// BRD V2 US-03 BR-06 makes a connectivity drop the one case where a shown
+  /// tour must still count as *not started*, so the next session has to offer
+  /// it again. This only stops the same session from re-pushing the tour on
+  /// every play-intent tap while the connection is still down.
+  final bool tutorialShownUnreported;
+
   /// True iff a ⚽ tap should kick off the tutorial right now.
   bool get shouldPlayTutorial => hasSelectedTeam && !hasSeenTutorial;
 
@@ -27,10 +38,12 @@ class TifoFlowState {
     bool? hasSelectedTeam,
     bool? hasSeenTutorial,
     bool? hasSeenEntry,
+    bool? tutorialShownUnreported,
   }) => TifoFlowState(
     hasSelectedTeam: hasSelectedTeam ?? this.hasSelectedTeam,
     hasSeenTutorial: hasSeenTutorial ?? this.hasSeenTutorial,
     hasSeenEntry: hasSeenEntry ?? this.hasSeenEntry,
+    tutorialShownUnreported: tutorialShownUnreported ?? this.tutorialShownUnreported,
   );
 }
 
@@ -47,6 +60,14 @@ class TifoFlowController extends Notifier<TifoFlowState> {
       return;
     }
     state = state.copyWith(hasSelectedTeam: true);
+  }
+
+  /// See [TifoFlowState.tutorialShownUnreported].
+  void markTutorialShownUnreported() {
+    if (state.tutorialShownUnreported) {
+      return;
+    }
+    state = state.copyWith(tutorialShownUnreported: true);
   }
 
   void markTutorialSeen() {
@@ -103,7 +124,7 @@ class TifoFlowController extends Notifier<TifoFlowState> {
     final box = await ref.read(hiveProvider('tifo').future);
     await box.delete('tutorialCompleted');
     await box.delete('tutorialOffered');
-    state = state.copyWith(hasSeenTutorial: false);
+    state = state.copyWith(hasSeenTutorial: false, tutorialShownUnreported: false);
   }
 }
 
