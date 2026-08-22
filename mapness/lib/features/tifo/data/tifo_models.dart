@@ -467,6 +467,7 @@ class TifoBuilding {
     this.scoreToBeat = 0,
     this.status = 'available',
     this.contested7d = 0,
+    this.standingDays,
   });
 
   final String id;
@@ -485,6 +486,14 @@ class TifoBuilding {
   /// Times this building was contested in the last 7 days (informational).
   final int contested7d;
 
+  /// Days the current owner has held the building, mirroring
+  /// [TifoDistrictSummary.standingDays] for the district tier.
+  ///
+  /// Nullable on purpose: null means the payload didn't say, and the sheet then
+  /// hides the row rather than asserting "0 days" — which would read as "just
+  /// claimed" for a building that has stood for months.
+  final int? standingDays;
+
   bool get isAvailable => status == 'available';
 
   bool get isNeutral => ownerClubSlug == null;
@@ -498,7 +507,13 @@ class TifoBuilding {
     return 'Building #$tail';
   }
 
-  TifoBuilding copyWith({String? ownerClubSlug, int? savedScore, int? scoreToBeat, String? status}) => TifoBuilding(
+  TifoBuilding copyWith({
+    String? ownerClubSlug,
+    int? savedScore,
+    int? scoreToBeat,
+    String? status,
+    int? standingDays,
+  }) => TifoBuilding(
     id: id,
     rings: rings,
     name: name,
@@ -507,6 +522,7 @@ class TifoBuilding {
     scoreToBeat: scoreToBeat ?? this.scoreToBeat,
     status: status ?? this.status,
     contested7d: contested7d,
+    standingDays: standingDays ?? this.standingDays,
   );
 
   /// Parses one item from the `items` array. Returns null when the geometry is
@@ -529,7 +545,31 @@ class TifoBuilding {
       scoreToBeat: (json['scoreToBeat'] as num?)?.toInt() ?? 0,
       status: json['status']?.toString() ?? 'available',
       contested7d: (json['contested7d'] as num?)?.toInt() ?? 0,
+      standingDays: _parseStandingDays(json),
     );
+  }
+
+  /// How long the current owner has held this building.
+  ///
+  /// Accepts both shapes rather than picking one: a ready-made day count under
+  /// the spelling the district summary already uses, or an ISO claim
+  /// timestamp. Our own notes pin neither for `/buildings` (see the endpoint
+  /// list in `features/tifo/AGENTS.md`), and getting it wrong is silent — the
+  /// row just never appears, which is exactly the bug this parses for
+  /// (TFS 86073). Returns null when the payload carries neither.
+  static int? _parseStandingDays(Map<String, dynamic> json) {
+    final direct = json['standingDays'] ?? json['ownedDays'];
+    if (direct is num) {
+      return direct.toInt();
+    }
+    for (final key in const ['claimedAt', 'ownedSince', 'standingSince', 'ownedAt']) {
+      final claimed = DateTime.tryParse(json[key]?.toString() ?? '');
+      if (claimed != null) {
+        final days = DateTime.now().toUtc().difference(claimed.toUtc()).inDays;
+        return days < 0 ? 0 : days; // clock skew must not print a negative
+      }
+    }
+    return null;
   }
 }
 

@@ -69,7 +69,19 @@ class TifoBuildingsController extends Notifier<TifoBuildingsState> {
       if (token.isCancelled) {
         return;
       }
-      logger.log('[tifo] fetched ${items.length} buildings for bbox $bbox');
+      // The owner-standing row (TFS 86073) is only as good as the payload: if
+      // `/buildings` names that field something `TifoBuilding._parseStandingDays`
+      // doesn't know, the row silently never renders again. Log the shortfall so
+      // the next person sees the cause instead of the symptom.
+      final claimed = items.where((b) => !b.isNeutral).length;
+      final withStanding = items.where((b) => b.standingDays != null).length;
+      logger.log(
+        '[tifo] fetched ${items.length} buildings for bbox $bbox '
+        '($claimed claimed, $withStanding with a standing duration)',
+      );
+      if (claimed > 0 && withStanding == 0) {
+        logger.log('[tifo] WARNING: no claimed building carried a standing duration — check the /buildings field name');
+      }
       final merged = Map<String, TifoBuilding>.of(state.byId);
       for (final b in items) {
         merged[b.id] = b;
@@ -126,7 +138,10 @@ class TifoBuildingsController extends Notifier<TifoBuildingsState> {
       return;
     }
     final updated = Map<String, TifoBuilding>.of(state.byId)
-      ..[buildingId] = existing.copyWith(ownerClubSlug: clubSlug, savedScore: savedScore);
+      // standingDays back to 0: the owner just changed, so the previous
+      // holder's duration must not survive the recolor and show up in the
+      // sheet as if the new owner had held it that long.
+      ..[buildingId] = existing.copyWith(ownerClubSlug: clubSlug, savedScore: savedScore, standingDays: 0);
     state = state.copyWith(byId: updated);
   }
 

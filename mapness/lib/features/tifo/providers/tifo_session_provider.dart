@@ -240,16 +240,28 @@ class TifoSessionController extends Notifier<TifoSessionState> {
   /// Marks the tutorial passed. BRD: *starting* the tutorial removes the gate
   /// forever, so call this on start (not completion) — skipping later must not
   /// re-gate the player.
-  Future<void> markTutorialStarted() async {
+  ///
+  /// Returns whether the tutorial is RECORDED for this profile once this
+  /// returns. The result matters (TFS 86055): the guided tour is an entirely
+  /// local flow, so losing connectivity mid-tour doesn't interrupt it — the
+  /// tour finishes, and only this call knows the server never heard about it.
+  /// Swallowing that silently let the caller stamp its device flag anyway,
+  /// which suppressed the tour forever while the server-side gate stayed shut.
+  Future<bool> markTutorialStarted() async {
     final p = state.profile;
-    if (p == null || p.tutorialCompleted) {
-      return;
+    if (p == null) {
+      return false; // no profile to record it against
+    }
+    if (p.tutorialCompleted) {
+      return true; // already recorded
     }
     try {
       await _api.completeTutorial();
       await refreshProfile();
-    } catch (_) {
-      // Non-fatal: the gate re-appears next session at worst.
+      return state.profile?.tutorialCompleted == true;
+    } catch (error) {
+      logger.log('[tifo] tutorial report failed, leaving the gate closed: $error');
+      return false;
     }
   }
 

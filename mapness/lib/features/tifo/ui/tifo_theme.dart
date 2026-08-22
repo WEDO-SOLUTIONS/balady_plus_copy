@@ -242,29 +242,30 @@ class TifoGhostButton extends StatelessWidget {
 /// `intl`'s NumberFormat doesn't map to Eastern Arabic-Indic digits for the
 /// `ar` locale in this project's pinned version — render them manually so
 /// "STEP 1 OF 2" reads "الخطوة ١ من ٢" instead of keeping Western digits.
-String tifoLocalizedDigits(BuildContext context, int n) {
-  if (Localizations.localeOf(context).languageCode != 'ar') {
-    return '$n';
-  }
-  const easternArabicDigits = ['٠', '١', '٢', '٣', '٤', '٥', '٦', '٧', '٨', '٩'];
-  return n.toString().split('').map((d) => easternArabicDigits[int.parse(d)]).join();
-}
-
 /// "Since N day(s) ago" — Arabic day counts need the full 0/1/2/few/many/other
-/// plural set (see [ArPlurals]/[getPluralForAr]), not just singular/plural.
-/// Zero/one/two bake the count into the translation itself; few/many/other
-/// prepend the (locale-formatted) number, matching the existing
-/// `ArPlurals.stations`/`.transfers` helpers.
+/// plural set (see [getPluralForAr]), not just singular/plural.
+///
+/// TIFO deliberately DIVERGES from [ArPlurals] here on two points, both by
+/// product decision:
+///
+///  * every branch prepends the number, including 0/1/2. [ArPlurals.stations]
+///    and `.transfers` bake those three counts into the word instead (`محطتان`
+///    already means "two stations", so `2 محطتان` would read as "2 two
+///    stations") — TIFO wants a visible numeral on every counter, so its
+///    translations carry the bare noun and the numeral is always added here;
+///  * digits stay Western (`3`) in Arabic too, not Eastern Arabic-Indic (`٣`).
+///
+/// So do not "restore" the 0/1/2 special-casing to match `ArPlurals`: it would
+/// double the count in the string for this feature's translations.
 String tifoStandingDaysAgo(BuildContext context, int days) {
   final l10n = AppLocalizations.of(context);
-  final digits = tifoLocalizedDigits(context, days);
   return switch (getPluralForAr(days)) {
-    Plurals.zero => l10n.tifoStandingDaysZero,
-    Plurals.one => l10n.tifoStandingDaysOne,
-    Plurals.two => l10n.tifoStandingDaysTwo,
-    Plurals.few => '$digits ${l10n.tifoStandingDaysFew}',
-    Plurals.many => '$digits ${l10n.tifoStandingDaysMany}',
-    Plurals.others => '$digits ${l10n.tifoStandingDaysOther}',
+    Plurals.zero => '$days ${l10n.tifoStandingDaysZero}',
+    Plurals.one => '$days ${l10n.tifoStandingDaysOne}',
+    Plurals.two => '$days ${l10n.tifoStandingDaysTwo}',
+    Plurals.few => '$days ${l10n.tifoStandingDaysFew}',
+    Plurals.many => '$days ${l10n.tifoStandingDaysMany}',
+    Plurals.others => '$days ${l10n.tifoStandingDaysOther}',
   };
 }
 
@@ -303,7 +304,7 @@ class TifoStepHeader extends StatelessWidget {
                   Text(
                     AppLocalizations.of(
                       context,
-                    ).stepOfTotal(tifoLocalizedDigits(context, step), tifoLocalizedDigits(context, total)),
+                    ).stepOfTotal(step, total),
                     style: TifoText.overline,
                   ),
                   const SizedBox(height: 2),
