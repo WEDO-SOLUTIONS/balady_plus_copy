@@ -443,10 +443,11 @@ class TifoDemoBuildingSheet extends StatelessWidget {
 // ─── 06 · Penalty challenge preview (dark) ──────────────────────────────────
 
 class TifoDemoPenaltyPreview extends StatelessWidget {
-  const TifoDemoPenaltyPreview({super.key, this.onStart, this.onBack});
+  const TifoDemoPenaltyPreview({super.key, this.onStart, this.onBack, this.onClose});
 
   final VoidCallback? onStart;
   final VoidCallback? onBack;
+  final VoidCallback? onClose;
 
   @override
   Widget build(BuildContext context) => ColoredBox(
@@ -454,111 +455,137 @@ class TifoDemoPenaltyPreview extends StatelessWidget {
     child: SafeArea(
       child: Padding(
         padding: const EdgeInsets.all(20),
-        child: Column(
+        child: Stack(
           children: [
-            const SizedBox(height: 12),
-            Text(
-              AppLocalizations.of(context).tifoPenaltyChallenge,
-              style: TifoText.h3.copyWith(color: TifoColors.accentMuted),
-            ),
-            const SizedBox(height: 16),
-            Expanded(
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(TifoRadii.l),
-                child: const Image(
-                  image: AssetImage('packages/mapness/assets/tifo/images/penalty_preview.png'),
-                  fit: BoxFit.cover,
-                  width: double.infinity,
-                ),
-              ),
-            ),
-            const SizedBox(height: 16),
-            IntrinsicHeight(
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  Expanded(
-                    child: Container(
-                      padding: const EdgeInsets.all(14),
-                      decoration: _card(bg: const Color(0xFF141A15), border: _amber.withValues(alpha: 0.7)),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            '🪙 ${AppLocalizations.of(context).tokensNeeded}',
-                            style: TifoText.captionMedium.copyWith(color: _amber),
-                          ),
-                          Text('2', style: TifoText.h2.copyWith(color: _amber)),
-                        ],
-                      ),
-                    ),
-                  ),
-                  const SizedBox(width: 10),
-                  Expanded(
-                    child: Container(
-                      padding: const EdgeInsets.all(14),
-                      decoration: _card(
-                        bg: const Color(0xFF141A15),
-                        border: TifoColors.accentSoft.withValues(alpha: 0.7),
-                      ),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            '🏢 ${AppLocalizations.of(context).claimTheBuilding}',
-                            style: TifoText.captionMedium.copyWith(color: TifoColors.accentMuted),
-                          ),
-                          Text('12', style: TifoText.h2.copyWith(color: TifoColors.accentMuted)),
-                          Text(
-                            AppLocalizations.of(context).beatTheScore,
-                            style: TifoText.captionRegular.copyWith(color: TifoColors.accentMuted),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            const SizedBox(height: 10),
-            Container(
-              width: double.infinity,
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-              decoration: _card(bg: const Color(0xFF141A15), border: TifoColors.accentSoft.withValues(alpha: 0.4)),
-              child: Text(
-                '${AppLocalizations.of(context).youGet3Misses}  ⚽ ⚽ ⚽',
-                style: TifoText.bodyLSemi.copyWith(color: TifoColors.accentMuted),
-                textAlign: TextAlign.center,
-              ),
-            ),
-            const SizedBox(height: 14),
-            Row(
+            Column(
               children: [
-                if (onBack != null) ...[
-                  GestureDetector(
-                    behavior: HitTestBehavior.opaque,
-                    onTap: onBack,
-                    child: Container(
-                      width: 48,
-                      height: 48,
-                      decoration: BoxDecoration(
-                        color: context.colors.neutralContainerDefault,
-                        borderRadius: BorderRadius.circular(TifoRadii.l),
-                      ),
-                      child: Icon(Icons.arrow_back_ios_new_rounded, size: 16, color: context.colors.neutralOnContainer),
+                const SizedBox(height: 12),
+                Text(
+                  AppLocalizations.of(context).tifoPenaltyChallenge,
+                  style: TifoText.h3.copyWith(color: TifoColors.accentMuted),
+                ),
+                const SizedBox(height: 16),
+                Expanded(
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(TifoRadii.l),
+                    child: const Image(
+                      image: AssetImage('packages/mapness/assets/tifo/images/penalty_preview.png'),
+                      fit: BoxFit.cover,
+                      width: double.infinity,
                     ),
                   ),
-                  const SizedBox(width: 12),
-                ],
-                Expanded(
-                  child: TifoPrimaryButton(
-                    label: AppLocalizations.of(context).startGame,
-                    leadingEmoji: '⚽',
-                    onPressed: onStart,
+                ),
+                const SizedBox(height: 16),
+                IntrinsicHeight(
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      Expanded(
+                        child: Container(
+                          padding: const EdgeInsets.all(14),
+                          decoration: _card(bg: const Color(0xFF141A15), border: _amber.withValues(alpha: 0.7)),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                '🪙 ${AppLocalizations.of(context).tokensNeeded}',
+                                style: TifoText.captionMedium.copyWith(color: _amber),
+                              ),
+                              Text('2', style: TifoText.h2.copyWith(color: _amber)),
+                            ],
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 10),
+                      Expanded(
+                        child: Container(
+                          padding: const EdgeInsets.all(14),
+                          decoration: _card(
+                            bg: const Color(0xFF141A15),
+                            border: TifoColors.accentSoft.withValues(alpha: 0.7),
+                          ),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                '🏢 ${AppLocalizations.of(context).claimTheBuilding}',
+                                style: TifoText.captionMedium.copyWith(color: TifoColors.accentMuted),
+                              ),
+                              Text('12', style: TifoText.h2.copyWith(color: TifoColors.accentMuted)),
+                              Text(
+                                AppLocalizations.of(context).beatTheScore,
+                                style: TifoText.captionRegular.copyWith(color: TifoColors.accentMuted),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
+                ),
+                const SizedBox(height: 10),
+                Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                  decoration: _card(bg: const Color(0xFF141A15), border: TifoColors.accentSoft.withValues(alpha: 0.4)),
+                  child: Text(
+                    '${AppLocalizations.of(context).youGet3Misses}  ⚽ ⚽ ⚽',
+                    style: TifoText.bodyLSemi.copyWith(color: TifoColors.accentMuted),
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+                const SizedBox(height: 14),
+                Row(
+                  children: [
+                    if (onBack != null) ...[
+                      GestureDetector(
+                        behavior: HitTestBehavior.opaque,
+                        onTap: onBack,
+                        child: Container(
+                          width: 48,
+                          height: 48,
+                          decoration: BoxDecoration(
+                            color: context.colors.neutralContainerDefault,
+                            borderRadius: BorderRadius.circular(TifoRadii.l),
+                          ),
+                          child: Icon(
+                            Icons.arrow_back_ios_new_rounded,
+                            size: 16,
+                            color: context.colors.neutralOnContainer,
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 12),
+                    ],
+                    Expanded(
+                      child: TifoPrimaryButton(
+                        label: AppLocalizations.of(context).startGame,
+                        leadingEmoji: '⚽',
+                        onPressed: onStart,
+                      ),
+                    ),
+                  ],
                 ),
               ],
             ),
+            if (onClose != null)
+              Positioned(
+                top: 0,
+                left: 0,
+                child: GestureDetector(
+                  behavior: HitTestBehavior.opaque,
+                  onTap: onClose,
+                  child: Container(
+                    width: 34,
+                    height: 34,
+                    decoration: BoxDecoration(
+                      color: context.colors.neutralContainerDefault,
+                      borderRadius: BorderRadius.circular(TifoRadii.m),
+                    ),
+                    child: Icon(Icons.close_rounded, size: 18, color: context.colors.neutralOnContainer),
+                  ),
+                ),
+              ),
           ],
         ),
       ),

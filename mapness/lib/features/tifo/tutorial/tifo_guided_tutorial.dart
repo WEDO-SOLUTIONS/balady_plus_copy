@@ -233,12 +233,17 @@ class _TifoGuidedTutorialState extends ConsumerState<TifoGuidedTutorial> {
                 showPrevious: _index > 0,
                 onPrevious: _previous,
                 onNext: _next,
+                onClose: _exit,
               ),
             ),
             _OverlayKind.none => Positioned.fill(
               // Preview step drives itself: START advances the tour, back
               // returns to the previous step (only when one exists).
-              child: TifoDemoPenaltyPreview(onStart: _next, onBack: _index > 0 ? _previous : null),
+              child: TifoDemoPenaltyPreview(
+                onStart: _next,
+                onBack: _index > 0 ? _previous : null,
+                onClose: _exit,
+              ),
             ),
           },
         ],
@@ -368,12 +373,14 @@ class _CoachTooltip extends StatelessWidget {
     required this.showPrevious,
     required this.onPrevious,
     required this.onNext,
+    required this.onClose,
   });
 
   final String text;
   final bool showPrevious;
   final VoidCallback onPrevious;
   final VoidCallback onNext;
+  final VoidCallback onClose;
 
   @override
   Widget build(BuildContext context) => SafeArea(
@@ -390,9 +397,30 @@ class _CoachTooltip extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            text,
-            style: TifoText.bodyL.copyWith(fontSize: 15, height: 1.35, color: context.colors.foregroundDefault),
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Expanded(
+                child: Text(
+                  text,
+                  style: TifoText.bodyL.copyWith(fontSize: 15, height: 1.35, color: context.colors.foregroundDefault),
+                ),
+              ),
+              const SizedBox(width: 12),
+              GestureDetector(
+                behavior: HitTestBehavior.opaque,
+                onTap: onClose,
+                child: Container(
+                  width: 34,
+                  height: 34,
+                  decoration: BoxDecoration(
+                    color: context.colors.neutralContainerDefault,
+                    borderRadius: BorderRadius.circular(TifoRadii.m),
+                  ),
+                  child: Icon(Icons.close_rounded, size: 18, color: context.colors.neutralOnContainer),
+                ),
+              ),
+            ],
           ),
           const SizedBox(height: 12),
           Row(

@@ -95,6 +95,13 @@ class TifoJourney {
             if (!context.mounted || !surface.isVisible(ref)) {
               return false;
             }
+
+            // The tutorial route is pushed non-opaque (it lets the live map
+            // show through), so a bottom sheet left open beneath this call
+            // (e.g. the leaderboard's "Dominate with your team" CTA) would
+            // stay visible behind it instead of being covered. Close it
+            // first — a no-op if nothing is open.
+            Navigator.of(context).popUntil((route) => route is! ModalBottomSheetRoute);
             await showTifoGuidedTutorial(context);
           }
           // Always report to the backend, even when the device flag was
