@@ -17,6 +17,7 @@ import 'package:mapness/shared/providers/analytic/bss_service.dart';
 import 'package:mapness/shared/providers/analytic/models/bss_request.dart';
 import 'package:mapness/shared/providers/analytic/models/payload/bss_payload.dart';
 import 'package:mapness/shared/providers/app_language.dart';
+import 'package:mapness/shared/providers/location.dart';
 import 'package:mapness/shared/providers/map/object_manager.dart';
 import 'package:mapness/shared/providers/urbi_analytics.dart';
 import 'package:mapness/widgets/quick_filters/models/filter_item.dart';
@@ -69,18 +70,21 @@ class _MapQuickFiltersState extends ConsumerState<MapQuickFilters> {
           .read(authMethodsProvider.notifier)
           .authAndOpen(
             context,
-            callback: () {
+            callback: () async {
               if (!mounted) {
                 return;
               }
+
               Metrics.logEventAdvanced(
                 MetricsConstants.exploreKeys.bookmarkIcon,
                 action: MetricAction.tap.name,
                 group: MetricsConstants.exploreTag,
               );
-
               ref.read(advertMetricsProvider.notifier).sendEvent(AdvertMetricsKeys.exploreLandingEngagement);
-              context.router.push(const FavouritesRoute());
+              final isAllowed = await ref.read(locationProvider.notifier).checkLocationPermission();
+              if (isAllowed) {
+                await context.router.push(const FavoriteListsRoute());
+              }
             },
           ),
       onQuickFilterTap: (quickFilter) {

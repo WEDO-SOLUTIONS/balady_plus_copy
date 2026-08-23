@@ -59,8 +59,6 @@ class LayerSliverList extends ConsumerWidget {
               // the login form and silently skips the callback. authAndOpen
               // subscribes to userStateStream and runs the callback after
               // login actually completes.
-              await ref.read(layersControlsProvider.notifier).toggleFavourites();
-              return;
               await ref
                   .read(authMethodsProvider.notifier)
                   .authAndOpen(

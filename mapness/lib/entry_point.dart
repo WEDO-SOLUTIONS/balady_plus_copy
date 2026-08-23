@@ -868,13 +868,11 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> with Widg
         }
 
         if (preview.isOwnList) {
-          // TODO(claude): localize string
-          showShortLinkToast('This is your own list');
+          showShortLinkToast(ref.read(appLocaleProvider).favoriteListOwnListToast);
           return true;
         }
         if (preview.alreadyAccepted) {
-          // TODO(claude): localize string
-          showShortLinkToast('You have already added this shared list to your favorites');
+          showShortLinkToast(ref.read(appLocaleProvider).favoriteListAlreadyAddedToast);
           return true;
         }
         if (!preview.canAccept) {
@@ -1689,6 +1687,18 @@ Future<void> initHive() async {
 // [MapnessProviderScope] can hand it the widget tree's provider container once it exists.
 _HostFlutterApi? _hostFlutterApi;
 
+// Always holds the most recent container [MapnessProviderScope] handed over. Kept up to date on
+// every rebuild (not just the first one) because the widget tree hosting it can be torn down and
+// rebuilt — e.g. the phone's own Activity going to the background/being destroyed during an
+// active Android Auto session — which disposes the container a caller may still be holding.
+ProviderContainer? _providerContainer;
+
+// Completed once [MapnessProviderScope] builds for the first time. Native bridge calls that need
+// Riverpod (e.g. `getFavoriteLists`) await this instead of reading a nullable field, since a
+// caller (e.g. an Android Auto session that comes up before the phone's own Activity/`runMain()`)
+// can otherwise race ahead of the widget tree ever building.
+final _firstProviderContainerReady = Completer<void>();
+
 class _HostFlutterApi extends HostFlutterApi {
   final appRunCompleter = Completer();
 
@@ -1696,10 +1706,11 @@ class _HostFlutterApi extends HostFlutterApi {
 
   bool isAppRun = false;
 
-  ProviderContainer? _providerContainer;
-
   void attachProviderContainer(ProviderContainer container) {
     _providerContainer = container;
+    if (!_firstProviderContainerReady.isCompleted) {
+      _firstProviderContainerReady.complete();
+    }
   }
 
   @override
@@ -1742,19 +1753,35 @@ class _HostFlutterApi extends HostFlutterApi {
 
   @override
   Future<FavoriteListsStateMessage> getFavoriteLists() async {
-    final container = _providerContainer;
-    // TODO(debug): revert to `if (container == null || !await isAuthorized())` —
-    // auth gate temporarily disabled for CarPlay testing without logging in,
-    // since favorite_lists_dio.dart currently uses a hardcoded test token anyway.
-    if (container == null) {
+    if (_providerContainer == null) {
+      try {
+        await _firstProviderContainerReady.future.timeout(const Duration(seconds: 10));
+      } on TimeoutException {
+        return FavoriteListsStateMessage(lists: const []);
+      }
+    }
+    if (!await isAuthorized()) {
       return FavoriteListsStateMessage(lists: const []);
     }
-    try {
-      return await buildFavoriteListsStateMessage(container);
-    } catch (e) {
-      logger.log('getFavoriteLists failed: $e', logLevel: MapnessLogLevel.error);
-      return FavoriteListsStateMessage(lists: const []);
+    for (var attempt = 0; attempt < 2; attempt++) {
+      final container = _providerContainer;
+      if (container == null) break;
+      try {
+        // Bounded: reading from an already-disposed container can hang forever instead of
+        // throwing (observed in the wild), which would otherwise stall this pigeon call — and
+        // with it the whole native caller — indefinitely.
+        final result = await buildFavoriteListsStateMessage(container).timeout(const Duration(seconds: 15));
+        return result;
+      } catch (e) {
+        logger.log('getFavoriteLists failed (attempt $attempt): $e', logLevel: MapnessLogLevel.error);
+        // The container may have been disposed mid-read (e.g. the widget tree hosting it just got
+        // torn down); give MapnessProviderScope a brief moment to rebuild and reattach a fresh one.
+        if (attempt == 0) {
+          await Future.delayed(const Duration(milliseconds: 500));
+        }
+      }
     }
+    return FavoriteListsStateMessage(lists: const []);
   }
 
   @override
