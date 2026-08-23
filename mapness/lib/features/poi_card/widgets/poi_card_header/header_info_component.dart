@@ -6,6 +6,7 @@ import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/entities/routing/route_search_point.dart';
+import 'package:mapness/features/leap/leap.dart';
 import 'package:mapness/features/poi_card/domain/model/poi_content/poi_content.dart';
 import 'package:mapness/features/poi_card/enums/poi_card_bottom_sheet_state.dart';
 import 'package:mapness/features/poi_card/extensions/geopoint_mapper.dart';
@@ -44,7 +45,12 @@ class HeaderInfoComponent extends ConsumerWidget {
 
     final workTime = data.getOpeningHoursHeader(context);
 
-    final fullAddress = data.getFullAddress(briefInfo, context.l10n);
+    final objectId = data.id?.objectId;
+    final leapAddress = objectId != null
+        ? ref.read(leapProvider.notifier).getLeapPoi(objectId)?.address(context.l10n)
+        : null;
+
+    final fullAddress = data.getFullAddress(briefInfo, context.l10n, addressOverride: leapAddress);
     return _HeaderInfoWidget(fullAddress: fullAddress, workTime: workTime);
   }
 }
