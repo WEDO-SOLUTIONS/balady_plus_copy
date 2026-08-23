@@ -551,18 +551,21 @@ class TifoBuilding {
 
   /// How long the current owner has held this building.
   ///
-  /// Accepts both shapes rather than picking one: a ready-made day count under
-  /// the spelling the district summary already uses, or an ISO claim
-  /// timestamp. Our own notes pin neither for `/buildings` (see the endpoint
-  /// list in `features/tifo/AGENTS.md`), and getting it wrong is silent — the
-  /// row just never appears, which is exactly the bug this parses for
-  /// (TFS 86073). Returns null when the payload carries neither.
+  /// Confirmed contract for `/buildings?bbox=`, `/buildings/by-ids` and
+  /// `/districts/{id}/buildings`: `heldDays` (ready-made day count) alongside
+  /// `ownerSince` (the ISO claim timestamp it was derived from). Both are
+  /// accepted — `heldDays` first since it's the authoritative one the backend
+  /// actually sends, `ownerSince` as a derivable fallback — plus the earlier
+  /// speculative spellings from before the contract was confirmed (TFS 86073:
+  /// getting this wrong is silent, the row just never appears), kept cheap
+  /// insurance against a stray endpoint still using them. Returns null when
+  /// the payload carries none of the above.
   static int? _parseStandingDays(Map<String, dynamic> json) {
-    final direct = json['standingDays'] ?? json['ownedDays'];
+    final direct = json['heldDays'] ?? json['standingDays'] ?? json['ownedDays'];
     if (direct is num) {
       return direct.toInt();
     }
-    for (final key in const ['claimedAt', 'ownedSince', 'standingSince', 'ownedAt']) {
+    for (final key in const ['ownerSince', 'claimedAt', 'ownedSince', 'standingSince', 'ownedAt']) {
       final claimed = DateTime.tryParse(json[key]?.toString() ?? '');
       if (claimed != null) {
         final days = DateTime.now().toUtc().difference(claimed.toUtc()).inDays;

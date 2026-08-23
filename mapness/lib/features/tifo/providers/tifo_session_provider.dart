@@ -253,19 +253,26 @@ class TifoSessionController extends Notifier<TifoSessionState> {
     }
     try {
       await _api.completeTutorial();
-      // Refreshed for the balance and flags the rest of the UI reads — but the
-      // result is NOT gated on `tutorialCompleted` coming back true. It was,
-      // and that reported failure on a perfectly good connection whenever
-      // `/me` hadn't caught up with the POST yet: the request having succeeded
-      // IS the record. Same reason the `profile == null` early-return is gone —
-      // it made "the profile isn't loaded yet" indistinguishable from "the
-      // server refused".
-      await refreshProfile();
-      return true;
     } catch (error) {
       logger.log('[tifo] tutorial report failed, leaving the gate closed: $error');
       return false;
     }
+    // Refreshed for the balance and flags the rest of the UI reads — but the
+    // record above is what counts, not this. Kept in its own try/catch: `/me`
+    // legitimately 401s while the player is still a guest (same reason
+    // `load()` tolerates it — see its doc comment), and that must not be
+    // mistaken for the completion POST having failed. It previously WAS
+    // gated on `tutorialCompleted` coming back true and that reported
+    // failure on a perfectly good connection whenever `/me` hadn't caught up
+    // with the POST yet: the request having succeeded IS the record. Same
+    // reason the `profile == null` early-return is gone — it made "the
+    // profile isn't loaded yet" indistinguishable from "the server refused".
+    try {
+      await refreshProfile();
+    } catch (error) {
+      logger.log('[tifo] profile refresh after tutorial-complete failed (expected while guest): $error');
+    }
+    return true;
   }
 
   Future<void> markOnboardingCompleted() async {

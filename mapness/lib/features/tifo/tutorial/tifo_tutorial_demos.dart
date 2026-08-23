@@ -812,8 +812,6 @@ class TifoDemoLeaderboard extends ConsumerWidget {
                           ],
                         ),
                       ),
-                      const SizedBox(width: 2),
-                      const Icon(Icons.chevron_right_rounded, size: 14, color: TifoColors.textSoft),
                     ],
                   ),
                 ),
