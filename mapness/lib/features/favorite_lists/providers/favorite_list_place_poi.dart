@@ -10,9 +10,11 @@ part 'favorite_list_place_poi.g.dart';
 /// drops a pin/highlight on the map — side effects that don't belong to a
 /// plain text list.
 @riverpod
-// todo(claude): remove this file?
 Future<DirectoryObjectMessage?> favoriteListPlacePoi(Ref ref, int objectId) async {
-  final controller = await ref.watch(dgisControllerProvider.future);
+  // Bounded: if the map controller never initializes in this context (e.g. no map widget is
+  // currently mounted on the phone screen while this is triggered from a native car-app bridge
+  // call), this would otherwise hang forever and, with it, the whole favorite-lists build.
+  final controller = await ref.watch(dgisControllerProvider.future).timeout(const Duration(seconds: 5));
   try {
     return await controller
         .searchByObjectId(DgisObjectIdMessage(objectId: objectId, entranceId: 0))
