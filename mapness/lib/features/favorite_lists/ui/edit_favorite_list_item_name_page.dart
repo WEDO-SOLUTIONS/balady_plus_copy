@@ -1,15 +1,12 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:balady_uikit/balady_uikit.dart';
-import 'package:balady_uikit/core/colorsV2/themes.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:mapness/_features/common/widgets/dragger.dart';
 import 'package:mapness/features/favorite_lists/data/favorite_lists_remote_datasource.dart';
-import 'package:mapness/features/favorite_lists/data/models/favorite_list_dto.dart';
 import 'package:mapness/features/favorite_lists/data/models/favorite_list_place_dto.dart';
 import 'package:mapness/features/favorite_lists/providers/custom_place_nickname.dart';
 import 'package:mapness/features/favorite_lists/providers/favorite_list_detail.dart';
@@ -32,7 +29,6 @@ class EditFavoriteListItemNamePage extends HookConsumerWidget {
     final place = list?.places?.firstWhereOrNull((e) => e.placeId == this.place.placeId) ?? this.place;
     final scrollController = useToggleSheetController(onClose: (_) => context.router.pop());
 
-    // TODO(claude): pass text to controller from params
     final nameController = useTextEditingController(text: place.customName);
     final isSubmitting = useState(false);
 
@@ -75,18 +71,15 @@ class EditFavoriteListItemNamePage extends HookConsumerWidget {
         BaladyTextInput(
           controller: nameController,
           config: BaladyInputConfig(
-            // TODO(claude): localize string
-            hintText: 'Custom Name',
+            hintText: context.l10n.favoriteListCustomName,
             fillColor: context.colors.backgroundSurface1,
             hintColor: context.colors.foregroundSoft,
           ),
-          // TODO(claude): localize string
-          supportingText: const BaladySupportingText(text: '     1-128 characters'),
+          supportingText: BaladySupportingText(text: '     ${context.l10n.favoriteListCustomNameHelperText}'),
         ),
         const SizedBox(height: Spacing.$10x),
         BaladyAppButton(
-          // TODO(claude): localize string
-          primaryLabel: 'Confirm',
+          primaryLabel: context.l10n.favoriteListConfirmButton,
           buttonColorScheme: ButtonColorScheme.accentSecondary,
           buttonState: isSubmitting.value
               ? ButtonState.loading

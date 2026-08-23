@@ -6,6 +6,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:mapness/_features/common/widgets/dragger.dart';
 import 'package:mapness/features/favorite_lists/data/models/marker_color_code.dart';
+import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/hooks/toggle_sheet_controller_hook.dart';
 import 'package:sheetify/sheetify.dart';
 
@@ -36,8 +37,7 @@ class MarkerColorPickerPage extends HookConsumerWidget {
           children: [
             Expanded(
               child: Text(
-                // TODO(claude): localize string
-                'Marker color',
+                context.l10n.favoriteListMarkerColor,
                 style: context.textStyles.h4SemiBold.copyWith(color: context.colors.foregroundDefault),
               ),
             ),
@@ -83,8 +83,7 @@ class MarkerColorPickerPage extends HookConsumerWidget {
         ),
         const SizedBox(height: Spacing.$4x),
         BaladyAppButton(
-          // TODO(claude): localize string
-          primaryLabel: 'Done',
+          primaryLabel: context.l10n.favoriteListMarkerColorDoneButton,
           buttonColorScheme: ButtonColorScheme.accent,
           onTap: () => context.router.pop(selected.value),
         ),

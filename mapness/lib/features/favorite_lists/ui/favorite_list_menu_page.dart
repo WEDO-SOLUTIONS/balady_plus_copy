@@ -45,9 +45,8 @@ class FavoriteListMenuPage extends HookConsumerWidget {
           children: [
             ContentRow(
               leading: Icon(SystemIcons.share, color: context.colors.foregroundMuted),
-              text: const ContentRowTextOptions(
-                // TODO(claude): localize string
-                title: 'Share list',
+              text: ContentRowTextOptions(
+                title: context.l10n.favoriteListShareButton,
               ),
               onTap: () async {
                 if (isSubmitting.value) {
@@ -73,11 +72,9 @@ class FavoriteListMenuPage extends HookConsumerWidget {
               },
             ),
             ContentRow(
-              // TODO(claude): set valid icon
               leading: Icon(SystemIcons.bookmarkAdd, color: context.colors.foregroundMuted),
-              text: const ContentRowTextOptions(
-                // TODO(claude): localize string
-                title: 'Add a place',
+              text: ContentRowTextOptions(
+                title: context.l10n.addPlace,
               ),
               onTap: () async {
                 // TODO(claude): what should I do here? Ask designer
@@ -86,9 +83,8 @@ class FavoriteListMenuPage extends HookConsumerWidget {
             ),
             ContentRow(
               leading: Icon(SystemIcons.tuning, color: context.colors.foregroundMuted),
-              text: const ContentRowTextOptions(
-                // TODO(claude): localize string
-                title: 'List settings',
+              text: ContentRowTextOptions(
+                title: context.l10n.favoriteListSettingsTitle,
               ),
               onTap: () async {
                 final shouldClose = await context.router.push(
@@ -101,17 +97,14 @@ class FavoriteListMenuPage extends HookConsumerWidget {
             ),
             ContentRow(
               leading: Icon(GeneralIcons.trash, color: context.colors.errorDefault),
-              text: const ContentRowTextOptions(
-                // TODO(claude): localize string
-                title: 'Delete list',
+              text: ContentRowTextOptions(
+                title: context.l10n.favoriteListDeleteButton,
               ),
               onTap: () async {
                 final shouldClose = await context.router.push(
                   ConfirmationSheetRoute(
-                    // TODO(claude): localize string
-                    title: 'Delete list',
-                    // TODO(claude): localize string
-                    message: 'Are you sure you want to delete this list?',
+                    title: context.l10n.favoriteListDeleteButton,
+                    message: context.l10n.favoriteListConfirmDeleteMessage,
                     buttons: [
                       SheetActionButton(label: context.l10n.cancel, onTap: () async => context.router.pop()),
                       SheetActionButton(

@@ -3,12 +3,12 @@ import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:intl/intl.dart';
 import 'package:mapness/_features/common/widgets/dragger.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/features/favorite_lists/data/favorite_lists_api_exception.dart';
 import 'package:mapness/features/favorite_lists/data/models/favorite_list_dto.dart';
 import 'package:mapness/features/favorite_lists/providers/favorite_list_detail.dart';
+import 'package:mapness/features/favorite_lists/ui/favorite_list_subtitle_parts.dart';
 import 'package:mapness/features/favorite_lists/ui/widgets/favorite_list_places_tile.dart';
 import 'package:mapness/features/favorite_lists/ui/widgets/favorite_progress_indicator.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
@@ -95,14 +95,10 @@ class FavoriteListDetailsPage extends HookConsumerWidget {
 
 String _placesCountLabel(BuildContext context, FavoriteListDto list) {
   final languageCode = Localizations.localeOf(context).languageCode;
-  final placeCount = list.placeCount ?? 0;
-  // TODO(claude): localize string and handle Arabic plural forms properly
   return [
-    '$placeCount place${placeCount == 1 ? '' : 's'}',
-    // TODO(claude): localize string
-    'Created ${DateFormat('dd.MM', languageCode).format(list.createdAt)}',
-    // TODO(claude): localize string
-    'Modified ${DateFormat('dd.MM', languageCode).format(list.updatedAt)}',
+    favoriteListPlacesCountText(context.l10n, list.placeCount ?? 0),
+    favoriteListCreatedOnText(context.l10n, list.createdAt, languageCode),
+    favoriteListModifiedOnText(context.l10n, list.updatedAt, languageCode),
   ].join(' • ');
 }
 
@@ -121,9 +117,8 @@ class _FavoriteListPlacesContent extends ConsumerWidget {
         data: (listDetail) {
           final places = listDetail.list.places ?? [];
           if (places.isEmpty) {
-            // TODO(claude): localize string
             return Text(
-              'No places in this list yet',
+              context.l10n.favoriteListEmptyPlaceholder,
               style: context.textStyles.bodySmallRegular.copyWith(color: context.colors.foregroundSoft),
             );
           }

@@ -114,8 +114,7 @@ class CreateOrUpdateFavoriteListPage extends HookConsumerWidget {
           children: [
             Expanded(
               child: Text(
-                // TODO(claude): localize string
-                isEditing ? 'List settings' : 'New list',
+                isEditing ? context.l10n.favoriteListSettingsTitle : context.l10n.favoriteListNewTitle,
                 style: context.textStyles.h4SemiBold.copyWith(color: context.colors.foregroundDefault),
               ),
             ),
@@ -135,8 +134,7 @@ class CreateOrUpdateFavoriteListPage extends HookConsumerWidget {
               child: BaladyTextInput(
                 controller: listNameController,
                 config: BaladyInputConfig(
-                  // TODO(claude): localize string
-                  hintText: 'List Name',
+                  hintText: context.l10n.favoriteListName,
                   fillColor: context.colors.backgroundSurface1,
                   hintColor: context.colors.foregroundSoft,
                 ),
@@ -205,8 +203,7 @@ class CreateOrUpdateFavoriteListPage extends HookConsumerWidget {
         BaladyTextInput(
           controller: descriptionController,
           config: BaladyInputConfig(
-            // TODO(claude): localize string
-            hintText: 'Description',
+            hintText: context.l10n.favoriteListDescription,
             fillColor: context.colors.backgroundSurface1,
             hintColor: context.colors.foregroundSoft,
           ),
@@ -227,11 +224,9 @@ class CreateOrUpdateFavoriteListPage extends HookConsumerWidget {
                   ),
                 ),
               ),
-              text: const ContentRowTextOptions(
-                // TODO(claude): localize string
-                title: 'Marker Color',
-                // TODO(claude): localize string
-                subtitle: 'Customizable',
+              text: ContentRowTextOptions(
+                title: context.l10n.favoriteListMarkerColor,
+                subtitle: context.l10n.favoriteListMarkerColorCustomizable,
               ),
               onTap: () async {
                 final picked = await context.router.push<MarkerColorCode>(
@@ -247,12 +242,10 @@ class CreateOrUpdateFavoriteListPage extends HookConsumerWidget {
         const SizedBox(height: Spacing.$4x),
         BaladyAppButton(
           primaryLabel: isUnchanged
-              // TODO(claude): localize string
-              ? 'Close without saving'
+              ? context.l10n.favoriteListCloseWithoutSaving
               : isEditing
               ? context.l10n.save
-              // TODO(claude): localize string
-              : 'Create list',
+              : context.l10n.favoriteListCreateButton,
           buttonColorScheme: isUnchanged ? ButtonColorScheme.accentSecondary : ButtonColorScheme.accent,
           buttonType: isUnchanged ? ButtonType.secondary : ButtonType.primary,
           buttonState: isSubmitting.value || isLoadingList.value

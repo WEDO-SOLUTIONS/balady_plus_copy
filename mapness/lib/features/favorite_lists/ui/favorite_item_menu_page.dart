@@ -50,9 +50,8 @@ class FavoriteItemMenuPage extends HookConsumerWidget {
           children: [
             ContentRow(
               leading: Icon(SystemIcons.share, color: context.colors.foregroundMuted),
-              text: const ContentRowTextOptions(
-                // TODO(claude): localize string
-                title: 'Share a place',
+              text: ContentRowTextOptions(
+                title: context.l10n.favoriteListShareAPlace,
               ),
               onTap: () async {
                 await ShareUtil.sharePOI(context: context, objectId: place.placeId);
@@ -61,9 +60,8 @@ class FavoriteItemMenuPage extends HookConsumerWidget {
             ),
             ContentRow(
               leading: Icon(General16Icons.edit, color: context.colors.foregroundMuted),
-              text: const ContentRowTextOptions(
-                // TODO(claude): localize string
-                title: 'Add custom name',
+              text: ContentRowTextOptions(
+                title: context.l10n.favoriteListAddCustomNameButton,
               ),
               onTap: () async {
                 final shouldClose = await context.router.push(
@@ -76,17 +74,14 @@ class FavoriteItemMenuPage extends HookConsumerWidget {
             ),
             ContentRow(
               leading: Icon(GeneralIcons.trash, color: context.colors.errorDefault),
-              text: const ContentRowTextOptions(
-                // TODO(claude): localize string
-                title: 'Remove from the list',
+              text: ContentRowTextOptions(
+                title: context.l10n.favoriteListRemoveFromListItem,
               ),
               onTap: () async {
                 final shouldClose = await context.router.push(
                   ConfirmationSheetRoute(
-                    // TODO(claude): localize string
-                    title: 'Delete from list',
-                    // TODO(claude): localize string
-                    message: 'Are you sure you want to delete this place from the list?',
+                    title: context.l10n.favoriteListDeleteFromListTitle,
+                    message: context.l10n.favoriteListConfirmDeletePlaceMessage,
                     buttons: [
                       SheetActionButton(label: context.l10n.cancel, onTap: () async => context.router.pop()),
                       SheetActionButton(

@@ -14,6 +14,7 @@ import 'package:mapness/features/favorite_lists/providers/aggregated_favorite_ma
 import 'package:mapness/features/favorite_lists/providers/favorite_list_detail.dart';
 import 'package:mapness/features/favorite_lists/providers/favorite_list_membership_map.dart';
 import 'package:mapness/features/favorite_lists/providers/favorite_lists.dart';
+import 'package:mapness/features/favorite_lists/ui/favorite_list_subtitle_parts.dart';
 import 'package:mapness/features/favorite_lists/ui/show_favorite_lists_error_sheet.dart';
 import 'package:mapness/features/favorite_lists/ui/widgets/favorite_progress_indicator.dart';
 import 'package:mapness/features/favourites/mappers/directory_object_message_mapper.dart';
@@ -141,8 +142,7 @@ class PickFavoriteListPage extends HookConsumerWidget {
           children: [
             Expanded(
               child: Text(
-                // TODO(claude): localize string
-                'Save place',
+                context.l10n.favoriteListSavePlaceTitle,
                 style: context.textStyles.h4SemiBold.copyWith(color: context.colors.foregroundDefault),
               ),
             ),
@@ -155,8 +155,7 @@ class PickFavoriteListPage extends HookConsumerWidget {
       footer: Padding(
         padding: const EdgeInsets.all(Spacing.$4x),
         child: BaladyAppButton(
-          // TODO(claude): localize string
-          primaryLabel: 'Save',
+          primaryLabel: context.l10n.save,
           buttonColorScheme: ButtonColorScheme.accent,
           buttonState: isSubmitting.value
               ? ButtonState.loading
@@ -171,8 +170,7 @@ class PickFavoriteListPage extends HookConsumerWidget {
             if (canSetHomeOrWork) ...[
               ContentRow(
                 leading: Icon(GeneralIcons.home, color: context.colors.foregroundSoft),
-                // TODO(claude): localize string
-                text: const ContentRowTextOptions(title: 'Set as Home'),
+                text: ContentRowTextOptions(title: context.l10n.favoriteListSetAsHome),
                 onTap: () {
                   if (isSubmitting.value) {
                     return;
@@ -182,8 +180,7 @@ class PickFavoriteListPage extends HookConsumerWidget {
               ),
               ContentRow(
                 leading: Icon(GeneralIcons.buildings, color: context.colors.foregroundSoft),
-                // TODO(claude): localize string
-                text: const ContentRowTextOptions(title: 'Set as Work'),
+                text: ContentRowTextOptions(title: context.l10n.favoriteListSetAsWork),
                 isDividerEnabled: true,
                 onTap: () {
                   if (isSubmitting.value) {
@@ -196,8 +193,7 @@ class PickFavoriteListPage extends HookConsumerWidget {
             ContentRow(
               leading: Icon(SystemIcons.zoomPlus, color: context.colors.accentDefault),
               text: ContentRowTextOptions(
-                // TODO(claude): localize string
-                title: 'Create a new list',
+                title: context.l10n.favoriteListCreateNewListItem,
                 titleOptions: ContentRowTextOption(baseColor: context.colors.accentDefault),
               ),
               isDividerEnabled: true,
@@ -214,8 +210,7 @@ class PickFavoriteListPage extends HookConsumerWidget {
                       Padding(
                         padding: const EdgeInsets.symmetric(vertical: Spacing.$4x),
                         child: Text(
-                          // TODO(claude): localize string
-                          'No lists yet. Create one above.',
+                          context.l10n.favoriteListNoListsYetPlaceholder,
                           style: context.textStyles.bodySmallRegular.copyWith(color: context.colors.foregroundSoft),
                         ),
                       ),
@@ -228,8 +223,7 @@ class PickFavoriteListPage extends HookConsumerWidget {
                           leading: Icon(SystemIcons.bookmarkFill, color: list.markerColorCode.color),
                           text: ContentRowTextOptions(
                             title: list.name,
-                            // TODO(claude): localize string and handle Arabic plural forms properly
-                            subtitle: '${list.placeCount ?? 0} place${(list.placeCount ?? 0) == 1 ? '' : 's'}',
+                            subtitle: favoriteListPlacesCountText(context.l10n, list.placeCount ?? 0),
                           ),
                           trailing: ContentRowCustomTrailingOptions(
                             builder: (context) => IgnorePointer(

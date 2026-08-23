@@ -38,9 +38,8 @@ class FavoriteListPlacesContent extends ConsumerWidget {
         data: (listDetail) {
           final places = listDetail.list.places ?? [];
           if (places.isEmpty) {
-            // TODO(claude): localize string
             return Text(
-              'No places in this list yet',
+              context.l10n.favoriteListEmptyPlaceholder,
               style: context.textStyles.bodySmallRegular.copyWith(color: context.colors.foregroundSoft),
             );
           }

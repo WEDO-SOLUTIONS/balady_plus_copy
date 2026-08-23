@@ -8,7 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:intl/intl.dart';
+import 'package:mapness/_generated/assets/assets.gen.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/features/favorite_lists/data/favorite_lists_api_exception.dart';
 import 'package:mapness/features/favorite_lists/data/models/favorite_list_dto.dart';
@@ -17,6 +17,7 @@ import 'package:mapness/features/favorite_lists/data/models/marker_color_code.da
 import 'package:mapness/features/favorite_lists/data/models/migrate_legacy_favorites_result_dto.dart';
 import 'package:mapness/features/favorite_lists/providers/favorite_lists.dart';
 import 'package:mapness/features/favorite_lists/providers/favorite_lists_migration.dart';
+import 'package:mapness/features/favorite_lists/ui/favorite_list_subtitle_parts.dart';
 import 'package:mapness/features/favorite_lists/ui/models/sheet_action_button.dart';
 import 'package:mapness/features/favorite_lists/ui/widgets/favorite_list_places_content.dart';
 import 'package:mapness/features/favorite_lists/ui/widgets/favorite_progress_indicator.dart';
@@ -43,14 +44,11 @@ class FavoriteListsPage extends HookConsumerWidget {
         hasHandledMigrationBanner.value = true;
         context.router.push(
           ConfirmationSheetRoute(
-            // TODO(claude): localize string
-            title: 'Favorites migrated successfully',
-            // TODO(claude): localize string
-            message: 'Your existing favorites have been migrated to the new Favorites list.',
+            title: context.l10n.favoriteListMigrationSuccessTitle,
+            message: context.l10n.favoriteListMigrationSuccessMessage,
             buttons: [
               SheetActionButton(
-                // TODO(claude): localize string
-                label: 'Got it',
+                label: context.l10n.favoriteListGotItButton,
                 buttonColorScheme: ButtonColorScheme.accent,
                 buttonType: ButtonType.primary,
                 onTap: () async => context.router.pop(),
@@ -85,21 +83,22 @@ class FavoriteListsPage extends HookConsumerWidget {
             spacing: 27,
             children: [
               _Section(
-                // TODO(claude): localize string
-                title: 'My addresses',
+                title: context.l10n.favoriteListMyAddressesSection,
                 child: ContentWrapper(
                   color: context.colors.backgroundSurface1,
                   children: [
                     ContentRow(
                       leading: Icon(GeneralIcons.home, color: context.colors.foregroundSoft),
-                      // TODO(claude): localize string and pass address
-                      text: const ContentRowTextOptions(title: 'Home', subtitle: 'Address'),
+                      // TODO(claude): pass real address
+                      text: ContentRowTextOptions(
+                        title: context.l10n.favoriteListHomeLocation,
+                        subtitle: context.l10n.favoriteListAddressSubtitle,
+                      ),
                       isDividerEnabled: true,
                       trailing: ContentRowTextTrailingOptions(
                         icon: SystemIcons.ellipsis,
                         iconColor: context.colors.foregroundSoft,
                         onPressed: () {
-                          // todo open menu
                           context.router.push(const EditMyAddressesRoute());
                         },
                       ),
@@ -108,10 +107,16 @@ class FavoriteListsPage extends HookConsumerWidget {
                       },
                     ),
                     ContentRow(
-                      // todo valid icon
-                      leading: Icon(GeneralIcons.buildings, color: context.colors.foregroundSoft),
-                      // TODO(claude): localize string and pass address
-                      text: const ContentRowTextOptions(title: 'Work', subtitle: 'Address'),
+                      leading: Assets.icons.svg.favorite.icFavorite2Building.svg(
+                        width: 22,
+                        height: 22,
+                        colorFilter: ColorFilter.mode(context.colors.foregroundSoft, BlendMode.srcIn),
+                      ),
+                      // TODO(claude): pass real address
+                      text: ContentRowTextOptions(
+                        title: context.l10n.favoriteListWorkLocation,
+                        subtitle: context.l10n.favoriteListAddressSubtitle,
+                      ),
                       trailing: ContentRowTextTrailingOptions(
                         icon: SystemIcons.ellipsis,
                         iconColor: context.colors.foregroundSoft,
@@ -127,17 +132,15 @@ class FavoriteListsPage extends HookConsumerWidget {
                 ),
               ),
               _Section(
-                // TODO(claude): localize string
-                title: 'My Lists',
+                title: context.l10n.favoriteListMyListsSection,
                 child: ContentWrapper(
                   color: context.colors.backgroundSurface1,
                   children: [
                     if (canCreateMoreLists)
                       ContentRow(
                         leading: Icon(SystemIcons.zoomPlus, color: context.colors.accentDefault, size: 24),
-                        // TODO(claude): localize string
                         text: ContentRowTextOptions(
-                          title: 'Create a new list',
+                          title: context.l10n.favoriteListCreateNewListItem,
                           titleOptions: ContentRowTextOption(baseColor: context.colors.accentDefault),
                         ),
                         onTap: () {
@@ -232,10 +235,10 @@ class FavoriteListsPage extends HookConsumerWidget {
 
 String _favoriteListSubtitle(BuildContext context, FavoriteListDto list) {
   final languageCode = Localizations.localeOf(context).languageCode;
-  final formattedDate = DateFormat('dd.MM.yy', languageCode).format(list.updatedAt);
-  final placeCount = list.placeCount ?? 0;
-  // TODO(claude): localize string and handle Arabic plural forms properly
-  return 'Modified $formattedDate • $placeCount place${placeCount == 1 ? '' : 's'}';
+  return [
+    favoriteListModifiedOnText(context.l10n, list.updatedAt, languageCode),
+    favoriteListPlacesCountText(context.l10n, list.placeCount ?? 0),
+  ].join(' • ');
 }
 
 class _Section extends StatelessWidget {

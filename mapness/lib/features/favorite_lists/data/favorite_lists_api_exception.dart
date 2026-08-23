@@ -39,8 +39,11 @@ class FavoriteListsApiException implements Exception {
   );
 
   static const Map<String, String> _titlesByCode = {
-    // TODO(claude): localize string
     'DUPLICATE_LIST_NAME': 'List name already exists',
+  };
+
+  static const Map<String, String> _titlesByCodeAr = {
+    'DUPLICATE_LIST_NAME': 'الاسم مستخدم من قبل',
   };
 
   final String code;
@@ -51,9 +54,9 @@ class FavoriteListsApiException implements Exception {
   /// Picks [message] or [messageAr] depending on [language]; defaults to English.
   String localizedMessage(Language language) => language == Language.arabic ? messageAr : message;
 
-  /// Title tailored to [code] if one is mapped; `null` when no specific title exists,
-  /// so the caller can fall back to a generic one.
-  String? get title => _titlesByCode[code];
+  /// Title tailored to [code] and [language] if one is mapped; `null` when no specific title
+  /// exists, so the caller can fall back to a generic one.
+  String? title(Language language) => language == Language.arabic ? _titlesByCodeAr[code] : _titlesByCode[code];
 
   @override
   String toString() => 'FavoriteListsApiException(code: $code, message: $message, requestId: $requestId)';

@@ -2,12 +2,14 @@ import 'dart:ui';
 
 import 'package:dgis_map/library.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:intl/intl.dart';
 import 'package:mapness/features/favorite_lists/data/favorite_lists_remote_datasource.dart';
 import 'package:mapness/features/favorite_lists/data/models/favorite_list_dto.dart';
 import 'package:mapness/features/favorite_lists/data/models/marker_color_code.dart';
 import 'package:mapness/features/favorite_lists/providers/favorite_lists_migration.dart';
+import 'package:mapness/features/favorite_lists/ui/favorite_list_subtitle_parts.dart';
+import 'package:mapness/l10n/generated/app_localizations.dart';
 import 'package:mapness/shared/providers/app_language.dart';
+import 'package:mapness/shared/ui/toast/app_locale.dart';
 import 'package:mapness/shared/utils/logger/logger.dart';
 
 extension on Color {
@@ -22,16 +24,11 @@ String _colorHex(FavoriteListDto list) {
   return list.markerColorCode.color.hexValue;
 }
 
-String _subtitle(FavoriteListDto list, String languageCode) {
-  final dateFormat = DateFormat('dd.MM.yy', languageCode);
-  final placeCount = list.placeCount ?? 0;
-  // TODO(claude): localize string and handle Arabic plural forms properly
-  return [
-    'Created ${dateFormat.format(list.createdAt)}',
-    'Modified ${dateFormat.format(list.updatedAt)}',
-    '$placeCount place${placeCount == 1 ? '' : 's'}',
-  ].join(' • ');
-}
+String _subtitle(AppLocalizations l10n, FavoriteListDto list, String languageCode) => [
+  favoriteListCreatedOnText(l10n, list.createdAt, languageCode),
+  favoriteListModifiedOnText(l10n, list.updatedAt, languageCode),
+  favoriteListPlacesCountText(l10n, list.placeCount ?? 0),
+].join(' • ');
 
 /// Builds the grouped favorite-lists payload sent to CarPlay/Android Auto.
 ///
@@ -47,11 +44,12 @@ Future<FavoriteListsStateMessage> buildFavoriteListsStateMessage(ProviderContain
 
   final lists = (await dataSource.getFavoriteLists()).lists;
   final languageCode = container.read(appLanguageProvider).baladyCompat;
+  final l10n = container.read(appLocaleProvider);
 
   final listMessages = await Future.wait(
     lists.map((list) async {
       final colorHex = _colorHex(list);
-      final subtitle = _subtitle(list, languageCode);
+      final subtitle = _subtitle(l10n, list, languageCode);
       try {
         final detail = await dataSource.getFavoriteListById(list.id);
         final places = detail.list.places ?? const [];

@@ -12,19 +12,18 @@ import 'package:mapness/shared/providers/app_language.dart';
 /// with [error]'s localized message if it's a [FavoriteListsApiException], or a generic
 /// fallback otherwise. Replaces the previous `ToastOverlay`-based error display.
 void showFavoriteListsErrorSheet(BuildContext context, WidgetRef ref, Object error) {
+  final language = ref.read(appLanguageProvider);
   final message = error is FavoriteListsApiException
-      ? error.localizedMessage(ref.read(appLanguageProvider))
+      ? error.localizedMessage(language)
       : context.l10n.somethingWentWrongPleaseTryAgainLater;
-  final title = error is FavoriteListsApiException ? error.title : null;
+  final title = error is FavoriteListsApiException ? error.title(language) : null;
   context.router.push(
     ConfirmationSheetRoute(
-      // TODO(claude): localize string
-      title: title ?? 'Something went wrong!',
+      title: title ?? context.l10n.favoriteListErrorTitle,
       message: message,
       buttons: [
         SheetActionButton(
-          // TODO(claude): localize string
-          label: 'OK',
+          label: context.l10n.favoriteListOkButton,
           buttonColorScheme: ButtonColorScheme.accent,
           buttonType: ButtonType.primary,
           onTap: () async => context.router.pop(),
