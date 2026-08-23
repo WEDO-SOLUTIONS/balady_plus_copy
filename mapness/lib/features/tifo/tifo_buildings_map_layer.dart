@@ -87,14 +87,6 @@ class _Bounds {
 class TifoBuildingsMapLayer extends Notifier<bool> {
   MapObjectManagerMessage? _buildingsManager;
   MapObjectManagerMessage? _districtsManager;
-
-  /// The administrative boundary gets its OWN manager, not the district one.
-  /// The two district tiers swap objects in and out of `_districtsManager` on
-  /// every zoom across a threshold; the boundary is the same geometry at both
-  /// of them, so keeping it separate means a tier swap can't take it down and
-  /// it needs no diff bookkeeping at all.
-  MapObjectManagerMessage? _boundaryManager;
-  bool _boundaryDrawn = false;
   StreamSubscription<VisibleRectEvent>? _visibleSub;
   Timer? _debounce;
   String? _lastBbox;
@@ -186,14 +178,6 @@ class TifoBuildingsMapLayer extends Notifier<bool> {
 
   /// Single polygon id for the cluster tier's region silhouette.
   static String _regionPolygonId(int index) => 'tifo-region#$index';
-
-  static String _boundaryPolygonId(int index) => 'tifo-boundary#$index';
-
-  /// Stroke for the administrative boundary drawn over the district mosaic.
-  /// Neutral and dark on purpose: it crosses polygons in every club colour, so
-  /// deriving it from a fill (the way [_borderArgb] does) would make it vanish
-  /// against some of them.
-  static const int _boundaryStrokeArgb = 0xFF2B2B2B;
 
   /// Alpha both the fill and its border are painted at. Sharing it is the
   /// point: a fully opaque border over a 90%-alpha fill reads as a DIFFERENT
@@ -395,7 +379,6 @@ class TifoBuildingsMapLayer extends Notifier<bool> {
       final controller = await ref.read(dgisControllerProvider.future);
       _buildingsManager ??= await controller.createMapObjectManager(layerId: MapObjectLayers.defaultLayerId);
       _districtsManager ??= await controller.createMapObjectManager(layerId: MapObjectLayers.defaultLayerId);
-      _boundaryManager ??= await controller.createMapObjectManager(layerId: MapObjectLayers.defaultLayerId);
 
       _visibleSub = controller.visibleRectEvents.listen((event) {
         final rect = event.visibleRect;
@@ -461,7 +444,6 @@ class TifoBuildingsMapLayer extends Notifier<bool> {
     _lastBbox = null;
     _drawnDistrictsLod = null;
     _drawnRegionFill = null;
-    _boundaryDrawn = false;
     _drawnFill.clear();
     _drawnRings.clear();
     _drawnDistrictFill.clear();
@@ -475,9 +457,6 @@ class TifoBuildingsMapLayer extends Notifier<bool> {
       }
       if (_districtsManager != null) {
         await controller.removeAllPolygons(fromManager: _districtsManager);
-      }
-      if (_boundaryManager != null) {
-        await controller.removeAllPolygons(fromManager: _boundaryManager);
       }
       // The 2D view is a TIFO rule, not the host map's — give the player
       // their tilted view back when the overlay goes away.
@@ -575,9 +554,6 @@ class TifoBuildingsMapLayer extends Notifier<bool> {
     }
     final lod = _lod;
     final tierChanged = _drawnDistrictsLod != lod;
-    // The city limit belongs to the two low-zoom tiers: at street level it is
-    // either off-screen or a stray line through the buildings.
-    await _syncBoundary(visible: lod != _TifoLod.buildings);
     if (lod == _TifoLod.buildings) {
       final hadDistricts = _drawnDistrictsLod != null;
       _drawnDistrictsLod = null;
@@ -1244,51 +1220,6 @@ class TifoBuildingsMapLayer extends Notifier<bool> {
       );
     } catch (error, stackTrace) {
       logger.log('[tifo-map] region redraw failed: $error\n$stackTrace');
-    }
-  }
-
-  /// Draws or removes the administrative boundary — outline only, no fill, so
-  /// it reads as a limit over whatever the district tier painted underneath.
-  /// Idempotent: called on every viewport event, does nothing when already in
-  /// the requested state.
-  Future<void> _syncBoundary({required bool visible}) async {
-    if (visible == _boundaryDrawn) {
-      return;
-    }
-    final manager = _boundaryManager;
-    if (manager == null) {
-      return;
-    }
-    try {
-      final controller = await ref.read(dgisControllerProvider.future);
-      if (!state) {
-        return;
-      }
-      if (!visible) {
-        _boundaryDrawn = false;
-        await controller.removeAllPolygons(fromManager: manager);
-        return;
-      }
-      final geometry = _regionGeometry();
-      _boundaryDrawn = true;
-      await _addChunked(controller, [
-        for (var i = 0; i < geometry.length; i++)
-          Polygon(
-            id: _boundaryPolygonId(i),
-            options: PolygonOptionsMessage(
-              contours: geometry[i],
-              // Fully transparent fill: the mosaic underneath must stay
-              // readable, so this contributes an outline and nothing else.
-              color: 0x00000000,
-              strokeColor: _boundaryStrokeArgb,
-              strokeWidth: 2.5,
-            ),
-          ),
-      ], manager);
-      logger.log('[tifo-map] boundary drawn (${geometry.length} polygons, outline only)');
-    } catch (error, stackTrace) {
-      _boundaryDrawn = false;
-      logger.log('[tifo-map] boundary sync failed: $error\n$stackTrace');
     }
   }
 

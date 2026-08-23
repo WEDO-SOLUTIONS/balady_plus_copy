@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/features/tifo/providers/tifo_session_provider.dart';
@@ -8,8 +6,6 @@ import 'package:mapness/features/tifo/tifo_flow_provider.dart';
 import 'package:mapness/features/tifo/tifo_login.dart';
 import 'package:mapness/features/tifo/tifo_surface.dart';
 import 'package:mapness/features/tifo/tutorial/tifo_guided_tutorial.dart';
-import 'package:mapness/features/tifo/ui/tifo_message_card.dart';
-import 'package:mapness/l10n/generated/app_localizations.dart';
 import 'package:mapness/shared/utils/logger/logger.dart';
 
 /// Drives the BRD V2 play-gate (US-01 BR-01): route to the first unmet step
@@ -123,7 +119,11 @@ class TifoJourney {
             // session from re-pushing the tour on every play-intent tap.
             flow.markTutorialShownUnreported();
             logger.log('[tifo] play-gate stopped: tutorial not recorded, treating it as not started');
-            _showTutorialNotRecorded(context);
+            // No dialog here. "Connection lost" belongs to the penalty flow,
+            // where a session really is voided and a token really is spent —
+            // raising it from the gate walk put it in front of players who had
+            // working internet and had just finished the tour, or who had only
+            // tapped "Dominate with your team".
             return false;
           }
           await flow.markTutorialCompletedOnDevice();
@@ -139,28 +139,5 @@ class TifoJourney {
       }
     }
     return ref.read(tifoSessionProvider).nextStep == TifoJourneyStep.ready;
-  }
-
-  /// Told the player their run didn't stick, so the tour reappearing later
-  /// isn't a mystery. Reuses the existing FR-16 "Connection lost" title with
-  /// the generic try-again body — the dedicated connection-lost body is about
-  /// a voided penalty session and its refunded token, which has nothing to do
-  /// with the tutorial.
-  void _showTutorialNotRecorded(BuildContext context) {
-    if (!context.mounted) {
-      return;
-    }
-    final l10n = AppLocalizations.of(context);
-    unawaited(
-      showTifoMessageDialog<void>(
-        context,
-        card: TifoMessageCard(
-          showIllustration: true,
-          title: l10n.tifoConnectionLostTitle,
-          body: l10n.tifoSomethingWentWrongBody,
-          onClose: () => Navigator.of(context).pop(),
-        ),
-      ),
-    );
   }
 }
