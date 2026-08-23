@@ -4,12 +4,15 @@ import 'package:auto_route/auto_route.dart';
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/colorsV2/themes.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
+import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:mapness/_generated/assets/assets.gen.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
+import 'package:mapness/app/auto_route/poi_card_ext.dart';
+import 'package:mapness/entities/favourites/favourite_item.dart';
 import 'package:mapness/features/favorite_lists/data/favorite_lists_api_exception.dart';
 import 'package:mapness/features/favorite_lists/data/models/favorite_list_dto.dart';
 import 'package:mapness/features/favorite_lists/data/models/icon_type.dart';
@@ -21,6 +24,8 @@ import 'package:mapness/features/favorite_lists/ui/favorite_list_subtitle_parts.
 import 'package:mapness/features/favorite_lists/ui/models/sheet_action_button.dart';
 import 'package:mapness/features/favorite_lists/ui/widgets/favorite_list_places_content.dart';
 import 'package:mapness/features/favorite_lists/ui/widgets/favorite_progress_indicator.dart';
+import 'package:mapness/features/favourites/helpers/favourite_entity_id.dart';
+import 'package:mapness/features/favourites/providers/favourite_cache.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/providers/app_language.dart';
 
@@ -61,6 +66,9 @@ class FavoriteListsPage extends HookConsumerWidget {
 
     final favoriteListsAsync = ref.watch(favoriteListsProvider);
     final favoriteListLimitsAsync = ref.watch(favoriteListLimitsProvider);
+    final favouritesAsync = ref.watch(favouriteCacheProvider);
+    final home = favouritesAsync.value?.home;
+    final work = favouritesAsync.value?.work;
     final canCreateMoreLists = favoriteListsAsync.maybeWhen(
       data: (lists) => favoriteListLimitsAsync.maybeWhen(
         data: (limits) => lists.length < limits.maxLists,
@@ -89,10 +97,9 @@ class FavoriteListsPage extends HookConsumerWidget {
                   children: [
                     ContentRow(
                       leading: Icon(GeneralIcons.home, color: context.colors.foregroundSoft),
-                      // TODO(claude): pass real address
                       text: ContentRowTextOptions(
                         title: context.l10n.favoriteListHomeLocation,
-                        subtitle: context.l10n.favoriteListAddressSubtitle,
+                        subtitle: home?.subtitle ?? context.l10n.favoriteListAddressSubtitle,
                       ),
                       isDividerEnabled: true,
                       trailing: ContentRowTextTrailingOptions(
@@ -102,9 +109,7 @@ class FavoriteListsPage extends HookConsumerWidget {
                           context.router.push(const EditMyAddressesRoute());
                         },
                       ),
-                      onTap: () {
-                        // todo open POI
-                      },
+                      onTap: () => _openPoiCard(context, home),
                     ),
                     ContentRow(
                       leading: Assets.icons.svg.favorite.icFavorite2Building.svg(
@@ -112,10 +117,9 @@ class FavoriteListsPage extends HookConsumerWidget {
                         height: 22,
                         colorFilter: ColorFilter.mode(context.colors.foregroundSoft, BlendMode.srcIn),
                       ),
-                      // TODO(claude): pass real address
                       text: ContentRowTextOptions(
                         title: context.l10n.favoriteListWorkLocation,
-                        subtitle: context.l10n.favoriteListAddressSubtitle,
+                        subtitle: work?.subtitle ?? context.l10n.favoriteListAddressSubtitle,
                       ),
                       trailing: ContentRowTextTrailingOptions(
                         icon: SystemIcons.ellipsis,
@@ -124,9 +128,7 @@ class FavoriteListsPage extends HookConsumerWidget {
                           // todo open menu
                         },
                       ),
-                      onTap: () {
-                        // todo open POI
-                      },
+                      onTap: () => _openPoiCard(context, work),
                     ),
                   ],
                 ),
@@ -231,6 +233,17 @@ class FavoriteListsPage extends HookConsumerWidget {
       ),
     );
   }
+}
+
+void _openPoiCard(BuildContext context, FavouriteItem? item) {
+  final objectId = parseObjectIdFromFavouriteEntityId(item?.entity?.id);
+  if (objectId == null) {
+    return;
+  }
+  context.router.replaceOrPush(
+    route: PoiCardWidgetRoute(objectId: DgisObjectIdMessage(objectId: objectId, entranceId: 0)),
+    toCompareRoutes: [PoiCardWidgetRoute.page],
+  );
 }
 
 String _favoriteListSubtitle(BuildContext context, FavoriteListDto list) {
