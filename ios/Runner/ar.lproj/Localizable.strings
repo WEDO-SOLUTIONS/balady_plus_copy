@@ -29,7 +29,6 @@
 "quickFilterFuel" = "الوقود";
 "favouritesScreenTitle" = "المفضلة";
 "favouritesScreenBackButton" = "بحث";
-"favouritesScreenLoadingPlaceholder" = "جار التحميل";
 "favouritesScreenSectionHomeAndWork" = "المنزل والعمل";
 "favouritesScreenSectionFavourites" = "المفضلة";
 "favouritesScreenItemTitleHome" = "بيت";
@@ -37,3 +36,8 @@
 "favouritesScreenItemSubtitlePlaceholder" = "أضف عنوانًا في هاتفك";
 "favouritesScreenPlaceholderEmptyTitle" = "لا يوجد شيء هنا بعد";
 "favouritesScreenPlaceholderEmptySubtitle" = "أضف الأماكن المفضلة على تطبيق بلدي+ لاستعراضها هنا";
+"favouritesScreenListPlaceCount" = "%d مكان";
+"favouritesScreenListEmptyPlaceholder" = "لا توجد أماكن في هذه القائمة بعد";
+"favouritesScreenMyListsHeader" = "قوائمي";
+"favouritesScreenPlaceResolving" = "جارٍ التحميل…";
+"favouritesScreenPlaceUnavailable" = "المكان غير متاح";

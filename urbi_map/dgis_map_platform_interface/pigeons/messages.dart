@@ -1444,23 +1444,21 @@ class FavouriteItemMessage {
   final GeoPointMessage coordinates;
 }
 
-class FavoriteListItemMessage {
-  FavoriteListItemMessage(this.id, this.subtitle, this.title, this.coordinates);
+class FavoriteListPlaceRefMessage {
+  FavoriteListPlaceRefMessage(this.placeId, this.customName);
 
-  final String id;
-  final String? subtitle;
-  final String title;
-  final GeoPointMessage coordinates;
+  final String placeId;
+  final String? customName;
 }
 
 class FavoriteListMessage {
-  FavoriteListMessage(this.id, this.name, this.colorHex, this.subtitle, this.items);
+  FavoriteListMessage(this.id, this.name, this.colorHex, this.subtitle, this.placeRefs);
 
   final String id;
   final String name;
   final String colorHex;
   final String subtitle;
-  final List<FavoriteListItemMessage> items;
+  final List<FavoriteListPlaceRefMessage> placeRefs;
 }
 
 class FavoriteListsStateMessage {

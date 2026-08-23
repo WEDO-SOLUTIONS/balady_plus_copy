@@ -6,6 +6,7 @@ import android.graphics.Color
 import android.graphics.Paint
 import androidx.annotation.DrawableRes
 import androidx.car.app.Screen
+import androidx.car.app.model.CarColor
 import androidx.car.app.model.CarIcon
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.IconCompat
@@ -24,6 +25,13 @@ fun Screen.getString(resId: Int, vararg formatArgs: Any): String {
 
 fun Screen.buildCarIcon(@DrawableRes resId: Int): CarIcon {
     return CarIcon.Builder(IconCompat.createWithResource(carContext, resId)).build()
+}
+
+fun Screen.buildTintedCarIcon(@DrawableRes resId: Int, colorHex: String): CarIcon {
+    val color = android.graphics.Color.parseColor(colorHex)
+    return CarIcon.Builder(IconCompat.createWithResource(carContext, resId))
+        .setTint(CarColor.createCustom(color, color))
+        .build()
 }
 
 fun Screen.createIndexedMarker(index: Int): Image {

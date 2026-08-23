@@ -3,14 +3,10 @@ import 'dart:ui';
 import 'package:dgis_map/library.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
+import 'package:mapness/features/favorite_lists/data/favorite_lists_remote_datasource.dart';
 import 'package:mapness/features/favorite_lists/data/models/favorite_list_dto.dart';
-import 'package:mapness/features/favorite_lists/data/models/favorite_list_place_dto.dart';
 import 'package:mapness/features/favorite_lists/data/models/marker_color_code.dart';
-import 'package:mapness/features/favorite_lists/providers/favorite_list_detail.dart';
-import 'package:mapness/features/favorite_lists/providers/favorite_list_place_poi.dart';
-import 'package:mapness/features/favorite_lists/providers/favorite_lists.dart';
-import 'package:mapness/features/poi_card/extensions/geopoint_mapper.dart';
-import 'package:mapness/shared/lib/make_address.dart';
+import 'package:mapness/features/favorite_lists/providers/favorite_lists_migration.dart';
 import 'package:mapness/shared/providers/app_language.dart';
 import 'package:mapness/shared/utils/logger/logger.dart';
 
@@ -37,39 +33,19 @@ String _subtitle(FavoriteListDto list, String languageCode) {
   ].join(' • ');
 }
 
-/// Resolves a single place's title (honoring a user-set [FavoriteListPlaceDto.customName]),
-/// address and coordinates via the same DGis SDK lookup the phone UI uses
-/// (`favorite_list_places_tile.dart`), so both surfaces stay consistent. Returns `null` when
-/// the place can't be resolved (unparseable id, SDK miss, or a transient SDK error) — the
-/// caller drops it rather than failing the whole list.
-Future<FavoriteListItemMessage?> _resolvePlaceItem(ProviderContainer container, FavoriteListPlaceDto place) async {
-  final objectId = int.tryParse(place.placeId);
-  if (objectId == null) {
-    return null;
-  }
-
-  try {
-    final poi = await container.read(favoriteListPlacePoiProvider(objectId).future);
-    final coordinates = poi?.markerPosition?.toGeoPointMessage();
-    if (poi == null || coordinates == null) {
-      return null;
-    }
-
-    return FavoriteListItemMessage(
-      id: place.placeId,
-      title: place.customName ?? poi.title,
-      subtitle: poi.makeAddress(),
-      coordinates: coordinates,
-    );
-  } catch (e) {
-    logger.log('favorite place ${place.placeId} POI lookup failed: $e', logLevel: MapnessLogLevel.error);
-    return null;
-  }
-}
-
-/// Builds the grouped favorite-lists payload sent to CarPlay.
+/// Builds the grouped favorite-lists payload sent to CarPlay/Android Auto.
+///
+/// Reads the (keepAlive) data source directly instead of going through
+/// `favoriteListsProvider`/`favoriteListDetailProvider` (autoDispose family providers): calling
+/// `container.read(autoDisposeProvider.future)` from outside any widget subscription doesn't
+/// keep the provider alive, so Riverpod disposes it mid-flight and the read hangs forever
+/// instead of completing — this is what made every list show up empty, even ones that do have
+/// places on the phone.
 Future<FavoriteListsStateMessage> buildFavoriteListsStateMessage(ProviderContainer container) async {
-  final lists = await container.read(favoriteListsProvider.future);
+  await container.read(favoriteListsMigrationProvider.future);
+  final dataSource = await container.read(favoriteListsRemoteDataSourceProvider.future);
+
+  final lists = (await dataSource.getFavoriteLists()).lists;
   final languageCode = container.read(appLanguageProvider).baladyCompat;
 
   final listMessages = await Future.wait(
@@ -77,12 +53,23 @@ Future<FavoriteListsStateMessage> buildFavoriteListsStateMessage(ProviderContain
       final colorHex = _colorHex(list);
       final subtitle = _subtitle(list, languageCode);
       try {
-        final detail = await container.read(favoriteListDetailProvider(listId: list.id).future);
+        final detail = await dataSource.getFavoriteListById(list.id);
         final places = detail.list.places ?? const [];
 
-        final items = (await Future.wait(places.map((place) => _resolvePlaceItem(container, place)))).nonNulls.toList();
+        // Places are resolved natively by CarPlay/Android Auto (see `FavoriteListsScreen.kt` /
+        // `FavoritesScreen.swift`) from `placeRefs` via their own SDK session, so no SDK lookup
+        // happens on the Dart side.
+        final placeRefs = places
+            .map((place) => FavoriteListPlaceRefMessage(placeId: place.placeId, customName: place.customName))
+            .toList();
 
-        return FavoriteListMessage(id: list.id, name: list.name, colorHex: colorHex, subtitle: subtitle, items: items);
+        return FavoriteListMessage(
+          id: list.id,
+          name: list.name,
+          colorHex: colorHex,
+          subtitle: subtitle,
+          placeRefs: placeRefs,
+        );
       } catch (e) {
         // One list's detail request failing (e.g. a transient network hiccup) must not blank
         // out every other already-resolved list — surface it as name-only instead.
@@ -92,7 +79,7 @@ Future<FavoriteListsStateMessage> buildFavoriteListsStateMessage(ProviderContain
           name: list.name,
           colorHex: colorHex,
           subtitle: subtitle,
-          items: const [],
+          placeRefs: const [],
         );
       }
     }),

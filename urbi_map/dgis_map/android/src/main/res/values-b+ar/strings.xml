@@ -74,4 +74,8 @@
   <string name="favourites_title">المفضلة</string>
   <string name="no_favourites_title">للا يوجد شيء هنا بعد. أضف الأماكن المفضلة على تطبيق بلدي+ لاستعراضها هنا.</string>
   <string name="no_favourites_subtitle">أضف الأماكن المفضلة على تطبيق بلدي+ لاستعراضها هنا</string>
+  <string name="favourites_lists_title">قوائمي</string>
+  <string name="favourites_list_empty_placeholder">لا توجد أماكن في هذه القائمة بعد</string>
+  <string name="favourite_place_resolving">جارٍ التحميل…</string>
+  <string name="favourite_place_unavailable">المكان غير متاح</string>
 </resources>

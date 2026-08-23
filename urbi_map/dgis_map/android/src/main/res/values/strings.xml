@@ -74,4 +74,8 @@
   <string name="favourites_title">Favorites</string>
   <string name="no_favourites_title">There\'s nothing here yet</string>
   <string name="no_favourites_subtitle">You can add your favorite places through Balady+ app on your phone</string>
+  <string name="favourites_lists_title">My lists</string>
+  <string name="favourites_list_empty_placeholder">No places in this list yet</string>
+  <string name="favourite_place_resolving">Loading…</string>
+  <string name="favourite_place_unavailable">Place unavailable</string>
 </resources>

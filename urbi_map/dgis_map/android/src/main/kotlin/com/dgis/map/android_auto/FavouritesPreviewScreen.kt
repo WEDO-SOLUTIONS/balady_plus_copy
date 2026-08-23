@@ -15,7 +15,9 @@ import androidx.car.app.model.Template
 import androidx.car.app.navigation.model.MapWithContentTemplate
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
+import com.dgis.FlutterProvider
 import com.dgis.map.R
+import com.dgis.map.UserAuthorizedNotifier
 import com.dgis.map.android_auto.settings.SettingsScreen
 import com.dgis.map.android_auto.utils.AndroidAutoUtils
 import kotlinx.coroutines.CoroutineScope
@@ -49,6 +51,9 @@ class FavouritesPreviewScreen(
     private var estimatesJob: Job? = null
     private var getEstimatesTimestamp: Long? = null
 
+    private var isAuthorized: Boolean = false
+    private var authObserverJob: Job? = null
+
     init {
         lifecycle.addObserver(
             object : DefaultLifecycleObserver {
@@ -58,24 +63,41 @@ class FavouritesPreviewScreen(
 
                 override fun onDestroy(owner: LifecycleOwner) {
                     estimatesJob?.cancel()
+                    authObserverJob?.cancel()
                 }
             }
         )
+
+        FlutterProvider.getHostFlutterApi(carContext).isAuthorized { result ->
+            isAuthorized = result.getOrNull() ?: false
+            invalidate()
+        }
+
+        authObserverJob = CoroutineScope(Dispatchers.Default).launch {
+            UserAuthorizedNotifier.events.collect { value ->
+                withContext(Dispatchers.Main) {
+                    isAuthorized = value
+                    invalidate()
+                }
+            }
+        }
     }
 
-    private val actionStrip by lazy {
-        val favouritesAction =
-            Action.Builder()
-                .setIcon(buildCarIcon(R.drawable.bookmark))
-                .setOnClickListener {
-                    screenManager.push(
-                        FavouritesScreen(carContext, mapController, favourites.items)
-                    )
-                }
-                .build()
-        ActionStrip.Builder().addAction(favouritesAction).addAction(searchAction)
-            .addAction(settingsAction).build()
-    }
+    private val actionStrip: ActionStrip
+        get() {
+            val builder = ActionStrip.Builder()
+            if (isAuthorized) {
+                val favouritesAction =
+                    Action.Builder()
+                        .setIcon(buildCarIcon(R.drawable.bookmark))
+                        .setOnClickListener {
+                            screenManager.push(FavoriteListsScreen(carContext, mapController))
+                        }
+                        .build()
+                builder.addAction(favouritesAction)
+            }
+            return builder.addAction(searchAction).addAction(settingsAction).build()
+        }
 
     private val itemSearch: Row
         get() {
@@ -91,13 +113,7 @@ class FavouritesPreviewScreen(
             return Row.Builder().setImage(buildCarIcon(R.drawable.bookmark))
                 .setTitle(getString(R.string.favourites_title))
                 .setOnClickListener {
-                    screenManager.push(
-                        FavouritesScreen(
-                            carContext,
-                            mapController,
-                            favourites.items
-                        )
-                    )
+                    screenManager.push(FavoriteListsScreen(carContext, mapController))
                 }.build()
         }
 
@@ -182,7 +198,11 @@ class FavouritesPreviewScreen(
                 itemList.addItem(row.build())
             }
         } else {
-            itemList.addItem(itemSearch).addItem(itemFavourites).addItem(itemSettings)
+            itemList.addItem(itemSearch)
+            if (isAuthorized) {
+                itemList.addItem(itemFavourites)
+            }
+            itemList.addItem(itemSettings)
         }
 
         return itemList.build()

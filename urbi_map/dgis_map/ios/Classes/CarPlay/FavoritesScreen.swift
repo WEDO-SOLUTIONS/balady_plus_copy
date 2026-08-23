@@ -10,6 +10,18 @@ class FavoritesScreen {
     private var lists: [FavoriteListMessage] = []
     private var expandedListIds: Set<String> = []
 
+    // Places are resolved natively via `searchManager` — the car session's own SDK search
+    // service, independent of the phone's Flutter map — instead of over Pigeon, so each place's
+    // `DirectoryObject` arrives asynchronously per-item rather than all at once with the list
+    // payload. Mirrors the Android Auto `FavoriteListsScreen.kt` implementation.
+    private let searchManager: SearchManager
+    private var resolvedPlaces: [String: DirectoryObject] = [:]
+    private var failedPlaceIds: Set<String> = []
+    // Must keep each request's Cancellable alive until completion, otherwise the SDK's required
+    // strong reference is dropped and the completion silently never fires (see the identical
+    // comment on `SearchHandler.objectSearchCancelables`).
+    private var resolvingCancelables: [String: DGis.Cancellable] = [:]
+
     init(
         listTemplate: CPListTemplate,
         interfaceController: CPInterfaceController,
@@ -20,6 +32,8 @@ class FavoritesScreen {
         self.interfaceController = interfaceController
         self.hostFlutterApi = hostFlutterApi
         self.searchNavigation = searchNavigation
+        let sdk = DgisMapInitializer.shared.getSdkContainer()
+        self.searchManager = try! SearchManager.createOnlineManager(context: try! sdk.context)
     }
 
     static func createTemplate() -> CPListTemplate {
@@ -34,9 +48,7 @@ class FavoritesScreen {
             title: NSLocalizedString("favouritesScreenBackButton", comment: ""),
             handler: onBackTap
         )
-        listTemplate.emptyViewTitleVariants = [
-            NSLocalizedString("favouritesScreenLoadingPlaceholder", comment: "")
-        ]
+        listTemplate.updateSections([loadingSection()])
         hostFlutterApi.getFavoriteLists(completion: onResult)
         listTemplate.show(with: interfaceController)
     }
@@ -64,9 +76,9 @@ class FavoritesScreen {
             let isExpanded = expandedListIds.contains(list.id)
             var items = [makeListHeaderItem(for: list, isExpanded: isExpanded)]
             if isExpanded {
-                items += list.items.isEmpty
+                items += list.placeRefs.isEmpty
                     ? [makeEmptyListPlaceholderItem()]
-                    : list.items.map(makePlaceItem)
+                    : list.placeRefs.map(makePlaceRefItem)
             }
             return CPListSection(
                 items: items,
@@ -116,26 +128,88 @@ class FavoritesScreen {
             expandedListIds.remove(info.listId)
         } else {
             expandedListIds.insert(info.listId)
+            retryFailedPlaces(inList: info.listId)
         }
         renderSections()
     }
 
-    private func makePlaceItem(_ item: FavoriteListItemMessage) -> CPListItem {
-        let listItem = CPListItem(text: item.title, detailText: item.subtitle ?? "")
-        listItem.userInfo = item
-        listItem.handler = onPlaceItemTap
-        return listItem
+    // Re-expanding a list is the user's retry gesture: clear this list's failed ids so
+    // `makePlaceRefItem` falls through to `resolvePlace` again instead of showing
+    // "unavailable" forever (place resolution has no other in-session refresh path).
+    private func retryFailedPlaces(inList listId: String) {
+        guard let list = lists.first(where: { $0.id == listId }) else { return }
+        for placeRef in list.placeRefs {
+            failedPlaceIds.remove(placeRef.placeId)
+        }
     }
 
-    private func onPlaceItemTap(listItem: CPSelectableListItem, completion: @escaping () -> Void) {
+    private func makePlaceRefItem(_ placeRef: FavoriteListPlaceRefMessage) -> CPListItem {
+        if let resolved = resolvedPlaces[placeRef.placeId] {
+            let listItem = CPListItem(text: placeRef.customName ?? resolved.title, detailText: resolved.addressString)
+            listItem.userInfo = placeRef
+            listItem.handler = onPlaceRefItemTap
+            return listItem
+        }
+
+        if failedPlaceIds.contains(placeRef.placeId) {
+            return CPListItem(text: NSLocalizedString("favouritesScreenPlaceUnavailable", comment: ""), detailText: nil)
+        }
+
+        if resolvingCancelables[placeRef.placeId] == nil {
+            resolvePlace(placeRef)
+        }
+        return CPListItem(text: NSLocalizedString("favouritesScreenPlaceResolving", comment: ""), detailText: nil)
+    }
+
+    // Resolves natively via `searchManager` (independent of the phone's Flutter map) instead of
+    // over Pigeon — this keeps favourite-place resolution working even when the phone's own map
+    // screen was never opened this session.
+    private func resolvePlace(_ placeRef: FavoriteListPlaceRefMessage) {
+        guard let objectId = UInt64(placeRef.placeId) else {
+            failedPlaceIds.insert(placeRef.placeId)
+            return
+        }
+
+        let dgisObjectId = DgisObjectId(objectId: objectId, entranceId: 0)
+        resolvingCancelables[placeRef.placeId] = searchManager.searchByDirectoryObjectId(objectId: dgisObjectId).sink {
+            [weak self] directoryObject in
+            guard let self else { return }
+            self.resolvingCancelables[placeRef.placeId] = nil
+            if let directoryObject {
+                self.resolvedPlaces[placeRef.placeId] = directoryObject
+            } else {
+                self.failedPlaceIds.insert(placeRef.placeId)
+            }
+            self.renderSections()
+        } failure: { [weak self] _ in
+            guard let self else { return }
+            self.resolvingCancelables[placeRef.placeId] = nil
+            self.failedPlaceIds.insert(placeRef.placeId)
+            self.renderSections()
+        }
+    }
+
+    private func onPlaceRefItemTap(listItem: CPSelectableListItem, completion: @escaping () -> Void) {
         defer { completion() }
-        guard let item = listItem.userInfo as? FavoriteListItemMessage else { return }
-        searchNavigation.navigate(
-            to: item.coordinates.geoPoint,
-            destinationName: listItem.text ?? item.title,
-            additionalInformation: item.subtitle ?? ""
-        )
+        guard
+            let placeRef = listItem.userInfo as? FavoriteListPlaceRefMessage,
+            let resolved = resolvedPlaces[placeRef.placeId]
+        else { return }
+
+        if let customName = placeRef.customName, let geoPoint = resolved.markerPosition?.point {
+            searchNavigation.navigate(to: geoPoint, destinationName: customName, additionalInformation: resolved.addressString)
+        } else {
+            searchNavigation.navigate(to: resolved)
+        }
         interfaceController.popToRootTemplate(animated: true) { _, __ in }
+    }
+
+    private func loadingSection() -> CPListSection {
+        let placeholder = CPListItem(
+            text: NSLocalizedString("favouritesScreenPlaceResolving", comment: ""),
+            detailText: nil
+        )
+        return CPListSection(items: [placeholder])
     }
 
     private func emptyStateSection() -> CPListSection {
