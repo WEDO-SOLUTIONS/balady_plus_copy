@@ -248,17 +248,20 @@ class TifoSessionController extends Notifier<TifoSessionState> {
   /// Swallowing that silently let the caller stamp its device flag anyway,
   /// which suppressed the tour forever while the server-side gate stayed shut.
   Future<bool> markTutorialStarted() async {
-    final p = state.profile;
-    if (p == null) {
-      return false; // no profile to record it against
-    }
-    if (p.tutorialCompleted) {
+    if (state.profile?.tutorialCompleted == true) {
       return true; // already recorded
     }
     try {
       await _api.completeTutorial();
+      // Refreshed for the balance and flags the rest of the UI reads — but the
+      // result is NOT gated on `tutorialCompleted` coming back true. It was,
+      // and that reported failure on a perfectly good connection whenever
+      // `/me` hadn't caught up with the POST yet: the request having succeeded
+      // IS the record. Same reason the `profile == null` early-return is gone —
+      // it made "the profile isn't loaded yet" indistinguishable from "the
+      // server refused".
       await refreshProfile();
-      return state.profile?.tutorialCompleted == true;
+      return true;
     } catch (error) {
       logger.log('[tifo] tutorial report failed, leaving the gate closed: $error');
       return false;
