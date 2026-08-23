@@ -27,6 +27,7 @@ class LeapPoi extends Equatable {
   String subtitle(AppLocalizations l10n) => l10n.leapPoiSubtitle;
 
   String about(AppLocalizations l10n) => l10n.leapPoiAbout;
+  String address(AppLocalizations l10n) => l10n.localeName.startsWith('ar') ? 'ملهم، الرياض' : 'Malham, Riyadh';
   Set<WeekDayMessage> get eventWeekDays {
     final first = DateTime(eventFrom.year, eventFrom.month, eventFrom.day);
     final last = DateTime(eventTo.year, eventTo.month, eventTo.day);
