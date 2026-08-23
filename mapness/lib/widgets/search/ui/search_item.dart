@@ -10,6 +10,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/features/poi_card/domain/dto/dgis_photos_dto.dart';
 import 'package:mapness/features/poi_card/provider/poi_photo_provider.dart';
 import 'package:mapness/features/poi_card/widgets/photo_row/poi_photos_row.dart';
+import 'package:mapness/features/leap/leap.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/entities/routing/route_search_point.dart';
 import 'package:mapness/features/poi_card/extensions/geopoint_mapper.dart';
@@ -107,7 +108,8 @@ class SearchItem extends ConsumerWidget {
     final now = saudiTimeNow();
     final closedStatus = workingHours?.closedStatus(now, context.l10n, soonThreshold: soonThreshold) ?? '';
     final closedStatusColors = workingHours?.colors(now, context.colors, soonThreshold: soonThreshold);
-    final address = result.makeAddress();
+    final leapAddress = ref.read(leapProvider.notifier).getLeapPoi(objectId)?.address(context.l10n);
+    final address = leapAddress ?? result.makeAddress();
 
     String? durationEstimate;
     final markerPosition = result.markerPosition;
@@ -172,7 +174,9 @@ class SearchItem extends ConsumerWidget {
                           child: SizedBox(height: 96, child: PoiPhotosRow(objectId: objectId)),
                         ),
                       Padding(
-                        padding: const EdgeInsetsDirectional.symmetric(horizontal: Spacing.$4x).copyWith(top: Spacing.$4x),
+                        padding: const EdgeInsetsDirectional.symmetric(
+                          horizontal: Spacing.$4x,
+                        ).copyWith(top: Spacing.$4x),
                         child: DefaultTextStyle(
                           style: context.textStyles.bodySmallRegular.copyWith(color: context.colors.foregroundSoft),
                           child: Column(

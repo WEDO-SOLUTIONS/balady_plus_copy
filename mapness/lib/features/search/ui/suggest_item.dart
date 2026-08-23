@@ -4,6 +4,7 @@ import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/entities/search/models/search_history.dart';
+import 'package:mapness/features/leap/leap.dart';
 import 'package:mapness/features/search/models/search_scope.dart';
 import 'package:mapness/features/search/providers/search.dart';
 import 'package:mapness/features/search/providers/search_history.dart';
@@ -55,7 +56,11 @@ class SuggestItem extends ConsumerWidget {
     String? subtitle;
     double? distanceKm;
     if (object != null) {
-      subtitle = object.item.makeAddress();
+      final objectId = object.item.id?.objectId;
+      final leapAddress = objectId != null
+          ? ref.read(leapProvider.notifier).getLeapPoi(objectId)?.address(context.l10n)
+          : null;
+      subtitle = leapAddress ?? object.item.makeAddress();
       if (object.item.markerPosition != null && myLocation != null) {
         distanceKm = CommonFunctions.distance(
           object.item.markerPosition!.latitude,
