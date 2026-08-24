@@ -53,6 +53,7 @@ class CityEventDateRange extends Equatable {
   List<Object?> get props => [from, to, enabled];
 
   bool get isNow => isDateInRange(DateTime.now());
+
   bool get isVisibleNow {
     final enabled = this.enabled;
     if (enabled == null) {

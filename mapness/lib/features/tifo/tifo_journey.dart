@@ -76,32 +76,64 @@ class TifoJourney {
           // BRD V2 US-03 BR-02: STARTING the tutorial clears the gate
           // permanently, whether the user finishes it or closes/skips it —
           // both are deliberate in-app outcomes of `showTifoGuidedTutorial`
-          // returning. BR-06's exception (session loss: connectivity drop,
-          // app close, crash) never reaches this line at all, since the
-          // process dies mid-await before either persistence call below can
-          // run — so gating on "did they finish" was wrong; the tour having
-          // been SHOWN is what must be persisted. A run already recorded on
-          // this device (e.g. as a guest, before the profile switched
-          // identity on login) skips straight to the server report.
+          // returning, so gating on "did they finish" would be wrong; the tour
+          // having been SHOWN is what gets persisted.
+          //
+          // BR-06 carves out session loss (connectivity drop, app close,
+          // crash). An app close or a crash never reaches this line — the
+          // process is gone mid-await. A CONNECTIVITY DROP does reach it, and
+          // that is what TFS 86055 was: the tour is local, so the network
+          // going away doesn't interrupt it, and only the server report below
+          // can tell that the run went unrecorded. Nothing is persisted until
+          // it does.
+          //
+          // A run already recorded on this device (e.g. as a guest, before the
+          // profile switched identity on login) skips straight to that report.
           final flow = ref.read(tifoFlowProvider.notifier);
           final alreadyStarted = await flow.hasCompletedTutorialOnDevice();
-          if (!alreadyStarted) {
+          if (!alreadyStarted && !ref.read(tifoFlowProvider).tutorialShownUnreported) {
             if (!context.mounted || !surface.isVisible(ref)) {
               return false;
             }
+
+            // The tutorial route is pushed non-opaque (it lets the live map
+            // show through), so a bottom sheet left open beneath this call
+            // (e.g. the leaderboard's "Dominate with your team" CTA) would
+            // stay visible behind it instead of being covered. Close it
+            // first — a no-op if nothing is open.
+            Navigator.of(context).popUntil((route) => route is! ModalBottomSheetRoute);
             await showTifoGuidedTutorial(context);
-            await flow.markTutorialCompletedOnDevice();
           }
           // Always report to the backend, even when the device flag was
           // already set — the server flag is per-PROFILE, and a guest run
           // that set the device flag may not yet be reported against a
           // freshly logged-in profile (identity switches bearer on staging).
-          await session.markTutorialStarted();
-          // If the server didn't record it (offline), stop instead of
-          // re-pushing the tour on the next loop iteration.
-          if (ref.read(tifoSessionProvider).profile?.tutorialCompleted != true) {
+          final recorded = await session.markTutorialStarted();
+          if (!recorded) {
+            // TFS 86055. The device flag is stamped ONLY on a recorded run.
+            // The earlier code stamped it right after the tour returned, on the
+            // assumption that BR-06's session-loss exception "never reaches
+            // this line, since the process dies mid-await" — true for an app
+            // close or a crash, but NOT for a connectivity drop: the guided
+            // tour is a purely local flow over bundled demo screens, so the
+            // network going away doesn't interrupt it at all. The tour ran to
+            // the end, the device flag went down, and the tour was then
+            // suppressed forever while the per-profile server gate stayed shut
+            // — the player was stuck behind a gate they could no longer clear.
+            //
+            // So: nothing is persisted, which is what makes this "not started"
+            // for the next session, and the in-memory flag above keeps THIS
+            // session from re-pushing the tour on every play-intent tap.
+            flow.markTutorialShownUnreported();
+            logger.log('[tifo] play-gate stopped: tutorial not recorded, treating it as not started');
+            // No dialog here. "Connection lost" belongs to the penalty flow,
+            // where a session really is voided and a token really is spent —
+            // raising it from the gate walk put it in front of players who had
+            // working internet and had just finished the tour, or who had only
+            // tapped "Dominate with your team".
             return false;
           }
+          await flow.markTutorialCompletedOnDevice();
 
         case TifoJourneyStep.teamSelect:
           final picked = await Navigator.of(context).push<bool>(

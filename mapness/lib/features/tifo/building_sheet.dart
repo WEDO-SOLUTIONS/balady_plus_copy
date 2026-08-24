@@ -73,6 +73,7 @@ class _TifoBuildingSheetState extends ConsumerState<_TifoBuildingSheet> {
     // already holds — used to only surface after the game had already
     // opened and closed again. Block the CTA up front instead.
     final isOwnBuilding = _building.ownerClubSlug != null && _building.ownerClubSlug == session.myClub?.id;
+    final standingDays = _building.standingDays;
 
     return SafeArea(
       top: false,
@@ -116,7 +117,7 @@ class _TifoBuildingSheetState extends ConsumerState<_TifoBuildingSheet> {
                   ? Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(l10n.tifoUnclaimed, style: TifoText.h1.copyWith(color: context.colors.accentDefault)),
+                        Text(l10n.tifoUnclaimed, style: TifoText.h2.copyWith(color: context.colors.accentDefault)),
                         const SizedBox(height: 24),
                         Text(
                           l10n.tifoNotClaimedYet,
@@ -138,9 +139,32 @@ class _TifoBuildingSheetState extends ConsumerState<_TifoBuildingSheet> {
                             ),
                             const SizedBox(width: 12),
                             Expanded(
-                              child: Text(
-                                ownerClub?.name ?? _building.displayName,
-                                style: TifoText.bodyLSemi.copyWith(color: context.colors.foregroundDefault),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    ownerClub?.name ?? _building.displayName,
+                                    style: TifoText.bodyLSemi.copyWith(color: context.colors.foregroundDefault),
+                                  ),
+                                  // TFS 86073: the design carries the current
+                                  // standing's age under the owner's name (see
+                                  // `TifoDemoBuildingSheet`, and the same row on
+                                  // the district sheet) — the real sheet was
+                                  // rendering the crest and the name only.
+                                  // Hidden rather than zeroed when the payload
+                                  // doesn't carry it; see
+                                  // `TifoBuilding.standingDays`.
+                                  if (standingDays != null)
+                                    Text(
+                                      standingDays == 0
+                                          // "Since 0 days ago" reads as a
+                                          // formatting bug on a building claimed
+                                          // minutes ago.
+                                          ? l10n.tifoJustNow
+                                          : '${l10n.tifoSince} ${tifoStandingDaysAgo(context, standingDays)}',
+                                      style: TifoText.captionRegular,
+                                    ),
+                                ],
                               ),
                             ),
                           ],
@@ -413,6 +437,25 @@ class _TifoBuildingSheetState extends ConsumerState<_TifoBuildingSheet> {
                 arm();
               }),
             ),
+            // TFS 86075: the session is void the moment the device goes
+            // offline (the backend keeps the token for a session that outlives
+            // `expiresAt`), so stop the run instead of letting the player play
+            // out something that cannot be submitted, then reconnect and find
+            // out. Shares `handled` with `onComplete` so the two can't both
+            // fire. No submit: there is no network, and the server has already
+            // written the session off — `tifoConnectionLostBody` says exactly
+            // that ("the session was canceled and your token was not
+            // refunded"), which is why FR-16 has that string.
+            onConnectionLost: () {
+              if (handled) {
+                return;
+              }
+              handled = true;
+              logger.log('[tifo] shootout abandoned: device went offline mid-session');
+              container.read(tifoBuildingsPollerProvider.notifier).start();
+              rootNavigatorKey.currentState?.pop();
+              _showResult('connection lost mid-shootout', connectionLost: true);
+            },
             onComplete: (outcome) {
               final session = playSession;
               if (handled || session == null) {
@@ -516,7 +559,17 @@ class _TifoBuildingSheetState extends ConsumerState<_TifoBuildingSheet> {
             // mutates `tifoBuildingsProvider`'s map, not this widget's own
             // `_building` field, so this still reads the pre-capture value.
             buildingOwnerColorKeyBeforePlay: tifoResultColorKeyFor(_building.ownerClubSlug),
-          ),
+          ).whenComplete(() {
+            // TFS 86070. The `refreshProfile()` above races the hero: it is
+            // fired the moment the submit returns, so whether the new score and
+            // match count have landed by the time the player dismisses the hero
+            // depends on how fast `/me` answers — and on the backend having
+            // committed the result before it was asked. Asking again ON
+            // DISMISSAL is what makes the Profile tiles right when the player
+            // actually looks at them. `container` (not `ref`) on purpose: this
+            // fires after the sheet may be gone.
+            unawaited(container.read(tifoSessionProvider.notifier).refreshProfile());
+          }),
         );
       }
     } catch (e) {
@@ -605,11 +658,18 @@ class _TifoBuildingSheetState extends ConsumerState<_TifoBuildingSheet> {
   /// has its own fullscreen hero (US-14, [showTifoPenaltyResult]); this is
   /// only ever the failure path — see the "Connection lost" (session voided,
   /// FR-16) and generic "Something went wrong" Figma message states.
-  void _showResult(String message, {bool connectionLost = false, VoidCallback? onRetry}) {
+  /// [detail] is for the LOG, not the dialog: it carries the backend's own
+  /// wording (and prefixes like "Submit failed:"), which is English-only and
+  /// technical — it was being rendered straight into the sheet, so an Arabic
+  /// build showed raw English and an EN build showed server internals. The
+  /// body now always comes from l10n; `tifoSomethingWentWrongBody` exists for
+  /// exactly this.
+  void _showResult(String detail, {bool connectionLost = false, VoidCallback? onRetry}) {
     final ctx = rootNavigatorKey.currentContext;
     if (ctx == null) {
       return;
     }
+    logger.log('[tifo] showing failure dialog${connectionLost ? ' (connection lost)' : ''}: $detail');
     final l10n = AppLocalizations.of(ctx);
     unawaited(
       showTifoMessageDialog<void>(
@@ -617,7 +677,7 @@ class _TifoBuildingSheetState extends ConsumerState<_TifoBuildingSheet> {
         card: TifoMessageCard(
           showIllustration: true,
           title: connectionLost ? l10n.tifoConnectionLostTitle : l10n.tifoSomethingWentWrongTitle,
-          body: connectionLost ? l10n.tifoConnectionLostBody : message,
+          body: connectionLost ? l10n.tifoConnectionLostBody : l10n.tifoSomethingWentWrongBody,
           primaryAction: TifoMessageAction(
             label: l10n.tifoRetry,
             onPressed: () {

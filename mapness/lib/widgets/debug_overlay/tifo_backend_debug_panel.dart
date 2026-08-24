@@ -619,6 +619,15 @@ class _GoalkeeperDifficultySliders extends ConsumerWidget {
           max: 10,
           onChanged: controller.setLateralDiveSpeed,
         ),
+        _DifficultySlider(
+          label: 'Max approach distance',
+          subtitle:
+              'How far he may travel from where he stood. Lower = a far ball stays out of reach (easier); above 5.4 nothing is capped',
+          value: difficulty.maxApproachDistance,
+          min: 0.5,
+          max: 9,
+          onChanged: controller.setMaxApproachDistance,
+        ),
         Align(
           alignment: Alignment.centerLeft,
           child: DebugOutlinedButton(

@@ -331,7 +331,13 @@ class _DistrictSheetState extends ConsumerState<_DistrictSheet> {
     child: Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(value, style: TifoText.h2.copyWith(color: TifoColors.accentSoft)),
+        FittedBox(
+          child: Text(
+            value,
+            style: TifoText.h2.copyWith(color: TifoColors.accentSoft),
+            maxLines: 1,
+          ),
+        ),
         Text(label, style: TifoText.captionRegular.copyWith(color: context.colors.foregroundDefault)),
       ],
     ),

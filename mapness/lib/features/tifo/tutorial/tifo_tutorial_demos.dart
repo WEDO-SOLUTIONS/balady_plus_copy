@@ -1,6 +1,9 @@
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/_generated/assets/assets.gen.dart';
+import 'package:mapness/features/tifo/data/tifo_models.dart';
+import 'package:mapness/features/tifo/providers/tifo_session_provider.dart';
 import 'package:mapness/features/tifo/ui/tifo_theme.dart';
 import 'package:mapness/l10n/generated/app_localizations.dart';
 
@@ -19,6 +22,68 @@ const _amber = Color(0xFFD97706);
 const _purple = Color(0xFF7C3AED);
 
 // ─── Shared bits ─────────────────────────────────────────────────────────────
+
+/// Slot order for the demo screens — the design's five teams in the order the
+/// tour has always shown them. Fixed on purpose: the canned stats are laid
+/// over these slots, so reordering them would silently reassign the demo
+/// standings.
+const List<Color> _demoSlotColors = [_black, _blue, _red, _sand, _yellow];
+
+/// Teams for the demo screens: the REAL season clubs (name + crest color from
+/// `/clubs`) whenever the roster is loaded, so the tour doesn't teach five
+/// anonymized colors that exist nowhere in the live game.
+///
+/// Clubs are placed into [_demoSlotColors] by nearest crest color, each club
+/// used at most once — that keeps the tour's long-standing slot ORDER (and
+/// therefore which team leads the demo table) while the labels become real.
+/// Matching by color rather than by slug or roster position follows
+/// `tifoNearestStrikerColor`'s reasoning: nothing here may assume which club
+/// the backend calls "blue".
+///
+/// The design palette stays as the FALLBACK for an empty roster — the tour can
+/// be opened before `/clubs` answers, or with no network at all, and a demo
+/// screen must never render an empty table. A season with more than five clubs
+/// shows the five closest to the design slots, exactly as many rows as before.
+List<(String, Color)> _demoTeams(BuildContext context, List<TifoClubInfo> clubs) {
+  if (clubs.isEmpty) {
+    final l10n = AppLocalizations.of(context);
+    return [
+      (l10n.blackTeam, _black),
+      (l10n.blueTeam, _blue),
+      (l10n.redTeam, _red),
+      (l10n.sandTeam, _sand),
+      (l10n.yellowTeam, _yellow),
+    ];
+  }
+  final pool = [...clubs];
+  final teams = <(String, Color)>[];
+  for (final slot in _demoSlotColors) {
+    if (pool.isEmpty) {
+      break;
+    }
+    var best = 0;
+    var bestDistance = double.infinity;
+    for (var i = 0; i < pool.length; i++) {
+      final distance = _rgbDistance(slot.toARGB32(), pool[i].colorArgb);
+      if (distance < bestDistance) {
+        bestDistance = distance;
+        best = i;
+      }
+    }
+    final club = pool.removeAt(best);
+    teams.add((club.name, Color(club.colorArgb)));
+  }
+  return teams;
+}
+
+/// Squared RGB distance between two ARGB values (alpha ignored) — same
+/// primitive `_nearestColorBucket` uses in `penalty_game.dart`.
+double _rgbDistance(int a, int b) {
+  final dr = ((a >> 16) & 0xFF) - ((b >> 16) & 0xFF);
+  final dg = ((a >> 8) & 0xFF) - ((b >> 8) & 0xFF);
+  final db = (a & 0xFF) - (b & 0xFF);
+  return (dr * dr + dg * dg + db * db).toDouble();
+}
 
 BoxDecoration _card({Color? bg, Color? border, double radius = TifoRadii.l}) => BoxDecoration(
   color: bg ?? TifoColors.surface,
@@ -378,10 +443,11 @@ class TifoDemoBuildingSheet extends StatelessWidget {
 // ─── 06 · Penalty challenge preview (dark) ──────────────────────────────────
 
 class TifoDemoPenaltyPreview extends StatelessWidget {
-  const TifoDemoPenaltyPreview({super.key, this.onStart, this.onBack});
+  const TifoDemoPenaltyPreview({super.key, this.onStart, this.onBack, this.onClose});
 
   final VoidCallback? onStart;
   final VoidCallback? onBack;
+  final VoidCallback? onClose;
 
   @override
   Widget build(BuildContext context) => ColoredBox(
@@ -389,108 +455,137 @@ class TifoDemoPenaltyPreview extends StatelessWidget {
     child: SafeArea(
       child: Padding(
         padding: const EdgeInsets.all(20),
-        child: Column(
+        child: Stack(
           children: [
-            const SizedBox(height: 12),
-            Text('Penalty Challenge', style: TifoText.h3.copyWith(color: TifoColors.accentMuted)),
-            const SizedBox(height: 16),
-            Expanded(
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(TifoRadii.l),
-                child: const Image(
-                  image: AssetImage('packages/mapness/assets/tifo/images/penalty_preview.png'),
-                  fit: BoxFit.cover,
-                  width: double.infinity,
-                ),
-              ),
-            ),
-            const SizedBox(height: 16),
-            IntrinsicHeight(
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  Expanded(
-                    child: Container(
-                      padding: const EdgeInsets.all(14),
-                      decoration: _card(bg: const Color(0xFF141A15), border: _amber.withValues(alpha: 0.7)),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            '🪙 ${AppLocalizations.of(context).tokensNeeded}',
-                            style: TifoText.captionMedium.copyWith(color: _amber),
-                          ),
-                          Text('2', style: TifoText.h2.copyWith(color: _amber)),
-                        ],
-                      ),
-                    ),
-                  ),
-                  const SizedBox(width: 10),
-                  Expanded(
-                    child: Container(
-                      padding: const EdgeInsets.all(14),
-                      decoration: _card(
-                        bg: const Color(0xFF141A15),
-                        border: TifoColors.accentSoft.withValues(alpha: 0.7),
-                      ),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            '🏢 ${AppLocalizations.of(context).claimTheBuilding}',
-                            style: TifoText.captionMedium.copyWith(color: TifoColors.accentMuted),
-                          ),
-                          Text('12', style: TifoText.h2.copyWith(color: TifoColors.accentMuted)),
-                          Text(
-                            AppLocalizations.of(context).beatTheScore,
-                            style: TifoText.captionRegular.copyWith(color: TifoColors.accentMuted),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            const SizedBox(height: 10),
-            Container(
-              width: double.infinity,
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-              decoration: _card(bg: const Color(0xFF141A15), border: TifoColors.accentSoft.withValues(alpha: 0.4)),
-              child: Text(
-                '${AppLocalizations.of(context).youGet3Misses}  ⚽ ⚽ ⚽',
-                style: TifoText.bodyLSemi.copyWith(color: TifoColors.accentMuted),
-                textAlign: TextAlign.center,
-              ),
-            ),
-            const SizedBox(height: 14),
-            Row(
+            Column(
               children: [
-                if (onBack != null) ...[
-                  GestureDetector(
-                    behavior: HitTestBehavior.opaque,
-                    onTap: onBack,
-                    child: Container(
-                      width: 48,
-                      height: 48,
-                      decoration: BoxDecoration(
-                        color: context.colors.neutralContainerDefault,
-                        borderRadius: BorderRadius.circular(TifoRadii.l),
-                      ),
-                      child: Icon(Icons.arrow_back_ios_new_rounded, size: 16, color: context.colors.neutralOnContainer),
+                const SizedBox(height: 12),
+                Text(
+                  AppLocalizations.of(context).tifoPenaltyChallenge,
+                  style: TifoText.h3.copyWith(color: TifoColors.accentMuted),
+                ),
+                const SizedBox(height: 16),
+                Expanded(
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(TifoRadii.l),
+                    child: const Image(
+                      image: AssetImage('packages/mapness/assets/tifo/images/penalty_preview.png'),
+                      fit: BoxFit.cover,
+                      width: double.infinity,
                     ),
                   ),
-                  const SizedBox(width: 12),
-                ],
-                Expanded(
-                  child: TifoPrimaryButton(
-                    label: AppLocalizations.of(context).startGame,
-                    leadingEmoji: '⚽',
-                    onPressed: onStart,
+                ),
+                const SizedBox(height: 16),
+                IntrinsicHeight(
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      Expanded(
+                        child: Container(
+                          padding: const EdgeInsets.all(14),
+                          decoration: _card(bg: const Color(0xFF141A15), border: _amber.withValues(alpha: 0.7)),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                '🪙 ${AppLocalizations.of(context).tokensNeeded}',
+                                style: TifoText.captionMedium.copyWith(color: _amber),
+                              ),
+                              Text('2', style: TifoText.h2.copyWith(color: _amber)),
+                            ],
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 10),
+                      Expanded(
+                        child: Container(
+                          padding: const EdgeInsets.all(14),
+                          decoration: _card(
+                            bg: const Color(0xFF141A15),
+                            border: TifoColors.accentSoft.withValues(alpha: 0.7),
+                          ),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                '🏢 ${AppLocalizations.of(context).claimTheBuilding}',
+                                style: TifoText.captionMedium.copyWith(color: TifoColors.accentMuted),
+                              ),
+                              Text('12', style: TifoText.h2.copyWith(color: TifoColors.accentMuted)),
+                              Text(
+                                AppLocalizations.of(context).beatTheScore,
+                                style: TifoText.captionRegular.copyWith(color: TifoColors.accentMuted),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
+                ),
+                const SizedBox(height: 10),
+                Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                  decoration: _card(bg: const Color(0xFF141A15), border: TifoColors.accentSoft.withValues(alpha: 0.4)),
+                  child: Text(
+                    '${AppLocalizations.of(context).youGet3Misses}  ⚽ ⚽ ⚽',
+                    style: TifoText.bodyLSemi.copyWith(color: TifoColors.accentMuted),
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+                const SizedBox(height: 14),
+                Row(
+                  children: [
+                    if (onBack != null) ...[
+                      GestureDetector(
+                        behavior: HitTestBehavior.opaque,
+                        onTap: onBack,
+                        child: Container(
+                          width: 48,
+                          height: 48,
+                          decoration: BoxDecoration(
+                            color: context.colors.neutralContainerDefault,
+                            borderRadius: BorderRadius.circular(TifoRadii.l),
+                          ),
+                          child: Icon(
+                            Icons.arrow_back_ios_new_rounded,
+                            size: 16,
+                            color: context.colors.neutralOnContainer,
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 12),
+                    ],
+                    Expanded(
+                      child: TifoPrimaryButton(
+                        label: AppLocalizations.of(context).startGame,
+                        leadingEmoji: '⚽',
+                        onPressed: onStart,
+                      ),
+                    ),
+                  ],
                 ),
               ],
             ),
+            if (onClose != null)
+              Positioned(
+                top: 0,
+                left: 0,
+                child: GestureDetector(
+                  behavior: HitTestBehavior.opaque,
+                  onTap: onClose,
+                  child: Container(
+                    width: 34,
+                    height: 34,
+                    decoration: BoxDecoration(
+                      color: context.colors.neutralContainerDefault,
+                      borderRadius: BorderRadius.circular(TifoRadii.m),
+                    ),
+                    child: Icon(Icons.close_rounded, size: 18, color: context.colors.neutralOnContainer),
+                  ),
+                ),
+              ),
           ],
         ),
       ),
@@ -583,22 +678,31 @@ class TifoDemoPenaltyHud extends StatelessWidget {
 
 // ─── 09 · Leaderboard (Table tab) ───────────────────────────────────────────
 
-class TifoDemoLeaderboard extends StatelessWidget {
+class TifoDemoLeaderboard extends ConsumerWidget {
   const TifoDemoLeaderboard({super.key});
 
-  List<(int, String, Color, int, int, int)> _rows(BuildContext context) {
-    final l10n = AppLocalizations.of(context);
+  /// Canned standings (the tour never asks the backend for numbers) laid over
+  /// the real clubs from [_demoTeams]. Capped by the shorter of the two lists,
+  /// so a season running fewer than five clubs renders a shorter table rather
+  /// than teams with no stats — or stats with no team.
+  static const List<(int, int, int)> _stats = [
+    (18, 342, 32),
+    (14, 268, 25),
+    (11, 205, 19),
+    (8, 142, 13),
+    (6, 98, 11),
+  ];
+
+  List<(int, String, Color, int, int, int)> _rows(BuildContext context, WidgetRef ref) {
+    final teams = _demoTeams(context, ref.watch(tifoSessionProvider.select((s) => s.clubs)));
     return [
-      (1, l10n.blackTeam, _black, 18, 342, 32),
-      (2, l10n.blueTeam, _blue, 14, 268, 25),
-      (3, l10n.redTeam, _red, 11, 205, 19),
-      (4, l10n.sandTeam, _sand, 8, 142, 13),
-      (5, l10n.yellowTeam, _yellow, 6, 98, 11),
+      for (var i = 0; i < teams.length && i < _stats.length; i++)
+        (i + 1, teams[i].$1, teams[i].$2, _stats[i].$1, _stats[i].$2, _stats[i].$3),
     ];
   }
 
   @override
-  Widget build(BuildContext context) => TifoDemoPanel(
+  Widget build(BuildContext context, WidgetRef ref) => TifoDemoPanel(
     child: Column(
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -662,7 +766,7 @@ class TifoDemoLeaderboard extends StatelessWidget {
                   ],
                 ),
               ),
-              for (final (rank, name, color, districts, buildings, pct) in _rows(context))
+              for (final (rank, name, color, districts, buildings, pct) in _rows(context, ref))
                 Padding(
                   padding: const EdgeInsets.symmetric(vertical: 7),
                   child: Row(
@@ -735,8 +839,6 @@ class TifoDemoLeaderboard extends StatelessWidget {
                           ],
                         ),
                       ),
-                      const SizedBox(width: 2),
-                      const Icon(Icons.chevron_right_rounded, size: 14, color: TifoColors.textSoft),
                     ],
                   ),
                 ),
@@ -1002,8 +1104,6 @@ class TifoDemoSupport extends StatelessWidget {
             children: [
               Row(
                 children: [
-                  Icon(Icons.arrow_back_ios_new_rounded, size: 18, color: context.colors.foregroundDefault),
-                  const SizedBox(width: 12),
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [

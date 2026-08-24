@@ -4,6 +4,7 @@ import 'dart:math' as math;
 import 'dart:ui' as ui;
 
 import 'package:audio_session/audio_session.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flame/components.dart' hide Timer;
 import 'package:flame/events.dart';
 import 'package:flame/game.dart';
@@ -26,6 +27,7 @@ class PenaltyApp extends StatelessWidget {
     super.key,
     this.onComplete,
     this.onReady,
+    this.onConnectionLost,
     this.missesAllowed = 3,
     this.scoreToBeat = 0,
     this.strikerColor,
@@ -35,6 +37,13 @@ class PenaltyApp extends StatelessWidget {
     this.locale,
     this.goalkeeperDifficulty = const TifoGoalkeeperDifficulty(),
   });
+
+  /// Fires when the device loses connectivity for [PenaltyGamePageState] to
+  /// judge as a real outage rather than a handover. The run is already void at
+  /// that point — the backend keeps the token for a session that outlives its
+  /// `expiresAt` — so the host should abandon it instead of letting the player
+  /// finish a shootout that cannot be submitted (TFS 86075).
+  final VoidCallback? onConnectionLost;
 
   /// The host app's in-app language, so the message-card dialogs (Still
   /// playing? / Leave challenge?) read in the right language — this page runs
@@ -100,6 +109,7 @@ class PenaltyApp extends StatelessWidget {
     home: PenaltyGamePage(
       onComplete: onComplete,
       onReady: onReady,
+      onConnectionLost: onConnectionLost,
       missesAllowed: missesAllowed,
       scoreToBeat: scoreToBeat,
       strikerColor: strikerColor,
@@ -165,6 +175,7 @@ class PenaltyGamePage extends StatefulWidget {
     super.key,
     this.onComplete,
     this.onReady,
+    this.onConnectionLost,
     this.missesAllowed = 3,
     this.scoreToBeat = 0,
     this.strikerColor,
@@ -176,6 +187,7 @@ class PenaltyGamePage extends StatefulWidget {
 
   final ValueChanged<TifoShootoutOutcome>? onComplete;
   final void Function(VoidCallback arm)? onReady;
+  final VoidCallback? onConnectionLost;
   final int missesAllowed;
   final int scoreToBeat;
   final String? strikerColor;
@@ -217,9 +229,62 @@ class _PenaltyGamePageState extends State<PenaltyGamePage> {
   /// void window (FR-16), just early enough for the player to react.
   static const int _idleWarningBufferSeconds = 8;
 
+  /// Floor on how long the player must actually be idle before the prompt may
+  /// appear, whatever `/config` says the void window is.
+  ///
+  /// Without it the trigger below is `sessionTimeout - idle <= 8`, which for
+  /// any `liveLockTimeoutSeconds <= 8` (a small value, or a 0 from a partial
+  /// config) is already true at ZERO idle seconds — the prompt then reopens
+  /// every second for the whole match, since dismissing it only resets the
+  /// idle clock and the condition doesn't depend on it any more.
+  static const int _idleWarningFloorSeconds = 12;
+
   Timer? _idleCheckTimer;
   DateTime? _lastActivityAt;
   bool _idlePromptOpen = false;
+
+  /// A live shootout is worthless the moment the device goes offline: the
+  /// backend voids any session that outlives its `expiresAt` and keeps the
+  /// token, while the game itself is pure local Flame and happily plays on. So
+  /// the player used to finish a full run, reconnect, and only then find out
+  /// the whole thing was void (TFS 86075).
+  StreamSubscription<List<ConnectivityResult>>? _connectivitySub;
+
+  /// Grace period before a reported outage is acted on. `connectivity_plus`
+  /// reports INTERFACE changes, not reachability: a Wi-Fi → cellular handover
+  /// surfaces a momentary `none`. Abandoning a paid run on that would be worse
+  /// than the bug being fixed, so the loss has to persist.
+  static const Duration _offlineGrace = Duration(seconds: 3);
+  Timer? _offlineTimer;
+  bool _connectionLostReported = false;
+
+  void _watchConnectivity() {
+    _connectivitySub?.cancel();
+    _connectivitySub = Connectivity().onConnectivityChanged.listen(_onConnectivityChanged);
+  }
+
+  void _onConnectivityChanged(List<ConnectivityResult> results) {
+    // An empty list means the platform didn't say — treat as connected rather
+    // than killing the run on missing information.
+    final offline = results.isNotEmpty && results.every((r) => r == ConnectivityResult.none);
+    if (!offline) {
+      _offlineTimer?.cancel();
+      _offlineTimer = null;
+      return;
+    }
+    if (_offlineTimer != null || _connectionLostReported) {
+      return;
+    }
+    _offlineTimer = Timer(_offlineGrace, () {
+      _offlineTimer = null;
+      if (!mounted || _connectionLostReported || _perspectiveGame.isCompleted) {
+        return;
+      }
+      _connectionLostReported = true;
+      _idleCheckTimer?.cancel();
+      widget.onConnectionLost?.call();
+    });
+  }
 
   void _onActivity() => _lastActivityAt = DateTime.now();
 
@@ -227,6 +292,9 @@ class _PenaltyGamePageState extends State<PenaltyGamePage> {
     _lastActivityAt = DateTime.now();
     _idleCheckTimer?.cancel();
     _idleCheckTimer = Timer.periodic(const Duration(seconds: 1), (_) => _checkIdle());
+    // Armed = the server session is open and the clock is running, which is
+    // exactly the window where going offline voids it.
+    _watchConnectivity();
   }
 
   void _checkIdle() {
@@ -235,7 +303,8 @@ class _PenaltyGamePageState extends State<PenaltyGamePage> {
       return;
     }
     final idleSeconds = DateTime.now().difference(lastActivityAt).inSeconds;
-    if (widget.sessionTimeoutSeconds - idleSeconds <= _idleWarningBufferSeconds) {
+    final warnAfter = math.max(widget.sessionTimeoutSeconds - _idleWarningBufferSeconds, _idleWarningFloorSeconds);
+    if (idleSeconds >= warnAfter) {
       unawaited(_showStillPlayingPrompt());
     }
   }
@@ -290,6 +359,12 @@ class _PenaltyGamePageState extends State<PenaltyGamePage> {
   void _onArmedChanged() {
     if (_perspectiveGame.armedNotifier.value) {
       _armIdleWatch();
+    } else {
+      // Disarming is the player pulling back to aim — input, so it counts.
+      // Otherwise "activity" is only ever a RESOLVED shot (`goalsNotifier` /
+      // `missesNotifier`), and a player lining one up carefully gets asked
+      // whether they are still playing while they visibly are.
+      _onActivity();
     }
   }
 
@@ -335,6 +410,8 @@ class _PenaltyGamePageState extends State<PenaltyGamePage> {
   void dispose() {
     unawaited(_ambiencePlayer?.dispose());
     _idleCheckTimer?.cancel();
+    _offlineTimer?.cancel();
+    unawaited(_connectivitySub?.cancel());
     _perspectiveGame.armedNotifier.removeListener(_onArmedChanged);
     _perspectiveGame.goalsNotifier.removeListener(_onActivity);
     _perspectiveGame.missesNotifier.removeListener(_onActivity);
@@ -458,12 +535,16 @@ class _PenaltyHudPanel extends StatelessWidget {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              ValueListenableBuilder<bool>(
-                valueListenable: game.armedNotifier,
-                builder: (_, armed, _) => Text(
-                  armed ? AppLocalizations.of(context).tifoPenaltyChallenge : 'Preparing the pitch…',
-                  style: const TextStyle(color: _title, fontSize: 16, fontWeight: FontWeight.w700),
-                ),
+              // TFS 86068: this used to read `armed ? l10n.tifoPenaltyChallenge
+              // : 'Preparing the pitch…'`, so the panel opened with a hardcoded
+              // English line and flipped to the localized title once the pitch
+              // armed — reported as "the title appears in English at game
+              // start, then in Arabic". The panel is the same panel either way,
+              // so it just keeps its title; the arming state is already
+              // conveyed by the pitch itself.
+              Text(
+                AppLocalizations.of(context).tifoPenaltyChallenge,
+                style: const TextStyle(color: _title, fontSize: 16, fontWeight: FontWeight.w700),
               ),
               const SizedBox(height: 10),
               Row(
@@ -1891,9 +1972,17 @@ class PenaltyGame extends FlameGame with TapCallbacks, DragCallbacks {
     );
 
     final keeperError = (_random.nextDouble() - 0.5) * goalkeeperDifficulty.aimError;
-    _keeperTargetX = (flightTarget.x * 0.72 + keeperError)
+    final desiredX = (flightTarget.x * 0.72 + keeperError)
         .clamp(-_goalHalfWidth + 0.75, _goalHalfWidth - 0.75)
         .toDouble();
+    // Cap the DISTANCE he may cover, measured from wherever the idle sway left
+    // him at the instant of the shot (`_keeperX` hasn't started diving yet).
+    // `lateralDiveSpeed` alone only delays his arrival — with enough flight
+    // time he reaches any corner from any starting point, which made wide
+    // placement pointless. See `maxApproachDistance`; its default spans the
+    // whole goal, so this clamp is a no-op unless QA dials it down.
+    final maxTravel = goalkeeperDifficulty.maxApproachDistance;
+    _keeperTargetX = desiredX.clamp(_keeperX - maxTravel, _keeperX + maxTravel).toDouble();
     _keeperDive = _chooseKeeperDive(flightTarget.y);
     // Fix the dive side once per shot — the render picks a native
     // left/right/center animation from it. This MUST be judged against the
@@ -1905,9 +1994,10 @@ class PenaltyGame extends FlameGame with TapCallbacks, DragCallbacks {
     // animation phase had the keeper leaning away from center at that
     // instant — i.e. side selection was driven by animation noise, not by
     // where the ball was actually going, which read as "always dives sideways".
-    _keeperSide = _keeperTargetX.abs() < 1.0
-        ? _KeeperSide.center
-        : (_keeperTargetX > 0 ? _KeeperSide.right : _KeeperSide.left);
+    // Judged on `desiredX`, i.e. BEFORE the travel cap: the dive still has to
+    // go toward the ball even when he can't get there, otherwise a capped
+    // keeper plays a center dive while the ball flies into the corner.
+    _keeperSide = desiredX.abs() < 1.0 ? _KeeperSide.center : (desiredX > 0 ? _KeeperSide.right : _KeeperSide.left);
   }
 
   _KeeperDive _chooseKeeperDive(double targetY) {

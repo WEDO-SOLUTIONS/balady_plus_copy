@@ -467,6 +467,7 @@ class TifoBuilding {
     this.scoreToBeat = 0,
     this.status = 'available',
     this.contested7d = 0,
+    this.standingDays,
   });
 
   final String id;
@@ -485,6 +486,14 @@ class TifoBuilding {
   /// Times this building was contested in the last 7 days (informational).
   final int contested7d;
 
+  /// Days the current owner has held the building, mirroring
+  /// [TifoDistrictSummary.standingDays] for the district tier.
+  ///
+  /// Nullable on purpose: null means the payload didn't say, and the sheet then
+  /// hides the row rather than asserting "0 days" — which would read as "just
+  /// claimed" for a building that has stood for months.
+  final int? standingDays;
+
   bool get isAvailable => status == 'available';
 
   bool get isNeutral => ownerClubSlug == null;
@@ -498,7 +507,13 @@ class TifoBuilding {
     return 'Building #$tail';
   }
 
-  TifoBuilding copyWith({String? ownerClubSlug, int? savedScore, int? scoreToBeat, String? status}) => TifoBuilding(
+  TifoBuilding copyWith({
+    String? ownerClubSlug,
+    int? savedScore,
+    int? scoreToBeat,
+    String? status,
+    int? standingDays,
+  }) => TifoBuilding(
     id: id,
     rings: rings,
     name: name,
@@ -507,6 +522,7 @@ class TifoBuilding {
     scoreToBeat: scoreToBeat ?? this.scoreToBeat,
     status: status ?? this.status,
     contested7d: contested7d,
+    standingDays: standingDays ?? this.standingDays,
   );
 
   /// Parses one item from the `items` array. Returns null when the geometry is
@@ -529,7 +545,34 @@ class TifoBuilding {
       scoreToBeat: (json['scoreToBeat'] as num?)?.toInt() ?? 0,
       status: json['status']?.toString() ?? 'available',
       contested7d: (json['contested7d'] as num?)?.toInt() ?? 0,
+      standingDays: _parseStandingDays(json),
     );
+  }
+
+  /// How long the current owner has held this building.
+  ///
+  /// Confirmed contract for `/buildings?bbox=`, `/buildings/by-ids` and
+  /// `/districts/{id}/buildings`: `heldDays` (ready-made day count) alongside
+  /// `ownerSince` (the ISO claim timestamp it was derived from). Both are
+  /// accepted — `heldDays` first since it's the authoritative one the backend
+  /// actually sends, `ownerSince` as a derivable fallback — plus the earlier
+  /// speculative spellings from before the contract was confirmed (TFS 86073:
+  /// getting this wrong is silent, the row just never appears), kept cheap
+  /// insurance against a stray endpoint still using them. Returns null when
+  /// the payload carries none of the above.
+  static int? _parseStandingDays(Map<String, dynamic> json) {
+    final direct = json['heldDays'] ?? json['standingDays'] ?? json['ownedDays'];
+    if (direct is num) {
+      return direct.toInt();
+    }
+    for (final key in const ['ownerSince', 'claimedAt', 'ownedSince', 'standingSince', 'ownedAt']) {
+      final claimed = DateTime.tryParse(json[key]?.toString() ?? '');
+      if (claimed != null) {
+        final days = DateTime.now().toUtc().difference(claimed.toUtc()).inDays;
+        return days < 0 ? 0 : days; // clock skew must not print a negative
+      }
+    }
+    return null;
   }
 }
 

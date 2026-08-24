@@ -23,6 +23,7 @@ class TifoSessionState {
     this.clubs = const [],
     this.config = TifoGameConfig.fallback,
     this.isLoading = false,
+    this.hasLoaded = false,
     this.isGuest = true,
     this.error,
   });
@@ -31,6 +32,14 @@ class TifoSessionState {
   final List<TifoClubInfo> clubs;
   final TifoGameConfig config;
   final bool isLoading;
+
+  /// True once [TifoSessionController.load] has finished at least once
+  /// (success OR failure). Before that the state is UNKNOWN, not "gates
+  /// unmet": `profile` is null on a fresh build, so [nextStep] answers
+  /// `tutorial` for everyone — including a fully onboarded player right after
+  /// a relaunch. Any UI that decides what to show from the gate state has to
+  /// wait for this flag (see [shouldOfferJoin]).
+  final bool hasLoaded;
 
   /// True while requests run on the guest device bearer (no host SSO login).
   /// Staging lazily registers a profile for any bearer, so [profile] being
@@ -78,15 +87,32 @@ class TifoSessionState {
   }
 
   /// True once every play-gate is cleared (tutorial seen, logged in, club
-  /// picked). Drives "Dominate with your team" — that pill targets players
-  /// who still have a gate left, not just first-ever-launch users.
+  /// picked).
   bool get isPlayReady => nextStep == TifoJourneyStep.ready;
+
+  /// Whether to show the "Dominate with your team" pill: only for a SIGNED-IN
+  /// player whose gate state is actually KNOWN and still has a gate left.
+  ///
+  /// * [hasLoaded] + non-null [profile] — [nextStep] cannot distinguish "not
+  ///   loaded yet" / "`/me` failed" from "tutorial not done", since it reads a
+  ///   null profile as the first gate. Without these the pill appeared over
+  ///   the map on every relaunch for an onboarded player, and tapping it
+  ///   merely forced the session load it was waiting on (which also repainted
+  ///   the map). An unknown gate state shows no CTA rather than the wrong one.
+  /// * `!isGuest` — the pill is not offered while signed out at all. Note this
+  ///   makes [TifoJourneyStep.login] unreachable THROUGH THIS PILL by
+  ///   construction; a signed-out player reaches the tutorial gate via the ⚽
+  ///   entry popup's CTA instead, and `isGuest` (not `profile`) is the only
+  ///   trustworthy sign-in signal — staging lazily registers a profile for
+  ///   any bearer, guest bearers included.
+  bool get shouldOfferJoin => hasLoaded && profile != null && !isGuest && !isPlayReady;
 
   TifoSessionState copyWith({
     TifoProfile? profile,
     List<TifoClubInfo>? clubs,
     TifoGameConfig? config,
     bool? isLoading,
+    bool? hasLoaded,
     bool? isGuest,
     Object? error = _sentinel,
   }) => TifoSessionState(
@@ -94,6 +120,7 @@ class TifoSessionState {
     clubs: clubs ?? this.clubs,
     config: config ?? this.config,
     isLoading: isLoading ?? this.isLoading,
+    hasLoaded: hasLoaded ?? this.hasLoaded,
     isGuest: isGuest ?? this.isGuest,
     error: identical(error, _sentinel) ? this.error : error as String?,
   );
@@ -155,6 +182,7 @@ class TifoSessionController extends Notifier<TifoSessionState> {
         clubs: clubs,
         config: config,
         isLoading: false,
+        hasLoaded: true,
         isGuest: isGuest,
         error: error,
       );
@@ -162,6 +190,7 @@ class TifoSessionController extends Notifier<TifoSessionState> {
       state = state.copyWith(
         profile: profile,
         isLoading: false,
+        hasLoaded: true,
         isGuest: isGuest,
         error: error ?? (e is TifoApiException ? e.message : e.toString()),
       );
@@ -211,17 +240,39 @@ class TifoSessionController extends Notifier<TifoSessionState> {
   /// Marks the tutorial passed. BRD: *starting* the tutorial removes the gate
   /// forever, so call this on start (not completion) — skipping later must not
   /// re-gate the player.
-  Future<void> markTutorialStarted() async {
-    final p = state.profile;
-    if (p == null || p.tutorialCompleted) {
-      return;
+  ///
+  /// Returns whether the tutorial is RECORDED for this profile once this
+  /// returns. The result matters (TFS 86055): the guided tour is an entirely
+  /// local flow, so losing connectivity mid-tour doesn't interrupt it — the
+  /// tour finishes, and only this call knows the server never heard about it.
+  /// Swallowing that silently let the caller stamp its device flag anyway,
+  /// which suppressed the tour forever while the server-side gate stayed shut.
+  Future<bool> markTutorialStarted() async {
+    if (state.profile?.tutorialCompleted == true) {
+      return true; // already recorded
     }
     try {
       await _api.completeTutorial();
-      await refreshProfile();
-    } catch (_) {
-      // Non-fatal: the gate re-appears next session at worst.
+    } catch (error) {
+      logger.log('[tifo] tutorial report failed, leaving the gate closed: $error');
+      return false;
     }
+    // Refreshed for the balance and flags the rest of the UI reads — but the
+    // record above is what counts, not this. Kept in its own try/catch: `/me`
+    // legitimately 401s while the player is still a guest (same reason
+    // `load()` tolerates it — see its doc comment), and that must not be
+    // mistaken for the completion POST having failed. It previously WAS
+    // gated on `tutorialCompleted` coming back true and that reported
+    // failure on a perfectly good connection whenever `/me` hadn't caught up
+    // with the POST yet: the request having succeeded IS the record. Same
+    // reason the `profile == null` early-return is gone — it made "the
+    // profile isn't loaded yet" indistinguishable from "the server refused".
+    try {
+      await refreshProfile();
+    } catch (error) {
+      logger.log('[tifo] profile refresh after tutorial-complete failed (expected while guest): $error');
+    }
+    return true;
   }
 
   Future<void> markOnboardingCompleted() async {

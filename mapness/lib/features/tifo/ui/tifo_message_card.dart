@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -148,6 +150,7 @@ class TifoMessageCard extends ConsumerWidget {
               TifoPrimaryButton(label: primaryAction!.label, onPressed: primaryAction!.onPressed)
             else
               TifoSecondaryButton(label: secondaryAction!.label, onPressed: secondaryAction!.onPressed),
+            if (Platform.isAndroid) const SizedBox(height: 48),
           ],
         ],
       ),

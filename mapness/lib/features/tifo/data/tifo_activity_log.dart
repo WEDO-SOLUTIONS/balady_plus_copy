@@ -1,4 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mapness/features/tifo/providers/tifo_session_provider.dart';
 import 'package:mapness/shared/providers/hive.dart';
 
 /// Local-only "Recent Activity" feed for the Profile tab.
@@ -12,7 +13,16 @@ import 'package:mapness/shared/providers/hive.dart';
 const kTifoActivityMaxEntries = 20;
 
 const _kTifoActivityBoxName = 'tifo_activity';
-const _kTifoActivityKey = 'entries';
+
+/// The pre-TFS-86042 key: ONE feed for the whole device, shared by every
+/// account that ever signed in on it. Read once so an existing install's
+/// entries can be dropped rather than kept lying around.
+const _kTifoActivityLegacyKey = 'entries';
+
+/// Entries are stored per profile. A device-wide key meant a newly registered
+/// or logged-out user opened the Profile tab onto somebody else's match
+/// history (TFS 86042).
+String _entriesKey(String userId) => 'entries:$userId';
 
 enum TifoActivityType { win, loss, tripCompleted }
 
@@ -51,10 +61,30 @@ class TifoActivityEntry {
 }
 
 class TifoActivityLogController extends AsyncNotifier<List<TifoActivityEntry>> {
+  /// Whose feed is currently loaded, or null while signed out — [add] writes
+  /// under this and only this.
+  String? _userId;
+
   @override
   Future<List<TifoActivityEntry>> build() async {
+    // `select` and not a plain watch: the session state changes on every
+    // balance/roster refresh, and the feed must only reload when the IDENTITY
+    // behind it changes.
+    final userId = ref.watch(tifoSessionProvider.select((s) => s.profile?.userId));
+    _userId = userId;
     final box = await ref.watch(hiveProvider(_kTifoActivityBoxName).future);
-    final raw = box.get(_kTifoActivityKey);
+
+    // One-time cleanup of the shared device-wide feed. Not migrated onto the
+    // current profile: there is no way to tell which account those entries
+    // belonged to, and guessing is what the bug was.
+    if (box.get(_kTifoActivityLegacyKey) != null) {
+      await box.delete(_kTifoActivityLegacyKey);
+    }
+
+    if (userId == null) {
+      return const []; // signed out — nothing of anyone's to show
+    }
+    final raw = box.get(_entriesKey(userId));
     if (raw is! List) {
       return const [];
     }
@@ -64,10 +94,14 @@ class TifoActivityLogController extends AsyncNotifier<List<TifoActivityEntry>> {
   /// Prepends [entry], persists it, and caps the log at [kTifoActivityMaxEntries]
   /// so the box doesn't grow unbounded over a long-lived install.
   Future<void> add(TifoActivityEntry entry) async {
+    final userId = _userId;
+    if (userId == null) {
+      return; // no profile to attribute it to; dropping beats mis-filing it
+    }
     final box = await ref.read(hiveProvider(_kTifoActivityBoxName).future);
     final current = state.value ?? const <TifoActivityEntry>[];
     final updated = [entry, ...current].take(kTifoActivityMaxEntries).toList(growable: false);
-    await box.put(_kTifoActivityKey, [for (final e in updated) e.toJson()]);
+    await box.put(_entriesKey(userId), [for (final e in updated) e.toJson()]);
     state = AsyncData(updated);
   }
 }

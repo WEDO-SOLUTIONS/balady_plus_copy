@@ -115,10 +115,15 @@ class _LeaderboardSheetState extends ConsumerState<_LeaderboardSheet> {
             TifoPrimaryButton(
               label: AppLocalizations.of(context).dominateWithYourTeam,
               trailingArrow: true,
-              // Play-intent CTA (BRD FR-03/FR-04): walk the gates (login →
-              // tutorial → team select) on top of the sheet — popping first
-              // would dispose this ref mid-journey. Close to the map only
-              // once the player is play-ready; on cancel stay on the sheet.
+              // Play-intent CTA (BRD FR-03/FR-04): walk the gates on top of
+              // the sheet — popping first would dispose this ref mid-journey.
+              // Close to the map only once the player is play-ready; on cancel
+              // stay on the sheet.
+              //
+              // The order is tutorial → login → team select (see
+              // `TifoSessionState.nextStep`), NOT login first as this comment
+              // used to claim: BRD V2 puts the tour ahead of the login wall
+              // even for a logged-out player.
               onPressed: () async {
                 final gateCtx = rootNavigatorKey.currentContext;
                 if (gateCtx == null) {
@@ -280,8 +285,13 @@ class _LeaderboardSheetState extends ConsumerState<_LeaderboardSheet> {
       shrinkWrap: true,
       children: [
         // Guest bearer gets a lazily-created staging profile, so a non-null
-        // profile alone doesn't mean "signed in" — check isGuest too.
-        if (session.isGuest || profile == null)
+        // profile alone doesn't mean "signed in" — check isGuest too. Also
+        // gated on hasLoaded: right after a relaunch the session defaults to
+        // isGuest=true/profile=null before `load()` has had a chance to run,
+        // which flashed this banner at an already-logged-in player. Hide it
+        // instead of asserting "signed out" while the real status is still
+        // unknown (see `TifoSessionState.hasLoaded`).
+        if (session.hasLoaded && (session.isGuest || profile == null))
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
             decoration: BoxDecoration(
@@ -344,7 +354,7 @@ class _LeaderboardSheetState extends ConsumerState<_LeaderboardSheet> {
                 const SizedBox(width: 12),
                 Expanded(
                   child: Text(
-                    club?.name ?? 'No team selected',
+                    club?.name ?? AppLocalizations.of(context).tifoNoTeamSelected,
                     style: TifoText.bodyLSemi.copyWith(color: TifoColors.accent),
                   ),
                 ),
@@ -352,8 +362,13 @@ class _LeaderboardSheetState extends ConsumerState<_LeaderboardSheet> {
             ),
           ),
         const SizedBox(height: 10),
+        // Tile ORDER is fixed left-to-right regardless of locale (only the
+        // Row's child order — each tile's own content still mirrors normally
+        // for RTL) — pin it via textDirection rather than a Directionality
+        // override so the tiles' internals are unaffected.
         IntrinsicHeight(
           child: Row(
+            textDirection: TextDirection.ltr,
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               Expanded(
@@ -372,6 +387,7 @@ class _LeaderboardSheetState extends ConsumerState<_LeaderboardSheet> {
         const SizedBox(height: 10),
         IntrinsicHeight(
           child: Row(
+            textDirection: TextDirection.ltr,
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               Expanded(
@@ -609,12 +625,12 @@ class _ActivityRow extends StatelessWidget {
       return l10n.tifoJustNow;
     }
     if (diff.inHours < 1) {
-      return l10n.tifoMinutesAgo(tifoLocalizedDigits(context, diff.inMinutes));
+      return l10n.tifoMinutesAgo(diff.inMinutes);
     }
     if (diff.inDays < 1) {
-      return l10n.tifoHoursAgo(tifoLocalizedDigits(context, diff.inHours));
+      return l10n.tifoHoursAgo(diff.inHours);
     }
-    return l10n.tifoDaysAgo(tifoLocalizedDigits(context, diff.inDays));
+    return l10n.tifoDaysAgo(diff.inDays);
   }
 }
 
@@ -731,8 +747,6 @@ class _LeaderRowTile extends StatelessWidget {
               ],
             ),
           ),
-          const SizedBox(width: 2),
-          const Icon(Icons.chevron_right_rounded, size: 16, color: TifoColors.textSoft),
         ],
       ),
     );
@@ -803,7 +817,7 @@ class _NextDailyTileState extends State<_NextDailyTile> {
     return _StatTile(
       label: AppLocalizations.of(context).nextDailyTokensIn,
       value: _left <= 0 ? '--' : '${two(hours)}:${two(minutes)}',
-      caption: _left <= 0 ? 'hh:mm' : '${two(seconds)}s',
+      caption: _left <= 0 ? AppLocalizations.of(context).tifoHhMm : '${two(seconds)}s',
       chipBg: context.colors.warningContainerDefault,
       icon: Icon(Icons.schedule_rounded, size: 16, color: context.colors.warningActive),
     );
