@@ -140,8 +140,15 @@ class TifoBuildingsController extends Notifier<TifoBuildingsState> {
     final updated = Map<String, TifoBuilding>.of(state.byId)
       // standingDays back to 0: the owner just changed, so the previous
       // holder's duration must not survive the recolor and show up in the
-      // sheet as if the new owner had held it that long.
-      ..[buildingId] = existing.copyWith(ownerClubSlug: clubSlug, savedScore: savedScore, standingDays: 0);
+      // sheet as if the new owner had held it that long. scoreToBeat mirrors
+      // savedScore: the capturing score is what the next challenger has to
+      // beat; the poller reconciles from the server on its next tick anyway.
+      ..[buildingId] = existing.copyWith(
+        ownerClubSlug: clubSlug,
+        savedScore: savedScore,
+        scoreToBeat: savedScore,
+        standingDays: 0,
+      );
     state = state.copyWith(byId: updated);
   }
 

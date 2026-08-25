@@ -933,7 +933,12 @@ class TifoBuildingsMapLayer extends Notifier<bool> {
     if (context == null || !_acquireSheetGate()) {
       return;
     }
-    unawaited(showTifoBuildingSheet(context, building).whenComplete(() => _sheetShowing = false));
+    // The tap closure captures the building as it was when the polygon was
+    // drawn, and polygons are only redrawn on a fill change — so score/status
+    // refreshed by the poller never reach it. Resolve the current cache entry
+    // instead of the drawn-time snapshot.
+    final fresh = ref.read(tifoBuildingsProvider).byId[building.id] ?? building;
+    unawaited(showTifoBuildingSheet(context, fresh).whenComplete(() => _sheetShowing = false));
   }
 
   // ─── Districts (zoom < 15) ─────────────────────────────────────────────────
