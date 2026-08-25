@@ -170,13 +170,14 @@ class _WrapperState extends ConsumerState<_PoiCardWrapper>
       storeParking.addPinParking(storeParkingData?.markerPosition, context.l10n.yourParkingSpot);
     }
     ref.watch(dgisEnvironmentProvider);
-    final poiCardState = gisPoiCardState ??
-              PoiCardState(
-                showEntrances: false,
-                isLoading: false,
-                gisObjectIdMessage: data,
-                organizations: null,
-              );
+    final poiCardState =
+        gisPoiCardState ??
+        PoiCardState(
+          showEntrances: false,
+          isLoading: false,
+          gisObjectIdMessage: data,
+          organizations: null,
+        );
 
     final isCityscapeObject = ref.read(cityscapeProvider.notifier).showCustomPin(widget.objectId.objectId);
 
@@ -224,42 +225,46 @@ class _WrapperState extends ConsumerState<_PoiCardWrapper>
     final objectId = data?.id?.objectId;
 
     final dataAndError = () {
+      // While we still hold previously loaded data, keep showing the card:
+      // a background refetch (e.g. provider rebuild on app resume) must not
+      // cover a perfectly good card with the loading or error sheet (BALADY-3856).
+      if (objectId != null) {
+        return null;
+      }
       if (state.isLoading && widget.objectId.objectId != parkingObjectId) {
         return const PoiLoading();
       }
-      if ((state.hasError && widget.objectId.objectId != parkingObjectId) || objectId == null) {
-        // sometimes error code is in message and sometimes in code, idk, probably changed in releases
-        final isPlatformException =
-            state.error is PlatformException &&
-            ((state.error! as PlatformException).code == PoiError.platformExceptionCode ||
-                (state.error! as PlatformException).message == 'NotFoundException');
+      // sometimes error code is in message and sometimes in code, idk, probably changed in releases
+      final isPlatformException =
+          state.error is PlatformException &&
+          ((state.error! as PlatformException).code == PoiError.platformExceptionCode ||
+              (state.error! as PlatformException).message == 'NotFoundException');
 
-        if (isPlatformException) {
-          return PoiError(
-            errorTitle: context.l10n.somethingWentWrong,
-            errorContent: context.l10n.saudiPassSomethingWentWrongHint,
-            buttonLabel: context.l10n.complete,
-            onClose: () async {
-              await ref.read(selectedMarkerProvider.notifier).removeAllMarkers();
-              await ref.read(highlightProvider.notifier).removeHighlight(widget.objectId);
-              ref.read(regularPoiActiveProvider.notifier).setActive(false);
-              context.router.pop();
-            },
-            onRetry: () {
-              context.router.pop();
-            },
-          );
-        }
+      if (isPlatformException) {
         return PoiError(
           errorTitle: context.l10n.somethingWentWrong,
           errorContent: context.l10n.saudiPassSomethingWentWrongHint,
           buttonLabel: context.l10n.complete,
-          onRetry: () {
+          onClose: () async {
+            await ref.read(selectedMarkerProvider.notifier).removeAllMarkers();
+            await ref.read(highlightProvider.notifier).removeHighlight(widget.objectId);
             ref.read(regularPoiActiveProvider.notifier).setActive(false);
+            context.router.pop();
+          },
+          onRetry: () {
             context.router.pop();
           },
         );
       }
+      return PoiError(
+        errorTitle: context.l10n.somethingWentWrong,
+        errorContent: context.l10n.saudiPassSomethingWentWrongHint,
+        buttonLabel: context.l10n.complete,
+        onRetry: () {
+          ref.read(regularPoiActiveProvider.notifier).setActive(false);
+          context.router.pop();
+        },
+      );
     }();
     if (dataAndError != null) {
       return PoiLoadingOrErrorSheet(sheetHeight: 360, data: dataAndError);

@@ -59,12 +59,16 @@ class PoiCardState {
     final entrancesJson = json['showEntrances'];
     final timestampJson = json.containsKey('timestamp') ? json['timestamp'] as int? : null;
 
+    // Both fields are nullable in [toJson]: a POI without in-building
+    // organizations (e.g. the LEAP mega POI) caches "organizations": null,
+    // and passing null into the generated fromJson throws — which made every
+    // cache read fail and forced a network refetch on each provider rebuild.
     return PoiCardState(
       showEntrances: entrancesJson,
       isLoading: false,
       timestamp: timestampJson,
-      gisObjectIdMessage: DirectoryObjectMessageExt.fromJson(objectIdJson),
-      organizations: OrganizationsMessage.fromJson(organizatonsJson),
+      gisObjectIdMessage: objectIdJson == null ? null : DirectoryObjectMessageExt.fromJson(objectIdJson),
+      organizations: organizatonsJson == null ? null : OrganizationsMessage.fromJson(organizatonsJson),
     );
   }
 
@@ -98,7 +102,10 @@ class PoiCardProvider extends _$PoiCardProvider {
     LatLng? closestPoint,
     bool showHighlight = true,
   }) async {
-    state = const AsyncValue.loading();
+    // No explicit `state = AsyncValue.loading()` here: Riverpod already marks a
+    // rebuilding provider as loading while keeping the previous value, so the
+    // open card can keep showing its data during a background refetch
+    // (e.g. after app resume) instead of flashing the loading/error sheet.
     // We need to use [appLang] to cache different data for different locales
     // We don't want to show arabic text to english users and vise versa
     final appLang = ref.read(appLanguageProvider);
@@ -170,12 +177,16 @@ class PoiCardProvider extends _$PoiCardProvider {
         qrTradeLicense: qrLicense,
       );
 
-      try {
-        final json = jsonEncode(poiCardState.toJson());
-        await poiBox.put(poiCardStateKey, json);
-      } catch (e, s) {
-        logger.log('Error saving poi card state to cache: $e', logLevel: MapnessLogLevel.critical);
-        state = AsyncValue.error(e, s);
+      // Don't cache a failed fetch: a state without the directory object is
+      // useless on restore and would only mask the next retry.
+      if (poi != null) {
+        try {
+          final json = jsonEncode(poiCardState.toJson());
+          await poiBox.put(poiCardStateKey, json);
+        } catch (e, s) {
+          logger.log('Error saving poi card state to cache: $e', logLevel: MapnessLogLevel.critical);
+          state = AsyncValue.error(e, s);
+        }
       }
       return poiCardState;
     }
@@ -265,6 +276,12 @@ class PoiCardProvider extends _$PoiCardProvider {
     try {
       final stateFromJson = PoiCardState.fromJson(jsonDecode(cachedData));
       if (stateFromJson.timestamp == null) {
+        return null;
+      }
+
+      // A cached state without the directory object would render as the
+      // "Something went wrong" sheet — refetch instead.
+      if (stateFromJson.gisObjectIdMessage == null) {
         return null;
       }
 

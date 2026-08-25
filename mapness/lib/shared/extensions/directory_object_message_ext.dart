@@ -23,11 +23,13 @@ extension DirectoryObjectMessageExt on DirectoryObjectMessage {
     final tradeLicenseJson = tradeLicense?.toJson();
     final routeInfosList = routeInfos.map((item) => item.toJson()).toList();
     final groupList = group.map((item) => item.toJson()).toList();
+    final platformIdsList = platformIds.map((item) => item.toJson()).toList();
     return {
       'types': typesList,
       'title': title,
       'titleAddition': titleAddition,
       'subtitle': subtitle,
+      'description': description,
       'about': about,
       'id': id?.toJson(),
       'markerPosition': markerPositionJson,
@@ -49,6 +51,8 @@ extension DirectoryObjectMessageExt on DirectoryObjectMessage {
       'tradeLicense': tradeLicenseJson,
       'rubricIds': rubricIds,
       'routeInfos': routeInfosList,
+      'orgInfo': orgInfo?.toJson(),
+      'platformIds': platformIdsList,
       'group': groupList,
     };
   }
@@ -61,6 +65,7 @@ extension DirectoryObjectMessageExt on DirectoryObjectMessage {
     titleAddition: json['titleAddition'] as String,
     subtitle: json['subtitle'] as String,
     about: json['about'] as String,
+    description: json['description'] as String?,
     id: json['id'] != null ? DgisObjectIdMessageExt.fromJson(json['id'] as Map<String, dynamic>) : null,
     markerPosition: json['markerPosition'] != null
         ? GeoPointWithElevationMessageExt.fromJson(json['markerPosition'] as Map<String, dynamic>)
@@ -110,9 +115,13 @@ extension DirectoryObjectMessageExt on DirectoryObjectMessage {
             .toList() ??
         [],
     orgInfo: json['orgInfo'] != null ? OrgInfoMessageExt.fromJson(json['orgInfo'] as Map<String, dynamic>) : null,
-    platformIds: (json['platformIds'] as List<dynamic>?)!
-        .map((e) => DgisObjectIdMessageExt.fromJson(e as Map<String, dynamic>))
-        .toList(),
+    // Entries cached before platformIds was serialized don't carry the key —
+    // a hard `!` here made every cache restore throw (BALADY-3856).
+    platformIds:
+        (json['platformIds'] as List<dynamic>?)
+            ?.map((e) => DgisObjectIdMessageExt.fromJson(e as Map<String, dynamic>))
+            .toList() ??
+        [],
     group:
         (json['group'] as List<dynamic>?)
             ?.map((e) => GroupItemMessageExt.fromJson(e as Map<String, dynamic>))

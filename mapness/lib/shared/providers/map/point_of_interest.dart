@@ -67,14 +67,18 @@ Future<DirectoryObjectMessage?> pointOfInterest(
     elevation: 0,
   );
 
-  final dark = await ref.watch(darkModeProvider.future);
+  // Watch only the flag we render with: darkModeProvider invalidates itself on
+  // every app resume (see [DarkMode.build]), and re-running this provider tears
+  // the open POI card through a refetch (BALADY-3856). With selectAsync the
+  // rebuild is skipped whenever isDark hasn't actually changed.
+  final isDarkMode = await ref.watch(darkModeProvider.selectAsync((mode) => mode.isDark));
   final isRtl = ref.watch(appLanguageProvider) == Language.arabic;
 
   final textStyle = MarkerTextStyleMessage(
     fontSize: 13,
     textOffset: 4,
-    color: dark.isDark ? 0xD3FFFFFF : 0xff1B1B1B,
-    strokeColor: dark.isDark ? 0xff1B1B1B : 0xD3FFFFFF,
+    color: isDarkMode ? 0xD3FFFFFF : 0xff1B1B1B,
+    strokeColor: isDarkMode ? 0xff1B1B1B : 0xD3FFFFFF,
     strokeWidth: 1,
     fontName: directoryObject.title.containsArabic() || isRtl
         ? MapnessConstants.poiMapFontAr

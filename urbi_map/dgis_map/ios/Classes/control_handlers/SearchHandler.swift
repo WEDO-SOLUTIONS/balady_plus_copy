@@ -9,7 +9,10 @@ class SearchHandler: NSObject {
 
     private let searchManager: SearchManager
     private let searchHistory: SearchHistory
-    private var objectSearchCancelable: Cancellable?
+    // Keyed per call: concurrent searchByDirectoryObjectId requests must not
+    // cancel each other. A single slot dropped the previous in-flight future,
+    // whose Dart side then hung until its timeout (BALADY-3856).
+    private var objectSearchCancelables: [UUID: Cancellable] = [:]
     private var searchCancelable: Cancellable?
     private var itemMarkerInfosCancellable: Cancellable?
     private var suggestCancelable: Cancellable?
@@ -41,15 +44,18 @@ class SearchHandler: NSObject {
     }
 
     func cancel() {
-        self.objectSearchCancelable?.cancel()
+        self.objectSearchCancelables.values.forEach { $0.cancel() }
+        self.objectSearchCancelables.removeAll()
         self.searchCancelable?.cancel()
         self.suggestCancelable?.cancel()
         self.itemMarkerInfosCancellable?.cancel()
     }
 
     func searchByDirectoryObjectId(objectId: DgisObjectId, completion: @escaping (Result<DirectoryObjectMessage, any Error>) -> Void) {
-        self.objectSearchCancelable = searchManager.searchByDirectoryObjectId(objectId: objectId).sink {
-            directoryObject in
+        let requestId = UUID()
+        self.objectSearchCancelables[requestId] = searchManager.searchByDirectoryObjectId(objectId: objectId).sink {
+            [weak self] directoryObject in
+            DispatchQueue.main.async { self?.objectSearchCancelables.removeValue(forKey: requestId) }
             guard let response = directoryObject else {
                 completion(
                     Result.failure(
@@ -60,12 +66,13 @@ class SearchHandler: NSObject {
                 )))
                 return
             }
-            
+
             completion(
                 Result.success(
                 response.toMessage())
             )
-        } failure: { error in
+        } failure: { [weak self] error in
+            DispatchQueue.main.async { self?.objectSearchCancelables.removeValue(forKey: requestId) }
             completion(Result.failure(FlutterError(code: "FutureError", message: error.description, details: nil)))
         }
     }
