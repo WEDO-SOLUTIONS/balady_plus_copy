@@ -131,7 +131,7 @@ class _TifoTeamSelectScreenState extends ConsumerState<TifoTeamSelectScreen> {
   }
 
   Widget _buildWelcomeBonus() {
-    final balance = ref.watch(tifoSessionProvider.select((s) => s.profile?.balance));
+    final welcomeBonus = ref.watch(tifoSessionProvider.select((s) => s.profile?.welcomeBonus));
     return Padding(
       padding: const EdgeInsets.fromLTRB(16, 12, 16, 16),
       child: Column(
@@ -157,7 +157,7 @@ class _TifoTeamSelectScreenState extends ConsumerState<TifoTeamSelectScreen> {
                     ),
                     const SizedBox(height: 2),
                     Text(
-                      AppLocalizations.of(context).tokensCount(balance ?? 10),
+                      AppLocalizations.of(context).tokensCount(welcomeBonus ?? 15),
                       style: TifoText.h3.copyWith(color: TifoColors.accentSoft),
                     ),
                   ],
