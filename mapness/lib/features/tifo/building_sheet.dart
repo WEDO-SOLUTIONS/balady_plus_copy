@@ -55,15 +55,24 @@ class _TifoBuildingSheetState extends ConsumerState<_TifoBuildingSheet> {
   /// after this State is disposed) can still read providers.
   ProviderContainer? _container;
 
+  /// Snapshot taken when the sheet was opened. The play/submit path reads it
+  /// AFTER this State is disposed (post-game submit) and deliberately wants
+  /// the pre-capture values (e.g. the owner BEFORE this attempt on the result
+  /// screen) — keep it frozen; `build()` renders the live cache entry instead.
   TifoBuilding get _building => widget.building;
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final session = ref.watch(tifoSessionProvider);
-    final ownerClub = session.clubById(_building.ownerClubSlug);
+    // Live cache entry for this building: the poller and the post-capture
+    // optimistic update land in `tifoBuildingsProvider`, so score/status/
+    // standing shown here follow them while the sheet is open (BALADY-3877).
+    // Falls back to the open-time snapshot if the entry was evicted.
+    final live = ref.watch(tifoBuildingsProvider.select((s) => s.byId[widget.building.id])) ?? widget.building;
+    final ownerClub = session.clubById(live.ownerClubSlug);
     final ownerColor = ownerClub == null ? TifoColors.neutralFill : Color(ownerClub.colorArgb);
-    final isClaim = _building.isNeutral;
+    final isClaim = live.isNeutral;
     // BRD US-08: browsing is always allowed, but a player who hasn't cleared
     // the play-gate yet (e.g. "Maybe Later" on team select) can't start a
     // challenge — show that up front instead of letting them tap Challenge
@@ -72,8 +81,8 @@ class _TifoBuildingSheetState extends ConsumerState<_TifoBuildingSheet> {
     // The server 409s `play/start` for a building the player's own club
     // already holds — used to only surface after the game had already
     // opened and closed again. Block the CTA up front instead.
-    final isOwnBuilding = _building.ownerClubSlug != null && _building.ownerClubSlug == session.myClub?.id;
-    final standingDays = _building.standingDays;
+    final isOwnBuilding = live.ownerClubSlug != null && live.ownerClubSlug == session.myClub?.id;
+    final standingDays = live.standingDays;
 
     return SafeArea(
       top: false,
@@ -143,7 +152,7 @@ class _TifoBuildingSheetState extends ConsumerState<_TifoBuildingSheet> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
-                                    ownerClub?.name ?? _building.displayName,
+                                    ownerClub?.name ?? live.displayName,
                                     style: TifoText.bodyLSemi.copyWith(color: context.colors.foregroundDefault),
                                   ),
                                   // TFS 86073: the design carries the current
@@ -185,7 +194,7 @@ class _TifoBuildingSheetState extends ConsumerState<_TifoBuildingSheet> {
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
                       Text(
-                        '${isClaim ? 0 : _building.scoreToBeat}',
+                        '${isClaim ? 0 : live.scoreToBeat}',
                         style: TifoText.h2.copyWith(color: TifoColors.accentSoft),
                       ),
                       const SizedBox(width: 6),
@@ -207,13 +216,13 @@ class _TifoBuildingSheetState extends ConsumerState<_TifoBuildingSheet> {
               child: Row(
                 children: [
                   Text(
-                    '${_building.contested7d}',
+                    '${live.contested7d}',
                     style: TifoText.h3.copyWith(color: context.colors.foregroundDefault),
                   ),
                   const SizedBox(width: 12),
                   Expanded(
                     child: Text(
-                      l10n.tifoContestedCount(_building.contested7d),
+                      l10n.tifoContestedCount(live.contested7d),
                       style: TifoText.captionRegular,
                     ),
                   ),
@@ -221,7 +230,7 @@ class _TifoBuildingSheetState extends ConsumerState<_TifoBuildingSheet> {
               ),
             ),
 
-            if (_building.isAvailable && !isOwnBuilding) ...[
+            if (live.isAvailable && !isOwnBuilding) ...[
               const SizedBox(height: 12),
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
@@ -251,7 +260,7 @@ class _TifoBuildingSheetState extends ConsumerState<_TifoBuildingSheet> {
             const SizedBox(height: 20),
 
             // CTA by status.
-            if (_building.isAvailable && canChallenge && !isOwnBuilding)
+            if (live.isAvailable && canChallenge && !isOwnBuilding)
               TifoPrimaryButton(
                 label: isClaim ? l10n.tifoClaimBuilding : l10n.tifoChallenge,
                 leadingEmoji: '⚽',
@@ -260,10 +269,10 @@ class _TifoBuildingSheetState extends ConsumerState<_TifoBuildingSheet> {
               )
             else if (isOwnBuilding)
               _disabledBar(l10n.tifoOwnBuildingHint)
-            else if (_building.isAvailable)
+            else if (live.isAvailable)
               _disabledBar(l10n.tifoNotPlayReady)
             else
-              _disabledBar(_building.status == 'live' ? l10n.tifoBuildingLiveHint : l10n.tifoBuildingCooldownHint),
+              _disabledBar(live.status == 'live' ? l10n.tifoBuildingLiveHint : l10n.tifoBuildingCooldownHint),
             if (kDebugMode) ...[
               const SizedBox(height: 8),
               SizedBox(
@@ -274,7 +283,7 @@ class _TifoBuildingSheetState extends ConsumerState<_TifoBuildingSheet> {
                     side: const BorderSide(color: Color(0x33D9A400)),
                     padding: const EdgeInsets.symmetric(vertical: 12),
                   ),
-                  onPressed: (_building.isAvailable && !_isBusy && !isOwnBuilding) ? _mockCapture : null,
+                  onPressed: (live.isAvailable && !_isBusy && !isOwnBuilding) ? _mockCapture : null,
                   icon: const Icon(Icons.bolt_rounded, size: 18),
                   label: const Text('Mock capture (skip game)'),
                 ),
