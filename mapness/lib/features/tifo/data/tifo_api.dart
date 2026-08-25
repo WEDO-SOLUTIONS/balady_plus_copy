@@ -54,6 +54,14 @@ final tifoDebugModeProvider = NotifierProvider<TifoDebugModeController, bool>(Ti
 /// urbi-lifestyle, with the TIFO path appended.
 const kTifoBaseUrl = 'https://urbi-lifestyle-stg.momah.gov.sa/1.0/api/v1/tifo';
 
+/// Sent as `x-api-key` on every request made WITHOUT a bearer (signed out) —
+/// every endpoint accepts either credential, returning its unauthenticated
+/// default response for the API key instead of 401ing (`/me` returns a
+/// generic profile, `/tutorial/complete` returns `{ok: true}` without
+/// persisting, etc. — see the TIFO API reference). Never sent alongside a
+/// bearer: a real session always takes priority.
+const _tifoGuestApiKey = 'd5104482-948a-49c5-acc1-86bd75e57a2f';
+
 /// The effective TIFO base URL + bearer, resolved per request.
 ///
 /// Base URL follows [dgisEnvironmentProvider] — i.e. it changes with the
@@ -137,7 +145,7 @@ class TifoApi {
   Options _options(String token) => Options(
     headers: {
       'Content-Type': 'application/json',
-      if (token.isNotEmpty) 'Authorization': 'Bearer $token',
+      if (token.isNotEmpty) 'Authorization': 'Bearer $token' else 'x-api-key': _tifoGuestApiKey,
     },
   );
 
