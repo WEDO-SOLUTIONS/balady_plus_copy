@@ -4,8 +4,10 @@ import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mapness/app/auto_route/app_routes.dart';
 import 'package:mapness/features/tifo/data/tifo_models.dart';
 import 'package:mapness/features/tifo/providers/tifo_session_provider.dart';
+import 'package:mapness/features/tifo/tifo_journey.dart';
 import 'package:mapness/features/tifo/ui/tifo_theme.dart';
 import 'package:mapness/l10n/generated/app_localizations.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
@@ -64,7 +66,22 @@ class _DistrictSheetState extends ConsumerState<_DistrictSheet> {
     return (lat: lat / n, lng: lng / n);
   }
 
+  /// Same play-gate as "Dominate with your team" (BRD FR-03/FR-04): walk
+  /// tutorial → login → team select first, same as any other play-intent CTA
+  /// — only once the player is play-ready does this actually zoom the camera.
+  /// The district sheet stays open through the walk (gate screens are pushed
+  /// on the root navigator, above it) and only closes once we're really
+  /// about to zoom, so backing out of a gate leaves the player where they
+  /// were instead of dropping them back on the map mid-flow.
   Future<void> _takeOver() async {
+    final gateCtx = rootNavigatorKey.currentContext;
+    if (gateCtx == null) {
+      return;
+    }
+    final ready = await TifoJourney(ref).ensurePlayReady(gateCtx);
+    if (!ready || !mounted) {
+      return;
+    }
     final navigator = Navigator.of(context);
     final target = _centroid;
     navigator.pop();

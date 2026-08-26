@@ -17,7 +17,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'leap.g.dart';
 
-@riverpod
+@Riverpod(keepAlive: true)
 class Leap extends _$Leap {
   static const _config = LeapConfig();
 
@@ -34,8 +34,8 @@ class Leap extends _$Leap {
   bool build() {
     mapManager = ref.watch(
       mapObjectManagerProvider(
-        named: MapObjectManagerSettings.cityEvent().name,
-        layerId: MapObjectManagerSettings.cityEvent().layerId,
+        named: MapObjectManagerSettings.leap().name,
+        layerId: MapObjectManagerSettings.leap().layerId,
       ).notifier,
     );
 
@@ -54,8 +54,8 @@ class Leap extends _$Leap {
 
     mapManager = ref.read(
       mapObjectManagerProvider(
-        named: MapObjectManagerSettings.cityEvent().name,
-        layerId: MapObjectManagerSettings.cityEvent().layerId,
+        named: MapObjectManagerSettings.leap().name,
+        layerId: MapObjectManagerSettings.leap().layerId,
       ).notifier,
     );
     await mapManager?.removeMarkerById(_config.globalMarkerId);

@@ -63,6 +63,13 @@ class MapObjectManagerSettings {
     layerId: MapObjectLayers.priorityLayerId,
   );
 
+  /// Its own manager (distinct from [cityEvent]) so the SDK's built-in
+  /// generalization/decluttering — which only avoids overlap between
+  /// objects within the SAME manager — never hides it against Cityscape's
+  /// or Founding Day's markers when they converge on screen while zooming.
+  factory MapObjectManagerSettings.leap() =>
+      const MapObjectManagerSettings._(name: 'leap', layerId: MapObjectLayers.priorityLayerId);
+
   factory MapObjectManagerSettings.eta() =>
       const MapObjectManagerSettings._(name: 'eta', layerId: MapObjectLayers.priorityLayerId);
 

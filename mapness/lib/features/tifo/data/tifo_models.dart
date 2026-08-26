@@ -82,6 +82,7 @@ class TifoClubInfo {
 @immutable
 class TifoProfile {
   const TifoProfile({
+    required this.welcomeBonus,
     required this.userId,
     required this.clubId,
     required this.balance,
@@ -102,6 +103,7 @@ class TifoProfile {
   final String userId;
   final String? clubId;
   final int balance;
+  final int welcomeBonus;
   final bool onboardingCompleted;
   final bool tutorialCompleted;
   final int freeClaimsRemaining;
@@ -130,6 +132,7 @@ class TifoProfile {
       userId: json['userId']?.toString() ?? '',
       clubId: json['club']?.toString(),
       balance: (json['balance'] as num?)?.toInt() ?? 0,
+      welcomeBonus: (json['welcomeBonus'] as num?)?.toInt() ?? 0,
       onboardingCompleted: json['onboardingCompleted'] == true,
       tutorialCompleted: json['tutorialCompleted'] == true,
       freeClaimsRemaining: (json['freeClaimsRemaining'] as num?)?.toInt() ?? 0,
