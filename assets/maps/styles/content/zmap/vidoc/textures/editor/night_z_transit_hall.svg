@@ -1,5 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<svg width="32" height="32" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
- <path d="m28.9 2h-25.8c-0.6 0-1.1 0.5-1.1 1.1v25.9c0 0.5 0.5 1 1.1 1h25.9c0.6 0 1.1-0.5 1.1-1.1v-25.8c-0.1-0.6-0.6-1.1-1.2-1.1zm-1.9 25h-22v-22h22v22z" fill="#1F2021"/>
- <path d="m25 20.6-6-4.6v3h-12v3h12v2.9l6-4.3zm-18-9.2 6 4.5v-2.9h12v-3h-12v-3" fill="#1F2021"/>
-</svg>

@@ -58,6 +58,7 @@ class FeedbackPermissionSheet extends HookWidget {
                   onTap: () => Navigator.pop(context),
                   primaryLabel: context.l10n.cancel,
                   padding: const EdgeInsets.symmetric(vertical: Spacing.$2x),
+                  buttonType: ButtonType.secondary,
                   buttonColorScheme: ButtonColorScheme.accentSecondary,
                   size: ButtonSize.large,
                 ),

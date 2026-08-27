@@ -4,8 +4,8 @@ import 'dart:math';
 
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
 import 'package:dgis_map/library.dart';
-import 'package:geolocator/geolocator.dart';
 import 'package:flutter_insider/flutter_insider.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:mapness/app/auto_route/app_routes.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/entities/city_contain/dto/location_point.dart';
@@ -376,5 +376,24 @@ class LocationWithPrecision extends _$LocationWithPrecision {
   double _roundToPrecision(double value, int decimalPlaces) {
     final mod = pow(10, decimalPlaces).toDouble();
     return (value * mod).round() / mod;
+  }
+}
+
+/// this provider waits for first non-null location or throws after timeout
+@riverpod
+Future<Position> getLocationSync(Ref ref, {Duration timeoutAfter = const Duration(seconds: 5)}) async {
+  final location = ref.read(locationProvider);
+  if (location != null) {
+    return location;
+  } else {
+    final completer = Completer<Position>();
+
+    final sub = ref.listen<Position?>(locationProvider, (_, next) {
+      if (next != null) {
+        completer.complete(next);
+      }
+    });
+
+    return completer.future.timeout(timeoutAfter).whenComplete(sub.close);
   }
 }
