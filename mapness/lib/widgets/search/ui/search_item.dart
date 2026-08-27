@@ -24,8 +24,8 @@ import 'package:mapness/shared/providers/app_language.dart';
 import 'package:mapness/widgets/search/ui/directory_object_car_estimate.dart';
 import 'package:mapness/widgets/search/ui/search_item_quick_actions.dart';
 import 'package:mapness/widgets/search/ui/search_tap_handler.dart';
-import 'package:mapness/widgets/search/ui/working_hours_colors.dart';
 import 'package:mapness/widgets/search/ui/working_hours.dart';
+import 'package:mapness/widgets/search/ui/working_hours_colors.dart';
 import 'package:mapness/widgets/search/ui/working_hours_from_opening_hours_message.dart';
 import 'package:mapness/widgets/search/ui/working_hours_strings.dart';
 import 'package:mapness/widgets/search/ui/working_hours_threshold_provider.dart';
@@ -71,9 +71,9 @@ class SearchItem extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    String subtitle =(result.id?.objectId == 70030077050725730
-        ? (context.locale.languageCode=='en'?'Settlement':'نطاق')
-        : (['تسوية','مستوطنة'].contains(result.subtitle ) ? 'نطاق' : result.subtitle));
+    String subtitle = (result.id?.objectId == 70030077050725730
+        ? (context.locale.languageCode == 'en' ? 'Settlement' : 'نطاق')
+        : (['تسوية', 'مستوطنة'].contains(result.subtitle) ? 'نطاق' : result.subtitle));
     // String subtitle = result.subtitle;
     List<String> photosUrls = [];
     List<Item> photoItems = [];
@@ -152,9 +152,7 @@ class SearchItem extends ConsumerWidget {
         }
       },
       child: Material(
-        color:  isDGA
-            ? context.colors.accentSecondarySoft
-            : contentColor ?? context.colors.backgroundSurface1,
+        color: isDGA ? context.colors.accentSecondarySoft : contentColor ?? context.colors.backgroundSurface1,
         shape: smoothBorder(RadiusBorder.xl),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,

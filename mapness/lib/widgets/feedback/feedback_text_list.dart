@@ -39,10 +39,12 @@ class _FeedbackTextListFieldState extends State<FeedbackTextListField> {
     super.initState();
 
     _inputItems = widget.field.oldValues
-        .map((value) => _InputItem(
-              controller: TextEditingController(text: value),
-              key: UniqueKey(),
-            ))
+        .map(
+          (value) => _InputItem(
+            controller: TextEditingController(text: value),
+            key: UniqueKey(),
+          ),
+        )
         .toList();
 
     if (_inputItems.isEmpty) {
@@ -80,13 +82,7 @@ class _FeedbackTextListFieldState extends State<FeedbackTextListField> {
   bool _isValid(String? value) {
     final validator = switch (widget.field.type) {
       FeedbackTextType.email => FormBuilderValidators.email(checkNullOrEmpty: false),
-      FeedbackTextType.phone => FormBuilderValidators.compose([
-          FormBuilderValidators.phoneNumber(checkNullOrEmpty: false),
-          FormBuilderValidators.minLength(
-            PhoneNumberFormatter.arabicPhoneNumberMinLength,
-            checkNullOrEmpty: false,
-          ),
-        ]),
+      FeedbackTextType.phone => PhoneNumberFormatter.validateSaudiMobile,
       FeedbackTextType.url => FormBuilderValidators.url(checkNullOrEmpty: false),
       _ => (_) => null,
     };
@@ -152,8 +148,9 @@ class _FeedbackTextListFieldState extends State<FeedbackTextListField> {
                     controller: _inputItems[i].controller,
                     labelText: i == 0 ? widget.field.label : null,
                     hintText: widget.field.hint,
-                    errorText:
-                        _isValid(_inputItems[i].controller.text) ? null : context.l10n.feedbackTextFieldWrongFormat,
+                    errorText: _isValid(_inputItems[i].controller.text)
+                        ? null
+                        : context.l10n.feedbackTextFieldWrongFormat,
                     allowedInputPattern: allowedInputPattern,
                     isRequired: widget.field.isRequired,
                     maxLength: widget.field.maxLength,

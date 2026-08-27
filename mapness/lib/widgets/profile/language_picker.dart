@@ -58,7 +58,7 @@ class LanguageRow extends ConsumerWidget {
             child: ExcludeSemantics(
               child: ContentRowV2(
                 leading: leadingIcon,
-                isDividerEnabled: true,
+                isDividerEnabled: !border,
                 text: ContentRowTextOptions(title: language.title),
                 trailing: ContentRowTextTrailingOptions(
                   icon: currentLanguage == language ? GeneralIcons.bulletCircleSolid : GeneralIcons.circleNull,
