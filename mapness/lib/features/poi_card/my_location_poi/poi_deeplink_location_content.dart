@@ -44,19 +44,38 @@ class PoiDeeplinkContent extends ConsumerWidget {
                 top: Spacing.$4x,
                 bottom: Spacing.$4x,
               ),
-              child: Text(
-                data.maybeWhen(
-                  data: (value) => value?.address ?? '${location.latitude}, ${location.longitude}',
-                  orElse: () => '',
+              child: data.maybeWhen(
+                data: (value) => Text(
+                  value?.address ?? '',
+                  style: context.textStyles.bodySmallRegular.copyWith(
+                    color: context.colors.foregroundSoft,
+                  ),
                 ),
-                style: context.textStyles.bodySmallRegular.copyWith(
-                  color: context.colors.foregroundSoft,
-                ),
+                orElse: () => _AddressShimmer(),
               ),
             ),
           ],
         );
       },
+    ),
+  );
+}
+
+class _AddressShimmer extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) => Shimmer.fromColors(
+    baseColor: context.colors.backgroundSurface4,
+    highlightColor: context.colors.backgroundSurface1,
+    child: FractionallySizedBox(
+      widthFactor: 0.55,
+      alignment: AlignmentDirectional.centerStart,
+      child: Container(
+        height: 12,
+        decoration: BoxDecoration(
+          color: context.colors.backgroundSurface4,
+          borderRadius: BorderRadius.circular(6),
+        ),
+      ),
     ),
   );
 }

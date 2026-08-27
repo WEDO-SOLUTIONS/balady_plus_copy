@@ -31,14 +31,18 @@ import 'package:mapness/features/metro/metro_layer_provider.dart';
 import 'package:mapness/features/metro/metro_layer_repository.dart';
 import 'package:mapness/features/metro/metro_layer_visible_provider.dart';
 import 'package:mapness/features/poi_card/provider/poi_card_closing.dart';
+import 'package:mapness/features/satellite/providers/satellite_map_controller.dart';
 import 'package:mapness/features/shuttle_bus/provider.dart';
 import 'package:mapness/features/shuttle_bus/repo.dart';
 import 'package:mapness/features/shuttle_bus/visible_provider.dart';
 import 'package:mapness/l10n/generated/app_localizations_en.dart';
+import 'package:mapness/shared/constants/constants.dart';
 import 'package:mapness/shared/config/environment_config.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
+import 'package:balady_plus/app/core/utils/common_functions.dart';
 import 'package:mapness/shared/lib/search/compute_camera_position.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
+import 'package:mapness/shared/utils/logger/logger.dart';
 import 'package:mapness/shared/providers/dgis_environment.dart';
 import 'package:mapness/shared/providers/location.dart';
 import 'package:mapness/shared/providers/map/camera_position.dart';
@@ -113,10 +117,16 @@ class LayersState {
 
 const duration = Duration(milliseconds: 700);
 
-@riverpod
+// BALADY-3730: keepAlive so `selectedType` survives the auth flow. Without
+// it the provider auto-disposes the moment the layers sheet is covered by
+// the login route — the callback then reads/creates a fresh instance,
+// toggles Favorites on it, and both that mutation and the later re-mount
+// lose the selection. Same pattern SatelliteMapController uses.
+@Riverpod(keepAlive: true)
 class LayersControls extends _$LayersControls {
   static const duration = Duration(milliseconds: 250);
   StreamSubscription? _viewPortSubscription;
+  StreamSubscription? _authStateSubscription;
   CancelToken? _cancelToken;
 
   final esriMapObjectSettings = MapObjectManagerSettings.esri();
@@ -138,6 +148,31 @@ class LayersControls extends _$LayersControls {
     ref.onDispose(() {
       _viewPortSubscription?.cancel();
       _tapSubscription?.cancel();
+      _authStateSubscription?.cancel();
+    });
+
+    // BALADY-3730 follow-up: if the user logs out while the Favorites layer
+    // is active, disable it — the layer needs an authenticated session and
+    // would otherwise keep stale selection/markers. Listen to the
+    // EntryPointCubit stream directly (same source authAndOpen uses):
+    // relying on authMethodsProvider here doesn't work because it is only
+    // re-evaluated when the autoDispose authProvider happens to be alive to
+    // invalidate it. The cubit stream replays the current state on
+    // subscription, so guard on an explicit logged-in -> logged-out
+    // transition. Mutation is deferred via microtask — stream callbacks
+    // must not touch providers synchronously from the notifier frame.
+    bool? wasLoggedIn;
+    _authStateSubscription?.cancel();
+    _authStateSubscription = CommonProperties.userStateStream.listen((event) {
+      final isLoggedIn = event.userInfo != null;
+      final loggedOut = wasLoggedIn == true && !isLoggedIn;
+      wasLoggedIn = isLoggedIn;
+      if (loggedOut && state.selectedType == LayerType.favourites) {
+        Future.microtask(() async {
+          await ref.read(favouriteToggleProvider.notifier).disable();
+          setSelection();
+        });
+      }
     });
 
     _tapSubscription = tapSubject.debounceTime(duration).listen(_tapHandler);
@@ -218,19 +253,25 @@ class LayersControls extends _$LayersControls {
         await toggleParking();
         break;
       case LayerType.metro:
-        toggleMetro();
+        await toggleMetro();
         break;
       case LayerType.busSubMenu:
         // no op
         break;
       case LayerType.makkahBus:
-        toggleMakkahBuses();
+        await toggleMakkahBuses();
         break;
       case LayerType.shuttleBus:
-        toggleHaramShuttle();
+        await toggleHaramShuttle();
         break;
       case LayerType.jeddahBus:
-        toggleJeddahBuses();
+        await toggleJeddahBuses();
+        break;
+      case LayerType.defaultMap:
+        await ref.read(satelliteMapControllerProvider.notifier).disable();
+        break;
+      case LayerType.satellite:
+        await ref.read(satelliteMapControllerProvider.notifier).enable();
         break;
       // case LayerType.joy:
       //   await toggleIwish();
@@ -284,11 +325,20 @@ class LayersControls extends _$LayersControls {
   }
 
   Future<void> toggleFavourites() async {
+    final currentState = state.selectedType;
     await _viewPortSubscription?.cancel();
     await _removeAll();
     _cancelToken?.cancel();
 
-    if (state.selectedType != (LayerType.favourites)) {
+    if (currentState != LayerType.favourites) {
+      // BALADY-3730: same mutual-exclusion guard as toggleParking — when
+      // favourites is activated while another overlay is on (e.g. traffic
+      // or metro), hide the previous native layer so the two don't render
+      // side-by-side. Idempotent (each branch checks isEnabled), so the
+      // double-call from _tapHandler stays safe.
+      if (currentState != null) {
+        await _hidePreviousLayers(currentState);
+      }
       await ref.read(favouriteToggleProvider.notifier).enable();
       setSelection(selectedType: LayerType.favourites);
     } else {
@@ -297,53 +347,69 @@ class LayersControls extends _$LayersControls {
     }
   }
 
-  void toggleMetro() {
+  Future<void> toggleMetro() async {
+    final currentState = state.selectedType;
     final isVisible = ref.read(metroLayerVisibleProvider);
     if (isVisible) {
       ref.read(metroLayerProvider.notifier).hideMetro();
-      if (state.selectedType == LayerType.metro) {
+      if (currentState == LayerType.metro) {
         setSelection();
       }
     } else {
+      if (currentState != null && currentState != LayerType.metro) {
+        await _hidePreviousLayers(currentState);
+      }
       ref.read(metroLayerProvider.notifier).showMetro();
       setSelection(selectedType: LayerType.metro);
     }
   }
 
-  void toggleMakkahBuses() {
+  Future<void> toggleMakkahBuses() async {
+    final currentState = state.selectedType;
     final isVisible = ref.read(makkahBusLayerVisibleProvider);
     if (isVisible) {
       ref.read(makkahBusLayerProvider.notifier).hide();
-      if (state.selectedType == LayerType.makkahBus) {
+      if (currentState == LayerType.makkahBus) {
         setSelection();
       }
     } else {
+      if (currentState != null && currentState != LayerType.makkahBus) {
+        await _hidePreviousLayers(currentState);
+      }
       ref.read(makkahBusLayerProvider.notifier).show();
       setSelection(selectedType: LayerType.makkahBus);
     }
   }
 
-  void toggleHaramShuttle() {
+  Future<void> toggleHaramShuttle() async {
+    final currentState = state.selectedType;
     final isVisible = ref.read(shuttleBusLayerVisibleProvider);
     if (isVisible) {
       ref.read(shuttleBusLayerProvider.notifier).hide();
-      if (state.selectedType == LayerType.shuttleBus) {
+      if (currentState == LayerType.shuttleBus) {
         setSelection();
       }
     } else {
+      if (currentState != null && currentState != LayerType.shuttleBus) {
+        await _hidePreviousLayers(currentState);
+      }
       ref.read(shuttleBusLayerProvider.notifier).show();
       setSelection(selectedType: LayerType.shuttleBus);
     }
   }
 
-  void toggleJeddahBuses() {
+  Future<void> toggleJeddahBuses() async {
+    final currentState = state.selectedType;
     final isVisible = ref.read(jeddahBusLayerVisibleProvider);
     if (isVisible) {
       ref.read(jeddahBusLayerProvider.notifier).hide();
-      if (state.selectedType == LayerType.jeddahBus) {
+      if (currentState == LayerType.jeddahBus) {
         setSelection();
       }
     } else {
+      if (currentState != null && currentState != LayerType.jeddahBus) {
+        await _hidePreviousLayers(currentState);
+      }
       ref.read(jeddahBusLayerProvider.notifier).show();
       setSelection(selectedType: LayerType.jeddahBus);
     }
@@ -410,6 +476,9 @@ class LayersControls extends _$LayersControls {
   Future<void> toggleComplianceBuildings() async {
     final currentState = state.selectedType;
     if (currentState != (LayerType.buildings)) {
+      if (currentState != null) {
+        await _hidePreviousLayers(currentState);
+      }
       setSelection(selectedType: LayerType.buildings);
       update(isLoading: true);
       await _showBuildingCompliance();
@@ -424,6 +493,9 @@ class LayersControls extends _$LayersControls {
   Future<void> toggleInvestOpportunities() async {
     final currentState = state.selectedType;
     if (currentState != (LayerType.invest)) {
+      if (currentState != null) {
+        await _hidePreviousLayers(currentState);
+      }
       await _showInvestmentOpportunities(LayerType.invest);
     } else {
       await _removeAll();
@@ -436,6 +508,9 @@ class LayersControls extends _$LayersControls {
   Future<void> toggleWhiteLands() async {
     final currentState = state.selectedType;
     if (currentState != (LayerType.fencing)) {
+      if (currentState != null) {
+        await _hidePreviousLayers(currentState);
+      }
       await _showWhiteLands();
     } else {
       await _viewPortSubscription?.cancel();
@@ -462,6 +537,16 @@ class LayersControls extends _$LayersControls {
 
       await ref.read(parkingStateProvider.notifier).hideParking();
     } else {
+      // BALADY-3615: when parking is activated while another overlay is
+      // on (e.g. via the dashboard quick action that calls toggleParking
+      // directly, bypassing _tapHandler), the previous layer kept
+      // rendering alongside parking. Hide the previous layer here so the
+      // toggle stays mutually exclusive regardless of call site.
+      // _hidePreviousLayers is idempotent (each branch checks isEnabled
+      // before disabling), so the double-call from _tapHandler is safe.
+      if (currentState != null) {
+        await _hidePreviousLayers(currentState);
+      }
       await _removeMapObjects();
       setSelection(selectedType: LayerType.parkingLots);
       await ref.read(parkingStateProvider.notifier).showParking();
@@ -485,6 +570,12 @@ class LayersControls extends _$LayersControls {
     await _viewPortSubscription?.cancel();
     unawaited(_removeMapObjects());
     final currentState = state.selectedType;
+    // TEMP(BALADY-3615): trace — remove after QA confirms.
+    logger.log(
+      'layers: enableParking selectedType=$currentState '
+      'trafficEnabled=${ref.read(trafficStateProvider.notifier).isTrafficEnabled}',
+      logLevel: MapnessLogLevel.info,
+    );
     if (currentState != null && currentState != LayerType.parkingLots) {
       await _hidePreviousLayers(currentState);
     }
@@ -625,17 +716,42 @@ class LayersControls extends _$LayersControls {
   }
 
   Future<void> _tapHandler(LayerType value) async {
+    // Satellite / default base-map switch is independent of overlay layers —
+    // do not clear the active overlay or its selection state.
+    if (value == LayerType.satellite || value == LayerType.defaultMap) {
+      await toggleLayers(value);
+      return;
+    }
+
     final currentState = state.selectedType;
+
+    // TEMP(BALADY-3615): trace the mutex chain — remove after QA confirms.
+    logger.log(
+      'layers: tap=$value selectedType=$currentState '
+      'trafficEnabled=${ref.read(trafficStateProvider.notifier).isTrafficEnabled}',
+      logLevel: MapnessLogLevel.info,
+    );
 
     _cancelToken?.cancel();
     await _viewPortSubscription?.cancel();
     await _hideAllSelectedMarkers();
     ref.read(poiCardClosingProvider.notifier).close();
 
-    if (currentState != null && currentState != value) {
-      await _hidePreviousLayers(currentState);
-    }
+    // BALADY-3615: do NOT call _hidePreviousLayers here. Every toggle*
+    // reached via toggleLayers hides the previous overlay itself (they must,
+    // because dashboard/free-roam call them directly). Calling it here too
+    // fired the traffic hide TWICE: hiding traffic is a native toggle-click
+    // (onTrafficTap), and the disabled event does not land between the two
+    // calls — the second click re-enabled traffic, leaving it rendered
+    // under the newly selected overlay.
     await toggleLayers(value);
+
+    // TEMP(BALADY-3615): post-toggle state.
+    logger.log(
+      'layers: after tap=$value selectedType=${state.selectedType} '
+      'trafficEnabled=${ref.read(trafficStateProvider.notifier).isTrafficEnabled}',
+      logLevel: MapnessLogLevel.info,
+    );
   }
 
   Future<void> _hidePreviousLayers(LayerType layer) async {
@@ -683,11 +799,19 @@ class LayersControls extends _$LayersControls {
         break;
       case LayerType.traffic:
         final trafficNotifier = ref.read(trafficStateProvider.notifier);
+        // TEMP(BALADY-3615): trace — remove after QA confirms.
+        logger.log(
+          'layers: hidePrevious(traffic) trafficEnabled=${trafficNotifier.isTrafficEnabled}',
+          logLevel: MapnessLogLevel.info,
+        );
         if (trafficNotifier.isTrafficEnabled) {
           trafficNotifier.onTrafficTap();
         }
         break;
       case LayerType.three3D:
+      case LayerType.defaultMap:
+      case LayerType.satellite:
+        break;
       // case LayerType.roadEvents:
       //   break;
     }
@@ -839,7 +963,7 @@ class LayersControls extends _$LayersControls {
                     strokeColor: Colors.white.value,
                     strokeWidth: 1,
                     fontSize: 14,
-                    fontName: 'IBMPlexSansArabic-Bold',
+                    fontName: MapnessConstants.poiMapFontAr,
                     textPlacement: MarkerTextPlacementMessage(placement: TextPlacementMessage.bottomCenter),
                   ),
                 ),
@@ -911,6 +1035,13 @@ class LayersControls extends _$LayersControls {
   Future<void> toggleTraffic() async {
     final trafficNotifier = ref.read(trafficStateProvider.notifier);
     final wasEnabled = trafficNotifier.isTrafficEnabled;
+    final currentState = state.selectedType;
+
+    // TEMP(BALADY-3615): trace — remove after QA confirms.
+    logger.log(
+      'layers: toggleTraffic wasEnabled=$wasEnabled selectedType=$currentState',
+      logLevel: MapnessLogLevel.info,
+    );
 
     Metrics.logEventAdvanced(
       MetricsConstants.exploreKeys.trafficLightButton,
@@ -918,10 +1049,16 @@ class LayersControls extends _$LayersControls {
       action: MetricAction.tap.name,
     );
 
+    // BALADY-3615: when enabling traffic while another overlay is on, hide
+    // the previous layer first so the two don't render side-by-side.
+    if (!wasEnabled && currentState != null && currentState != LayerType.traffic) {
+      await _hidePreviousLayers(currentState);
+    }
+
     trafficNotifier.onTrafficTap();
 
     if (wasEnabled) {
-      if (state.selectedType == LayerType.traffic) {
+      if (currentState == LayerType.traffic) {
         setSelection();
       }
     } else {

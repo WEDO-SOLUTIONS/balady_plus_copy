@@ -43,13 +43,7 @@ class FeedbackInput extends HookWidget {
       validator: FormBuilderValidators.compose([
         switch (field.type) {
           FeedbackTextType.email => FormBuilderValidators.email(checkNullOrEmpty: false),
-          FeedbackTextType.phone => FormBuilderValidators.compose([
-              FormBuilderValidators.phoneNumber(checkNullOrEmpty: false),
-              FormBuilderValidators.minLength(
-                PhoneNumberFormatter.arabicPhoneNumberMinLength,
-                checkNullOrEmpty: false,
-              ),
-            ]),
+          FeedbackTextType.phone => PhoneNumberFormatter.validateSaudiMobile,
           FeedbackTextType.url => FormBuilderValidators.url(checkNullOrEmpty: false),
           _ => (_) => null,
         },
@@ -69,8 +63,8 @@ class FeedbackInput extends HookWidget {
           maxLines: isAddress
               ? null
               : field.type == FeedbackTextType.multilineText
-                  ? 5
-                  : 1,
+              ? 5
+              : 1,
           onChanged: (value) {
             final trimmedStart = value.replaceFirst(RegExp(r'^\s+'), '');
 
