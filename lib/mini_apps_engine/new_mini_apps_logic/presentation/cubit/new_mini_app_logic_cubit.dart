@@ -6,6 +6,7 @@ import 'package:balady_plus/app/core/dependency_injection/injection_container.da
 import 'package:balady_plus/app/core/errors/failures.dart';
 import 'package:balady_plus/app/core/services/local/navigation_services.dart';
 import 'package:balady_plus/app/core/utils/common_functions.dart';
+import 'package:balady_plus/app/core/utils/nullable.dart';
 import 'package:balady_plus/app/core/utils/constants/route_names.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/dialogs/need_login_bottom_sheet.dart';
 import 'package:balady_plus/app/features/delegators/presentation/delegators_cubit/delegators_cubit.dart';
@@ -38,16 +39,15 @@ class NewMiniAppLogicCubit extends Cubit<NewMiniAppLogicState> {
   Timer? _searchDebounce;
 
   //! Get mini apps ...
-  Future<void> loadMiniApps({
-    bool showLoading = true,
-    bool forceRefresh = false,
-  }) async {
-
-    print("Future<void> loadMiniApps({");
+  Future<void> loadMiniApps({bool showLoading = true, bool forceRefresh = false}) async {
     //! Always block concurrent calls — even forceRefresh must wait until the
     //! current load finishes. This prevents the double-load that happens when
     //! `authenticated` and `unAuthenticatedState` both fire on first open.
-    if (state.isAppsGroupLoading == true || state.isFavLoading == true || state.isUnFavLoading == true || state.isSearching == true || state.isEntryPointsLoading == true) {
+    if (state.isAppsGroupLoading == true ||
+        state.isFavLoading == true ||
+        state.isUnFavLoading == true ||
+        state.isSearching == true ||
+        state.isEntryPointsLoading == true) {
       return;
     }
 
@@ -60,12 +60,11 @@ class NewMiniAppLogicCubit extends Cubit<NewMiniAppLogicState> {
         isFavLoading: true,
         isAppsGroupLoading: true,
         isEntryPointsLoading: true,
-        favError: null,
-        entryPointsError: null,
+        favError: Nullable(null),
+        entryPointsError: Nullable(null),
         isSearching: false,
         searchResults: const [],
-        searchError: null,
-
+        searchError: Nullable(null),
       ),
     );
 
@@ -80,8 +79,8 @@ class NewMiniAppLogicCubit extends Cubit<NewMiniAppLogicState> {
             isFavLoading: false,
             isAppsGroupLoading: false,
             isEntryPointsLoading: false,
-            favError: e.toString(),
-            entryPointsError: e.toString(),
+            favError: Nullable(e.toString()),
+            entryPointsError: Nullable(e.toString()),
           ),
         );
       },
@@ -149,8 +148,8 @@ class NewMiniAppLogicCubit extends Cubit<NewMiniAppLogicState> {
             parentMiniApp: data.parentMiniApp,
             appGroups: filteredGroups,
             entryPoints: filteredEntryPoints,
-            favError: null,
-            entryPointsError: null,
+            favError: Nullable(null),
+            entryPointsError: Nullable(null),
           ),
         );
       },
@@ -161,12 +160,16 @@ class NewMiniAppLogicCubit extends Cubit<NewMiniAppLogicState> {
   Future<void> refreshMiniApps() async {
     if (state.isRefreshing) return;
 
-    emit(state.copyWith(isRefreshing: true, favError: null, entryPointsError: null, searchError: null));
-
-    await loadMiniApps(
-      showLoading: false,
-      forceRefresh: true,
+    emit(
+      state.copyWith(
+        isRefreshing: true,
+        favError: Nullable(null),
+        entryPointsError: Nullable(null),
+        searchError: Nullable(null),
+      ),
     );
+
+    await loadMiniApps(showLoading: false, forceRefresh: true);
 
     emit(state.copyWith(isRefreshing: false));
   }
@@ -221,7 +224,7 @@ class NewMiniAppLogicCubit extends Cubit<NewMiniAppLogicState> {
       final trimmed = query.trim();
 
       if (trimmed.isEmpty) {
-        emit(state.copyWith(searchResults: [], isSearching: false, searchError: null));
+        emit(state.copyWith(searchResults: [], isSearching: false, searchError: Nullable(null)));
         return;
       }
 
@@ -242,10 +245,10 @@ class NewMiniAppLogicCubit extends Cubit<NewMiniAppLogicState> {
         return _isFuzzyMatch(name, q) || _isFuzzyMatch(description, q);
       }).toList();
 
-      emit(state.copyWith(isSearching: false, searchResults: results, searchError: null));
+      emit(state.copyWith(isSearching: false, searchResults: results, searchError: Nullable(null)));
     });
 
-    emit(state.copyWith(isSearching: true, searchError: null, searchResults: []));
+    emit(state.copyWith(isSearching: true, searchError: Nullable(null), searchResults: []));
   }
 
   String _normalizeForSearch(String input) {
@@ -434,6 +437,10 @@ class NewMiniAppLogicCubit extends Cubit<NewMiniAppLogicState> {
       return;
     }
 
+    // 2. Initiate loading if allMiniApps is empty and not already loading
+    if (state.allMiniApps.isEmpty && !state.isAppsGroupLoading) {
+      loadMiniApps();
+    }
 
     await _deepLinkSubscription?.cancel();
 
@@ -441,8 +448,6 @@ class NewMiniAppLogicCubit extends Cubit<NewMiniAppLogicState> {
       final miniApp = state.allMiniApps.firstWhereOrNull((s) => s.serviceKey == serviceKey);
 
       if (miniApp != null) {
-        debugPrint("Data arrived! Opening ${miniApp.name}");
-
         openMiniApp(miniApp.copyWith());
 
         // 3. STOP listening once we've succeeded
@@ -454,7 +459,18 @@ class NewMiniAppLogicCubit extends Cubit<NewMiniAppLogicState> {
 
   void clearSearch() {
     _searchDebounce?.cancel();
-    emit(state.copyWith(searchResults: [], isSearching: false, searchError: null, isAppsGroupLoading: false, isEntryPointsLoading: false, isFavLoading: false, isUnFavLoading: false, isRefreshing: false));
+    emit(
+      state.copyWith(
+        searchResults: [],
+        isSearching: false,
+        searchError: Nullable(null),
+        isAppsGroupLoading: false,
+        isEntryPointsLoading: false,
+        isFavLoading: false,
+        isUnFavLoading: false,
+        isRefreshing: false,
+      ),
+    );
   }
 
   void setSortType(FilterOptionType? sortType) {
@@ -660,7 +676,6 @@ class NewMiniAppLogicCubit extends Cubit<NewMiniAppLogicState> {
         .whereType<EntryPoints>()
         .toList();
   }
-
 
   MiniApp? getMiniAppByServiceId(String serviceKey) {
     try {

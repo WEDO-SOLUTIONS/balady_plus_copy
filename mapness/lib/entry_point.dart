@@ -4,6 +4,7 @@ import 'dart:async';
 
 import 'package:app_links/app_links.dart';
 import 'package:balady_plus/app/core/dependency_injection/injection_container.dart';
+import 'package:balady_plus/app/core/utils/constants/remote_config.dart';
 import 'package:balady_plus/app/core/utils/constants/ux_cam_events.dart';
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
 import 'package:balady_plus/app/features/accecipilities/balady_theme_controller.dart';
@@ -15,6 +16,7 @@ import 'package:balady_uikit/core/colorsV2/app_theme.dart';
 import 'package:balady_uikit/core/colorsV2/themes.dart';
 import 'package:balady_uikit/core/typography/text_theme_styles.dart';
 import 'package:balady_uikit/core/typography/text_theme_styles_v3.dart';
+import 'package:collection/collection.dart';
 // ignore: depend_on_referenced_packages
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:dgis_map/library.dart';
@@ -23,6 +25,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_insider/enum/InsiderCallbackAction.dart';
 import 'package:flutter_insider/flutter_insider.dart';
+import 'package:mapness/features/app_analytics/insider_custom_action_handler.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_uxcam/flutter_uxcam.dart';
 import 'package:geolocator/geolocator.dart';
@@ -198,7 +201,9 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> with Widg
 
   String _fontFamily() {
     final language = ref.watch(appLanguageProvider);
-    return language == Language.arabic ? 'packages/balady_uikit/Frutiger' : 'packages/balady_uikit/Golos';
+    return language == Language.arabic
+        ? 'packages/balady_design_system/IBMPlexSansArabic'
+        : 'packages/balady_uikit/Golos';
   }
 
   @override
@@ -838,6 +843,7 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> with Widg
           break;
         case InsiderCallbackAction.TEMP_STORE_CUSTOM_ACTION:
           _startupLog('[INSIDER][TEMP_STORE_CUSTOM_ACTION]: $data');
+          InsiderCustomActionHandler.handleCustomAction(data);
           break;
         default:
           _startupLog('[INSIDER][InsiderCallbackAction]: Unregistered Action!');
@@ -1069,7 +1075,11 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> with Widg
         await router.push(MapnessServicesRoute());
       } else if (url.path == '/parking') {
         _openParking();
-      } else {
+      } else if (url.path == '/media') {
+        _openMediaCatelog();
+      }
+
+      else {
         await router.pushPath(url.toString());
       }
     }
@@ -1098,6 +1108,11 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> with Widg
     await CommonFunctions.onLogin();
   }
 
+
+  Future<void> _openMediaCatelog() async {
+    final AppRouter router = await ref.watch(appRouterProvider);
+    await router.push(const MediaCatalogRoute());
+  }
   void _openParking() {
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       ref.read(appAnalyticsProvider).quickActionSelected('parking');
@@ -1233,37 +1248,55 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> with Widg
 
   Future<void> _openQuickFilter(String filter) async {
     final AppRouter router = await ref.watch(appRouterProvider);
-    final quickFilter = QuickFilter.values.firstWhere(
-      (element) => element.name == filter,
+    final quickFilter = QuickFilter.values.firstWhereOrNull(
+      (element) => element.name.toLowerCase() == filter.toLowerCase(),
     );
-    unawaited(
-      ref.read(urbiAnalyticsProvider).track('quickFilterSearch', properties: {'filter': quickFilter.name}),
-    );
-    ref.read(appAnalyticsProvider).categorySelected(quickFilter.name);
-    ref.read(advertMetricsProvider.notifier).sendEvent(AdvertMetricsKeys.exploreSearch);
+    final NaviQuickFilterMore? naviFilter = quickFilter == null
+        ? NaviQuickFilterMore.values.firstWhereOrNull(
+          (element) => element.name.toLowerCase() == filter.toLowerCase(),
+    ) : null;
 
-    final language = ref.read(appLanguageProvider);
+    if (quickFilter == null && naviFilter == null) return;
 
-    final query = quickFilter.query[language];
-    if (query != null) {
+    final String filterName = quickFilter?.name ?? naviFilter!.name;
       unawaited(
-        BssService.instance.sendEvent(
-          BssRequest(
-            eventType: BSSEventType.action,
-            actionType: BSSActionType.deeplink,
-            uiElement: const BssUIElement(
-              name: BssUIElementNames.searchStart,
-              ownerName: BssUIElementNames.searchBar,
-            ),
-            payload: BssPayload(searchRequest: BssSearchRequest(text: query)),
-          ),
-        ),
+        ref.read(urbiAnalyticsProvider).track('quickFilterSearch', properties: {'filter': filterName}),
       );
-    }
-    unawaited(router.push(SearchRoute(requestFocus: false)));
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      ref.read(searchProvider(SearchScopeEnum.map.value).notifier).quickSearch(quickFilter);
-    });
+      ref.read(appAnalyticsProvider).categorySelected(filterName);
+      ref.read(advertMetricsProvider.notifier).sendEvent(AdvertMetricsKeys.exploreSearch);
+
+      final language = ref.read(appLanguageProvider);
+
+       final String? query = quickFilter?.query[language] ?? naviFilter?.query[language];
+      if (query != null) {
+        unawaited(
+          BssService.instance.sendEvent(
+            BssRequest(
+              eventType: BSSEventType.action,
+              actionType: BSSActionType.deeplink,
+              uiElement: const BssUIElement(
+                name: BssUIElementNames.searchStart,
+                ownerName: BssUIElementNames.searchBar,
+              ),
+              payload: BssPayload(searchRequest: BssSearchRequest(text: query)),
+            ),
+          ),
+        );
+      }
+      unawaited(router.push(SearchRoute(requestFocus: false)));
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        final searchNotifier = ref.read(searchProvider(SearchScopeEnum.map.value).notifier);
+
+        if (quickFilter != null) {
+          searchNotifier.quickSearch(quickFilter);
+        } else if (naviFilter != null) {
+          searchNotifier.searchByText(naviFilter.name);
+        }
+
+      });
+
+
+
   }
 
   Future<void> _openStories(String id) async {
@@ -1472,14 +1505,15 @@ Future<void> setupMapness(EnvType envType) async {
 
 /// Initializes the BytePlus RangersAppLog SDK (DataFinder analytics).
 ///
-/// App ID is hardcoded per flavor for now.
-/// TODO: staging is temporarily pointed at the (future) PRODUCTION BytePlus
-/// project so we can validate prod-project data on TestFlight. Switch staging
-/// back to the staging project id once validation is done.
-/// TODO: replace `_kBytePlusProdAppId` with the real PRODUCTION project App ID
-/// once it is registered in the BytePlus console (Project Center → Details).
-/// TODO: move these ids to build-time config (--dart-define) instead of
-/// hardcoding.
+/// Config is read per-flavor from the loaded `.env.<flavor>` file via
+/// [RemoteConfig] (same pattern as APIGEE/SSO). Each flavor points at the right
+/// BytePlus project through its own `BYTEPLUS_APP_ID`:
+///  * `.env.prod` → production project `Balady` (10000002),
+///  * `.env.stg` / `.env.pre` / `.env.dev` → `Balady Staging Test` (10000000).
+///
+/// Only real production traffic goes to the production project; pre-prod and all
+/// lower environments report to staging so they don't pollute prod analytics.
+
 /// Guards against initializing the BytePlus SDK more than once — `setupMapness`
 /// can run twice (e.g. the engine re-attaches), and a second `initRangersAppLog`
 /// triggers a duplicate device-register / session.
@@ -1490,17 +1524,12 @@ void _initBytePlus(EnvType envType) {
     return;
   }
 
-  // Staging project id (Balady Staging Test APP). Used as the placeholder for
-  // production until the real prod project is registered.
-  const stagingAppId = '10000000';
-  const prodAppId = stagingAppId; // TODO: replace with real prod App ID.
+  final isProduction = envType == EnvType.prod;
+  final appId = RemoteConfig.bytePlusAppId;
+  final channel = RemoteConfig.bytePlusChannel;
 
-  final isProduction = envType == EnvType.prod || envType == EnvType.pre;
-  final appId = isProduction ? prodAppId : stagingAppId;
-  final channel = isProduction ? 'AppStore' : 'TestFlight';
-
-  if (appId.isEmpty || appId.startsWith('TODO')) {
-    debugPrint('[BytePlus] Skipped: App ID not configured yet.');
+  if (appId.isEmpty) {
+    debugPrint('[BytePlus] Skipped: BYTEPLUS_APP_ID not set in .env.${envType.name}.');
     return;
   }
 

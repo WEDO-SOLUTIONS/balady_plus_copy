@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:mapness/features/app_analytics/app_analytics_repository.dart';
 import 'package:mapness/features/app_analytics/data/app_analytics_byteplus_impl.dart';
 import 'package:mapness/features/app_analytics/data/app_analytics_insider_impl.dart';
@@ -143,6 +144,9 @@ class _CompositeAnalytics implements AppAnalyticsApi {
     String? deviceOs,
     String? appVersion,
     String? userId,
+    String? phone,
+    String? firstName,
+    String? lastName,
   }) {
     for (final impl in _implementations) {
       impl.setUserInfo(
@@ -152,6 +156,9 @@ class _CompositeAnalytics implements AppAnalyticsApi {
         deviceOs: deviceOs,
         appVersion: appVersion,
         userId: userId,
+        phone: phone,
+        firstName: firstName,
+        lastName: lastName,
       );
     }
   }
@@ -369,11 +376,20 @@ class _CompositeAnalytics implements AppAnalyticsApi {
   }
 }
 
-@riverpod
+// Prevents auto-dispose to avoid re-initializing analytics on page changes
+@Riverpod(keepAlive: true)
 class AppAnalytics extends _$AppAnalytics {
   @override
   AppAnalyticsApi build() {
-    final auth = ref.watch(authProvider.future);
+    // Watch the auth AsyncValue (NOT `authProvider.future`). `Auth` updates its
+    // state imperatively (`state = AsyncValue.data(userInfo)`) from an
+    // EntryPointCubit stream listener on login/logout; that mutation re-emits the
+    // AsyncValue and rebuilds watchers of `authProvider`, but does NOT produce a
+    // fresh `.future` — so watching `.future` captured the pre-login value once
+    // and never refired on login (DataFinder stayed logged-out). Matching the
+    // rest of the app (`ref.watch(authProvider).value`) makes this rebuild on
+    // every login/logout/account switch.
+    final auth = ref.watch(authProvider);
     final analytics =
         stateOrNull ??
         _CompositeAnalytics([
@@ -383,8 +399,18 @@ class AppAnalytics extends _$AppAnalytics {
     final locale = ref.watch(appLanguageProvider).languageCode;
     final deviceInfo = ref.watch(deviceInfoProvider.future);
     Future(() async {
-      final authValue = await auth;
+      final authValue = auth.value;
       final deviceInfoValue = await deviceInfo;
+
+      // TEMP debug (physical-device testing of the DataFinder user identity):
+      // shows what id resolves per login type. grep console for [DataFinder].
+      debugPrint(
+        '[DataFinder] resolve userId -> '
+        'loggedIn=${authValue != null} '
+        'loginType=${authValue?.loginType.name} '
+        'sub=${authValue?.sub} idNo=${authValue?.idNo} '
+        '=> ${authValue == null ? 'null' : (authValue.sub ?? authValue.idNo)}',
+      );
 
       analytics.setUserInfo(
         email: authValue?.getEmail(),
@@ -392,9 +418,25 @@ class AppAnalytics extends _$AppAnalytics {
         deviceId: deviceInfoValue.deviceId,
         deviceOs: deviceInfoValue.mobileOS?.name,
         appVersion: deviceInfoValue.appVersion,
-        // Logged-in user id (national id). Null when logged out → BytePlus
-        // falls back to the device id.
-        userId: deviceInfoValue.authId,
+        // Logged-in user id. Use `sub` — the SSO subject id — because it is the
+        // ONE identifier that means the same thing across phone (OTP) and
+        // national-id (SSO) login (unlike `idNo`, which is `sub` on phone but the
+        // national id on SSO). `null` => not logged in (DataFinder clears the
+        // user); non-null => logged in.
+        //
+        // Read from the *live* auth state we already `ref.watch` above — NOT from
+        // `deviceInfoProvider`, which is `keepAlive` and captures its id once at
+        // app start (before login) and never refreshes. Watching auth makes this
+        // rebuild on every login/logout/account switch, so the correct id is sent
+        // and it clears on logout.
+        //
+        // Fallback to `idNo` only while genuinely logged in, so a (theoretical)
+        // SSO token missing the `sub` claim never makes a logged-in user look
+        // logged out. On phone login `sub` is a guaranteed non-null String.
+        userId: authValue == null ? null : (authValue.sub ?? authValue.idNo),
+        phone: authValue?.getPhone(),
+        firstName: authValue?.getFirstName(),
+        lastName: authValue?.getLastName(),
       );
     });
 

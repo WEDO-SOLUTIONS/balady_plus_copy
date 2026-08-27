@@ -16,14 +16,8 @@ publish_to: "none" # Remove this line if you wish to publish to pub.dev
 # Read more about iOS versioning at
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
 
-# to access balady-unpub-stg.momah.gov.sa you must put this line on your local machine
-# 1- open terminal
-# 2- tun this command line
-# echo "80.225.75.31 balady-unpub-stg.momah.gov.sa" | sudo tee -a /etc/hosts
-# 80.225.75.31 - balady-unpub-stg.momah.gov.sa
-
-version: 3.30.1+864
-#version: 3.13.1+452
+version: 3.30.3+874
+#version: 3.13.5+466
 
 environment:
   sdk: ">=3.8.0 <4.0.0"
@@ -77,7 +71,7 @@ dependencies:
   # Native APP to open files with string result
   open_filex: ^4.7.0
   # for getting commonly used locations on host platform file
-  path_provider: ^2.1.5
+  path_provider: ^2.1.6
   # Launching a URL, Open contacts and others.
   url_launcher: ^6.3.2
   ##! UI
@@ -145,7 +139,7 @@ dependencies:
   #    git:
   #      url: https://github.com/MahmoudBaha/flutter_google_places
   flutter_picker_plus:
-    hosted: https://balady-unpub-stg.momah.gov.sa/
+    hosted: https://unpub.balady.gov.sa/
     version: ^1.5.4
   percent_indicator: ^4.2.5
   # flutter_cached_pdfview: ^0.4.2
@@ -175,8 +169,8 @@ dependencies:
 
   # Mapness
   balady_uikit:
-    hosted: https://balady-unpub-stg.momah.gov.sa/
-    version: 5.1.4
+    hosted: https://unpub.balady.gov.sa/
+    version: 5.1.7
 
 
   sheetify: ^1.1.3
@@ -207,11 +201,8 @@ dependencies:
   ############################################################
   balady_authorization:
     # path: /Users/hashemalkhateeb/Development/flutter_projects/nhc_projects/packages//BaladyAuthorization
-   hosted: https://balady-unpub-stg.momah.gov.sa/
-   version: 1.0.13
-    # TODO(Shady) update the latest version on new unpup
-    # hosted: https://baladyapp-unpub.urbi.ae/
-    # version: 1.0.16
+    hosted: https://unpub.balady.gov.sa/
+    version: 1.0.18
   #path: /Users/mhamed/work/projects/Balady/BaladyAuthorization
   # git:
   #   url: https://tfs.momra.gov.sa/tfs/MOMRACollection/MobileApps/_git/BaladyAuthorization
@@ -222,9 +213,8 @@ dependencies:
   ############################################################
   balady_design_system:
 #    path: /Users/hashemalkhateeb/Development/flutter_projects/nhc_projects/packages/balady_design_system
-     # TODO: we need to double check if 0.0.13 published on new host
-     hosted: https://balady-unpub-stg.momah.gov.sa/
-     version: 0.0.13
+     hosted: https://unpub.balady.gov.sa/
+     version: 0.0.5-dev
   #      git:
   #        url: https://tfs.momra.gov.sa/tfs/MOMRACollection/MobileApps/_git/balady_design_system
   #        ref: main
@@ -247,7 +237,7 @@ dependencies:
   collection: ^1.19.1
   image: ^4.7.2
   http: ^1.6.0
-  flutter_insider: ^4.0.6+nh
+
   sentry_dio: ^9.9.2
   shelf: ^1.4.2
   timezone: ^0.10.0
@@ -403,3 +393,9 @@ dependency_overrides:
   # (path_provider_foundation >=2.5.0 uses objective_c which fails on Simulator)
   path_provider_foundation: 2.4.0
 
+  # BALADY-3755 / BALADY-3768: vendored copy of sheetify 1.1.3, patched so that
+  # a keyboard belonging to an iOS share extension no longer collapses our
+  # layout. See third_party/sheetify/VENDORING.md.
+  # Drop this override once the fix is released upstream (urbi-ae/sheetify).
+  sheetify:
+    path: third_party/sheetify

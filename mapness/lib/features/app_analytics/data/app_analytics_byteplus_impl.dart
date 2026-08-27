@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:device_info_plus/device_info_plus.dart';
+import 'package:flutter/foundation.dart';
 import 'package:mapness/features/app_analytics/app_analytics_repository.dart';
 import 'package:mapness/features/app_analytics/models/datafinder_models.dart';
 import 'package:rangers_applog_flutter_plugin/rangers_applog_flutter_plugin.dart';
@@ -63,12 +64,19 @@ class AppAnalyticsBytePlusImpl implements AppAnalyticsRepository, DataFinderAnal
     String? deviceOs,
     String? appVersion,
     String? userId,
+    String? phone,
+    String? firstName,
+    String? lastName,
   }) {
-    // BytePlus user identity: the logged-in user id when available, otherwise the
-    // device id. This re-runs on auth changes (login/logout), so on logout
-    // `userId` is null and we fall back to the device id.
-    final identity = (userId != null && userId.isNotEmpty) ? userId : deviceId;
-    if (identity != null) RangersApplogFlutterPlugin.setUserUniqueId(identity);
+    // Always call: a non-null [userId] (the SSO `sub`) logs the user in; `null`
+    // logs them OUT. The RangersAppLog plugin explicitly treats
+    // `setUserUniqueId(null)` as logout, so this must NOT be guarded by a
+    // null-check — otherwise the previous user stays "logged in" to DataFinder
+    // after sign-out / account switch.
+    // TEMP debug (physical-device testing of the DataFinder user identity):
+    // grep the device console for [DataFinder] to trace login/logout/sub.
+    debugPrint('[DataFinder] setUserUniqueId(${userId ?? 'null → LOGOUT'})');
+    RangersApplogFlutterPlugin.setUserUniqueId(userId);
 
     final profile = <String, dynamic>{};
     if (email != null) profile['email'] = email;
