@@ -11,6 +11,7 @@ import 'package:mapness/entities/hajj/poi_marker_rcmc.dart';
 import 'package:mapness/features/city_event/active_city_event.dart';
 import 'package:mapness/features/hajj/hajj_rcmc_provider.dart';
 import 'package:mapness/features/lifestyle_layers/configs/layers_consts.dart';
+import 'package:mapness/shared/constants/constants.dart';
 import 'package:mapness/shared/extensions/int_extention.dart';
 import 'package:mapness/shared/extensions/marker_icons_ext.dart';
 import 'package:mapness/shared/extensions/string_ext.dart';
@@ -132,7 +133,7 @@ class HajjWrapperListenersState extends ConsumerState<HajjWrapperListeners> {
       color: isPin ? colorPin : context.themeRead.colors.accentDefault.value,
       strokeColor: isPin ? strokeColorPin : strokeColorMarker,
       fontSize: isPin ? _fontSizePin : _fontSizeMarker,
-      fontName: isArabic ? poiMapFontAr : poiMapFontEn,
+      fontName: isArabic ? MapnessConstants.poiMapFontAr : MapnessConstants.poiMapFontEn,
       textOffset: 4,
       strokeWidth: 1,
     );
