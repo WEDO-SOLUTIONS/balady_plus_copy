@@ -4,12 +4,15 @@ import Foundation
 class PublicTransportModel {
     let route: TrafficRoute
     
-    init(route: TrafficRoute) {
+    let currentPosition: RoutePoint?
+
+    init(route: TrafficRoute, currentPosition: RoutePoint? = nil) {
         self.route = route
+        self.currentPosition = currentPosition
     }
-    
+
     var briefModel: BriefPublicTransportModel {
-        BriefPublicTransportModel(route: route)
+        BriefPublicTransportModel(route: route, currentPosition: currentPosition)
     }
     
     var transfers: [Transfer] {

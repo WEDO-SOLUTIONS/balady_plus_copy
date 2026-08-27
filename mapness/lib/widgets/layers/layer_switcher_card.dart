@@ -10,6 +10,7 @@ import 'package:mapness/features/lifestyle_layers/providers/layers_controls.dart
 import 'package:mapness/features/lifestyle_layers/providers/layers_state.dart' as layers_state;
 import 'package:mapness/features/map_dimensions/map_dimensions_control_provider.dart';
 import 'package:mapness/features/metro/metro_layer_visible_provider.dart';
+import 'package:mapness/features/satellite/providers/satellite_map_controller.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/providers/map/traffic_state.dart' as traffic;
 
@@ -54,6 +55,14 @@ class LayerSwitcherCard extends ConsumerWidget {
       isSelected = layers_state.LayerType.bus.contains(layersState.selectedType);
     }
 
+    if (value == layers_state.LayerType.satellite) {
+      isSelected = ref.watch(satelliteMapControllerProvider);
+    }
+
+    if (value == layers_state.LayerType.defaultMap) {
+      isSelected = !ref.watch(satelliteMapControllerProvider);
+    }
+
     final withIcon = onIconTap != null && layerTapItems.contains(value);
 
     final (imageType, assetPath) = value.imageAsset();
@@ -87,34 +96,34 @@ class LayerSwitcherCard extends ConsumerWidget {
     return Semantics(
       label: value.titleLocale(context.l10n),
       enabled: true,
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Container(
-            decoration: BoxDecoration(
-              border: Border.all(
-                strokeAlign: BorderSide.strokeAlignOutside,
-                color: isSelected != true ? Colors.transparent : colors.accentDefault,
-                width: 3,
-              ),
-              borderRadius: BorderRadius.circular(RadiusBorder.m),
+      child:Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Container(
+          decoration: BoxDecoration(
+            border: Border.all(
+              strokeAlign: BorderSide.strokeAlignOutside,
+              color: isSelected != true ? Colors.transparent : colors.accentDefault,
+              width: 3,
             ),
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(RadiusBorder.m),
-              child: image,
-            ),
+            borderRadius: BorderRadius.circular(RadiusBorder.m),
           ),
-          //  const SizedBox(height: Spacing.$1x),
-          // BE-153: when this is the parking layer card, the whole title row
-          // (text + chevron) opens the parking menu — not only the chevron icon.
-          GestureDetector(
-            onTap: withIcon ? () => onIconTap?.call(value) : null,
-            behavior: HitTestBehavior.opaque,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Flexible(
-                  child: Semantics(
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(RadiusBorder.m),
+            child: image,
+          ),
+        ),
+       //  const SizedBox(height: Spacing.$1x),
+        // BE-153: when this is the parking layer card, the whole title row
+        // (text + chevron) opens the parking menu — not only the chevron icon.
+        GestureDetector(
+          onTap: withIcon ? () => onIconTap?.call(value) : null,
+          behavior: HitTestBehavior.opaque,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Flexible(
+                child: Semantics(
                     label: '',
                     enabled: false,
                     child: Text(

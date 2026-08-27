@@ -1,8 +1,11 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mapness/features/lifestyle_layers/providers/active_layers_tab.dart';
 import 'package:mapness/features/lifestyle_layers/providers/layers_controls.dart';
+import 'package:mapness/features/satellite/providers/base_map_switcher_enabled.dart';
 import 'package:mapness/features/lifestyle_layers/providers/layers_state.dart' as layers_state;
 import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
@@ -20,17 +23,14 @@ class LayersSheetContent extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final state = ref.watch(layersControlsProvider);
+    final activeTab = ref.watch(activeLayersTabProvider);
     return SliverPadding(
-      padding: const EdgeInsets.only(
-        left: Spacing.$4x,
-        right: Spacing.$4x,
-        bottom: Spacing.$4x,
-      ),
+      padding: const EdgeInsets.only(left: Spacing.$4x, right: Spacing.$4x, bottom: Spacing.$4x),
       sliver: MultiSliver(
         children: [
           SliverToBoxAdapter(
             child: Padding(
-              padding: const EdgeInsets.only(bottom: Spacing.$5x),
+              padding: const EdgeInsets.only(bottom: Spacing.$3x),
               child: Row(
                 children: [
                   Text(
@@ -47,6 +47,7 @@ class LayersSheetContent extends ConsumerWidget {
                       );
                       onClose();
                     },
+                    color: context.colors.backgroundSurface5,
                     padding: EdgeInsets.zero,
                     innerPadding: const EdgeInsets.symmetric(horizontal: Spacing.$2x),
                   ),
@@ -54,34 +55,130 @@ class LayersSheetContent extends ConsumerWidget {
               ),
             ),
           ),
+          SliverToBoxAdapter(
+            child: Padding(
+              padding: const EdgeInsets.only(bottom: Spacing.$3x),
+              child: _LayersTabRow(
+                active: activeTab,
+                onSelected: (tab) => ref.read(activeLayersTabProvider.notifier).set(tab),
+              ),
+            ),
+          ),
+          // Two grids for "All layers" so base-map options (Default, Satellite)
+          // occupy a row by themselves and overlays start on a fresh row —
+          // matches the Figma macet for BE-243. Other tabs keep a single grid.
+          if (activeTab == LayersTab.allLayers) ...[
+            // BALADY-3754: base-map switcher is gated by the
+            // `base_map_switcher_enabled` FRC flag (hidden by default) until
+            // the satellite tile source is production-ready.
+            if (ref.watch(baseMapSwitcherEnabledProvider).value ?? false)
+              LayerSliverList(
+                onIconTap: onIconTap,
+                layerType: layers_state.LayerType.baseMaps,
+                layersState: state,
+                layerTapItems: layerTapItems,
+              ),
+            LayerSliverList(
+              onIconTap: onIconTap,
+              layerType: layers_state.LayerType.overlays,
+              layersState: state,
+              layerTapItems: layerTapItems,
+            ),
+          ] else
+            LayerSliverList(
+              onIconTap: onIconTap,
+              layerType: switch (activeTab) {
+                LayersTab.mapDetails => layers_state.LayerType.mapDetails,
+                LayersTab.publicTransport => layers_state.LayerType.publicTransport,
+                LayersTab.allLayers => layers_state.LayerType.v1, // unreachable; keeps the switch exhaustive.
+              },
+              layersState: state,
+              layerTapItems: layerTapItems,
+            ),
+        ],
+      ),
+    );
+  }
+}
 
-          // TODO(Ayat): BSA(1069) For now we hide the switches and present only the Lifestyle logic, we will come back to this later
-          // SliverToBoxAdapter(
-          //   child: Column(
-          //     children: [
-          //       TabsRow.v2(
-          //         initialIndex: state.layersType.index,
-          //         tabsContent: [
-          //           TabsRowV2Content(title: context.l10n.lifestyle),
-          //           TabsRowV2Content(title: context.l10n.business),
-          //         ],
-          //         onIndexChanged: (index) {
-          //           layersControlsProviderNotifier.update(
-          //             layersType: LayersType.values[index ?? 0],
-          //           );
-          //         },
-          //       ),
-          //       const SizedBox(height: 12),
-          //     ],
-          //   ),
-          // ),
-          LayerSliverList(
-            onIconTap: onIconTap,
-            layerType: layers_state.LayerType.v1,
-            layersState: state,
-            layerTapItems: layerTapItems,
+class _LayersTabRow extends StatelessWidget {
+  const _LayersTabRow({required this.active, required this.onSelected});
+
+  final LayersTab active;
+  final ValueChanged<LayersTab> onSelected;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = context.l10n;
+    final labels = <LayersTab, String>{
+      LayersTab.allLayers: l10n.allLayers,
+      LayersTab.mapDetails: l10n.mapDetails,
+      LayersTab.publicTransport: l10n.publicTransport,
+    };
+    // BALADY-3724: explicit Expanded + SizedBox gaps. Intrinsic-width +
+    // spaceBetween crowded on narrower screens (Huawei) when chip texts
+    // already filled most of the row width, leaving ~0px between chips.
+    // Equal-width chips with a guaranteed gap render predictably across
+    // devices.
+    const tabs = LayersTab.values;
+    return Row(
+      children: [
+        for (var i = 0; i < tabs.length; i++) ...[
+          if (i > 0) const SizedBox(width: Spacing.$3x),
+          Expanded(
+            child: _LayersTabChip(
+              label: labels[tabs[i]]!,
+              isSelected: tabs[i] == active,
+              onTap: () => onSelected(tabs[i]),
+            ),
           ),
         ],
+      ],
+    );
+  }
+}
+
+class _LayersTabChip extends StatelessWidget {
+  const _LayersTabChip({required this.label, required this.isSelected, required this.onTap});
+
+  final String label;
+  final bool isSelected;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    // Styling per Figma node 6194:9044: rectangular neutral button, 1px
+    // borderDefault always present, fill flips to backgroundSurface5 on the
+    // active tab. No accent border / accent text — selection is signalled
+    // by fill, like an iOS segmented control.
+    final colors = context.colors;
+    return GestureDetector(
+      behavior: HitTestBehavior.opaque,
+      onTap: onTap,
+      // BALADY-3725: instant state flip, no AnimatedContainer. Animating the
+      // fill color over 150 ms produced overlapping transitions across two
+      // chips (old + new both half-gray for a frame), which QA logged as a
+      // flash. Selection is binary anyway, animation gave nothing here.
+      child: Container(
+        height: 40,
+        padding: const EdgeInsets.symmetric(horizontal: Spacing.$2x),
+        decoration: BoxDecoration(
+          color: isSelected ? colors.backgroundSurface5 : Colors.transparent,
+          borderRadius: BorderRadius.circular(4),
+          border: Border.all(color: colors.borderDefault),
+        ),
+        alignment: Alignment.center,
+        // BALADY-3736: Arabic labels (e.g. "المواصلات العامة") are wider than
+        // an equal-width chip and overflowed adjacent tabs. Shrink-to-fit
+        // with AutoSizeText keeps all three labels readable on one line.
+        child: AutoSizeText(
+          label,
+          maxLines: 1,
+          minFontSize: 9,
+          overflow: TextOverflow.ellipsis,
+          textAlign: TextAlign.center,
+          style: context.textStyles.bodySmallMedium.copyWith(color: colors.foregroundDefault),
+        ),
       ),
     );
   }
