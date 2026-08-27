@@ -353,8 +353,6 @@ jobs:
           mkdir -p lib/l10n/generated
           flutter gen-l10n
 
-<<<<<<< HEAD
-=======
 #       NOT USED
 #      - name: Setup SSH
 #        uses: webfactory/ssh-agent@v0.9.0
@@ -366,7 +364,6 @@ jobs:
       - name: Add private registry to hosts
         run: echo "${{ secrets.UNPUB_SERVER_IP }} balady-unpub-stg.momah.gov.sa" | sudo tee -a /etc/hosts
 
->>>>>>> master
       - name: Setup dgis_map_platform_interface
         run: |
           cd urbi_map/dgis_map_platform_interface
