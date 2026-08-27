@@ -20,8 +20,10 @@ import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:mapness/shared/providers/map/sound_settings.dart';
 import 'package:mapness/shared/providers/media_query.dart';
+import 'package:mapness/shared/utils/logger/logger.dart';
 import 'package:mapness/shared/utils/text_utils/voice_settings_utils.dart';
 import 'package:mapness/widgets/path_nav/ui/better_route_button.dart';
+import 'package:mapness/widgets/path_nav/ui/countdown_banner.dart';
 import 'package:mapness/widgets/path_nav/ui/header/navi_eta_header.dart';
 import 'package:mapness/widgets/path_nav/ui/parking_bottom_banner.dart';
 import 'package:sheetify/sheetify.dart';
@@ -44,9 +46,13 @@ class NaviSheetPanel extends ConsumerStatefulWidget {
   final VoidCallback onTapRoute;
   final VoidCallback endTripAndBuildAnotherRoute;
   final VoidCallback onEndTripPressed;
+  final VoidCallback onSwitchToPedestrian;
+  final VoidCallback onCancelSwitchToPedestrian;
   final ToggleSheetController sheetController;
   final bool isLandscape;
   final bool isHomeOrWork;
+  final bool showPedestrianPrompt;
+  final Duration pedestrianPromptAutoDismiss;
   final ValueNotifier<bool> isSwitchingToFoot;
 
   const NaviSheetPanel({
@@ -62,9 +68,13 @@ class NaviSheetPanel extends ConsumerStatefulWidget {
     required this.onSearchPressed,
     required this.onTapRoute,
     required this.onEndTripPressed,
+    required this.onSwitchToPedestrian,
+    required this.onCancelSwitchToPedestrian,
     required this.sheetController,
     required this.isLandscape,
     required this.isHomeOrWork,
+    required this.showPedestrianPrompt,
+    required this.pedestrianPromptAutoDismiss,
     required this.isSwitchingToFoot,
     super.key,
   });
@@ -175,23 +185,40 @@ class _NaviPanelLandscapeState extends ConsumerState<NaviSheetPanel> {
         shapeBorderDelegate: shapeDelegate,
         paddingDelegate: paddingDelegate,
         barrierColorDelegate: barrierDelegate,
-        topHeader: ValueListenableBuilder(
-          valueListenable: widget.betterRouteDurationProfit,
-          builder: (context, duration, child) => duration != null
-              ? Padding(
-                  padding: const EdgeInsets.only(left: Spacing.$4x, right: Spacing.$4x, bottom: Spacing.$3x),
-                  child: BetterRouteButton(
-                    title: context.l10n.betterRouteFound(max((duration / 60).round(), 1)),
-                    onTap: () => widget.acceptBetterRoute(context),
-                    onCloseTap: () => widget.rejectBetterRoute(context),
-                  ),
-                )
-              : ParkingBanner(
-                  navigatorType: widget.navType,
-                  navigationState: widget.navigationState,
-                  isHomeOrWork: widget.isHomeOrWork,
-                  bottomSheetController: widget.sheetController,
-                ),
+        topHeader: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            ValueListenableBuilder(
+              valueListenable: widget.betterRouteDurationProfit,
+              builder: (context, duration, child) => duration != null
+                  ? Padding(
+                      padding: const EdgeInsets.only(left: Spacing.$4x, right: Spacing.$4x, bottom: Spacing.$3x),
+                      child: BetterRouteButton(
+                        title: context.l10n.betterRouteFound(max((duration / 60).round(), 1)),
+                        onTap: () => widget.acceptBetterRoute(context),
+                        onCloseTap: () => widget.rejectBetterRoute(context),
+                      ),
+                    )
+                  : ParkingBanner(
+                      navigatorType: widget.navType,
+                      navigationState: widget.navigationState,
+                      isHomeOrWork: widget.isHomeOrWork,
+                      bottomSheetController: widget.sheetController,
+                    ),
+            ),
+            if (widget.showPedestrianPrompt)
+              CountdownBanner(
+                text: context.l10n.switchToPedestrianMode,
+                duration: widget.pedestrianPromptAutoDismiss,
+                onTap: widget.onSwitchToPedestrian,
+                onClose: widget.onCancelSwitchToPedestrian,
+                onTimeout: widget.onCancelSwitchToPedestrian,
+                leadingIcon: switch (Directionality.of(context)) {
+                  TextDirection.ltr => General16Icons.walkLTR,
+                  TextDirection.rtl => General16Icons.walkRTL,
+                },
+              ),
+          ],
         ),
         header: ValueListenableBuilder<PathNavState>(
           valueListenable: widget.navigationState,
