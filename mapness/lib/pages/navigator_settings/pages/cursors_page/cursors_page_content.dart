@@ -10,7 +10,12 @@ import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:urbi_utils/urbi_utils.dart';
 
 class CursorsPageContent extends ConsumerWidget {
-  const CursorsPageContent({super.key});
+  const CursorsPageContent({super.key, this.scrollable = true});
+
+  /// `false` when embedded into an outer scrollable (the ToggleSheet in
+  /// cursors_sheet.dart provides its own SliverList; a nested scroll view
+  /// would swallow the sheet's drag gestures).
+  final bool scrollable;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -33,55 +38,73 @@ class CursorsPageContent extends ConsumerWidget {
     final yourCursors = NavigationCursor.values.where(data.isDownloaded).toList();
     final available = NavigationCursor.values.where((c) => !data.isDownloaded(c)).toList();
 
-    return SingleChildScrollView(
-      child: Padding(
-        padding: const EdgeInsets.all(Spacing.$4x).copyWith(bottom: 0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            _SubtitleRow(text: l10n.selectNavigatorType),
-            ContentColumn(
-              headerTitle: l10n.yourCursors,
-              content: [
-                ContentWrapper(
-                  color: cardColor,
-                  children: [
-                    for (final cursor in yourCursors)
-                      _CursorRow(
-                        cursor: cursor,
-                        trailing: cursor == data.active ? _CursorTrailing.selected : _CursorTrailing.pickable,
-                        busy: data.inProgress == cursor,
-                        onTap: cursor == data.active ? null : () => controller.select(cursor),
-                        onLongPress: cursor.requiresDownload ? () => _dropLocal(context, controller, cursor) : null,
-                      ),
-                  ],
+    // BALADY-3762: section headers are h4SemiBold with the subtitle under
+    // "Your cursors", and the list keeps a full bottom padding (Figma
+    // 2287-3295) — not the uikit ContentColumn caption-label layout.
+    final body = Padding(
+      padding: const EdgeInsets.all(Spacing.$4x),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          _SectionHeader(text: l10n.yourCursors),
+          const SizedBox(height: Spacing.$0_5x),
+          _SubtitleRow(text: l10n.selectNavigatorType),
+          const SizedBox(height: Spacing.$4x),
+          ContentWrapper(
+            color: cardColor,
+            children: [
+              for (final (i, cursor) in yourCursors.indexed)
+                _CursorRow(
+                  cursor: cursor,
+                  trailing: cursor == data.active ? _CursorTrailing.selected : _CursorTrailing.pickable,
+                  busy: data.inProgress == cursor,
+                  dividerEnabled: i < yourCursors.length - 1,
+                  onTap: cursor == data.active ? null : () => controller.select(cursor),
+                  onLongPress: cursor.requiresDownload ? () => _dropLocal(context, controller, cursor) : null,
                 ),
+            ],
+          ),
+          if (available.isNotEmpty) ...[
+            const SizedBox(height: Spacing.$3x),
+            _SectionHeader(text: l10n.cursorsAvailable),
+            const SizedBox(height: Spacing.$4x),
+            ContentWrapper(
+              color: cardColor,
+              children: [
+                for (final (i, cursor) in available.indexed)
+                  _CursorRow(
+                    cursor: cursor,
+                    trailing: _CursorTrailing.downloadable,
+                    busy: data.inProgress == cursor,
+                    dividerEnabled: i < available.length - 1,
+                    onTap: () => controller.select(cursor),
+                    onLongPress: cursor.requiresDownload ? () => _dropLocal(context, controller, cursor) : null,
+                  ),
               ],
             ),
-            if (available.isNotEmpty)
-              ContentColumn(
-                headerTitle: l10n.cursorsAvailable,
-                content: [
-                  ContentWrapper(
-                    color: cardColor,
-                    children: [
-                      for (final cursor in available)
-                        _CursorRow(
-                          cursor: cursor,
-                          trailing: _CursorTrailing.downloadable,
-                          busy: data.inProgress == cursor,
-                          onTap: () => controller.select(cursor),
-                          onLongPress: cursor.requiresDownload ? () => _dropLocal(context, controller, cursor) : null,
-                        ),
-                    ],
-                  ),
-                ],
-              ),
-          ].insertBetween(Spacing.$4x.heightBox).toList(),
+          ],
+        ],
+      ),
+    );
+    if (!scrollable) {
+      // Sheet mode: the ToggleSheet already constrains the width in
+      // landscape (see cursors_sheet.dart).
+      return body;
+    }
+    // BALADY-3763: full-page mode — cap the content width so landscape does
+    // not stretch rows across the whole screen, pushing trailing icons to
+    // the far edge.
+    return SingleChildScrollView(
+      child: Center(
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: _maxContentWidth),
+          child: body,
         ),
       ),
     );
   }
+
+  static const _maxContentWidth = 600.0;
 }
 
 enum _CursorTrailing { selected, pickable, downloadable }
@@ -106,17 +129,25 @@ Future<void> _dropLocal(
     );
 }
 
+class _SectionHeader extends StatelessWidget {
+  const _SectionHeader({required this.text});
+  final String text;
+
+  @override
+  Widget build(BuildContext context) => Text(
+    text,
+    style: context.textStyles.h4SemiBold.copyWith(color: context.colors.foregroundDefault),
+  );
+}
+
 class _SubtitleRow extends StatelessWidget {
   const _SubtitleRow({required this.text});
   final String text;
 
   @override
-  Widget build(BuildContext context) => Padding(
-    padding: const EdgeInsets.only(bottom: Spacing.$2x, left: Spacing.$4x, right: Spacing.$4x),
-    child: Text(
-      text,
-      style: context.textStyles.bodySmallRegular.copyWith(color: context.colors.foregroundSoft),
-    ),
+  Widget build(BuildContext context) => Text(
+    text,
+    style: context.textStyles.bodySmallRegular.copyWith(color: context.colors.foregroundSoft),
   );
 }
 
@@ -125,6 +156,7 @@ class _CursorRow extends StatelessWidget {
     required this.cursor,
     required this.trailing,
     required this.busy,
+    required this.dividerEnabled,
     required this.onTap,
     this.onLongPress,
   });
@@ -132,6 +164,7 @@ class _CursorRow extends StatelessWidget {
   final NavigationCursor cursor;
   final _CursorTrailing trailing;
   final bool busy;
+  final bool dividerEnabled;
   final VoidCallback? onTap;
   // TEMP debug: long-press drops the cached GLB from disk so the next tap
   // re-downloads from CDN. Remove alongside the corresponding controller /
@@ -145,7 +178,7 @@ class _CursorRow extends StatelessWidget {
       title: cursor.title(context),
       titleStyle: context.textStyle.text.copyWith(color: colors.foregroundDefault),
       leadingIcon: _CursorThumbnail(cursor: cursor),
-      dividerEnabled: true,
+      dividerEnabled: dividerEnabled,
       // Every trailing state goes through `customActionWidget` (Widget?) so
       // the design-team SVGs for checkmark and download render as-is,
       // without shoehorning them into balady_uikit's IconData-only
@@ -216,7 +249,8 @@ class _CursorThumbnail extends StatelessWidget {
   const _CursorThumbnail({required this.cursor});
   final NavigationCursor cursor;
 
-  static const _size = 32.0;
+  // Figma 2287-3295: 28px thumbnail slot in the cursor rows.
+  static const _size = 28.0;
   static const _palette = <Color>[
     Color(0xFFF6BC00),
     Color(0xFFE07A5F),
