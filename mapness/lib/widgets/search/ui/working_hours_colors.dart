@@ -16,7 +16,7 @@ extension WorkingHoursColorsExt on WorkingHours {
       case WorkingHoursStatusType.open:
       case WorkingHoursStatusType.open24Hours:
         return (
-          text: colors.accentActive,
+          text: colors.accentDefault,
           background: colors.accentContainerDefault.withOpacity(0.1),
         );
       case WorkingHoursStatusType.openSoon:

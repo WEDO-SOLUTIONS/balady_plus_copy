@@ -296,7 +296,6 @@ class _ContentState extends ConsumerState<_PoiCardContent> with SingleTickerProv
       'Will show in subtitle: ${poiHeaderSubTitle != null}',
     );
 
-
     return Directionality(
       textDirection: Directionality.of(context),
       child: ValueListenableBuilder<PoiCardBottomSheetState>(
@@ -361,12 +360,14 @@ class _ContentState extends ConsumerState<_PoiCardContent> with SingleTickerProv
                       props: {'objectId': widget.objectId},
                     );
 
-                    final phoneNumber = widget.data.getContactsInfoModels.firstWhereOrNull(
-                      (element) => element.type == ContactsInfoType.phone,
-                    );
+                    final phoneNumbers = widget.data.getContactsInfoModels
+                        .where((e) => e.type == ContactsInfoType.phone && e.value != null)
+                        .toList();
                     _bssOnCallTap();
-                    if (phoneNumber?.value != null) {
-                      poiActions.callPhone(phoneNumber!.value!);
+                    if (phoneNumbers.length == 1) {
+                      poiActions.callPhone(phoneNumbers.first.value!);
+                    } else if (phoneNumbers.length > 1) {
+                      _showPhonePickerSheet(phoneNumbers, poiActions.callPhone);
                     }
                   },
                   onEntranceTap: () => poiActions.toggleEntrances(
@@ -407,7 +408,7 @@ class _ContentState extends ConsumerState<_PoiCardContent> with SingleTickerProv
                       _getParkingSubtitle(widget.data.parkingInfo, context.l10n) ??
                       (widget.objectId == 70030077050725730
                           ? (context.locale.languageCode == 'en' ? 'Settlement' : 'نطاق')
-                          : (['تسوية','مستوطنة'].contains(widget.data.subtitle )? 'نطاق' : widget.data.subtitle)),
+                          : (['تسوية', 'مستوطنة'].contains(widget.data.subtitle) ? 'نطاق' : widget.data.subtitle)),
                   subTitleExtraInlineSpans: [
                     if (poiHeaderSubTitle != null) ...[
                       const TextSpan(text: ' • '),
@@ -497,6 +498,9 @@ class _ContentState extends ConsumerState<_PoiCardContent> with SingleTickerProv
     }
     return '$total ${l10n.lots} • $freeText';
   }
+
+  void _showPhonePickerSheet(List<ContactsInfoModel> phones, void Function(String) onSelect) =>
+      showPhonePickerSheet(context, phones, onSelect);
 
   // BSS
   void _bssOnRouteTap() {

@@ -42,9 +42,13 @@ class BriefPublicTransportModel {
     let onFootDuration: Int
     let publicTransportTransferRouteLongEntry: Array<[String: Any?]>
     
-    init(route: TrafficRoute) {
+    init(route: TrafficRoute, currentPosition: RoutePoint? = nil) {
         self.transfers = route.route.publicTransportTransfers.entries
-        self.duration = route.estimatedDuration
+        if let currentPosition = currentPosition {
+            self.duration = Int(route.traffic.durations.calculateDuration(routePoint: currentPosition).rounded())
+        } else {
+            self.duration = route.estimatedDuration
+        }
         self.transports = transfers.compactMap { entry in
             let transfer = entry.value
             
