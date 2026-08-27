@@ -909,38 +909,67 @@ class CommonFunctions {
     }
   }
 
-  static void openBaladyWebView(String? url, {bool isObjections = false, bool needLogin = true}) async {
+  static Future<dynamic> openBaladyWebView(
+    String? url, {
+    bool isObjections = false,
+    bool needLogin = true,
+    List<String>? callbackUrls,
+  }) async {
     if (needLogin == false) {
-      Navigator.of(
+      return await Navigator.of(
         NavigationService.navigatorKey.currentContext!,
-      ).pushNamed(RouteName.inappWebview, arguments: (requestNum: ''.tr(), url: url, isObjections: isObjections));
+      ).pushNamed(
+        RouteName.inappWebview,
+        arguments: (
+          requestNum: ''.tr(),
+          url: url,
+          isObjections: isObjections,
+          callbackUrls: callbackUrls,
+        ),
+      );
     } else {
       if (CommonProperties.isLoggedIn) {
         EasyLoading.show();
         GetCookie getCookie = GetCookie(repository: sl());
         final failureOrSuccessForCookie = await getCookie(true);
         EasyLoading.dismiss();
-        failureOrSuccessForCookie.fold(
+        return await failureOrSuccessForCookie.fold(
           (l) {
             CommonFunctions.showError("server_error_1".tr());
+            return null;
           },
           (r) async {
-            Navigator.of(
+            return await Navigator.of(
               NavigationService.navigatorKey.currentContext!,
-            ).pushNamed(RouteName.inappWebview, arguments: (requestNum: ''.tr(), url: url, isObjections: isObjections));
+            ).pushNamed(
+              RouteName.inappWebview,
+              arguments: (
+                requestNum: ''.tr(),
+                url: url,
+                isObjections: isObjections,
+                callbackUrls: callbackUrls,
+              ),
+            );
           },
         );
       } else {
+        dynamic result;
         await showDialog(
           context: NavigationService.navigatorKey.currentContext!,
           builder: (ctx) => NeedLoginDialog(
             onSuccessLogin: (bool? isSuccess) async {
               if (isSuccess ?? false) {
-                openBaladyWebView(url, isObjections: isObjections);
+                result = await openBaladyWebView(
+                  url,
+                  isObjections: isObjections,
+                  needLogin: needLogin,
+                  callbackUrls: callbackUrls,
+                );
               }
             },
           ),
         );
+        return result;
       }
     }
   }

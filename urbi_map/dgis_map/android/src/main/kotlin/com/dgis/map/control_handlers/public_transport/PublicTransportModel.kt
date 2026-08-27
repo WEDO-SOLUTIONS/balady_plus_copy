@@ -8,10 +8,11 @@ import java.util.*
 class PublicTransportModel(
     route: TrafficRoute,
     startName: String? = null,
-    finishName: String? = null
+    finishName: String? = null,
+    currentPosition: RoutePoint? = null,
 ) {
     /** Краткая информация (отображаемая в "шапке" карточки). */
-    val briefModel: BriefPublicTransportModel = BriefPublicTransportModel(route)
+    val briefModel: BriefPublicTransportModel = BriefPublicTransportModel(route, currentPosition)
 
     /** Точки пересадки. */
     val transfers: List<Transfer> = run {

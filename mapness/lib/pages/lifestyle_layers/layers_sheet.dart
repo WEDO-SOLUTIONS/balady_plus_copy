@@ -29,7 +29,20 @@ class LayersSheetPageState extends ConsumerState<LayersSheetPage> {
   bool _isClosingRoute = false;
 
   late final barrierColorDelegate = ToggleSheetDelegateFunction(
-    function: (controller) => screenOverlayDimming40.withAlpha((controller.fraction * 255).toInt()),
+    function: (controller) {
+      // Fade the dimming in as the sheet opens, up to the opacity the design
+      // token already carries — never past it.
+      //
+      // BALADY-3755: this used to be `withAlpha((fraction * 255).toInt())`,
+      // which had two defects. `fraction` can be NaN/Infinity when the host
+      // view collapses, and `toInt()` throws `UnsupportedError` on both. And at
+      // fraction 1.0 it forced alpha to 255, turning a 55% scrim into a fully
+      // opaque one that hid the map completely. Scaling the token's own alpha
+      // keeps the maximum at the designed value.
+      final fraction = controller.fraction;
+      final ratio = fraction.isFinite ? fraction.clamp(0.0, 1.0) : 0.0;
+      return screenOverlayDimming40.withAlpha((screenOverlayDimming40.alpha * ratio).round());
+    },
   );
   late Color screenOverlayDimming40;
 

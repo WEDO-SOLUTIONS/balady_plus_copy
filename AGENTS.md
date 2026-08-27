@@ -58,3 +58,43 @@ Editing the **route list** in `app_routes.dart` (transitions, durations, guards)
 - Never edit files in the outer workspace (`../`) — those are workspace-level memory, not project source.
 - Never commit secrets (`.env`, signing certs, service-account JSON). The git hooks do not catch every leak.
 - Never `git push --force` to a release branch.
+
+## Session Context: Navigation, Favourites, Performance
+
+The current work session focused on production-only freezes/jank where the UI disappeared and only the native map stayed visible, plus related Riverpod lifecycle errors and favourites persistence issues.
+
+Detailed context is also split into nearest subtree agent files so future edits pick up feature-specific instructions automatically:
+
+- `mapness/lib/features/favourites/AGENTS.md`
+- `mapness/lib/widgets/favourites/AGENTS.md`
+- `mapness/lib/shared/lib/auth/AGENTS.md`
+- `mapness/lib/pages/landing/AGENTS.md`
+- `mapness/lib/widgets/landing/AGENTS.md`
+- `mapness/lib/pages/path_nav/AGENTS.md`
+- `mapness/lib/features/routing/AGENTS.md`
+- `mapness/lib/shared/providers/map/AGENTS.md`
+- `mapness/lib/features/ai_summary/AGENTS.md`
+- `mapness/lib/features/satellite/AGENTS.md`
+- `urbi_map/AGENTS.md`
+
+- Do **not** build a new APK unless the user explicitly asks. The user asked to avoid accidental production APK rebuilds during diagnosis.
+- Prefer validating this class of issues in `profile`/`release`, not only `debug`: debug timing can hide router/sheet/auth races.
+- Several fixes are intentionally defensive against Riverpod async lifecycle races: check `ref.mounted`/request identity after async gaps, avoid provider writes after dispose, and avoid using `ref` synchronously inside `onDispose` callbacks.
+- For provider disposal callbacks that need to mutate other providers, defer the mutation outside the lifecycle callback (for example via `Future.microtask`) instead of calling `ref.read`/state changes directly inside `onDispose`.
+- Path navigation fixes in this session targeted stale/partial native navigation state, nullable navigation event subscriptions, mounted checks after async gaps, and ensuring `PathNavPageInitAction.startNavigation` starts native navigation instead of accidentally falling into restore logic.
+- Dashboard/map-only freeze investigation identified route/sheet lifecycle races around `LandingPage`, `AutoTabsRouter`, `Drive back home`, `Contribute`, and `PathNavRoute`. Keep the landing subtree mounted when it is merely covered by another route; use `Offstage`/`IgnorePointer`/`TickerMode` instead of returning `SizedBox.shrink()` for covered routes.
+- Auth-gated actions should await their async callback. Avoid fire-and-forget navigation callbacks after login because auth invalidations, favourites writes, sheet hiding, and route pushes can otherwise interleave.
+- Favourites search selection should await `addItem`/`setHome`/`setWork` before popping the search route. This preserves Hive cache/add-sync ordering and prevents route navigation from racing against provider updates.
+- Favourites are now treated as local-first: read Hive cache before auth/remote fetch, persist pending add/delete sync before network calls, keep pending sync on network/invalid-response failures, and do not overwrite non-empty local cache with an empty remote response while sync is pending.
+- AI Summary header layout was adjusted for long English/Arabic labels: use constrained `AutoSizeText`/ellipsis in the title and keep the badge compact with `Flexible`, not a full-width `Expanded` gap.
+- Indoor floor-plan display is controlled through the `urbi_map` bridge method `setIndoorFloorPlansEnabled`. `DgisController` disables floor plans at map initialization and enables them when visible-rect zoom reaches the configured near-max threshold.
+- Satellite base-map ([BE-243](https://wedosolutions-sa.atlassian.net/browse/BE-243)) is a separate `toggleSatellite` bridge in `urbi_map` (not the weather heatmap bridge). The Dart provider is `@Riverpod(keepAlive: true)` because layers-sheet close would otherwise auto-dispose it and the UI would desync from the native raster source on reopen. Tile URL + token live in Firebase Remote Config under `satellite_config` with a bundled default; `{TOKEN}` is substituted Dart-side. See `mapness/lib/features/satellite/AGENTS.md`.
+
+Useful verification commands from this session:
+
+```bash
+rtk fvm dart format -l 120 <dart-files>
+rtk fvm flutter analyze --no-pub <dart-files>
+```
+
+Note: in the pinned Dart toolchain used in this session, `dart format --fix` is not available; use `dart format -l 120` unless the toolchain changes.
