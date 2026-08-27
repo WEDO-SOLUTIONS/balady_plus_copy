@@ -35,7 +35,7 @@ class AccessibilityController extends ChangeNotifier {
   // Platform integration
   bool followSystemSettings = true;
 
-  static final Map<FontWeight, String> fontWeightLabels = {
+  static Map<FontWeight, String> fontWeightLabels = {
     FontWeight.w100: 'Thin',
     FontWeight.w300: 'Light',
     FontWeight.w400: 'Regular',
