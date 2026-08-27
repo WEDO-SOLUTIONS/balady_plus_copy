@@ -19,6 +19,7 @@ import 'package:mapness/shared/providers/map/selected_marker.dart';
 import 'package:mapness/shared/ui/bottom_sheet/dgis_bottom_sheet.dart';
 import 'package:mapness/shared/ui/bottom_sheet/ui/disable_overscroll_behavior.dart';
 import 'package:mapness/shared/ui/sheets/card_header.dart';
+import 'package:shimmer/shimmer.dart';
 
 part 'poi_deeplink_location_action.dart';
 part 'poi_deeplink_location_content.dart';

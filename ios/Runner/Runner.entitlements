@@ -8,10 +8,11 @@
 	<array>
 		<string>applinks:*.balady.gov.sa</string>
 		<string>applinks:apps.balady.gov.sa</string>
+		<string>applinks:plus.balady.gov.sa</string>
 		<string>applinks:plus.balady.sa</string>
 		<string>applinks:apps.balady.gov.sa?mode=developer</string>
-		<string>applinks:go.balady.sa</string>
-		<string>applinks:go.balady.sa?mode=developer</string>
+		<string>applinks:go.balady.gov.sa</string>
+		<string>applinks:go.balady.gov.sa?mode=developer</string>
 	</array>
 	<key>com.apple.developer.carplay-maps</key>
 	<true/>

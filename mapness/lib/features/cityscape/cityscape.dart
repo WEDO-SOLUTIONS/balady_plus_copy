@@ -6,6 +6,7 @@ import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/app/auto_route/poi_card_ext.dart';
 import 'package:mapness/features/cityscape/cityscape_debug.dart';
 import 'package:mapness/features/poi_card/domain/model/poi_camera_config.dart';
+import 'package:mapness/shared/constants/constants.dart';
 import 'package:mapness/shared/providers/app_language.dart';
 import 'package:mapness/shared/providers/dgis_environment.dart';
 import 'package:mapness/shared/providers/map/camera_position.dart';
@@ -86,9 +87,10 @@ class Cityscape extends _$Cityscape {
     await mapManager?.removeMarkerById(cityscapeGlobalMarkerId);
 
     final isArabic = ref.read(appLanguageProvider) == Language.arabic;
-    final fontName = isArabic ? poiMapFontAr : poiMapFontEn;
-    final title =
-        isArabic ? 'الرياض الدولي\nالمعرض\nو مركز المؤتمرات' : 'Riyadh International\nExhibition\n& Convention Center';
+    final fontName = isArabic ? MapnessConstants.poiMapFontAr : MapnessConstants.poiMapFontEn;
+    final title = isArabic
+        ? 'الرياض الدولي\nالمعرض\nو مركز المؤتمرات'
+        : 'Riyadh International\nExhibition\n& Convention Center';
     final globalMarker = sdk.Marker(
       id: cityscapeGlobalMarkerId,
       options: sdk.MarkerOptionsMessage(
@@ -127,9 +129,10 @@ class Cityscape extends _$Cityscape {
     }
 
     final isArabic = ref.read(appLanguageProvider) == Language.arabic;
-    final fontName = isArabic ? poiMapFontAr : poiMapFontEn;
-    final title =
-        isArabic ? 'الرياض الدولي\nالمعرض\nو مركز المؤتمرات' : 'Riyadh International\nExhibition\n& Convention Center';
+    final fontName = isArabic ? MapnessConstants.poiMapFontAr : MapnessConstants.poiMapFontEn;
+    final title = isArabic
+        ? 'الرياض الدولي\nالمعرض\nو مركز المؤتمرات'
+        : 'Riyadh International\nExhibition\n& Convention Center';
     await mapManager?.setMarkerOptions(
       cityscapeGlobalMarkerId,
       sdk.ChangeMarkerOptionsMessage(
@@ -161,16 +164,18 @@ class Cityscape extends _$Cityscape {
   }
 
   void openThePlace() {
-    ref.read(appRouterProvider).replaceOrPush(
-      route: PoiCardWidgetRoute(
-        objectId: sdk.DgisObjectIdMessage(
-          objectId: _cityscapeObjectId,
-          entranceId: 0,
-        ),
-        closestPoint: sdk.LatLng(latitude: center.latitude, longitude: center.longitude),
-        cameraConfig: const PoiCameraConfig(zoom: 17),
-      ),
-      toCompareRoutes: [PoiCardWidgetRoute.page],
-    );
+    ref
+        .read(appRouterProvider)
+        .replaceOrPush(
+          route: PoiCardWidgetRoute(
+            objectId: sdk.DgisObjectIdMessage(
+              objectId: _cityscapeObjectId,
+              entranceId: 0,
+            ),
+            closestPoint: sdk.LatLng(latitude: center.latitude, longitude: center.longitude),
+            cameraConfig: const PoiCameraConfig(zoom: 17),
+          ),
+          toCompareRoutes: [PoiCardWidgetRoute.page],
+        );
   }
 }

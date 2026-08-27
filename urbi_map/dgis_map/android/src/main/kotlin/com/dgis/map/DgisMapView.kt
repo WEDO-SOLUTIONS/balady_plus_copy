@@ -1,7 +1,11 @@
 package com.dgis.map
 
+import android.app.Activity
+import android.app.Application
 import android.content.Context
+import android.os.Bundle
 import android.view.LayoutInflater
+import android.widget.FrameLayout
 import com.dgis.map.control_handlers.*
 import com.dgis.map.extensions.*
 import com.dgis.map.map_api.*
@@ -47,6 +51,42 @@ class DgisMapView(
     private val mapView: MapView =
             LayoutInflater.from(context).inflate(R.layout.map_view_layout, null) as MapView
 
+    // BALADY-3755: the map is hosted in a container we own so the MapView can
+    // be re-attached to the window after the app returns from background.
+    // When Android drops the GL surface while the app is backgrounded, the
+    // SDK's renderer sometimes comes back in a state where the camera,
+    // markers and polylines still draw but the vector tile layers never do
+    // (map background + markers only). Re-adding the view forces a full
+    // surfaceDestroyed/surfaceCreated cycle which re-initializes tile
+    // rendering while preserving the Map object (camera, sources, layers).
+    private val container: FrameLayout = FrameLayout(context).also { it.addView(mapView) }
+
+    private var stoppedWhileInBackground = false
+    private val lifecycleCallbacks = object : Application.ActivityLifecycleCallbacks {
+        override fun onActivityStopped(activity: Activity) {
+            stoppedWhileInBackground = true
+        }
+
+        override fun onActivityResumed(activity: Activity) {
+            if (!stoppedWhileInBackground) {
+                return
+            }
+            stoppedWhileInBackground = false
+            container.post {
+                if (mapView.parent === container) {
+                    container.removeView(mapView)
+                    container.addView(mapView)
+                }
+            }
+        }
+
+        override fun onActivityCreated(activity: Activity, savedInstanceState: Bundle?) = Unit
+        override fun onActivityStarted(activity: Activity) = Unit
+        override fun onActivityPaused(activity: Activity) = Unit
+        override fun onActivitySaveInstanceState(activity: Activity, outState: Bundle) = Unit
+        override fun onActivityDestroyed(activity: Activity) = Unit
+    }
+
     private var map: DgisMap? = null
 
     private var zoomControlHandler: ZoomControlHandler? = null
@@ -57,6 +97,7 @@ class DgisMapView(
     private var searchHandler: SearchHandler? = null
     private var routeHandler: RouteHandler? = null
     private var weatherHandler: WeatherHandler? = null
+    private var satelliteHandler: SatelliteHandler? = null
     private val navigationManager = DgisMapInitializer.getNavigationManager().also { navManager ->
         // Apply persisted sound setting immediately, before any navigation starts.
         // The SDK enables all sound categories by default. We read from Flutter's
@@ -107,6 +148,10 @@ class DgisMapView(
         val messenger = ProxyBinaryMessenger(binaryMessenger, nameSuffix = "map_$id")
         MapApi.setUp(messenger, this)
 
+        // BALADY-3755: watch for background -> foreground transitions.
+        (context.applicationContext as? Application)
+                ?.registerActivityLifecycleCallbacks(lifecycleCallbacks)
+
         // Listen for sound changes from Android Auto and forward them to Flutter
         soundUpdateJob = CoroutineScope(Dispatchers.Main).launch {
             for (toggleType in SoundUpdateNotifier.events) {
@@ -121,9 +166,11 @@ class DgisMapView(
         }
     }
 
-    override fun getView() = mapView
+    override fun getView() = container
 
     override fun dispose() {
+        (context.applicationContext as? Application)
+                ?.unregisterActivityLifecycleCallbacks(lifecycleCallbacks)
         soundUpdateJob?.cancel()
         // The navigation handler subscribes to the shared NavigationManager's channels;
         // it must be closed before the map, otherwise a late state event (e.g. FINISHED)
@@ -1190,6 +1237,7 @@ class DgisMapView(
                 TrafficAndParkingControlHandler(sdkContext, map, eventSink)
         setupTapHandler()
         weatherHandler = WeatherHandler(sdkContext, map)
+        satelliteHandler = SatelliteHandler(sdkContext, map)
 
         callback(Result.success(InitializeMessage(wasInitialized = true, errorDescription = "")))
     }
@@ -1263,6 +1311,10 @@ class DgisMapView(
 
     override fun toggleHeatmap(message: WeatherMapMessage, callback: (Result<Boolean>) -> Unit) {
         weatherHandler?.toggleHeatmap(message, callback)
+    }
+
+    override fun toggleSatellite(message: SatelliteMapMessage, callback: (Result<Boolean>) -> Unit) {
+        satelliteHandler?.toggleSatellite(message, callback)
     }
 
     override fun betterRouteResponse(

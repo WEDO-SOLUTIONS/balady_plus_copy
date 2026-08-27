@@ -34,6 +34,28 @@ android {
     namespace "momra.balady.android"
     ndkVersion = "28.2.13676358"
 
+    // Store native libraries uncompressed and page-aligned inside the APK/AAB.
+    // Required for 16 KB page-size support: compressed .so entries cannot be
+    // 16 KB zip-aligned, which makes Play flag the app as not supporting 16 KB
+    // devices even when every .so's ELF segments are already aligned.
+    packaging {
+        jniLibs {
+            useLegacyPackaging = false
+
+            // The BytePlus/ByteDance `encryptor` AAR (transitive of
+            // RangersAppLog-Lite-cn) ships a libEncryptorP.so whose armeabi-v7a
+            // and x86_64 variants are only 4 KB ELF-aligned. arm64-v8a is 64 KB
+            // and fully compliant. 16 KB page-size devices are all 64-bit ARM,
+            // so these 32-bit/x86_64 copies can never run on one — but Play's
+            // static 16 KB check still flags them. Drop just those two variants;
+            // every other ABI/library is kept intact.
+            excludes += [
+                'lib/armeabi-v7a/libEncryptorP.so',
+                'lib/x86_64/libEncryptorP.so',
+            ]
+        }
+    }
+
     compileOptions {
         // Flag to enable support for the new language APIs
         coreLibraryDesugaringEnabled true
