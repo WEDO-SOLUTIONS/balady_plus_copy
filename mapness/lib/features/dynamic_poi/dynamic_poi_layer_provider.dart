@@ -14,6 +14,7 @@ import 'package:mapness/features/dynamic_poi/dynamic_poi_selection_provider.dart
 import 'package:mapness/features/dynamic_poi/dynamic_poi_visibility.dart';
 import 'package:mapness/features/dynamic_poi/dynamic_poi_visibility_provider.dart';
 import 'package:mapness/features/lifestyle_layers/configs/layers_consts.dart';
+import 'package:mapness/shared/constants/constants.dart';
 import 'package:mapness/shared/extensions/string_ext.dart';
 import 'package:mapness/shared/providers/app_language.dart';
 import 'package:mapness/shared/providers/dark_mode.dart';
@@ -473,7 +474,7 @@ class DynamicPoiLayer extends _$DynamicPoiLayer {
       color: isDark ? 0xD3FFFFFF : 0xff1B1B1B,
       strokeColor: isDark ? 0xff1B1B1B : 0xD3FFFFFF,
       strokeWidth: 2,
-      fontName: useArabicFont ? poiMapFontAr : poiMapFontEn,
+      fontName: useArabicFont ? MapnessConstants.poiMapFontAr : MapnessConstants.poiMapFontEn,
       textPlacement: MarkerTextPlacementMessage(placement: TextPlacementMessage.bottomCenter),
       suppressOnOverlap: true,
     );

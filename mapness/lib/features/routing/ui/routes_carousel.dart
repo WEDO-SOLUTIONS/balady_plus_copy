@@ -24,6 +24,7 @@ class RoutesCarousel extends StatelessWidget {
     required this.navType,
     required this.publicTransportVisibility,
     required this.routes,
+    this.onRouteIndexChanged,
     super.key,
   });
 
@@ -33,6 +34,7 @@ class RoutesCarousel extends StatelessWidget {
   final Function(RouteInfo) startNavigation;
   final AsyncValue<PublicTransportVisibilityResult> publicTransportVisibility;
   final AsyncValue<List<RouteInfo>> routes;
+  final ValueChanged<int>? onRouteIndexChanged;
 
   @override
   Widget build(BuildContext context) => LayoutBuilder(
@@ -43,6 +45,7 @@ class RoutesCarousel extends StatelessWidget {
       navType: navType,
       publicTransportVisibility: publicTransportVisibility,
       routes: routes,
+      onRouteIndexChanged: onRouteIndexChanged,
     ),
   );
 }
@@ -55,6 +58,7 @@ class _RoutesCarousel extends ConsumerStatefulWidget {
     required this.biggestWidth,
     required this.publicTransportVisibility,
     required this.routes,
+    required this.onRouteIndexChanged,
   });
 
   final RouteSearchOptionsMessage navType;
@@ -63,6 +67,7 @@ class _RoutesCarousel extends ConsumerStatefulWidget {
   final List<RouteParamsPointWithLabel?> points;
   final AsyncValue<PublicTransportVisibilityResult> publicTransportVisibility;
   final AsyncValue<List<RouteInfo>> routes;
+  final ValueChanged<int>? onRouteIndexChanged;
 
   @override
   ConsumerState<_RoutesCarousel> createState() => _RoutesCarouselState();
@@ -77,6 +82,9 @@ class _RoutesCarouselState extends ConsumerState<_RoutesCarousel> {
   void initState() {
     super.initState();
     _pageController = PageController(viewportFraction: widget.navType.cardWidthWithPadding / widget.biggestWidth);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      widget.onRouteIndexChanged?.call(_activeRoute);
+    });
     _activeRouteSubscription = ref
         .read(dgisControllerProvider)
         .value
@@ -88,6 +96,7 @@ class _RoutesCarouselState extends ConsumerState<_RoutesCarousel> {
     final activeRouteIndex = event.index;
     if (_activeRoute != activeRouteIndex) {
       _activeRoute = activeRouteIndex;
+      widget.onRouteIndexChanged?.call(activeRouteIndex);
       _pageController.animateToPage(activeRouteIndex, duration: Durations.medium1, curve: Curves.easeIn);
     }
   }
@@ -112,6 +121,7 @@ class _RoutesCarouselState extends ConsumerState<_RoutesCarousel> {
 
   void _onActiveChanged(int index) {
     _activeRoute = index;
+    widget.onRouteIndexChanged?.call(index);
 
     ref.read(dgisControllerProvider).value?.setActiveRouteIndex(index);
     ref.read(dgisControllerProvider).value?.setPublicTransportActiveRoute(index);

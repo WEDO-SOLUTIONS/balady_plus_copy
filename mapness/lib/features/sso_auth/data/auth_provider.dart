@@ -53,6 +53,7 @@ class Auth extends _$Auth {
   Future<void> tokenExpireLogout() async {
     Metrics.logEvent('Auth/tokenExpireLogout');
     mixpanel?.timeEvent('Auth: tokenExpireLogout');
+    await ref.read(profileImageProvider.notifier).clear();
     await sl<EntryPointCubit>().autoLogout();
     ref.invalidateSelf();
     await mixpanel?.track('Auth: logtokenExpireLogoutOut');
