@@ -76,6 +76,7 @@ extension MarkerFromSearchResultMessage on SearchResultMessage {
     required bool isDark,
     required CityEventType? activeCityEvent,
     AdvancedIconResolver? advancedIconResolver,
+    MapMarkersType? forcedMarkerType,
     bool withLabel = true,
     bool isRtl = true,
     Future<void> Function(ItemMarkerInfoMessage? data, int index)? onTapAnalytic,
@@ -105,7 +106,9 @@ extension MarkerFromSearchResultMessage on SearchResultMessage {
 
       MarkerIconMessage? icon;
 
-      if (advancedIconResolver != null) {
+      if (forcedMarkerType != null) {
+        icon = forcedMarkerType.pathBuilder(activeCityEvent, isDark: isDark).markerIcon(size: 32);
+      } else if (advancedIconResolver != null) {
         icon = (await advancedIconResolver(
           rubrics,
           objectId!,

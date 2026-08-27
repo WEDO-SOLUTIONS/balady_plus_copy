@@ -279,33 +279,6 @@ jobs:
             balady_uikit:
               git:
                 url: https://github.com/WEDO-SOLUTIONS/balady_uikit.git
-                ref: development
-                path: packages/balady_uikit
-            balady_uikit_default:
-              git:
-                url: https://github.com/WEDO-SOLUTIONS/balady_uikit.git
-                ref: development
-                path: packages/balady_uikit_default
-            balady_uikit_dga:
-              git:
-                url: https://github.com/WEDO-SOLUTIONS/balady_uikit.git
-                ref: development
-                path: packages/balady_uikit_dga
-            balady_uikit_saudi_day:
-              git:
-                url: https://github.com/WEDO-SOLUTIONS/balady_uikit.git
-                ref: development
-                path: packages/balady_uikit_saudi_day
-            balady_uikit_foundation_day:
-              git:
-                url: https://github.com/WEDO-SOLUTIONS/balady_uikit.git
-                ref: development
-                path: packages/balady_uikit_foundation_day
-            balady_uikit_mekkah:
-              git:
-                url: https://github.com/WEDO-SOLUTIONS/balady_uikit.git
-                ref: development
-                path: packages/balady_uikit_mekkah
             balady_authorization:
               git:
                 url: https://github.com/WEDO-SOLUTIONS/balady_authorization.git
@@ -327,7 +300,6 @@ jobs:
             map_styles:
               git:
                 url: https://github.com/WEDO-SOLUTIONS/map_styles.git
-                ref: development
           EOF
 
           cat > mapness/pubspec_overrides.yaml <<'EOF'
@@ -335,33 +307,6 @@ jobs:
             balady_uikit:
               git:
                 url: https://github.com/WEDO-SOLUTIONS/balady_uikit.git
-                ref: development
-                path: packages/balady_uikit
-            balady_uikit_default:
-              git:
-                url: https://github.com/WEDO-SOLUTIONS/balady_uikit.git
-                ref: development
-                path: packages/balady_uikit_default
-            balady_uikit_dga:
-              git:
-                url: https://github.com/WEDO-SOLUTIONS/balady_uikit.git
-                ref: development
-                path: packages/balady_uikit_dga
-            balady_uikit_saudi_day:
-              git:
-                url: https://github.com/WEDO-SOLUTIONS/balady_uikit.git
-                ref: development
-                path: packages/balady_uikit_saudi_day
-            balady_uikit_foundation_day:
-              git:
-                url: https://github.com/WEDO-SOLUTIONS/balady_uikit.git
-                ref: development
-                path: packages/balady_uikit_foundation_day
-            balady_uikit_mekkah:
-              git:
-                url: https://github.com/WEDO-SOLUTIONS/balady_uikit.git
-                ref: development
-                path: packages/balady_uikit_mekkah
             balady_authorization:
               git:
                 url: https://github.com/WEDO-SOLUTIONS/balady_authorization.git
@@ -383,7 +328,6 @@ jobs:
             map_styles:
               git:
                 url: https://github.com/WEDO-SOLUTIONS/map_styles.git
-                ref: development
           EOF
 
       - name: Setup Flutter
