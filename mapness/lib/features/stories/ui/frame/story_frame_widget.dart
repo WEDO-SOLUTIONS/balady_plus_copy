@@ -6,6 +6,8 @@ import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:balady_uikit/core/extensions/layout_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mapness/app/auto_route/app_routes.dart';
+import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/features/advert_metrics/advert_metrics.dart';
 import 'package:mapness/features/app_analytics/app_analytics.dart';
 import 'package:mapness/features/stories/models/story_frame_action.dart';
@@ -21,7 +23,9 @@ import 'package:urbi_utils/urbi_utils.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 part 'frame_progress_indicator.dart';
+
 part 'story_frame_action_button.dart';
+
 part 'story_frame_content.dart';
 
 class StoryFrameWidget extends StatefulWidget {
@@ -173,175 +177,194 @@ class _StoryFrameWidgetState extends State<StoryFrameWidget>
 
   @override
   Widget build(BuildContext context) => LayoutBuilder(
-      builder: (context, contraints) => SizedBox.fromSize(
-            size: contraints.biggest,
-            child: Padding(
-              padding: EdgeInsets.only(
-                bottom: MediaQuery.paddingOf(context).bottom,
-              ),
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(16),
-                child: Material(
-                  child: Stack(
+    builder: (context, contraints) => SizedBox.fromSize(
+      size: contraints.biggest,
+      child: Padding(
+        padding: EdgeInsets.only(
+          bottom: MediaQuery.paddingOf(context).bottom,
+        ),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(16),
+          child: Material(
+            child: Stack(
+              children: [
+                if (widget.frame.imageUrl != null && widget.frame.fullscreenImage)
+                  Positioned.fill(
+                    child: _buildImage(
+                      title: context.l10n.loading,
+                    ),
+                  ),
+                if (storyTheme.gradientColor != null)
+                  Align(
+                    alignment: Alignment.topLeft,
+                    child: SizedBox(
+                      height: contraints.maxHeight / 2,
+                      width: double.infinity,
+                      child: DecoratedBox(
+                        decoration: BoxDecoration(
+                          gradient: RadialGradient(
+                            radius: 1,
+                            center: Alignment.topLeft,
+                            colors: [
+                              storyTheme.gradientColor!,
+                              const Color(0x00FFFFFF),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                const Positioned(
+                  top: 0,
+                  left: 0,
+                  right: 0,
+                  height: kToolbarHeight + Spacing.$8x,
+                  child: DecoratedBox(
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        begin: Alignment.topCenter,
+                        end: Alignment.bottomCenter,
+                        colors: [
+                          Color(0x66000000),
+                          Color(0x00000000),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+                Positioned.fill(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
                     children: [
-                      if (widget.frame.imageUrl != null && widget.frame.fullscreenImage)
-                        Positioned.fill(
+                      _buildTopbar(context),
+                      const SizedBox(
+                        height: Spacing.$6x,
+                      ),
+                      SizedBox(
+                        width: contraints.maxWidth,
+                        child: StoryFrameContent(
+                          frame: widget.frame,
+                          storyTheme: storyTheme,
+                        ),
+                      ),
+                      if (widget.frame.imageUrl != null && !widget.frame.fullscreenImage)
+                        Expanded(
                           child: _buildImage(
                             title: context.l10n.loading,
                           ),
                         ),
-                      if (storyTheme.gradientColor != null)
-                        Align(
-                          alignment: Alignment.topLeft,
-                          child: SizedBox(
-                            height: contraints.maxHeight / 2,
-                            width: double.infinity,
-                            child: DecoratedBox(
-                              decoration: BoxDecoration(
-                                gradient: RadialGradient(
-                                  radius: 1,
-                                  center: Alignment.topLeft,
-                                  colors: [
-                                    storyTheme.gradientColor!,
-                                    const Color(0x00FFFFFF),
-                                  ],
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                      Positioned.fill(
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            _buildTopbar(context),
-                            const SizedBox(
-                              height: Spacing.$6x,
-                            ),
-                            SizedBox(
-                              width: contraints.maxWidth,
-                              child: StoryFrameContent(
-                                frame: widget.frame,
-                                storyTheme: storyTheme,
-                              ),
-                            ),
-                            if (widget.frame.imageUrl != null && !widget.frame.fullscreenImage)
-                              Expanded(
-                                child: _buildImage(
-                                  title: context.l10n.loading,
-                                ),
-                              ),
-                          ],
-                        ),
-                      ),
-                      if (!_isLoading)
-                        Padding(
-                          padding: const EdgeInsets.only(top: kToolbarHeight),
-                          child: Row(
-                            children: [
-                              Expanded(
-                                flex: 3,
-                                child: GestureDetector(
-                                  onTapDown: _onTapDown,
-                                  onTapUp: (_) => _onTapUp(_onPrevious),
-                                ),
-                              ),
-                              Expanded(
-                                flex: 7,
-                                child: GestureDetector(
-                                  onTapDown: _onTapDown,
-                                  onTapUp: (_) => _onTapUp(_onNext),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      if (widget.frame.action != null)
-                        _buildAction(
-                          contraints,
-                          widget.frame.imageUrl?.contains('saudi') == true ? const Color(0xff003449) : null,
-                        ),
                     ],
                   ),
                 ),
-              ),
+                if (!_isLoading)
+                  Padding(
+                    padding: const EdgeInsets.only(top: kToolbarHeight),
+                    child: Row(
+                      children: [
+                        Expanded(
+                          flex: 3,
+                          child: GestureDetector(
+                            onTapDown: _onTapDown,
+                            onTapUp: (_) => _onTapUp(_onPrevious),
+                          ),
+                        ),
+                        Expanded(
+                          flex: 7,
+                          child: GestureDetector(
+                            onTapDown: _onTapDown,
+                            onTapUp: (_) => _onTapUp(_onNext),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                if (widget.frame.action != null)
+                  _buildAction(
+                    contraints,
+                    widget.frame.imageUrl?.contains('saudi') == true ? const Color(0xff003449) : null,
+                  ),
+              ],
             ),
-          ));
+          ),
+        ),
+      ),
+    ),
+  );
 
   Align _buildAction(BoxConstraints contraints, [Color? actionColor]) => Align(
-        alignment: Alignment.bottomCenter,
-        child: Container(
-          width: contraints.maxWidth,
-          padding: storyTheme.actionTheme.padding,
-          decoration: BoxDecoration(
-            gradient: storyTheme.actionTheme.hasGradient
-                ? LinearGradient(
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter,
-                    stops: const [0, 1],
-                    colors: [
-                      storyTheme.backgroundColor.withOpacity(0),
-                      storyTheme.backgroundColor,
-                    ],
-                  )
-                : null,
-          ),
-          child: _frame.isButtonEnabled
-              ? StoryFrameActionButton(
-                  actionTheme: storyTheme.actionTheme,
-                  action: widget.frame.action!,
-                  actionColor: actionColor,
-                  onNext: _onNext,
-                  onActionPressed: () => widget.onActionPressed?.call(widget.frame),
-                )
-              : const SizedBox.shrink(),
-        ),
-      );
+    alignment: Alignment.bottomCenter,
+    child: Container(
+      width: contraints.maxWidth,
+      padding: storyTheme.actionTheme.padding,
+      decoration: BoxDecoration(
+        gradient: storyTheme.actionTheme.hasGradient
+            ? LinearGradient(
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+                stops: const [0, 1],
+                colors: [
+                  storyTheme.backgroundColor.withOpacity(0),
+                  storyTheme.backgroundColor,
+                ],
+              )
+            : null,
+      ),
+      child: _frame.isButtonEnabled
+          ? StoryFrameActionButton(
+              actionTheme: storyTheme.actionTheme,
+              action: widget.frame.action!,
+              actionColor: actionColor,
+              onNext: _onNext,
+              onActionPressed: () => widget.onActionPressed?.call(widget.frame),
+            )
+          : const SizedBox.shrink(),
+    ),
+  );
 
   Padding _buildTopbar(BuildContext context) => Padding(
-        padding: const EdgeInsets.only(
-          top: Spacing.$4x,
-          left: Spacing.$5x,
-          right: Spacing.$4x,
-        ),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            if (StoryTypes.saudiDay != widget.type)
-              Expanded(
-                child: Padding(
-                  padding: const EdgeInsetsDirectional.only(end: Spacing.$4x),
-                  child: FrameProgressIndicator(
-                    frameIndex: widget.frameIndex,
-                    framesLength: widget.frameLength,
-                    animation: _progress,
-                    trackTheme: storyTheme.trackTheme,
-                  ),
-                ),
-              )
-            else
-              const Spacer(),
-            Consumer(
-              builder: (context, ref, _) => AppButton.close(
-                onTap: () {
-                  if (widget.frameIndex == widget.frameLength - 1) {
-                    ref.read(advertMetricsProvider.notifier).sendEvent(AdvertMetricsKeys.onboardingStoriesCompleted);
-                    ref.read(appAnalyticsProvider).onboardingFlowCompleted();
-                  } else {
-                    ref.read(appAnalyticsProvider).onboardingFlowSkipped();
-                  }
-                  StoryArgsProvider.of(context).onClose();
-                },
-                innerPadding: const EdgeInsets.all(Spacing.$2x),
-                padding: EdgeInsets.zero,
-                buttonColorScheme: ButtonColorScheme.accentSecondary,
-                color: storyTheme.closeButtonTheme.backgroundColor,
-                iconColor: storyTheme.closeButtonTheme.iconColor,
+    padding: const EdgeInsets.only(
+      top: Spacing.$4x,
+      left: Spacing.$5x,
+      right: Spacing.$4x,
+    ),
+    child: Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        if (StoryTypes.saudiDay != widget.type)
+          Expanded(
+            child: Padding(
+              padding: const EdgeInsetsDirectional.only(end: Spacing.$4x),
+              child: FrameProgressIndicator(
+                frameIndex: widget.frameIndex,
+                framesLength: widget.frameLength,
+                animation: _progress,
+                trackTheme: storyTheme.trackTheme,
               ),
             ),
-          ],
+          )
+        else
+          const Spacer(),
+        Consumer(
+          builder: (context, ref, _) => AppButton.close(
+            onTap: () {
+              if (widget.frameIndex == widget.frameLength - 1) {
+                ref.read(advertMetricsProvider.notifier).sendEvent(AdvertMetricsKeys.onboardingStoriesCompleted);
+                ref.read(appAnalyticsProvider).onboardingFlowCompleted();
+              } else {
+                ref.read(appAnalyticsProvider).onboardingFlowSkipped();
+              }
+              StoryArgsProvider.of(context).onClose();
+            },
+            innerPadding: const EdgeInsets.all(Spacing.$2x),
+            padding: EdgeInsets.zero,
+            buttonColorScheme: ButtonColorScheme.accentSecondary,
+            color: storyTheme.closeButtonTheme.backgroundColor,
+            iconColor: storyTheme.closeButtonTheme.iconColor,
+          ),
         ),
-      );
+      ],
+    ),
+  );
 
   LoadingShimmerImage _buildImage({required String title}) {
     final isArabic = Directionality.of(context) == TextDirection.rtl;

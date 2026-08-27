@@ -58,21 +58,17 @@ class _DriveBackHomeCardState extends ConsumerState<DriveBackHomeCard> with Auto
           height: 123,
           child: DecoratedBox(
             decoration: BoxDecoration(
-
-             //  color: context.colors.backgroundSurface5,
-              // borderRadius: BorderRadius.circular(RadiusBorder.xl),
-              // boxShadow: Shadows.s,
+              color: context.colors.backgroundSurface5,
+              borderRadius: BorderRadius.circular(RadiusBorder.xl),
+              boxShadow: Shadows.s,
               image: DecorationImage(
-
                 image: activeCityEvent.getDriveHomeBackground(isDark: isDark),
                 matchTextDirection: true,
-                fit: BoxFit.cover,
-                alignment: AlignmentDirectional.centerEnd,
+                fit: BoxFit.fill,
               ),
             ),
             child: Stack(
               children: [
-
                 if (showBlueCircles) ...[
                   ClipRRect(
                     borderRadius: BorderRadius.circular(RadiusBorder.xl),
@@ -145,7 +141,6 @@ class _DriveBackHomeCardState extends ConsumerState<DriveBackHomeCard> with Auto
   }
 
   Future<void> authAndOpenNavigator(WidgetRef ref, StackRouter router, String locationLabel, String homeLabel) async {
-
     /// Force update authProvider when the user was not authenticated to get relavant favorites.
     final isAuth = ref.read(authProvider).value != null;
     if (!isAuth) {
