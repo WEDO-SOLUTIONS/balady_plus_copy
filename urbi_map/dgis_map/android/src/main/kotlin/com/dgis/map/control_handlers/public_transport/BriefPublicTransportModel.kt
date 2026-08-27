@@ -6,7 +6,7 @@ import ru.dgis.sdk.map.*
 import ru.dgis.sdk.routing.*
 import kotlin.math.max
 
-class BriefPublicTransportModel(route: TrafficRoute) {
+class BriefPublicTransportModel(route: TrafficRoute, currentPosition: RoutePoint? = null) {
     private val _transfers: List<PublicTransportTransferRouteLongEntry> =
         route.route.publicTransportTransfers.entries
 
@@ -53,7 +53,10 @@ class BriefPublicTransportModel(route: TrafficRoute) {
      * Заголовок.
      * Предполагаемое время проезда, например, "1 ч 42 мин."
      */
-    val duration: Long = route.estimatedDuration.inSeconds
+    val duration: Long = if (currentPosition != null)
+        route.traffic.durations.calculateDuration(currentPosition).inSeconds
+    else
+        route.estimatedDuration.inSeconds
 
     /** Информация о транспорте. */
     val transports: List<Transport> =

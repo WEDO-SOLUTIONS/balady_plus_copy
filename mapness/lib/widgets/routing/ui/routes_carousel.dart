@@ -95,22 +95,36 @@ class RoutesCarousel extends ConsumerWidget {
           return PathCardFailure.routeNotFound(refresh: refresh, text: context.l10n.routeNotFound);
         },
         data: (ptRoutes) {
-          if (ptRoutes.isEmpty || publicTransportVisibility.hasError) {
-            return PathCardFailure.routeNotFound(refresh: refresh, text: context.l10n.routeNotFound);
+          // Filter out walking-only routes: routes where every segment has no transit stops
+          final transitRoutes = ptRoutes
+              .where(
+                (route) =>
+                    route.publicTransportTransferRouteLongEntry.any((entry) => entry.value.routeParts.isNotEmpty),
+              )
+              .toList();
+
+          if (transitRoutes.isEmpty || publicTransportVisibility.hasError) {
+            return PathCardFailure.nearestMetroTooFar(
+              refresh: () {
+                ref.read(routesUpdateTabProvider.notifier).update = RouteSearchOptionsMessage.car;
+              },
+              text: context.l10n.nearestMetroTooFar,
+              labelButton: context.l10n.goByCar,
+            );
           }
 
-          final shortest = shortestIsOnlyOnePublicTransport(ptRoutes);
+          final shortest = shortestIsOnlyOnePublicTransport(transitRoutes);
 
           return RouteCarouselWrapper(
             pageController: pageController,
-            routesCount: ptRoutes.length,
+            routesCount: transitRoutes.length,
             height: navType.cardHeight,
             onActiveChanged: onActiveChanged,
             itemBuilder: (context, index) {
-              final route = ptRoutes[index];
+              final route = transitRoutes[index];
               final durationInSeconds = route.duration;
               return Padding(
-                padding: padding(index: index, length: ptRoutes.length),
+                padding: padding(index: index, length: transitRoutes.length),
                 child: PathPublicCard(
                   route: route,
                   localizations: PathCardLocalization(
@@ -124,7 +138,7 @@ class RoutesCarousel extends ConsumerWidget {
                   additionalInfo: shortest != null && shortest == durationInSeconds
                       ? PathCardStatus.shortest(context.l10n.shortest)
                       : null,
-                  publicTransportRoutes: ptRoutes,
+                  publicTransportRoutes: transitRoutes,
                   activeIndex: index,
                   onActiveChanged: onActiveChanged,
                 ),
