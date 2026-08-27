@@ -1,11 +1,9 @@
-import 'package:auto_route/auto_route.dart';
-import 'package:dgis_map/library.dart';
-import 'package:flutter/material.dart';
 import 'dart:async';
 
 import 'package:auto_route/auto_route.dart';
+import 'package:balady_plus/app/core/utils/common_functions.dart';
 import 'package:dgis_map/library.dart';
-import 'package:flutter/widgets.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/features/advert_metrics/advert_metrics.dart';
@@ -13,12 +11,10 @@ import 'package:mapness/features/app_analytics/app_analytics.dart';
 import 'package:mapness/features/lifestyle_layers/providers/layers_controls.dart';
 import 'package:mapness/features/poi_card/domain/model/poi_camera_config.dart';
 import 'package:mapness/features/special_themes/core/special_theme_mode.dart';
-import 'package:balady_plus/app/core/utils/common_functions.dart';
-import 'package:mapness/shared/constants/metrics_constants.dart';
-import 'package:mapness/shared/providers/location.dart';
-import 'package:sheetify/sheetify.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
+import 'package:mapness/shared/providers/location.dart';
+import 'package:sheetify/sheetify.dart';
 
 /// Encapsulates all dashboard quick action callbacks and navigation logic.
 /// This class eliminates props drilling by centralizing all action handlers
@@ -69,6 +65,10 @@ class DashboardActions {
     });
   }
 
+  Future<void> openNearby(BuildContext context) async {
+    context.router.push(const NearbyRoute());
+  }
+
   /// Opens the Quran mini-app.
   void openQuran() {
     _logThemedQuickAction('quran');
@@ -112,15 +112,17 @@ class DashboardActions {
     if (userLocation == null) return;
 
     if (!context.mounted) return;
-    unawaited(context.router.push(
-      ShareMyLocationRoute(
-        cameraConfig: const PoiCameraConfig(zoom: 17, bearing: 0, tilt: 0),
-        closestPoint: LatLng(
-          latitude: userLocation.latitude,
-          longitude: userLocation.longitude,
+    unawaited(
+      context.router.push(
+        ShareMyLocationRoute(
+          cameraConfig: const PoiCameraConfig(zoom: 17, bearing: 0, tilt: 0),
+          closestPoint: LatLng(
+            latitude: userLocation.latitude,
+            longitude: userLocation.longitude,
+          ),
         ),
       ),
-    ));
+    );
   }
 
   /// Opens the Snap and Send mini-app for reporting issues.

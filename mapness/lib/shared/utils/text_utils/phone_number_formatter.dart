@@ -49,6 +49,18 @@ class PhoneNumberFormatter extends TextInputFormatter {
   /// TODO(ilyasov): extract to a separate utility class.
   static String formatPure(String text) => _convertArabicDigits(text).replaceAll(RegExp(r'\D'), '');
 
+  /// Validates a Saudi mobile number: exactly 9 local digits starting with 5 after +966.
+  static String? validateSaudiMobile(String? value) {
+    if (value == null || value.trim().isEmpty) {
+      return null;
+    }
+    final local = formatPure(value).replaceFirst(RegExp(r'^966'), '');
+    if (local.length != 9 || !local.startsWith('5')) {
+      return '';
+    }
+    return null;
+  }
+
   @override
   TextEditingValue formatEditUpdate(
     TextEditingValue oldValue,
@@ -65,7 +77,7 @@ class PhoneNumberFormatter extends TextInputFormatter {
     if (digitsOnly.startsWith(countyCode)) {
       digitsOnly = digitsOnly.replaceFirst(countyCode, '');
     }
-    for (; i < min(digitsOnly.length, 10); i++) {
+    for (; i < min(digitsOnly.length, 9); i++) {
       if (i == 2) {
         formatted.write(') ');
       }

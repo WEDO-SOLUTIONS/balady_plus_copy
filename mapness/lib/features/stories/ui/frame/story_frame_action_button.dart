@@ -52,8 +52,11 @@ class _StoryFrameActionButtonState extends ConsumerState<StoryFrameActionButton>
   String _getActionTitle() {
     final l10n = context.l10n;
     return switch (widget.action) {
-      NextStoryAction(localeKey: final key, title: final title) => title ?? _keyToLocale(l10n, key),
-      NavigationFrameAction(localeKey: final key, title: final title) => title ?? _keyToLocale(l10n, key),
+      NextStoryAction(localeKey: final key, title: final title) ||
+      NavigationFrameAction(
+        localeKey: final key,
+        title: final title,
+      ) => title == null || title.isEmpty ? _keyToLocale(l10n, key) : title,
       NetworkLinkFrameAction(title: final title) => title,
     };
   }

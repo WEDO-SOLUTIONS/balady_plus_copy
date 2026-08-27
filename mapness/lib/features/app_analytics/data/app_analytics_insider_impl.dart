@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:device_info_plus/device_info_plus.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_insider/flutter_insider.dart';
 
 // ignore: implementation_imports
@@ -7,6 +8,8 @@ import 'package:flutter_insider/src/identifiers.dart';
 import 'package:mapness/features/app_analytics/app_analytics_repository.dart';
 
 class AppAnalyticsInsiderImpl implements AppAnalyticsRepository {
+  static String? _lastLoggedUserId;
+
   @override
   void onboardingFlowStarted() {
     FlutterInsider.Instance.tagEvent('onboarding_flow_started').build();
@@ -68,35 +71,84 @@ class AppAnalyticsInsiderImpl implements AppAnalyticsRepository {
     String? deviceOs,
     String? appVersion,
     String? userId,
+    String? phone,
+    String? firstName,
+    String? lastName,
   }) {
     final user = FlutterInsider.Instance.getCurrentUser();
 
     if (user == null) {
+      debugPrint('[Insider] getCurrentUser() returned null. Cannot set user info.');
       return;
     }
 
-    if (deviceId != null) {
-      user.setCustomAttributeWithString('device_id', deviceId);
+    // Handle user logout / clear session
+    if (userId == null && (email == null || email.isEmpty) && (phone == null || phone.isEmpty)) {
+      if (_lastLoggedUserId != null) {
+        debugPrint('[Insider] User logged out / unauthenticated. Calling logout().');
+        _lastLoggedUserId = null;
+        user.logout();
+      }
+      return;
     }
 
-    if (deviceOs != null) {
-      user.setCustomAttributeWithString('device_os', deviceOs);
+    // Deduplicate: Avoid duplicate login calls and login events for the same user session
+    if (userId != null && userId == _lastLoggedUserId) {
+      debugPrint('[Insider] setUserInfo called for already identified user ($userId). Skipping duplicate login event.');
+      return;
     }
 
-    if (appVersion != null) {
-      user.setCustomAttributeWithString('app_version', appVersion);
-    }
-
-    if (locale != null) {
-      user.setLocale(locale);
-    }
+    _lastLoggedUserId = userId;
 
     final identifiers = FlutterInsiderIdentifiers();
-    if (email != null) {
+    if (email != null && email.isNotEmpty) {
       identifiers.addEmail(email);
     }
+    if (phone != null && phone.isNotEmpty) {
+      identifiers.addPhoneNumber(phone);
+    }
+    if (userId != null && userId.isNotEmpty) {
+      identifiers.addUserID(userId);
+    }
 
-    user.login(identifiers);
+    debugPrint('[Insider] Triggering login with userId: $userId, email: $email, phone: $phone');
+
+    // Use the second variant of login with callback to avoid attribute/event race conditions
+    user.login(
+      identifiers,
+      insiderIDResult: (insiderID) {
+        debugPrint('[Insider] Login callback completed. Insider ID: $insiderID');
+        final newUser = FlutterInsider.Instance.getCurrentUser();
+        if (newUser == null) {
+          debugPrint('[Insider] getCurrentUser() returned null inside login callback.');
+          return;
+        }
+
+        if (firstName != null && firstName.isNotEmpty) {
+          newUser.setName(firstName);
+        }
+        if (lastName != null && lastName.isNotEmpty) {
+          newUser.setSurname(lastName);
+        }
+        if (locale != null && locale.isNotEmpty) {
+          newUser.setLocale(locale);
+        }
+
+        if (deviceId != null) {
+          newUser.setCustomAttributeWithString('device_id', deviceId);
+        }
+        if (deviceOs != null) {
+          newUser.setCustomAttributeWithString('device_os', deviceOs);
+        }
+        if (appVersion != null) {
+          newUser.setCustomAttributeWithString('app_version', appVersion);
+        }
+
+        // Fire login event inside callback after attributes are applied to new user
+        debugPrint('[Insider] Tagging login event for user: $userId (Insider ID: $insiderID)');
+        FlutterInsider.Instance.tagEvent('login').build();
+      },
+    );
   }
 
   @override
