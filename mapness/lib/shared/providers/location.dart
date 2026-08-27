@@ -39,7 +39,7 @@ class _Location extends _$Location {
     // listener and other async callsites read the controller from the plain
     // top-level [activeDgisController] cache (populated by
     // DgisController.onMapCreated) — invisible to Riverpod's graph analysis.
-    checkLocationPermission(showGiveAccessSheet: false).then((permitted) async {
+    checkLocationPermission(showGiveAccessSheet: false, restartPipelineIfInactive: false).then((permitted) async {
       if (!ref.mounted || !permitted) {
         return;
       }
@@ -137,6 +137,7 @@ class _Location extends _$Location {
   Future<bool> checkLocationPermission({
     String? routeOnClose,
     bool showGiveAccessSheet = true,
+    bool restartPipelineIfInactive = true,
   }) async {
     const routeLocation = '/request_location';
     final router = ref.read(appRouterProvider);
@@ -156,6 +157,7 @@ class _Location extends _$Location {
         }
         if (status == perm.PermissionStatus.granted) {
           unawaited(_startInsiderGeofenceIfNeeded());
+          final pipelineWasInactive = state == null;
           if (state == null) {
             final isGmsAvailable = await CommonFunctions.isGmsAvailable();
             final isHuawei = await CommonFunctions.isHuaweiDevice();
@@ -189,6 +191,16 @@ class _Location extends _$Location {
               return false;
             }
             state = location;
+          }
+          if (restartPipelineIfInactive && pipelineWasInactive) {
+            final DgisMapController? controller = activeDgisController ?? await ref.read(dgisControllerProvider.future);
+            if (!ref.mounted) {
+              return false;
+            }
+            if (controller != null) {
+              unawaited(controller.onLocationPermissionGranted(desiredAccuracy: DesiredAccuracyMessage.high));
+            }
+            ref.invalidateSelf();
           }
 
           return true;
