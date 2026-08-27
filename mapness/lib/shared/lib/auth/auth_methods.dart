@@ -11,7 +11,13 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'auth_methods.g.dart';
 
-@riverpod
+// BALADY-3730: keepAlive is required. Nothing in the app watches this
+// provider — every consumer does `ref.read(...).authAndOpen(...)` — so as
+// autoDispose the notifier is disposed while the user is still typing on
+// the login screen. When the post-login stream event finally fires,
+// `state = ...` inside runCallback throws on the dead notifier BEFORE the
+// callback runs, and the tap's follow-up action is silently lost.
+@Riverpod(keepAlive: true)
 class AuthMethods extends _$AuthMethods {
   static StreamSubscription<EntryPointState>? _authSubscription;
 
@@ -54,6 +60,11 @@ class AuthMethods extends _$AuthMethods {
   }) async {
     await _authSubscription?.cancel();
     _loginScreenPoppedSubscription?.cancel();
+    // BALADY-3730: the popped flag is sticky from any previous login flow.
+    // Without this reset the 1-second poll below sees the stale `true`,
+    // cancels the userStateStream subscription while the user is still on
+    // the login form, and the callback never runs.
+    BaladyRouteObserver.resetLoginScreenPopped();
     if (!state) {
       if (!context.mounted) {
         return;
@@ -66,8 +77,11 @@ class AuthMethods extends _$AuthMethods {
           return;
         }
         callbackStarted = true;
-        state = CommonProperties.isLoggedIn;
         try {
+          // Inside try: if the notifier is disposed despite keepAlive
+          // (container teardown), the state write must not prevent the
+          // subscriptions below from being cleaned up.
+          state = CommonProperties.isLoggedIn;
           await callback?.call();
         } finally {
           await _authSubscription?.cancel();

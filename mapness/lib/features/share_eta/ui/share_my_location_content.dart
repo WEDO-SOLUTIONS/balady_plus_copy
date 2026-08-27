@@ -26,6 +26,7 @@ import 'package:mapness/shared/ui/loading/loading_overlay.dart';
 import 'package:mapness/shared/ui/measure_size.dart';
 import 'package:mapness/shared/ui/share_eta/poi_my_location_action.dart';
 import 'package:mapness/shared/ui/sheets/card_header.dart';
+import 'package:shimmer/shimmer.dart';
 import 'package:mapness/shared/ui/toast/toast_overlay.dart';
 
 @RoutePage()
@@ -75,7 +76,7 @@ class ShareMyLocationPage extends HookConsumerWidget {
 
     final title = value?.title ?? context.l10n.myLocation;
     final subTitle = isAuthorized ? context.l10n.myLocationSubtitle : null;
-    final text = value?.address ?? '${closestPoint?.latitude}, ${closestPoint?.longitude}';
+    final text = data.maybeWhen(data: (v) => v?.address ?? '', orElse: () => '');
 
     ref.listen(etaServiceProvider, (_, next) {
       if (context.mounted == false) {
@@ -161,12 +162,28 @@ class ShareMyLocationPage extends HookConsumerWidget {
                   ),
                   Padding(
                     padding: const EdgeInsets.all(Spacing.$4x).copyWith(top: isAuthorized ? Spacing.$4x : 0),
-                    child: Text(
-                      text,
-                      style: context.textStyles.bodySmallRegular.copyWith(color: context.colors.foregroundSoft),
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                    ),
+                    child: data.isLoading
+                        ? Shimmer.fromColors(
+                            baseColor: context.colors.backgroundSurface4,
+                            highlightColor: context.colors.backgroundSurface1,
+                            child: FractionallySizedBox(
+                              widthFactor: 0.55,
+                              alignment: AlignmentDirectional.centerStart,
+                              child: Container(
+                                height: 12,
+                                decoration: BoxDecoration(
+                                  color: context.colors.backgroundSurface4,
+                                  borderRadius: BorderRadius.circular(6),
+                                ),
+                              ),
+                            ),
+                          )
+                        : Text(
+                            text,
+                            style: context.textStyles.bodySmallRegular.copyWith(color: context.colors.foregroundSoft),
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
+                          ),
                   ),
                   MyLocationPoiActions(
                     onShare: () => _showEtaControlSheet(context, ref, closestPoint: closestPoint),

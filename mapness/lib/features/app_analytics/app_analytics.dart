@@ -144,6 +144,9 @@ class _CompositeAnalytics implements AppAnalyticsApi {
     String? deviceOs,
     String? appVersion,
     String? userId,
+    String? phone,
+    String? firstName,
+    String? lastName,
   }) {
     for (final impl in _implementations) {
       impl.setUserInfo(
@@ -153,6 +156,9 @@ class _CompositeAnalytics implements AppAnalyticsApi {
         deviceOs: deviceOs,
         appVersion: appVersion,
         userId: userId,
+        phone: phone,
+        firstName: firstName,
+        lastName: lastName,
       );
     }
   }
@@ -370,7 +376,8 @@ class _CompositeAnalytics implements AppAnalyticsApi {
   }
 }
 
-@riverpod
+// Prevents auto-dispose to avoid re-initializing analytics on page changes
+@Riverpod(keepAlive: true)
 class AppAnalytics extends _$AppAnalytics {
   @override
   AppAnalyticsApi build() {
@@ -427,6 +434,9 @@ class AppAnalytics extends _$AppAnalytics {
         // SSO token missing the `sub` claim never makes a logged-in user look
         // logged out. On phone login `sub` is a guaranteed non-null String.
         userId: authValue == null ? null : (authValue.sub ?? authValue.idNo),
+        phone: authValue?.getPhone(),
+        firstName: authValue?.getFirstName(),
+        lastName: authValue?.getLastName(),
       );
     });
 
