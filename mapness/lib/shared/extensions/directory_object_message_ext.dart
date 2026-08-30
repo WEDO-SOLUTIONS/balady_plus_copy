@@ -50,6 +50,7 @@ extension DirectoryObjectMessageExt on DirectoryObjectMessage {
       'rubricIds': rubricIds,
       'routeInfos': routeInfosList,
       'group': groupList,
+      'platformIds': platformIds.map((item) => item.toJson()).toList(),
     };
   }
 
@@ -110,9 +111,11 @@ extension DirectoryObjectMessageExt on DirectoryObjectMessage {
             .toList() ??
         [],
     orgInfo: json['orgInfo'] != null ? OrgInfoMessageExt.fromJson(json['orgInfo'] as Map<String, dynamic>) : null,
-    platformIds: (json['platformIds'] as List<dynamic>?)!
-        .map((e) => DgisObjectIdMessageExt.fromJson(e as Map<String, dynamic>))
-        .toList(),
+    platformIds:
+        (json['platformIds'] as List<dynamic>?)
+            ?.map((e) => DgisObjectIdMessageExt.fromJson(e as Map<String, dynamic>))
+            .toList() ??
+        [],
     group:
         (json['group'] as List<dynamic>?)
             ?.map((e) => GroupItemMessageExt.fromJson(e as Map<String, dynamic>))

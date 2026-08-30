@@ -12,7 +12,6 @@ import 'package:mapness/features/poi_card/domain/model/organizations_response.da
 import 'package:mapness/features/poi_card/domain/model/poi_camera_config.dart';
 import 'package:mapness/features/poi_card/domain/model/qr_trade_license.dart';
 import 'package:mapness/features/poi_card/provider/poi_photo_provider.dart';
-import 'package:mapness/l10n/generated/app_localizations.dart';
 import 'package:mapness/shared/constants/constants.dart';
 import 'package:mapness/shared/extensions/directory_object_message_ext.dart';
 import 'package:mapness/shared/providers/app_language.dart';
@@ -20,7 +19,6 @@ import 'package:mapness/shared/providers/dgis_http_network.dart';
 import 'package:mapness/shared/providers/hive.dart';
 import 'package:mapness/shared/providers/map/camera_position.dart';
 import 'package:mapness/shared/providers/map/point_of_interest.dart';
-import 'package:mapness/shared/providers/padding_config.dart';
 import 'package:mapness/shared/providers/vendor_config.dart';
 import 'package:mapness/shared/utils/logger/logger.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -135,7 +133,8 @@ class PoiCardProvider extends _$PoiCardProvider {
               showHighlight: showHighlight,
             ).future,
           )
-          .timeout(const Duration(minutes: 10));
+          .timeout(const Duration(seconds: 10))
+          .onError((error, stackTrace) => null);
 
       final photosFuture = ref.watch(poiPhotoProvider(objectId).future);
       final organisationsFuture = fetchOrganizationsData(objectId: objectId);
