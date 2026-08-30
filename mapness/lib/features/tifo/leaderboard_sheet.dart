@@ -108,7 +108,20 @@ class _LeaderboardSheetState extends ConsumerState<_LeaderboardSheet> {
               ),
             ),
             const SizedBox(height: 8),
-            _Tabs(tab: _tab, onChanged: (t) => setState(() => _tab = t)),
+            _Tabs(
+              tab: _tab,
+              onChanged: (t) {
+                setState(() => _tab = t);
+                // The profile tab's daily-timer tile (`_NextDailyTile`) reads
+                // `profile.secondsToNextDaily` off whatever `/me` snapshot is
+                // already cached — which can be from well before this sheet
+                // opened. Refresh it on every switch to Profile so a signed-in
+                // player sees the current countdown, not a stale one.
+                if (t == 1 && !ref.read(tifoSessionProvider).isGuest) {
+                  unawaited(ref.read(tifoSessionProvider.notifier).refreshProfile());
+                }
+              },
+            ),
             const SizedBox(height: 16),
             Flexible(child: _tab == 0 ? _buildTable() : _buildProfile()),
             const SizedBox(height: 12),
