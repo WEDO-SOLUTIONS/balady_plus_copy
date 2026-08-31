@@ -25,6 +25,8 @@ class _UnifiedStepState extends State<UnifiedStep> {
     final state = context.read<VolunteerProfileBloc>().state;
     _phoneController = TextEditingController(text: state.phoneNumber ?? '');
     _emailController = TextEditingController(text: state.email ?? '');
+    _selectedRegionId = state.regionId;
+    _selectedCityId = state.cityId;
   }
 
   void _onEmailChanged(String value) {

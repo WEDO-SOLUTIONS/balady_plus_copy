@@ -85,6 +85,13 @@ class VolunteerProfileBloc
     on<UploadCVFile>(_onUploadCVFile);
   }
 
+  // Prepends '0' when the API returns a 9-digit Saudi mobile without the leading zero
+  String _normalizePhone(String phone) {
+    final digits = phone.trim();
+    if (RegExp(r'^5[0-9]{8}$').hasMatch(digits)) return '0$digits';
+    return digits;
+  }
+
   /// Resets all profile data to initial state
 
   Future<void> _onLoadVolunteerProfile(
@@ -133,16 +140,17 @@ class VolunteerProfileBloc
           // Map volunteering fields
           String? volunteeringLevelId;
           String? volunteeringWorkFieldId;
+          String? volunteeringServiceId;
           String? volunteeringTypeId;
           List<String> skillsIds = [];
           if (profile.volunteeringLevel?.id != null) {
             volunteeringLevelId = profile.volunteeringLevel!.id.toString();
           }
-          if (profile.volunteeringFields != null &&
-              profile.volunteeringFields!.isNotEmpty &&
-              profile.volunteeringFields!.first.id != null) {
-            volunteeringWorkFieldId =
-                profile.volunteeringFields!.first.id.toString();
+          // volunteeringDomainServices carries both the field (parentId/parentName) and service (id/name)
+          if (profile.volunteeringDomainServices?.isNotEmpty == true) {
+            final ds = profile.volunteeringDomainServices!.first;
+            if (ds.parentId != null) volunteeringWorkFieldId = ds.parentId.toString();
+            if (ds.id != null) volunteeringServiceId = ds.id.toString();
           }
           if (profile.volunteeringType?.id != null) {
             volunteeringTypeId = profile.volunteeringType!.id.toString();
@@ -208,7 +216,8 @@ class VolunteerProfileBloc
             lastName: profile.lastName,
             fullName: profile.fullName,
             email: profile.email ?? '',
-            phoneNumber: profile.phone ?? '',
+            // API omits the leading 0; normalize to local Saudi format (05XXXXXXXX)
+            phoneNumber: _normalizePhone(profile.phone ?? ''),
             nationalId: profile.nationalId ?? '',
             dateOfBirth: profile.birthDate,
             nationality: profile.nationality,
@@ -242,11 +251,14 @@ class VolunteerProfileBloc
             skillsIds: skillsIds,
             volunteeringLevel: profile.volunteeringLevel?.name,
             volunteeringLevelId: volunteeringLevelId,
-            volunteeringWorkField:
-                profile.volunteeringFields?.isNotEmpty == true
-                    ? profile.volunteeringFields!.first.name
-                    : null,
+            volunteeringWorkField: profile.volunteeringDomainServices?.isNotEmpty == true
+                ? profile.volunteeringDomainServices!.first.parentName
+                : null,
             volunteeringWorkFieldId: volunteeringWorkFieldId,
+            volunteeringService: profile.volunteeringDomainServices?.isNotEmpty == true
+                ? profile.volunteeringDomainServices!.first.name
+                : null,
+            volunteeringServiceId: volunteeringServiceId,
             volunteeringType: profile.volunteeringType?.name,
             volunteeringTypeId: volunteeringTypeId,
             isIndividualSelected: isIndividualSelected,
