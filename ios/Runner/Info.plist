@@ -4,6 +4,9 @@
 <dict>
 	<key>CADisableMinimumFrameDurationOnPhone</key>
 	<true/>
+	<!-- PostHog is set up programmatically (PosthogBaladyAnalyticsSink), host/key come from .env -->
+	<key>com.posthog.posthog.AUTO_INIT</key>
+	<false/>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleLocalizations</key>
@@ -107,6 +110,10 @@
 	<string>Photo Library is used to choose photos for Reports</string>
 	<key>NSSpeechRecognitionUsageDescription</key>
 	<string>Balady+ uses speech recognition so you can search for places and municipal services by voice instead of typing, for example saying a neighbourhood or facility name to find it on the map.</string>
+	<key>NSSupportsLiveActivities</key>
+	<true/>
+	<key>NSSupportsLiveActivitiesFrequentUpdates</key>
+	<true/>
 	<key>NSUserTrackingUsageDescription</key>
 	<string>Your data will be used to deliver personalized ads to you.</string>
 	<key>UIApplicationSceneManifest</key>

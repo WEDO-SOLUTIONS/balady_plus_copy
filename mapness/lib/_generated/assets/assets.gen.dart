@@ -27,224 +27,202 @@ class $AssetsIconsGen {
 class $AssetsImagesGen {
   const $AssetsImagesGen();
 
-  /// File path: assets/images/add_company.png
-  AssetGenImage get addCompany => const AssetGenImage('assets/images/add_company.png');
+  /// File path: assets/images/add_company.webp
+  AssetGenImage get addCompany => const AssetGenImage('assets/images/add_company.webp');
 
-  /// File path: assets/images/add_company_founding_day.png
-  AssetGenImage get addCompanyFoundingDay => const AssetGenImage('assets/images/add_company_founding_day.png');
+  /// File path: assets/images/add_company_founding_day.webp
+  AssetGenImage get addCompanyFoundingDay => const AssetGenImage('assets/images/add_company_founding_day.webp');
 
-  /// File path: assets/images/add_photo.png
-  AssetGenImage get addPhoto => const AssetGenImage('assets/images/add_photo.png');
+  /// File path: assets/images/add_photo.webp
+  AssetGenImage get addPhoto => const AssetGenImage('assets/images/add_photo.webp');
 
-  /// File path: assets/images/add_photo_founding_day.png
-  AssetGenImage get addPhotoFoundingDay => const AssetGenImage('assets/images/add_photo_founding_day.png');
+  /// File path: assets/images/add_photo_founding_day.webp
+  AssetGenImage get addPhotoFoundingDay => const AssetGenImage('assets/images/add_photo_founding_day.webp');
 
   /// Directory path: assets/images/audio_placeholders
   $AssetsImagesAudioPlaceholdersGen get audioPlaceholders => const $AssetsImagesAudioPlaceholdersGen();
 
-  /// File path: assets/images/background_ornament_saudiday.png
-  AssetGenImage get backgroundOrnamentSaudiday => const AssetGenImage('assets/images/background_ornament_saudiday.png');
+  /// File path: assets/images/background_ornament_saudiday.webp
+  AssetGenImage get backgroundOrnamentSaudiday =>
+      const AssetGenImage('assets/images/background_ornament_saudiday.webp');
 
-  /// File path: assets/images/calendar_card.png
-  AssetGenImage get calendarCard => const AssetGenImage('assets/images/calendar_card.png');
+  /// File path: assets/images/calendar_card.webp
+  AssetGenImage get calendarCard => const AssetGenImage('assets/images/calendar_card.webp');
 
-  /// File path: assets/images/city_expert.png
-  AssetGenImage get cityExpert => const AssetGenImage('assets/images/city_expert.png');
+  /// File path: assets/images/city_expert.webp
+  AssetGenImage get cityExpert => const AssetGenImage('assets/images/city_expert.webp');
 
-  /// File path: assets/images/city_expert_founding_day.png
-  AssetGenImage get cityExpertFoundingDay => const AssetGenImage('assets/images/city_expert_founding_day.png');
+  /// File path: assets/images/city_expert_founding_day.webp
+  AssetGenImage get cityExpertFoundingDay => const AssetGenImage('assets/images/city_expert_founding_day.webp');
 
-  /// File path: assets/images/city_expert_saudi_day.png
-  AssetGenImage get cityExpertSaudiDay => const AssetGenImage('assets/images/city_expert_saudi_day.png');
+  /// File path: assets/images/city_expert_saudi_day.webp
+  AssetGenImage get cityExpertSaudiDay => const AssetGenImage('assets/images/city_expert_saudi_day.webp');
 
-  /// File path: assets/images/cityscape_global.png
-  AssetGenImage get cityscapeGlobal => const AssetGenImage('assets/images/cityscape_global.png');
+  /// File path: assets/images/cityscape_global.webp
+  AssetGenImage get cityscapeGlobal => const AssetGenImage('assets/images/cityscape_global.webp');
 
-  /// File path: assets/images/dark_map_preview.jpg
-  AssetGenImage get darkMapPreview => const AssetGenImage('assets/images/dark_map_preview.jpg');
+  /// File path: assets/images/dashboard_bg_pattern.webp
+  AssetGenImage get dashboardBgPattern => const AssetGenImage('assets/images/dashboard_bg_pattern.webp');
 
-  /// File path: assets/images/dashboard_bg_pattern.png
-  AssetGenImage get dashboardBgPattern => const AssetGenImage('assets/images/dashboard_bg_pattern.png');
+  /// File path: assets/images/driveHomeArrowFoundingDay.webp
+  AssetGenImage get driveHomeArrowFoundingDay => const AssetGenImage('assets/images/driveHomeArrowFoundingDay.webp');
 
-  /// File path: assets/images/driveHomeArrowFoundingDay.png
-  AssetGenImage get driveHomeArrowFoundingDay => const AssetGenImage('assets/images/driveHomeArrowFoundingDay.png');
+  /// File path: assets/images/drive_home_arrow.webp
+  AssetGenImage get driveHomeArrow => const AssetGenImage('assets/images/drive_home_arrow.webp');
 
-  /// File path: assets/images/drive_home_arrow.png
-  AssetGenImage get driveHomeArrow => const AssetGenImage('assets/images/drive_home_arrow.png');
+  /// File path: assets/images/drive_home_arrow_saudiday.webp
+  AssetGenImage get driveHomeArrowSaudiday => const AssetGenImage('assets/images/drive_home_arrow_saudiday.webp');
 
-  /// File path: assets/images/drive_home_arrow_saudiday.png
-  AssetGenImage get driveHomeArrowSaudiday => const AssetGenImage('assets/images/drive_home_arrow_saudiday.png');
+  /// File path: assets/images/drive_home_background.webp
+  AssetGenImage get driveHomeBackground => const AssetGenImage('assets/images/drive_home_background.webp');
 
-  /// File path: assets/images/drive_home_background.png
-  AssetGenImage get driveHomeBackground => const AssetGenImage('assets/images/drive_home_background.png');
+  /// File path: assets/images/drive_home_background_dark.webp
+  AssetGenImage get driveHomeBackgroundDark => const AssetGenImage('assets/images/drive_home_background_dark.webp');
 
-  /// File path: assets/images/drive_home_background_dark.png
-  AssetGenImage get driveHomeBackgroundDark => const AssetGenImage('assets/images/drive_home_background_dark.png');
-
-  /// File path: assets/images/drive_home_background_founding_day.png
+  /// File path: assets/images/drive_home_background_founding_day.webp
   AssetGenImage get driveHomeBackgroundFoundingDay =>
-      const AssetGenImage('assets/images/drive_home_background_founding_day.png');
+      const AssetGenImage('assets/images/drive_home_background_founding_day.webp');
 
-  /// File path: assets/images/drive_home_background_saudiday.png
+  /// File path: assets/images/drive_home_background_saudiday.webp
   AssetGenImage get driveHomeBackgroundSaudiday =>
-      const AssetGenImage('assets/images/drive_home_background_saudiday.png');
+      const AssetGenImage('assets/images/drive_home_background_saudiday.webp');
 
-  /// File path: assets/images/eta_sheet_background.png
-  AssetGenImage get etaSheetBackground => const AssetGenImage('assets/images/eta_sheet_background.png');
+  /// File path: assets/images/eta_sheet_background.webp
+  AssetGenImage get etaSheetBackground => const AssetGenImage('assets/images/eta_sheet_background.webp');
 
-  /// File path: assets/images/explore_mbc.png
-  AssetGenImage get exploreMbc => const AssetGenImage('assets/images/explore_mbc.png');
+  /// File path: assets/images/explore_mbc.webp
+  AssetGenImage get exploreMbc => const AssetGenImage('assets/images/explore_mbc.webp');
 
-  /// File path: assets/images/favorites_example_arabic.png
-  AssetGenImage get favoritesExampleArabic => const AssetGenImage('assets/images/favorites_example_arabic.png');
+  /// File path: assets/images/favorites_example_arabic.webp
+  AssetGenImage get favoritesExampleArabic => const AssetGenImage('assets/images/favorites_example_arabic.webp');
 
-  /// File path: assets/images/favorites_example_arabic_saudiday.png
+  /// File path: assets/images/favorites_example_arabic_saudiday.webp
   AssetGenImage get favoritesExampleArabicSaudiday =>
-      const AssetGenImage('assets/images/favorites_example_arabic_saudiday.png');
+      const AssetGenImage('assets/images/favorites_example_arabic_saudiday.webp');
 
-  /// File path: assets/images/favorites_example_english.png
-  AssetGenImage get favoritesExampleEnglish => const AssetGenImage('assets/images/favorites_example_english.png');
+  /// File path: assets/images/favorites_example_english.webp
+  AssetGenImage get favoritesExampleEnglish => const AssetGenImage('assets/images/favorites_example_english.webp');
 
-  /// File path: assets/images/favorites_example_english_saudiday.png
+  /// File path: assets/images/favorites_example_english_saudiday.webp
   AssetGenImage get favoritesExampleEnglishSaudiday =>
-      const AssetGenImage('assets/images/favorites_example_english_saudiday.png');
+      const AssetGenImage('assets/images/favorites_example_english_saudiday.webp');
 
-  /// File path: assets/images/feedback_dashboard.png
-  AssetGenImage get feedbackDashboard => const AssetGenImage('assets/images/feedback_dashboard.png');
+  /// File path: assets/images/feedback_dashboard.webp
+  AssetGenImage get feedbackDashboard => const AssetGenImage('assets/images/feedback_dashboard.webp');
 
-  /// File path: assets/images/feedback_dashboard_founding_day.png
+  /// File path: assets/images/feedback_dashboard_founding_day.webp
   AssetGenImage get feedbackDashboardFoundingDay =>
-      const AssetGenImage('assets/images/feedback_dashboard_founding_day.png');
+      const AssetGenImage('assets/images/feedback_dashboard_founding_day.webp');
 
-  /// File path: assets/images/feedback_dashboard_saudiday.png
-  AssetGenImage get feedbackDashboardSaudiday => const AssetGenImage('assets/images/feedback_dashboard_saudiday.png');
-
-  /// File path: assets/images/feedback_eyes.png
-  AssetGenImage get feedbackEyes => const AssetGenImage('assets/images/feedback_eyes.png');
+  /// File path: assets/images/feedback_dashboard_saudiday.webp
+  AssetGenImage get feedbackDashboardSaudiday => const AssetGenImage('assets/images/feedback_dashboard_saudiday.webp');
 
   /// File path: assets/images/foundation_day_bg_pattern.svg
   SvgGenImage get foundationDayBgPattern => const SvgGenImage('assets/images/foundation_day_bg_pattern.svg');
 
-  /// File path: assets/images/founding_day_al_hamdan_heritage.png
+  /// File path: assets/images/founding_day_al_hamdan_heritage.webp
   AssetGenImage get foundingDayAlHamdanHeritage =>
-      const AssetGenImage('assets/images/founding_day_al_hamdan_heritage.png');
+      const AssetGenImage('assets/images/founding_day_al_hamdan_heritage.webp');
 
-  /// File path: assets/images/founding_day_circle_logo.png
-  AssetGenImage get foundingDayCircleLogo => const AssetGenImage('assets/images/founding_day_circle_logo.png');
+  /// File path: assets/images/founding_day_circle_logo.webp
+  AssetGenImage get foundingDayCircleLogo => const AssetGenImage('assets/images/founding_day_circle_logo.webp');
 
-  /// File path: assets/images/founding_day_diriyah_cultural_institution.png
+  /// File path: assets/images/founding_day_diriyah_cultural_institution.webp
   AssetGenImage get foundingDayDiriyahCulturalInstitution =>
-      const AssetGenImage('assets/images/founding_day_diriyah_cultural_institution.png');
+      const AssetGenImage('assets/images/founding_day_diriyah_cultural_institution.webp');
 
-  /// File path: assets/images/founding_day_historical_dir_yiyah.png
+  /// File path: assets/images/founding_day_historical_dir_yiyah.webp
   AssetGenImage get foundingDayHistoricalDirYiyah =>
-      const AssetGenImage('assets/images/founding_day_historical_dir_yiyah.png');
+      const AssetGenImage('assets/images/founding_day_historical_dir_yiyah.webp');
 
-  /// File path: assets/images/founding_day_logo.png
-  AssetGenImage get foundingDayLogo => const AssetGenImage('assets/images/founding_day_logo.png');
+  /// File path: assets/images/founding_day_logo.webp
+  AssetGenImage get foundingDayLogo => const AssetGenImage('assets/images/founding_day_logo.webp');
 
-  /// File path: assets/images/founding_day_national_museum.png
-  AssetGenImage get foundingDayNationalMuseum => const AssetGenImage('assets/images/founding_day_national_museum.png');
+  /// File path: assets/images/founding_day_national_museum.webp
+  AssetGenImage get foundingDayNationalMuseum => const AssetGenImage('assets/images/founding_day_national_museum.webp');
 
-  /// File path: assets/images/gaussian_splatting_entry_point_dark_ar.png
+  /// File path: assets/images/gaussian_splatting_entry_point_dark_ar.webp
   AssetGenImage get gaussianSplattingEntryPointDarkAr =>
-      const AssetGenImage('assets/images/gaussian_splatting_entry_point_dark_ar.png');
+      const AssetGenImage('assets/images/gaussian_splatting_entry_point_dark_ar.webp');
 
-  /// File path: assets/images/gaussian_splatting_entry_point_dark_en.png
+  /// File path: assets/images/gaussian_splatting_entry_point_dark_en.webp
   AssetGenImage get gaussianSplattingEntryPointDarkEn =>
-      const AssetGenImage('assets/images/gaussian_splatting_entry_point_dark_en.png');
+      const AssetGenImage('assets/images/gaussian_splatting_entry_point_dark_en.webp');
 
-  /// File path: assets/images/gaussian_splatting_entry_point_light_ar.png
+  /// File path: assets/images/gaussian_splatting_entry_point_light_ar.webp
   AssetGenImage get gaussianSplattingEntryPointLightAr =>
-      const AssetGenImage('assets/images/gaussian_splatting_entry_point_light_ar.png');
+      const AssetGenImage('assets/images/gaussian_splatting_entry_point_light_ar.webp');
 
-  /// File path: assets/images/gaussian_splatting_entry_point_light_en.png
+  /// File path: assets/images/gaussian_splatting_entry_point_light_en.webp
   AssetGenImage get gaussianSplattingEntryPointLightEn =>
-      const AssetGenImage('assets/images/gaussian_splatting_entry_point_light_en.png');
+      const AssetGenImage('assets/images/gaussian_splatting_entry_point_light_en.webp');
 
   /// File path: assets/images/ic_arrow_feedback.svg
   SvgGenImage get icArrowFeedback => const SvgGenImage('assets/images/ic_arrow_feedback.svg');
 
-  /// File path: assets/images/illustration_flip_continue_dark.png
+  /// File path: assets/images/illustration_flip_continue_dark.webp
   AssetGenImage get illustrationFlipContinueDark =>
-      const AssetGenImage('assets/images/illustration_flip_continue_dark.png');
+      const AssetGenImage('assets/images/illustration_flip_continue_dark.webp');
 
-  /// File path: assets/images/illustration_flip_continue_light.png
+  /// File path: assets/images/illustration_flip_continue_light.webp
   AssetGenImage get illustrationFlipContinueLight =>
-      const AssetGenImage('assets/images/illustration_flip_continue_light.png');
+      const AssetGenImage('assets/images/illustration_flip_continue_light.webp');
 
   /// File path: assets/images/img_nearby_placeholder.jpg
   AssetGenImage get imgNearbyPlaceholder => const AssetGenImage('assets/images/img_nearby_placeholder.jpg');
 
-  /// File path: assets/images/ishan-seefromthesky-unsplash.jpg
-  AssetGenImage get ishanSeefromtheskyUnsplash => const AssetGenImage('assets/images/ishan-seefromthesky-unsplash.jpg');
+  /// File path: assets/images/ishan-seefromthesky-unsplash.webp
+  AssetGenImage get ishanSeefromtheskyUnsplash =>
+      const AssetGenImage('assets/images/ishan-seefromthesky-unsplash.webp');
 
   /// Directory path: assets/images/layers
   $AssetsImagesLayersGen get layers => const $AssetsImagesLayersGen();
 
-  /// File path: assets/images/light_map_preview.jpg
-  AssetGenImage get lightMapPreview => const AssetGenImage('assets/images/light_map_preview.jpg');
+  /// File path: assets/images/leap_logo.png
+  AssetGenImage get leapLogo => const AssetGenImage('assets/images/leap_logo.png');
 
   /// Directory path: assets/images/makkah_quick_actions
   $AssetsImagesMakkahQuickActionsGen get makkahQuickActions => const $AssetsImagesMakkahQuickActionsGen();
 
-  /// File path: assets/images/marker_eta_mask.png
-  AssetGenImage get markerEtaMask => const AssetGenImage('assets/images/marker_eta_mask.png');
+  /// File path: assets/images/marker_eta_mask.webp
+  AssetGenImage get markerEtaMask => const AssetGenImage('assets/images/marker_eta_mask.webp');
 
-  /// File path: assets/images/onboarding_story_1.png
-  AssetGenImage get onboardingStory1 => const AssetGenImage('assets/images/onboarding_story_1.png');
-
-  /// File path: assets/images/onboarding_story_2.png
-  AssetGenImage get onboardingStory2 => const AssetGenImage('assets/images/onboarding_story_2.png');
-
-  /// File path: assets/images/onboarding_story_3.png
-  AssetGenImage get onboardingStory3 => const AssetGenImage('assets/images/onboarding_story_3.png');
-
-  /// File path: assets/images/qibla.png
-  AssetGenImage get qibla => const AssetGenImage('assets/images/qibla.png');
+  /// File path: assets/images/qibla.webp
+  AssetGenImage get qibla => const AssetGenImage('assets/images/qibla.webp');
 
   /// Directory path: assets/images/ramadan_quick_actions
   $AssetsImagesRamadanQuickActionsGen get ramadanQuickActions => const $AssetsImagesRamadanQuickActionsGen();
 
-  /// File path: assets/images/region_not_available.png
-  AssetGenImage get regionNotAvailable => const AssetGenImage('assets/images/region_not_available.png');
+  /// File path: assets/images/region_not_available.webp
+  AssetGenImage get regionNotAvailable => const AssetGenImage('assets/images/region_not_available.webp');
 
-  /// File path: assets/images/route_story_1.png
-  AssetGenImage get routeStory1 => const AssetGenImage('assets/images/route_story_1.png');
+  /// File path: assets/images/saudi_day_splash.webp
+  AssetGenImage get saudiDaySplash => const AssetGenImage('assets/images/saudi_day_splash.webp');
 
-  /// File path: assets/images/route_story_2.png
-  AssetGenImage get routeStory2 => const AssetGenImage('assets/images/route_story_2.png');
-
-  /// File path: assets/images/route_story_3.png
-  AssetGenImage get routeStory3 => const AssetGenImage('assets/images/route_story_3.png');
-
-  /// File path: assets/images/saudi_day_splash.png
-  AssetGenImage get saudiDaySplash => const AssetGenImage('assets/images/saudi_day_splash.png');
-
-  /// File path: assets/images/saudi_national_flag.png
-  AssetGenImage get saudiNationalFlag => const AssetGenImage('assets/images/saudi_national_flag.png');
+  /// File path: assets/images/saudi_national_flag.webp
+  AssetGenImage get saudiNationalFlag => const AssetGenImage('assets/images/saudi_national_flag.webp');
 
   /// Directory path: assets/images/saudi_pass
   $AssetsImagesSaudiPassGen get saudiPass => const $AssetsImagesSaudiPassGen();
 
-  /// File path: assets/images/success_app_feedback.png
-  AssetGenImage get successAppFeedback => const AssetGenImage('assets/images/success_app_feedback.png');
+  /// File path: assets/images/success_app_feedback.webp
+  AssetGenImage get successAppFeedback => const AssetGenImage('assets/images/success_app_feedback.webp');
 
-  /// File path: assets/images/success_app_feedback_dark.png
-  AssetGenImage get successAppFeedbackDark => const AssetGenImage('assets/images/success_app_feedback_dark.png');
+  /// File path: assets/images/success_app_feedback_dark.webp
+  AssetGenImage get successAppFeedbackDark => const AssetGenImage('assets/images/success_app_feedback_dark.webp');
 
-  /// File path: assets/images/sunrise_pray.png
-  AssetGenImage get sunrisePray => const AssetGenImage('assets/images/sunrise_pray.png');
+  /// File path: assets/images/sunrise_pray.webp
+  AssetGenImage get sunrisePray => const AssetGenImage('assets/images/sunrise_pray.webp');
 
-  /// File path: assets/images/tree-and-park-bench-white-background.png
+  /// File path: assets/images/tree-and-park-bench-white-background.webp
   AssetGenImage get treeAndParkBenchWhiteBackground =>
-      const AssetGenImage('assets/images/tree-and-park-bench-white-background.png');
+      const AssetGenImage('assets/images/tree-and-park-bench-white-background.webp');
 
-  /// File path: assets/images/wavinghand.png
-  AssetGenImage get wavinghand => const AssetGenImage('assets/images/wavinghand.png');
+  /// File path: assets/images/wavinghand.webp
+  AssetGenImage get wavinghand => const AssetGenImage('assets/images/wavinghand.webp');
 
-  /// File path: assets/images/wrc_dashboard.png
-  AssetGenImage get wrcDashboard => const AssetGenImage('assets/images/wrc_dashboard.png');
+  /// File path: assets/images/wrc_dashboard.webp
+  AssetGenImage get wrcDashboard => const AssetGenImage('assets/images/wrc_dashboard.webp');
 
   /// List of all assets
   List<dynamic> get values => [
@@ -258,7 +236,6 @@ class $AssetsImagesGen {
     cityExpertFoundingDay,
     cityExpertSaudiDay,
     cityscapeGlobal,
-    darkMapPreview,
     dashboardBgPattern,
     driveHomeArrowFoundingDay,
     driveHomeArrow,
@@ -276,7 +253,6 @@ class $AssetsImagesGen {
     feedbackDashboard,
     feedbackDashboardFoundingDay,
     feedbackDashboardSaudiday,
-    feedbackEyes,
     foundationDayBgPattern,
     foundingDayAlHamdanHeritage,
     foundingDayCircleLogo,
@@ -293,16 +269,10 @@ class $AssetsImagesGen {
     illustrationFlipContinueLight,
     imgNearbyPlaceholder,
     ishanSeefromtheskyUnsplash,
-    lightMapPreview,
+    leapLogo,
     markerEtaMask,
-    onboardingStory1,
-    onboardingStory2,
-    onboardingStory3,
     qibla,
     regionNotAvailable,
-    routeStory1,
-    routeStory2,
-    routeStory3,
     saudiDaySplash,
     saudiNationalFlag,
     successAppFeedback,
@@ -587,9 +557,6 @@ class $AssetsIconsSvgGen {
   /// File path: assets/icons/svg/ic_lang_en.svg
   SvgGenImage get icLangEn => const SvgGenImage('assets/icons/svg/ic_lang_en.svg');
 
-  /// File path: assets/icons/svg/ic_language_change.svg
-  SvgGenImage get icLanguageChange => const SvgGenImage('assets/icons/svg/ic_language_change.svg');
-
   /// File path: assets/icons/svg/ic_marker_m_new_saudi_day.svg
   SvgGenImage get icMarkerMNewSaudiDay => const SvgGenImage('assets/icons/svg/ic_marker_m_new_saudi_day.svg');
 
@@ -728,6 +695,9 @@ class $AssetsIconsSvgGen {
   /// Directory path: assets/icons/svg/layers
   $AssetsIconsSvgLayersGen get layers => const $AssetsIconsSvgLayersGen();
 
+  /// File path: assets/icons/svg/leap_unique_marker.svg
+  SvgGenImage get leapUniqueMarker => const SvgGenImage('assets/icons/svg/leap_unique_marker.svg');
+
   /// File path: assets/icons/svg/parking_control.svg
   SvgGenImage get parkingControl => const SvgGenImage('assets/icons/svg/parking_control.svg');
 
@@ -763,9 +733,6 @@ class $AssetsIconsSvgGen {
 
   /// Directory path: assets/icons/svg/places_new_saudi_day
   $AssetsIconsSvgPlacesNewSaudiDayGen get placesNewSaudiDay => const $AssetsIconsSvgPlacesNewSaudiDayGen();
-
-  /// Directory path: assets/icons/svg/profile
-  $AssetsIconsSvgProfileGen get profile => const $AssetsIconsSvgProfileGen();
 
   /// Directory path: assets/icons/svg/quick_filters
   $AssetsIconsSvgQuickFiltersGen get quickFilters => const $AssetsIconsSvgQuickFiltersGen();
@@ -850,7 +817,6 @@ class $AssetsIconsSvgGen {
     icKiblah,
     icLangAr,
     icLangEn,
-    icLanguageChange,
     icMarkerMNewSaudiDay,
     icMbcMood,
     icMetroMarker,
@@ -891,6 +857,7 @@ class $AssetsIconsSvgGen {
     icWrcSearchMarkerServicePark,
     icWrcSearchMarkerShakedownStage,
     icWrcSearchMarkerSpecialSuperStage,
+    leapUniqueMarker,
     parkingControl,
     percent,
     photoGallery,
@@ -912,36 +879,36 @@ class $AssetsIconsSvgGen {
 class $AssetsImagesAudioPlaceholdersGen {
   const $AssetsImagesAudioPlaceholdersGen();
 
-  /// File path: assets/images/audio_placeholders/arabiya.png
-  AssetGenImage get arabiya => const AssetGenImage('assets/images/audio_placeholders/arabiya.png');
+  /// File path: assets/images/audio_placeholders/arabiya.webp
+  AssetGenImage get arabiya => const AssetGenImage('assets/images/audio_placeholders/arabiya.webp');
 
-  /// File path: assets/images/audio_placeholders/arabiya_fm.png
-  AssetGenImage get arabiyaFm => const AssetGenImage('assets/images/audio_placeholders/arabiya_fm.png');
+  /// File path: assets/images/audio_placeholders/arabiya_fm.webp
+  AssetGenImage get arabiyaFm => const AssetGenImage('assets/images/audio_placeholders/arabiya_fm.webp');
 
-  /// File path: assets/images/audio_placeholders/arriving.png
-  AssetGenImage get arriving => const AssetGenImage('assets/images/audio_placeholders/arriving.png');
+  /// File path: assets/images/audio_placeholders/arriving.webp
+  AssetGenImage get arriving => const AssetGenImage('assets/images/audio_placeholders/arriving.webp');
 
   /// Directory path: assets/images/audio_placeholders/arriving_soon
   $AssetsImagesAudioPlaceholdersArrivingSoonGen get arrivingSoon =>
       const $AssetsImagesAudioPlaceholdersArrivingSoonGen();
 
-  /// File path: assets/images/audio_placeholders/hoda.png
-  AssetGenImage get hoda => const AssetGenImage('assets/images/audio_placeholders/hoda.png');
+  /// File path: assets/images/audio_placeholders/hoda.webp
+  AssetGenImage get hoda => const AssetGenImage('assets/images/audio_placeholders/hoda.webp');
 
-  /// File path: assets/images/audio_placeholders/mbc_fm.png
-  AssetGenImage get mbcFm => const AssetGenImage('assets/images/audio_placeholders/mbc_fm.png');
+  /// File path: assets/images/audio_placeholders/mbc_fm.webp
+  AssetGenImage get mbcFm => const AssetGenImage('assets/images/audio_placeholders/mbc_fm.webp');
 
-  /// File path: assets/images/audio_placeholders/mbc_loud.png
-  AssetGenImage get mbcLoud => const AssetGenImage('assets/images/audio_placeholders/mbc_loud.png');
+  /// File path: assets/images/audio_placeholders/mbc_loud.webp
+  AssetGenImage get mbcLoud => const AssetGenImage('assets/images/audio_placeholders/mbc_loud.webp');
 
-  /// File path: assets/images/audio_placeholders/non.png
-  AssetGenImage get non => const AssetGenImage('assets/images/audio_placeholders/non.png');
+  /// File path: assets/images/audio_placeholders/non.webp
+  AssetGenImage get non => const AssetGenImage('assets/images/audio_placeholders/non.webp');
 
-  /// File path: assets/images/audio_placeholders/panorama.png
-  AssetGenImage get panorama => const AssetGenImage('assets/images/audio_placeholders/panorama.png');
+  /// File path: assets/images/audio_placeholders/panorama.webp
+  AssetGenImage get panorama => const AssetGenImage('assets/images/audio_placeholders/panorama.webp');
 
-  /// File path: assets/images/audio_placeholders/sweet.png
-  AssetGenImage get sweet => const AssetGenImage('assets/images/audio_placeholders/sweet.png');
+  /// File path: assets/images/audio_placeholders/sweet.webp
+  AssetGenImage get sweet => const AssetGenImage('assets/images/audio_placeholders/sweet.webp');
 
   /// List of all assets
   List<AssetGenImage> get values => [arabiya, arabiyaFm, arriving, hoda, mbcFm, mbcLoud, non, panorama, sweet];
@@ -953,8 +920,8 @@ class $AssetsImagesLayersGen {
   /// File path: assets/images/layers/default_map.png
   AssetGenImage get defaultMap => const AssetGenImage('assets/images/layers/default_map.png');
 
-  /// File path: assets/images/layers/img_layer_jeddah_bus.png
-  AssetGenImage get imgLayerJeddahBus => const AssetGenImage('assets/images/layers/img_layer_jeddah_bus.png');
+  /// File path: assets/images/layers/img_layer_jeddah_bus.webp
+  AssetGenImage get imgLayerJeddahBus => const AssetGenImage('assets/images/layers/img_layer_jeddah_bus.webp');
 
   /// File path: assets/images/layers/satellite.png
   AssetGenImage get satellite => const AssetGenImage('assets/images/layers/satellite.png');
@@ -1015,9 +982,6 @@ class $AssetsImagesRamadanQuickActionsGen {
   /// File path: assets/images/ramadan_quick_actions/quaran.png
   AssetGenImage get quaran => const AssetGenImage('assets/images/ramadan_quick_actions/quaran.png');
 
-  /// File path: assets/images/ramadan_quick_actions/road_event.png
-  AssetGenImage get roadEvent => const AssetGenImage('assets/images/ramadan_quick_actions/road_event.png');
-
   /// File path: assets/images/ramadan_quick_actions/safety_tips.png
   AssetGenImage get safetyTips => const AssetGenImage('assets/images/ramadan_quick_actions/safety_tips.png');
 
@@ -1037,7 +1001,6 @@ class $AssetsImagesRamadanQuickActionsGen {
     parking,
     qibla,
     quaran,
-    roadEvent,
     safetyTips,
     sendLocation,
     snapAndSend,
@@ -1048,26 +1011,26 @@ class $AssetsImagesRamadanQuickActionsGen {
 class $AssetsImagesSaudiPassGen {
   const $AssetsImagesSaudiPassGen();
 
-  /// File path: assets/images/saudi_pass/basket.png
-  AssetGenImage get basket => const AssetGenImage('assets/images/saudi_pass/basket.png');
+  /// File path: assets/images/saudi_pass/basket.webp
+  AssetGenImage get basket => const AssetGenImage('assets/images/saudi_pass/basket.webp');
 
-  /// File path: assets/images/saudi_pass/books.png
-  AssetGenImage get books => const AssetGenImage('assets/images/saudi_pass/books.png');
+  /// File path: assets/images/saudi_pass/books.webp
+  AssetGenImage get books => const AssetGenImage('assets/images/saudi_pass/books.webp');
 
-  /// File path: assets/images/saudi_pass/car.png
-  AssetGenImage get car => const AssetGenImage('assets/images/saudi_pass/car.png');
+  /// File path: assets/images/saudi_pass/car.webp
+  AssetGenImage get car => const AssetGenImage('assets/images/saudi_pass/car.webp');
 
-  /// File path: assets/images/saudi_pass/clock.png
-  AssetGenImage get clock => const AssetGenImage('assets/images/saudi_pass/clock.png');
+  /// File path: assets/images/saudi_pass/clock.webp
+  AssetGenImage get clock => const AssetGenImage('assets/images/saudi_pass/clock.webp');
 
-  /// File path: assets/images/saudi_pass/hearts.png
-  AssetGenImage get hearts => const AssetGenImage('assets/images/saudi_pass/hearts.png');
+  /// File path: assets/images/saudi_pass/hearts.webp
+  AssetGenImage get hearts => const AssetGenImage('assets/images/saudi_pass/hearts.webp');
 
-  /// File path: assets/images/saudi_pass/others.png
-  AssetGenImage get others => const AssetGenImage('assets/images/saudi_pass/others.png');
+  /// File path: assets/images/saudi_pass/others.webp
+  AssetGenImage get others => const AssetGenImage('assets/images/saudi_pass/others.webp');
 
-  /// File path: assets/images/saudi_pass/plane.png
-  AssetGenImage get plane => const AssetGenImage('assets/images/saudi_pass/plane.png');
+  /// File path: assets/images/saudi_pass/plane.webp
+  AssetGenImage get plane => const AssetGenImage('assets/images/saudi_pass/plane.webp');
 
   /// List of all assets
   List<AssetGenImage> get values => [basket, books, car, clock, hearts, others, plane];
@@ -2162,37 +2125,6 @@ class $AssetsIconsSvgPlacesNewSaudiDayGen {
   ];
 }
 
-class $AssetsIconsSvgProfileGen {
-  const $AssetsIconsSvgProfileGen();
-
-  /// File path: assets/icons/svg/profile/call.svg
-  SvgGenImage get call => const SvgGenImage('assets/icons/svg/profile/call.svg');
-
-  /// File path: assets/icons/svg/profile/email.svg
-  SvgGenImage get email => const SvgGenImage('assets/icons/svg/profile/email.svg');
-
-  /// File path: assets/icons/svg/profile/ic_language_change.svg
-  SvgGenImage get icLanguageChange => const SvgGenImage('assets/icons/svg/profile/ic_language_change.svg');
-
-  /// File path: assets/icons/svg/profile/info.svg
-  SvgGenImage get info => const SvgGenImage('assets/icons/svg/profile/info.svg');
-
-  /// File path: assets/icons/svg/profile/question_circle.svg
-  SvgGenImage get questionCircle => const SvgGenImage('assets/icons/svg/profile/question_circle.svg');
-
-  /// File path: assets/icons/svg/profile/rate.svg
-  SvgGenImage get rate => const SvgGenImage('assets/icons/svg/profile/rate.svg');
-
-  /// File path: assets/icons/svg/profile/settings.svg
-  SvgGenImage get settings => const SvgGenImage('assets/icons/svg/profile/settings.svg');
-
-  /// File path: assets/icons/svg/profile/website.svg
-  SvgGenImage get website => const SvgGenImage('assets/icons/svg/profile/website.svg');
-
-  /// List of all assets
-  List<SvgGenImage> get values => [call, email, icLanguageChange, info, questionCircle, rate, settings, website];
-}
-
 class $AssetsIconsSvgQuickFiltersGen {
   const $AssetsIconsSvgQuickFiltersGen();
 
@@ -2240,24 +2172,24 @@ class $AssetsIconsSvgWeatherGen {
 class $AssetsImagesAudioPlaceholdersArrivingSoonGen {
   const $AssetsImagesAudioPlaceholdersArrivingSoonGen();
 
-  /// File path: assets/images/audio_placeholders/arriving_soon/apple_car_play.png
+  /// File path: assets/images/audio_placeholders/arriving_soon/apple_car_play.webp
   AssetGenImage get appleCarPlay =>
-      const AssetGenImage('assets/images/audio_placeholders/arriving_soon/apple_car_play.png');
+      const AssetGenImage('assets/images/audio_placeholders/arriving_soon/apple_car_play.webp');
 
-  /// File path: assets/images/audio_placeholders/arriving_soon/balady_content.png
+  /// File path: assets/images/audio_placeholders/arriving_soon/balady_content.webp
   AssetGenImage get baladyContent =>
-      const AssetGenImage('assets/images/audio_placeholders/arriving_soon/balady_content.png');
+      const AssetGenImage('assets/images/audio_placeholders/arriving_soon/balady_content.webp');
 
-  /// File path: assets/images/audio_placeholders/arriving_soon/mbc_video_news.png
+  /// File path: assets/images/audio_placeholders/arriving_soon/mbc_video_news.webp
   AssetGenImage get mbcVideoNews =>
-      const AssetGenImage('assets/images/audio_placeholders/arriving_soon/mbc_video_news.png');
+      const AssetGenImage('assets/images/audio_placeholders/arriving_soon/mbc_video_news.webp');
 
-  /// File path: assets/images/audio_placeholders/arriving_soon/on_demand.png
-  AssetGenImage get onDemand => const AssetGenImage('assets/images/audio_placeholders/arriving_soon/on_demand.png');
+  /// File path: assets/images/audio_placeholders/arriving_soon/on_demand.webp
+  AssetGenImage get onDemand => const AssetGenImage('assets/images/audio_placeholders/arriving_soon/on_demand.webp');
 
-  /// File path: assets/images/audio_placeholders/arriving_soon/speed_alerts.png
+  /// File path: assets/images/audio_placeholders/arriving_soon/speed_alerts.webp
   AssetGenImage get speedAlerts =>
-      const AssetGenImage('assets/images/audio_placeholders/arriving_soon/speed_alerts.png');
+      const AssetGenImage('assets/images/audio_placeholders/arriving_soon/speed_alerts.webp');
 
   /// List of all assets
   List<AssetGenImage> get values => [appleCarPlay, baladyContent, mbcVideoNews, onDemand, speedAlerts];

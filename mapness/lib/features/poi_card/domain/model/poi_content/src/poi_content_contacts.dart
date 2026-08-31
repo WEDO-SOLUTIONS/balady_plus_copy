@@ -59,4 +59,4 @@ class ContactsInfoModel {
   const ContactsInfoModel({required this.type, this.displayText, this.value, this.comment});
 }
 
-enum PoiContentSocialMediaTypes { website, instagram, facebook, youtube, linkedin, whatsapp, telegram }
+enum PoiContentSocialMediaTypes { website, instagram, facebook, youtube, linkedin, whatsapp, telegram, twitter, tiktok }

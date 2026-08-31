@@ -25,6 +25,7 @@ class LevelsState {
 @riverpod
 class IndoorLevels extends _$IndoorLevels {
   StreamSubscription? _levelsSubscription;
+  StreamSubscription? _hideIndoorLevelsSubscription;
   StreamSubscription? _indexSubscription;
   StreamSubscription? _hideLevelsSubscription;
   StreamSubscription<NavigationEvent>? _freeRoamSubscription;
@@ -71,8 +72,13 @@ class IndoorLevels extends _$IndoorLevels {
     }
   }
 
+  void _hideIndoorLevelsListener(HideIndoorLevelsEvent event) {
+    state = LevelsState([], 0);
+  }
+
   Future<void> _subscribeToStreams(AsyncValue<DgisMapController> dgisController) async {
     _levelsSubscription = dgisController.value?.indoorLevelNames.listen(_levelsListener);
+    _hideIndoorLevelsSubscription = dgisController.value?.hideIndoorLevels.listen(_hideIndoorLevelsListener);
     _indexSubscription = dgisController.value?.indoorActiveIndex.listen(_indexListener);
     _hideLevelsSubscription = dgisController.value?.hideIndoorLevels.listen((_) => state = null);
     _freeRoamSubscription = dgisController.value?.freeRoamController.events.listen((freeRoamState) {
@@ -87,6 +93,8 @@ class IndoorLevels extends _$IndoorLevels {
   void _cancelSubscriptions() {
     _levelsSubscription?.cancel();
     _levelsSubscription = null;
+    _hideIndoorLevelsSubscription?.cancel();
+    _hideIndoorLevelsSubscription = null;
     _indexSubscription?.cancel();
     _indexSubscription = null;
     _hideLevelsSubscription?.cancel();

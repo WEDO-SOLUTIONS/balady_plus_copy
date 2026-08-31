@@ -7,8 +7,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/entities/routing/route_point.dart';
 import 'package:mapness/entry_point.dart';
 import 'package:mapness/features/search/ui/suggest_item.dart';
-import 'package:mapness/shared/constants/metrics_constants.dart';
-import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/providers/location.dart';
 
 class RoutingSuggestList extends ConsumerWidget {
@@ -47,13 +45,6 @@ class RoutingSuggestList extends ConsumerWidget {
                   mixpanel?.track('impossible-unounted-context');
                   return;
                 }
-
-                Metrics.logEventAdvanced(
-                  MetricsConstants.routesKeys.searchSuggestion,
-                  group: MetricsConstants.routesTag,
-                  action: MetricAction.tap.toString(),
-                  props: {'item': object.id?.objectId},
-                );
 
                 context.router.pop(RoutePointDirectoryObject(object));
               },

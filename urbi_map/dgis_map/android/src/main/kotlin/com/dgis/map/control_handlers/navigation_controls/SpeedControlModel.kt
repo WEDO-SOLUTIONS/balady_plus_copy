@@ -1,5 +1,7 @@
 package com.dgis.map.control_handlers.navigation_controls
 
+import com.dgis.map.live_updates.NavLiveEventBus
+import com.dgis.map.live_updates.NavSpeed
 import io.flutter.plugin.common.EventChannel
 import ru.dgis.sdk.navigation.*
 import ru.dgis.sdk.positioning.Location
@@ -25,11 +27,17 @@ class SpeedControlModel(
 
     private var speedLimits: FloatRouteLongAttribute? = null
 
+    // Mirrored for the live updates widget, which needs speed and limit in one payload.
+    private var currentSpeed = 0
+    private var currentSpeedLimit: Int? = null
+    private var isExceedingLimit = false
+
     override fun close() = closables.forEach(AutoCloseable::close)
 
     private fun locationListener(location: Location?) {
         val speed = location?.groundSpeed ?: return
         val kmph = metersPerSecondToKilometersPerHour(speed.value).toInt()
+        currentSpeed = kmph
         eventSink.success(
             mapOf(
                 "event" to SpeedEvents.speedEvent.name,
@@ -37,6 +45,7 @@ class SpeedControlModel(
                 "value" to kmph,
             )
         )
+        publishSpeed()
     }
 
     private fun routeInfoListener(routeInfo: RouteInfo) {
@@ -51,16 +60,19 @@ class SpeedControlModel(
     private fun positionListener(position: RoutePoint?) {
         position ?: return
         val entry = speedLimits?.entry(position) ?: kotlin.run {
-            return eventSink.success(
+            currentSpeedLimit = null
+            eventSink.success(
                 mapOf(
                     "event" to SpeedEvents.speedEvent.name,
                     "speedEvent" to SpeedEvents.speedLimitEvent.name,
                     "value" to null,
                 )
             )
+            return publishSpeed()
         }
 
         val maxAllowedSpeed = metersPerSecondToKilometersPerHour(entry.value.toDouble()).toInt()
+        currentSpeedLimit = maxAllowedSpeed
         eventSink.success(
             mapOf(
                 "event" to SpeedEvents.speedEvent.name,
@@ -68,9 +80,19 @@ class SpeedControlModel(
                 "value" to maxAllowedSpeed,
             )
         )
+        publishSpeed()
+    }
+
+    private fun publishSpeed() {
+        NavLiveEventBus.speed.value = NavSpeed(
+            speed = currentSpeed,
+            speedLimit = currentSpeedLimit,
+            isSpeeding = isExceedingLimit,
+        )
     }
 
     private fun exceedLimitListener(isExceed: Boolean) {
+        isExceedingLimit = isExceed
         eventSink.success(
             mapOf(
                 "event" to SpeedEvents.speedEvent.name,
@@ -78,6 +100,7 @@ class SpeedControlModel(
                 "value" to isExceed,
             )
         )
+        publishSpeed()
     }
 
     private fun cameraListener(cameraInfo: CameraProgressInfo?) {

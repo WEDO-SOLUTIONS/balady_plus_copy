@@ -27,7 +27,6 @@ class MapPage extends ConsumerStatefulWidget {
 
 class _MapPageState extends ConsumerState<MapPage>
     with AutomaticKeepAliveClientMixin, WidgetsBindingObserver, AutoRouteAwareStateMixin<MapPage> {
-  final int _keyIndex = 0;
   bool _needRefresh = false;
 
   @override
@@ -106,7 +105,7 @@ class _MapPageState extends ConsumerState<MapPage>
             },
             onPointerSignal: (_) => ref.read(navigationControlsVisibilityProvider.notifier).registerInteraction(),
             child: DgisMap(
-              key: ValueKey(_keyIndex),
+              key: const ValueKey('primary-map'),
               androidUseExpensive: true,
               onMapCreated: (controller) async {
                 _trace('onMapCreated android start controller=${identityHashCode(controller)}');
@@ -148,7 +147,7 @@ class _MapPageState extends ConsumerState<MapPage>
             },
             onPointerSignal: (_) => ref.read(navigationControlsVisibilityProvider.notifier).registerInteraction(),
             child: DgisMap(
-              key: ValueKey(_keyIndex),
+              key: const ValueKey('primary-map'),
               androidUseExpensive: true,
               onMapCreated: (controller) async {
                 _trace('onMapCreated ios start controller=${identityHashCode(controller)}');
@@ -173,8 +172,7 @@ class _MapPageState extends ConsumerState<MapPage>
   @override
   bool get wantKeepAlive => true;
 
-  void _trace(String event) {
-  }
+  void _trace(String event) {}
 
   Future<void> _initToastMessage() async {
     final isFirstStart = ref.read(firstStartProvider);

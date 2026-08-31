@@ -1498,6 +1498,12 @@ abstract class MapApi {
   @async
   void loadStyles(String asset);
 
+  /// Load a compiled `.2gis` style from an absolute filesystem path on the
+  /// device (e.g. a repacked copy written to the app's support directory).
+  /// Use this when the style file isn't bundled as a Flutter asset.
+  @async
+  void loadStylesFromPath(String absolutePath);
+
   @async
   void overrideLocales(List<String> locales);
 
@@ -1518,6 +1524,15 @@ abstract class MapApi {
 
   @async
   CameraPositionMessage getCameraPosition();
+
+  /// Swap the 3D model of the my-location object (the navigation cursor) on
+  /// the live map. [glb] is the raw GLB bytes. Backed by the SDK's
+  /// `MyLocationMapObject.setModelData` — no style reload and no MapView
+  /// recreate, so nothing on the map (route, maneuvers, camera) is disturbed
+  /// (BALADY-3772). Applies to whichever my-location source is currently on
+  /// the map (default or the navigation-time one).
+  @async
+  void setNavigationCursorModel(Uint8List glb);
 
   @async
   CameraPositionMessage calcPositionForRoute(CalcPositionOptionsMessage options);

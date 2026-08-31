@@ -21,13 +21,10 @@ class PoiLoadingOrErrorSheet extends HookConsumerWidget {
   /// Height of the sheet
   final double sheetHeight;
 
-  /// Height of the content
-  final double contentHeight;
-
   /// Data to show loading or error
   final PoiLoadingOrError data;
 
-  const PoiLoadingOrErrorSheet({required this.data, required this.sheetHeight, required this.contentHeight, super.key});
+  const PoiLoadingOrErrorSheet({required this.data, required this.sheetHeight, super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -66,9 +63,8 @@ class PoiLoadingOrErrorSheet extends HookConsumerWidget {
             ),
             switch (data) {
               PoiLoading() => Center(child: Loading.large()),
-              PoiError() => Builder(
+              PoiError(:final errorTitle, :final errorContent, :final onRetry, :final buttonLabel) => Builder(
                 builder: (context) {
-                  final error = data as PoiError;
                   final padding = MediaQuery.of(context).padding;
                   double bottomPadding = Spacing.$4x;
                   if (padding.bottom > 0) {
@@ -86,28 +82,28 @@ class PoiLoadingOrErrorSheet extends HookConsumerWidget {
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
-                        const ErrorImageWidget(),
+                        Flexible(child: FittedBox(child: const ErrorImageWidget())),
                         const SizedBox(height: Spacing.$4x),
                         Text(
-                          error.errorTitle,
+                          errorTitle,
                           textAlign: TextAlign.center,
                           style: context.textStyles.h3SemiBold.copyWith(color: context.colors.foregroundDefault),
                         ),
-                        if (error.errorContent != null)
+                        if (errorContent != null)
                           Padding(
                             padding: const EdgeInsets.only(top: Spacing.$2x),
                             child: Text(
-                              error.errorContent ?? '',
+                              errorContent,
                               textAlign: TextAlign.center,
                               style: context.textStyles.bodyLargeRegular.copyWith(color: context.colors.foregroundSoft),
                             ),
                           ),
                         Spacing.$6x.heightBox,
                         AppButton(
-                          onTap: error.onRetry,
+                          onTap: onRetry,
                           buttonColorScheme: ButtonColorScheme.accentSecondary,
                           size: ButtonSize.large,
-                          primaryLabel: error.buttonLabel ?? context.l10n.tryAgain,
+                          primaryLabel: buttonLabel ?? context.l10n.tryAgain,
                         ),
                       ],
                     ),

@@ -40,6 +40,9 @@ import ru.dgis.sdk.routing.BriefRouteInfoSearchPoints
 import ru.dgis.sdk.routing.RouteSearchOptions
 import ru.dgis.sdk.routing.RouteSearchPoint
 
+/** Name of the event that carries the tunnel state to Flutter. Mirrors `TunnelStateEvent.name`. */
+private const val TUNNEL_STATE_CHANGED_EVENT = "tunnelStateChanged"
+
 class DgisMapView(
         private val sdkContext: ru.dgis.sdk.Context,
         private val binaryMessenger: BinaryMessenger,
@@ -110,15 +113,37 @@ class DgisMapView(
                 java.util.EnumSet.noneOf(ru.dgis.sdk.navigation.SoundCategory::class.java)
         }
     }
-    private val navigationHandler by unsafeLazy {
+    private val navigationHandlerLazy = unsafeLazy {
         NavigationHandler(
                 sdkContext = sdkContext,
                 navigationManager = navigationManager,
                 eventSink = eventSink,
                 map = map!!,
                 appContext = context,
+                onMyLocationSourceReplaced = ::reapplyNavigationCursorModel,
         )
     }
+
+    /**
+     * BALADY-3772: the navigation-cursor 3D model last set via
+     * [setNavigationCursorModel]. Re-applied by [NavigationHandler] whenever the
+     * my-location object may have (re)materialised its model: after a source
+     * swap and once a session reaches State.NAVIGATION — otherwise a fresh
+     * source (or a session started later) comes up with the style's default mesh.
+     */
+    private var navigationCursorModel: ModelData? = null
+
+    private fun reapplyNavigationCursorModel() {
+        val model = navigationCursorModel ?: return
+        val source = map?.sources?.firstOrNull { it is MyLocationMapObjectSource }
+                as? MyLocationMapObjectSource ?: return
+        try {
+            source.item.setModelData(model)
+        } catch (e: Exception) {
+            Log.w("DgisMapView", "re-applying navigation cursor model failed: $e")
+        }
+    }
+    private val navigationHandler by navigationHandlerLazy
     private val packagesHandler by unsafeLazy {
         PackagesHandler(
                 sdkContext = sdkContext,
@@ -127,6 +152,19 @@ class DgisMapView(
     }
     private var compassControlHandler: CompassControlHandler? = null
     private var trafficAndParkingControlHandler: TrafficAndParkingControlHandler? = null
+
+    /**
+     * Day/night as last requested by Flutter, kept so the tunnel override can be undone.
+     * `null` until Flutter picks a theme — until then the SDK default is left alone.
+     */
+    private var requestedAppearance: MapAppearanceMessage? = null
+    private var isInTunnel = false
+
+    /**
+     * Created only once the map is ready: the detector reports the current state straight from
+     * its constructor, and that callback re-themes the map view.
+     */
+    private var tunnelDetector: TunnelDetector? = null
 
     /** Event stream to Flutter */
     private lateinit var eventChannel: EventChannel
@@ -171,6 +209,15 @@ class DgisMapView(
         (context.applicationContext as? Application)
                 ?.unregisterActivityLifecycleCallbacks(lifecycleCallbacks)
         soundUpdateJob?.cancel()
+        // The navigation handler subscribes to the shared NavigationManager's channels;
+        // it must be closed before the map, otherwise a late state event (e.g. FINISHED)
+        // touches the already-closed map and crashes with "Access to closed Java object".
+        if (navigationHandlerLazy.isInitialized()) {
+            navigationHandler.close()
+        }
+        // Same ordering constraint as the navigation handler above: the detector is driven by
+        // the shared NavigationManager and its callback re-themes the map view.
+        tunnelDetector?.close()
         map?.close()
         routeHandler?.close()
         zoomControlHandler?.close()
@@ -262,10 +309,32 @@ class DgisMapView(
 
     override fun loadStyles(asset: String, callback: (Result<Unit>) -> Unit) {
         val styleAsset = FlutterInjector.instance().flutterLoader().getLookupKeyForAsset(asset)
+        loadStyleFile(File.fromAsset(sdkContext, styleAsset), callback)
+    }
 
+    override fun loadStylesFromPath(absolutePath: String, callback: (Result<Unit>) -> Unit) {
+        val javaFile = java.io.File(absolutePath)
+        if (!javaFile.isFile) {
+            callback(
+                    Result.failure(
+                            FileNotFoundException(
+                                    "Style file does not exist at <$absolutePath>"
+                            )
+                    )
+            )
+            return
+        }
+        // Use the File(path) constructor — NOT File.fromString(), which builds an
+        // in-memory file from the string's *contents* (the SDK would then try to
+        // parse the path text itself as a style and fail with "Can't load style
+        // from file"). The constructor's parameter is a filesystem path.
+        loadStyleFile(File(absolutePath), callback)
+    }
+
+    private fun loadStyleFile(file: File, callback: (Result<Unit>) -> Unit) {
         val builder = StyleBuilder(sdkContext)
         closables.add(
-                builder.loadStyle(File.fromAsset(sdkContext, styleAsset)).apply {
+                builder.loadStyle(file).apply {
                     onResult {
                         map?.style = it
                         callback(Result.success(Unit))
@@ -454,6 +523,40 @@ class DgisMapView(
                         )
                 )
         )
+    }
+
+    /**
+     * BALADY-3772: swap the 3D model of the my-location object (navigation cursor)
+     * on the live map via MyLocationMapObject.setModelData. No style reload, no
+     * MapView recreate — the route, maneuvers and camera stay untouched. Applies to
+     * whichever MyLocationMapObjectSource is currently on the map: the default one
+     * from onMapReady or the one NavigationHandler installs for guidance.
+     */
+    override fun setNavigationCursorModel(glb: ByteArray, callback: (Result<Unit>) -> Unit) {
+        val currentMap = map
+        if (currentMap == null) {
+            callback(Result.failure(IllegalStateException("setNavigationCursorModel: map is not ready")))
+            return
+        }
+        try {
+            val source = currentMap.sources.firstOrNull { it is MyLocationMapObjectSource }
+                    as? MyLocationMapObjectSource
+            if (source == null) {
+                callback(
+                        Result.failure(
+                                IllegalStateException("setNavigationCursorModel: no MyLocationMapObjectSource on map")
+                        )
+                )
+                return
+            }
+            val model = createModelData(sdkContext, glb)
+            source.item.setModelData(model)
+            navigationCursorModel = model
+            callback(Result.success(Unit))
+        } catch (e: Exception) {
+            Log.w("DgisMapView", "setNavigationCursorModel failed: $e")
+            callback(Result.failure(e))
+        }
     }
 
     override fun getCameraVisibleArea(callback: (Result<PolygonGeometryMessage>) -> Unit) {
@@ -1119,13 +1222,42 @@ class DgisMapView(
     }
 
     override fun setAppearance(appearance: MapAppearanceMessage, callback: (Result<Unit>) -> Unit) {
-        when (appearance) {
+        requestedAppearance = appearance
+        applyAppearance()
+
+        callback(Result.success(Unit))
+    }
+
+    /**
+     * Resolves the map theme from Flutter's choice and the tunnel override. A tunnel is dark
+     * whatever the time of day is, so it wins over the requested theme until the car is out.
+     */
+    private fun applyAppearance() {
+        if (isInTunnel) {
+            mapView.setTheme(MapTheme.defaultDarkTheme)
+            return
+        }
+
+        when (requestedAppearance) {
             MapAppearanceMessage.DAY -> mapView.setTheme(MapTheme.defaultTheme)
             MapAppearanceMessage.NIGHT -> mapView.setTheme(MapTheme.defaultDarkTheme)
             MapAppearanceMessage.SYSTEM -> print("todo") // mapView.setTheme("day", "night")
+            // Flutter has not chosen a theme yet — nothing to restore to.
+            null -> Unit
         }
+    }
 
-        callback(Result.success(Unit))
+    private fun onTunnelStateChanged(inTunnel: Boolean) {
+        if (isInTunnel == inTunnel) return
+        isInTunnel = inTunnel
+        applyAppearance()
+        // Flutter darkens the rest of the app off the same signal.
+        eventSink.success(
+                mapOf(
+                        "event" to TUNNEL_STATE_CHANGED_EVENT,
+                        "inTunnel" to inTunnel,
+                )
+        )
     }
 
     override fun setZoomRestrictions(min: Double?, max: Double?, callback: (Result<Unit>) -> Unit) {
@@ -1230,6 +1362,7 @@ class DgisMapView(
                 TrafficAndParkingControlHandler(sdkContext, map, eventSink)
         setupTapHandler()
         weatherHandler = WeatherHandler(sdkContext, map)
+        tunnelDetector = TunnelDetector(navigationManager, ::onTunnelStateChanged)
         satelliteHandler = SatelliteHandler(sdkContext, map)
 
         callback(Result.success(InitializeMessage(wasInitialized = true, errorDescription = "")))
