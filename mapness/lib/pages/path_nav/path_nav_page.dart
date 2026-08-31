@@ -146,9 +146,16 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
       // Re-sync sound settings from persistence in case CarPlay/Android Auto
       // changed the setting while the phone app was backgrounded.
       ref.read(soundSettingsProvider.notifier).syncFromPersistence();
-      // The trip may have ended natively (CarPlay / Android Auto, or the engine
-      // itself) while the app was backgrounded — reconcile UI with the engine.
-      unawaited(_reconcileNavigationOnResume());
+      if (widget.navType == RouteSearchOptionsMessage.publicTransport) {
+        // PT never starts the native navigator, so the engine always reports
+        // disabled - reconciling below would end the Metro trip on every
+        // unlock. Re-show the route overlay instead (BALADY-3790).
+        unawaited(_resyncPublicTransportRoute());
+      } else {
+        // The trip may have ended natively (CarPlay / Android Auto, or the engine
+        // itself) while the app was backgrounded — reconcile UI with the engine.
+        unawaited(_reconcileNavigationOnResume());
+      }
     }
   }
 
@@ -170,6 +177,19 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
     if (engineStopped && pageStillNavigating) {
       unawaited(_endTripAndShowHome());
     }
+  }
+
+  // Public transport never starts the native navigator (see saveNavigationState
+  // below), so its route overlay has no session to restore from a lock/unlock
+  // cycle - it depends entirely on the route editor's map source staying
+  // rendered. Re-issue showRoutes() on resume to force it back on screen in
+  // case the map dropped it while the app was backgrounded (BALADY-3790).
+  Future<void> _resyncPublicTransportRoute() async {
+    final dgisController = await ref.read(dgisControllerProvider.future);
+    if (!mounted) {
+      return;
+    }
+    await dgisController.showRoutes();
   }
 
   Future<void> _checkBackgroundNavigationSound(AppLifecycleState state) async {
