@@ -15,7 +15,6 @@ import com.dgis.map.map_api.SoundToggleType
 import io.flutter.plugin.common.EventChannel
 import ru.dgis.sdk.Context as SdkContext
 import ru.dgis.sdk.Duration
-import ru.dgis.sdk.Meter
 import ru.dgis.sdk.ScreenSize
 import ru.dgis.sdk.coordinates.Bearing
 import ru.dgis.sdk.geometry.ComplexGeometry
@@ -306,11 +305,7 @@ class NavigationHandler(
                         map.addSource(
                                 MyLocationMapObjectSource(
                                         context = this.context,
-                                        controllerSettings =
-                                                MyLocationControllerSettings(
-                                                        coordinatesThreshold = Meter(10.0f),
-                                                        bearingThreshold = Bearing(90.0)
-                                                )
+                                        controllerSettings = MyLocationControllerSettings()
                                 )
                         )
                 }
