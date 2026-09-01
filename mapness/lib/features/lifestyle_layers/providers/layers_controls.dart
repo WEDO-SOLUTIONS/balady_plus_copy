@@ -665,6 +665,28 @@ class LayersControls extends _$LayersControls {
     }
   }
 
+  bool _roadEventsAutoShown = false;
+
+  /// Auto-shows road events for car navigation if it isn't already visible.
+  void showRoadEventsForNavigation() {
+    if (state.selectedType == LayerType.roadEvents) {
+      return;
+    }
+    _roadEventsAutoShown = true;
+    handleTap(LayerType.roadEvents);
+  }
+
+  /// Restores road events visibility to what it was before [showRoadEventsForNavigation].
+  void restoreRoadEventsAfterNavigation() {
+    if (!_roadEventsAutoShown) {
+      return;
+    }
+    _roadEventsAutoShown = false;
+    if (state.selectedType == LayerType.roadEvents) {
+      handleTap(LayerType.roadEvents);
+    }
+  }
+
   MapRequestParams _createParams(VisibleRect visibleRect, LayerType layer, EnvironmentConfig env) => MapRequestParams(
     layer: layer.getGISLayerType(),
     southWestLongitude: visibleRect.southWestLon,

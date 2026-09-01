@@ -155,7 +155,9 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
     _initNavigation();
     startControlsDisapearTimer();
     ref.read(layersControlsProvider.notifier).hideLayer(LayerType.metro);
-    if (widget.navType != RouteSearchOptionsMessage.car) {
+    if (widget.navType == RouteSearchOptionsMessage.car) {
+      ref.read(layersControlsProvider.notifier).showRoadEventsForNavigation();
+    } else {
       ref.read(layersControlsProvider.notifier).hideLayer(LayerType.roadEvents);
     }
     WakelockPlus.enable();
@@ -171,6 +173,7 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
 
     // Restore the active layer if we go back from the routing info screen
     ref.read(layersControlsProvider.notifier).restorePreviousLayer();
+    ref.read(layersControlsProvider.notifier).restoreRoadEventsAfterNavigation();
     super.deactivate();
   }
 
