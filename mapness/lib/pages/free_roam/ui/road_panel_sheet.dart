@@ -7,10 +7,8 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:mapness/_features/common/providers/ui_direction.dart';
 import 'package:mapness/_features/common/widgets/dragger.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
-import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/hooks/toggle_sheet_controller_hook.dart';
-import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/providers/map/sound_settings.dart';
 import 'package:sheetify/sheetify.dart';
 
@@ -64,11 +62,6 @@ class RoadPanelSheetPage extends HookConsumerWidget {
                 AppButton.close(
                   primaryIcon: SystemIcons.arrowCornerDownLarge,
                   onTap: () {
-                    Metrics.logEventAdvanced(
-                      MetricsConstants.layersKeys.exitIcon,
-                      group: MetricsConstants.layersTag,
-                      action: MetricAction.tap.toString(),
-                    );
                     sheetController.close();
                   },
                   padding: EdgeInsets.zero,

@@ -4,6 +4,8 @@ import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 
 import 'package:balady_plus/app/events_logs/models/error_exception_model.dart';
+import 'package:mapness/features/balady_analytics/balady_analytics.dart';
+
 import 'controller/logs_controller.dart';
 import 'events_names.dart';
 
@@ -48,6 +50,13 @@ Future<void> unhandledExceptionBaladyLogs(FutureOr<void> Function() main) async 
           stackTrace: stackTrace.toString(),
         ),
       );
+      // The one crash path PostHog's autocapture cannot reach: a zone handler
+      // swallows async errors before they surface to PlatformDispatcher, and a
+      // zone cannot be hooked from outside. Framework and native crashes need
+      // no call here — the SDK captures those itself and chains our handlers.
+      // Fires before `configure()` on early startup crashes; the facade buffers
+      // and flushes them once the mode is known.
+      BaladyAnalytics.instance.error(error, stackTrace, {'mechanism': 'runZonedGuarded'});
     },
   );
 

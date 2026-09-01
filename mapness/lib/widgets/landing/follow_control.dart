@@ -6,8 +6,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/entities/path_nav/models/path_nav_message_state.dart';
 import 'package:mapness/features/advert_metrics/advert_metrics.dart';
 import 'package:mapness/features/path_nav/providers/path_nav_message.dart';
-import 'package:mapness/shared/constants/metrics_constants.dart';
-import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/providers/app_language.dart';
 import 'package:mapness/shared/providers/location.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
@@ -32,12 +30,6 @@ class FollowControl extends ConsumerWidget {
     return MapButton(
       semanticsLabel: context.l10n.myLocation,
       onTap: () async {
-        Metrics.logEventAdvanced(
-          MetricsConstants.exploreKeys.locateMeIcon,
-          group: MetricsConstants.exploreTag,
-          action: MetricAction.tap.name,
-        );
-
         ref.read(advertMetricsProvider.notifier).sendEvent(AdvertMetricsKeys.exploreLandingEngagement);
         ref.read(navigationControlsVisibilityProvider.notifier).registerInteraction();
 

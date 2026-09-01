@@ -8,10 +8,11 @@ extension PoiContentFullAddressExt on DirectoryObjectMessage {
   /// and its address
   PoiContentFullAddressModel getFullAddress(
     List<BriefRouteInfoMessage>? briefInfo,
-    AppLocalizations l10n, [
+    AppLocalizations l10n, {
     void Function()? onEntrancesTap,
     String? assetLogoPath,
-  ]) {
+    String? addressOverride,
+  }) {
     // Entrances
     final entrancesCount = entrances.fold(0, (prev, e) => prev + (e.geometry?.entrancePoints.length ?? 0));
     final entrances_ = onEntrancesTap != null
@@ -22,7 +23,7 @@ extension PoiContentFullAddressExt on DirectoryObjectMessage {
 
     return PoiContentFullAddressModel(
       title: l10n.address,
-      fullAddress: makeAddress(),
+      fullAddress: addressOverride ?? makeAddress(),
       entrances: entrances_,
       types: types,
       floors: floors != null ? PoiContentFloorModel(title: l10n.floor, floors: floors) : null,
