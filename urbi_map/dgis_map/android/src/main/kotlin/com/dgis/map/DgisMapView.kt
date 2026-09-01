@@ -1,7 +1,11 @@
 package com.dgis.map
 
+import android.app.Activity
+import android.app.Application
 import android.content.Context
+import android.os.Bundle
 import android.view.LayoutInflater
+import android.widget.FrameLayout
 import com.dgis.map.control_handlers.*
 import com.dgis.map.extensions.*
 import com.dgis.map.map_api.*
@@ -46,6 +50,42 @@ class DgisMapView(
 
     private val mapView: MapView =
             LayoutInflater.from(context).inflate(R.layout.map_view_layout, null) as MapView
+
+    // BALADY-3755: the map is hosted in a container we own so the MapView can
+    // be re-attached to the window after the app returns from background.
+    // When Android drops the GL surface while the app is backgrounded, the
+    // SDK's renderer sometimes comes back in a state where the camera,
+    // markers and polylines still draw but the vector tile layers never do
+    // (map background + markers only). Re-adding the view forces a full
+    // surfaceDestroyed/surfaceCreated cycle which re-initializes tile
+    // rendering while preserving the Map object (camera, sources, layers).
+    private val container: FrameLayout = FrameLayout(context).also { it.addView(mapView) }
+
+    private var stoppedWhileInBackground = false
+    private val lifecycleCallbacks = object : Application.ActivityLifecycleCallbacks {
+        override fun onActivityStopped(activity: Activity) {
+            stoppedWhileInBackground = true
+        }
+
+        override fun onActivityResumed(activity: Activity) {
+            if (!stoppedWhileInBackground) {
+                return
+            }
+            stoppedWhileInBackground = false
+            container.post {
+                if (mapView.parent === container) {
+                    container.removeView(mapView)
+                    container.addView(mapView)
+                }
+            }
+        }
+
+        override fun onActivityCreated(activity: Activity, savedInstanceState: Bundle?) = Unit
+        override fun onActivityStarted(activity: Activity) = Unit
+        override fun onActivityPaused(activity: Activity) = Unit
+        override fun onActivitySaveInstanceState(activity: Activity, outState: Bundle) = Unit
+        override fun onActivityDestroyed(activity: Activity) = Unit
+    }
 
     private var map: DgisMap? = null
 
@@ -107,6 +147,10 @@ class DgisMapView(
         val messenger = ProxyBinaryMessenger(binaryMessenger, nameSuffix = "map_$id")
         MapApi.setUp(messenger, this)
 
+        // BALADY-3755: watch for background -> foreground transitions.
+        (context.applicationContext as? Application)
+                ?.registerActivityLifecycleCallbacks(lifecycleCallbacks)
+
         // Listen for sound changes from Android Auto and forward them to Flutter
         soundUpdateJob = CoroutineScope(Dispatchers.Main).launch {
             for (toggleType in SoundUpdateNotifier.events) {
@@ -121,9 +165,11 @@ class DgisMapView(
         }
     }
 
-    override fun getView() = mapView
+    override fun getView() = container
 
     override fun dispose() {
+        (context.applicationContext as? Application)
+                ?.unregisterActivityLifecycleCallbacks(lifecycleCallbacks)
         soundUpdateJob?.cancel()
         map?.close()
         routeHandler?.close()
@@ -696,6 +742,47 @@ class DgisMapView(
             callback: (Result<Unit>) -> Unit
     ) {
         objectTapHandler?.removeAllMarkers(manager?.id, callback)
+    }
+
+    // --- 3D MODEL ---
+
+    override fun addModel(
+            model: ModelMapObjectMessage,
+            manager: MapObjectManagerMessage?,
+            callback: (Result<Unit>) -> Unit
+    ) {
+        objectTapHandler?.addModel(model, manager?.id, callback)
+    }
+
+    override fun setModelOptions(
+            id: String,
+            options: ChangeModelMapObjectOptionsMessage,
+            callback: (Result<Unit>) -> Unit
+    ) {
+        objectTapHandler?.setModelOptions(id, options, callback)
+    }
+
+    override fun addModels(
+            models: List<ModelMapObjectMessage>,
+            manager: MapObjectManagerMessage?,
+            callback: (Result<Unit>) -> Unit
+    ) {
+        objectTapHandler?.addModels(models, manager?.id, callback)
+    }
+
+    override fun removeModel(
+            id: String,
+            manager: MapObjectManagerMessage?,
+            callback: (Result<Unit>) -> Unit
+    ) {
+        objectTapHandler?.removeModel(id, manager?.id, callback)
+    }
+
+    override fun removeAllModels(
+            manager: MapObjectManagerMessage?,
+            callback: (Result<Unit>) -> Unit
+    ) {
+        objectTapHandler?.removeAllModels(manager?.id, callback)
     }
 
     // --- MAP OBJECT ---

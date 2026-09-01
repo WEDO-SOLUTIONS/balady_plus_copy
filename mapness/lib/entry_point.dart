@@ -4,7 +4,8 @@ import 'dart:async';
 
 import 'package:app_links/app_links.dart';
 import 'package:balady_plus/app/core/dependency_injection/injection_container.dart';
-import 'package:balady_plus/app/core/utils/constants/ux_cam_events.dart';
+import 'package:balady_plus/app/core/utils/constants/analytics_events.dart';
+import 'package:balady_plus/app/core/utils/constants/remote_config.dart';
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
 import 'package:balady_plus/app/features/accecipilities/balady_theme_controller.dart';
 import 'package:balady_plus/app/features/entry_point/presentation/cubit/auth_cubit.dart';
@@ -15,6 +16,7 @@ import 'package:balady_uikit/core/colorsV2/app_theme.dart';
 import 'package:balady_uikit/core/colorsV2/themes.dart';
 import 'package:balady_uikit/core/typography/text_theme_styles.dart';
 import 'package:balady_uikit/core/typography/text_theme_styles_v3.dart';
+import 'package:collection/collection.dart';
 // ignore: depend_on_referenced_packages
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:dgis_map/library.dart';
@@ -24,8 +26,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_insider/enum/InsiderCallbackAction.dart';
 import 'package:flutter_insider/flutter_insider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:rangers_applog_flutter_plugin/rangers_applog_flutter_plugin.dart';
-import 'package:flutter_uxcam/flutter_uxcam.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:hive_ce_flutter/hive_flutter.dart';
 import 'package:mapness/_features/common/providers/shared_prefs.dart';
@@ -41,6 +41,14 @@ import 'package:mapness/entities/routing/route_params_point.dart';
 import 'package:mapness/entities/search/models/search_history.dart';
 import 'package:mapness/features/advert_metrics/advert_metrics.dart';
 import 'package:mapness/features/app_analytics/app_analytics.dart';
+import 'package:mapness/features/app_analytics/insider_custom_action_handler.dart';
+import 'package:mapness/features/app_icon_quick_actions/providers/app_icon_quick_actions_initializer.dart';
+import 'package:mapness/features/app_icon_quick_actions/providers/app_icon_quick_actions_manager.dart';
+import 'package:mapness/features/app_icon_quick_actions/providers/pending_app_icon_quick_action.dart';
+import 'package:mapness/features/app_icon_quick_actions/services/app_icon_quick_action_handler.dart';
+import 'package:mapness/features/app_icon_quick_actions/services/app_icon_quick_actions_platform.dart';
+import 'package:mapness/features/balady_analytics/balady_analytics.dart';
+import 'package:mapness/features/balady_analytics/events/service_events.dart';
 import 'package:mapness/features/car/car_enable_free_roam.dart';
 import 'package:mapness/features/city_event/active_city_event.dart';
 import 'package:mapness/features/cityscape/cityscape.dart';
@@ -49,17 +57,13 @@ import 'package:mapness/features/favourites/data/models/favorite_cache_item.dart
 import 'package:mapness/features/favourites/mappers/favourite_item_mapper.dart';
 import 'package:mapness/features/favourites/providers/favourite_cache.dart';
 import 'package:mapness/features/founding_day/founding_day.dart';
+import 'package:mapness/features/leap/leap.dart';
 import 'package:mapness/features/lifestyle_layers/providers/layers_controls.dart';
 import 'package:mapness/features/makkah_places/makkah_places_layer_provider.dart';
 import 'package:mapness/features/parking_spot/parking_manage.dart';
 import 'package:mapness/features/path_nav/lib/extensions.dart';
 import 'package:mapness/features/poi_card/domain/model/poi_camera_config.dart';
 import 'package:mapness/features/search/providers/search_region.dart' show initializeSearchRegionServiceProvider;
-import 'package:mapness/features/app_icon_quick_actions/providers/app_icon_quick_actions_initializer.dart';
-import 'package:mapness/features/app_icon_quick_actions/providers/app_icon_quick_actions_manager.dart';
-import 'package:mapness/features/app_icon_quick_actions/services/app_icon_quick_action_handler.dart';
-import 'package:mapness/features/app_icon_quick_actions/providers/pending_app_icon_quick_action.dart';
-import 'package:mapness/features/app_icon_quick_actions/services/app_icon_quick_actions_platform.dart';
 import 'package:mapness/features/share_eta/helpers/utils.dart';
 import 'package:mapness/features/share_eta/providers/share_my_location_launch_intent.dart';
 import 'package:mapness/features/stories/models/story_types.dart';
@@ -71,10 +75,8 @@ import 'package:mapness/pages/debug_overlay/debug_overlay.dart';
 import 'package:mapness/pages/landing/landing_page.dart';
 import 'package:mapness/pages/path_nav/path_nav_page.dart';
 import 'package:mapness/shared/constants/constants.dart';
-import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/lib/auth/auth_methods.dart';
 import 'package:mapness/shared/lib/deeplink_functions.dart';
-import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/lib/urbi_metrics_utils.dart';
 import 'package:mapness/shared/providers/analytic/bss_common.dart';
 import 'package:mapness/shared/providers/analytic/bss_dio.dart';
@@ -106,6 +108,7 @@ import 'package:mapness/widgets/scopes/global_scopes.dart';
 import 'package:mixpanel_flutter/mixpanel_flutter.dart';
 import 'package:provider/provider.dart' as p;
 import 'package:provider/provider.dart' as provider;
+import 'package:rangers_applog_flutter_plugin/rangers_applog_flutter_plugin.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:sheetify/sheetify.dart';
 
@@ -195,9 +198,12 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> with Widg
   StreamSubscription<Uri>? _linkSubscription;
   ProviderSubscription? _locationListener;
   StreamSubscription? _navigationEventsListener;
+
   String _fontFamily() {
     final language = ref.watch(appLanguageProvider);
-    return language == Language.arabic ? 'packages/balady_uikit/Frutiger' : 'packages/balady_uikit/Golos';
+    return language == Language.arabic
+        ? 'packages/balady_design_system/IBMPlexSansArabic'
+        : 'packages/balady_uikit/Golos';
   }
 
   @override
@@ -260,10 +266,19 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> with Widg
       if (!mounted) {
         return;
       }
+      await ref.read(leapProvider.notifier).initializeGlobalMarker();
+      if (!mounted) {
+        return;
+      }
       final mapStyle = ref.read(activeCityEventProvider)?.stylePath;
 
       if (mapStyle != null) {
         _updateMapStyle(mapStyle);
+      }
+
+      await _updateGlobalMarkerLeap(ref);
+      if (!mounted) {
+        return;
       }
 
       // Sync BaladyThemeNotifier with the persisted darkModeProvider state
@@ -452,6 +467,21 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> with Widg
     }
   }
 
+  Future<void> _updateGlobalMarkerLeap(WidgetRef ref) async {
+    if (!mounted) {
+      return;
+    }
+    final isLeapNow = ref.read(leapProvider);
+    final selectedMarker = ref.read(selectedMarkerProvider);
+    final notifier = ref.read(leapProvider.notifier);
+
+    if (isLeapNow && selectedMarker == null) {
+      await notifier.showGlobalMarker();
+    } else {
+      await notifier.hideGlobalMarker();
+    }
+  }
+
   Future<void> _updateAllMarkersWRC(WidgetRef ref, bool wrcEnabled) async {
     final notifier = ref.read(wRCProvider.notifier);
     if (wrcEnabled) {
@@ -545,23 +575,6 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> with Widg
           return;
         }
 
-        // Track theme deactivation
-        if (prev != null && prev != SpecialThemeMode.base) {
-          Metrics.logEventAdvanced(
-            MetricsConstants.themesKeys.themeDeactivated,
-            group: MetricsConstants.themesTag,
-            props: {'theme': prev.name},
-          );
-        }
-
-        // Track theme activation
-        if (next != SpecialThemeMode.base) {
-          Metrics.logEventAdvanced(
-            MetricsConstants.themesKeys.themeActivated,
-            group: MetricsConstants.themesTag,
-            props: {'theme': next.name},
-          );
-        }
         final isDark = ref.read(darkModeProvider).value?.isDark ?? false;
         _themeChanged(isDark: isDark);
       })
@@ -571,6 +584,7 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> with Widg
         }
         _updateGlobalMarkerCityscape(ref);
         _updateGlobalMarkerFoundingDay(ref);
+        _updateGlobalMarkerLeap(ref);
       })
       ..listen<CityEventType?>(activeCityEventProvider, (prev, next) {
         if (prev == next) {
@@ -589,12 +603,16 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> with Widg
       ..listen<bool>(foundingDayUrbiProvider, (prev, next) {
         _updateGlobalMarkerFoundingDay(ref);
       })
+      ..listen<bool>(leapProvider, (prev, next) {
+        _updateGlobalMarkerLeap(ref);
+      })
       ..listen<bool>(wRCProvider, (prev, next) {
         _updateAllMarkersWRC(ref, next);
       })
       ..listen<Marker?>(selectedMarkerProvider, (prev, next) {
         _updateGlobalMarkerCityscape(ref);
         _updateGlobalMarkerFoundingDay(ref);
+        _updateGlobalMarkerLeap(ref);
         _updateSpecificMarkerWRC(ref, prev, next);
       })
       // listen for changes in car connection state. But do not rebuild widget
@@ -710,23 +728,21 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> with Widg
         ..log('StackTrace: $stackTrace', logLevel: MapnessLogLevel.error);
     }
 
-    try {
-      final config = FlutterUxConfig(
-        enableAdvancedGestureRecognition: true,
-        enableCrashHandling: true,
-        enableMultiSessionRecord: true,
-        enableNetworkLogging: kDebugMode,
-        userAppKey: '2w1otnta9bvvhzo',
-        enableAutomaticScreenNameTagging: false,
-      );
-      await FlutterUxcam.startWithConfiguration(config);
-      logger.log('UXCam started with configuration');
-    } catch (e, stackTrace) {
-      logger
-        ..log('Error initializing UXCam: $e', logLevel: MapnessLogLevel.error)
-        ..log('StackTrace: $stackTrace', logLevel: MapnessLogLevel.error);
-      // Continue without UXCam - it's not critical for app functionality
-    }
+    // Idempotent: the host shell may have configured the facade already.
+    BaladyAnalytics.instance.configure(
+      mode: BaladyAnalyticsMode.parse(RemoteConfig.baladyAnalyticsMode),
+      sink: PosthogBaladyAnalyticsSink.tryCreate(
+        host: RemoteConfig.baladyAnalyticsUrl,
+        apiKey: RemoteConfig.baladyAnalyticsKey,
+      ),
+    );
+    // First legacy stream under the facade umbrella: events tracked with
+    // channels: {..., urbi} keep flowing to balady-metrics.urbi.ae.
+    BaladyAnalytics.instance.registerChannel(
+      BaladyAnalyticsChannel.urbi,
+      UrbiBaladyAnalyticsSink(analyticsClient),
+    );
+    logger.log('BaladyAnalytics mode: ${BaladyAnalytics.instance.mode.name}');
   }
 
   Future<void> initDeepLinks() async {
@@ -837,6 +853,7 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> with Widg
           break;
         case InsiderCallbackAction.TEMP_STORE_CUSTOM_ACTION:
           _startupLog('[INSIDER][TEMP_STORE_CUSTOM_ACTION]: $data');
+          InsiderCustomActionHandler.handleCustomAction(data);
           break;
         default:
           _startupLog('[INSIDER][InsiderCallbackAction]: Unregistered Action!');
@@ -887,7 +904,8 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> with Widg
               .read(appRouterProvider)
               .replaceOrPush(
                 route: RoutingRoutesRoute(points: [startPoint, finishPoint]),
-                toCompareRoutes: [RoutingRoutesRoute.page],
+                shouldPopAndPush: true,
+                toCompareRoutes: [RoutingRoutesRoute.page, PoiCardWidgetRoute.page],
               );
 
         case ShortLinkResponseTrip(:final payload):
@@ -898,7 +916,8 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> with Widg
                   points: payload.route.toRouteParamsPointWithLabels(),
                   navType: payload.route.type.toMessage(),
                 ),
-                toCompareRoutes: [RoutingRoutesRoute.page],
+                shouldPopAndPush: true,
+                toCompareRoutes: [RoutingRoutesRoute.page, PoiCardWidgetRoute.page],
               );
       }
       return true;
@@ -1066,6 +1085,8 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> with Widg
         await router.push(MapnessServicesRoute());
       } else if (url.path == '/parking') {
         _openParking();
+      } else if (url.path == '/media') {
+        _openMediaCatelog();
       } else {
         await router.pushPath(url.toString());
       }
@@ -1093,6 +1114,11 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> with Widg
 
   Future<void> _openRegisterPage() async {
     await CommonFunctions.onLogin();
+  }
+
+  Future<void> _openMediaCatelog() async {
+    final AppRouter router = await ref.watch(appRouterProvider);
+    await router.push(const MediaCatalogRoute());
   }
 
   void _openParking() {
@@ -1190,11 +1216,6 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> with Widg
   Future<void> _openQibla() async {
     final AppRouter router = await ref.watch(appRouterProvider);
     ref.read(appAnalyticsProvider).quickActionSelected('qibla');
-    Metrics.logEventAdvanced(
-      MetricsConstants.exploreKeys.qibla,
-      action: MetricAction.tap.name,
-      group: MetricsConstants.exploreTag,
-    );
     final location = ref.read(locationProvider.notifier);
 
     await location.checkLocationPermission().then((allowed) async {
@@ -1207,20 +1228,24 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> with Widg
   Future<void> _openQuran() async {
     ref.read(appAnalyticsProvider).quickActionSelected('quran');
     // await NavigationService.navigatorKey.currentState?.pushNamed(RouteName.menuQuranPage);
+    ServiceEvents.setPendingOpenSource(ServiceEvents.sourceQuickAction);
     CommonFunctions.openMiniApp(serviceKey: 'Quran');
   }
 
   Future<void> _openAthkar() async {
     ref.read(appAnalyticsProvider).quickActionSelected('athkar');
     // await NavigationService.navigatorKey.currentState?.pushNamed(RouteName.mainAthkarPage);
+    ServiceEvents.setPendingOpenSource(ServiceEvents.sourceQuickAction);
     CommonFunctions.openMiniApp(serviceKey: 'Athkar');
   }
 
   Future<void> _openSnapSend({bool fromQuickAction = false}) async {
     if (!fromQuickAction) {
-      CommonFunctions.sendUXCamEvent(
-        UXCamEvents.SnapAndSend_Open_From_Home_Event,
+      CommonFunctions.sendAnalyticsEvent(
+        AnalyticsEvents.SnapAndSend_Open_From_Home_Event,
       );
+    } else {
+      ServiceEvents.setPendingOpenSource(ServiceEvents.sourceQuickAction);
     }
     CommonFunctions.openMiniApp(serviceKey: 'snapandsend');
     // await NavigationService.navigatorKey.currentState!.pushNamed(
@@ -1230,18 +1255,27 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> with Widg
 
   Future<void> _openQuickFilter(String filter) async {
     final AppRouter router = await ref.watch(appRouterProvider);
-    final quickFilter = QuickFilter.values.firstWhere(
-      (element) => element.name == filter,
+    final quickFilter = QuickFilter.values.firstWhereOrNull(
+      (element) => element.name.toLowerCase() == filter.toLowerCase(),
     );
+    final NaviQuickFilterMore? naviFilter = quickFilter == null
+        ? NaviQuickFilterMore.values.firstWhereOrNull(
+            (element) => element.name.toLowerCase() == filter.toLowerCase(),
+          )
+        : null;
+
+    if (quickFilter == null && naviFilter == null) return;
+
+    final String filterName = quickFilter?.name ?? naviFilter!.name;
     unawaited(
-      ref.read(urbiAnalyticsProvider).track('quickFilterSearch', properties: {'filter': quickFilter.name}),
+      ref.read(urbiAnalyticsProvider).track('quickFilterSearch', properties: {'filter': filterName}),
     );
-    ref.read(appAnalyticsProvider).categorySelected(quickFilter.name);
+    ref.read(appAnalyticsProvider).categorySelected(filterName);
     ref.read(advertMetricsProvider.notifier).sendEvent(AdvertMetricsKeys.exploreSearch);
 
     final language = ref.read(appLanguageProvider);
 
-    final query = quickFilter.query[language];
+    final String? query = quickFilter?.query[language] ?? naviFilter?.query[language];
     if (query != null) {
       unawaited(
         BssService.instance.sendEvent(
@@ -1259,19 +1293,18 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> with Widg
     }
     unawaited(router.push(SearchRoute(requestFocus: false)));
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      ref.read(searchProvider(SearchScopeEnum.map.value).notifier).quickSearch(quickFilter);
+      final searchNotifier = ref.read(searchProvider(SearchScopeEnum.map.value).notifier);
+
+      if (quickFilter != null) {
+        searchNotifier.quickSearch(quickFilter);
+      } else if (naviFilter != null) {
+        searchNotifier.searchByText(naviFilter.name);
+      }
     });
   }
 
   Future<void> _openStories(String id) async {
     final AppRouter router = await ref.watch(appRouterProvider);
-
-    Metrics.logEventAdvanced(
-      MetricsConstants.exploreKeys.storyBanner,
-      group: MetricsConstants.exploreTag,
-      action: MetricAction.tap.name,
-      props: {'id': id},
-    );
 
     ref.read(storiesOpenStateProvider.notifier).open();
 
@@ -1304,7 +1337,7 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> with Widg
         closestPoint: location,
         cameraConfig: const PoiCameraConfig(zoom: 17),
       ),
-      toCompareRoutes: [PoiCardWidgetRoute.page],
+      toCompareRoutes: [RoutingRoutesRoute.page, PoiCardWidgetRoute.page],
     );
   }
 
@@ -1458,8 +1491,10 @@ Future<void> setupMapness(EnvType envType) async {
 
   await initialiseDGis(
     logOptions: LogOptionsMessage(
-      systemLevel: LogLevelMessage.fatal,
-      customLevel: LogLevelMessage.fatal,
+      // systemLevel: LogLevelMessage.fatal,
+      // customLevel: LogLevelMessage.fatal,
+      systemLevel: LogLevelMessage.verbose,
+      customLevel: LogLevelMessage.verbose,
     ),
     configContent: vendorConfigContentMessage,
   );
@@ -1469,14 +1504,15 @@ Future<void> setupMapness(EnvType envType) async {
 
 /// Initializes the BytePlus RangersAppLog SDK (DataFinder analytics).
 ///
-/// App ID is hardcoded per flavor for now.
-/// TODO: staging is temporarily pointed at the (future) PRODUCTION BytePlus
-/// project so we can validate prod-project data on TestFlight. Switch staging
-/// back to the staging project id once validation is done.
-/// TODO: replace `_kBytePlusProdAppId` with the real PRODUCTION project App ID
-/// once it is registered in the BytePlus console (Project Center → Details).
-/// TODO: move these ids to build-time config (--dart-define) instead of
-/// hardcoding.
+/// Config is read per-flavor from the loaded `.env.<flavor>` file via
+/// [RemoteConfig] (same pattern as APIGEE/SSO). Each flavor points at the right
+/// BytePlus project through its own `BYTEPLUS_APP_ID`:
+///  * `.env.prod` → production project `Balady` (10000002),
+///  * `.env.stg` / `.env.pre` / `.env.dev` → `Balady Staging Test` (10000000).
+///
+/// Only real production traffic goes to the production project; pre-prod and all
+/// lower environments report to staging so they don't pollute prod analytics.
+
 /// Guards against initializing the BytePlus SDK more than once — `setupMapness`
 /// can run twice (e.g. the engine re-attaches), and a second `initRangersAppLog`
 /// triggers a duplicate device-register / session.
@@ -1487,17 +1523,12 @@ void _initBytePlus(EnvType envType) {
     return;
   }
 
-  // Staging project id (Balady Staging Test APP). Used as the placeholder for
-  // production until the real prod project is registered.
-  const stagingAppId = '10000000';
-  const prodAppId = stagingAppId; // TODO: replace with real prod App ID.
+  final isProduction = envType == EnvType.prod;
+  final appId = RemoteConfig.bytePlusAppId;
+  final channel = RemoteConfig.bytePlusChannel;
 
-  final isProduction = envType == EnvType.prod || envType == EnvType.pre;
-  final appId = isProduction ? prodAppId : stagingAppId;
-  final channel = isProduction ? 'AppStore' : 'TestFlight';
-
-  if (appId.isEmpty || appId.startsWith('TODO')) {
-    debugPrint('[BytePlus] Skipped: App ID not configured yet.');
+  if (appId.isEmpty) {
+    debugPrint('[BytePlus] Skipped: BYTEPLUS_APP_ID not set in .env.${envType.name}.');
     return;
   }
 

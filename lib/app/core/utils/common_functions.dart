@@ -7,11 +7,11 @@ import 'dart:typed_data' show Uint8List;
 import 'package:balady_authorization/src/authentication/bloc/authentication_bloc.dart';
 import 'package:balady_plus/app/core/services/services_exports.dart';
 import 'package:balady_plus/app/core/utils/constants/remote_config.dart';
-import 'package:balady_plus/app/features/delegators/presentation/delegators_cubit/delegators_cubit.dart';
-import 'package:balady_plus/app/features/delegators/domain/entities/delegator_entity.dart';
-import 'package:balady_plus/app/features/delegators/domain/entities/agent_entity.dart';
 import 'package:balady_plus/app/events_logs/balady_logs.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/dialogs/need_login_dialog.dart';
+import 'package:balady_plus/app/features/delegators/domain/entities/agent_entity.dart';
+import 'package:balady_plus/app/features/delegators/domain/entities/delegator_entity.dart';
+import 'package:balady_plus/app/features/delegators/presentation/delegators_cubit/delegators_cubit.dart';
 import 'package:balady_plus/app/features/location/domain/entities/gis/gis_params.dart';
 import 'package:balady_plus/app/features/location/domain/entities/gis/gis_response.dart';
 import 'package:balady_plus/app/features/location/presentation/bloc/location_bloc.dart';
@@ -28,7 +28,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart' show EventTransformer;
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_hms_gms_availability/flutter_hms_gms_availability.dart';
-import 'package:flutter_uxcam/flutter_uxcam.dart';
 import 'package:geolocator/geolocator.dart' as geo_locator;
 import 'package:hijri/hijri_calendar.dart';
 import 'package:http/http.dart' as http;
@@ -65,10 +64,9 @@ import '../../features/entry_point/domain/use_cases/get_cookie.dart';
 import '../../features/entry_point/presentation/cubit/auth_cubit.dart';
 import '../../features/notifications/manager/notification_manager.dart';
 import '../dependency_injection/dependency_injection_exports.dart' show sl;
-import '../errors/exceptions.dart';
 import './utils_exports.dart' show AppColor, AppLanguage, EnvType, GeneralKey, MimeType, RouteName, UIHelper, WithDelay;
+import 'constants/analytics_events.dart';
 import 'constants/dialog_names.dart';
-import 'constants/ux_cam_events.dart';
 
 FirebaseAnalytics fbAnalytics = FirebaseAnalytics.instance;
 
@@ -909,38 +907,53 @@ class CommonFunctions {
     }
   }
 
-  static void openBaladyWebView(String? url, {bool isObjections = false, bool needLogin = true}) async {
+  static Future<dynamic> openBaladyWebView(
+    String? url, {
+    bool isObjections = false,
+    bool needLogin = true,
+    List<String>? callbackUrls,
+  }) async {
     if (needLogin == false) {
-      Navigator.of(
-        NavigationService.navigatorKey.currentContext!,
-      ).pushNamed(RouteName.inappWebview, arguments: (requestNum: ''.tr(), url: url, isObjections: isObjections));
+      return await Navigator.of(NavigationService.navigatorKey.currentContext!).pushNamed(
+        RouteName.inappWebview,
+        arguments: (requestNum: ''.tr(), url: url, isObjections: isObjections, callbackUrls: callbackUrls),
+      );
     } else {
       if (CommonProperties.isLoggedIn) {
         EasyLoading.show();
         GetCookie getCookie = GetCookie(repository: sl());
         final failureOrSuccessForCookie = await getCookie(true);
         EasyLoading.dismiss();
-        failureOrSuccessForCookie.fold(
+        return await failureOrSuccessForCookie.fold(
           (l) {
             CommonFunctions.showError("server_error_1".tr());
+            return null;
           },
           (r) async {
-            Navigator.of(
-              NavigationService.navigatorKey.currentContext!,
-            ).pushNamed(RouteName.inappWebview, arguments: (requestNum: ''.tr(), url: url, isObjections: isObjections));
+            return await Navigator.of(NavigationService.navigatorKey.currentContext!).pushNamed(
+              RouteName.inappWebview,
+              arguments: (requestNum: ''.tr(), url: url, isObjections: isObjections, callbackUrls: callbackUrls),
+            );
           },
         );
       } else {
+        dynamic result;
         await showDialog(
           context: NavigationService.navigatorKey.currentContext!,
           builder: (ctx) => NeedLoginDialog(
             onSuccessLogin: (bool? isSuccess) async {
               if (isSuccess ?? false) {
-                openBaladyWebView(url, isObjections: isObjections);
+                result = await openBaladyWebView(
+                  url,
+                  isObjections: isObjections,
+                  needLogin: needLogin,
+                  callbackUrls: callbackUrls,
+                );
               }
             },
           ),
         );
+        return result;
       }
     }
   }
@@ -1268,45 +1281,6 @@ class CommonFunctions {
           //  p.addAttachment(attachment)
         },
       );
-
-      // UX Cam Events
-      if (RemoteConfig.uxCamKey.isNotEmpty) {
-        Map<String, dynamic> headersMap = (dioError?.requestOptions.headers ?? response?.requestOptions.headers) ?? {};
-        headersMap.remove("Authorization");
-        headersMap.remove("authorization");
-
-        String headers = (headersMap.cast().toString());
-
-        String data = (dioError?.requestOptions.data.toString() ?? response?.requestOptions.data.toString()) ?? "";
-
-        String queryString =
-            (dioError?.requestOptions.queryParameters.toString() ??
-                response?.requestOptions.queryParameters.toString()) ??
-            "";
-
-        String message =
-            (dioError?.response?.data.toString() ?? response?.data.toString()) ?? (errorMessage ?? ex.toString());
-
-        if (dioError != null && dioError is NoDataFoundException) {
-          message = "Data Not Found";
-        }
-
-        message = message.isEmpty ? (errorMessage ?? ex.toString()) : message;
-        print("MessageMessage $message");
-
-        String? URL = (dioError?.requestOptions.path ?? response?.realUri.path);
-
-        if (URL != null) {
-          FlutterUxcam.logEventWithProperties("APIError", {
-            "Url": URL.length <= 1024 ? URL : URL.substring(0, 1023),
-            "Data": data.length <= 1024 ? data : data.substring(0, 1023),
-            "QueryString": queryString.length <= 1024 ? queryString : queryString.substring(0, 1023),
-            "Headers": headers.length <= 1024 ? headers : headers.substring(0, 1023),
-            "Message": message.length <= 1024 ? message : message.substring(0, 1023),
-            "Environment": sl<EnvType>().name,
-          });
-        }
-      }
     } catch (error, stackTrace) {
       LogsViewModel().sendEventFromModel(
         event: ErrorExceptionModel(
@@ -1430,7 +1404,7 @@ class CommonFunctions {
 
     Response r = await WebService(
       dio: dio,
-    ).dio.getUri(Uri.parse(url), options: Options(headers: {if (serviceId != null) "X-Service-Id": serviceId}));
+    ).dio.getUri(Uri.parse(url), options: Options(headers: {"X-Service-Id": ?serviceId}));
     String extension = r.headers["Content-Type"].toString().split("/")[1].replaceAll("]", "");
 
     String dir = (await getTemporaryDirectory()).path;
@@ -1449,7 +1423,7 @@ class CommonFunctions {
   }
 
   static void openSnapAndSend() async {
-    CommonFunctions.sendUXCamEvent(UXCamEvents.SnapAndSend_Open_From_Home_Event);
+    CommonFunctions.sendAnalyticsEvent(AnalyticsEvents.SnapAndSend_Open_From_Home_Event);
 
     NavigationService.navigatorKey.currentState!.pushNamed(RouteName.vDAllTypesScreen);
   }
@@ -1505,25 +1479,9 @@ class CommonFunctions {
     //     .add(DashboardEventInitial());
   }
 
-  static void sendUXCamEvent(String event) {
+  static void sendAnalyticsEvent(String event) {
     try {
-      FlutterUxcam.logEvent(event);
       Sentry.addBreadcrumb(Breadcrumb(message: event));
-    } catch (error, stackTrace) {
-      LogsViewModel().sendEventFromModel(
-        event: ErrorExceptionModel(
-          nameEvent: EventsName.handledException,
-          message: error.toString(),
-          stackTrace: stackTrace.toString(),
-        ),
-      );
-    }
-  }
-
-  static void sendUXCamEventWithProperties(String event, Map<String, dynamic> data) {
-    try {
-      FlutterUxcam.logEventWithProperties(event, data);
-      Sentry.addBreadcrumb(Breadcrumb(message: event, data: data));
     } catch (error, stackTrace) {
       LogsViewModel().sendEventFromModel(
         event: ErrorExceptionModel(

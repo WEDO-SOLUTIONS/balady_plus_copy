@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 class Constants {
   /// app config
-  static const String appFontType = 'packages/balady_uikit/Frutiger';
+  static const String appFontType = 'packages/balady_design_system/IBMPlexSansArabic';
   static const String cairoFontType = 'Cairo';
   static const String geezaProFontType = 'GeezaPro';
   static const String lucidaGrandFontType = 'LucidaGrande';

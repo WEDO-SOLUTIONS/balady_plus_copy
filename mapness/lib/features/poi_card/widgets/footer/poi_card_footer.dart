@@ -17,93 +17,43 @@ import 'package:mapness/features/poi_card/enums/poi_card_bottom_sheet_state.dart
 import 'package:mapness/features/poi_card/extensions/poi_content/src/poi_content_contacts.dart';
 import 'package:mapness/features/poi_card/provider/poi_card_actions_provider.dart';
 import 'package:mapness/features/routing/providers/current_route.dart';
-import 'package:mapness/features/special_themes/core/special_theme_mode.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/providers/analytic/bss_service.dart';
 import 'package:mapness/shared/providers/analytic/extension/bss_ext.dart';
 import 'package:mapness/shared/providers/analytic/models/payload/bss_payload.dart';
+import 'package:mapness/shared/ui/lifestyle_action_bar_style.dart';
 import 'package:mapness/shared/ui/toast/toast_overlay.dart';
 import 'package:mapness/widgets/helpers/throttled_callback_widget.dart';
 import 'package:sheetify/multi_state_sheet/multi_state_sheet.dart';
 
 const _buttonColorScheme = ButtonColorScheme.accentSecondary;
-const _lifestyleBorderRadius = 4.0;
-const _lifestyleIconSize = 15.0;
 
-class _PoiFooterActionStyle {
-  final bool useLifestyleStyle;
-  final BorderSide? secondaryBorder;
-  final Color? secondaryBackground;
-  final Color directionsBackground;
-  final Color directionsForeground;
-
-  const _PoiFooterActionStyle({
-    required this.useLifestyleStyle,
-    required this.secondaryBorder,
-    required this.secondaryBackground,
-    required this.directionsBackground,
-    required this.directionsForeground,
-  });
-
-  factory _PoiFooterActionStyle.of(BuildContext context, WidgetRef ref) {
-    final useLifestyleStyle = ref.watch(specialThemeModeProvider) == SpecialThemeMode.base;
-    final colors = context.colors;
-    final theme = context.read<ThemeController>().currentTheme;
-    final isDgaDark = theme == BaladyAppThemes.darkDGA;
-    final isDgaLight = theme == BaladyAppThemes.lightDGA;
-
-    return _PoiFooterActionStyle(
-      useLifestyleStyle: useLifestyleStyle,
-      secondaryBorder: useLifestyleStyle ? BorderSide(color: colors.borderDefault, width: 1) : null,
-      secondaryBackground: isDgaDark
-          ? colors.neutralMuted
-          : isDgaLight
-          ? colors.neutralOnNeutral
-          : useLifestyleStyle
-          ? colors.backgroundSurface1
-          : null,
-      directionsBackground: colors.accentSecondaryDefault,
-      directionsForeground: colors.accentSecondaryOnAccentSecondary,
-    );
-  }
-
-  ItemActionBar directions({
-    required BuildContext context,
-    required VoidCallback onPressed,
-  }) {
-    return ItemActionBar(
-      icon: TransportIcons.locationDirectionNavigator,
-      buttonType: useLifestyleStyle ? ButtonType.secondary : ButtonType.primary,
-      colorScheme: _buttonColorScheme,
-      label: context.l10n.poiCardDirections,
-      innerPadding: const EdgeInsets.symmetric(vertical: Spacing.$2x, horizontal: Spacing.$3x),
-      bgColor: useLifestyleStyle ? directionsBackground : null,
-      labelColor: useLifestyleStyle ? directionsForeground : null,
-      iconColor: useLifestyleStyle ? directionsForeground : null,
-      onPressed: onPressed,
-    );
-  }
-
-  ItemActionBar secondary({
-    required IconData icon,
-    required VoidCallback onPressed,
-    String? label,
-    EdgeInsetsGeometry? innerPadding,
-    ButtonType buttonType = ButtonType.secondary,
-  }) {
-    return ItemActionBar(
+ItemActionBar _footerSecondary({
+  required LifestyleActionBarStyle? lifestyleStyle,
+  required IconData icon,
+  required VoidCallback onPressed,
+  String? label,
+  EdgeInsetsGeometry? innerPadding,
+  ButtonType buttonType = ButtonType.secondary,
+}) {
+  if (lifestyleStyle != null) {
+    return lifestyleStyle.secondary(
       icon: icon,
-      buttonType: buttonType,
-      colorScheme: _buttonColorScheme,
       label: label,
       innerPadding: innerPadding,
-      border: secondaryBorder,
-      borderRadius: useLifestyleStyle ? _lifestyleBorderRadius : null,
-      bgColor: secondaryBackground,
-      iconSize: useLifestyleStyle ? _lifestyleIconSize : null,
+      buttonType: buttonType,
       onPressed: onPressed,
     );
   }
+
+  return ItemActionBar(
+    icon: icon,
+    buttonType: buttonType,
+    colorScheme: _buttonColorScheme,
+    label: label,
+    innerPadding: innerPadding,
+    onPressed: onPressed,
+  );
 }
 
 class PoiCardFooter extends HookConsumerWidget {
@@ -194,7 +144,8 @@ class PoiCardFooter extends HookConsumerWidget {
     final poiActions = ref.read(poiCardActionsProvider.notifier);
 
     final parkingPoi = objectId == parkingObjectId;
-    final actionStyle = _PoiFooterActionStyle.of(context, ref);
+    final useLifestyleStyle = LifestyleActionBarStyle.isEnabled(ref);
+    final lifestyleStyle = useLifestyleStyle ? LifestyleActionBarStyle.of(context) : null;
 
     return ThrottledCallbackWidget(
       callback: () {
@@ -207,23 +158,36 @@ class PoiCardFooter extends HookConsumerWidget {
         color: color,
         displayShadow: displayShadow.value,
         items: [
-          actionStyle.directions(context: context, onPressed: onTapCar),
+          if (lifestyleStyle != null)
+            lifestyleStyle.directions(context: context, onPressed: onTapCar)
+          else
+            ItemActionBar(
+              icon: TransportIcons.locationDirectionNavigator,
+              buttonType: ButtonType.primary,
+              colorScheme: _buttonColorScheme,
+              label: context.l10n.poiCardDirections,
+              innerPadding: const EdgeInsets.symmetric(vertical: Spacing.$2x, horizontal: Spacing.$3x),
+              onPressed: onTapCar,
+            ),
           if (!parkingPoi && isFavourite)
-            actionStyle.secondary(
+            _footerSecondary(
+              lifestyleStyle: lifestyleStyle,
               icon: iconData,
-              buttonType: actionStyle.useLifestyleStyle ? ButtonType.secondary : ButtonType.primary,
+              buttonType: ButtonType.primary,
               onPressed: () => onTapFavorite(favouriteItem),
             ),
           if (currentRoute != null && objectId != null && !currentRoute.isStartOrFinishPOI(objectId))
             if (!currentRoute.containsIntermediatePOI(objectId))
-              actionStyle.secondary(
+              _footerSecondary(
+                lifestyleStyle: lifestyleStyle,
                 icon: TransportIcons.addStop,
                 label: context.l10n.addStop,
                 innerPadding: const EdgeInsets.symmetric(vertical: Spacing.$2x, horizontal: Spacing.$3x),
                 onPressed: onAddPointToRoute,
               )
             else
-              actionStyle.secondary(
+              _footerSecondary(
+                lifestyleStyle: lifestyleStyle,
                 icon: SystemIcons.closeSmall,
                 buttonType: ButtonType.primary,
                 label: context.l10n.deletePoint,
@@ -231,13 +195,15 @@ class PoiCardFooter extends HookConsumerWidget {
                 onPressed: onRemovePointFromRoute,
               ),
           if (hasContactsAndHasEntrances && callPhone != null)
-            actionStyle.secondary(
+            _footerSecondary(
+              lifestyleStyle: lifestyleStyle,
               icon: context.isLTR ? GeneralIcons.phoneLTR : GeneralIcons.phoneRTL,
               label: hasContactsAndHasEntrances ? null : context.l10n.call,
               onPressed: callPhone,
             ),
           if (website != null && data != null)
-            actionStyle.secondary(
+            _footerSecondary(
+              lifestyleStyle: lifestyleStyle,
               icon: GeneralIcons.web,
               onPressed: () {
                 BssService.instance.trackLinkTap(data!, BssContactType.website, website);
@@ -245,31 +211,37 @@ class PoiCardFooter extends HookConsumerWidget {
               },
             ),
           if (hasEntrances && onEntranceTap != null && !hasMetro)
-            actionStyle.secondary(
+            _footerSecondary(
+              lifestyleStyle: lifestyleStyle,
               icon: GeneralIcons.doorEntrance,
               onPressed: onEntranceTap,
             ),
           if (!parkingPoi && !isFavourite)
-            actionStyle.secondary(
+            _footerSecondary(
+              lifestyleStyle: lifestyleStyle,
               icon: iconData,
               onPressed: () => onTapFavorite(favouriteItem),
             ),
-          actionStyle.secondary(
+          _footerSecondary(
+            lifestyleStyle: lifestyleStyle,
             icon: SystemIcons.share,
             onPressed: throttledShare,
           ),
           if (!parkingPoi)
-            actionStyle.secondary(
+            _footerSecondary(
+              lifestyleStyle: lifestyleStyle,
               icon: SystemIcons.parkingAdd,
               onPressed: () => _onParkingTab(ref, context),
             ),
           if (parkingPoi)
-            actionStyle.secondary(
+            _footerSecondary(
+              lifestyleStyle: lifestyleStyle,
               icon: SystemIcons.edit,
               onPressed: () => context.router.push(ParkingSpotRoute(isEdit: true)),
             ),
           if (parkingPoi)
-            actionStyle.secondary(
+            _footerSecondary(
+              lifestyleStyle: lifestyleStyle,
               icon: GeneralIcons.trash,
               onPressed: () => _onTrashTab(ref, context),
             ),

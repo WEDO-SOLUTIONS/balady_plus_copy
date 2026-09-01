@@ -72,6 +72,9 @@ class AppConfigLoader {
       /// In-code defaults used until the Firebase Console value is fetched.
       await remoteConfig.setDefaults({
         RemoteConfigConstants.satelliteConfig: kSatelliteConfigBundledDefault,
+        // BALADY-3754: base-map switcher hidden until the satellite tile
+        // source is production-ready.
+        RemoteConfigConstants.baseMapSwitcherEnabled: false,
       });
 
       /// Ensure Remote Config is initialized and activate the config values
@@ -156,6 +159,14 @@ class AppConfigLoader {
     }
     final value = config.getValue(RemoteConfigConstants.satelliteConfig);
     return (raw: value.asString(), source: value.source);
+  }
+
+  /// BALADY-3754: whether the Default/Satellite base-map tiles are shown in
+  /// the layers sheet. Defaults to `false` (hidden) — both via `setDefaults`
+  /// and when Firebase Remote Config failed to initialize.
+  static Future<bool> isBaseMapSwitcherEnabled() async {
+    final config = await _config?.future;
+    return config?.getValue(RemoteConfigConstants.baseMapSwitcherEnabled).asBool() ?? false;
   }
 
   static Future<void> _saveAppConfig(FirebaseRemoteConfig? remoteConfig, EnvType envType) async {

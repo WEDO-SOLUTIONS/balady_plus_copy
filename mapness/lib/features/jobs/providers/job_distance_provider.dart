@@ -2,7 +2,6 @@ import 'package:dgis_map/library.dart';
 import 'package:mapness/entry_point.dart';
 import 'package:mapness/features/jobs/data/models/job_distance_info.dart';
 import 'package:mapness/shared/lib/geo/geo_utils.dart';
-import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:mapness/shared/utils/logger/logger.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -15,13 +14,6 @@ class JobDistance extends _$JobDistance {
   @override
   Future<JobDistanceInfo?> build(double lat, double lon) async {
     final dgisController = await ref.watch(dgisControllerProvider.future);
-    Metrics.logEvent(
-      _metricEventName,
-      extras: {
-        'lat': lat.toString(),
-        'lon': lon.toString(),
-      },
-    );
     mixpanel?.timeEvent(_metricEventName);
     try {
       final data = await dgisController.search(

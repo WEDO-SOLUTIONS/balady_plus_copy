@@ -5,10 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/features/lifestyle_layers/providers/active_layers_tab.dart';
 import 'package:mapness/features/lifestyle_layers/providers/layers_controls.dart';
+import 'package:mapness/features/satellite/providers/base_map_switcher_enabled.dart';
 import 'package:mapness/features/lifestyle_layers/providers/layers_state.dart' as layers_state;
-import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
-import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/widgets/layers/layer_sliver_list.dart';
 import 'package:sliver_tools/sliver_tools.dart';
 
@@ -38,14 +37,7 @@ class LayersSheetContent extends ConsumerWidget {
                   ),
                   const Spacer(),
                   AppButton.close(
-                    onTap: () {
-                      Metrics.logEventAdvanced(
-                        MetricsConstants.layersKeys.exitIcon,
-                        group: MetricsConstants.layersTag,
-                        action: MetricAction.tap.toString(),
-                      );
-                      onClose();
-                    },
+                    onTap: onClose,
                     color: context.colors.backgroundSurface5,
                     padding: EdgeInsets.zero,
                     innerPadding: const EdgeInsets.symmetric(horizontal: Spacing.$2x),
@@ -67,12 +59,16 @@ class LayersSheetContent extends ConsumerWidget {
           // occupy a row by themselves and overlays start on a fresh row —
           // matches the Figma macet for BE-243. Other tabs keep a single grid.
           if (activeTab == LayersTab.allLayers) ...[
-            LayerSliverList(
-              onIconTap: onIconTap,
-              layerType: layers_state.LayerType.baseMaps,
-              layersState: state,
-              layerTapItems: layerTapItems,
-            ),
+            // BALADY-3754: base-map switcher is gated by the
+            // `base_map_switcher_enabled` FRC flag (hidden by default) until
+            // the satellite tile source is production-ready.
+            if (ref.watch(baseMapSwitcherEnabledProvider).value ?? false)
+              LayerSliverList(
+                onIconTap: onIconTap,
+                layerType: layers_state.LayerType.baseMaps,
+                layersState: state,
+                layerTapItems: layerTapItems,
+              ),
             LayerSliverList(
               onIconTap: onIconTap,
               layerType: layers_state.LayerType.overlays,

@@ -84,7 +84,7 @@ class _MiniAppsHomeScreenState extends State<MiniAppsHomeScreen> {
                   state.isAppsGroupLoading ||
                   state.isEntryPointsLoading ||
                   state.isInitial;
-              final hasError = state.entryPointsError != null && state.favError != null;
+              final hasError = state.entryPointsError != null || state.favError != null;
 
               if (hasError) {
                 return GeneralErrorWidget(error: state.favError ?? state.entryPointsError!);

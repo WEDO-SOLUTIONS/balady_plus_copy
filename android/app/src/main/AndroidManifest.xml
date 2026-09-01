@@ -57,8 +57,6 @@
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
     <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS" />
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
     <uses-permission android:name="com.google.android.gms.permission.AD_ID"/>
 
 
@@ -112,7 +110,7 @@
     <application
         android:name=".App"
         android:usesCleartextTraffic="true"
-        android:extractNativeLibs="true"
+        android:extractNativeLibs="false"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name">
 
@@ -123,6 +121,11 @@
         <meta-data
             android:name="asset_statements"
             android:resource="@string/asset_statements" />
+
+        <!-- PostHog is set up programmatically (PosthogBaladyAnalyticsSink), host/key come from .env -->
+        <meta-data
+            android:name="com.posthog.posthog.AUTO_INIT"
+            android:value="false" />
 
         <meta-data
             android:name="androidx.car.app.minCarApiLevel"
@@ -212,7 +215,8 @@
 
                 <data android:scheme="http" />
                 <data android:scheme="https" />
-                <data android:host="plus.balady.sa" />
+                <data android:host="plus.balady.gov.sa" />
+                <data android:host="plus.balady.gov.sa" />
             </intent-filter>
 
             <intent-filter android:autoVerify="true">
@@ -234,7 +238,7 @@
 
                 <data android:scheme="http" />
                 <data android:scheme="https" />
-                <data android:host="go.balady.sa" />
+                <data android:host="go.balady.gov.sa" />
             </intent-filter>
 
             <intent-filter android:autoVerify="true">
@@ -264,13 +268,16 @@
                 <data android:scheme="insiderbaladyapp" />
             </intent-filter>
 
-            <intent-filter>
+        </activity>
+
+        <activity android:name="com.useinsider.insider.InsiderLoginActivity"
+            tools:node="merge">
+            <intent-filter tools:node="remove">
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
-                <data android:scheme="insiderbaladyappuat" />
+                <data android:scheme="insiderbaladyapp" />
             </intent-filter>
-
         </activity>
 
         <activity

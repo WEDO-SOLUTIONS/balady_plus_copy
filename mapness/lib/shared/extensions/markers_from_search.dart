@@ -6,12 +6,11 @@ import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/app/auto_route/poi_card_ext.dart';
 import 'package:mapness/entities/city_event/city_event.dart';
 import 'package:mapness/features/lifestyle_layers/configs/layers_consts.dart';
-import 'package:mapness/shared/constants/metrics_constants.dart';
+import 'package:mapness/shared/constants/constants.dart';
 import 'package:mapness/shared/extensions/change_marker_options_ext.dart';
 import 'package:mapness/shared/extensions/marker_icons_ext.dart';
 import 'package:mapness/shared/extensions/string_ext.dart';
 import 'package:mapness/shared/lib/geo_point_ext.dart';
-import 'package:mapness/shared/lib/urbi_metrics.dart';
 
 /// We use this method to throw away the part of the organization description that contains
 /// additional information that is not necessary on the map next to the marker
@@ -67,8 +66,7 @@ typedef AdvancedIconResolver =
 
 extension MarkerFromSearchResultMessage on SearchResultMessage {
   static const _invalidMarkerId = 'invalid';
-  static const _propertyKey = 'objectId';
-  static const poiMapFontAr = 'FrutigerLTArabic65Bold';
+  static const poiMapFontAr = 'IBMPlexSansArabic-Bold';
   static const poiMapFontEn = 'GolosText_SemiBold';
 
   Future<List<Marker>> getMarkers({
@@ -122,12 +120,6 @@ extension MarkerFromSearchResultMessage on SearchResultMessage {
           id: objectId?.toString() ?? _invalidMarkerId,
           onTap: () {
             onTapAnalytic?.call(markerInfo, item.$1);
-            Metrics.logEventAdvanced(
-              MetricsConstants.poiKeys.marker,
-              group: MetricsConstants.poiTag,
-              action: MetricAction.tap.toString(),
-              props: {_propertyKey: objectId},
-            );
 
             router.replaceOrPush(
               route: PoiCardWidgetRoute(
@@ -143,7 +135,7 @@ extension MarkerFromSearchResultMessage on SearchResultMessage {
               color: isDark ? 0xD3FFFFFF : 0xff1B1B1B,
               strokeColor: isDark ? 0xff1B1B1B : 0xD3FFFFFF,
               fontSize: 13,
-              fontName: text.containsArabic() || isRtl ? poiMapFontAr : poiMapFontEn,
+              fontName: text.containsArabic() || isRtl ? MapnessConstants.poiMapFontAr : MapnessConstants.poiMapFontEn,
               textOffset: 4,
               strokeWidth: 1,
               textPlacement: MarkerTextPlacementMessage(
