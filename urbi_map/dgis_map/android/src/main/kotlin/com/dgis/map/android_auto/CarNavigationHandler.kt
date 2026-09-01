@@ -551,10 +551,6 @@ class CarNavigationHandler(
         }
     }
 
-    fun timeoutBetterRoute() {
-        navigationManager.uiModel.betterRouteResponse(BetterRouteResponse.TIMEOUT)
-    }
-
     fun stopNavigation() {
         navigationManager.stop()
     }

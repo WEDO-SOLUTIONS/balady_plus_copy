@@ -354,7 +354,12 @@ dependency_overrides:
   # Pin to avoid objective_c FFI crash on iOS Simulator
   # (path_provider_foundation >=2.5.0 uses objective_c which fails on Simulator)
   path_provider_foundation: 2.4.0
-  sdga_design_system: 1.0.0
+
+  # flutter_html 3.0.0 imports the *internal* package:html/src/query_selector.dart
+  # and calls its top-level matches(); html 0.15.7 removed that function, so the
+  # release kernel snapshot fails with "Method not found: 'matches'".
+  # Drop this pin once flutter_html stops reaching into html's internals.
+  html: 0.15.6
 
   # BALADY-3755 / BALADY-3768: vendored copy of sheetify 1.1.3, patched so that
   # a keyboard belonging to an iOS share extension no longer collapses our
