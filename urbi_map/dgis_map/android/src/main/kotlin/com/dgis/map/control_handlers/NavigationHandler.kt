@@ -391,8 +391,17 @@ class NavigationHandler(
         }
 
         fun stopFreeRoam() {
+                // Free roam has to leave the camera at the last roaming position instead of
+                // snapping back to the user location (TFS #34904). The behaviour stored by
+                // `setupCamera` may be a following one, so restoring it alone is not enough.
+                val wasActive = navigationManager.uiModel.state != State.DISABLED
                 navigationManager.stop()
+                stopFollowNavigation()
                 resetCamera()
+
+                if (!wasActive) return
+
+                map.camera.setBehaviour(CameraBehaviour(position = null))
                 LiveUpdatesCoordinator.onSessionStopped()
         }
 

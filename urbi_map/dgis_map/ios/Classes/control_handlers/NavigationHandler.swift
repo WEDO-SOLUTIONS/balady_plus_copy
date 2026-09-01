@@ -510,8 +510,19 @@ class NavigationHandler {
     }
 
     func stopFreeRoam() {
+        // Free roam has to leave the camera at the last roaming position instead of
+        // snapping back to the user location, the same way Android behaves (TFS #34904).
+        // The behaviour stored by `setupCamera` may be a following one (the map usually
+        // follows the location before free roam starts), so restoring it would pull the
+        // camera back to the current location right after the trip is ended.
+        let wasActive = self.navigationManager.uiModel.state != .disabled
         self.navigationManager.stop()
+        stopFollowNavigation()
         resetCamera()
+
+        guard wasActive else { return }
+
+        self.map.camera.setBehaviour(behaviour: CameraBehaviour(position: nil))
     }
 
     func toggleSounds(toggleType: SoundToggleType) {
