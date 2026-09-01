@@ -78,9 +78,14 @@ class NavigationCursorState {
 /// [DgisMapController.setNavigationCursorModel] (SDK
 /// `MyLocationMapObject.setModelData`) — no style repack, no MapView
 /// recreate, so the route, maneuvers and camera are never disturbed
-/// (BALADY-3772). Every path persists activeId; [applyActive] re-applies
-/// it whenever a map (re)initialises and when the day/night appearance
-/// flips (the bundled classic car has distinct day/night meshes).
+/// (BALADY-3772). The native side keeps the model turn-by-turn-only:
+/// outside a navigation session the bytes are merely cached and the
+/// standard my-location marker stays (regression follow-up — the car must
+/// not show on Explore); the model is applied when guidance starts and
+/// reset when it ends. Every path persists activeId; [applyActive]
+/// re-applies it whenever a map (re)initialises and when the day/night
+/// appearance flips (the bundled classic car has distinct day/night
+/// meshes).
 @Riverpod(keepAlive: true)
 class NavigationCursorController extends _$NavigationCursorController {
   @override
@@ -199,19 +204,22 @@ class NavigationCursorController extends _$NavigationCursorController {
   static final _bundledEntryCache = <String, Uint8List>{};
 
   /// Read one entry out of the bundled `.2gis` (a zip). The archive is
-  /// ~10 MB and read only once per entry; both classic meshes get cached.
+  /// ~10 MB, so decoding it runs on a background isolate via [compute] —
+  /// same reasoning as [DynamicStyleService.repackInto]: doing this on the
+  /// UI isolate is a multi-second stall on real devices, which for this
+  /// call site (in the middle of a live cursor swap, see [select]) surfaced
+  /// as the map going blank/white for its duration (BALADY-3772). Read only
+  /// once per entry; both classic meshes get cached.
   Future<Uint8List> _bundledStyleEntry(String name) async {
     final cached = _bundledEntryCache[name];
     if (cached != null) {
       return cached;
     }
     final data = await rootBundle.load(MapnessConstants.mapStylesPath);
-    final archive = ZipDecoder().decodeBytes(data.buffer.asUint8List(data.offsetInBytes, data.lengthInBytes));
-    final entry = archive.files.firstWhere(
-      (f) => f.name == name,
-      orElse: () => throw StateError('bundled style has no $name'),
+    final bytes = await compute(
+      _decodeBundledStyleEntry,
+      (data.buffer.asUint8List(data.offsetInBytes, data.lengthInBytes), name),
     );
-    final bytes = Uint8List.fromList(entry.readBytes() ?? const <int>[]);
     _bundledEntryCache[name] = bytes;
     return bytes;
   }
@@ -264,4 +272,16 @@ class NavigationCursorController extends _$NavigationCursorController {
     logger.log('$_logTag deleteLocal: ${cursor.id} dropped (activeNow=${newActive.id})');
     return deleted;
   }
+}
+
+/// Isolate entry point for [NavigationCursorController._bundledStyleEntry].
+/// Top-level (not a closure) so [compute] can spawn it on a background
+/// isolate; `data.$1` is the raw archive bytes, `data.$2` the entry name.
+Uint8List _decodeBundledStyleEntry((Uint8List, String) data) {
+  final archive = ZipDecoder().decodeBytes(data.$1);
+  final entry = archive.files.firstWhere(
+    (f) => f.name == data.$2,
+    orElse: () => throw StateError('bundled style has no ${data.$2}'),
+  );
+  return Uint8List.fromList(entry.readBytes() ?? const <int>[]);
 }

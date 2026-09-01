@@ -121,15 +121,17 @@ class DgisMapView(
                 map = map!!,
                 appContext = context,
                 onMyLocationSourceReplaced = ::reapplyNavigationCursorModel,
+                onNavigationSessionEnded = ::resetNavigationCursorModelOnMap,
         )
     }
 
     /**
      * BALADY-3772: the navigation-cursor 3D model last set via
-     * [setNavigationCursorModel]. Re-applied by [NavigationHandler] whenever the
-     * my-location object may have (re)materialised its model: after a source
-     * swap and once a session reaches State.NAVIGATION — otherwise a fresh
-     * source (or a session started later) comes up with the style's default mesh.
+     * [setNavigationCursorModel]. The custom model is a turn-by-turn-only
+     * visual: [NavigationHandler] applies it when a session starts (after the
+     * source swap and once State.NAVIGATION is reached) and resets the marker
+     * back to the style default when the session ends. Outside a session the
+     * model is only cached here.
      */
     private var navigationCursorModel: ModelData? = null
 
@@ -141,6 +143,22 @@ class DgisMapView(
             source.item.setModelData(model)
         } catch (e: Exception) {
             Log.w("DgisMapView", "re-applying navigation cursor model failed: $e")
+        }
+    }
+
+    /**
+     * BALADY-3772 (regression): once the navigation session ends the
+     * my-location marker must return to the standard style default — the
+     * custom car model must not stick around on Explore. The chosen model
+     * stays cached in [navigationCursorModel] for the next session.
+     */
+    private fun resetNavigationCursorModelOnMap() {
+        val source = map?.sources?.firstOrNull { it is MyLocationMapObjectSource }
+                as? MyLocationMapObjectSource ?: return
+        try {
+            source.item.setModelData(null)
+        } catch (e: Exception) {
+            Log.w("DgisMapView", "resetting navigation cursor model failed: $e")
         }
     }
     private val navigationHandler by navigationHandlerLazy
@@ -528,9 +546,12 @@ class DgisMapView(
     /**
      * BALADY-3772: swap the 3D model of the my-location object (navigation cursor)
      * on the live map via MyLocationMapObject.setModelData. No style reload, no
-     * MapView recreate — the route, maneuvers and camera stay untouched. Applies to
-     * whichever MyLocationMapObjectSource is currently on the map: the default one
-     * from onMapReady or the one NavigationHandler installs for guidance.
+     * MapView recreate — the route, maneuvers and camera stay untouched.
+     *
+     * Regression follow-up: the custom model is only visible during turn-by-turn
+     * navigation. Outside a session the bytes are just cached —
+     * [NavigationHandler] pushes them when guidance starts and resets the marker
+     * when it ends, so Explore keeps the standard my-location marker.
      */
     override fun setNavigationCursorModel(glb: ByteArray, callback: (Result<Unit>) -> Unit) {
         val currentMap = map
@@ -539,6 +560,13 @@ class DgisMapView(
             return
         }
         try {
+            val model = createModelData(sdkContext, glb)
+            navigationCursorModel = model
+            val navigating = navigationHandlerLazy.isInitialized() && navigationHandler.isNavigating
+            if (!navigating) {
+                callback(Result.success(Unit))
+                return
+            }
             val source = currentMap.sources.firstOrNull { it is MyLocationMapObjectSource }
                     as? MyLocationMapObjectSource
             if (source == null) {
@@ -549,9 +577,7 @@ class DgisMapView(
                 )
                 return
             }
-            val model = createModelData(sdkContext, glb)
             source.item.setModelData(model)
-            navigationCursorModel = model
             callback(Result.success(Unit))
         } catch (e: Exception) {
             Log.w("DgisMapView", "setNavigationCursorModel failed: $e")
