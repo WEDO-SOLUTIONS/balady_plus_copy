@@ -9,6 +9,7 @@ import 'package:mapness/_features/common/providers/shared_prefs.dart';
 import 'package:mapness/_generated/assets/assets.gen.dart';
 import 'package:mapness/features/favourites/providers/favourite_cache.dart';
 import 'package:mapness/features/sso_auth/data/auth_provider.dart';
+import 'package:mapness/features/tifo/providers/tifo_session_provider.dart';
 import 'package:mapness/features/weather/provider/forecast_weather_provider.dart';
 import 'package:mapness/shared/providers/navigator_voice.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -121,6 +122,8 @@ class AppLanguage extends _$AppLanguage {
     unawaited(ref.read(authProvider.notifier).forceUpdate());
     // Update cached text for the favourites items
     unawaited(ref.read(favouriteCacheProvider.notifier).forceRefresh());
+    // Re-fetch the TIFO roster so club names come back in the new locale
+    unawaited(ref.read(tifoSessionProvider.notifier).forceRefresh());
 
     state = value;
 

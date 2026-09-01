@@ -37,6 +37,9 @@ class EnvironmentConfig {
   final CityEventDateRange foundingDayDateRange;
   final CityEventDateRange leapDateRange;
   final CityEventDateRange wrcEventDateRange;
+  // TIFO isn't a city event itself — it just reuses the same remote-config
+  // shape (see CityEventDateRange.tifoDefault for the placeholder window).
+  final CityEventDateRange tifoDateRange;
 
   EnvironmentConfig({
     required this.url,
@@ -62,6 +65,7 @@ class EnvironmentConfig {
     required this.foundingDayDateRange,
     required this.leapDateRange,
     required this.wrcEventDateRange,
+    required this.tifoDateRange,
   });
 
   factory EnvironmentConfig.fromEnvType(String envType) => switch (envType) {
@@ -111,6 +115,10 @@ class EnvironmentConfig {
       json['wrcEventDateRange'] as Map<String, dynamic>?,
       CityEventDateRange.wrcDefault(),
     ),
+    tifoDateRange: CityEventDateRange.fromJson(
+      json['tifoDateRange'] as Map<String, dynamic>?,
+      CityEventDateRange.tifoDefault(),
+    ),
   );
 
   Map<String, dynamic> toJson() => {
@@ -158,6 +166,7 @@ class EnvironmentConfig {
     foundingDayDateRange: CityEventDateRange.foundingDayDefault(),
     leapDateRange: CityEventDateRange.leapDefault(),
     wrcEventDateRange: CityEventDateRange.wrcDefault(),
+    tifoDateRange: CityEventDateRange.tifoDefault(),
   );
 
   factory EnvironmentConfig.momrahStaging() => EnvironmentConfig(
@@ -184,6 +193,7 @@ class EnvironmentConfig {
     foundingDayDateRange: CityEventDateRange.foundingDayDefault(),
     leapDateRange: CityEventDateRange.leapDefault(),
     wrcEventDateRange: CityEventDateRange.wrcDefault(),
+    tifoDateRange: CityEventDateRange.tifoDefault(),
   );
 
   factory EnvironmentConfig.momrahProd() => EnvironmentConfig(
@@ -210,6 +220,7 @@ class EnvironmentConfig {
     foundingDayDateRange: CityEventDateRange.foundingDayDefault(),
     leapDateRange: CityEventDateRange.leapDefault(),
     wrcEventDateRange: CityEventDateRange.wrcDefault(),
+    tifoDateRange: CityEventDateRange.tifoDefault(),
   );
 
   factory EnvironmentConfig.urbiPreProd() => EnvironmentConfig(
@@ -238,5 +249,6 @@ class EnvironmentConfig {
     foundingDayDateRange: CityEventDateRange.foundingDayDefault(),
     leapDateRange: CityEventDateRange.leapDefault(),
     wrcEventDateRange: CityEventDateRange.wrcDefault(),
+    tifoDateRange: CityEventDateRange.tifoDefault(),
   );
 }

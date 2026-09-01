@@ -58,7 +58,6 @@ class CityEventDateRange extends Equatable {
   }
 
   bool isDateInRange(DateTime dateTime) {
-    // we add one day to include the last day in range when checking
     final endDate = to.add(const Duration(days: 1));
     return dateTime == from || (dateTime.isAfter(from) && dateTime.isBefore(endDate));
   }

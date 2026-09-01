@@ -847,6 +847,47 @@ class DgisMapView(
         objectTapHandler?.removeAllMarkers(manager?.id, callback)
     }
 
+    // --- 3D MODEL ---
+
+    override fun addModel(
+            model: ModelMapObjectMessage,
+            manager: MapObjectManagerMessage?,
+            callback: (Result<Unit>) -> Unit
+    ) {
+        objectTapHandler?.addModel(model, manager?.id, callback)
+    }
+
+    override fun setModelOptions(
+            id: String,
+            options: ChangeModelMapObjectOptionsMessage,
+            callback: (Result<Unit>) -> Unit
+    ) {
+        objectTapHandler?.setModelOptions(id, options, callback)
+    }
+
+    override fun addModels(
+            models: List<ModelMapObjectMessage>,
+            manager: MapObjectManagerMessage?,
+            callback: (Result<Unit>) -> Unit
+    ) {
+        objectTapHandler?.addModels(models, manager?.id, callback)
+    }
+
+    override fun removeModel(
+            id: String,
+            manager: MapObjectManagerMessage?,
+            callback: (Result<Unit>) -> Unit
+    ) {
+        objectTapHandler?.removeModel(id, manager?.id, callback)
+    }
+
+    override fun removeAllModels(
+            manager: MapObjectManagerMessage?,
+            callback: (Result<Unit>) -> Unit
+    ) {
+        objectTapHandler?.removeAllModels(manager?.id, callback)
+    }
+
     // --- MAP OBJECT ---
     override fun createMapObjectManagerWithClustering(
             message: ClusteringMapObjectManagerOptionsMessage,

@@ -38,6 +38,7 @@ import 'package:mapness/features/routing/providers/current_route.dart';
 import 'package:mapness/features/routing/providers/routes.dart';
 import 'package:mapness/features/search/providers/search.dart';
 import 'package:mapness/features/search/ui/search_scope.dart';
+import 'package:mapness/features/tifo/tifo_trip_rewards.dart';
 import 'package:mapness/features/share_eta/entities/route_params_point_mapper.dart';
 import 'package:mapness/features/share_eta/models/eta_route_info.dart';
 import 'package:mapness/features/share_eta/providers/eta_route_info_provider.dart';
@@ -99,6 +100,12 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
   bool _pedestrianSwitchInProgress = false;
   bool _finishedByEta = false;
   bool _isEndingTrip = false;
+  // Guards `_finishNavigation` against firing more than once for the same
+  // trip: the SDK's `finished` event, the ETA<=5m fallback, and the
+  // pedestrian-switch fallback can each independently trigger it, and
+  // without this every extra call sends its own TIFO trip-reward request
+  // (each with a fresh random tripId, so the backend can't dedupe them).
+  bool _navigationFinishReported = false;
 
   // Restoring navigation restarts it on the native side, which emits transient
   // disabled/finished events before the restored navigation actually starts.
@@ -1035,11 +1042,21 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
   }
 
   Future<void> _finishNavigation() async {
+    if (_navigationFinishReported) {
+      return;
+    }
+    _navigationFinishReported = true;
+
     // iOS: DGis "arrival" voice can stop in-app radio. Capture current state so we can
     // restore it after the voice finishes (best-effort, delayed).
     final streamAudioWasPlayingBeforeFinish = ref.read(streamAudioProvider).isEffectivelyPlaying;
 
     _sendAnalitycs();
+    // TIFO US-16: a completed trip earns tokens. Fire-and-forget — the backend
+    // validates and rewards; a signed-out user or a failed call is a no-op.
+    // Read the route's distance now, before `clearRoute()` below wipes it.
+    final tripDistanceKm = (ref.read(currentRouteProvider)?.route.distance ?? 0) / 1000;
+    unawaited(reportTifoTripCompleted(ref, distanceKm: tripDistanceKm));
     _navigationState.value = PathNavState.finished;
     await Future.delayed(const Duration(milliseconds: 500));
     if (!mounted) {

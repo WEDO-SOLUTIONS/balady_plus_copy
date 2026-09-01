@@ -843,6 +843,82 @@ class ChangeMarkerOptionsMessage {
   final int? zIndex;
 }
 
+enum ModelSizeTypeMessage { logicalPixel, scale }
+
+/// 3D model size parameters.
+class ModelSizeMessage {
+  const ModelSizeMessage({required this.value, required this.type});
+
+  /// Logical pixels for [ModelSizeTypeMessage.logicalPixel] or scale factor for [ModelSizeTypeMessage.scale].
+  final double value;
+  final ModelSizeTypeMessage type;
+}
+
+/// 3D model parameters.
+class ModelMapObjectOptionsMessage {
+  const ModelMapObjectOptionsMessage({
+    required this.position,
+    required this.modelPath,
+    required this.size,
+    this.mapDirection,
+    this.opacity,
+    this.isVisible,
+    this.levelId,
+    this.zIndex,
+  });
+
+  /// Getting the location of the 3D model.
+  final GeoPointWithElevationMessage position;
+
+  /// Flutter asset path to a .glb/.gltf model.
+  final String modelPath;
+
+  /// Getting the 3D model size.
+  final ModelSizeMessage size;
+
+  /// Angle of the model rotation on the map relative to the north direction in degrees.
+  final MapDirectionMessage? mapDirection;
+
+  /// Model opacity.
+  final double? opacity;
+
+  /// Is the model visible?
+  final bool? isVisible;
+
+  /// Binding to the floor plan of the building.
+  final LevelIdMessage? levelId;
+
+  /// Z-index for draw ordering.
+  final int? zIndex;
+}
+
+class ChangeModelMapObjectOptionsMessage {
+  ChangeModelMapObjectOptionsMessage({
+    this.position,
+    this.modelPath,
+    this.size,
+    this.mapDirection,
+    this.opacity,
+    this.isVisible,
+    this.zIndex,
+  });
+
+  final GeoPointWithElevationMessage? position;
+  final String? modelPath;
+  final ModelSizeMessage? size;
+  final MapDirectionMessage? mapDirection;
+  final double? opacity;
+  final bool? isVisible;
+  final int? zIndex;
+}
+
+class ModelMapObjectMessage {
+  ModelMapObjectMessage(this.id, this.options);
+
+  final String id;
+  final ModelMapObjectOptionsMessage options;
+}
+
 class MarkerMessage {
   MarkerMessage(this.id, this.options);
 
@@ -1630,6 +1706,21 @@ abstract class MapApi {
 
   @async
   void removeAllMarkers(MapObjectManagerMessage? manager);
+
+  @async
+  void addModel(ModelMapObjectMessage model, MapObjectManagerMessage? manager);
+
+  @async
+  void setModelOptions(String id, ChangeModelMapObjectOptionsMessage options);
+
+  @async
+  void addModels(List<ModelMapObjectMessage> models, MapObjectManagerMessage? manager);
+
+  @async
+  void removeModel(String id, MapObjectManagerMessage? manager);
+
+  @async
+  void removeAllModels(MapObjectManagerMessage? manager);
 
   @async
   MapObjectManagerMessage createMapObjectManagerWithClustering(

@@ -1511,8 +1511,10 @@ Future<void> setupMapness(EnvType envType) async {
 
   await initialiseDGis(
     logOptions: LogOptionsMessage(
-      systemLevel: LogLevelMessage.fatal,
-      customLevel: LogLevelMessage.fatal,
+      // systemLevel: LogLevelMessage.fatal,
+      // customLevel: LogLevelMessage.fatal,
+      systemLevel: LogLevelMessage.verbose,
+      customLevel: LogLevelMessage.verbose,
     ),
     configContent: vendorConfigContentMessage,
   );

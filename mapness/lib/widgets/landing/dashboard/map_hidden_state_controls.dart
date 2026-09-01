@@ -109,6 +109,11 @@ class _MapHiddenStateControlsState extends ConsumerState<MapHiddenStateControls>
       children: [
         Stack(
           alignment: Alignment.bottomCenter,
+          // CityEventDisplay's logo is deliberately taller than its own banner
+          // and paints past its bounds (see city_event_display.dart) so it
+          // doesn't inflate the measured topHeader height — don't clip that
+          // overflow here either.
+          clipBehavior: Clip.none,
           children: [
             Padding(
               padding: EdgeInsets.only(bottom: showSpecialBanner ? Spacing.$4x : 0.0),

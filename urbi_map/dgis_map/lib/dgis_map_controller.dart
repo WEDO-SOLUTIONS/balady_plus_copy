@@ -400,10 +400,29 @@ class DgisMapController {
   /// Remove all markers added with [addMarker].
   Future<void> removeAllMarkers({MapObjectManagerMessage? fromManager}) => _instance.removeAllMarkers(fromManager);
 
+  /// Add 3D model to map.
+  Future<void> addModel(ModelMapObject model, {MapObjectManagerMessage? toManager}) =>
+      _instance.addModel(model, toManager);
+
+  /// Change 3D model options.
+  Future<void> setModelOptions(String id, ChangeModelMapObjectOptionsMessage options) =>
+      _instance.setModelOptions(id, options);
+
+  /// Add several 3D models to map.
+  Future<void> addModels(List<ModelMapObject> models, {MapObjectManagerMessage? toManager}) =>
+      _instance.addModels(models, toManager);
+
+  /// Remove 3D model by id.
+  Future<void> removeModel(String id, {MapObjectManagerMessage? fromManager}) => _instance.removeModel(id, fromManager);
+
+  /// Remove all 3D models added with [addModel].
+  Future<void> removeAllModels({MapObjectManagerMessage? fromManager}) => _instance.removeAllModels(fromManager);
+
   /// Remove all markers, polygons, polylines
   /// that were added with [addMarker], [addPolygons], [addPolyline].
   Future<void> removeAll({MapObjectManagerMessage? fromManager}) async {
     await _instance.removeAllMarkers(fromManager);
+    await _instance.removeAllModels(fromManager);
     await _instance.removeAllPolygons(fromManager);
     await _instance.removeAllPolylines(fromManager);
     await _instance.removeAllCircles(fromManager);
