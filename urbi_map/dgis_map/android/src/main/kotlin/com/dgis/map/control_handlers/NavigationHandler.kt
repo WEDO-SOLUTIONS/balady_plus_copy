@@ -50,9 +50,13 @@ class NavigationHandler(
         // BALADY-3772: the navigation-cursor 3D model is set on the my-location
         // object via setModelData. It has to be re-applied whenever that object
         // may have (re)materialised its model: after guidance swaps the source
-        // in/out, and when a session (guidance / free roam) starts — a model set
+        // in, and when a session (guidance / free roam) starts — a model set
         // while the cursor was still the idle dashboard marker is not shown.
         private val onMyLocationSourceReplaced: () -> Unit = {},
+        // BALADY-3772 (regression): the custom model is a turn-by-turn-only
+        // visual. Fired when a session ends so the owner resets the
+        // my-location marker back to the standard style default.
+        private val onNavigationSessionEnded: () -> Unit = {},
 ) : AutoCloseable {
         private val context: SdkContext = sdkContext
         private val voicesManager = getVoiceManager(sdkContext)
@@ -204,8 +208,11 @@ class NavigationHandler(
                         }
                         map.addSource(oldSource!!)
                         oldSource = null
-                        onMyLocationSourceReplaced()
                 }
+                // BALADY-3772 (regression): the session is over — drop the custom
+                // cursor model so the marker returns to the standard one. Called
+                // unconditionally: free roam does not swap the source at all.
+                onNavigationSessionEnded()
         }
 
         override fun close() {

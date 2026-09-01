@@ -78,9 +78,14 @@ class NavigationCursorState {
 /// [DgisMapController.setNavigationCursorModel] (SDK
 /// `MyLocationMapObject.setModelData`) — no style repack, no MapView
 /// recreate, so the route, maneuvers and camera are never disturbed
-/// (BALADY-3772). Every path persists activeId; [applyActive] re-applies
-/// it whenever a map (re)initialises and when the day/night appearance
-/// flips (the bundled classic car has distinct day/night meshes).
+/// (BALADY-3772). The native side keeps the model turn-by-turn-only:
+/// outside a navigation session the bytes are merely cached and the
+/// standard my-location marker stays (regression follow-up — the car must
+/// not show on Explore); the model is applied when guidance starts and
+/// reset when it ends. Every path persists activeId; [applyActive]
+/// re-applies it whenever a map (re)initialises and when the day/night
+/// appearance flips (the bundled classic car has distinct day/night
+/// meshes).
 @Riverpod(keepAlive: true)
 class NavigationCursorController extends _$NavigationCursorController {
   @override
