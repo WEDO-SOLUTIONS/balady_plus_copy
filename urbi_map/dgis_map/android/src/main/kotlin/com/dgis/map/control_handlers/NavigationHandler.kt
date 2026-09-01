@@ -50,8 +50,9 @@ class NavigationHandler(
         // BALADY-3772: the navigation-cursor 3D model is set on the my-location
         // object via setModelData. It has to be re-applied whenever that object
         // may have (re)materialised its model: after guidance swaps the source
-        // in, and when a session (guidance / free roam) starts — a model set
-        // while the cursor was still the idle dashboard marker is not shown.
+        // in, and once a turn-by-turn session reaches State.NAVIGATION — a
+        // model set while the cursor was still the idle dashboard marker is
+        // not shown.
         private val onMyLocationSourceReplaced: () -> Unit = {},
         // BALADY-3772 (regression): the custom model is a turn-by-turn-only
         // visual. Fired when a session ends so the owner resets the
@@ -71,6 +72,17 @@ class NavigationHandler(
         private var oldSource: Source? = null
 
         var isNavigating: Boolean = false
+                private set
+
+        /**
+         * BALADY-3772: true only while a turn-by-turn session (guidance or its
+         * simulation) started via [startNavigation]/[startSimulation] is
+         * active. Unlike [isNavigating] it stays false for free roam and for
+         * route search outside guidance — the custom cursor model must not
+         * replace the standard my-location marker there (free roam auto-starts
+         * right from the Explore dashboard).
+         */
+        var isTurnByTurn: Boolean = false
                 private set
 
         // Models to observe channels and send events to Flutter
@@ -210,6 +222,7 @@ class NavigationHandler(
                 // BALADY-3772 (regression): the session is over — drop the custom
                 // cursor model so the marker returns to the standard one. Called
                 // unconditionally: free roam does not swap the source at all.
+                isTurnByTurn = false
                 onNavigationSessionEnded()
         }
 
@@ -315,6 +328,10 @@ class NavigationHandler(
 
                 setupCamera(speedRangeZoom = speedRangeZoom)
 
+                // BALADY-3772: a turn-by-turn session is starting — the custom
+                // cursor model may be applied from here until the session ends.
+                isTurnByTurn = true
+
                 val currentLocationSource = map.sources.firstOrNull { it is MyLocationMapObjectSource }
                 if (oldSource == null && currentLocationSource != null) {
                         oldSource = currentLocationSource
@@ -368,6 +385,10 @@ class NavigationHandler(
                 }
 
                 setupCamera(speedRangeZoom = speedRangeZoom)
+
+                // BALADY-3772: simulation is a turn-by-turn session too — the
+                // custom cursor model applies the same way as in real guidance.
+                isTurnByTurn = true
 
                 if (!options.isPublicTransport) {
                         navigationManager.startSimulation(
@@ -423,6 +444,10 @@ class NavigationHandler(
                                 )
                                 LiveUpdatesCoordinator.onNavStateChanged(Event.stateDisabled)
                                 isNavigating = false
+                                // BALADY-3772: defensive — a session that ends without
+                                // passing stopNavigation/stopFreeRoam must not leave the
+                                // turn-by-turn flag (and thus the custom cursor) armed.
+                                isTurnByTurn = false
                         }
                         State.FINISHED -> {
                                 eventSink.success(
@@ -444,10 +469,15 @@ class NavigationHandler(
                                 )
                                 LiveUpdatesCoordinator.onNavStateChanged(Event.stateNavigation)
                                 isNavigating = true
-                                // The my-location object switches to its navigation (3D model)
-                                // representation only once the session is actually running —
-                                // a model pushed earlier is not shown. Re-apply it here.
-                                onMyLocationSourceReplaced()
+                                // BALADY-3772: the my-location object switches to its
+                                // navigation (3D model) representation only once the
+                                // session is actually running — a model pushed earlier is
+                                // not shown. Re-apply it here, but only for turn-by-turn:
+                                // free roam raises the same state and must keep the
+                                // standard marker.
+                                if (isTurnByTurn) {
+                                        onMyLocationSourceReplaced()
+                                }
                         }
                         State.ROUTE_SEARCH -> {
                                 eventSink.success(
