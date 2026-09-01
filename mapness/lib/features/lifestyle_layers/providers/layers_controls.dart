@@ -36,6 +36,7 @@ import 'package:mapness/features/shuttle_bus/provider.dart';
 import 'package:mapness/features/shuttle_bus/repo.dart';
 import 'package:mapness/features/shuttle_bus/visible_provider.dart';
 import 'package:mapness/l10n/generated/app_localizations_en.dart';
+import 'package:mapness/shared/constants/constants.dart';
 import 'package:mapness/shared/config/environment_config.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:balady_plus/app/core/utils/common_functions.dart';
@@ -965,7 +966,7 @@ class LayersControls extends _$LayersControls {
                     strokeColor: Colors.white.value,
                     strokeWidth: 1,
                     fontSize: 14,
-                    fontName: 'IBMPlexSansArabic-Bold',
+                    fontName: MapnessConstants.poiMapFontAr,
                     textPlacement: MarkerTextPlacementMessage(placement: TextPlacementMessage.bottomCenter),
                   ),
                 ),

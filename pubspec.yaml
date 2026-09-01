@@ -16,8 +16,8 @@ publish_to: "none" # Remove this line if you wish to publish to pub.dev
 # Read more about iOS versioning at
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
 
-#version: 3.30.4+596
-version: 3.13.3+460
+version: 3.30.3+874
+#version: 3.13.5+466
 
 environment:
   sdk: ">=3.8.0 <4.0.0"
@@ -202,7 +202,7 @@ dependencies:
   balady_authorization:
     # path: /Users/hashemalkhateeb/Development/flutter_projects/nhc_projects/packages//BaladyAuthorization
     hosted: https://unpub.balady.gov.sa/
-    version: 1.0.16
+    version: 1.0.18
   #path: /Users/mhamed/work/projects/Balady/BaladyAuthorization
   # git:
   #   url: https://tfs.momra.gov.sa/tfs/MOMRACollection/MobileApps/_git/BaladyAuthorization
@@ -214,7 +214,7 @@ dependencies:
   balady_design_system:
 #    path: /Users/hashemalkhateeb/Development/flutter_projects/nhc_projects/packages/balady_design_system
      hosted: https://unpub.balady.gov.sa/
-     version: 0.0.2-dev
+     version: 0.0.5-dev
   #      git:
   #        url: https://tfs.momra.gov.sa/tfs/MOMRACollection/MobileApps/_git/balady_design_system
   #        ref: main
@@ -392,3 +392,9 @@ dependency_overrides:
   # (path_provider_foundation >=2.5.0 uses objective_c which fails on Simulator)
   path_provider_foundation: 2.4.0
 
+  # BALADY-3755 / BALADY-3768: vendored copy of sheetify 1.1.3, patched so that
+  # a keyboard belonging to an iOS share extension no longer collapses our
+  # layout. See third_party/sheetify/VENDORING.md.
+  # Drop this override once the fix is released upstream (urbi-ae/sheetify).
+  sheetify:
+    path: third_party/sheetify
