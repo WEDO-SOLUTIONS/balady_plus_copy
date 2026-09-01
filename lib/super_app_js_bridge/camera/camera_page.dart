@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../app/core/utils/common_functions.dart';
-import '../../app/core/utils/constants/ux_cam_events.dart';
+import '../../app/core/utils/constants/analytics_events.dart';
 import 'camera_bloc/camera_bloc.dart';
 
 class VDCameraPage extends StatefulWidget {
@@ -14,34 +14,26 @@ class VDCameraPage extends StatefulWidget {
   State<VDCameraPage> createState() => _VDCameraPageState();
 }
 
-class _VDCameraPageState extends State<VDCameraPage>
-    with TickerProviderStateMixin {
+class _VDCameraPageState extends State<VDCameraPage> with TickerProviderStateMixin {
   @override
   void initState() {
     super.initState();
-    CommonFunctions.sendUXCamEvent(UXCamEvents.startServiceSnapAndSend);
-    CommonFunctions.sendUXCamEvent(UXCamEvents.cameraServiceSnapAndSend);
-    CommonFunctions.sendUXCamEvent(UXCamEvents.SnapAndSend_Open_Camera_Step_Event);
+    CommonFunctions.sendAnalyticsEvent(AnalyticsEvents.startServiceSnapAndSend);
+    CommonFunctions.sendAnalyticsEvent(AnalyticsEvents.cameraServiceSnapAndSend);
+    CommonFunctions.sendAnalyticsEvent(AnalyticsEvents.SnapAndSend_Open_Camera_Step_Event);
   }
 
   @override
   Widget build(BuildContext context) {
     return MultiBlocProvider(
-      providers: [
-        BlocProvider<CameraBloc>(
-          create: (BuildContext context) => CameraBloc(),
-        ),
-      ],
+      providers: [BlocProvider<CameraBloc>(create: (BuildContext context) => CameraBloc())],
       child: Scaffold(
         body: BlocBuilder<CameraBloc, CameraState>(
           builder: (context, state) {
-            return !(state.showCamera ?? false)
-                ? const PhotoPreviewWidgetNew()
-                : const CameraWidget();
+            return !(state.showCamera ?? false) ? const PhotoPreviewWidgetNew() : const CameraWidget();
           },
         ),
       ),
     );
   }
 }
-

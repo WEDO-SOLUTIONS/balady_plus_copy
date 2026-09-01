@@ -57,8 +57,6 @@
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
     <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS" />
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
     <uses-permission android:name="com.google.android.gms.permission.AD_ID"/>
 
 
@@ -123,6 +121,11 @@
         <meta-data
             android:name="asset_statements"
             android:resource="@string/asset_statements" />
+
+        <!-- PostHog is set up programmatically (PosthogBaladyAnalyticsSink), host/key come from .env -->
+        <meta-data
+            android:name="com.posthog.posthog.AUTO_INIT"
+            android:value="false" />
 
         <meta-data
             android:name="androidx.car.app.minCarApiLevel"
@@ -213,7 +216,7 @@
                 <data android:scheme="http" />
                 <data android:scheme="https" />
                 <data android:host="plus.balady.gov.sa" />
-                <data android:host="plus.balady.sa" />
+                <data android:host="plus.balady.gov.sa" />
             </intent-filter>
 
             <intent-filter android:autoVerify="true">

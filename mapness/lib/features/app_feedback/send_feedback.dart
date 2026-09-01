@@ -4,7 +4,7 @@ import 'package:mapness/entities/app_feedback/app_feedback_payload.dart';
 import 'package:mapness/entities/app_feedback/feedback_source.dart';
 import 'package:mapness/features/app_feedback/app_feedback_dio.dart';
 import 'package:mapness/features/app_feedback/collect_feedback.dart';
-import 'package:mapness/shared/lib/urbi_metrics.dart';
+import 'package:mapness/features/balady_analytics/balady_analytics.dart';
 import 'package:mapness/shared/utils/logger/logger.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -52,7 +52,7 @@ class SendFeedback extends _$SendFeedback {
     } catch (e, st) {
       state = AppFeedbackState.error;
       logger.log('Failed to send feedback ${e.toString()}');
-      Metrics.logException(e, st);
+      BaladyAnalytics.instance.error(e, st);
     }
   }
 

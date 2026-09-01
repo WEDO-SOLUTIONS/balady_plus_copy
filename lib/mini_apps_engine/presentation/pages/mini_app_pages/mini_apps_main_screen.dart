@@ -15,6 +15,7 @@ import 'package:balady_plus/mini_apps_engine/presentation/bloc/mini_apps_engine_
 import 'package:balady_plus/app/core/utils/dialog_on_web_view/show_dialog_on_web_view.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/reload_widget.dart';
 import 'package:balady_plus/mini_apps_engine/presentation/pages/mini_app_pages/web_mini_apps_screen.dart';
+import 'package:mapness/features/balady_analytics/events/service_events.dart';
 import 'package:mapness/features/stream_audio/ui/providers/stream_audio_prov.dart';
 import 'package:mapness/features/stream_audio/ui/widgets/audio_player_banner.dart';
 
@@ -29,6 +30,25 @@ class MiniAppsMainScreen extends ConsumerStatefulWidget {
 class _MiniAppsMainScreenState extends ConsumerState<MiniAppsMainScreen> {
   late MiniApp data;
   bool showTooltip = true;
+
+  // service_opened / service_closed boundary (docs/analytics-tracking-plan.md,
+  // Phase 1): this screen is the single choke point every mini-app open goes
+  // through, so it owns both events and the wall-clock duration between them.
+  String? _analyticsServiceId;
+  DateTime? _analyticsOpenedAt;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (_analyticsServiceId == null) {
+      final miniApp = ModalRoute.of(context)?.settings.arguments;
+      if (miniApp is MiniApp) {
+        _analyticsServiceId = miniApp.serviceKey;
+        _analyticsOpenedAt = DateTime.now();
+        ServiceEvents.opened(serviceId: miniApp.serviceKey);
+      }
+    }
+  }
 
   @override
   void initState() {
@@ -229,6 +249,12 @@ class _MiniAppsMainScreenState extends ConsumerState<MiniAppsMainScreen> {
   @override
   void dispose() {
     debugPrint('MiniAppsMainScreen: Starting dispose');
+
+    final serviceId = _analyticsServiceId;
+    final openedAt = _analyticsOpenedAt;
+    if (serviceId != null && openedAt != null) {
+      ServiceEvents.closed(serviceId: serviceId, duration: DateTime.now().difference(openedAt));
+    }
 
     // Restore audio provider and show floating player when mini app is closed
     if (mounted) {

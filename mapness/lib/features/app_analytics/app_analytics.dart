@@ -395,6 +395,9 @@ class AppAnalytics extends _$AppAnalytics {
         _CompositeAnalytics([
           AppAnalyticsInsiderImpl(),
           AppAnalyticsBytePlusImpl(),
+          // The BaladyAnalytics (PostHog) mirror was removed on purpose: legacy
+          // UXCam-era events do not migrate. Our pipeline gets its own events
+          // per docs/analytics-tracking-plan.md.
         ]);
     final locale = ref.watch(appLanguageProvider).languageCode;
     final deviceInfo = ref.watch(deviceInfoProvider.future);
