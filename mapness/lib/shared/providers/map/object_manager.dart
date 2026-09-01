@@ -91,6 +91,9 @@ class MapObjectManagerSettings {
       const MapObjectManagerSettings._(name: 'shuttle-bus', layerId: MapObjectLayers.defaultLayerId);
 
   const MapObjectManagerSettings.wrcEvent() : this._(name: 'wrc-event', layerId: MapObjectLayers.hajjLayerId);
+
+  factory MapObjectManagerSettings.roadEvents() =>
+      const MapObjectManagerSettings._(name: 'road-events', layerId: MapObjectLayers.defaultLayerId);
 }
 
 @riverpod

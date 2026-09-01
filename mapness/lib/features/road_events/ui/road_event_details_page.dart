@@ -6,7 +6,6 @@ import 'package:balady_plus/app/features/_shared_feature_/presentation/buttons/i
 import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/buttons/custom_buttons_widgets.dart';
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
-import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -14,44 +13,48 @@ import 'package:intl/intl.dart';
 import 'package:mapness/_features/common/widgets/dragger.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/features/map_tap_handler/map_tap_handler_provider.dart';
+import 'package:mapness/features/road_events/data/road_events_datasource.dart';
+import 'package:mapness/features/road_events/data/road_events_dio.dart';
+import 'package:mapness/features/road_events/domain/road_event.dart';
 import 'package:mapness/features/road_events/helpers/road_event_type_label.dart';
+import 'package:mapness/features/road_events/providers/road_event_marker_bitmap.dart';
+import 'package:mapness/features/road_events/providers/road_events_markers.dart';
 import 'package:mapness/l10n/generated/app_localizations.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/hooks/toggle_sheet_controller_hook.dart';
 import 'package:mapness/shared/providers/app_language.dart';
-import 'package:mapness/shared/providers/map/dgis_controller.dart';
-import 'package:mapness/shared/providers/map/highlight.dart';
+import 'package:mapness/shared/providers/location.dart';
+import 'package:mapness/shared/providers/map/selected_marker.dart';
 import 'package:mapness/shared/ui/buttons/app_close_button.dart';
 import 'package:mapness/shared/ui/toast/toast_overlay.dart';
-import 'package:mapness/shared/utils/language_detector.dart';
 import 'package:sheetify/sheetify.dart';
 
 import 'widgets/report_road_event_lanes.dart';
 
-/// Shown for taps on any native `RoadEventSource` map marker (not just road
-/// restrictions), surfacing the event's `type` and the `lanes` it affects.
+/// Shown for taps on a road-event map marker, surfacing the event's `type`
+/// and the `lanes` it affects.
 @RoutePage()
 class RoadEventDetailsPage extends StatefulHookConsumerWidget {
   const RoadEventDetailsPage({
     required this.id,
-    required this.title,
-    required this.startTime,
-    required this.finishTime,
+    required this.location,
+    required this.createdAt,
+    required this.expiresAt,
     required this.type,
     required this.lanes,
-    required this.availableActionTypes,
+    required this.feedback,
     required this.updatedAt,
     this.hasBarrier = false,
     super.key,
   });
 
-  final DgisObjectId id;
-  final String title;
-  final DateTime? startTime;
-  final DateTime? finishTime;
+  final String id;
+  final RoadEventLocation location;
+  final DateTime? createdAt;
+  final DateTime? expiresAt;
   final RoadEventType? type;
   final Set<RoadEventLane> lanes;
-  final Set<RoadEventActionType> availableActionTypes;
+  final RoadEventFeedback feedback;
   final DateTime? updatedAt;
   final bool hasBarrier;
 
@@ -65,13 +68,12 @@ class _RoadEventDetailsPageState extends ConsumerState<RoadEventDetailsPage> {
 
   RoadEventSheetState get _initialRoadEventState => RoadEventSheetState(
     id: widget.id,
-    title: widget.title,
-    objectId: widget.id.objectId,
-    startTime: widget.startTime,
-    finishTime: widget.finishTime,
+    location: widget.location,
+    createdAt: widget.createdAt,
+    expiresAt: widget.expiresAt,
     type: widget.type,
     lanes: widget.lanes,
-    availableActionTypes: widget.availableActionTypes,
+    feedback: widget.feedback,
     updatedAt: widget.updatedAt,
   );
 
@@ -79,35 +81,52 @@ class _RoadEventDetailsPageState extends ConsumerState<RoadEventDetailsPage> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      unawaited(selectEvent(_currentRoadEventState.id));
+      unawaited(selectEvent(_currentRoadEventState));
     });
   }
 
   RoadEventSheetState get _currentRoadEventState => ref.read(roadEventsProvider) ?? _initialRoadEventState;
 
-  Future<void> selectEvent(DgisObjectId objectId) async {
-    final highlight = ref.read(highlightProvider.notifier);
-    await highlight.addHighlight(objectId.toMessage());
+  Future<void> selectEvent(RoadEventSheetState state) async {
+    final marker = await roadEventMarker(
+      RoadEvent(
+        id: state.id,
+        type: state.type ?? RoadEventType.danger,
+        location: state.location,
+        lanes: state.lanes,
+        feedback: state.feedback,
+      ),
+      () {},
+      bitmap: ref.read(roadEventMarkerBitmapProvider),
+      devicePixelRatio: WidgetsBinding.instance.platformDispatcher.views.first.devicePixelRatio,
+    );
+    await ref.read(selectedMarkerProvider.notifier).showMarker(marker, settings: roadEventsMarkersSettings);
   }
 
-  Future<void> removeSelection(DgisObjectId objectId) async {
-    final highlight = ref.read(highlightProvider.notifier);
-    await highlight.removeHighlight(objectId.toMessage());
+  Future<void> removeSelection(RoadEventSheetState state) async {
+    await ref.read(selectedMarkerProvider.notifier).clear();
   }
 
-  /// Invokes the matching native `RoadEventAction` (CONFIRMATION for "Still there",
-  /// DISPROOF for "Not anymore") on the currently open road event.
+  /// Submits a "still there"/"not anymore" verdict for the currently open road
+  /// event via `POST /events/{id}/feedback`.
   Future<void> _performAction(RoadEventActionType type) async {
     if (_isSubmitting) {
       return;
     }
     setState(() => _isSubmitting = true);
     try {
-      final controller = await ref.read(dgisControllerProvider.future);
-      final success = await controller.setRoadEventAction(type);
-      if (!success) {
-        throw Exception('Road event action $type returned a network error');
+      final userLocation = ref.read(locationProvider);
+      if (userLocation == null) {
+        throw Exception('No user location available for road event feedback');
       }
+      final dio = await ref.read(roadEventsDioProvider.future);
+      final datasource = RoadEventsDatasource(dio: dio);
+      await datasource.submitFeedback(
+        eventId: _currentRoadEventState.id,
+        type: type,
+        location: RoadEventLocation(latitude: userLocation.latitude, longitude: userLocation.longitude),
+        source: 'map',
+      );
       if (!mounted) {
         return;
       }
@@ -142,8 +161,8 @@ class _RoadEventDetailsPageState extends ConsumerState<RoadEventDetailsPage> {
       }
 
       unawaited(() async {
-        await removeSelection(previous.id);
-        await selectEvent(next.id);
+        await removeSelection(previous);
+        await selectEvent(next);
       }());
     });
 
@@ -155,21 +174,12 @@ class _RoadEventDetailsPageState extends ConsumerState<RoadEventDetailsPage> {
     final roadEventState = ref.watch(roadEventsProvider) ?? _initialRoadEventState;
     final currentLang = ref.read(appLanguageProvider).languageCode;
 
-    // TODO(@alexstrnik) switch back to widget.title after SDK fix
-    // This is a workaround to fix the title and description that is not localized
-    // When it will be fixed, we can switch back to widget.title
-    final titleLang = LanguageDetector.detectLanguage(roadEventState.title);
-    var title = roadEventState.title;
-    if (titleLang.localeForMapness != currentLang) {
-      title = context.l10n.roadBlocking;
-    }
-
     // TODO(claude): schedule/lanesLabel are computed but not yet rendered anywhere below —
     // wire them into the layout (e.g. a "Dates: ..."/"Lanes: ..." row) once the design for
     // this is ready, or drop them (and _formatSchedule/_normalizeBoundary) if not needed.
     final schedule = _formatSchedule(
-      roadEventState.startTime,
-      roadEventState.finishTime,
+      roadEventState.createdAt,
+      roadEventState.expiresAt,
       currentLang,
       context.l10n,
     );
@@ -179,9 +189,9 @@ class _RoadEventDetailsPageState extends ConsumerState<RoadEventDetailsPage> {
         : '${context.l10n.roadEventLanesLabel}: '
               '${roadEventState.lanes.map((lane) => _laneLabel(lane, context.l10n)).join(', ')}';
 
-    final type = roadEventState.type ?? RoadEventType.other;
-    final canDisprove = roadEventState.availableActionTypes.contains(RoadEventActionType.disproof);
-    final canConfirm = roadEventState.availableActionTypes.contains(RoadEventActionType.confirmation);
+    final type = roadEventState.type ?? RoadEventType.danger;
+    final canDisprove = roadEventState.feedback.availableActionTypes.contains(RoadEventActionType.disproof);
+    final canConfirm = roadEventState.feedback.availableActionTypes.contains(RoadEventActionType.confirmation);
 
     return Stack(
       children: [
@@ -367,7 +377,7 @@ class _RoadEventDetailsPageState extends ConsumerState<RoadEventDetailsPage> {
       return;
     }
     _isClosing = true;
-    await removeSelection(_currentRoadEventState.id);
+    await removeSelection(_currentRoadEventState);
     if (mounted) {
       context.router.pop();
     }

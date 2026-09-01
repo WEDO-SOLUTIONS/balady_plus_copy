@@ -13,6 +13,7 @@ import 'package:mapness/features/city_event/active_city_event.dart';
 import 'package:mapness/features/favourites/providers/favourite_markers.dart';
 import 'package:mapness/features/founding_day/founding_day.dart';
 import 'package:mapness/features/lifestyle_layers/providers/layers_controls.dart';
+import 'package:mapness/features/road_events/providers/road_events_markers.dart';
 import 'package:mapness/features/thermal_monitor/thermal_monitor.dart';
 import 'package:mapness/shared/lib/urbi_metrics_utils.dart';
 import 'package:mapness/shared/providers/map/camera_padding.dart';
@@ -213,6 +214,7 @@ class _LandingPageState extends ConsumerState<LandingPage>
     ref
       ..watch(layersControlsProvider)
       ..watch(favouriteMarkersProvider.select((value) => null))
+      ..watch(roadEventsMarkersProvider.select((value) => null))
       /// keep iwish markers alive when page is opened  (DO NOT DELETE UNTIL REFACOR OF LAYER CONTROLS!)
       ..watch(mapObjectManagerProvider(named: esri.name, layerId: esri.layerId).notifier)
       ..watch(thermalMonitorProvider)

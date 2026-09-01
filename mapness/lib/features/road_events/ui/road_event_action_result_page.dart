@@ -4,10 +4,10 @@ import 'package:auto_route/auto_route.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/buttons/custom_buttons_widgets.dart';
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
-import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:mapness/_features/common/widgets/dragger.dart';
+import 'package:mapness/features/road_events/domain/road_event.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/hooks/toggle_sheet_controller_hook.dart';
 import 'package:sheetify/sheetify.dart';
@@ -66,13 +66,11 @@ class _RoadEventActionResultPageState extends ConsumerState<RoadEventActionResul
     final iconAndColor = switch (widget.type) {
       RoadEventActionType.confirmation => (TransportIcons.accident, context.colors.errorDefault),
       RoadEventActionType.disproof => (SystemIcons.checkmark, context.colors.accentDefault),
-      _ => null,
     };
 
     final message = switch (widget.type) {
       RoadEventActionType.confirmation => context.l10n.roadEventStillThere,
       RoadEventActionType.disproof => context.l10n.roadEventNotAnymore,
-      _ => null,
     };
 
     return ToggleSheet(
@@ -90,30 +88,28 @@ class _RoadEventActionResultPageState extends ConsumerState<RoadEventActionResul
             crossAxisAlignment: CrossAxisAlignment.start,
             spacing: Spacing.$3x,
             children: [
-              if (iconAndColor != null)
-                Container(
-                  height: 36,
-                  width: 36,
-                  margin: const EdgeInsets.only(top: 3),
-                  decoration: BoxDecoration(
-                    color: iconAndColor.$2,
-                    shape: BoxShape.circle,
-                  ),
-                  child: Icon(
-                    iconAndColor.$1,
-                    color: context.colors.staticWhite,
-                  ),
+              Container(
+                height: 36,
+                width: 36,
+                margin: const EdgeInsets.only(top: 3),
+                decoration: BoxDecoration(
+                  color: iconAndColor.$2,
+                  shape: BoxShape.circle,
                 ),
+                child: Icon(
+                  iconAndColor.$1,
+                  color: context.colors.staticWhite,
+                ),
+              ),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   spacing: Spacing.$1x,
                   children: [
-                    if (message != null)
-                      Text(
-                        message,
-                        style: context.textStyles.h4SemiBold.copyWith(color: context.colors.foregroundDefault),
-                      ),
+                    Text(
+                      message,
+                      style: context.textStyles.h4SemiBold.copyWith(color: context.colors.foregroundDefault),
+                    ),
                     Text(
                       context.l10n.thanksForYourFeedback,
                       style: context.textStyles.bodySmallRegular.copyWith(color: context.colors.foregroundSoft),

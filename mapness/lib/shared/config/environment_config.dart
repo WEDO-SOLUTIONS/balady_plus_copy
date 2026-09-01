@@ -11,6 +11,9 @@ extension DgisEnvExt on DgisEnv {
   };
 }
 
+// TODO: split per-environment once separate Road Event Service deployments exist for dev/prod.
+const _defaultRoadEventApi = 'https://urbi-lifestyle-stg.momah.gov.sa/1.0/api/v1/road-events/';
+
 class EnvironmentConfig {
   final String url;
   final String meteoblue;
@@ -25,6 +28,7 @@ class EnvironmentConfig {
 
   // TODO(Demezy): very probably will be changed in the future
   final String feedbackApi;
+  final String roadEventApi;
   final bool appFeedbackEnable;
   final String appFeedbackApi;
   final String baladyBusinessUrl;
@@ -46,6 +50,7 @@ class EnvironmentConfig {
     required this.shortLinkUrl,
     required this.shortLinkApiKey,
     required this.feedbackApi,
+    required this.roadEventApi,
     required this.proxy,
     required this.appFeedbackEnable,
     required this.appFeedbackApi,
@@ -78,6 +83,8 @@ class EnvironmentConfig {
     shortLinkUrl: json['shortLinkUrl'] as String? ?? 'https://urbi-lifestyle.momah.gov.sa/1.0/short/link',
     shortLinkApiKey: json['shortLinkApiKey'] as String? ?? 'b32b12d2-4edb-4774-abbb-00b6b4a02c8e',
     feedbackApi: json['feedbackApi'] as String,
+    // TODO: remove the fallback once Remote Config carries `roadEventApi` for every environment.
+    roadEventApi: json['roadEventApi'] as String? ?? _defaultRoadEventApi,
     appFeedbackEnable: json['appFeedbackEnable'] as bool,
     appFeedbackApi: json['appFeedbackApi'] as String,
     baladyBusinessUrl: json['baladyBusinessUrl'] as String,
@@ -112,6 +119,7 @@ class EnvironmentConfig {
     'shareEtaApi': shareEtaApi,
     'shortLinkApiKey': shortLinkApiKey,
     'feedbackApi': feedbackApi,
+    'roadEventApi': roadEventApi,
     'appFeedbackEnable': appFeedbackEnable,
     'appFeedbackApi': appFeedbackApi,
     'baladyBusinessUrl': baladyBusinessUrl,
@@ -132,6 +140,7 @@ class EnvironmentConfig {
 
     /// swagger: https://momrah-balady-dev-discrepancy.public-poc.urbi.ae/docs/
     feedbackApi: 'https://momrah-balady-dev-discrepancy.public-poc.urbi.ae/api/2.0/',
+    roadEventApi: _defaultRoadEventApi,
     appFeedbackApi: 'https://momrah-balady-dev.public-poc.urbi.ae/api',
     appFeedbackEnable: true,
     bssApi: 'https://casino-bss-receiver-api-qa.k8s.2gis.dev',
@@ -154,6 +163,7 @@ class EnvironmentConfig {
     shortLinkUrl: 'https://urbi-lifestyle.momah.gov.sa/1.0/short/link',
     shortLinkApiKey: 'b32b12d2-4edb-4774-abbb-00b6b4a02c8e',
     feedbackApi: 'https://urbi-lifestyle-stg.momah.gov.sa/api/2.0/',
+    roadEventApi: _defaultRoadEventApi,
     appFeedbackApi: 'https://urbi-lifestyle-stg.momah.gov.sa/api',
     appFeedbackEnable: true,
     proxy: null,
@@ -177,6 +187,7 @@ class EnvironmentConfig {
     shortLinkUrl: 'https://urbi-lifestyle.momah.gov.sa/1.0/short/link',
     shortLinkApiKey: 'b32b12d2-4edb-4774-abbb-00b6b4a02c8e',
     feedbackApi: 'https://urbi-lifestyle.momah.gov.sa/api/2.0/',
+    roadEventApi: _defaultRoadEventApi,
     appFeedbackApi: 'https://urbi-lifestyle.momah.gov.sa/api',
     appFeedbackEnable: true,
     proxy: null,
@@ -203,6 +214,7 @@ class EnvironmentConfig {
 
     /// swagger: https://momrah-balady-discrepancy.public-poc.urbi.ae/docs/
     feedbackApi: 'https://momrah-balady-discrepancy.iaas.urbi-sa.com/api/2.0/',
+    roadEventApi: _defaultRoadEventApi,
     appFeedbackApi: 'https://momrah-balady-dev.iaas.urbi-sa.com/api',
     appFeedbackEnable: true,
     bssApi: 'https://casino-bss-receiver-api-qa.k8s.2gis.dev',

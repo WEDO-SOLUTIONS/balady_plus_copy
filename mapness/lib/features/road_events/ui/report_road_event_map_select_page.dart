@@ -1,8 +1,10 @@
+import 'dart:async';
+
 import 'package:auto_route/auto_route.dart';
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/colorsV2/app_theme.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
-import 'package:dgis_map/library.dart';
+import 'package:dgis_map/library.dart' show LocationFollowType;
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_svg/svg.dart';
@@ -10,7 +12,11 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:mapness/_features/common/widgets/dragger.dart';
 import 'package:mapness/_generated/assets/assets.gen.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
+import 'package:mapness/features/road_events/data/road_events_datasource.dart';
+import 'package:mapness/features/road_events/data/road_events_dio.dart';
+import 'package:mapness/features/road_events/domain/road_event.dart';
 import 'package:mapness/features/road_events/helpers/road_event_type_label.dart';
+import 'package:mapness/features/road_events/providers/road_events_repository.dart';
 import 'package:mapness/features/road_events/ui/widgets/report_road_event_lanes.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/extensions/camera_position_message_ext.dart';
@@ -61,35 +67,29 @@ class _ReportRoadEventMapSelectPageState extends ConsumerState<ReportRoadEventMa
     });
   }
 
-  Future<void> _onSubmit(GeoPointMessage point, RoadEventType type, Set<RoadEventLane> lanes) async {
+  Future<void> _onSubmit(RoadEventLocation location, RoadEventType type, Set<RoadEventLane> lanes) async {
     if (_isSubmitting) {
       return;
     }
     setState(() => _isSubmitting = true);
     try {
-      final controller = await ref.read(dgisControllerProvider.future);
-      final result = await controller.createRoadEvent(
-        type: type,
-        location: point,
-        lanes: lanes,
-        description: type.label(context.l10n),
-      );
-      if (result != AddRoadEventResultMessage.ok) {
-        throw Exception('createRoadEvent failed: $result');
-      }
+      final dio = await ref.read(roadEventsDioProvider.future);
+      final datasource = RoadEventsDatasource(dio: dio);
+      final event = await datasource.createEvent(type: type, location: location, lanes: lanes, source: 'navigation');
       if (!mounted) {
         return;
       }
+      ref.read(roadEventsRepositoryProvider.notifier).addLocal(event);
       context.router.pop();
-    } catch (_) {
+    } catch (e) {
       if (mounted) {
-        // TODO(claude): wire up retry — pop(true) here and re-invoke _onSubmit(point, type,
-        // lanes) on true, matching the ErrorSheetDialogRoute pattern used elsewhere (see
-        // map_search_history.dart). Right now "Try Again" just dismisses the error.
         await context.router.push(
           ErrorSheetDialogRoute(
             buttonLabel: context.l10n.tryAgain,
-            onRetry: () => context.router.pop(),
+            onRetry: () {
+              context.router.pop();
+              unawaited(_onSubmit(location, type, lanes));
+            },
             onClose: (_) => context.router.pop(),
           ),
         );
@@ -187,7 +187,7 @@ class _ReportRoadEventMapSelectPageState extends ConsumerState<ReportRoadEventMa
     // precision.
     final fraction = pinFraction.value;
     final point = (visibleRect != null && fraction != null)
-        ? GeoPointMessage(
+        ? RoadEventLocation(
             latitude: visibleRect.northEastLat - fraction.dy * (visibleRect.northEastLat - visibleRect.southWestLat),
             longitude: visibleRect.southWestLon + fraction.dx * (visibleRect.northEastLon - visibleRect.southWestLon),
           )

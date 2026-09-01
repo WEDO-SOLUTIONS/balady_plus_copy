@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:collection/collection.dart';
-import 'package:dgis_map/library.dart';
+import 'package:dgis_map/library.dart' hide RoadEventType, RoadEventLane, RoadEventActionType, RoadEventTapEvent;
 import 'package:flutter/foundation.dart';
 import 'package:mapness/app/auto_route/app_routes.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
@@ -10,6 +10,7 @@ import 'package:mapness/features/app_analytics/datafinder_source_tracker.dart';
 import 'package:mapness/features/app_analytics/models/datafinder_models.dart';
 import 'package:mapness/features/advert_metrics/advert_metrics.dart';
 import 'package:mapness/features/poi_card/domain/model/poi_camera_config.dart';
+import 'package:mapness/features/road_events/domain/road_event.dart';
 import 'package:mapness/features/search/providers/search.dart';
 import 'package:mapness/features/search/ui/search_scope.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
@@ -40,14 +41,14 @@ class RoadEvents extends _$RoadEvents {
     return _routeState(appRouter, currentState: null);
   }
 
-  void handleTap(RoadEventTapEvent event) {
+  void handleTap(RoadEvent event) {
     Metrics.logEventAdvanced(
       MetricsConstants.poiKeys.roadEvent,
       group: MetricsConstants.poiTag,
       action: MetricAction.tap.toString(),
-      props: {'event': event.id.objectId, 'title': event.title},
+      props: {'event': event.id, 'type': event.type},
     );
-    final nextState = RoadEventSheetState.fromEvent(event);
+    final nextState = RoadEventSheetState.fromDomain(event);
     final router = ref.read(appRouterProvider);
 
     if (router.topRoute.name == RoadEventDetailsRoute.name) {
@@ -66,12 +67,12 @@ class RoadEvents extends _$RoadEvents {
       router.push(
         RoadEventDetailsRoute(
           id: nextState.id,
-          title: nextState.title,
-          startTime: nextState.startTime,
-          finishTime: nextState.finishTime,
+          location: nextState.location,
+          createdAt: nextState.createdAt,
+          expiresAt: nextState.expiresAt,
           type: nextState.type,
           lanes: nextState.lanes,
-          availableActionTypes: nextState.availableActionTypes,
+          feedback: nextState.feedback,
           updatedAt: nextState.updatedAt,
         ),
       ),
@@ -172,8 +173,6 @@ class MapTapHandler extends _$MapTapHandler with GuardTapEventMixin {
   void _defaultOnMapClickListener(TapEvent event) {
     if (event is ObjectTapEvent) {
       _handleObjectTapEvent(event);
-    } else if (event is RoadEventTapEvent) {
-      _handleRoadEventTapEvent(event);
     } else if (event is MyLocationTapEvent) {
       _handleMyLocationTapEvent(event);
     }
@@ -218,10 +217,6 @@ class MapTapHandler extends _$MapTapHandler with GuardTapEventMixin {
     return true;
   }
 
-  void _handleRoadEventTapEvent(RoadEventTapEvent event) {
-    ref.read(roadEventsProvider.notifier).handleTap(event);
-  }
-
   void _handleMyLocationTapEvent(MyLocationTapEvent event) {
     Metrics.logEventAdvanced(
       MetricsConstants.poiKeys.myLocation,
@@ -251,48 +246,44 @@ class MapTapHandler extends _$MapTapHandler with GuardTapEventMixin {
 class RoadEventSheetState {
   const RoadEventSheetState({
     required this.id,
-    required this.title,
-    required this.objectId,
-    required this.startTime,
-    required this.finishTime,
+    required this.location,
+    required this.createdAt,
+    required this.expiresAt,
     required this.type,
     required this.lanes,
-    required this.availableActionTypes,
+    required this.feedback,
     required this.updatedAt,
   });
 
-  factory RoadEventSheetState.fromEvent(RoadEventTapEvent event) => RoadEventSheetState(
+  factory RoadEventSheetState.fromDomain(RoadEvent event) => RoadEventSheetState(
     id: event.id,
-    title: event.title,
-    objectId: event.id.objectId,
-    startTime: event.startTime,
-    finishTime: event.finishTime,
+    location: event.location,
+    createdAt: event.createdAt,
+    expiresAt: event.expiresAt,
     type: event.type,
     lanes: event.lanes,
-    availableActionTypes: event.availableActionTypes,
+    feedback: event.feedback,
     updatedAt: event.updatedAt,
   );
 
   factory RoadEventSheetState.fromRouteArgs(RoadEventDetailsRouteArgs args) => RoadEventSheetState(
     id: args.id,
-    title: args.title,
-    objectId: args.id.objectId,
-    startTime: args.startTime,
-    finishTime: args.finishTime,
+    location: args.location,
+    createdAt: args.createdAt,
+    expiresAt: args.expiresAt,
     type: args.type,
     lanes: args.lanes,
-    availableActionTypes: args.availableActionTypes,
+    feedback: args.feedback,
     updatedAt: args.updatedAt,
   );
 
-  final DgisObjectId id;
-  final String title;
-  final int objectId;
-  final DateTime? startTime;
-  final DateTime? finishTime;
+  final String id;
+  final RoadEventLocation location;
+  final DateTime? createdAt;
+  final DateTime? expiresAt;
   final RoadEventType? type;
   final Set<RoadEventLane> lanes;
-  final Set<RoadEventActionType> availableActionTypes;
+  final RoadEventFeedback feedback;
   final DateTime? updatedAt;
 
   @override
@@ -301,23 +292,24 @@ class RoadEventSheetState {
       other is RoadEventSheetState &&
           runtimeType == other.runtimeType &&
           id == other.id &&
-          title == other.title &&
-          startTime == other.startTime &&
-          finishTime == other.finishTime &&
+          createdAt == other.createdAt &&
+          expiresAt == other.expiresAt &&
           type == other.type &&
           updatedAt == other.updatedAt &&
           const SetEquality<RoadEventLane>().equals(lanes, other.lanes) &&
-          const SetEquality<RoadEventActionType>().equals(availableActionTypes, other.availableActionTypes);
+          const SetEquality<RoadEventActionType>().equals(
+            feedback.availableActionTypes,
+            other.feedback.availableActionTypes,
+          );
 
   @override
   int get hashCode => Object.hash(
     id,
-    title,
-    startTime,
-    finishTime,
+    createdAt,
+    expiresAt,
     type,
     updatedAt,
     Object.hashAllUnordered(lanes),
-    Object.hashAllUnordered(availableActionTypes),
+    Object.hashAllUnordered(feedback.availableActionTypes),
   );
 }
