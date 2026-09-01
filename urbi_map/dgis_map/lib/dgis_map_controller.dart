@@ -230,6 +230,11 @@ class DgisMapController {
   /// Returns map camera position.
   Future<CameraPositionMessage> getCameraPosition() => _instance.getCameraPosition();
 
+  /// Swap the navigation-cursor 3D model on the live map (raw GLB bytes).
+  /// The native side applies it only while turn-by-turn guidance is active
+  /// and resets the marker when the session ends (BALADY-3772).
+  Future<void> setNavigationCursorModel(Uint8List glb) => _instance.setNavigationCursorModel(glb);
+
   /// Returns nearest objects to camera position.
   Future<List<RenderedObjectMessage>> getNearestObjects() => _instance.getNearestObjects();
 

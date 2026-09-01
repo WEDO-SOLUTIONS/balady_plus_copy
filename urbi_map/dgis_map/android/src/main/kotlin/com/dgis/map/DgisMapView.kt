@@ -110,15 +110,55 @@ class DgisMapView(
                 java.util.EnumSet.noneOf(ru.dgis.sdk.navigation.SoundCategory::class.java)
         }
     }
-    private val navigationHandler by unsafeLazy {
+    private val navigationHandlerLazy = unsafeLazy {
         NavigationHandler(
                 sdkContext = sdkContext,
                 navigationManager = navigationManager,
                 eventSink = eventSink,
                 map = map!!,
                 appContext = context,
+                onMyLocationSourceReplaced = ::reapplyNavigationCursorModel,
+                onNavigationSessionEnded = ::resetNavigationCursorModelOnMap,
         )
     }
+
+    /**
+     * BALADY-3772: the navigation-cursor 3D model last set via
+     * [setNavigationCursorModel]. The custom model is a turn-by-turn-only
+     * visual: [NavigationHandler] applies it when a guidance session starts
+     * (after the source swap and once State.NAVIGATION is reached) and resets
+     * the marker back to the style default when the session ends. Outside a
+     * session the model is only cached here.
+     */
+    private var navigationCursorModel: ModelData? = null
+
+    private fun reapplyNavigationCursorModel() {
+        val model = navigationCursorModel ?: return
+        val source = map?.sources?.firstOrNull { it is MyLocationMapObjectSource }
+                as? MyLocationMapObjectSource ?: return
+        try {
+            source.item.setModelData(model)
+        } catch (e: Exception) {
+            Log.w("DgisMapView", "re-applying navigation cursor model failed: $e")
+        }
+    }
+
+    /**
+     * BALADY-3772 (regression): once the navigation session ends the
+     * my-location marker must return to the standard style default — the
+     * custom car model must not stick around on Explore. The chosen model
+     * stays cached in [navigationCursorModel] for the next session.
+     */
+    private fun resetNavigationCursorModelOnMap() {
+        val source = map?.sources?.firstOrNull { it is MyLocationMapObjectSource }
+                as? MyLocationMapObjectSource ?: return
+        try {
+            source.item.setModelData(null)
+        } catch (e: Exception) {
+            Log.w("DgisMapView", "resetting navigation cursor model failed: $e")
+        }
+    }
+    private val navigationHandler by navigationHandlerLazy
     private val packagesHandler by unsafeLazy {
         PackagesHandler(
                 sdkContext = sdkContext,
@@ -454,6 +494,49 @@ class DgisMapView(
                         )
                 )
         )
+    }
+
+    /**
+     * BALADY-3772: swap the 3D model of the my-location object (navigation cursor)
+     * on the live map via MyLocationMapObject.setModelData. No style reload, no
+     * MapView recreate — the route, maneuvers and camera stay untouched.
+     *
+     * Regression follow-up: the custom model is only visible during turn-by-turn
+     * guidance. Outside a session the bytes are just cached — NavigationHandler
+     * pushes them when guidance starts and resets the marker when it ends, so
+     * Explore (and free roam, which auto-starts from the Explore dashboard)
+     * keeps the standard my-location marker.
+     */
+    override fun setNavigationCursorModel(glb: ByteArray, callback: (Result<Unit>) -> Unit) {
+        val currentMap = map
+        if (currentMap == null) {
+            callback(Result.failure(IllegalStateException("setNavigationCursorModel: map is not ready")))
+            return
+        }
+        try {
+            val model = createModelData(sdkContext, glb)
+            navigationCursorModel = model
+            val turnByTurn = navigationHandlerLazy.isInitialized() && navigationHandler.isTurnByTurn
+            if (!turnByTurn) {
+                callback(Result.success(Unit))
+                return
+            }
+            val source = currentMap.sources.firstOrNull { it is MyLocationMapObjectSource }
+                    as? MyLocationMapObjectSource
+            if (source == null) {
+                callback(
+                        Result.failure(
+                                IllegalStateException("setNavigationCursorModel: no MyLocationMapObjectSource on map")
+                        )
+                )
+                return
+            }
+            source.item.setModelData(model)
+            callback(Result.success(Unit))
+        } catch (e: Exception) {
+            Log.w("DgisMapView", "setNavigationCursorModel failed: $e")
+            callback(Result.failure(e))
+        }
     }
 
     override fun getCameraVisibleArea(callback: (Result<PolygonGeometryMessage>) -> Unit) {
