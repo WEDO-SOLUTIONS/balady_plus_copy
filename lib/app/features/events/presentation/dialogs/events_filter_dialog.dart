@@ -1,18 +1,13 @@
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
-import 'package:balady_plus/app/features/_shared_feature_/presentation/components/bottom_sheets/draggable_sheet_component.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
-import '../../../../core/utils/constants/app_style.dart';
-import '../../../../core/utils/constants/ux_cam_events.dart';
-import '../../../../core/utils/enums/date_form.dart';
+import '../../../../core/utils/constants/analytics_events.dart';
 import '../../../_shared_feature_/presentation/buttons/elevated_button_widgets.dart';
 import '../../../_shared_feature_/presentation/components/bottom_sheets/generic_bottom_sheet_list.dart';
 import '../../../_shared_feature_/presentation/dialogs/bottom_sheet_dialogs.dart';
 import '../../../_shared_feature_/presentation/widgets/drop_downs/drop_down_box_with_title.dart';
-import '../../../_shared_feature_/presentation/widgets/radio_buttons/custom_radio_button_widget copy.dart';
-import '../../../_shared_feature_/presentation/widgets/texts/custom_text_widget.dart';
 import '../../../_shared_feature_/presentation/widgets/texts/filter_text_field.dart';
 import '../../domain/entities/events_category/events_category_item.dart';
 import '../../domain/entities/search_events/search_events_params.dart';
@@ -25,11 +20,7 @@ class EventsFilterDialog extends StatefulWidget {
   final EventsBloc requestsBloc;
   final SearchEventsParams params;
 
-  const EventsFilterDialog({
-    super.key,
-    required this.requestsBloc,
-    required this.params,
-  });
+  const EventsFilterDialog({super.key, required this.requestsBloc, required this.params});
 
   @override
   State<EventsFilterDialog> createState() => _EventsFilterDialogState();
@@ -66,7 +57,7 @@ class _EventsFilterDialogState extends State<EventsFilterDialog> {
     sortBy = widget.params.sortBy;
     textEditingController?.text = widget.params.keyword ?? "";
 
-    CommonFunctions.sendUXCamEvent(UXCamEvents.Events_List_Click_Filter_Event);
+    CommonFunctions.sendAnalyticsEvent(AnalyticsEvents.Events_List_Click_Filter_Event);
   }
 
   @override
@@ -75,187 +66,176 @@ class _EventsFilterDialogState extends State<EventsFilterDialog> {
       value: widget.requestsBloc,
       child: SizedBox(
         width: double.infinity,
-        child: BlocBuilder<EventsBloc, EventsState>(builder: (context, state) {
-          return Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              FilterTextField(
-                hintText: "search".tr(),
-                textEditingController: textEditingController,
-                textInputType: TextInputType.text,
-                onChanged: (value) {
-                  keyword = value;
-                },
-              ),
-              DropDownWithTitle(
-                title: "events_filter_city".tr(),
-                selectedValue: selectedCity?.name,
-                status: state.cityStatus,
-                onRetry: () => context.read<EventsBloc>().add(
-                      GetCitiesEvent(),
+        child: BlocBuilder<EventsBloc, EventsState>(
+          builder: (context, state) {
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                FilterTextField(
+                  hintText: "search".tr(),
+                  textEditingController: textEditingController,
+                  textInputType: TextInputType.text,
+                  onChanged: (value) {
+                    keyword = value;
+                  },
+                ),
+                DropDownWithTitle(
+                  title: "events_filter_city".tr(),
+                  selectedValue: selectedCity?.name,
+                  status: state.cityStatus,
+                  onRetry: () => context.read<EventsBloc>().add(GetCitiesEvent()),
+                  onTap: () {
+                    //MMDialog
+                    BottomSheetDialog.showDraggableSheet<EventCategoryItem>(
+                      context,
+                      // dialogKeyName: DialogName.objectablePageProductsFilters,
+                      // currentRouteName: RouteName.objectableTransactions,
+                      child: GenericBottomSheetList<EventCategoryItem>(
+                        title: "events_filter_city".tr(),
+                        items: state.citiesList ?? [],
+                        selectedValue: selectedCity,
+                        onTap: (item) {
+                          setState(() {
+                            selectedCity = item;
+                          });
+                          Navigator.pop(context);
+                        },
+                      ),
+                    );
+                  },
+                ),
+                DropDownWithTitle(
+                  title: "events_filter_season".tr(),
+                  selectedValue: selectedSeason?.name,
+                  status: state.seasonStatus,
+                  onRetry: () => context.read<EventsBloc>().add(GetSeasonsEvent()),
+                  onTap: () {
+                    //MMDialog
+                    BottomSheetDialog.showDraggableSheet<EventCategoryItem>(
+                      context,
+                      // dialogKeyName: DialogName.objectablePageProductsFilters,
+                      // currentRouteName: RouteName.objectableTransactions,
+                      child: GenericBottomSheetList<EventCategoryItem>(
+                        title: "events_filter_season".tr(),
+                        items: state.seasonList ?? [],
+                        selectedValue: selectedSeason,
+                        onTap: (item) {
+                          setState(() {
+                            selectedSeason = item;
+                          });
+                          Navigator.pop(context);
+                        },
+                      ),
+                    );
+                  },
+                ),
+                DropDownWithTitle(
+                  title: "events_filter_audience".tr(),
+                  selectedValue: selectedAudince?.name,
+                  status: state.audinceStatus,
+                  onRetry: () => context.read<EventsBloc>().add(GetAudienceEvent()),
+                  onTap: () {
+                    //MMDialog
+                    BottomSheetDialog.showDraggableSheet<EventCategoryItem>(
+                      context,
+                      // dialogKeyName: DialogName.objectablePageProductsFilters,
+                      // currentRouteName: RouteName.objectableTransactions,
+                      child: GenericBottomSheetList<EventCategoryItem>(
+                        title: "events_filter_audience".tr(),
+                        items: state.audinceList ?? [],
+                        selectedValue: selectedAudince,
+                        onTap: (item) {
+                          setState(() {
+                            selectedAudince = item;
+                          });
+                          Navigator.pop(context);
+                        },
+                      ),
+                    );
+                  },
+                ),
+                DropDownWithTitle(
+                  title: "events_filter_category".tr(),
+                  selectedValue: selectedCategory?.name,
+                  status: state.categoryStatus,
+                  onRetry: () => context.read<EventsBloc>().add(GetCategoriesEvent()),
+                  onTap: () {
+                    //MMDialog
+                    BottomSheetDialog.showDraggableSheet<EventCategoryItem>(
+                      context,
+                      // dialogKeyName: DialogName.objectablePageProductsFilters,
+                      // currentRouteName: RouteName.objectableTransactions,
+                      child: GenericBottomSheetList<EventCategoryItem>(
+                        title: "events_filter_category".tr(),
+                        items: state.categoryList ?? [],
+                        selectedValue: selectedCategory,
+                        onTap: (item) {
+                          setState(() {
+                            selectedCategory = item;
+                          });
+                          Navigator.pop(context);
+                        },
+                      ),
+                    );
+                  },
+                ),
+                DropDownWithTitle(
+                  title: "events_filter_fess".tr(),
+                  selectedValue: selectedFees?.name,
+                  status: state.feesStatus,
+                  onRetry: () => context.read<EventsBloc>().add(GetFeesEvent()),
+                  onTap: () {
+                    //MMDialog
+                    BottomSheetDialog.showDraggableSheet<EventCategoryItem>(
+                      context,
+                      // dialogKeyName: DialogName.objectablePageProductsFilters,
+                      // currentRouteName: RouteName.objectableTransactions,
+                      child: GenericBottomSheetList<EventCategoryItem>(
+                        title: "events_filter_fess".tr(),
+                        items: state.feesList ?? [],
+                        selectedValue: selectedFees,
+                        onTap: (item) {
+                          setState(() {
+                            selectedFees = item;
+                          });
+                          Navigator.pop(context);
+                        },
+                      ),
+                    );
+                  },
+                ),
+                Row(
+                  children: [
+                    Expanded(
+                      child: EventFilterDatePicker(
+                        title: "events_filter_dateFrom".tr(),
+                        initialDateForm: DateForm.gregorian,
+                        initialDate: dateFrom,
+                        onChange: (DateTime date, DateForm dateForm) {
+                          setState(() {
+                            dateFrom = date;
+                          });
+                        },
+                      ),
                     ),
-                onTap: () {
-                  //MMDialog
-                  BottomSheetDialog.showDraggableSheet<EventCategoryItem>(
-                    context,
-                    // dialogKeyName: DialogName.objectablePageProductsFilters,
-                    // currentRouteName: RouteName.objectableTransactions,
-                    child: GenericBottomSheetList<EventCategoryItem>(
-                      title: "events_filter_city".tr(),
-                      items: state.citiesList ?? [],
-                      selectedValue: selectedCity,
-                      onTap: (item) {
-                        setState(() {
-                          selectedCity = item;
-                        });
-                        Navigator.pop(context);
-                      },
+                    SizedBox(width: 16),
+                    Expanded(
+                      child: EventFilterDatePicker(
+                        title: "events_filter_dateTo".tr(),
+                        initialDateForm: DateForm.gregorian,
+                        startDate: dateFrom,
+                        initialDate: dateTo,
+                        onChange: (DateTime date, DateForm dateForm) {
+                          setState(() {
+                            dateTo = date;
+                          });
+                        },
+                      ),
                     ),
-                  );
-                },
-              ),
-              DropDownWithTitle(
-                title: "events_filter_season".tr(),
-                selectedValue: selectedSeason?.name,
-                status: state.seasonStatus,
-                onRetry: () => context.read<EventsBloc>().add(
-                      GetSeasonsEvent(),
-                    ),
-                onTap: () {
-                  //MMDialog
-                  BottomSheetDialog.showDraggableSheet<EventCategoryItem>(
-                    context,
-                    // dialogKeyName: DialogName.objectablePageProductsFilters,
-                    // currentRouteName: RouteName.objectableTransactions,
-                    child: GenericBottomSheetList<EventCategoryItem>(
-                      title: "events_filter_season".tr(),
-                      items: state.seasonList ?? [],
-                      selectedValue: selectedSeason,
-                      onTap: (item) {
-                        setState(() {
-                          selectedSeason = item;
-                        });
-                        Navigator.pop(context);
-                      },
-                    ),
-                  );
-                },
-              ),
-              DropDownWithTitle(
-                title: "events_filter_audience".tr(),
-                selectedValue: selectedAudince?.name,
-                status: state.audinceStatus,
-                onRetry: () => context.read<EventsBloc>().add(
-                      GetAudienceEvent(),
-                    ),
-                onTap: () {
-                  //MMDialog
-                  BottomSheetDialog.showDraggableSheet<EventCategoryItem>(
-                    context,
-                    // dialogKeyName: DialogName.objectablePageProductsFilters,
-                    // currentRouteName: RouteName.objectableTransactions,
-                    child: GenericBottomSheetList<EventCategoryItem>(
-                      title: "events_filter_audience".tr(),
-                      items: state.audinceList ?? [],
-                      selectedValue: selectedAudince,
-                      onTap: (item) {
-                        setState(() {
-                          selectedAudince = item;
-                        });
-                        Navigator.pop(context);
-                      },
-                    ),
-                  );
-                },
-              ),
-              DropDownWithTitle(
-                title: "events_filter_category".tr(),
-                selectedValue: selectedCategory?.name,
-                status: state.categoryStatus,
-                onRetry: () => context.read<EventsBloc>().add(
-                      GetCategoriesEvent(),
-                    ),
-                onTap: () {
-                  //MMDialog
-                  BottomSheetDialog.showDraggableSheet<EventCategoryItem>(
-                    context,
-                    // dialogKeyName: DialogName.objectablePageProductsFilters,
-                    // currentRouteName: RouteName.objectableTransactions,
-                    child: GenericBottomSheetList<EventCategoryItem>(
-                      title: "events_filter_category".tr(),
-                      items: state.categoryList ?? [],
-                      selectedValue: selectedCategory,
-                      onTap: (item) {
-                        setState(() {
-                          selectedCategory = item;
-                        });
-                        Navigator.pop(context);
-                      },
-                    ),
-                  );
-                },
-              ),
-              DropDownWithTitle(
-                title: "events_filter_fess".tr(),
-                selectedValue: selectedFees?.name,
-                status: state.feesStatus,
-                onRetry: () => context.read<EventsBloc>().add(
-                      GetFeesEvent(),
-                    ),
-                onTap: () {
-                  //MMDialog
-                  BottomSheetDialog.showDraggableSheet<EventCategoryItem>(
-                    context,
-                    // dialogKeyName: DialogName.objectablePageProductsFilters,
-                    // currentRouteName: RouteName.objectableTransactions,
-                    child: GenericBottomSheetList<EventCategoryItem>(
-                      title: "events_filter_fess".tr(),
-                      items: state.feesList ?? [],
-                      selectedValue: selectedFees,
-                      onTap: (item) {
-                        setState(() {
-                          selectedFees = item;
-                        });
-                        Navigator.pop(context);
-                      },
-                    ),
-                  );
-                },
-              ),
-              Row(
-                children: [
-                  Expanded(
-                    child: EventFilterDatePicker(
-                      title: "events_filter_dateFrom".tr(),
-                      initialDateForm: DateForm.gregorian,
-                      initialDate: dateFrom,
-                      onChange: (DateTime date, DateForm dateForm) {
-                        setState(() {
-                          dateFrom = date;
-                        });
-                      },
-                    ),
-                  ),
-                  SizedBox(width: 16),
-                  Expanded(
-                    child: EventFilterDatePicker(
-                      title: "events_filter_dateTo".tr(),
-                      initialDateForm: DateForm.gregorian,
-                      startDate: dateFrom,
-                      initialDate: dateTo,
-                      onChange: (DateTime date, DateForm dateForm) {
-                        setState(() {
-                          dateTo = date;
-                        });
-                      },
-                    ),
-                  ),
-                ],
-              ),
-              SizedBox(
-                height: 16,
-              ),
-              /*   CustomTextWidget(
+                  ],
+                ),
+                SizedBox(height: 16),
+                /*   CustomTextWidget(
                 "events_filter_fess".tr(),
                 textStyle: AppStyle.dropDownTitleTextStyle,
               ),
@@ -317,10 +297,10 @@ class _EventsFilterDialogState extends State<EventsFilterDialog> {
                   )
                 ],
               ),*/
-              // SizedBox(
-              //    height: 16,
-              //  ),
-              /* CustomTextWidget(
+                // SizedBox(
+                //    height: 16,
+                //  ),
+                /* CustomTextWidget(
                 "events_filter_fess_sort".tr(),
                 textStyle: AppStyle.dropDownTitleTextStyle,
               ),
@@ -382,14 +362,12 @@ class _EventsFilterDialogState extends State<EventsFilterDialog> {
                   )
                 ],
               ),*/
-              SizedBox(
-                height: 40,
-              ),
-              Column(
-                children: [
-                  ElevatedButtonWidget.apply(
-                    onPressed: () {
-                      Navigator.pop(
+                SizedBox(height: 40),
+                Column(
+                  children: [
+                    ElevatedButtonWidget.apply(
+                      onPressed: () {
+                        Navigator.pop(
                           context,
                           widget.params.copyWith(
                             keyword: Nullable(keyword),
@@ -401,37 +379,38 @@ class _EventsFilterDialogState extends State<EventsFilterDialog> {
                             dateFrom: Nullable(dateFrom),
                             dateTo: Nullable(dateTo),
                             selectedFees: Nullable(selectedFees),
-                          ));
+                          ),
+                        );
 
-                      CommonFunctions.sendUXCamEvent(
-                          UXCamEvents.Events_List_Click_Apply_Filter_Event);
-                    },
-                  ),
-                  const SizedBox(height: 16),
-                  ElevatedButtonWidget.deletaAll(
-                    onPressed: () {
-                      //   Navigator.pop(context, SearchEventsParams());
-                      textEditingController?.text = "";
-                      keyword = null;
-                      selectedCity = null;
-                      selectedSeason = null;
-                      selectedAudince = null;
-                      selectedCategory = null;
-                      selectedFees = null;
-                      dateFrom = null;
-                      dateTo = null;
-                      //   isFree = widget.params.isFree;
-                      sortBy = null;
-                      setState(() {});
-                    },
-                  ),
-                ],
-              )
-              /*
+                        CommonFunctions.sendAnalyticsEvent(AnalyticsEvents.Events_List_Click_Apply_Filter_Event);
+                      },
+                    ),
+                    const SizedBox(height: 16),
+                    ElevatedButtonWidget.deletaAll(
+                      onPressed: () {
+                        //   Navigator.pop(context, SearchEventsParams());
+                        textEditingController?.text = "";
+                        keyword = null;
+                        selectedCity = null;
+                        selectedSeason = null;
+                        selectedAudince = null;
+                        selectedCategory = null;
+                        selectedFees = null;
+                        dateFrom = null;
+                        dateTo = null;
+                        //   isFree = widget.params.isFree;
+                        sortBy = null;
+                        setState(() {});
+                      },
+                    ),
+                  ],
+                ),
+                /*
               */
-            ],
-          );
-        }),
+              ],
+            );
+          },
+        ),
       ),
     );
   }

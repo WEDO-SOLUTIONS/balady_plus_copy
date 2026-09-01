@@ -64,10 +64,18 @@ class _CityEventLogoState extends State<CityEventLogo> with SingleTickerProvider
     return MultiStateSheetBuilder<ThreeStateSheet>(
       defaultState: ThreeStateSheet.hidden,
       builder: (context, state, interpolation, child) {
-        final delta = state == ThreeStateSheet.hidden ? clampDouble(interpolation * 3, 0, 1) : 1.0;
+        // Fades out on the way to "expanded" too, instead of staying pinned
+        // at full visibility for every non-hidden state — but only over the
+        // last third of the "open" state's range, so it stays fully visible
+        // until the sheet is nearly fully expanded.
+        final opacity = switch (state) {
+          ThreeStateSheet.hidden => clampDouble(interpolation * 3, 0, 1),
+          ThreeStateSheet.open => clampDouble((1 - interpolation) * 3, 0, 1),
+          ThreeStateSheet.expanded => 0.0,
+        };
         return IgnorePointer(
-          ignoring: state == ThreeStateSheet.hidden,
-          child: Align(heightFactor: delta, alignment: Alignment.topCenter, child: child),
+          ignoring: opacity == 0,
+          child: Opacity(opacity: opacity, child: child),
         );
       },
       child: GestureDetector(

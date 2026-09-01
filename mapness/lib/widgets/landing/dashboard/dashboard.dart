@@ -20,9 +20,7 @@ import 'package:mapness/features/poi_card/domain/model/poi_camera_config.dart';
 import 'package:mapness/features/saudi_national_day/saudi_national_day.dart';
 import 'package:mapness/features/stream_audio/ui/providers/stream_audio_prov.dart';
 import 'package:mapness/features/stream_audio/ui/widgets/explore_card.dart';
-import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
-import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/providers/dark_mode.dart';
 import 'package:mapness/shared/providers/location.dart';
 import 'package:mapness/widgets/landing/dashboard/map_dashboard_controls.dart';
@@ -205,6 +203,8 @@ class _DashboardState extends ConsumerState<Dashboard> with TickerProviderStateM
                 bottom: (widget.bottomSheetController.sheetHeight + 50).clamp(0.0, double.infinity),
                 child: eventLogo,
               ),
+            // TIFO entry now lives in the map controls column (TifoControl),
+            // not as a debug-gated FAB here.
           ],
         ),
       ),

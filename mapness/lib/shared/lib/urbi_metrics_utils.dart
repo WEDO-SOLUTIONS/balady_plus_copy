@@ -60,8 +60,10 @@ class AdvancedMetrics {
         );
         logger.log(_loadTimeMetrics.toString());
       } catch (e) {
-        logger.log('${AdvancedMetricsConstants.debugConsole}::${AdvancedMetricsConstants.appLoadTime}: ${e.toString()}',
-            logLevel: MapnessLogLevel.critical);
+        logger.log(
+          '${AdvancedMetricsConstants.debugConsole}::${AdvancedMetricsConstants.appLoadTime}: ${e.toString()}',
+          logLevel: MapnessLogLevel.critical,
+        );
       }
     }
   }
@@ -87,8 +89,9 @@ class AdvancedMetrics {
           logger.log(metrics.toString());
         } catch (e) {
           logger.log(
-              '${AdvancedMetricsConstants.debugConsole}::${AdvancedMetricsConstants.batteryUsage}::${e.toString()}',
-              logLevel: MapnessLogLevel.critical);
+            '${AdvancedMetricsConstants.debugConsole}::${AdvancedMetricsConstants.batteryUsage}::${e.toString()}',
+            logLevel: MapnessLogLevel.critical,
+          );
         }
       }
     }
@@ -135,8 +138,9 @@ class AdvancedMetrics {
         isInBatterySaveMode = await Battery().isInBatterySaveMode;
       } catch (e) {
         logger.log(
-            '${AdvancedMetricsConstants.debugConsole}::${AdvancedMetricsConstants.batteryUsage}::${e.toString()}',
-            logLevel: MapnessLogLevel.critical);
+          '${AdvancedMetricsConstants.debugConsole}::${AdvancedMetricsConstants.batteryUsage}::${e.toString()}',
+          logLevel: MapnessLogLevel.critical,
+        );
         return;
       }
       List<double>? location;
@@ -144,8 +148,9 @@ class AdvancedMetrics {
         location = await _getLocation();
       } catch (e) {
         logger.log(
-            '${AdvancedMetricsConstants.debugConsole}::${AdvancedMetricsConstants.keys.location}::${e.toString()}',
-            logLevel: MapnessLogLevel.critical);
+          '${AdvancedMetricsConstants.debugConsole}::${AdvancedMetricsConstants.keys.location}::${e.toString()}',
+          logLevel: MapnessLogLevel.critical,
+        );
       }
 
       final levelDiff = _batteryInitial! - level;
@@ -210,8 +215,10 @@ class AdvancedMetrics {
         await _lostGPSClean();
         return;
       } catch (e) {
-        logger.log('${AdvancedMetricsConstants.debugConsole}::${AdvancedMetricsConstants.lostGps}::${e.toString()}',
-            logLevel: MapnessLogLevel.critical);
+        logger.log(
+          '${AdvancedMetricsConstants.debugConsole}::${AdvancedMetricsConstants.lostGps}::${e.toString()}',
+          logLevel: MapnessLogLevel.critical,
+        );
       }
     }
 
@@ -228,8 +235,10 @@ class AdvancedMetrics {
           logger.log(metrics.toString());
           await _lostGPSClean();
         } catch (e) {
-          logger.log('${AdvancedMetricsConstants.debugConsole}::${AdvancedMetricsConstants.lostGps}::${e.toString()}',
-              logLevel: MapnessLogLevel.critical);
+          logger.log(
+            '${AdvancedMetricsConstants.debugConsole}::${AdvancedMetricsConstants.lostGps}::${e.toString()}',
+            logLevel: MapnessLogLevel.critical,
+          );
         }
       }
     }
@@ -270,8 +279,9 @@ class AdvancedMetrics {
         logger.log(routeCalculation.toString());
       } catch (e) {
         logger.log(
-            '${AdvancedMetricsConstants.debugConsole}::${AdvancedMetricsConstants.routeCalculationTime}::${e.toString()}',
-            logLevel: MapnessLogLevel.critical);
+          '${AdvancedMetricsConstants.debugConsole}::${AdvancedMetricsConstants.routeCalculationTime}::${e.toString()}',
+          logLevel: MapnessLogLevel.critical,
+        );
       }
     }
   }
@@ -293,10 +303,12 @@ class AdvancedMetrics {
       _searchResponseRuntime?.stop();
       _searchResponseRuntime = null;
 
+      // NB: `query` is the search TYPE, `searchQuery` is the user's text —
+      // see SearchResponseTimeMetric field docs (they were swapped here before).
       final searchResponse = SearchResponseTimeMetric(
         responseTime: duration,
-        query: _searchQuery!,
-        searchQuery: _searchQueryType!,
+        query: _searchQueryType!,
+        searchQuery: _searchQuery!,
       );
       try {
         await track(
@@ -306,8 +318,9 @@ class AdvancedMetrics {
         logger.log(searchResponse.toString());
       } catch (e) {
         logger.log(
-            '${AdvancedMetricsConstants.debugConsole}::${AdvancedMetricsConstants.searchDuration}::${e.toString()}',
-            logLevel: MapnessLogLevel.critical);
+          '${AdvancedMetricsConstants.debugConsole}::${AdvancedMetricsConstants.searchDuration}::${e.toString()}',
+          logLevel: MapnessLogLevel.critical,
+        );
       }
     }
   }
@@ -328,8 +341,10 @@ class AdvancedMetrics {
       );
       return [location.latitude, location.longitude];
     } catch (e) {
-      logger.log('${AdvancedMetricsConstants.debugConsole}::Location: ${e.toString()}',
-          logLevel: MapnessLogLevel.critical);
+      logger.log(
+        '${AdvancedMetricsConstants.debugConsole}::Location: ${e.toString()}',
+        logLevel: MapnessLogLevel.critical,
+      );
     }
     return null;
   }
