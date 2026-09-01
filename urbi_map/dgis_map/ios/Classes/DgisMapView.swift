@@ -541,7 +541,7 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
     /// reload, no MapView recreate — route, maneuvers and camera stay untouched.
     /// Applies to whichever `MyLocationMapObjectSource` is currently on the map
     /// (the default one or the one NavigationHandler installs for guidance).
-func setNavigationCursorModel(glb: FlutterStandardTypedData, completion: @escaping (Result<Void, any Error>) -> Void) {
+    func setNavigationCursorModel(glb: FlutterStandardTypedData, completion: @escaping (Result<Void, any Error>) -> Void) {
         guard let map = self.map else {
             completion(.failure(PigeonError(code: "map_not_ready", message: "setNavigationCursorModel: map is not ready", details: nil)))
             return
