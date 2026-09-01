@@ -36,7 +36,17 @@ class NavigationHandler {
     private let maneuverControlModel: ManeuverControlModel
     
     private let oldSource: DGis.Source?
-    
+    /// BALADY-3772: the navigation-cursor 3D model is set on the my-location
+    /// object via setModelData. The owner (DgisMapView) re-applies it whenever
+    /// that object may have (re)materialised its model: after guidance swaps
+    /// the source and when a session (guidance / free roam) starts — a model
+    /// set while the cursor was still the idle dashboard marker is not shown.
+    var onMyLocationSourceReplaced: (() -> Void)?
+    /// BALADY-3772 (regression): the custom model is a turn-by-turn-only
+    /// visual. Fired when a session ends so the owner resets the my-location
+    /// marker back to the standard style default.
+    var onNavigationSessionEnded: (() -> Void)?
+
     private(set) var isNavigating: Bool = false
 
     init(map: Map, mapView: UIView & IMapView, sdk: Container, eventChannel: DgisStreamHandler, view: UIView) {
@@ -334,6 +344,7 @@ class NavigationHandler {
                 bearingThreshold: Bearing(value: 90)
             )
         ))
+        onMyLocationSourceReplaced?()
         
         completion(Result.success(()))
     }
@@ -406,8 +417,11 @@ class NavigationHandler {
     func stopNavigation() {
         self.navigationManager.stop()
         resetCamera()
+        // BALADY-3772 (regression): the session is over — drop the custom
+        // cursor model so the marker returns to the standard one.
+        onNavigationSessionEnded?()
     }
-    
+
     func saveNavigationState(completion: @escaping (Result<FlutterStandardTypedData, any Error>) -> Void) {
         let state = PackedNavigationState.fromModel(model: self.navigationManager.uiModel)
         completion(
@@ -463,6 +477,7 @@ class NavigationHandler {
         do {
             setupCamera(speedRangeZoom: speedRangeZoom)
             try self.navigationManager.start()
+            onMyLocationSourceReplaced?()
         } catch {
             completion(
                 Result.failure(
@@ -480,6 +495,8 @@ class NavigationHandler {
     func stopFreeRoam() {
         self.navigationManager.stop()
         resetCamera()
+        // BALADY-3772 (regression): see stopNavigation.
+        onNavigationSessionEnded?()
     }
 
     func toggleSounds(toggleType: SoundToggleType) {

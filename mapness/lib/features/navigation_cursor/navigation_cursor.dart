@@ -102,11 +102,13 @@ const _thumbDir = 'assets/icons/cursors';
 const String kCursorCdnBaseUrl =
     'https://objectstorage.me-jeddah-1.oraclecloud.com/p/sviCqJVBbXeCelRlDyKxSlnW3xxqZ3eN73i9qlu-Id_yCHCOlyQ0qRzenirwNrJZ/n/axownvq9lhmx/b/balady-plus-assets/o/cursors/';
 
-/// Archive-internal paths of the car model slots. `styles.zss` binds these by
-/// exact filename and the SDK draws them ONLY during turn-by-turn car
+/// Archive-internal paths of the bundled classic car meshes inside the 2GIS
+/// style archive: index 0 = day, index 1 = night (they are different meshes).
+/// The controller reads them out of the bundle to feed
+/// `setNavigationCursorModel` for the classic cursor; the style itself binds
+/// them by exact filename and the SDK draws them ONLY during turn-by-turn car
 /// navigation (the static dashboard marker is a separate FOOT_GPS model,
-/// intentionally left untouched). Kept public so the controller can pass them
-/// to `applyOverrides`.
+/// intentionally left untouched).
 const kNavigationCursorCarModelPaths = <String>[
   'zmap/vidoc/models/day_LIGHT_THEME_CAR_MODEL.glb',
   'zmap/vidoc/models/night_DARK_THEME_CAR_MODEL.glb',

@@ -12,7 +12,6 @@ import 'package:mapness/features/lifestyle_layers/providers/layers_controls.dart
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/providers/first_start.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
-import 'package:mapness/shared/providers/map/map_recreation.dart';
 import 'package:mapness/shared/providers/map/navigation_controls_visibility.dart';
 import 'package:mapness/shared/providers/map/object_manager.dart';
 import 'package:mapness/shared/providers/map/selected_marker.dart';
@@ -84,10 +83,6 @@ class _MapPageState extends ConsumerState<MapPage>
     super.build(context);
 
     final dgisController = ref.watch(dgisControllerProvider.notifier);
-    // Recreation counter drives the DgisMap ValueKey; bumping it tears down
-    // the native MapView so the 2GIS SDK drops its process-scoped GLB cache.
-    // See [MapRecreationCounter].
-    final recreationKey = ref.watch(mapRecreationCounterProvider);
 
     ref.watch(selectedMarkerProvider);
     final settings = MapObjectManagerSettings.selectedMarker();
@@ -110,7 +105,7 @@ class _MapPageState extends ConsumerState<MapPage>
             },
             onPointerSignal: (_) => ref.read(navigationControlsVisibilityProvider.notifier).registerInteraction(),
             child: DgisMap(
-              key: ValueKey(recreationKey),
+              key: const ValueKey('primary-map'),
               androidUseExpensive: true,
               onMapCreated: (controller) async {
                 _trace('onMapCreated android start controller=${identityHashCode(controller)}');
@@ -152,7 +147,7 @@ class _MapPageState extends ConsumerState<MapPage>
             },
             onPointerSignal: (_) => ref.read(navigationControlsVisibilityProvider.notifier).registerInteraction(),
             child: DgisMap(
-              key: ValueKey(recreationKey),
+              key: const ValueKey('primary-map'),
               androidUseExpensive: true,
               onMapCreated: (controller) async {
                 _trace('onMapCreated ios start controller=${identityHashCode(controller)}');

@@ -423,6 +423,12 @@ class DgisMapPlugin extends FlutterMapApi {
     return _api.getCameraPosition();
   }
 
+  /// Swap the navigation-cursor 3D model on the live map (raw GLB bytes).
+  /// See `MapApi.setNavigationCursorModel`.
+  Future<void> setNavigationCursorModel(Uint8List glb) {
+    return _api.setNavigationCursorModel(glb);
+  }
+
   /// Get nearest objects.
   Future<List<RenderedObjectMessage>> getNearestObjects() async {
     return (await _api.getNearestObjects()).whereType<RenderedObjectMessage>().toList();
