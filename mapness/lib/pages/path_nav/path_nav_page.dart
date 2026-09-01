@@ -55,7 +55,9 @@ import 'package:mapness/shared/providers/car_connection.dart';
 import 'package:mapness/shared/providers/location.dart';
 import 'package:mapness/shared/providers/map/camera_padding.dart';
 import 'package:mapness/shared/providers/map/camera_position.dart';
+import 'package:mapness/shared/providers/map/camera_state.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
+import 'package:mapness/shared/providers/map/follow_state.dart';
 import 'package:mapness/shared/providers/map/navigator_auto_enable_parking.dart';
 import 'package:mapness/shared/providers/map/object_manager.dart';
 import 'package:mapness/shared/providers/map/parking_autoenabled_sheet_provider.dart';
@@ -133,6 +135,20 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
   StreamSubscription? _naviEventsListener;
   bool wasSetActive = true;
   Timer? timer;
+
+  // HB-23: a map gesture (pinch-zoom, pan) makes the SDK rebind the camera
+  // behaviour away from the navigation follow controller, and nothing on the
+  // native side ever rebinds it back — followReturnDelay does not survive the
+  // rebind, so after a two-finger zoom the camera silently stops following the
+  // car for the rest of the trip. Watch the SDK's own follow state and resume
+  // follow after a short idle delay while turn-by-turn guidance is running.
+  Timer? _followResumeTimer;
+
+  // Set while a flow that intentionally turns follow off is on top (the
+  // navigation search sheet calls stopFollowNavigation for its lifetime).
+  bool _followResumeSuspended = false;
+
+  static const _followResumeDelay = Duration(seconds: 5);
 
   late ToggleSheetController sheetController;
 
@@ -257,6 +273,7 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
     _betterRouteDurationProfit.dispose();
     _navigationState.dispose();
     timer?.cancel();
+    _followResumeTimer?.cancel();
     WakelockPlus.disable();
     isSwitchingToFoot.dispose();
     super.dispose();
@@ -609,7 +626,16 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
       })
       // Location updates keep coming while the user is stationary, so this also
       // re-evaluates the prompt after the re-display interval expires.
-      ..listen(locationProvider, (_, _) => _maybeShowPedestrianPrompt());
+      ..listen(locationProvider, (_, _) => _maybeShowPedestrianPrompt())
+      // HB-23: any map gesture (two-finger zoom included) makes the SDK drop
+      // camera follow, and it never comes back on its own. Re-engage it after
+      // a short idle delay while turn-by-turn guidance is running.
+      ..listen(followStateProvider, (previous, next) {
+        final lostFollow = next.type == LocationFollowType.off && previous?.type != LocationFollowType.off;
+        if (lostFollow) {
+          _scheduleFollowResume();
+        }
+      });
 
     // We use the Directionality widget to set the text direction to ltr.
     // This is necessary for LayersControl to be at the right side of the screen.
@@ -1403,6 +1429,48 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
     }
   }
 
+  // HB-23: arms the resume-follow timer after the SDK reported that camera
+  // follow was dropped (a pinch-zoom or pan gesture rebinds the camera
+  // behaviour away from the follow controller, and the native side never
+  // rebinds it back — the camera would stop tracking the car until the user
+  // taps the follow button). Only active turn-by-turn guidance is resumed:
+  // pause ("Show route"), trip end and the navigation search sheet keep the
+  // free camera they set up.
+  void _scheduleFollowResume() {
+    if (_followResumeSuspended ||
+        widget.navType == RouteSearchOptionsMessage.publicTransport ||
+        _navigationState.value != PathNavState.running) {
+      return;
+    }
+    _followResumeTimer?.cancel();
+    _followResumeTimer = Timer(_followResumeDelay, _resumeFollowNavigation);
+  }
+
+  Future<void> _resumeFollowNavigation() async {
+    if (!mounted || _followResumeSuspended || _isEndingTrip || _navigationState.value != PathNavState.running) {
+      return;
+    }
+    // Already following again (follow button, continue after pause, better
+    // route accept) — nothing to resume.
+    if (ref.read(followStateProvider).type != LocationFollowType.off) {
+      return;
+    }
+    // The user is still holding the map with a gesture — try again later
+    // instead of yanking the camera out of their fingers.
+    if (ref.read(cameraStateProvider) == CameraState.busy) {
+      _followResumeTimer = Timer(_followResumeDelay, _resumeFollowNavigation);
+      return;
+    }
+
+    final dgisController = await ref.read(dgisControllerProvider.future);
+    if (!mounted || _navigationState.value != PathNavState.running) {
+      return;
+    }
+    // Same call as the follow button: rebinds the camera behaviour to the
+    // navigation follow controller and re-enables follow.
+    await dgisController.followNavigation();
+  }
+
   /// Checks if the distance between current position and route start point is reasonable
   bool _isLocationAccuracyAcceptable(double latitude, double longitude) {
     final routeStartPoint = ref.read(etaRouteInfoProvider).startPoint;
@@ -1467,7 +1535,19 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
     );
 
     await mapObjectProvider.setMapObjectManagerIsVisible(isVisible: true);
-    await context.router.push(NaviSearchRoute(isPathNavScreen: true));
+    // HB-23: the search sheet turns follow off on purpose for its lifetime
+    // (stopFollowNavigation in its initState) — hold the auto-resume until the
+    // sheet is popped, then re-arm it if follow did not come back.
+    _followResumeSuspended = true;
+    _followResumeTimer?.cancel();
+    try {
+      await context.router.push(NaviSearchRoute(isPathNavScreen: true));
+    } finally {
+      _followResumeSuspended = false;
+      if (mounted && ref.read(followStateProvider).type == LocationFollowType.off) {
+        _scheduleFollowResume();
+      }
+    }
     await mapObjectProvider.setMapObjectManagerIsVisible(isVisible: false);
   }
 }
