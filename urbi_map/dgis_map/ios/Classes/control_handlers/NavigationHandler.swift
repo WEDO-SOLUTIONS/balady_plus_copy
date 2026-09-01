@@ -49,8 +49,9 @@ class NavigationHandler {
     /// BALADY-3772: the navigation-cursor 3D model is set on the my-location
     /// object via setModelData. The owner (DgisMapView) re-applies it whenever
     /// that object may have (re)materialised its model: after guidance swaps
-    /// the source and when a session (guidance / free roam) starts — a model
-    /// set while the cursor was still the idle dashboard marker is not shown.
+    /// the source in, and once a turn-by-turn session reaches
+    /// `State.navigation` — a model set while the cursor was still the idle
+    /// dashboard marker is not shown.
     var onMyLocationSourceReplaced: (() -> Void)?
     /// BALADY-3772 (regression): the custom model is a turn-by-turn-only
     /// visual. Fired when a session ends so the owner resets the my-location
@@ -58,6 +59,14 @@ class NavigationHandler {
     var onNavigationSessionEnded: (() -> Void)?
 
     private(set) var isNavigating: Bool = false
+
+    /// BALADY-3772: true only while a turn-by-turn session (guidance or its
+    /// simulation) started via `startNavigation`/`startSimulation` is active.
+    /// Unlike `isNavigating` it stays false for free roam and for route
+    /// search outside guidance — the custom cursor model must not replace
+    /// the standard my-location marker there (free roam auto-starts right
+    /// from the Explore dashboard).
+    private(set) var isTurnByTurn: Bool = false
 
     init(map: Map, mapView: UIView & IMapView, sdk: Container, eventChannel: DgisStreamHandler, view: UIView) {
         self.context = try! sdk.context
@@ -113,6 +122,10 @@ class NavigationHandler {
                 "state": Events.stateDisabled
             ])
             self.isNavigating = false
+            // BALADY-3772: defensive — a session that ends without passing
+            // stopNavigation/stopFreeRoam must not leave the turn-by-turn
+            // flag (and thus the custom cursor) armed.
+            self.isTurnByTurn = false
             postStateChanged(Events.stateDisabled)
         case State.finished:
             self.eventChannel.success([
@@ -128,6 +141,14 @@ class NavigationHandler {
                 "state": Events.stateNavigation
             ])
             self.isNavigating = true
+            // BALADY-3772: the my-location object switches to its navigation
+            // (3D model) representation only once the session is actually
+            // running — a model pushed earlier is not shown. Re-apply it
+            // here, but only for turn-by-turn: free roam raises the same
+            // state and must keep the standard marker.
+            if self.isTurnByTurn {
+                onMyLocationSourceReplaced?()
+            }
             postStateChanged(Events.stateNavigation)
         case State.routeSearch:
             self.eventChannel.success([
@@ -357,8 +378,12 @@ class NavigationHandler {
             return
         }
         
+        // BALADY-3772: a turn-by-turn session is starting — the custom cursor
+        // model may be applied from here until the session ends.
+        isTurnByTurn = true
+
         let oldSource = map.sources.first(where: { $0 is MyLocationMapObjectSource })!
-        
+
         map.removeSource(source: oldSource)
         
         map.addSource(source: MyLocationMapObjectSource(
@@ -417,6 +442,9 @@ class NavigationHandler {
             let isPublicTransport = options == .publicTransport(PublicTransportRouteSearchOptions())
             if !isPublicTransport {
             setupCamera(speedRangeZoom: speedRangeZoom)
+            // BALADY-3772: simulation is a turn-by-turn session too — the
+            // custom cursor model applies the same way as in real guidance.
+            isTurnByTurn = true
             try self.navigationManager.startSimulation(
                 routeBuildOptions: RouteBuildOptions(
                     finishPoint: finishPoint,
@@ -443,6 +471,7 @@ class NavigationHandler {
         resetCamera()
         // BALADY-3772 (regression): the session is over — drop the custom
         // cursor model so the marker returns to the standard one.
+        isTurnByTurn = false
         onNavigationSessionEnded?()
     }
 
@@ -500,8 +529,10 @@ class NavigationHandler {
     func startFreeRoam(speedRangeZoom: [SpeedRangeZoom], completion: (Result<Void, any Error>) -> Void) {
         do {
             setupCamera(speedRangeZoom: speedRangeZoom)
+            // BALADY-3772 (regression): free roam is NOT turn-by-turn — no
+            // re-apply here, the standard my-location marker stays (free roam
+            // auto-starts right from the Explore dashboard).
             try self.navigationManager.start()
-            onMyLocationSourceReplaced?()
         } catch {
             completion(
                 Result.failure(
@@ -526,7 +557,10 @@ class NavigationHandler {
         self.navigationManager.stop()
         stopFollowNavigation()
         resetCamera()
-        // BALADY-3772 (regression): see stopNavigation.
+        // BALADY-3772 (regression): see stopNavigation. Called unconditionally
+        // even though free roam never applies the custom model — defensive
+        // reset keeps the standard marker whatever path led here.
+        isTurnByTurn = false
         onNavigationSessionEnded?()
 
         guard wasActive else { return }

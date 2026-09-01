@@ -128,10 +128,10 @@ class DgisMapView(
     /**
      * BALADY-3772: the navigation-cursor 3D model last set via
      * [setNavigationCursorModel]. The custom model is a turn-by-turn-only
-     * visual: [NavigationHandler] applies it when a session starts (after the
-     * source swap and once State.NAVIGATION is reached) and resets the marker
-     * back to the style default when the session ends. Outside a session the
-     * model is only cached here.
+     * visual: [NavigationHandler] applies it when a guidance session starts
+     * (after the source swap and once State.NAVIGATION is reached) and resets
+     * the marker back to the style default when the session ends. Outside a
+     * session the model is only cached here.
      */
     private var navigationCursorModel: ModelData? = null
 
@@ -549,9 +549,10 @@ class DgisMapView(
      * MapView recreate — the route, maneuvers and camera stay untouched.
      *
      * Regression follow-up: the custom model is only visible during turn-by-turn
-     * navigation. Outside a session the bytes are just cached —
+     * guidance. Outside a session the bytes are just cached —
      * [NavigationHandler] pushes them when guidance starts and resets the marker
-     * when it ends, so Explore keeps the standard my-location marker.
+     * when it ends, so Explore (and free roam, which auto-starts from the
+     * Explore dashboard) keeps the standard my-location marker.
      */
     override fun setNavigationCursorModel(glb: ByteArray, callback: (Result<Unit>) -> Unit) {
         val currentMap = map
@@ -562,8 +563,8 @@ class DgisMapView(
         try {
             val model = createModelData(sdkContext, glb)
             navigationCursorModel = model
-            val navigating = navigationHandlerLazy.isInitialized() && navigationHandler.isNavigating
-            if (!navigating) {
+            val turnByTurn = navigationHandlerLazy.isInitialized() && navigationHandler.isTurnByTurn
+            if (!turnByTurn) {
                 callback(Result.success(Unit))
                 return
             }
