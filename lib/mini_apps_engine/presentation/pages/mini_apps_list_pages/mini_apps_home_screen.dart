@@ -84,7 +84,7 @@ class _MiniAppsHomeScreenState extends State<MiniAppsHomeScreen> {
                   state.isAppsGroupLoading ||
                   state.isEntryPointsLoading ||
                   state.isInitial;
-              final hasError = state.entryPointsError != null && state.favError != null;
+              final hasError = state.entryPointsError != null || state.favError != null;
 
               if (hasError) {
                 return GeneralErrorWidget(error: state.favError ?? state.entryPointsError!);
@@ -299,7 +299,7 @@ class _MiniAppsHomeScreenState extends State<MiniAppsHomeScreen> {
                                                     constraints: const BoxConstraints(minHeight: 100),
                                                     decoration: const BoxDecoration(
                                                       image: DecorationImage(
-                                                        image: AssetImage("assets/icons/png/momtathel.png"),
+                                                        image: AssetImage("assets/icons/png/momtathel.webp"),
                                                         fit: BoxFit.cover,
                                                       ),
                                                     ),

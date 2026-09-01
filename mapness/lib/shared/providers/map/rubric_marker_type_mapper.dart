@@ -3,11 +3,12 @@ import 'dart:convert';
 
 import 'package:balady_uikit/core/colorsV2/themes.dart';
 import 'package:dgis_map/library.dart';
-import 'package:flutter_uxcam/flutter_uxcam.dart';
 import 'package:mapness/entities/search/models/rubric_marker_info.dart';
+import 'package:mapness/features/balady_analytics/balady_analytics.dart';
 import 'package:mapness/features/city_event/active_city_event.dart';
 import 'package:mapness/features/cityscape/cityscape.dart';
 import 'package:mapness/features/founding_day/founding_day.dart';
+import 'package:mapness/features/leap/leap.dart';
 import 'package:mapness/features/wrc/wrc.dart';
 import 'package:mapness/shared/extensions/marker_icons_ext.dart';
 import 'package:mapness/shared/providers/dark_mode.dart';
@@ -38,7 +39,7 @@ class RubricTypeMapper {
 
         rubricMarkerInfo = decoded.map((e) => RubricMarkerInfo.fromJson(e)).toList();
       } on Exception catch (e, stackTrace) {
-        unawaited(FlutterUxcam.reportExceptionEvent(e, stackTrace));
+        BaladyAnalytics.instance.error(e, stackTrace);
         return null;
       } on Object catch (_) {
         rethrow;
@@ -100,6 +101,11 @@ class RubricMarkerMapper extends _$RubricMarkerMapper {
     final wrcNotifier = ref.watch(wRCProvider.notifier);
     if (wrcNotifier.isWRCEventObject(objectId, closestPoint)) {
       return (wrcNotifier.getSearchMarkerPath(objectId), wrcNotifier.getPinPath(objectId));
+    }
+
+    final leapNotifier = ref.watch(leapProvider.notifier);
+    if (leapNotifier.isLeapObject(objectId)) {
+      return (leapNotifier.customMarker, leapNotifier.customMarker);
     }
 
     final activeCityEvent = ref.read(activeCityEventProvider);

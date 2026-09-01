@@ -20,8 +20,6 @@ import 'package:mapness/widgets/landing/kaaba_virtual_journey_card.dart';
 import 'package:mapness/widgets/landing/place_preview_makkah.dart';
 import 'package:mapness/widgets/landing/quick_action_button.dart';
 import 'package:mapness/widgets/stories/lib/stories_widget.dart';
-import 'package:mapness/shared/constants/metrics_constants.dart';
-import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:sheetify/sheetify.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 
@@ -84,12 +82,6 @@ class MakkahBasedDashboardContent extends ConsumerWidget {
         if (showKaabaCard) ...[
           KaabaVirtualJourneyCard(
             onTap: () {
-              Metrics.logEventAdvanced(
-                MetricsConstants.kaabaTourKeys.cardTapped,
-                group: MetricsConstants.kaabaTourTag,
-                action: MetricAction.tap.name,
-                props: {'theme': themeMode.name},
-              );
               context.router.push(const GaussianSplattingRoute());
             },
           ),
@@ -146,7 +138,7 @@ class MakkahBasedDashboardContent extends ConsumerWidget {
                     final streamAudio = ref.watch(streamAudioProvider);
                     final isLoading = streamAudio.isLoadingChannels;
                     final hasChannels = streamAudio.hasChannels;
-                
+
                     return QuickActionButton(
                       text: Directionality.of(context) == TextDirection.rtl ? 'البث الصوتي' : 'Stream Audio',
                       icon: Icons.wifi,
@@ -171,16 +163,16 @@ class MakkahBasedDashboardContent extends ConsumerWidget {
                             ),
                       onTap: () async {
                         final provider = ref.read(streamAudioProvider.notifier);
-                
+
                         try {
                           // Reset if needed before getting live programs
                           if (provider.needsReinitialization) {
                             await provider.reset();
                           }
-                
+
                           // Always try to get channels (this will show loading state)
                           await provider.getChannels(forceRefresh: !hasChannels);
-                
+
                           if (provider.filteredChannels.isNotEmpty) {
                             await provider.selectChannel(provider.filteredChannels.first);
                           } else {
@@ -265,7 +257,7 @@ class MakkahBasedDashboardContent extends ConsumerWidget {
           const DecoratedBox(
             decoration: BoxDecoration(
               image: DecorationImage(
-                image: AssetImage('assets/images/places_makkah.png'),
+                image: AssetImage('assets/images/places_makkah.webp'),
                 matchTextDirection: true,
                 fit: BoxFit.fitWidth,
                 alignment: Alignment.bottomCenter,

@@ -9,7 +9,6 @@ import 'package:mapness/_features/common/providers/shared_prefs.dart';
 import 'package:mapness/_generated/protocol/protocol.pb.dart' as proto;
 import 'package:mapness/entities/profile/user_profile_data.dart';
 import 'package:mapness/entry_point.dart';
-import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/providers/base_dio.dart';
 import 'package:mapness/shared/providers/dgis_network.dart';
 import 'package:mapness/shared/utils/logger/logger.dart';
@@ -28,6 +27,7 @@ class ProfileImage extends _$ProfileImage {
   String? get _imageBase64OnDevice => _prefs.getString(_imagePrefsKey);
 
   bool _isUpdated = false;
+  int _requestGeneration = 0;
 
   PermissionStatus status = PermissionStatus.denied;
 
@@ -44,7 +44,11 @@ class ProfileImage extends _$ProfileImage {
   }
 
   Future<void> _updateImageFromBackend() async {
+    final generation = _requestGeneration;
     final backendImage = await _downloadProfileImageToBytes();
+    if (!ref.mounted || generation != _requestGeneration) {
+      return;
+    }
 
     await _updateImageState(backendImage);
     _isUpdated = true;
@@ -97,7 +101,6 @@ class ProfileImage extends _$ProfileImage {
   Future<String> _uploadImage(Uint8List bytes) async {
     final compressedBytes = await _comporessList(bytes);
     // start the timer for the event "Image Upload"
-    Metrics.logEvent('Profile_Image_Upload');
     mixpanel?.timeEvent('Profile Image Upload');
 
     final dio = await ref.read(dGisNetworkProvider.future);
@@ -161,6 +164,7 @@ class ProfileImage extends _$ProfileImage {
   }
 
   Future<void> clear() async {
+    _requestGeneration++;
     await _prefs.remove(_imagePrefsKey);
     state = const AsyncData(UserProfileData());
     _isUpdated = false;

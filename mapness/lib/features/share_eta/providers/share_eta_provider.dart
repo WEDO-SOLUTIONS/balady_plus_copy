@@ -43,6 +43,10 @@ class ShareEta extends _$ShareEta {
   Timer? _locationSubscription;
   bool _reconnectingInProgress = false;
   bool _lastConnectionStatus = true;
+  bool _isSharingSession = false;
+  bool _shareLinkPresented = false;
+  bool _stopSharingInProgress = false;
+  DateTime? _sharingStartedAt;
 
   EtaStreamType _streamType = EtaStreamType.geo;
 
@@ -58,7 +62,8 @@ class ShareEta extends _$ShareEta {
         final durationInMinutes = EtaStreamStorage().state.durationInMinutes;
 
         if (durationInMinutes != null) {
-          ref.read(etaTimerIndicatorProvider.notifier).startTimer(durationInMinutes);
+          _sharingStartedAt ??= DateTime.now();
+          ref.read(etaTimerIndicatorProvider.notifier).startTimer(_remainingMinutes(durationInMinutes));
         }
 
         final state = EtaStreamStorage().state;
@@ -71,16 +76,22 @@ class ShareEta extends _$ShareEta {
           if (durationInMinutes == null) {
             return;
           }
-          _shareLiveLocationDialog(state.streamToken!, state.streamId!, durationInMinutes);
+          if (!_shareLinkPresented) {
+            _shareLinkPresented = true;
+            _shareLiveLocationDialog(state.streamToken!, state.streamId!, durationInMinutes);
+          }
         } else if (_streamType == EtaStreamType.eta) {
           final eta = ref.read(pathNavEtaProvider);
           if (eta == null) {
             return;
           }
 
-          final DateFormat formatter = DateFormat('HH:mm');
-          final arrivalDate = DateTime.now().add(Duration(seconds: eta.durationInSeconds));
-          _shareEtaDialog(state.streamToken!, state.streamId!, formatter.format(arrivalDate));
+          if (!_shareLinkPresented) {
+            _shareLinkPresented = true;
+            final DateFormat formatter = DateFormat('HH:mm');
+            final arrivalDate = DateTime.now().add(Duration(seconds: eta.durationInSeconds));
+            _shareEtaDialog(state.streamToken!, state.streamId!, formatter.format(arrivalDate));
+          }
         }
 
         _locationSubscription = Timer.periodic(const Duration(seconds: sendLocationIntervalSeconds), (_) async {
@@ -130,7 +141,7 @@ class ShareEta extends _$ShareEta {
             ref.read(websocketErrorHandlerProvider.notifier).setStatus(EtaErrorStatusCodes.noLocation, 'Lost location');
           }
         });
-      } else {
+      } else if (!_isSharingSession && ref.read(websocketTypeProvider) == SubscriptionType.share) {
         ref.read(websocketTypeProvider.notifier).setType();
       }
     });
@@ -138,8 +149,8 @@ class ShareEta extends _$ShareEta {
     ref
       ..listen(websocketErrorHandlerProvider, (_, current) async {
         final (code, reason) = current;
-        if (code != null && reason != null) {
-          await _onErrorStatus(code, reason);
+        if (code != null) {
+          await _onErrorStatus(code, reason ?? '');
         }
       })
       ..listen(etaRouteInfoProvider, (_, current) {
@@ -239,13 +250,29 @@ class ShareEta extends _$ShareEta {
       } finally {
         _reconnectingInProgress = false;
       }
-    } else if (statusCode == EtaErrorStatusCodes.endConnection &&
-        [WebsocketReason.expired, WebsocketReason.manual].contains(reasonData)) {
-      final isSharing = ref.read(websocketTypeProvider) == SubscriptionType.share;
-      if (isSharing) {
+    } else if (statusCode == EtaErrorStatusCodes.endConnection) {
+      logger.log(
+        'ETA stream closed by the server. Reason: ${reasonData?.toName() ?? reason}',
+        logLevel: MapnessLogLevel.info,
+      );
+      if (_isSharingSession || ref.read(websocketTypeProvider) == SubscriptionType.share) {
         await stopSharing();
       }
     }
+  }
+
+  int _remainingMinutes(int durationInMinutes) {
+    final startedAt = _sharingStartedAt;
+    if (startedAt == null) {
+      return durationInMinutes;
+    }
+
+    final leftInSeconds = durationInMinutes * 60 - DateTime.now().difference(startedAt).inSeconds;
+    if (leftInSeconds <= 0) {
+      return 0;
+    }
+
+    return (leftInSeconds / 60).ceil();
   }
 
   void shareIfExistingStream([int? durationInMinutes]) {
@@ -267,6 +294,8 @@ class ShareEta extends _$ShareEta {
       final etaService = ref.read(etaServiceProvider.notifier);
       state = _streamType = EtaStreamType.geo;
 
+      _startSharingSession();
+
       final payload = EtaStreamPayload(type: EtaStreamType.geo.name, durationMinutes: durationInMinutes);
 
       //store the duration in the storage
@@ -285,6 +314,8 @@ class ShareEta extends _$ShareEta {
 
       state = _streamType = EtaStreamType.eta;
       final etaRoute = ref.read(etaRouteInfoProvider);
+
+      _startSharingSession();
 
       _lastConnectionStatus = true;
       _reconnectingInProgress = false;
@@ -319,7 +350,40 @@ class ShareEta extends _$ShareEta {
 
   Future<void> stopSharingAndClearCurrent() => stopSharing(clearStateStorage: true);
 
+  void _startSharingSession() {
+    _isSharingSession = true;
+    _shareLinkPresented = false;
+    _sharingStartedAt = null;
+  }
+
   Future<void> stopSharing({bool clearStateStorage = false}) async {
+    if (_stopSharingInProgress) {
+      if (clearStateStorage) {
+        EtaStreamStorage().clear();
+      }
+      return;
+    }
+
+    _stopSharingInProgress = true;
+    try {
+      await _stopSharing(clearStateStorage: clearStateStorage);
+    } finally {
+      _stopSharingInProgress = false;
+    }
+  }
+
+  Future<void> _stopSharing({required bool clearStateStorage}) async {
+    _isSharingSession = false;
+    _shareLinkPresented = false;
+    _sharingStartedAt = null;
+
+    _locationSubscription?.cancel();
+    _locationSubscription = null;
+
+    if (ref.mounted) {
+      ref.read(etaTimerIndicatorProvider.notifier).stopTimer();
+    }
+
     final tokenId = EtaStreamStorage().state.streamToken;
     final xStreamData = EtaStreamStorage().state.xStreamData;
 

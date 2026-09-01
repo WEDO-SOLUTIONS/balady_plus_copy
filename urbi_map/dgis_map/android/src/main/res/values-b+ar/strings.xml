@@ -8,9 +8,18 @@
   <string name="better_route_alert_choose_action">اختيار</string>
   <string name="stop_navigation_action">إنهاء الرحلة</string>
   <string name="rerouting_message">إعادة التوجيه…</string>
-  <string name="location_signal_lost_message">فقدنا الاتصال بك</string>
+  <string name="location_signal_lost_message">فقدت إشارة GPS.\nجارٍ محاولة إعادة الاتصال...</string>
   <string name="end_trip_alert_title">لقد وصلت</string>
-  <string name="end_trip_alert_action">إنهاء الرحلة</string>
+
+  <!-- Navigation live updates (phone ongoing notification) -->
+  <string name="live_update_open_action">فتح في بلدي+</string>
+  <string name="live_update_arrived_message">لقد وصلت إلى وجهتك</string>
+  <string name="live_update_eta_format">الوصول %1$s</string>
+  <string name="live_update_arrived_title">لقد وصلت</string>
+  <string name="live_update_towards_format">باتجاه %1$s</string>
+  <string name="free_roam">التجول الحر</string>
+  <string name="live_update_gps_lost">انقطعت إشارة GPS</string>
+  <string name="live_update_reroute">إعادة التوجيه</string>
 
   <!-- Permission request -->
   <string name="location_permission_request_message">يرجى إيقاف السيارة والسماح لتطبيق بلدي بالوصول إلى موقعك على هاتفك</string>
@@ -37,6 +46,7 @@
 
   <!-- Common -->
   <string name="app">بلدي</string>
+  <string name="balady_maps">خرائط بلدي+</string>
   <string name="driving_notification_title">التنقل باستخدام خرائط بلدي</string>
   <string name="you_dont_seem_to_have_internet_description">يبدو أنه لا يوجد اتصال بالإنترنت. يرجى التحقق من الاتصال</string>
   <string name="meter">م</string>

@@ -1,6 +1,16 @@
 import DGis
 import Foundation
 
+// Cross-module contract with the Runner Live Activity controller.
+// Raw values are part of the fixed contract — do not rename.
+extension Notification.Name {
+    static let dgisNavigationDashboardTick = Notification.Name("dgis.navigation.dashboardTick")
+    static let dgisNavigationManeuverTick = Notification.Name("dgis.navigation.maneuverTick")
+    static let dgisNavigationSpeedTick = Notification.Name("dgis.navigation.speedTick")
+    static let dgisNavigationMessageTick = Notification.Name("dgis.navigation.messageTick")
+    static let dgisNavigationStateChanged = Notification.Name("dgis.navigation.stateChanged")
+}
+
 class NavigationHandler {
     private class Events {
         // event name
@@ -28,7 +38,7 @@ class NavigationHandler {
     
     private var cancelable: Array<Cancellable> = []
     private var moveCameraCancellable: DGis.Cancellable?
-    
+
     // Models to observe channels and send events to Flutter
     private let speedControlModel: SpeedControlModel
     private let dashboardControlModel: DashboardControlModel
@@ -36,6 +46,12 @@ class NavigationHandler {
     private let maneuverControlModel: ManeuverControlModel
     
     private let oldSource: DGis.Source?
+    /// BALADY-3772: the navigation-cursor 3D model is set on the my-location
+    /// object via setModelData. The owner (DgisMapView) re-applies it whenever
+    /// that object may have (re)materialised its model: after guidance swaps
+    /// the source and when a session (guidance / free roam) starts — a model
+    /// set while the cursor was still the idle dashboard marker is not shown.
+    var onMyLocationSourceReplaced: (() -> Void)?
     
     private(set) var isNavigating: Bool = false
 
@@ -83,10 +99,8 @@ class NavigationHandler {
         )
         
         navigationManager.mapManager.addMap(map: map)
-        
-        
     }
-    
+
     private func stateChannelListener(_ state: State) {
         switch (state) {
         case State.disabled:
@@ -95,12 +109,14 @@ class NavigationHandler {
                 "state": Events.stateDisabled
             ])
             self.isNavigating = false
+            postStateChanged(Events.stateDisabled)
         case State.finished:
             self.eventChannel.success([
                 "event": Events.navigationEvent,
                 "state": Events.stateFinished
             ])
             self.isNavigating = false
+            postStateChanged(Events.stateFinished)
             stopNavigation()
         case State.navigation:
             self.eventChannel.success([
@@ -108,12 +124,26 @@ class NavigationHandler {
                 "state": Events.stateNavigation
             ])
             self.isNavigating = true
+            postStateChanged(Events.stateNavigation)
         case State.routeSearch:
             self.eventChannel.success([
                 "event": Events.navigationEvent,
                 "state": Events.stateRouteSearch
             ])
             self.isNavigating = true
+            postStateChanged(Events.stateRouteSearch)
+        }
+    }
+
+    private func postStateChanged(_ state: String) {
+        // SDK callback thread: a synchronous post waits for main-queue observers and can
+        // deadlock against main-thread calls into the SDK — post async on main instead.
+        DispatchQueue.main.async {
+            NotificationCenter.default.post(
+                name: .dgisNavigationStateChanged,
+                object: nil,
+                userInfo: ["state": state]
+            )
         }
     }
     
@@ -334,6 +364,7 @@ class NavigationHandler {
                 bearingThreshold: Bearing(value: 90)
             )
         ))
+        onMyLocationSourceReplaced?()
         
         completion(Result.success(()))
     }
@@ -463,6 +494,7 @@ class NavigationHandler {
         do {
             setupCamera(speedRangeZoom: speedRangeZoom)
             try self.navigationManager.start()
+            onMyLocationSourceReplaced?()
         } catch {
             completion(
                 Result.failure(

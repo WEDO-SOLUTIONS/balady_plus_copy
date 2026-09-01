@@ -12,7 +12,7 @@
           "value" : "light"
         }
       ],
-      "filename" : "ButtonControl 1.png",
+      "filename" : "ZoomOut-1.png",
       "idiom" : "universal",
       "scale" : "1x"
     },
@@ -39,7 +39,7 @@
           "value" : "light"
         }
       ],
-      "filename" : "ButtonControl@2x 2.png",
+      "filename" : "ZoomOut-2.png",
       "idiom" : "universal",
       "scale" : "2x"
     },
@@ -66,7 +66,7 @@
           "value" : "light"
         }
       ],
-      "filename" : "ButtonControl@3x 2.png",
+      "filename" : "ZoomOut.png",
       "idiom" : "universal",
       "scale" : "3x"
     },

@@ -82,5 +82,5 @@ class NafathLoginWidget extends StatelessWidget {
     ),
   );
 
-  Widget get nafathImage => Image.asset("assets/images/nafath_login_image.png", fit: BoxFit.contain);
+  Widget get nafathImage => Image.asset("assets/images/nafath_login_image.webp", fit: BoxFit.contain);
 }

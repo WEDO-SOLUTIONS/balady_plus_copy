@@ -15,7 +15,7 @@ import 'package:flutter/widgets.dart' show WidgetsBinding;
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
-import 'package:flutter_uxcam/flutter_uxcam.dart';
+import 'package:mapness/features/balady_analytics/balady_analytics.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -89,86 +89,14 @@ class EntryPointCubit extends Cubit<EntryPointState> {
     });
     refreshAPIGeeToken();
     // Restore authentication state on app startup (non-blocking)
-   // unawaited(_restoreAuthState());
+    // unawaited(_restoreAuthState());
   }
 
   /// Restore authentication state from storage when app starts
-  Future<void> _restoreAuthState() async {
-    try {
-      // Check if there's stored authentication data
-      final failureOrSuccess = await _checkAuth(NoParams());
-      await failureOrSuccess.fold(
-        (failure) {
-          // No stored auth data, keep initial state
-          return;
-        },
-        (token) async {
-          // Found stored token, restore state
-          final failureOrSuccessForProfile = await _checkSSOProfile(NoParams());
-          failureOrSuccessForProfile.fold(
-            (failure) {
-              // Profile not found, clear auth
-              emit(state.copyWith(status: AuthStatus.notAuthenticated));
-            },
-            (profile) {
-              // Restore authenticated state
-              emit(
-                state.copyWith(
-                  status: AuthStatus.authenticated,
-                  token: token,
-                  userInfo: profile,
-                  errorMessage: "",
-                ),
-              );
-              if (profile.idNo != null) {
-                FlutterUxcam.setUserIdentity(profile.idNo);
-                FlutterUxcam.setUserProperty("name", profile.arName ?? "");
-              }
-            },
-          );
-        },
-      );
-    } catch (e) {
-      // Error restoring state, keep initial state
-      // Don't emit error to avoid blocking app startup
-    }
-  }
 
   void hideSplash() {
     emit(state.copyWith(showSplash: false));
   }
-
-  // Future<void> onLoadingApp() async {
-  //   emit(state.copyWith(status: AuthStatus.loading));
-  //   sl<LocationCubit>().getLocationInit();
-  //   final failureOrSuccess = await _checkAuth(NoParams());
-  //   await failureOrSuccess.fold((failure) {
-  //     emit(state.copyWith(
-  //       status: AuthStatus.failure,
-  //     ));
-  //   }, (token) async {
-  //     final failureOrSuccess = await _checkSSOProfile(NoParams());
-  //     failureOrSuccess.fold((failure) {}, (profile) {
-  //       emit(state.copyWith(
-  //         status: AuthStatus.notAuthenticated,
-  //         token: token,
-  //         userInfo: profile,
-  //         errorMessage: "",
-  //       ));
-  //       FlutterUxcam.setUserIdentity(profile.idNo);
-  //       FlutterUxcam.setUserProperty("name", profile.arName ?? "");
-  //     });
-  //     //MM sl<EtmamEntryPointCubit>().onLoadingApp();
-  //
-  //     //  if (token.refreshToken != null) await refreshToken(token.refreshToken!);
-  //     if (sharedPrefs.getFirstDateTime() == null) {
-  //       sharedPrefs.setFirstDateTime();
-  //     }
-  //     refreshSSOProfile();
-  //     getEkramPermissions();
-  //   });
-  //   refreshAPIGeeToken();
-  // }
 
   String? mainPage;
 
@@ -181,10 +109,7 @@ class EntryPointCubit extends Cubit<EntryPointState> {
     String? mainPage,
   }) async {
     try {
-      sl<ActionLoginCubit>().openLoginScreen(
-        state: sl<AuthenticationBloc>().state,
-        isMunicipality: isMunicipality,
-      );
+      sl<ActionLoginCubit>().openLoginScreen(state: sl<AuthenticationBloc>().state, isMunicipality: isMunicipality);
       this.mainPage = mainPage;
     } catch (e) {
       print("object");
@@ -193,10 +118,7 @@ class EntryPointCubit extends Cubit<EntryPointState> {
   }
 
   ////////////////////////////////////////////////////////////////////////
-  Future<bool> onLoginV2({
-    required LoginDataModel? data,
-    bool isFromEtmam = false,
-  }) async {
+  Future<bool> onLoginV2({required LoginDataModel? data, bool isFromEtmam = false}) async {
     EasyLoading.show();
     emit(state.copyWith(status: AuthStatus.loading));
     late SSOToken token;
@@ -212,12 +134,7 @@ class EntryPointCubit extends Cubit<EntryPointState> {
       final failureOrSuccessForToken = await _getToken(NoParams());
       await failureOrSuccessForToken.fold(
         (failure) {
-          emit(
-            state.copyWith(
-              status: AuthStatus.failure,
-              errorMessage: (failure as ServerFailure).errorMessage,
-            ),
-          );
+          emit(state.copyWith(status: AuthStatus.failure, errorMessage: (failure as ServerFailure).errorMessage));
         },
         (success) async {
           token = SSOToken(
@@ -229,21 +146,15 @@ class EntryPointCubit extends Cubit<EntryPointState> {
         },
       );
     }
-    AuthenticatedState authState =
-        sl<AuthenticationBloc>().state as AuthenticatedState;
+    AuthenticatedState authState = sl<AuthenticationBloc>().state as AuthenticatedState;
     if (authState is AuthenticatedMunicipalityState) {
-      _saveDataLogin(
-        token: token,
-        isFromEtmam: isFromEtmam,
-        authState: authState,
-      );
+      _saveDataLogin(token: token, isFromEtmam: isFromEtmam, authState: authState);
     } else {
       final profileData = authState.profileData;
       // `complete_profile` comes from the OTP login API (`MobileLoginVerifyOtp`).
       // - true  → user signed up via OTP only → personal data is editable.
       // - false → user already has an SSO/Nafath account → profile is read-only.
-      final bool completeProfile =
-          authState.loginData.completeProfile;
+      final bool completeProfile = authState.loginData.completeProfile;
       emit(
         state.copyWith(
           status: AuthStatus.authenticated,
@@ -254,6 +165,12 @@ class EntryPointCubit extends Cubit<EntryPointState> {
             enName: profileData.enName,
             arName: profileData.arName,
             idNo: profileData.sub,
+            // `sub` is the SSO subject id and the ONE identifier that means the
+            // same thing across phone (OTP) and national-id (SSO) login. On this
+            // OTP path `profileData.sub` is a required non-null String, so set it
+            // explicitly (previously only `idNo` carried it, leaving
+            // `userInfo.sub` null on phone login).
+            sub: profileData.sub,
             mail: profileData.email,
             phone: profileData.phoneNumber,
             loginType: SsoLoginType.otp,
@@ -264,17 +181,12 @@ class EntryPointCubit extends Cubit<EntryPointState> {
       );
       Sentry.configureScope((scope) {
         scope.setUser(
-          SentryUser(
-            id: profileData.sub.toString(),
-            username: profileData.enName,
-            email: profileData.email,
-          ),
+          SentryUser(id: profileData.sub.toString(), username: profileData.enName, email: profileData.email),
         );
       });
     }
 
-    if (CommonProperties.fcmToken != null &&
-        CommonProperties.fcmToken!.isNotEmpty) {
+    if (CommonProperties.fcmToken != null && CommonProperties.fcmToken!.isNotEmpty) {
       CommonFunctions.updateNotificationSettings(CommonProperties.fcmToken!);
     }
 
@@ -289,12 +201,7 @@ class EntryPointCubit extends Cubit<EntryPointState> {
     final failureOrSuccessForToken = await _getToken(NoParams());
     await failureOrSuccessForToken.fold(
       (failure) {
-        emit(
-          state.copyWith(
-            status: AuthStatus.failure,
-            errorMessage: (failure as ServerFailure).errorMessage,
-          ),
-        );
+        emit(state.copyWith(status: AuthStatus.failure, errorMessage: (failure as ServerFailure).errorMessage));
         EasyLoading.dismiss();
         return;
       },
@@ -306,12 +213,9 @@ class EntryPointCubit extends Cubit<EntryPointState> {
               dataLogin: {
                 "access_token": success.accessToken,
                 "idToken": success.idToken,
-                "expires_in":
-                    success.accessTokenExpirationDateTime != null
-                        ? DateTime.now()
-                            .difference(success.accessTokenExpirationDateTime!)
-                            .inSeconds
-                        : 3500000,
+                "expires_in": success.accessTokenExpirationDateTime != null
+                    ? DateTime.now().difference(success.accessTokenExpirationDateTime!).inSeconds
+                    : 3500000,
                 "token_type": success.tokenType,
                 "refresh_token": success.refreshToken,
                 "scope": success.scopes ?? "",
@@ -372,12 +276,9 @@ class EntryPointCubit extends Cubit<EntryPointState> {
   }
 
   Future<bool> refreshAPIGeeToken() async {
-    DateTime? expireTime = DateTime.tryParse(
-      state.apigeeToken?.expirationTime ?? "",
-    );
+    DateTime? expireTime = DateTime.tryParse(state.apigeeToken?.expirationTime ?? "");
 
-    if (expireTime == null ||
-        (expireTime.difference(DateTime.now()).inHours <= 2)) {
+    if (expireTime == null || (expireTime.difference(DateTime.now()).inHours <= 2)) {
       final failureOrSuccess = await _getAPIgeeToken(NoParams());
       return await failureOrSuccess.fold(
         (failure) {
@@ -395,14 +296,10 @@ class EntryPointCubit extends Cubit<EntryPointState> {
 
   Future<void> checkifTokenExpired() async {
     if (state.status == AuthStatus.notAuthenticated) {
-      DateTime? expireTime = DateTime.tryParse(
-        state.token?.expirationTime ?? "",
-      );
+      DateTime? expireTime = DateTime.tryParse(state.token?.expirationTime ?? "");
 
       if (expireTime != null) {
-        if (!DateTime.now()
-            .add(const Duration(minutes: 15))
-            .isBefore(expireTime)) {
+        if (!DateTime.now().add(const Duration(minutes: 15)).isBefore(expireTime)) {
           if (state.token?.refreshToken != null) {
             return await refreshToken(state.token!.refreshToken!);
           }
@@ -423,12 +320,7 @@ class EntryPointCubit extends Cubit<EntryPointState> {
       // if (state.status == AuthStatus.notAuthenticated) {
       //   return;
       // }
-      emit(
-        const EntryPointState(
-          status: AuthStatus.notAuthenticated,
-          showSplash: false,
-        ),
-      );
+      emit(const EntryPointState(status: AuthStatus.notAuthenticated, showSplash: false));
 
       if (loginData?.deviceIdToken != null) {
         try {
@@ -441,8 +333,7 @@ class EntryPointCubit extends Cubit<EntryPointState> {
         clearSSOInfo();
       }
 
-      if (CommonProperties.fcmToken != null &&
-          CommonProperties.fcmToken!.isNotEmpty) {
+      if (CommonProperties.fcmToken != null && CommonProperties.fcmToken!.isNotEmpty) {
         CommonFunctions.updateNotificationSettings(CommonProperties.fcmToken!);
       }
       EasyLoading.dismiss();
@@ -473,8 +364,7 @@ class EntryPointCubit extends Cubit<EntryPointState> {
         EasyLoading.dismiss();
       }
     }
-    if (CommonProperties.fcmToken != null &&
-        CommonProperties.fcmToken!.isNotEmpty) {
+    if (CommonProperties.fcmToken != null && CommonProperties.fcmToken!.isNotEmpty) {
       CommonFunctions.updateNotificationSettings(CommonProperties.fcmToken!);
     }
     CommonFunctions.showError("session_ended_error".tr());
@@ -491,13 +381,10 @@ class EntryPointCubit extends Cubit<EntryPointState> {
 
   Future<void> refreshSSOProfile() async {
     try {
-      AuthenticatedState authState =
-          sl<AuthenticationBloc>().state as AuthenticatedState;
+      AuthenticatedState authState = sl<AuthenticationBloc>().state as AuthenticatedState;
       if (authState is AuthenticatedMunicipalityState) {
         final failureOrSuccessForProfile = await _getProfile(NoParams());
-        await failureOrSuccessForProfile.fold((failure) async {}, (
-          success,
-        ) async {
+        await failureOrSuccessForProfile.fold((failure) async {}, (success) async {
           // `/connect/userinfo` does not return `complete_profile`,
           // `loginType`, etc. Preserve them from the value captured at login
           // (`MobileLoginVerifyOtp` / `_saveDataLogin`) so editing rules stay
@@ -505,12 +392,9 @@ class EntryPointCubit extends Cubit<EntryPointState> {
           final previous = state.userInfo;
           final merged = success.copyWith(
             loginType: previous?.loginType ?? success.loginType,
-            completeProfile:
-                previous?.completeProfile ?? success.completeProfile,
-            isEmailVerified:
-                previous?.isEmailVerified ?? success.isEmailVerified,
-            isEmailEditable:
-                previous?.isEmailEditable ?? success.isEmailEditable,
+            completeProfile: previous?.completeProfile ?? success.completeProfile,
+            isEmailVerified: previous?.isEmailVerified ?? success.isEmailVerified,
+            isEmailEditable: previous?.isEmailEditable ?? success.isEmailEditable,
             isSSOLocked: previous?.isSSOLocked ?? success.isSSOLocked,
           );
           final failureOrSuccess = await _saveSSOProfile(merged);
@@ -581,17 +465,13 @@ class EntryPointCubit extends Cubit<EntryPointState> {
 
       GetGISData getgis = GetGISData(repository: sl());
 
-      var result = await getgis(
-        GISParams(x: latlng.longitude, y: latlng.latitude),
-      );
+      var result = await getgis(GISParams(x: latlng.longitude, y: latlng.latitude));
       result.fold(
         (l) {
           emit(state.copyWith(gisStatus: BlocStatus.failure));
         },
         (r) {
-          emit(
-            state.copyWith(userLocationGIS: r, gisStatus: BlocStatus.success),
-          );
+          emit(state.copyWith(userLocationGIS: r, gisStatus: BlocStatus.success));
 
           return (state.userLocation, state.userLocationGIS);
         },
@@ -635,48 +515,63 @@ class EntryPointCubit extends Cubit<EntryPointState> {
         print("object");
       },
       (success) async {
-        emit(
-          state.copyWith(
-            status: AuthStatus.loading,
-            token: token,
-            errorMessage: "",
-          ),
-        );
+        emit(state.copyWith(status: AuthStatus.loading, token: token, errorMessage: ""));
 
-      Map<String, dynamic> decodedToken = JwtDecoder.decode(token.token ?? "");
-      SsoUserInfo user = SsoUserInfoModel.fromJson(decodedToken);
-      final failureOrSuccess =
-          await _saveSSOProfile(SsoUserInfoModel.fromJson(decodedToken));
-      if (failureOrSuccess.isRight()) {
-        emit(
-          state.copyWith(
-            status: AuthStatus.authenticated,
-            token: token,
-            userInfo: user.copyWith(
-              name: authState.profileData.firstNameArabic,
-              sname: authState.profileData.lastNameArabic,
-              enName: authState.profileData.enName,
-              arName: authState.profileData.arName,
-              mail: authState.profileData.email,
-              phone: authState.profileData.phoneNumber,
-              loginType: SsoLoginType.nationalId,
-              completeProfile: authState.loginData.completeProfile,
-            ),
-            errorMessage: "",
-          ),
-        );
-        FlutterUxcam.setUserIdentity(user.idNo);
-        FlutterUxcam.setUserProperty("name", user.arName ?? "");
-        Sentry.configureScope((scope) {
-          scope.setUser(
-            SentryUser(
-              id: user.idNo,
-              username: user.enName,
-              email: user.mail,
+        Map<String, dynamic> decodedToken = JwtDecoder.decode(token.token ?? "");
+        SsoUserInfo user = SsoUserInfoModel.fromJson(decodedToken);
+        // TEMP verification: confirm the SSO JWT actually carries a `sub` claim so
+        // `userInfo.sub` is reliable on national-id login (it is guaranteed on the
+        // phone/OTP path). Remove once confirmed on a real SSO login.
+        // ignore: avoid_print
+        assert(() {
+          print('[AUTH][SSO] jwt has sub=${decodedToken.containsKey('sub')} value=${decodedToken['sub']}');
+          return true;
+        }());
+        final failureOrSuccess = await _saveSSOProfile(SsoUserInfoModel.fromJson(decodedToken));
+        if (failureOrSuccess.isRight()) {
+          emit(
+            state.copyWith(
+              status: AuthStatus.authenticated,
+              token: token,
+              userInfo: user.copyWith(
+                name: authState.profileData.firstNameArabic,
+                sname: authState.profileData.lastNameArabic,
+                enName: authState.profileData.enName,
+                arName: authState.profileData.arName,
+                mail: authState.profileData.email,
+                phone: authState.profileData.phoneNumber,
+                loginType: SsoLoginType.nationalId,
+                completeProfile: authState.loginData.completeProfile,
+              ),
+              errorMessage: "",
             ),
           );
-        });
-      }
+          BaladyAnalytics.instance.identify(
+            userId: user.idNo,
+            traits: {
+              "sub": user.sub ?? "",
+              "name": user.arName ?? "",
+              "en_name": user.enName ?? "",
+              "login_type": user.loginType.name ?? "",
+              "sex": user.sex == "1"
+                  ? "male"
+                  : user.sex == "2"
+                  ? "female"
+                  : "N/A",
+              "nationality": user.nationality ?? "N/A",
+              "birthday": user.dob ?? "N/A",
+            },
+          );
+          // Sentry.configureScope((scope) {
+          //   scope.setUser(
+          //     SentryUser(
+          //       id: user.idNo,
+          //       username: user.enName,
+          //       email: user.mail,
+          //     ),
+          //   );
+          // });
+        }
 
         final failureOrSuccessForCookie = await _getCookie(true);
 
@@ -685,12 +580,7 @@ class EntryPointCubit extends Cubit<EntryPointState> {
             final failureOrSuccessForCookie = await _getCookie(true);
             await failureOrSuccessForCookie.fold(
               (failure) {
-                emit(
-                  state.copyWith(
-                    status: AuthStatus.failure,
-                    errorMessage: (failure as ServerFailure).errorMessage,
-                  ),
-                );
+                emit(state.copyWith(status: AuthStatus.failure, errorMessage: (failure as ServerFailure).errorMessage));
               },
               (r) async {
                 SSOToken? token = state.token;

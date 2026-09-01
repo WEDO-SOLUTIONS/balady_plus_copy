@@ -1,7 +1,7 @@
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+
 import '../../dependency_injection/dependency_injection_exports.dart' show sl;
 import '../utils_exports.dart' show EnvType;
-
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class RemoteConfig {
   //////  Not Used
@@ -41,31 +41,25 @@ class RemoteConfig {
   ////   just used in one place in the app
   static String get webSiteUrl => _RemoteConfig.webSiteUrl[env]!;
 
-  static String get baladyCommercialUrl =>
-      _RemoteConfig.baladyCommercialUrl[env]!;
+  static String get baladyCommercialUrl => _RemoteConfig.baladyCommercialUrl[env]!;
 
-  static String get publicAppointmentShareURL =>
-      _RemoteConfig.publicAppointmentShareURL[env]!;
+  static String get publicAppointmentShareURL => _RemoteConfig.publicAppointmentShareURL[env]!;
 
   static String get damagedCarsClass => _RemoteConfig.damagedCarsClass[env]!;
 
   static String get regaClass => _RemoteConfig.regaClass[env]!;
 
-  static List<String> get MSRAllowedMuncipalites =>
-      _RemoteConfig.MSRAllowedMuncipalites[env]!;
+  static List<String> get MSRAllowedMuncipalites => _RemoteConfig.MSRAllowedMuncipalites[env]!;
 
-//////////////////////////////////////////////////////
-//   static String get apigeeURL => "__APIGEE-URL__";
+  //////////////////////////////////////////////////////
+  //   static String get apigeeURL => "__APIGEE-URL__";
   static String get apigeeURL {
     String apigeeURL = '__APIGEE_URL__';
     // String apigeeURL = const String.fromEnvironment(
     //   'APIGEE_URL',
     // );
-    return apigeeURL != "__APIGEE_URL__"
-        ? apigeeURL
-        : dotenv.env['APIGEE_URL'] ?? "default"; // Get from .env
+    return apigeeURL != "__APIGEE_URL__" ? apigeeURL : dotenv.env['APIGEE_URL'] ?? "default"; // Get from .env
   }
-
 
   // static String get hmCode => "__HM-CODE__";
   static String get hmCode {
@@ -78,9 +72,7 @@ class RemoteConfig {
     // print("HM_CODE : $hmCode");
     // print("HM_CODE : $hmCode");
     // print("HM_CODE : $hmCode");
-    return hmCode != "__HM_CODE__"
-        ? hmCode
-        : dotenv.env['HM_CODE'] ?? "default"; // Get from .env
+    return hmCode != "__HM_CODE__" ? hmCode : dotenv.env['HM_CODE'] ?? "default"; // Get from .env
   }
 
   //////////////////////////////////////////////////////
@@ -98,9 +90,7 @@ class RemoteConfig {
     // String ssoSecret = const String.fromEnvironment(
     //   'SSO_SECRET',
     // );
-    return ssoSecret != "__SSO_SECRET__"
-        ? ssoSecret
-        : dotenv.env['SSO_SECRET'] ?? "default"; // Get from .env
+    return ssoSecret != "__SSO_SECRET__" ? ssoSecret : dotenv.env['SSO_SECRET'] ?? "default"; // Get from .env
   }
 
   // static String get ssoClient => "__SSO-CLINT__";
@@ -109,10 +99,23 @@ class RemoteConfig {
     // String ssoClient = const String.fromEnvironment(
     //   'SSO_CLINT'
     // );
-    return ssoClient != "__SSO_CLINT__"
-        ? ssoClient
-        : dotenv.env['SSO_CLINT'] ?? "default"; // Get from .env
+    return ssoClient != "__SSO_CLINT__" ? ssoClient : dotenv.env['SSO_CLINT'] ?? "default"; // Get from .env
   }
+
+  //////////////////////////////////////////////////////
+  // BytePlus RangersAppLog (DataFinder) — read per-flavor from the loaded .env.
+  // prod → .env.prod (10000002), stg/pre/dev → staging (10000000).
+  static String get bytePlusAppId => dotenv.env['BYTEPLUS_APP_ID'] ?? '';
+
+  static String get bytePlusAppName => dotenv.env['BYTEPLUS_APP_NAME'] ?? '';
+
+  static String get bytePlusChannel => dotenv.env['BYTEPLUS_CHANNEL'] ?? 'TestFlight';
+
+  static String get bytePlusAppKey => dotenv.env['BYTEPLUS_APP_KEY'] ?? '';
+
+  static String get bytePlusAppUrl => dotenv.env['BYTEPLUS_APP_URL'] ?? '';
+
+  static String get bytePlusUrlScheme => dotenv.env['BYTEPLUS_URL_SCHEME'] ?? '';
 
   //////////////////////////////////////////////////////
   static String get momraDomain => _RemoteConfig.momraDomain[env]!;
@@ -121,11 +124,9 @@ class RemoteConfig {
 
   static double get mapRadius => _RemoteConfig.mapRadius[env]!;
 
-  static String get specialConditionOldId =>
-      _RemoteConfig.specialConditionOldId[env]!;
+  static String get specialConditionOldId => _RemoteConfig.specialConditionOldId[env]!;
 
-  static String get specialConditionId =>
-      _RemoteConfig.specialConditionId[env]!;
+  static String get specialConditionId => _RemoteConfig.specialConditionId[env]!;
 
   // List<String> get munciplities => _RemoteConfig.munciplities[env]!;
 
@@ -135,16 +136,21 @@ class RemoteConfig {
 
   static EnvType get env => sl<EnvType>();
 
-  static Map<String, dynamic> get MunicipalServicesIDs =>
-      _RemoteConfig.municipal_services_IDS[env]!;
+  static Map<String, dynamic> get MunicipalServicesIDs => _RemoteConfig.municipal_services_IDS[env]!;
 
-  static String get uxCamKey => _RemoteConfig.uxCamKey[env]!;
+  // BaladyAnalytics (our own pipeline) — mode read per-flavor from the loaded
+  // .env: legacy | dual | ours. Absent/unknown value falls back to `legacy`.
+  static String get baladyAnalyticsMode => dotenv.env['BALADY_ANALYTICS_MODE'] ?? 'legacy';
 
-  static String get movingVeichleCategoryKey =>
-      _RemoteConfig.movingVeichleCategoryKey[env]!;
+  // PostHog Cloud EU transport for BaladyAnalytics. Both empty in flavors that
+  // have no project configured — the facade then keeps its logging sink.
+  static String get baladyAnalyticsUrl => dotenv.env['BALADY_ANALYTICS_URL'] ?? '';
 
-  static String get QaseemCategoryKey =>
-      _RemoteConfig.QaseemCategoryKey[env]!;
+  static String get baladyAnalyticsKey => dotenv.env['BALADY_ANALYTICS_KEY'] ?? '';
+
+  static String get movingVeichleCategoryKey => _RemoteConfig.movingVeichleCategoryKey[env]!;
+
+  static String get QaseemCategoryKey => _RemoteConfig.QaseemCategoryKey[env]!;
 }
 
 //! First solution
@@ -191,9 +197,6 @@ class _RemoteConfig {
   //   prodVal: "__PROD-SSO-SECRET__",
   //   urbiPreVal: "__STG-SSO-SECRET__",
   // );
-
-
-
 
   static final gis = _initValues<String>(
     devVal: "https://gisappstg.momra.gov.sa",
@@ -250,14 +253,6 @@ class _RemoteConfig {
   );
 
   /////////////////////////
-
-  static final uxCamKey = _initValues<String>(
-    devVal: "",
-    stgVal: "3i45abbyrbljp32",
-    preVal: "3i45abbyrbljp32",
-    prodVal: "2w1otnta9bvvhzo",
-    urbiPreVal: "",
-  );
 
   static final mapRadius = _initValues<double>(
     devVal: 20000000000000.0,
@@ -343,79 +338,14 @@ class _RemoteConfig {
     stgVal: "BIGipServerssoappdev.momra.gov.sa.app~ssoappdev.momra.gov.sa_pool",
     preVal: "BIGipServerssoappstg.momra.gov.sa.app~ssoappstg.momra.gov.sa_pool",
     prodVal: "BIGipServerssoapp.balady.gov.sa.app~ssoapp.balady.gov.sa_pool",
-    urbiPreVal:
-        "BIGipServerssoappstg.momra.gov.sa.app~ssoappstg.momra.gov.sa_pool",
+    urbiPreVal: "BIGipServerssoappstg.momra.gov.sa.app~ssoappstg.momra.gov.sa_pool",
   );
 
   static final MSRAllowedMuncipalites = _initValues<List<String>>(
-    devVal: [
-      "007",
-      "010",
-      "016",
-      "002",
-      "008",
-      "009",
-      "012",
-      "011",
-      "013",
-      "014",
-      "015",
-      "017",
-      "018",
-      "003",
-      "005"
-    ],
-    stgVal: [
-      "007",
-      "010",
-      "016",
-      "002",
-      "008",
-      "009",
-      "012",
-      "011",
-      "013",
-      "014",
-      "015",
-      "017",
-      "018",
-      "003",
-      "005"
-    ],
-    preVal: [
-      "007",
-      "010",
-      "016",
-      "002",
-      "008",
-      "009",
-      "012",
-      "011",
-      "013",
-      "014",
-      "015",
-      "017",
-      "018",
-      "003",
-      "005"
-    ],
-    prodVal: [
-      "007",
-      "010",
-      "016",
-      "002",
-      "008",
-      "009",
-      "012",
-      "011",
-      "013",
-      "014",
-      "015",
-      "017",
-      "018",
-      "003",
-      "005"
-    ],
+    devVal: ["007", "010", "016", "002", "008", "009", "012", "011", "013", "014", "015", "017", "018", "003", "005"],
+    stgVal: ["007", "010", "016", "002", "008", "009", "012", "011", "013", "014", "015", "017", "018", "003", "005"],
+    preVal: ["007", "010", "016", "002", "008", "009", "012", "011", "013", "014", "015", "017", "018", "003", "005"],
+    prodVal: ["007", "010", "016", "002", "008", "009", "012", "011", "013", "014", "015", "017", "018", "003", "005"],
     urbiPreVal: [
       "007",
       "010",
@@ -431,225 +361,75 @@ class _RemoteConfig {
       "017",
       "018",
       "003",
-      "005"
+      "005",
     ],
   );
 
   static final municipal_services_IDS = _initValues<Map<String, dynamic>>(
     devVal: {
-      "CommercialLicenseRenew": {
-        "id": 10485,
-        "Key_name": "CommercialLicenseRenew",
-      },
-      "CommercialLicenseTransfer": {
-        "id": 10502,
-        "Key_name": "CommercialLicenseTransfer",
-      },
-      "CommercialLicenseCancel": {
-        "id": 10492,
-        "Key_name": "CommercialLicenseCancel",
-      },
-      "PostersLicenseService": {
-        "id": 11820,
-        "Key_name": "PostersLicenseService",
-      },
-      "PermitsLicenseService24H": {
-        "id": 10528,
-        "Key_name": "PermitsLicenseService24H",
-      },
-      "PermitsTobaccoLicense": {
-        "id": 10526,
-        "Key_name": "PermitsTobaccoLicense",
-      },
+      "CommercialLicenseRenew": {"id": 10485, "Key_name": "CommercialLicenseRenew"},
+      "CommercialLicenseTransfer": {"id": 10502, "Key_name": "CommercialLicenseTransfer"},
+      "CommercialLicenseCancel": {"id": 10492, "Key_name": "CommercialLicenseCancel"},
+      "PostersLicenseService": {"id": 11820, "Key_name": "PostersLicenseService"},
+      "PermitsLicenseService24H": {"id": 10528, "Key_name": "PermitsLicenseService24H"},
+      "PermitsTobaccoLicense": {"id": 10526, "Key_name": "PermitsTobaccoLicense"},
       /////////  Not Used   //////////
-      "survey_report_inquery": {
-        "id": 11428,
-        "Key_name": "license_query",
-      },
-      "inquiry_construction_license": {
-        "id": 11124,
-        "Key_name": "license_query",
-      },
-      "classification_certificate": {
-        "id": 11340,
-        "Key_name": "classification_certificate",
-      },
-      "create_complianceLocation": {
-        "id": 11429,
-        "Key_name": "create_complianceLocation",
-      },
+      "survey_report_inquery": {"id": 11428, "Key_name": "license_query"},
+      "inquiry_construction_license": {"id": 11124, "Key_name": "license_query"},
+      "classification_certificate": {"id": 11340, "Key_name": "classification_certificate"},
+      "create_complianceLocation": {"id": 11429, "Key_name": "create_complianceLocation"},
     },
     stgVal: {
-      "CommercialLicenseRenew": {
-        "id": 10485,
-        "Key_name": "CommercialLicenseRenew",
-      },
-      "CommercialLicenseTransfer": {
-        "id": 10502,
-        "Key_name": "CommercialLicenseTransfer",
-      },
-      "CommercialLicenseCancel": {
-        "id": 10492,
-        "Key_name": "CommercialLicenseCancel",
-      },
-      "PostersLicenseService": {
-        "id": 11946,
-        "Key_name": "PostersLicenseService",
-      },
-      "PermitsLicenseService24H": {
-        "id": 10528,
-        "Key_name": "PermitsLicenseService24H",
-      },
-      "PermitsTobaccoLicense": {
-        "id": 10526,
-        "Key_name": "PermitsTobaccoLicense",
-      },
+      "CommercialLicenseRenew": {"id": 10485, "Key_name": "CommercialLicenseRenew"},
+      "CommercialLicenseTransfer": {"id": 10502, "Key_name": "CommercialLicenseTransfer"},
+      "CommercialLicenseCancel": {"id": 10492, "Key_name": "CommercialLicenseCancel"},
+      "PostersLicenseService": {"id": 11946, "Key_name": "PostersLicenseService"},
+      "PermitsLicenseService24H": {"id": 10528, "Key_name": "PermitsLicenseService24H"},
+      "PermitsTobaccoLicense": {"id": 10526, "Key_name": "PermitsTobaccoLicense"},
       /////////  Not Used   //////////
-      "survey_report_inquery": {
-        "id": 11428,
-        "Key_name": "license_query",
-      },
-      "inquiry_construction_license": {
-        "id": 11124,
-        "Key_name": "license_query",
-      },
-      "classification_certificate": {
-        "id": 11340,
-        "Key_name": "classification_certificate",
-      },
-      "create_complianceLocation": {
-        "id": 11429,
-        "Key_name": "create_complianceLocation",
-      },
+      "survey_report_inquery": {"id": 11428, "Key_name": "license_query"},
+      "inquiry_construction_license": {"id": 11124, "Key_name": "license_query"},
+      "classification_certificate": {"id": 11340, "Key_name": "classification_certificate"},
+      "create_complianceLocation": {"id": 11429, "Key_name": "create_complianceLocation"},
     },
     preVal: {
-      "CommercialLicenseRenew": {
-        "id": 10485,
-        "Key_name": "CommercialLicenseRenew",
-      },
-      "CommercialLicenseTransfer": {
-        "id": 10502,
-        "Key_name": "CommercialLicenseTransfer",
-      },
-      "CommercialLicenseCancel": {
-        "id": 10492,
-        "Key_name": "CommercialLicenseCancel",
-      },
-      "PostersLicenseService": {
-        "id": 11820,
-        "Key_name": "PostersLicenseService",
-      },
-      "PermitsLicenseService24H": {
-        "id": 10528,
-        "Key_name": "PermitsLicenseService24H",
-      },
-      "PermitsTobaccoLicense": {
-        "id": 10526,
-        "Key_name": "PermitsTobaccoLicense",
-      },
+      "CommercialLicenseRenew": {"id": 10485, "Key_name": "CommercialLicenseRenew"},
+      "CommercialLicenseTransfer": {"id": 10502, "Key_name": "CommercialLicenseTransfer"},
+      "CommercialLicenseCancel": {"id": 10492, "Key_name": "CommercialLicenseCancel"},
+      "PostersLicenseService": {"id": 11820, "Key_name": "PostersLicenseService"},
+      "PermitsLicenseService24H": {"id": 10528, "Key_name": "PermitsLicenseService24H"},
+      "PermitsTobaccoLicense": {"id": 10526, "Key_name": "PermitsTobaccoLicense"},
       /////////  Not Used   //////////
-      "classification_certificate": {
-        "id": 11380,
-        "Key_name": "classification_certificate",
-      },
-      "survey_report_inquery": {
-        "id": 11632,
-        "Key_name": "license_query",
-      },
-      "inquiry_construction_license": {
-        "id": 11124,
-        "Key_name": "license_query",
-      },
-      "create_complianceLocation": {
-        "id": 13701,
-        "Key_name": "create_complianceLocation",
-      },
+      "classification_certificate": {"id": 11380, "Key_name": "classification_certificate"},
+      "survey_report_inquery": {"id": 11632, "Key_name": "license_query"},
+      "inquiry_construction_license": {"id": 11124, "Key_name": "license_query"},
+      "create_complianceLocation": {"id": 13701, "Key_name": "create_complianceLocation"},
     },
     prodVal: {
-      "CommercialLicenseRenew": {
-        "id": 10485,
-        "Key_name": "CommercialLicenseRenew",
-      },
-      "CommercialLicenseTransfer": {
-        "id": 10502,
-        "Key_name": "CommercialLicenseTransfer",
-      },
-      "CommercialLicenseCancel": {
-        "id": 10492,
-        "Key_name": "CommercialLicenseCancel",
-      },
-      "PostersLicenseService": {
-        "id": 11820,
-        "Key_name": "PostersLicenseService",
-      },
-      "PermitsLicenseService24H": {
-        "id": 10528,
-        "Key_name": "PermitsLicenseService24H",
-      },
-      "PermitsTobaccoLicense": {
-        "id": 10526,
-        "Key_name": "PermitsTobaccoLicense",
-      },
+      "CommercialLicenseRenew": {"id": 10485, "Key_name": "CommercialLicenseRenew"},
+      "CommercialLicenseTransfer": {"id": 10502, "Key_name": "CommercialLicenseTransfer"},
+      "CommercialLicenseCancel": {"id": 10492, "Key_name": "CommercialLicenseCancel"},
+      "PostersLicenseService": {"id": 11820, "Key_name": "PostersLicenseService"},
+      "PermitsLicenseService24H": {"id": 10528, "Key_name": "PermitsLicenseService24H"},
+      "PermitsTobaccoLicense": {"id": 10526, "Key_name": "PermitsTobaccoLicense"},
       /////////  Not Used   //////////
-      "classification_certificate": {
-        "id": 11380,
-        "Key_name": "classification_certificate",
-      },
-      "survey_report_inquery": {
-        "id": 11632,
-        "Key_name": "license_query",
-      },
-      "inquiry_construction_license": {
-        "id": 11124,
-        "Key_name": "license_query",
-      },
-      "create_complianceLocation": {
-        "id": 13701,
-        "Key_name": "create_complianceLocation",
-      },
+      "classification_certificate": {"id": 11380, "Key_name": "classification_certificate"},
+      "survey_report_inquery": {"id": 11632, "Key_name": "license_query"},
+      "inquiry_construction_license": {"id": 11124, "Key_name": "license_query"},
+      "create_complianceLocation": {"id": 13701, "Key_name": "create_complianceLocation"},
     },
     urbiPreVal: {
-      "CommercialLicenseRenew": {
-        "id": 10485,
-        "Key_name": "CommercialLicenseRenew",
-      },
-      "CommercialLicenseTransfer": {
-        "id": 10502,
-        "Key_name": "CommercialLicenseTransfer",
-      },
-      "CommercialLicenseCancel": {
-        "id": 10492,
-        "Key_name": "CommercialLicenseCancel",
-      },
-      "PostersLicenseService": {
-        "id": 11820,
-        "Key_name": "PostersLicenseService",
-      },
-      "PermitsLicenseService24H": {
-        "id": 10528,
-        "Key_name": "PermitsLicenseService24H",
-      },
-      "PermitsTobaccoLicense": {
-        "id": 10526,
-        "Key_name": "PermitsTobaccoLicense",
-      },
+      "CommercialLicenseRenew": {"id": 10485, "Key_name": "CommercialLicenseRenew"},
+      "CommercialLicenseTransfer": {"id": 10502, "Key_name": "CommercialLicenseTransfer"},
+      "CommercialLicenseCancel": {"id": 10492, "Key_name": "CommercialLicenseCancel"},
+      "PostersLicenseService": {"id": 11820, "Key_name": "PostersLicenseService"},
+      "PermitsLicenseService24H": {"id": 10528, "Key_name": "PermitsLicenseService24H"},
+      "PermitsTobaccoLicense": {"id": 10526, "Key_name": "PermitsTobaccoLicense"},
       /////////  Not Used   //////////
-      "survey_report_inquery": {
-        "id": 11428,
-        "Key_name": "license_query",
-      },
-      "inquiry_construction_license": {
-        "id": 11124,
-        "Key_name": "license_query",
-      },
-      "inquiry_construction_license": {
-        "id": 11124,
-        "Key_name": "license_query",
-      },
-      "create_complianceLocation": {
-        "id": 11429,
-        "Key_name": "create_complianceLocation",
-      },
+      "survey_report_inquery": {"id": 11428, "Key_name": "license_query"},
+      "inquiry_construction_license": {"id": 11124, "Key_name": "license_query"},
+      "inquiry_construction_license": {"id": 11124, "Key_name": "license_query"},
+      "create_complianceLocation": {"id": 11429, "Key_name": "create_complianceLocation"},
     },
   );
 
@@ -699,12 +479,11 @@ class _RemoteConfig {
     dynamic preVal,
     dynamic prodVal,
     dynamic urbiPreVal,
-  }) =>
-      {
-        EnvType.dev: devVal,
-        EnvType.stg: stgVal,
-        EnvType.pre: preVal,
-        EnvType.prod: prodVal,
-        EnvType.urbiPre: urbiPreVal,
-      };
+  }) => {
+    EnvType.dev: devVal,
+    EnvType.stg: stgVal,
+    EnvType.pre: preVal,
+    EnvType.prod: prodVal,
+    EnvType.urbiPre: urbiPreVal,
+  };
 }

@@ -5,6 +5,39 @@ plugins {
     id "org.jetbrains.kotlin.plugin.compose"
 }
 
+// R8 renames Java/Kotlin symbols in release builds (`minifyEnabled true` below),
+// so native crash frames reach PostHog as `a.b()`. The plugin uploads the R8
+// mapping file after each release build, which is what turns them back into real
+// names. It shells out to `posthog-cli`, so it is applied only when upload
+// credentials are present: a developer building release locally has neither the
+// CLI nor the key, and their build must not fail over reporting. See
+// docs/analytics/SYMBOL_UPLOAD.md for the CI wiring.
+if (System.getenv("POSTHOG_CLI_API_KEY")) {
+    apply plugin: "com.posthog.android"
+
+    // Make the upload fail-open, matching the iOS uploader. The plugin's task
+    // extends Gradle's Exec, which fails the build on a non-zero exit, and it
+    // throws IllegalStateException outright when posthog-cli is missing — so
+    // out of the box a bad key, a network blip or a runner without the CLI
+    // turns a release red over crash-report symbols. Not a trade worth making:
+    // unsymbolicated stacks cost debugging time, a failed release costs more.
+    tasks.matching { it.name.startsWith("uploadPostHogProguardMappings") }.configureEach {
+        ignoreExitValue = true
+        onlyIf {
+            try {
+                new ProcessBuilder("posthog-cli", "--version")
+                        .redirectErrorStream(true)
+                        .start()
+                        .waitFor() == 0
+            } catch (Exception ignored) {
+                logger.warn("posthog-cli not found — skipping R8 mapping upload; " +
+                        "release stacks for this build stay obfuscated.")
+                false
+            }
+        }
+    }
+}
+
 def localProperties = new Properties()
 def localPropertiesFile = rootProject.file('local.properties')
 if (localPropertiesFile.exists()) {
@@ -33,6 +66,28 @@ android {
     compileSdk = 36
     namespace "momra.balady.android"
     ndkVersion = "28.2.13676358"
+
+    // Store native libraries uncompressed and page-aligned inside the APK/AAB.
+    // Required for 16 KB page-size support: compressed .so entries cannot be
+    // 16 KB zip-aligned, which makes Play flag the app as not supporting 16 KB
+    // devices even when every .so's ELF segments are already aligned.
+    packaging {
+        jniLibs {
+            useLegacyPackaging = false
+
+            // The BytePlus/ByteDance `encryptor` AAR (transitive of
+            // RangersAppLog-Lite-cn) ships a libEncryptorP.so whose armeabi-v7a
+            // and x86_64 variants are only 4 KB ELF-aligned. arm64-v8a is 64 KB
+            // and fully compliant. 16 KB page-size devices are all 64-bit ARM,
+            // so these 32-bit/x86_64 copies can never run on one — but Play's
+            // static 16 KB check still flags them. Drop just those two variants;
+            // every other ABI/library is kept intact.
+            excludes += [
+                'lib/armeabi-v7a/libEncryptorP.so',
+                'lib/x86_64/libEncryptorP.so',
+            ]
+        }
+    }
 
     compileOptions {
         // Flag to enable support for the new language APIs

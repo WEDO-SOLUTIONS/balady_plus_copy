@@ -8,9 +8,7 @@ import 'package:mapness/features/special_themes/core/theme_splash_config.dart';
 import 'package:mapness/features/special_themes/core/theme_splash_state.dart';
 import 'package:mapness/features/special_themes/modes/mekkah_base/mekkah_base_theme.dart';
 import 'package:mapness/pages/theme_splash/theme_splash_page.dart';
-import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/lib/common_functions.dart';
-import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/providers/location.dart';
 
 // Design tokens
@@ -19,14 +17,12 @@ class _DebugColors {
   static const surface = Color(0xFF18181B);
   static const surfaceLight = Color(0xFF27272A);
   static const border = Color(0xFF3F3F46);
-  static const borderLight = Color(0xFF52525B);
 
   static const textPrimary = Color(0xFFFAFAFA);
   static const textSecondary = Color(0xFFA1A1AA);
   static const textMuted = Color(0xFF71717A);
 
   static const accent = Color(0xFF8B5CF6);
-  static const accentLight = Color(0xFFA78BFA);
   static const success = Color(0xFF22C55E);
   static const warning = Color(0xFFF59E0B);
   static const error = Color(0xFFEF4444);
@@ -53,122 +49,113 @@ class SpecialThemeDebugPanel extends ConsumerWidget {
   const SpecialThemeDebugPanel({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    return Container(
-      decoration: const BoxDecoration(
-        color: _DebugColors.background,
-        borderRadius: BorderRadius.all(Radius.circular(16)),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          _Header(),
-          Padding(
-            padding: const EdgeInsets.all(16),
-            child: Column(
-              children: [
-                _ActiveThemeCard(),
-                const SizedBox(height: 12),
-                _DebugTogglesCard(),
-                const SizedBox(height: 12),
-                _MakkahDiagnosticsCard(),
-                const SizedBox(height: 12),
-                _PilgrimDiagnosticsCard(),
-                const SizedBox(height: 12),
-                _SplashTestCard(),
-                const SizedBox(height: 12),
-                _RemoteConfigCard(),
-              ],
-            ),
+  Widget build(BuildContext context, WidgetRef ref) => Container(
+    decoration: const BoxDecoration(
+      color: _DebugColors.background,
+      borderRadius: BorderRadius.all(Radius.circular(16)),
+    ),
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        _Header(),
+        Padding(
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            children: [
+              _ActiveThemeCard(),
+              const SizedBox(height: 12),
+              _DebugTogglesCard(),
+              const SizedBox(height: 12),
+              const _MakkahDiagnosticsCard(),
+              const SizedBox(height: 12),
+              const _PilgrimDiagnosticsCard(),
+              const SizedBox(height: 12),
+              _SplashTestCard(),
+              const SizedBox(height: 12),
+              const _RemoteConfigCard(),
+            ],
           ),
-        ],
-      ),
-    );
-  }
+        ),
+      ],
+    ),
+  );
 }
 
 class _Header extends StatelessWidget {
   @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: const BoxDecoration(
-        border: Border(
-          bottom: BorderSide(color: _DebugColors.border, width: 1),
-        ),
+  Widget build(BuildContext context) => Container(
+    padding: const EdgeInsets.all(16),
+    decoration: const BoxDecoration(
+      border: Border(
+        bottom: BorderSide(color: _DebugColors.border),
       ),
-      child: Row(
-        children: [
-          Container(
-            padding: const EdgeInsets.all(10),
-            decoration: BoxDecoration(
-              gradient: _DebugColors.gradientPurple,
-              borderRadius: BorderRadius.circular(10),
-              boxShadow: [
-                BoxShadow(
-                  color: _DebugColors.accent.withOpacity(0.3),
-                  blurRadius: 12,
-                  offset: const Offset(0, 4),
-                ),
-              ],
-            ),
-            child: const Icon(
-              Icons.palette_rounded,
-              color: Colors.white,
-              size: 20,
-            ),
-          ),
-          const SizedBox(width: 12),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                'Theme Manager',
-                style: context.textStyles.bodyLargeSemiBold.copyWith(
-                  color: _DebugColors.textPrimary,
-                  letterSpacing: -0.3,
-                ),
-              ),
-              Text(
-                'Debug & Configuration',
-                style: context.textStyles.captionSmallRegular.copyWith(
-                  color: _DebugColors.textMuted,
-                ),
+    ),
+    child: Row(
+      children: [
+        Container(
+          padding: const EdgeInsets.all(10),
+          decoration: BoxDecoration(
+            gradient: _DebugColors.gradientPurple,
+            borderRadius: BorderRadius.circular(10),
+            boxShadow: [
+              BoxShadow(
+                color: _DebugColors.accent.withOpacity(0.3),
+                blurRadius: 12,
+                offset: const Offset(0, 4),
               ),
             ],
           ),
-        ],
-      ),
-    );
-  }
+          child: const Icon(
+            Icons.palette_rounded,
+            color: Colors.white,
+            size: 20,
+          ),
+        ),
+        const SizedBox(width: 12),
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'Theme Manager',
+              style: context.textStyles.bodyLargeSemiBold.copyWith(
+                color: _DebugColors.textPrimary,
+                letterSpacing: -0.3,
+              ),
+            ),
+            Text(
+              'Debug & Configuration',
+              style: context.textStyles.captionSmallRegular.copyWith(
+                color: _DebugColors.textMuted,
+              ),
+            ),
+          ],
+        ),
+      ],
+    ),
+  );
 }
 
 class _GlassCard extends StatelessWidget {
   const _GlassCard({
     required this.child,
-    this.gradient,
     this.padding = const EdgeInsets.all(14),
   });
 
   final Widget child;
-  final Gradient? gradient;
   final EdgeInsets padding;
 
   @override
-  Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        color: _DebugColors.surface,
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: _DebugColors.border, width: 1),
-        gradient: gradient,
-      ),
-      child: Padding(
-        padding: padding,
-        child: child,
-      ),
-    );
-  }
+  Widget build(BuildContext context) => Container(
+    decoration: BoxDecoration(
+      color: _DebugColors.surface,
+      borderRadius: BorderRadius.circular(12),
+      border: Border.all(color: _DebugColors.border),
+    ),
+    child: Padding(
+      padding: padding,
+      child: child,
+    ),
+  );
 }
 
 class _SectionTitle extends StatelessWidget {
@@ -185,32 +172,30 @@ class _SectionTitle extends StatelessWidget {
   final Gradient? iconGradient;
 
   @override
-  Widget build(BuildContext context) {
-    return Row(
-      children: [
-        Container(
-          padding: const EdgeInsets.all(6),
-          decoration: BoxDecoration(
-            gradient: iconGradient ?? _DebugColors.gradientPurple,
-            borderRadius: BorderRadius.circular(6),
-          ),
-          child: Icon(icon, color: Colors.white, size: 14),
+  Widget build(BuildContext context) => Row(
+    children: [
+      Container(
+        padding: const EdgeInsets.all(6),
+        decoration: BoxDecoration(
+          gradient: iconGradient ?? _DebugColors.gradientPurple,
+          borderRadius: BorderRadius.circular(6),
         ),
-        const SizedBox(width: 10),
-        Text(
-          title,
-          style: context.textStyles.bodySmallSemiBold.copyWith(
-            color: _DebugColors.textPrimary,
-            letterSpacing: -0.2,
-          ),
+        child: Icon(icon, color: Colors.white, size: 14),
+      ),
+      const SizedBox(width: 10),
+      Text(
+        title,
+        style: context.textStyles.bodySmallSemiBold.copyWith(
+          color: _DebugColors.textPrimary,
+          letterSpacing: -0.2,
         ),
-        if (trailing != null) ...[
-          const Spacer(),
-          trailing!,
-        ],
+      ),
+      if (trailing != null) ...[
+        const Spacer(),
+        trailing!,
       ],
-    );
-  }
+    ],
+  );
 }
 
 class _ActiveThemeCard extends ConsumerWidget {
@@ -245,7 +230,7 @@ class _ActiveThemeCard extends ConsumerWidget {
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Icon(
+                  const Icon(
                     Icons.bug_report_rounded,
                     size: 14,
                     color: _DebugColors.warning,
@@ -360,46 +345,36 @@ class _ThemeChip extends StatelessWidget {
   final Gradient gradient;
 
   @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-      decoration: BoxDecoration(
-        gradient: isActive ? gradient : null,
-        color: isActive ? null : _DebugColors.surfaceLight,
-        borderRadius: BorderRadius.circular(8),
-        border: Border.all(
-          color: isActive ? Colors.transparent : _DebugColors.border,
-        ),
-        boxShadow: isActive
-            ? [
-                BoxShadow(
-                  color: (gradient.colors.first).withOpacity(0.3),
-                  blurRadius: 8,
-                  offset: const Offset(0, 2),
-                ),
-              ]
-            : null,
+  Widget build(BuildContext context) => Container(
+    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+    decoration: BoxDecoration(
+      gradient: isActive ? gradient : null,
+      color: isActive ? null : _DebugColors.surfaceLight,
+      borderRadius: BorderRadius.circular(8),
+      border: Border.all(
+        color: isActive ? Colors.transparent : _DebugColors.border,
       ),
-      child: Text(
-        label,
-        style: context.textStyles.captionSmallMedium.copyWith(
-          color: isActive ? Colors.white : _DebugColors.textSecondary,
-          fontWeight: isActive ? FontWeight.w600 : FontWeight.w500,
-        ),
+      boxShadow: isActive
+          ? [
+              BoxShadow(
+                color: gradient.colors.first.withOpacity(0.3),
+                blurRadius: 8,
+                offset: const Offset(0, 2),
+              ),
+            ]
+          : null,
+    ),
+    child: Text(
+      label,
+      style: context.textStyles.captionSmallMedium.copyWith(
+        color: isActive ? Colors.white : _DebugColors.textSecondary,
+        fontWeight: isActive ? FontWeight.w600 : FontWeight.w500,
       ),
-    );
-  }
+    ),
+  );
 }
 
 class _DebugTogglesCard extends ConsumerWidget {
-  void _trackDebugToggle(String feature, bool enabled) {
-    Metrics.logEventAdvanced(
-      enabled ? MetricsConstants.themesKeys.debugOverrideEnabled : MetricsConstants.themesKeys.debugOverrideDisabled,
-      group: MetricsConstants.themesTag,
-      props: {'feature': feature, 'enabled': enabled},
-    );
-  }
-
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final foundationDay = ref.watch(foundationDayDebugProvider);
@@ -407,12 +382,13 @@ class _DebugTogglesCard extends ConsumerWidget {
     final ramadan = ref.watch(ramadanSeasonDebugProvider);
     final hajj = ref.watch(hajjSeasonDebugProvider);
     final pilgrimFeature = ref.watch(pilgrimFeatureDebugProvider);
+    final leap = ref.watch(leapDebugProvider);
 
     return _GlassCard(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _SectionTitle(
+          const _SectionTitle(
             icon: Icons.bug_report_rounded,
             title: 'Debug Overrides',
             iconGradient: _DebugColors.gradientBlue,
@@ -422,7 +398,6 @@ class _DebugTogglesCard extends ConsumerWidget {
             label: 'Foundation Day',
             value: foundationDay,
             onChanged: (v) {
-              _trackDebugToggle('foundationDay', v);
               ref.read(foundationDayDebugProvider.notifier).set(v);
             },
             gradient: _DebugColors.gradientPurple,
@@ -431,7 +406,6 @@ class _DebugTogglesCard extends ConsumerWidget {
             label: 'Makkah Base',
             value: mekkahBase,
             onChanged: (v) {
-              _trackDebugToggle('mekkahBase', v);
               ref.read(mekkahBaseThemeDebugProvider.notifier).set(v);
             },
             gradient: _DebugColors.gradientAmber,
@@ -440,7 +414,6 @@ class _DebugTogglesCard extends ConsumerWidget {
           //   label: 'Ramadan Season',
           //   value: ramadan,
           //   onChanged: (v) {
-          //     _trackDebugToggle('ramadan', v);
           //     ref.read(ramadanSeasonDebugProvider.notifier).set(v);
           //   },
           //   gradient: _DebugColors.gradientTeal,
@@ -449,7 +422,6 @@ class _DebugTogglesCard extends ConsumerWidget {
           //   label: 'Hajj Season',
           //   value: hajj,
           //   onChanged: (v) {
-          //     _trackDebugToggle('hajj', v);
           //     ref.read(hajjSeasonDebugProvider.notifier).set(v);
           //   },
           //   gradient: _DebugColors.gradientBlue,
@@ -458,10 +430,17 @@ class _DebugTogglesCard extends ConsumerWidget {
             label: 'Pilgrim Feature',
             value: pilgrimFeature,
             onChanged: (v) {
-              _trackDebugToggle('pilgrim', v);
               ref.read(pilgrimFeatureDebugProvider.notifier).set(v);
             },
             gradient: _DebugColors.gradientGreen,
+          ),
+          _ToggleRow(
+            label: 'LEAP Event',
+            value: leap,
+            onChanged: (v) {
+              ref.read(leapDebugProvider.notifier).enabled = v;
+            },
+            gradient: _DebugColors.gradientTeal,
           ),
           const SizedBox(height: 14),
           _LocationRefreshRow(),
@@ -484,7 +463,7 @@ class _LocationRefreshRow extends ConsumerWidget {
       children: [
         Row(
           children: [
-            Icon(Icons.location_on, size: 14, color: _DebugColors.textMuted),
+            const Icon(Icons.location_on, size: 14, color: _DebugColors.textMuted),
             const SizedBox(width: 8),
             Expanded(
               child: Text(
@@ -498,11 +477,6 @@ class _LocationRefreshRow extends ConsumerWidget {
             GestureDetector(
               behavior: HitTestBehavior.opaque,
               onTap: () {
-                // Track location refresh
-                Metrics.logEventAdvanced(
-                  MetricsConstants.themesKeys.debugLocationRefreshed,
-                  group: MetricsConstants.themesTag,
-                );
                 ref.read(locationProvider.notifier).refreshLocation();
               },
               child: Container(
@@ -541,38 +515,36 @@ class _ToggleRow extends StatelessWidget {
   final Gradient gradient;
 
   @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 6),
-      child: Row(
-        children: [
-          Container(
-            width: 3,
-            height: 20,
-            decoration: BoxDecoration(
-              gradient: value ? gradient : null,
-              color: value ? null : _DebugColors.border,
-              borderRadius: BorderRadius.circular(2),
+  Widget build(BuildContext context) => Padding(
+    padding: const EdgeInsets.symmetric(vertical: 6),
+    child: Row(
+      children: [
+        Container(
+          width: 3,
+          height: 20,
+          decoration: BoxDecoration(
+            gradient: value ? gradient : null,
+            color: value ? null : _DebugColors.border,
+            borderRadius: BorderRadius.circular(2),
+          ),
+        ),
+        const SizedBox(width: 12),
+        Expanded(
+          child: Text(
+            label,
+            style: context.textStyles.bodySmallRegular.copyWith(
+              color: value ? _DebugColors.textPrimary : _DebugColors.textSecondary,
             ),
           ),
-          const SizedBox(width: 12),
-          Expanded(
-            child: Text(
-              label,
-              style: context.textStyles.bodySmallRegular.copyWith(
-                color: value ? _DebugColors.textPrimary : _DebugColors.textSecondary,
-              ),
-            ),
-          ),
-          _CustomSwitch(
-            value: value,
-            onChanged: onChanged,
-            gradient: gradient,
-          ),
-        ],
-      ),
-    );
-  }
+        ),
+        _CustomSwitch(
+          value: value,
+          onChanged: onChanged,
+          gradient: gradient,
+        ),
+      ],
+    ),
+  );
 }
 
 class _CustomSwitch extends StatelessWidget {
@@ -587,44 +559,42 @@ class _CustomSwitch extends StatelessWidget {
   final Gradient gradient;
 
   @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () => onChanged(!value),
-      child: AnimatedContainer(
-        duration: const Duration(milliseconds: 200),
-        width: 44,
-        height: 24,
-        decoration: BoxDecoration(
-          gradient: value ? gradient : null,
-          color: value ? null : _DebugColors.surfaceLight,
-          borderRadius: BorderRadius.circular(12),
-          border: Border.all(
-            color: value ? Colors.transparent : _DebugColors.border,
-          ),
+  Widget build(BuildContext context) => GestureDetector(
+    onTap: () => onChanged(!value),
+    child: AnimatedContainer(
+      duration: const Duration(milliseconds: 200),
+      width: 44,
+      height: 24,
+      decoration: BoxDecoration(
+        gradient: value ? gradient : null,
+        color: value ? null : _DebugColors.surfaceLight,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(
+          color: value ? Colors.transparent : _DebugColors.border,
         ),
-        child: AnimatedAlign(
-          duration: const Duration(milliseconds: 200),
-          alignment: value ? Alignment.centerRight : Alignment.centerLeft,
-          child: Container(
-            margin: const EdgeInsets.all(2),
-            width: 20,
-            height: 20,
-            decoration: BoxDecoration(
-              color: Colors.white,
-              shape: BoxShape.circle,
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withOpacity(0.2),
-                  blurRadius: 4,
-                  offset: const Offset(0, 2),
-                ),
-              ],
-            ),
+      ),
+      child: AnimatedAlign(
+        duration: const Duration(milliseconds: 200),
+        alignment: value ? Alignment.centerRight : Alignment.centerLeft,
+        child: Container(
+          margin: const EdgeInsets.all(2),
+          width: 20,
+          height: 20,
+          decoration: BoxDecoration(
+            color: Colors.white,
+            shape: BoxShape.circle,
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.2),
+                blurRadius: 4,
+                offset: const Offset(0, 2),
+              ),
+            ],
           ),
         ),
       ),
-    );
-  }
+    ),
+  );
 }
 
 class _SplashTestCard extends ConsumerWidget {
@@ -637,7 +607,7 @@ class _SplashTestCard extends ConsumerWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _SectionTitle(
+          const _SectionTitle(
             icon: Icons.play_circle_rounded,
             title: 'Test Splash',
             iconGradient: _DebugColors.gradientGreen,
@@ -652,7 +622,7 @@ class _SplashTestCard extends ConsumerWidget {
               ),
               child: Row(
                 children: [
-                  Icon(
+                  const Icon(
                     Icons.info_outline_rounded,
                     size: 16,
                     color: _DebugColors.textMuted,
@@ -682,13 +652,6 @@ class _SplashTestCard extends ConsumerWidget {
   }
 
   void _showSplash(WidgetRef ref, SpecialThemeMode mode) {
-    // Track debug splash triggered
-    Metrics.logEventAdvanced(
-      MetricsConstants.themesKeys.debugSplashTriggered,
-      group: MetricsConstants.themesTag,
-      props: {'theme': mode.name},
-    );
-
     final splashState = ref.read(themeSplashStateProvider.notifier);
     splashState.resetSplashFor(mode);
 
@@ -724,38 +687,36 @@ class _GradientButton extends StatelessWidget {
   final VoidCallback onTap;
 
   @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        padding: const EdgeInsets.symmetric(vertical: 12),
-        decoration: BoxDecoration(
-          gradient: gradient,
-          borderRadius: BorderRadius.circular(8),
-          boxShadow: [
-            BoxShadow(
-              color: gradient.colors.first.withOpacity(0.3),
-              blurRadius: 8,
-              offset: const Offset(0, 4),
-            ),
-          ],
-        ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(icon, color: Colors.white, size: 18),
-            const SizedBox(width: 8),
-            Text(
-              label,
-              style: context.textStyles.bodySmallSemiBold.copyWith(
-                color: Colors.white,
-              ),
-            ),
-          ],
-        ),
+  Widget build(BuildContext context) => GestureDetector(
+    onTap: onTap,
+    child: Container(
+      padding: const EdgeInsets.symmetric(vertical: 12),
+      decoration: BoxDecoration(
+        gradient: gradient,
+        borderRadius: BorderRadius.circular(8),
+        boxShadow: [
+          BoxShadow(
+            color: gradient.colors.first.withOpacity(0.3),
+            blurRadius: 8,
+            offset: const Offset(0, 4),
+          ),
+        ],
       ),
-    );
-  }
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(icon, color: Colors.white, size: 18),
+          const SizedBox(width: 8),
+          Text(
+            label,
+            style: context.textStyles.bodySmallSemiBold.copyWith(
+              color: Colors.white,
+            ),
+          ),
+        ],
+      ),
+    ),
+  );
 }
 
 class _RemoteConfigCard extends ConsumerWidget {
@@ -780,7 +741,7 @@ class _RemoteConfigCard extends ConsumerWidget {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   configAsync.when(
-                    data: (_) => _StatusDot(color: _DebugColors.success),
+                    data: (_) => const _StatusDot(color: _DebugColors.success),
                     loading: () => const SizedBox(
                       width: 14,
                       height: 14,
@@ -789,16 +750,11 @@ class _RemoteConfigCard extends ConsumerWidget {
                         color: _DebugColors.accent,
                       ),
                     ),
-                    error: (_, __) => _StatusDot(color: _DebugColors.error),
+                    error: (_, __) => const _StatusDot(color: _DebugColors.error),
                   ),
                   const SizedBox(width: 10),
                   _RefreshButton(
                     onTap: () {
-                      // Track config refresh
-                      Metrics.logEventAdvanced(
-                        MetricsConstants.themesKeys.debugConfigRefreshed,
-                        group: MetricsConstants.themesTag,
-                      );
                       ref.read(placesActivationProvider.notifier).refresh();
                     },
                   ),
@@ -836,22 +792,20 @@ class _StatusDot extends StatelessWidget {
   final Color color;
 
   @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: 8,
-      height: 8,
-      decoration: BoxDecoration(
-        color: color,
-        shape: BoxShape.circle,
-        boxShadow: [
-          BoxShadow(
-            color: color.withOpacity(0.5),
-            blurRadius: 4,
-          ),
-        ],
-      ),
-    );
-  }
+  Widget build(BuildContext context) => Container(
+    width: 8,
+    height: 8,
+    decoration: BoxDecoration(
+      color: color,
+      shape: BoxShape.circle,
+      boxShadow: [
+        BoxShadow(
+          color: color.withOpacity(0.5),
+          blurRadius: 4,
+        ),
+      ],
+    ),
+  );
 }
 
 class _RefreshButton extends StatelessWidget {
@@ -860,37 +814,35 @@ class _RefreshButton extends StatelessWidget {
   final VoidCallback onTap;
 
   @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-        decoration: BoxDecoration(
-          color: _DebugColors.surfaceLight,
-          borderRadius: BorderRadius.circular(6),
-          border: Border.all(color: _DebugColors.border),
-        ),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(
-              Icons.refresh_rounded,
-              size: 12,
-              color: _DebugColors.textSecondary,
-            ),
-            const SizedBox(width: 4),
-            Text(
-              'Refresh',
-              style: context.textStyles.captionSmallMedium.copyWith(
-                color: _DebugColors.textSecondary,
-                fontSize: 11,
-              ),
-            ),
-          ],
-        ),
+  Widget build(BuildContext context) => GestureDetector(
+    onTap: onTap,
+    child: Container(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+      decoration: BoxDecoration(
+        color: _DebugColors.surfaceLight,
+        borderRadius: BorderRadius.circular(6),
+        border: Border.all(color: _DebugColors.border),
       ),
-    );
-  }
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          const Icon(
+            Icons.refresh_rounded,
+            size: 12,
+            color: _DebugColors.textSecondary,
+          ),
+          const SizedBox(width: 4),
+          Text(
+            'Refresh',
+            style: context.textStyles.captionSmallMedium.copyWith(
+              color: _DebugColors.textSecondary,
+              fontSize: 11,
+            ),
+          ),
+        ],
+      ),
+    ),
+  );
 }
 
 class _ErrorBox extends StatelessWidget {
@@ -899,30 +851,28 @@ class _ErrorBox extends StatelessWidget {
   final String message;
 
   @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(
-        color: _DebugColors.error.withOpacity(0.1),
-        borderRadius: BorderRadius.circular(8),
-        border: Border.all(color: _DebugColors.error.withOpacity(0.3)),
-      ),
-      child: Row(
-        children: [
-          Icon(Icons.error_outline_rounded, size: 16, color: _DebugColors.error),
-          const SizedBox(width: 8),
-          Expanded(
-            child: Text(
-              message,
-              style: context.textStyles.captionSmallRegular.copyWith(
-                color: _DebugColors.error,
-              ),
+  Widget build(BuildContext context) => Container(
+    padding: const EdgeInsets.all(12),
+    decoration: BoxDecoration(
+      color: _DebugColors.error.withOpacity(0.1),
+      borderRadius: BorderRadius.circular(8),
+      border: Border.all(color: _DebugColors.error.withOpacity(0.3)),
+    ),
+    child: Row(
+      children: [
+        const Icon(Icons.error_outline_rounded, size: 16, color: _DebugColors.error),
+        const SizedBox(width: 8),
+        Expanded(
+          child: Text(
+            message,
+            style: context.textStyles.captionSmallRegular.copyWith(
+              color: _DebugColors.error,
             ),
           ),
-        ],
-      ),
-    );
-  }
+        ),
+      ],
+    ),
+  );
 }
 
 class _ConfigDetails extends StatelessWidget {
@@ -931,71 +881,69 @@ class _ConfigDetails extends StatelessWidget {
   final PlacesActivationConfig config;
 
   @override
-  Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        _ConfigMeta(config: config),
-        const SizedBox(height: 14),
-        _SubsectionLabel(label: 'THEMES'),
-        const SizedBox(height: 8),
-        if (config.presentThemes.contains('mekkah'))
-          _ThemeConfigItem(
-            name: 'Mekkah',
-            config: config.mekkah,
-            gradient: _DebugColors.gradientAmber,
+  Widget build(BuildContext context) => Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      _ConfigMeta(config: config),
+      const SizedBox(height: 14),
+      const _SubsectionLabel(label: 'THEMES'),
+      const SizedBox(height: 8),
+      if (config.presentThemes.contains('mekkah'))
+        _ThemeConfigItem(
+          name: 'Mekkah',
+          config: config.mekkah,
+          gradient: _DebugColors.gradientAmber,
+        ),
+      if (config.presentThemes.contains('foundation_day'))
+        _ThemeConfigItem(
+          name: 'Foundation Day',
+          config: config.foundationDay,
+          gradient: _DebugColors.gradientPurple,
+        ),
+      if (config.presentThemes.contains('ramadan'))
+        _ThemeConfigItem(
+          name: 'Ramadan',
+          config: config.ramadan,
+          gradient: _DebugColors.gradientTeal,
+        ),
+      if (config.presentThemes.contains('hajj'))
+        _ThemeConfigItem(
+          name: 'Hajj',
+          config: config.hajj,
+          gradient: _DebugColors.gradientBlue,
+        ),
+      if (config.presentThemes.isEmpty)
+        Container(
+          padding: const EdgeInsets.all(12),
+          decoration: BoxDecoration(
+            color: _DebugColors.surfaceLight,
+            borderRadius: BorderRadius.circular(8),
           ),
-        if (config.presentThemes.contains('foundation_day'))
-          _ThemeConfigItem(
-            name: 'Foundation Day',
-            config: config.foundationDay,
-            gradient: _DebugColors.gradientPurple,
-          ),
-        if (config.presentThemes.contains('ramadan'))
-          _ThemeConfigItem(
-            name: 'Ramadan',
-            config: config.ramadan,
-            gradient: _DebugColors.gradientTeal,
-          ),
-        if (config.presentThemes.contains('hajj'))
-          _ThemeConfigItem(
-            name: 'Hajj',
-            config: config.hajj,
-            gradient: _DebugColors.gradientBlue,
-          ),
-        if (config.presentThemes.isEmpty)
-          Container(
-            padding: const EdgeInsets.all(12),
-            decoration: BoxDecoration(
-              color: _DebugColors.surfaceLight,
-              borderRadius: BorderRadius.circular(8),
-            ),
-            child: Row(
-              children: [
-                Icon(
-                  Icons.info_outline_rounded,
-                  size: 16,
+          child: Row(
+            children: [
+              const Icon(
+                Icons.info_outline_rounded,
+                size: 16,
+                color: _DebugColors.textMuted,
+              ),
+              const SizedBox(width: 8),
+              Text(
+                'No themes defined in config',
+                style: context.textStyles.captionSmallRegular.copyWith(
                   color: _DebugColors.textMuted,
                 ),
-                const SizedBox(width: 8),
-                Text(
-                  'No themes defined in config',
-                  style: context.textStyles.captionSmallRegular.copyWith(
-                    color: _DebugColors.textMuted,
-                  ),
-                ),
-              ],
-            ),
+              ),
+            ],
           ),
-        if (config.features.isNotEmpty) ...[
-          const SizedBox(height: 14),
-          _SubsectionLabel(label: 'FEATURES'),
-          const SizedBox(height: 8),
-          ...config.features.map((f) => _FeatureItem(feature: f)),
-        ],
+        ),
+      if (config.features.isNotEmpty) ...[
+        const SizedBox(height: 14),
+        const _SubsectionLabel(label: 'FEATURES'),
+        const SizedBox(height: 8),
+        ...config.features.map((f) => _FeatureItem(feature: f)),
       ],
-    );
-  }
+    ],
+  );
 }
 
 class _ConfigMeta extends StatelessWidget {
@@ -1045,23 +993,21 @@ class _MetaBadge extends StatelessWidget {
   final Color color;
 
   @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-      decoration: BoxDecoration(
-        color: color.withOpacity(0.15),
-        borderRadius: BorderRadius.circular(4),
+  Widget build(BuildContext context) => Container(
+    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+    decoration: BoxDecoration(
+      color: color.withOpacity(0.15),
+      borderRadius: BorderRadius.circular(4),
+    ),
+    child: Text(
+      label,
+      style: context.textStyles.captionSmallMedium.copyWith(
+        color: color,
+        fontSize: 10,
+        fontWeight: FontWeight.w600,
       ),
-      child: Text(
-        label,
-        style: context.textStyles.captionSmallMedium.copyWith(
-          color: color,
-          fontSize: 10,
-          fontWeight: FontWeight.w600,
-        ),
-      ),
-    );
-  }
+    ),
+  );
 }
 
 class _SubsectionLabel extends StatelessWidget {
@@ -1070,17 +1016,15 @@ class _SubsectionLabel extends StatelessWidget {
   final String label;
 
   @override
-  Widget build(BuildContext context) {
-    return Text(
-      label,
-      style: context.textStyles.captionSmallMedium.copyWith(
-        color: _DebugColors.textMuted,
-        fontSize: 10,
-        fontWeight: FontWeight.w600,
-        letterSpacing: 1,
-      ),
-    );
-  }
+  Widget build(BuildContext context) => Text(
+    label,
+    style: context.textStyles.captionSmallMedium.copyWith(
+      color: _DebugColors.textMuted,
+      fontSize: 10,
+      fontWeight: FontWeight.w600,
+      letterSpacing: 1,
+    ),
+  );
 }
 
 class _ThemeConfigItem extends StatelessWidget {
@@ -1178,9 +1122,7 @@ class _ThemeConfigItem extends StatelessWidget {
     );
   }
 
-  String _formatDate(DateTime date) {
-    return '${date.day}/${date.month}/${date.year}';
-  }
+  String _formatDate(DateTime date) => '${date.day}/${date.month}/${date.year}';
 }
 
 class _FeatureItem extends ConsumerWidget {
@@ -1223,7 +1165,7 @@ class _FeatureItem extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     // Check if this feature has a debug override
     final isPilgrimFeature = feature.code == 'show_pilgrim';
-    final debugOverride = isPilgrimFeature ? ref.watch(pilgrimFeatureDebugProvider) : false;
+    final debugOverride = isPilgrimFeature && ref.watch(pilgrimFeatureDebugProvider);
 
     final isActive = _isEffectivelyActive(ref, debugOverride);
     final inactiveReason = _getInactiveReason(ref, debugOverride);
@@ -1315,9 +1257,7 @@ class _FeatureItem extends ConsumerWidget {
     );
   }
 
-  String _formatDate(DateTime date) {
-    return '${date.day}/${date.month}/${date.year}';
-  }
+  String _formatDate(DateTime date) => '${date.day}/${date.month}/${date.year}';
 }
 
 class _StatusPill extends StatelessWidget {
@@ -1355,22 +1295,20 @@ class _InfoChip extends StatelessWidget {
   final String label;
 
   @override
-  Widget build(BuildContext context) {
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Icon(icon, size: 12, color: _DebugColors.textMuted),
-        const SizedBox(width: 4),
-        Text(
-          label,
-          style: context.textStyles.captionSmallRegular.copyWith(
-            color: _DebugColors.textSecondary,
-            fontSize: 10,
-          ),
+  Widget build(BuildContext context) => Row(
+    mainAxisSize: MainAxisSize.min,
+    children: [
+      Icon(icon, size: 12, color: _DebugColors.textMuted),
+      const SizedBox(width: 4),
+      Text(
+        label,
+        style: context.textStyles.captionSmallRegular.copyWith(
+          color: _DebugColors.textSecondary,
+          fontSize: 10,
         ),
-      ],
-    );
-  }
+      ),
+    ],
+  );
 }
 
 class _MakkahDiagnosticsCard extends ConsumerWidget {
@@ -1405,7 +1343,7 @@ class _MakkahDiagnosticsCard extends ConsumerWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _SectionTitle(
+          const _SectionTitle(
             icon: Icons.troubleshoot_rounded,
             title: 'Makkah Diagnostics',
             iconGradient: _DebugColors.gradientAmber,
@@ -1463,7 +1401,7 @@ class _MakkahDiagnosticsCard extends ConsumerWidget {
                 const SizedBox(height: 6),
                 Row(
                   children: [
-                    Icon(
+                    const Icon(
                       Icons.straighten_rounded,
                       size: 12,
                       color: _DebugColors.textMuted,
@@ -1503,9 +1441,7 @@ class _MakkahDiagnosticsCard extends ConsumerWidget {
     );
   }
 
-  String _formatDate(DateTime date) {
-    return '${date.day}/${date.month}';
-  }
+  String _formatDate(DateTime date) => '${date.day}/${date.month}';
 }
 
 /// Diagnostics card for the `show_pilgrim` feature. Mirrors [_MakkahDiagnosticsCard]
@@ -1546,7 +1482,7 @@ class _PilgrimDiagnosticsCard extends ConsumerWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _SectionTitle(
+          const _SectionTitle(
             icon: Icons.troubleshoot_rounded,
             title: 'Pilgrim Diagnostics',
             iconGradient: _DebugColors.gradientGreen,
@@ -1639,9 +1575,7 @@ class _PilgrimDiagnosticsCard extends ConsumerWidget {
     );
   }
 
-  String _formatDate(DateTime date) {
-    return '${date.day}/${date.month}';
-  }
+  String _formatDate(DateTime date) => '${date.day}/${date.month}';
 }
 
 class _DiagRow extends StatelessWidget {
@@ -1656,38 +1590,36 @@ class _DiagRow extends StatelessWidget {
   final String? detail;
 
   @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 4),
-      child: Row(
-        children: [
-          Icon(
-            value ? Icons.check_circle_rounded : Icons.cancel_rounded,
-            size: 14,
-            color: value ? _DebugColors.success : _DebugColors.error,
+  Widget build(BuildContext context) => Padding(
+    padding: const EdgeInsets.symmetric(vertical: 4),
+    child: Row(
+      children: [
+        Icon(
+          value ? Icons.check_circle_rounded : Icons.cancel_rounded,
+          size: 14,
+          color: value ? _DebugColors.success : _DebugColors.error,
+        ),
+        const SizedBox(width: 8),
+        Text(
+          label,
+          style: context.textStyles.captionSmallRegular.copyWith(
+            color: _DebugColors.textSecondary,
+            fontSize: 11,
           ),
-          const SizedBox(width: 8),
+        ),
+        if (detail != null) ...[
+          const SizedBox(width: 6),
           Text(
-            label,
+            '($detail)',
             style: context.textStyles.captionSmallRegular.copyWith(
-              color: _DebugColors.textSecondary,
-              fontSize: 11,
+              color: _DebugColors.textMuted,
+              fontSize: 10,
             ),
           ),
-          if (detail != null) ...[
-            const SizedBox(width: 6),
-            Text(
-              '($detail)',
-              style: context.textStyles.captionSmallRegular.copyWith(
-                color: _DebugColors.textMuted,
-                fontSize: 10,
-              ),
-            ),
-          ],
         ],
-      ),
-    );
-  }
+      ],
+    ),
+  );
 }
 
 class _LocationRow extends StatelessWidget {
@@ -1702,30 +1634,28 @@ class _LocationRow extends StatelessWidget {
   final double? lon;
 
   @override
-  Widget build(BuildContext context) {
-    return Row(
-      children: [
-        SizedBox(
-          width: 80,
-          child: Text(
-            label,
-            style: context.textStyles.captionSmallRegular.copyWith(
-              color: _DebugColors.textMuted,
-              fontSize: 10,
-            ),
+  Widget build(BuildContext context) => Row(
+    children: [
+      SizedBox(
+        width: 80,
+        child: Text(
+          label,
+          style: context.textStyles.captionSmallRegular.copyWith(
+            color: _DebugColors.textMuted,
+            fontSize: 10,
           ),
         ),
-        Expanded(
-          child: Text(
-            lat != null && lon != null ? '${lat!.toStringAsFixed(5)}, ${lon!.toStringAsFixed(5)}' : 'null',
-            style: context.textStyles.captionSmallMedium.copyWith(
-              color: lat != null ? _DebugColors.textSecondary : _DebugColors.error,
-              fontSize: 10,
-              fontFamily: 'monospace',
-            ),
+      ),
+      Expanded(
+        child: Text(
+          lat != null && lon != null ? '${lat!.toStringAsFixed(5)}, ${lon!.toStringAsFixed(5)}' : 'null',
+          style: context.textStyles.captionSmallMedium.copyWith(
+            color: lat != null ? _DebugColors.textSecondary : _DebugColors.error,
+            fontSize: 10,
+            fontFamily: 'monospace',
           ),
         ),
-      ],
-    );
-  }
+      ),
+    ],
+  );
 }

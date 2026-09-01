@@ -3,7 +3,7 @@ part of 'story_frame_widget.dart';
 const _joodeskanPattern = 'https://www.joodeskan.sa/';
 
 /// A button widget that represents an action in a story frame.
-class StoryFrameActionButton extends StatefulWidget {
+class StoryFrameActionButton extends ConsumerStatefulWidget {
   ///  [StoryFrameActionButton].
   const StoryFrameActionButton({
     required this.actionTheme,
@@ -29,10 +29,10 @@ class StoryFrameActionButton extends StatefulWidget {
   final Color? actionColor;
 
   @override
-  State<StoryFrameActionButton> createState() => _StoryFrameActionButtonState();
+  ConsumerState<StoryFrameActionButton> createState() => _StoryFrameActionButtonState();
 }
 
-class _StoryFrameActionButtonState extends State<StoryFrameActionButton> {
+class _StoryFrameActionButtonState extends ConsumerState<StoryFrameActionButton> {
   /// Maps a localization key to its corresponding localized value.
   String _keyToLocale(AppLocalizations l10n, String key) => switch (key) {
     'next' => l10n.next,
@@ -84,13 +84,28 @@ class _StoryFrameActionButtonState extends State<StoryFrameActionButton> {
 
   /// Handles the network link action by opening the specified URL.
   void handleNetworkLinkAction(String url) {
+    final Uri uri = Uri.parse(url);
     if (url.startsWith(_joodeskanPattern)) {
       NavigationService.navigatorKey.currentState?.pushNamed(
         RouteName.jodDonationPage,
       );
       return;
+    } else if (url.contains('/miniApps')) {
+      final urlParams = uri.fragment.isNotEmpty ? Uri.parse(uri.fragment) : uri;
+      final params = urlParams.queryParameters;
+      if (params['groupId'] != null) {
+        ServiceEvents.setPendingOpenSource(ServiceEvents.sourceStory);
+        CommonFunctions.openMiniAppGroupId(
+          groupId: params['groupId'].toString(),
+        );
+      } else if (params['key'] != null) {
+        ServiceEvents.setPendingOpenSource(ServiceEvents.sourceStory);
+        CommonFunctions.openMiniApp(serviceKey: params['key'].toString());
+      }
+      final AppRouter router = ref.read(appRouterProvider)..push(MapnessServicesRoute());
+    } else {
+      launchUrl(Uri.parse(url), mode: LaunchMode.externalApplication);
     }
-    launchUrl(Uri.parse(url));
   }
 
   @override

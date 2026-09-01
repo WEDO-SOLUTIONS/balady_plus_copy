@@ -19,7 +19,7 @@ on:
       - "bugfix/*"
       - "feat/*"
       - "feature/*"
-      - "urbi"
+      - "core"
       - "release/*"
     paths-ignore:
       - "**.md"
@@ -254,10 +254,142 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
+        with:
+          # actions/checkout persists GITHUB_TOKEN as a global http.extraheader
+          # for github.com, which overrides our own PAT below for every other
+          # github.com clone (e.g. map_styles.git) since GITHUB_TOKEN is scoped
+          # only to this repo. Disable it so our url.insteadOf mapping wins.
+          persist-credentials: false
+
+      - name: Configure git auth for private WEDO-SOLUTIONS package repos
+        run: |
+          git config --global url."https://x-access-token:${{ secrets.WEDO_PACKAGES_PAT }}@github.com/".insteadOf "https://github.com/"
+
+      - name: Generate pubspec overrides for unpub-hosted packages
+        # ubuntu-latest has no VPN route to unpub.balady.gov.sa, so `flutter pub get`
+        # can't resolve these hosted deps here. Override them with git deps (default
+        # branch) pointing at the same private repos instead, CI-only, never committed.
+        # Both files get the full set: mapness resolves the root package's deps too
+        # via its `path: ..` dependency, and dependency_overrides don't propagate
+        # across that boundary — each pubspec_overrides.yaml only covers its own
+        # entrypoint's resolution.
+        run: |
+          cat > pubspec_overrides.yaml <<'EOF'
+          dependency_overrides:
+            balady_uikit:
+              git:
+                url: https://github.com/WEDO-SOLUTIONS/balady_uikit.git
+                ref: development
+                path: packages/balady_uikit
+            balady_uikit_default:
+              git:
+                url: https://github.com/WEDO-SOLUTIONS/balady_uikit.git
+                ref: development
+                path: packages/balady_uikit_default
+            balady_uikit_dga:
+              git:
+                url: https://github.com/WEDO-SOLUTIONS/balady_uikit.git
+                ref: development
+                path: packages/balady_uikit_dga
+            balady_uikit_saudi_day:
+              git:
+                url: https://github.com/WEDO-SOLUTIONS/balady_uikit.git
+                ref: development
+                path: packages/balady_uikit_saudi_day
+            balady_uikit_foundation_day:
+              git:
+                url: https://github.com/WEDO-SOLUTIONS/balady_uikit.git
+                ref: development
+                path: packages/balady_uikit_foundation_day
+            balady_uikit_mekkah:
+              git:
+                url: https://github.com/WEDO-SOLUTIONS/balady_uikit.git
+                ref: development
+                path: packages/balady_uikit_mekkah
+            balady_authorization:
+              git:
+                url: https://github.com/WEDO-SOLUTIONS/balady_authorization.git
+            balady_design_system:
+              git:
+                url: https://github.com/WEDO-SOLUTIONS/balady-design-system.git
+            flutter_picker_plus:
+              git:
+                url: https://github.com/WEDO-SOLUTIONS/flutter_picker_plus.git
+            urbi_analytics:
+              git:
+                url: https://github.com/WEDO-SOLUTIONS/urbi_analytics.git
+            urbi_utils:
+              git:
+                url: https://github.com/WEDO-SOLUTIONS/urbi_utils.git
+            another_transformer_page_view:
+              git:
+                url: https://github.com/WEDO-SOLUTIONS/another_transformer_page_view.git
+            map_styles:
+              git:
+                url: https://github.com/WEDO-SOLUTIONS/map_styles.git
+                ref: development
+          EOF
+
+          cat > mapness/pubspec_overrides.yaml <<'EOF'
+          dependency_overrides:
+            balady_uikit:
+              git:
+                url: https://github.com/WEDO-SOLUTIONS/balady_uikit.git
+                ref: development
+                path: packages/balady_uikit
+            balady_uikit_default:
+              git:
+                url: https://github.com/WEDO-SOLUTIONS/balady_uikit.git
+                ref: development
+                path: packages/balady_uikit_default
+            balady_uikit_dga:
+              git:
+                url: https://github.com/WEDO-SOLUTIONS/balady_uikit.git
+                ref: development
+                path: packages/balady_uikit_dga
+            balady_uikit_saudi_day:
+              git:
+                url: https://github.com/WEDO-SOLUTIONS/balady_uikit.git
+                ref: development
+                path: packages/balady_uikit_saudi_day
+            balady_uikit_foundation_day:
+              git:
+                url: https://github.com/WEDO-SOLUTIONS/balady_uikit.git
+                ref: development
+                path: packages/balady_uikit_foundation_day
+            balady_uikit_mekkah:
+              git:
+                url: https://github.com/WEDO-SOLUTIONS/balady_uikit.git
+                ref: development
+                path: packages/balady_uikit_mekkah
+            balady_authorization:
+              git:
+                url: https://github.com/WEDO-SOLUTIONS/balady_authorization.git
+            balady_design_system:
+              git:
+                url: https://github.com/WEDO-SOLUTIONS/balady-design-system.git
+            flutter_picker_plus:
+              git:
+                url: https://github.com/WEDO-SOLUTIONS/flutter_picker_plus.git
+            urbi_analytics:
+              git:
+                url: https://github.com/WEDO-SOLUTIONS/urbi_analytics.git
+            urbi_utils:
+              git:
+                url: https://github.com/WEDO-SOLUTIONS/urbi_utils.git
+            another_transformer_page_view:
+              git:
+                url: https://github.com/WEDO-SOLUTIONS/another_transformer_page_view.git
+            map_styles:
+              git:
+                url: https://github.com/WEDO-SOLUTIONS/map_styles.git
+                ref: development
+          EOF
+
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: "3.38.5"
+          flutter-version: "3.44.5"
           channel: "stable"
 
       - name: Download Localazy #wait secrets from 2gis
@@ -271,7 +403,6 @@ jobs:
           # Re-apply keys referenced in code but not published in Localazy
           # (see mapness/l10n_overrides.json). Must run after download, before gen-l10n.
           sudo chown -R "$USER:$USER" mapness/lib/l10n || true
-          python3 justscripts/apply_l10n_overrides.py
           cd mapness
           # FIXME: Workaround, see https://github.com/localazy/download/issues/3
           mkdir -p lib/l10n/generated

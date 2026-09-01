@@ -10,9 +10,7 @@ import 'package:mapness/features/app_analytics/app_analytics.dart';
 import 'package:mapness/features/quick_filters/ui/quick_filters.dart';
 import 'package:mapness/features/search/providers/search.dart';
 import 'package:mapness/features/search/ui/search_scope.dart';
-import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/lib/auth/auth_methods.dart';
-import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/providers/analytic/bss_service.dart';
 import 'package:mapness/shared/providers/analytic/models/bss_request.dart';
 import 'package:mapness/shared/providers/analytic/models/payload/bss_payload.dart';
@@ -73,12 +71,6 @@ class _MapQuickFiltersState extends ConsumerState<MapQuickFilters> {
               if (!mounted) {
                 return;
               }
-              Metrics.logEventAdvanced(
-                MetricsConstants.exploreKeys.bookmarkIcon,
-                action: MetricAction.tap.name,
-                group: MetricsConstants.exploreTag,
-              );
-
               ref.read(advertMetricsProvider.notifier).sendEvent(AdvertMetricsKeys.exploreLandingEngagement);
               context.router.push(const FavouritesRoute());
             },
@@ -118,12 +110,6 @@ class _MapQuickFiltersState extends ConsumerState<MapQuickFilters> {
       },
       onFavouritesTap: () {
         _debouncer.run(() {
-          Metrics.logEventAdvanced(
-            MetricsConstants.exploreKeys.bookmarkIcon,
-            action: MetricAction.tap.name,
-            group: MetricsConstants.exploreTag,
-          );
-
           searchObjectManager.removeAllMarkers();
         });
       },

@@ -18,7 +18,9 @@ import 'package:mapness/pages/free_roam/ui/road_panel.dart';
 import 'package:mapness/pages/free_roam/ui/traffic_parking_control.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/extensions/path_nav_ext.dart';
+import 'package:mapness/shared/providers/app_language.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
+import 'package:mapness/shared/services/navigation_live_updates.dart';
 import 'package:mapness/widgets/landing/compass_control.dart';
 import 'package:mapness/widgets/landing/follow_control.dart';
 import 'package:mapness/widgets/landing/indoor_control.dart';
@@ -88,8 +90,33 @@ class FreeRoamPageState extends ConsumerState<FreeRoamPage> with WidgetsBindingO
     });
     startControlsDisapearTimer();
     _listenNavigationEvents();
+    // Localizations are only readable once the first frame is scheduled.
+    WidgetsBinding.instance.addPostFrameCallback((_) => unawaited(_startLiveUpdates()));
 
     WakelockPlus.enable();
+  }
+
+  /// Free roam has no route, so the widget only carries speed, limit and the
+  /// current road — the same data the on-screen panel shows.
+  Future<void> _startLiveUpdates() async {
+    if (!mounted) {
+      return;
+    }
+    final l10n = context.l10n;
+    await NavigationLiveUpdates.instance.setSessionMetadata(
+      destinationName: null,
+      mode: 'freeRoam',
+      routeType: 'car',
+      language: ref.read(appLanguageProvider).baladyCompat,
+      strings: <String, String>{
+        'free_roam': l10n.freeRoam,
+        'gps_lost': l10n.gpsLost,
+        'km': l10n.km,
+        'm': l10n.meter,
+        'h': l10n.hoursShort,
+        'min': l10n.minutesShort,
+      },
+    );
   }
 
   @override
@@ -103,6 +130,7 @@ class FreeRoamPageState extends ConsumerState<FreeRoamPage> with WidgetsBindingO
   @override
   void deactivate() {
     _deactivateFreeRoam();
+    unawaited(NavigationLiveUpdates.instance.endSession());
     super.deactivate();
   }
 
@@ -189,59 +217,69 @@ class FreeRoamPageState extends ConsumerState<FreeRoamPage> with WidgetsBindingO
                   padding: EdgeInsets.symmetric(vertical: uikit.Spacing.$3x),
                   child: ManeuverWidget(),
                 ),
-                const SizedBox(height: uikit.Spacing.$3x),
+                const SizedBox(height: uikit.Spacing.$6x),
                 Expanded(
-                  child: AnimatedOpacity(
-                    opacity: isControlsActive ? 1 : 0,
-                    duration: const Duration(milliseconds: 250),
-                    child: IgnorePointer(
-                      ignoring: !isControlsActive,
-                      child: GestureDetector(
-                        onTap: () {
-                          timer?.cancel();
-                          timer = null;
-                          wasSetActive = true;
-                          isControlsActive = true;
-                          startControlsDisapearTimer();
-                        },
-                        child: Padding(
-                          padding: padding,
-                          child: isPortrait
-                              ? const Column(
-                                  crossAxisAlignment: CrossAxisAlignment.end,
-                                  children: [
-                                    TrafficParkingControl(),
-                                    SizedBox(height: uikit.Spacing.$2x),
-                                    DimensionControl(),
-                                    Spacer(),
-                                    Row(
-                                      children: [
-                                        IndoorControl(),
-                                      ],
-                                    ),
-                                    Spacer(),
-                                    CompassControl(),
-                                    SizedBox(height: uikit.Spacing.$2x),
-                                    FollowControl(),
-                                    SizedBox(height: uikit.Spacing.$3x),
-                                  ],
-                                )
-                              : const Row(
-                                  children: [
-                                    Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-                                        Spacer(),
-                                        Padding(
-                                          padding: padding,
-                                          child: IndoorControl(),
+                  child: IntrinsicHeight(
+                    child: Padding(
+                      padding: padding,
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const SoundControl(),
+                          Expanded(
+                            child: AnimatedOpacity(
+                              opacity: isControlsActive ? 1 : 0,
+                              duration: const Duration(milliseconds: 250),
+                              child: IgnorePointer(
+                                ignoring: !isControlsActive,
+                                child: GestureDetector(
+                                  onTap: () {
+                                    timer?.cancel();
+                                    timer = null;
+                                    wasSetActive = true;
+                                    isControlsActive = true;
+                                    startControlsDisapearTimer();
+                                  },
+                                  child: isPortrait
+                                      ? const Column(
+                                          crossAxisAlignment: CrossAxisAlignment.end,
+                                          children: [
+                                            TrafficParkingControl(trafficVisible: false),
+                                            SizedBox(height: uikit.Spacing.$2x),
+                                            DimensionControl(),
+                                            Spacer(),
+                                            Row(
+                                              children: [
+                                                IndoorControl(),
+                                              ],
+                                            ),
+                                            Spacer(),
+                                            CompassControl(),
+                                            SizedBox(height: uikit.Spacing.$2x),
+                                            FollowControl(),
+                                            SizedBox(height: uikit.Spacing.$3x),
+                                          ],
+                                        )
+                                      : const Row(
+                                          children: [
+                                            Column(
+                                              crossAxisAlignment: CrossAxisAlignment.start,
+                                              children: [
+                                                Spacer(),
+                                                Padding(
+                                                  padding: padding,
+                                                  child: IndoorControl(),
+                                                ),
+                                                Spacer(flex: 3),
+                                              ],
+                                            ),
+                                          ],
                                         ),
-                                        Spacer(flex: 3),
-                                      ],
-                                    ),
-                                  ],
                                 ),
-                        ),
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                   ),

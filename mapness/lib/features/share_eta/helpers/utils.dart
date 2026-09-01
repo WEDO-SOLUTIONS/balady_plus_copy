@@ -22,6 +22,10 @@ import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:mapness/shared/utils/logger/logger.dart';
 
 class EtaUtils {
+  static const _expiredSheetRouteName = 'eta_share_expired';
+
+  static ModalRoute<void>? _expiredSheetRoute;
+
   static Future<img.Image> processImage(String imgUrl, int imgSize, {bool isUnavailable = false}) async {
     // Load the mask image from assets
     final maskData = await rootBundle.load(Assets.images.markerEtaMask.keyName);
@@ -68,8 +72,18 @@ class EtaUtils {
     return mask48x48;
   }
 
-  static Future<bool> processShareLink(WidgetRef ref,
-      {required String tokenId, required String streamId, String? type, double? latitude, double? longitude}) async {
+  static Future<bool> processShareLink(
+    WidgetRef ref, {
+    required String tokenId,
+    required String streamId,
+    String? type,
+    double? latitude,
+    double? longitude,
+  }) async {
+    if (type == 'eta' || type == 'live') {
+      dismissExpiredSheet();
+    }
+
     final Completer<Position?> completer = Completer();
     ProviderSubscription? _locationListener;
 
@@ -104,7 +118,9 @@ class EtaUtils {
     if (type == 'eta') {
       try {
         if (latitude != null && longitude != null) {
-          await ref.read(cameraPositionProvider.notifier).animateTo(
+          await ref
+              .read(cameraPositionProvider.notifier)
+              .animateTo(
                 CameraPositionMessage(
                   point: GeoPointMessage(latitude: latitude, longitude: longitude),
                   zoom: 17,
@@ -156,7 +172,9 @@ class EtaUtils {
         await ref.read(shareEtaProvider.notifier).stopSharing();
 
         if (latitude != null && longitude != null) {
-          await ref.read(cameraPositionProvider.notifier).animateTo(
+          await ref
+              .read(cameraPositionProvider.notifier)
+              .animateTo(
                 CameraPositionMessage(
                   point: GeoPointMessage(latitude: latitude, longitude: longitude),
                   zoom: 17,
@@ -179,29 +197,43 @@ class EtaUtils {
   }
 
   static void showLiveLocationExpired(BuildContext context) {
-    showModalBottomSheet(
-      backgroundColor: Colors.transparent,
-      context: context,
-      isScrollControlled: true,
-      builder: (_) => EtaShareExpired.liveLocation(context),
-    );
+    _showExpiredSheet(context, (_) => EtaShareExpired.liveLocation(context));
   }
 
   static void showEtaExpired(BuildContext context) {
-    showModalBottomSheet(
-      backgroundColor: Colors.transparent,
-      context: context,
-      isScrollControlled: true,
-      builder: (_) => EtaShareExpired.eta(context),
-    );
+    _showExpiredSheet(context, (_) => EtaShareExpired.eta(context));
   }
 
   static void showBroadcastExpired(BuildContext context) {
-    showModalBottomSheet(
+    _showExpiredSheet(context, (_) => EtaShareExpired.broadcastExpired(context));
+  }
+
+  /// Closes the "share expired" sheet if it is still on screen. Safe to call when nothing is shown.
+  static void dismissExpiredSheet() {
+    final route = _expiredSheetRoute;
+    _expiredSheetRoute = null;
+    if (route == null || !route.isActive) {
+      return;
+    }
+    route.navigator?.removeRoute(route);
+  }
+
+  static void _showExpiredSheet(BuildContext context, WidgetBuilder builder) {
+    dismissExpiredSheet();
+
+    showModalBottomSheet<void>(
       backgroundColor: Colors.transparent,
       context: context,
       isScrollControlled: true,
-      builder: (_) => EtaShareExpired.broadcastExpired(context),
-    );
+      routeSettings: const RouteSettings(name: _expiredSheetRouteName),
+      builder: (sheetContext) {
+        _expiredSheetRoute = ModalRoute.of<void>(sheetContext);
+        return builder(sheetContext);
+      },
+    ).whenComplete(() {
+      if (_expiredSheetRoute?.isActive != true) {
+        _expiredSheetRoute = null;
+      }
+    });
   }
 }

@@ -50,7 +50,7 @@ extension PoiContentFeedbackExt on PoiContentFeedbackType {
                 Color(0xFFB28F64),
                 Color(0xFF846743),
               ],
-            _ => const [Color(0xFF396372), Color(0xFF013449)],
+            _ => [context.colors.accentMuted, context.colors.accentDefault], //const [Color(0xFF396372), Color(0xFF013449)],
           },
         PoiContentFeedbackType.cityExpert => switch (activeCityEvent) {
             CityEventType.saudiNationalDay => const [Color(0xFF008A4A), Color(0xFF00542B)],
@@ -58,7 +58,7 @@ extension PoiContentFeedbackExt on PoiContentFeedbackType {
                 Color(0xFFB28F64),
                 Color(0xFF846743),
               ],
-            _ => const [Color(0xFF3AB7AE), Color(0xFF238A82)],
+            _ =>[context.colors.accentMuted, context.colors.accentDefault], //const [Color(0xFF3AB7AE), Color(0xFF238A82)],
           },
       };
 }

@@ -67,23 +67,36 @@ class LayerSwitcherCard extends ConsumerWidget {
 
     final (imageType, assetPath) = value.imageAsset();
     final image = switch (imageType) {
-      ImageAssetType.svg => SvgPicture.asset(
-        assetPath,
-        fit: BoxFit.cover,
-        height: 80,
-        colorFilter: ColorFilter.mode(
-          Colors.black.withAlpha(40),
-          BlendMode.overlay,
+      ImageAssetType.svg => Semantics(
+        label: '',
+        image: true,
+        enabled: false,
+        child: SvgPicture.asset(
+          assetPath,
+          fit: BoxFit.cover,
+          height: 80,
+          colorFilter: ColorFilter.mode(
+            Colors.black.withAlpha(40),
+            BlendMode.overlay,
+          ),
         ),
       ),
-      ImageAssetType.image => Image.asset(
-        assetPath,
-        fit: BoxFit.cover,
-        height: 80,
+      ImageAssetType.image => Semantics(
+        label: '',
+        image: true,
+        enabled: false,
+        child: Image.asset(
+          assetPath,
+          fit: BoxFit.cover,
+          height: 80,
+        ),
       ),
     };
 
-    return Column(
+    return Semantics(
+      label: value.titleLocale(context.l10n),
+      enabled: true,
+      child:Column(
       mainAxisSize: MainAxisSize.min,
       children: [
         Container(
@@ -110,27 +123,32 @@ class LayerSwitcherCard extends ConsumerWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Flexible(
-                child: Text(
-                  value.titleLocale(context.l10n),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  textAlign: TextAlign.center,
-                  style: textStyles.bodySmallMedium.copyWith(
-                    color: isSelected ? colors.accentOnContainer : colors.foregroundDefault,
+                child: Semantics(
+                    label: '',
+                    enabled: false,
+                    child: Text(
+                      value.titleLocale(context.l10n),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      textAlign: TextAlign.center,
+                      style: textStyles.bodySmallMedium.copyWith(
+                        color: isSelected ? colors.accentOnContainer : colors.foregroundDefault,
+                      ),
+                    ),
                   ),
                 ),
-              ),
-              if (withIcon)
-                Icon(
-                  Icons.chevron_right,
-                  size: 22,
-                  color: colors.foregroundSoft,
-                ),
-            ],
+                if (withIcon)
+                  Icon(
+                    Icons.chevron_right,
+                    size: 22,
+                    color: colors.foregroundSoft,
+                  ),
+              ],
+            ),
           ),
-        ),
-        const SizedBox(height: Spacing.$2x),
-      ],
+          const SizedBox(height: Spacing.$2x),
+        ],
+      ),
     );
   }
 }
