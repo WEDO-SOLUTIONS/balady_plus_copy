@@ -244,6 +244,8 @@ class DgisMapPlugin extends FlutterMapApi {
           return _objectTapEventHandler.roadEventTapEvent(map);
         case MarkerTapEvent.name:
           return _objectTapEventHandler.markerTapEvent(map);
+        case ModelTapEvent.name:
+          return _objectTapEventHandler.modelTapEvent(map);
         case ClusterTapEvent.name:
           unawaited(
             _objectTapEventHandler.clusterTapEvent(map, _api).then((value) async {
@@ -563,6 +565,44 @@ class DgisMapPlugin extends FlutterMapApi {
     return _api.removeAllMarkers(manager);
   }
 
+  /// Add 3D model on the map.
+  Future<void> addModel(ModelMapObject model, MapObjectManagerMessage? manager) {
+    if (model.onTap != null) {
+      _objectTapEventHandler.addModelHandler(model.id, model.onTap!, manager?.id);
+    }
+    return _api.addModel(ModelMapObjectMessage(id: model.id, options: model.options), manager);
+  }
+
+  /// Change 3D model options.
+  Future<void> setModelOptions(String id, ChangeModelMapObjectOptionsMessage options) {
+    return _api.setModelOptions(id, options);
+  }
+
+  /// Add 3D models on the map.
+  Future<void> addModels(List<ModelMapObject> models, MapObjectManagerMessage? manager) {
+    for (var model in models) {
+      if (model.onTap != null) {
+        _objectTapEventHandler.addModelHandler(model.id, model.onTap!, manager?.id);
+      }
+    }
+    return _api.addModels(
+      models.map((model) => ModelMapObjectMessage(id: model.id, options: model.options)).toList(),
+      manager,
+    );
+  }
+
+  /// Remove 3D model from the map by id.
+  Future<void> removeModel(String id, MapObjectManagerMessage? manager) {
+    _objectTapEventHandler.removeModelHandler(id);
+    return _api.removeModel(id, manager);
+  }
+
+  /// Remove all 3D models from the map related to the [manager].
+  Future<void> removeAllModels(MapObjectManagerMessage? manager) {
+    _objectTapEventHandler.removeAllModelHandlers(manager?.id);
+    return _api.removeAllModels(manager);
+  }
+
   /// Create map object manager with clustering.
   Future<MapObjectManagerMessage> createMapObjectManagerWithClustering(
     ClusteringMapObjectManager manager, {
@@ -629,7 +669,7 @@ class DgisMapPlugin extends FlutterMapApi {
 
   /// Remove all polygons from the map related to the [manager].
   Future<void> removeAllPolygons(MapObjectManagerMessage? manager) {
-    _objectTapEventHandler.removeAllPolygonHandlers();
+    _objectTapEventHandler.removeAllPolygonHandlers(manager?.id);
     return _api.removeAllPolygons(manager);
   }
 
@@ -664,7 +704,7 @@ class DgisMapPlugin extends FlutterMapApi {
 
   /// Remove all circles from the map related to the [manager].
   Future<void> removeAllCircles(MapObjectManagerMessage? manager) {
-    _objectTapEventHandler.removeAllCircleHandlers();
+    _objectTapEventHandler.removeAllCircleHandlers(manager?.id);
     return _api.removeAllCircles(manager);
   }
 
@@ -699,7 +739,7 @@ class DgisMapPlugin extends FlutterMapApi {
 
   /// Remove all polylines from the map related to the [manager].
   Future<void> removeAllPolylines(MapObjectManagerMessage? manager) {
-    _objectTapEventHandler.removeAllPolylineHandlers();
+    _objectTapEventHandler.removeAllPolylineHandlers(manager?.id);
     return _api.removeAllPolylines(manager);
   }
 

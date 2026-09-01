@@ -2,6 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/features/advert_metrics/advert_metrics.dart';
+import 'package:mapness/features/balady_analytics/events/story_events.dart';
 import 'package:mapness/features/stories/models/story_data.dart';
 import 'package:mapness/features/stories/models/story_frame_action.dart';
 import 'package:mapness/features/stories/models/story_frame_controller.dart';
@@ -18,12 +19,17 @@ class StoryFramesPlayer extends ConsumerStatefulWidget {
   final VoidCallback onNextStory;
   final VoidCallback onPreviousStory;
 
+  /// Called when the last frame of [story] becomes visible — the story was
+  /// watched through (analytics: `story_viewed.completed`).
+  final VoidCallback? onLastFrameShown;
+
   const StoryFramesPlayer({
     required this.onNextStory,
     required this.onPreviousStory,
     required this.story,
     super.key,
     this.controller,
+    this.onLastFrameShown,
   });
 
   @override
@@ -37,6 +43,13 @@ class _StoryFramesPlayerState extends ConsumerState<StoryFramesPlayer> {
   void initState() {
     super.initState();
     ref.read(storyServiceProvider.notifier).markStoryAsRead(widget.story.storyId, currentIndex);
+    _notifyIfLastFrameShown();
+  }
+
+  void _notifyIfLastFrameShown() {
+    if (currentIndex == widget.story.frames.length - 1) {
+      widget.onLastFrameShown?.call();
+    }
   }
 
   void _nextPage(String storyId, int pageIndex, int maxIndex) {
@@ -49,6 +62,7 @@ class _StoryFramesPlayerState extends ConsumerState<StoryFramesPlayer> {
     setState(() {
       currentIndex++;
     });
+    _notifyIfLastFrameShown();
   }
 
   void _previousPage(String storyId, int pageIndex) {
@@ -110,6 +124,15 @@ class _StoryFramesPlayerState extends ConsumerState<StoryFramesPlayer> {
             if (action.location.contains('/quickFeedback')) {
               ref.read(advertMetricsProvider.notifier).sendEvent(AdvertMetricsKeys.addPoiStories);
             }
+          }
+          // `NextStoryAction` only advances frames — not a CTA.
+          switch (action) {
+            case NavigationFrameAction(location: final location):
+              StoryEvents.storyCtaTapped(storyId: story.storyId, target: location);
+            case NetworkLinkFrameAction(url: final url):
+              StoryEvents.storyCtaTapped(storyId: story.storyId, target: url);
+            case NextStoryAction():
+              break;
           }
         },
       ),

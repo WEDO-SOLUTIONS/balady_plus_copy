@@ -2,7 +2,6 @@
 // import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/texts/custom_text_widget.dart';
 // import 'package:flutter/material.dart';
 // import 'package:flutter/scheduler.dart';
-// import 'package:flutter_uxcam/flutter_uxcam.dart';
 //
 // import 'package:localize_and_translate/localize_and_translate.dart';
 // import 'package:provider/provider.dart';
@@ -75,9 +74,7 @@
 //         mapViewModel.bottomSheetSizeFraction.notifyListeners();
 //
 //         if (mapViewModel.draggableScrollableController.size > 0.6) {
-//           FlutterUxcam.tagScreenName("HomeDialog");
 //         } else {
-//           FlutterUxcam.tagScreenName("HomePage");
 //         }
 //       });
 //     });

@@ -22,10 +22,8 @@ import 'package:mapness/pages/path_nav/path_nav_page.dart';
 import 'package:mapness/pages/routing/ui/routing_change_path_sheet.dart';
 import 'package:mapness/pages/routing/ui/routing_info.dart';
 import 'package:mapness/pages/routing/ui/routing_map_controls.dart';
-import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/hooks/toggle_sheet_controller_hook.dart';
-import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/providers/location.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:mapness/shared/providers/map/object_manager.dart';
@@ -146,46 +144,46 @@ class _RoutingRoutesPageState extends ConsumerState<RoutingRoutesPage> {
                   ),
                   if (points.length > 2)
                     Semantics(
-                    label: context.l10n.edit,
+                      label: context.l10n.edit,
+                      button: true,
+                      child: ExcludeSemantics(
+                        child: AppButton(
+                          primaryIcon: General16Icons.edit,
+                          iconColor: colors.neutralOnContainer,
+                          buttonColorScheme: ButtonColorScheme.neutral,
+                          buttonType: ButtonType.secondary,
+                          size: ButtonSize.large,
+                          onTap: _changeRoute,
+                        ),
+                      ),
+                    )
+                  else
+                    Semantics(
+                      label: context.l10n.a11ySwapRouteEndpoints,
+                      button: true,
+                      child: ExcludeSemantics(
+                        child: AppButton(
+                          primaryIcon: TransportIcons.verticalChange,
+                          buttonColorScheme: ButtonColorScheme.neutral,
+                          buttonType: ButtonType.secondary,
+                          size: ButtonSize.large,
+                          onTap: _onSwipeRoutes,
+                        ),
+                      ),
+                    ),
+                  Semantics(
+                    label: context.l10n.a11yClose,
                     button: true,
                     child: ExcludeSemantics(
                       child: AppButton(
-                        primaryIcon: General16Icons.edit,
+                        primaryIcon: SystemIcons.close,
                         iconColor: colors.neutralOnContainer,
                         buttonColorScheme: ButtonColorScheme.neutral,
                         buttonType: ButtonType.secondary,
                         size: ButtonSize.large,
-                        onTap: _changeRoute,
+                        onTap: _onClose,
                       ),
                     ),
-                  )
-                else
-                  Semantics(
-                    label: context.l10n.a11ySwapRouteEndpoints,
-                    button: true,
-                    child: ExcludeSemantics(
-                      child: AppButton(
-                        primaryIcon: TransportIcons.verticalChange,
-                        buttonColorScheme: ButtonColorScheme.neutral,
-                        buttonType: ButtonType.secondary,
-                        size: ButtonSize.large,
-                        onTap: _onSwipeRoutes,
-                      ),
-                    ),
-                  ),
-                Semantics(
-                  label: context.l10n.a11yClose,
-                  button: true,
-                  child: ExcludeSemantics(
-                    child: AppButton(
-                      primaryIcon: SystemIcons.close,
-                      iconColor: colors.neutralOnContainer,
-                      buttonColorScheme: ButtonColorScheme.neutral,
-                      buttonType: ButtonType.secondary,
-                      size: ButtonSize.large,
-                      onTap: _onClose,
-                    ),
-                  ),
                   ),
                 ].insertBetween(Spacing.$3x.widthBox).toList(),
               ),
@@ -289,12 +287,6 @@ class _RoutingRoutesPageState extends ConsumerState<RoutingRoutesPage> {
   }
 
   void _onSwipeRoutes() {
-    Metrics.logEventAdvanced(
-      MetricsConstants.routesKeys.routeSelectionReverseRouteDirectionIcon,
-      group: MetricsConstants.routesTag,
-      action: MetricAction.tap.toString(),
-    );
-
     setState(() {
       points = points.reversed.toList();
     });
@@ -342,12 +334,6 @@ class _RoutingRoutesPageState extends ConsumerState<RoutingRoutesPage> {
     await ref
         .read(mapObjectManagerProvider(named: mapSetting.name, layerId: mapSetting.layerId).notifier)
         .setMapObjectManagerIsVisible(isVisible: true);
-
-    Metrics.logEventAdvanced(
-      MetricsConstants.routesKeys.routeSelectionBack,
-      group: MetricsConstants.routesTag,
-      action: MetricAction.tap.toString(),
-    );
 
     final navState = await ActiveNavigationHelper.getState(ref.read(dgisControllerProvider).value);
 

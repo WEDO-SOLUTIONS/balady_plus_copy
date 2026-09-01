@@ -4,6 +4,9 @@
 <dict>
 	<key>CADisableMinimumFrameDurationOnPhone</key>
 	<true/>
+	<!-- PostHog is set up programmatically (PosthogBaladyAnalyticsSink), host/key come from .env -->
+	<key>com.posthog.posthog.AUTO_INIT</key>
+	<false/>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleLocalizations</key>
@@ -38,7 +41,7 @@
 				<string>com.balady</string>
 				<string>apps.balady.gov.sa</string>
 				<string>plus.balady.gov.sa</string>
-				<string>plus.balady.sa</string>
+				<string>plus.balady.gov.sa</string>
 			</array>
 		</dict>
 		<dict>
