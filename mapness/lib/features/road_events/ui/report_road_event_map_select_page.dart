@@ -55,16 +55,26 @@ class _ReportRoadEventMapSelectPageState extends ConsumerState<ReportRoadEventMa
   final GlobalKey _pinKey = GlobalKey();
 
   bool _isSubmitting = false;
+  bool _wasFollowing = false;
 
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final follow = ref.read(followStateProvider);
-      if (follow.type != LocationFollowType.off) {
+      _wasFollowing = follow.type != LocationFollowType.off;
+      if (_wasFollowing) {
         ref.read(dgisControllerProvider).value?.stopFollowNavigation();
       }
     });
+  }
+
+  @override
+  void deactivate() {
+    if (_wasFollowing) {
+      ref.read(dgisControllerProvider).value?.startFollowNavigation();
+    }
+    super.deactivate();
   }
 
   Future<void> _onSubmit(RoadEventLocation location, RoadEventType type, Set<RoadEventLane> lanes) async {

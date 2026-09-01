@@ -6,6 +6,7 @@ import 'package:balady_plus/app/features/_shared_feature_/presentation/buttons/i
 import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/buttons/custom_buttons_widgets.dart';
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
+import 'package:dgis_map/library.dart' show LocationFollowType;
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -24,6 +25,8 @@ import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/hooks/toggle_sheet_controller_hook.dart';
 import 'package:mapness/shared/providers/app_language.dart';
 import 'package:mapness/shared/providers/location.dart';
+import 'package:mapness/shared/providers/map/dgis_controller.dart';
+import 'package:mapness/shared/providers/map/follow_state.dart';
 import 'package:mapness/shared/providers/map/selected_marker.dart';
 import 'package:mapness/shared/ui/buttons/app_close_button.dart';
 import 'package:mapness/shared/ui/toast/toast_overlay.dart';
@@ -65,6 +68,7 @@ class RoadEventDetailsPage extends StatefulHookConsumerWidget {
 class _RoadEventDetailsPageState extends ConsumerState<RoadEventDetailsPage> {
   bool _isClosing = false;
   bool _isSubmitting = false;
+  bool _wasFollowing = false;
 
   RoadEventSheetState get _initialRoadEventState => RoadEventSheetState(
     id: widget.id,
@@ -83,6 +87,18 @@ class _RoadEventDetailsPageState extends ConsumerState<RoadEventDetailsPage> {
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       unawaited(selectEvent(_currentRoadEventState));
     });
+    _wasFollowing = ref.read(followStateProvider).type != LocationFollowType.off;
+    if (_wasFollowing) {
+      ref.read(dgisControllerProvider).value?.stopFollowNavigation();
+    }
+  }
+
+  @override
+  void deactivate() {
+    if (_wasFollowing) {
+      ref.read(dgisControllerProvider).value?.startFollowNavigation();
+    }
+    super.deactivate();
   }
 
   RoadEventSheetState get _currentRoadEventState => ref.read(roadEventsProvider) ?? _initialRoadEventState;
