@@ -759,6 +759,28 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
         self.objectTapHandler?.removeAllMarkers(from: manager?.id, completion: completion)
     }
     
+    // MARK: 3D Model
+    
+    func addModel(model: ModelMapObjectMessage, manager: MapObjectManagerMessage?, completion: @escaping (Result<Void, any Error>) -> Void) {
+        self.objectTapHandler?.addModel(model, to: manager?.id, completion: completion)
+    }
+    
+    func setModelOptions(id: String, options: ChangeModelMapObjectOptionsMessage, completion: @escaping (Result<Void, any Error>) -> Void) {
+        self.objectTapHandler?.setModelOptions(id, options: options, completion: completion)
+    }
+    
+    func addModels(models: [ModelMapObjectMessage], manager: MapObjectManagerMessage?, completion: @escaping (Result<Void, any Error>) -> Void) {
+        self.objectTapHandler?.addModels(models, to: manager?.id, completion: completion)
+    }
+    
+    func removeModel(id: String, manager: MapObjectManagerMessage?, completion: @escaping (Result<Void, any Error>) -> Void) {
+        self.objectTapHandler?.removeModel(id, from: manager?.id, completion: completion)
+    }
+    
+    func removeAllModels(manager: MapObjectManagerMessage?, completion: @escaping (Result<Void, any Error>) -> Void) {
+        self.objectTapHandler?.removeAllModels(from: manager?.id, completion: completion)
+    }
+    
     // MARK: Map Object Manager
     
     func createMapObjectManagerWithClustering(message: ClusteringMapObjectManagerOptionsMessage, layerId: String?, completion: @escaping (Result<MapObjectManagerMessage, any Error>) -> Void) {
@@ -998,6 +1020,7 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
                     maxZoom: Zoom(value: 18)
                 ),
             imageFactory: try! self.sdk.imageFactory,
+            modelFactory: try! self.sdk.modelFactory,
             routeHandler: self.routeHandler,
             eventChannel: eventChannel,
             registrar: self.registrar

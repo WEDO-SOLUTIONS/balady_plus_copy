@@ -3,11 +3,8 @@ import 'dart:io';
 
 import 'package:dio/dio.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/features/special_themes/modes/mekkah_base/mekkah_base_theme.dart';
 import 'package:mapness/shared/config/environment_config.dart';
-import 'package:mapness/shared/constants/metrics_constants.dart';
-import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/providers/base_dio.dart';
 import 'package:mapness/shared/providers/dgis_environment.dart';
 import 'package:mapness/shared/providers/makkah_config_staging.dart';
@@ -248,12 +245,6 @@ class PlacesActivationConfigDatasource {
   String get _cacheFile => _isStaging ? _cacheStagingFileName : _cacheFileName;
 
   Future<PlacesActivationConfig> getConfig() async {
-    // Track config fetch started
-    Metrics.logEventAdvanced(
-      MetricsConstants.themesKeys.configFetchStarted,
-      group: MetricsConstants.themesTag,
-    );
-
     try {
       final response = await dio.get<dynamic>(
         _remoteUrl,
@@ -273,33 +264,14 @@ class PlacesActivationConfigDatasource {
         final config = PlacesActivationConfig.fromJson(json);
         await _saveToCache(jsonEncode(json));
 
-        // Track config fetch success
-        Metrics.logEventAdvanced(
-          MetricsConstants.themesKeys.configFetchSuccess,
-          group: MetricsConstants.themesTag,
-          props: {'version': config.version, 'source': 'remote'},
-        );
-
         return config;
       }
     } on DioException catch (e) {
-      // Track config fetch failed
-      Metrics.logEventAdvanced(
-        MetricsConstants.themesKeys.configFetchFailed,
-        group: MetricsConstants.themesTag,
-        props: {'error': e.type.name, 'source': 'remote'},
-      );
       logger.log(
         'PlacesActivationConfig: Failed to fetch from remote, falling back to cache. Error: $e',
         logLevel: MapnessLogLevel.warning,
       );
     } catch (e) {
-      // Track config fetch failed
-      Metrics.logEventAdvanced(
-        MetricsConstants.themesKeys.configFetchFailed,
-        group: MetricsConstants.themesTag,
-        props: {'error': e.toString(), 'source': 'remote'},
-      );
       logger.log(
         'PlacesActivationConfig: Unexpected error fetching remote data: $e',
         logLevel: MapnessLogLevel.warning,
@@ -338,13 +310,6 @@ class PlacesActivationConfigDatasource {
         final json = jsonDecode(jsonOutput) as Map<String, dynamic>;
         final config = PlacesActivationConfig.fromJson(json);
 
-        // Track cache used
-        Metrics.logEventAdvanced(
-          MetricsConstants.themesKeys.configCacheUsed,
-          group: MetricsConstants.themesTag,
-          props: {'version': config.version},
-        );
-
         return config;
       }
     } catch (e) {
@@ -364,21 +329,8 @@ class PlacesActivationConfigDatasource {
       final json = jsonDecode(jsonOutput) as Map<String, dynamic>;
       final config = PlacesActivationConfig.fromJson(json);
 
-      // Track asset fallback used
-      Metrics.logEventAdvanced(
-        MetricsConstants.themesKeys.configAssetFallback,
-        group: MetricsConstants.themesTag,
-        props: {'version': config.version},
-      );
-
       return config;
     } catch (e) {
-      // Track config fetch failed completely
-      Metrics.logEventAdvanced(
-        MetricsConstants.themesKeys.configFetchFailed,
-        group: MetricsConstants.themesTag,
-        props: {'error': e.toString(), 'source': 'assets'},
-      );
       logger.log(
         'PlacesActivationConfig: Failed to load from assets, using defaults: $e',
         logLevel: MapnessLogLevel.warning,

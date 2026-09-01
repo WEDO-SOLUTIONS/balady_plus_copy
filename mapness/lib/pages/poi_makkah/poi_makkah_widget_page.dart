@@ -37,12 +37,10 @@ import 'package:mapness/features/special_themes/core/places_activation_config.da
 import 'package:mapness/features/special_themes/core/special_theme_mode.dart';
 import 'package:mapness/widgets/landing/kaaba_virtual_journey_card.dart';
 import 'package:mapness/features/special_themes/modes/mekkah_base/makkah_poi_constants.dart';
-import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/entities/coordinates.dart';
 import 'package:mapness/shared/extensions/brief_route_info_message_ext.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/lib/share_util.dart';
-import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/providers/location.dart';
 import 'package:mapness/shared/providers/map/find_brief_route_info.dart';
 import 'package:mapness/shared/providers/dark_mode.dart';

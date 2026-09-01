@@ -48,6 +48,8 @@ class PoiContentContactsCard extends StatelessWidget {
         if (hasPhones && hasEmails) Divider(color: context.colors.borderDefault, indent: Spacing.$12x, height: 1),
         if (hasEmails)
           _EmailItemWidget(emails: data.emails!, onTap: data.onEmailTap, showFullWidth: shouldShowFullWidth),
+        if ((hasPhones || hasEmails) && hasSocialMedia && shouldShowFullWidth)
+          Divider(color: context.colors.borderDefault, indent: Spacing.$12x, height: 1),
         if (hasSocialMedia) const SizedBox(width: double.maxFinite),
         if (hasSocialMedia)
           _SocialMediaItemWidget(
@@ -60,14 +62,16 @@ class PoiContentContactsCard extends StatelessWidget {
   }
 
   static IconData getIconData(PoiContentSocialMediaTypes type) => switch (type) {
-        PoiContentSocialMediaTypes.website => GeneralIcons.web,
-        PoiContentSocialMediaTypes.instagram => SocialIcons.instagram,
-        PoiContentSocialMediaTypes.facebook => SocialIcons.facebook,
-        PoiContentSocialMediaTypes.youtube => SocialIcons.youtube,
-        PoiContentSocialMediaTypes.linkedin => SocialIcons.linkedin,
-        PoiContentSocialMediaTypes.whatsapp => SocialIcons.whatsapp,
-        PoiContentSocialMediaTypes.telegram => SocialIcons.telegram,
-      };
+    PoiContentSocialMediaTypes.website => GeneralIcons.web,
+    PoiContentSocialMediaTypes.instagram => SocialIcons.instagram,
+    PoiContentSocialMediaTypes.facebook => SocialIcons.facebook,
+    PoiContentSocialMediaTypes.youtube => SocialIcons.youtube,
+    PoiContentSocialMediaTypes.linkedin => SocialIcons.linkedin,
+    PoiContentSocialMediaTypes.whatsapp => SocialIcons.whatsapp,
+    PoiContentSocialMediaTypes.telegram => SocialIcons.telegram,
+    PoiContentSocialMediaTypes.twitter => SocialIcons.twitter,
+    PoiContentSocialMediaTypes.tiktok => SocialIcons.tiktok,
+  };
 }
 
 class _PhoneItemWidget extends StatelessWidget {
@@ -321,6 +325,8 @@ class _SocialMediaItemWidget extends StatelessWidget {
     PoiContentSocialMediaTypes.linkedin => SocialIcons.linkedin,
     PoiContentSocialMediaTypes.whatsapp => SocialIcons.whatsapp,
     PoiContentSocialMediaTypes.telegram => SocialIcons.telegram,
+    PoiContentSocialMediaTypes.twitter => SocialIcons.twitter,
+    PoiContentSocialMediaTypes.tiktok => SocialIcons.tiktok,
   };
 
   String _getDisplayText(PoiContentSocialMediaModel socialMedia) {
@@ -426,6 +432,8 @@ class _SocialMediaItemWidget extends StatelessWidget {
     PoiContentSocialMediaTypes.linkedin => 'LinkedIn',
     PoiContentSocialMediaTypes.whatsapp => 'WhatsApp',
     PoiContentSocialMediaTypes.telegram => 'Telegram',
+    PoiContentSocialMediaTypes.twitter => 'X',
+    PoiContentSocialMediaTypes.tiktok => 'TikTok',
   };
 }
 
