@@ -528,11 +528,27 @@ class CarNavigationHandler(
     }
 
     fun acceptBetterRoute() {
-        navigationManager.uiModel.betterRouteResponse(BetterRouteResponse.ACCEPT)
+        respondToBetterRoute(BetterRouteResponse.ACCEPT)
     }
 
     fun rejectBetterRoute() {
-        navigationManager.uiModel.betterRouteResponse(BetterRouteResponse.REJECT)
+        respondToBetterRoute(BetterRouteResponse.REJECT)
+    }
+
+    fun timeoutBetterRoute() {
+        respondToBetterRoute(BetterRouteResponse.TIMEOUT)
+    }
+
+    private fun respondToBetterRoute(response: BetterRouteResponse) {
+        // Answering a better-route offer that the SDK has already resolved — a user tap racing the
+        // 10s alert timeout, or the offer being retracted between the channel emit and our reply —
+        // throws inside the native SDK. Swallow it so a stale response can never tear down the
+        // Android Auto process.
+        try {
+            navigationManager.uiModel.betterRouteResponse(response)
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
     }
 
     fun timeoutBetterRoute() {
