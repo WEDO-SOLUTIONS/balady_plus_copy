@@ -6,6 +6,7 @@ import 'package:mapness/features/road_events/data/road_events_datasource.dart';
 import 'package:mapness/features/road_events/data/road_events_dio.dart';
 import 'package:mapness/features/road_events/domain/road_event.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
+import 'package:mapness/shared/providers/map/road_event_source.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:rxdart/rxdart.dart';
 
@@ -25,9 +26,7 @@ class RoadEventsRepository extends _$RoadEventsRepository {
 
   @override
   Future<List<RoadEvent>> build() async {
-    final dio = await ref.watch(roadEventsDioProvider.future);
-    final datasource = RoadEventsDatasource(dio: dio);
-    final controller = ref.watch(dgisControllerProvider.notifier);
+    final isVisible = ref.watch(roadEventSourceControlProvider);
 
     ref.onDispose(() {
       final token = _cancelToken;
@@ -38,6 +37,19 @@ class RoadEventsRepository extends _$RoadEventsRepository {
     });
 
     _subscription?.cancel();
+    final token = _cancelToken;
+    if (token != null && !token.isCancelled) {
+      token.cancel('road events layer hidden');
+    }
+
+    if (!isVisible) {
+      return state.value ?? const [];
+    }
+
+    final dio = await ref.watch(roadEventsDioProvider.future);
+    final datasource = RoadEventsDatasource(dio: dio);
+    final controller = ref.watch(dgisControllerProvider.notifier);
+
     _subscription = controller.visibleRectSubject
         .whereNotNull()
         .debounceTime(_viewportDebounce)
@@ -46,7 +58,7 @@ class RoadEventsRepository extends _$RoadEventsRepository {
           await _refresh(datasource, event.visibleRect);
         });
 
-    return const [];
+    return state.value ?? const [];
   }
 
   Future<void> _refresh(RoadEventsDatasource datasource, VisibleRect visibleRect) async {
