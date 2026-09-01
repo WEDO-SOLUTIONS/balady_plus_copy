@@ -136,9 +136,10 @@ class DgisController extends _$DgisController {
 
     await controller.setBetterRouteSettings(BetterRouteSettings.prod);
 
-    // BALADY-3772: the persisted navigation cursor is applied to the live
+    // BALADY-3772: the persisted navigation cursor is set on the live
     // my-location object rather than baked into the style, so push it once
-    // the map is up (and again on every recreate/init).
+    // the map is up (and again on every recreate/init). The native side only
+    // caches it here — the model becomes visible when turn-by-turn starts.
     await ref.read(navigationCursorControllerProvider.notifier).applyActive(controller);
 
     try {
