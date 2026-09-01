@@ -128,7 +128,7 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
         self.navigationHandler?.onNavigationSessionEnded = { [weak self] in
             self?.resetNavigationCursorModelOnMap()
         }
-        
+
         self.carPlayHandler = CarPlayHandler(eventChannel: eventChannel)
         
         self.routeHandler = RouteHandler(
@@ -535,9 +535,10 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
     /// reload, no MapView recreate — route, maneuvers and camera stay untouched.
     ///
     /// Regression follow-up: the custom model is only visible during
-    /// turn-by-turn navigation. Outside a session the bytes are just cached —
+    /// turn-by-turn guidance. Outside a session the bytes are just cached —
     /// NavigationHandler pushes them when guidance starts and resets the marker
-    /// when it ends, so Explore keeps the standard my-location marker.
+    /// when it ends, so Explore (and free roam, which auto-starts from the
+    /// Explore dashboard) keeps the standard my-location marker.
     func setNavigationCursorModel(glb: FlutterStandardTypedData, completion: @escaping (Result<Void, any Error>) -> Void) {
         guard let map = self.map else {
             completion(.failure(PigeonError(code: "map_not_ready", message: "setNavigationCursorModel: map is not ready", details: nil)))
@@ -545,13 +546,15 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
         }
         let modelData: ModelData
         do {
+            // `Container.modelFactory` is a throwing property (`get throws`)
+            // on this SDK version — a plain access does not compile.
             modelData = try self.sdk.modelFactory.make(modelData: glb.data)
         } catch {
             completion(.failure(PigeonError(code: "model_factory_unavailable", message: "setNavigationCursorModel: \(error)", details: nil)))
             return
         }
         self.navigationCursorModel = modelData
-        guard self.navigationHandler?.isNavigating == true else {
+        guard self.navigationHandler?.isTurnByTurn == true else {
             completion(.success(()))
             return
         }
@@ -565,8 +568,8 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
 
     /// BALADY-3772: the navigation-cursor 3D model last set via
     /// `setNavigationCursorModel`. The custom model is a turn-by-turn-only
-    /// visual: NavigationHandler applies it when a session starts (after the
-    /// guidance source swap) and resets the marker back to the style default
+    /// visual: NavigationHandler applies it when a guidance session starts
+    /// (after the source swap) and resets the marker back to the style default
     /// when the session ends. Outside a session the model is only cached here.
     private var navigationCursorModel: ModelData?
 

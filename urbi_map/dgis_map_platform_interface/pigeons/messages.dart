@@ -1605,8 +1605,10 @@ abstract class MapApi {
   /// the live map. [glb] is the raw GLB bytes. Backed by the SDK's
   /// `MyLocationMapObject.setModelData` — no style reload and no MapView
   /// recreate, so nothing on the map (route, maneuvers, camera) is disturbed
-  /// (BALADY-3772). Applies to whichever my-location source is currently on
-  /// the map (default or the navigation-time one).
+  /// (BALADY-3772). The native side keeps the model turn-by-turn-only:
+  /// outside an active guidance session the bytes are merely cached and the
+  /// standard my-location marker stays; the model is applied when guidance
+  /// starts and reset when the session ends.
   @async
   void setNavigationCursorModel(Uint8List glb);
 
