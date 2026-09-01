@@ -7,7 +7,10 @@ import 'package:mapness/_features/common/providers/network_status.dart';
 import 'package:mapness/_features/common/providers/shared_prefs.dart';
 import 'package:mapness/entities/path_nav/models/path_nav_better_route.dart';
 import 'package:mapness/entities/routing/route_params_point.dart';
+import 'package:mapness/features/balady_analytics/events/navigation_events.dart';
+import 'package:mapness/features/city_by_location/city_by_location.dart';
 import 'package:mapness/shared/lib/urbi_metrics_utils.dart';
+import 'package:mapness/shared/providers/location.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:mapness/shared/providers/map/navigator_route_settings.dart';
 import 'package:mapness/shared/providers/urbi_analytics.dart';
@@ -22,6 +25,61 @@ class NoInternetException implements Exception {
 
 class WalkingDistanceException implements Exception {
   const WalkingDistanceException();
+}
+
+/// Snapshot of everything the `route_built`/`route_failed` events need,
+/// captured before the async gaps of a route calculation so the events can be
+/// sent even after the provider is disposed. City names come from the same
+/// city-by-location source the legacy navigation events used; when the start
+/// point is "my location" (null) the last known GPS position fills in.
+class _RouteAnalytics {
+  _RouteAnalytics(Ref ref, RouteParamsPoint? startPoint, RouteParamsPoint? finishPoint, this.navType)
+    : originLat = startPoint?.latitude ?? ref.read(locationProvider)?.latitude,
+      originLng = startPoint?.longitude ?? ref.read(locationProvider)?.longitude,
+      destinationLat = finishPoint?.latitude,
+      destinationLng = finishPoint?.longitude,
+      destinationObjectId = finishPoint?.objectId {
+    final cityByLocation = ref.read(cityByLocationProvider.notifier);
+    _resolveCityName = (lat, lng) async => (await cityByLocation.getCityByLatLng(lat: lat, lng: lng)).name;
+  }
+
+  late final Future<String?> Function(double lat, double lng) _resolveCityName;
+  final RouteSearchOptionsMessage navType;
+  final double? originLat;
+  final double? originLng;
+  final double? destinationLat;
+  final double? destinationLng;
+  final int? destinationObjectId;
+
+  bool _abandoned = false;
+
+  /// The user left before the calculation settled (provider disposed) — a
+  /// still-pending timeout would otherwise report a bogus `route_failed`.
+  void abandon() => _abandoned = true;
+
+  void routeBuilt({required int alternativesCount, double? distanceM}) {
+    if (_abandoned) {
+      return;
+    }
+    BaladyNavigationEvents.trackRouteBuilt(
+      navType: navType,
+      originLat: originLat,
+      originLng: originLng,
+      destinationLat: destinationLat,
+      destinationLng: destinationLng,
+      destinationObjectId: destinationObjectId,
+      distanceM: distanceM,
+      alternativesCount: alternativesCount,
+      resolveCityName: _resolveCityName,
+    );
+  }
+
+  void routeFailed(Object error) {
+    if (_abandoned) {
+      return;
+    }
+    BaladyNavigationEvents.trackRouteFailed(navType: navType, error: error);
+  }
 }
 
 @riverpod
@@ -42,6 +100,13 @@ class Routes extends _$Routes {
 
     final dgisController = ref.watch(dgisControllerProvider);
     final searchOptions = ref.watch(navigatorRouteSettingsProvider);
+
+    // Transit calculations are tracked by [PublicTransportRoutes]; this
+    // provider never completes for them (no routesInfoChangedEvents) and would
+    // only report bogus timeouts.
+    final analytics = navType == RouteSearchOptionsMessage.publicTransport
+        ? null
+        : _RouteAnalytics(ref, startPoint, finishPoint, navType);
 
     final intermediatePoints = this.intermediatePoints?.points.map((e) => e.value?.pointMessage).nonNulls.toList();
 
@@ -68,6 +133,7 @@ class Routes extends _$Routes {
     });
 
     ref.onDispose(() {
+      analytics?.abandon();
       subscription?.cancel();
       cancelableCompleter.operation.cancel();
     });
@@ -78,7 +144,7 @@ class Routes extends _$Routes {
 
     await dgisController.value?.setRouteParams(params);
     try {
-      return await cancelableCompleter.operation.value.timeout(
+      final routes = await cancelableCompleter.operation.value.timeout(
         const Duration(seconds: 10),
         onTimeout: () {
           if (!online) {
@@ -92,26 +158,33 @@ class Routes extends _$Routes {
           throw TimeoutException('Timeout while waiting for routes');
         },
       );
+      analytics?.routeBuilt(alternativesCount: routes.length, distanceM: routes.isEmpty ? null : routes.first.distance);
+      return routes;
     } catch (e) {
       // Re-check network status
       if (!online) {
+        analytics?.routeFailed(const NoInternetException());
         throw const NoInternetException();
       }
 
       // Handle specific exception types
       if (e is NoInternetException) {
+        analytics?.routeFailed(e);
         rethrow;
       }
 
       if (e is WalkingDistanceException) {
+        analytics?.routeFailed(e);
         rethrow;
       }
 
       if (navType == RouteSearchOptionsMessage.pedestrian) {
+        analytics?.routeFailed(const WalkingDistanceException());
         throw const WalkingDistanceException();
       }
 
       // Re-throw timeout or other exceptions
+      analytics?.routeFailed(e);
       rethrow;
     }
   }
@@ -137,6 +210,10 @@ class PublicTransportRoutes extends _$PublicTransportRoutes {
     final dgisController = ref.watch(dgisControllerProvider);
     final searchOptions = ref.watch(navigatorRouteSettingsProvider);
 
+    // Transit routes carry no overall length, so route_built goes out without
+    // distance_m / distance_bucket for them.
+    final analytics = _RouteAnalytics(ref, startPoint, finishPoint, navType);
+
     final intermediatePoints = this.intermediatePoints?.points.map((e) => e.value?.pointMessage).nonNulls.toList();
 
     final params = RouteEditorRouteParamsMessage(
@@ -159,6 +236,7 @@ class PublicTransportRoutes extends _$PublicTransportRoutes {
     });
 
     ref.onDispose(() {
+      analytics.abandon();
       publicTransportRoutesSubscription?.cancel();
       cancelableCompleter.operation.cancel();
     });
@@ -169,7 +247,7 @@ class PublicTransportRoutes extends _$PublicTransportRoutes {
 
     await dgisController.value?.setRouteParams(params);
     try {
-      return await cancelableCompleter.operation.value.timeout(
+      final routes = await cancelableCompleter.operation.value.timeout(
         timeout ?? const Duration(seconds: 10),
         onTimeout: () {
           if (!online) {
@@ -179,18 +257,23 @@ class PublicTransportRoutes extends _$PublicTransportRoutes {
           throw TimeoutException('Timeout while waiting for public transport routes');
         },
       );
+      analytics.routeBuilt(alternativesCount: routes.length);
+      return routes;
     } catch (e) {
       // Re-check network status
       if (!online) {
+        analytics.routeFailed(const NoInternetException());
         throw const NoInternetException();
       }
 
       // Handle specific exception types
       if (e is NoInternetException) {
+        analytics.routeFailed(e);
         rethrow;
       }
 
       // Re-throw timeout or other exceptions
+      analytics.routeFailed(e);
       rethrow;
     }
   }

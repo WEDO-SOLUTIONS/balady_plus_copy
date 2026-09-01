@@ -15,9 +15,8 @@ publish_to: "none" # Remove this line if you wish to publish to pub.dev
 # In iOS, build-name is used as CFBundleShortVersionString while build-number used as CFBundleVersion.
 # Read more about iOS versioning at
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
-
-version: 3.30.3+874
-#version: 3.13.5+466
+#version: 3.30.3+881
+version: 3.13.5+466
 
 environment:
   sdk: ">=3.8.0 <4.0.0"
@@ -148,7 +147,6 @@ dependencies:
   # eliminate this after lazy-ass author update the package
   firebase_messaging: ^16.1.0
   firebase_analytics: ^12.1.0
-  flutter_uxcam: ^2.7.6
   carousel_slider: ^5.1.1
   add_2_calendar: ^3.0.1
   flutter_svg_provider:
@@ -168,7 +166,7 @@ dependencies:
   # Mapness
   balady_uikit:
     hosted: https://unpub.balady.gov.sa/
-    version: 5.1.7
+    version: 6.0.1
 
 
   sheetify: ^1.1.3
@@ -356,6 +354,7 @@ dependency_overrides:
   # Pin to avoid objective_c FFI crash on iOS Simulator
   # (path_provider_foundation >=2.5.0 uses objective_c which fails on Simulator)
   path_provider_foundation: 2.4.0
+  sdga_design_system: 1.0.0
 
   # BALADY-3755 / BALADY-3768: vendored copy of sheetify 1.1.3, patched so that
   # a keyboard belonging to an iOS share extension no longer collapses our

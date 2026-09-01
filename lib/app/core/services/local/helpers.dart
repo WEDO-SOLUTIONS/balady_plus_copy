@@ -2,18 +2,15 @@ import 'dart:async';
 import 'dart:developer' as devtools show log;
 import 'dart:io';
 
-import 'package:balady_plus/app/core/services/services_exports.dart'
-    show NavigationService;
+import 'package:balady_plus/app/core/services/services_exports.dart' show NavigationService;
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
 import 'package:balady_plus/app/events_logs/balady_logs.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_uxcam/flutter_uxcam.dart';
 import 'package:geolocator/geolocator.dart' as geo_locator;
 import 'package:geolocator/geolocator.dart';
-import 'package:localize_and_translate/localize_and_translate.dart'
-    show translator, Translation;
+import 'package:localize_and_translate/localize_and_translate.dart' show translator, Translation;
 import 'package:open_filex/open_filex.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -22,7 +19,6 @@ import 'package:sentry_flutter/sentry_flutter.dart';
 import '../../../features/_shared_feature_/presentation/dialogs/photo_permission_dialog.dart';
 import '../../../features/bottom_navigation/presentation/cubits/bottom_nav_bar_cubit.dart';
 import '../../dependency_injection/injection_container.dart';
-import '../../utils/constants/remote_config.dart';
 
 // use it insead of print() or debugPrint()
 extension Log<T extends Object> on T {
@@ -38,8 +34,7 @@ class Helpers {
 
   static String translatingWord(String key) => key.tr();
 
-  static bool isArabic(BuildContext context) =>
-      translator.isDirectionRTL(context);
+  static bool isArabic(BuildContext context) => translator.isDirectionRTL(context);
 
   static bool isRTL() => translator.activeLanguageCode == 'ar';
 
@@ -54,9 +49,7 @@ class Helpers {
 
   static void backNavigationToHomeScreen({int index = 0}) {
     sl<BottomNavBarCubit>().onChangeBottomNavBar(index);
-    NavigationService.navigatorKey.currentState!.popUntil(
-      ModalRoute.withName(RouteName.bottomNavigation),
-    );
+    NavigationService.navigatorKey.currentState!.popUntil(ModalRoute.withName(RouteName.bottomNavigation));
   }
 
   /*
@@ -111,10 +104,7 @@ class Helpers {
     );
   }
 
-  static Future<LatLng?> getCurrentLocation({
-    geo_locator.LocationAccuracy? accuracy,
-    Duration? duration,
-  }) async {
+  static Future<LatLng?> getCurrentLocation({geo_locator.LocationAccuracy? accuracy, Duration? duration}) async {
     try {
       bool isHuawei = await CommonFunctions.isHuaweiDevice();
       if (isHuawei) {
@@ -122,8 +112,7 @@ class Helpers {
         return latLng;
       }
       //  EasyLoading.show();
-      geo_locator.Position position = await geo_locator
-          .Geolocator.getCurrentPosition(
+      geo_locator.Position position = await geo_locator.Geolocator.getCurrentPosition(
         locationSettings: LocationSettings(
           accuracy: accuracy ?? geo_locator.LocationAccuracy.high,
           timeLimit: duration ?? const Duration(seconds: 13),
@@ -140,10 +129,7 @@ class Helpers {
     var status = await Permission.photos.request();
 
     if (status == PermissionStatus.permanentlyDenied) {
-      showDialog(
-        context: context,
-        builder: (ctx) => const PhotoPermissionDialog(),
-      );
+      showDialog(context: context, builder: (ctx) => const PhotoPermissionDialog());
       return false;
     } else if (status != PermissionStatus.granted) {
       Permission.photos.request();
@@ -300,14 +286,11 @@ class Helpers {
         url: url,
         queryString: qeuryParms,
         data: {
-          if (body != null)
-            'body': body != null ? body.toString() : "",
-            "StatusCode": (statusCode ?? 0).toString(),
+          if (body != null) 'body': body != null ? body.toString() : "",
+          "StatusCode": (statusCode ?? 0).toString(),
         },
       );
-      SentryMessage sentryMessage = SentryMessage(
-        data != null ? data.toString() : "",
-      );
+      SentryMessage sentryMessage = SentryMessage(data != null ? data.toString() : "");
 
       SentryUser sentryUser = SentryUser(
         id: CommonProperties.userInfo?.idNo,
@@ -325,29 +308,6 @@ class Helpers {
         exceptions: [SentryException(value: url ?? "", type: url)],
       );
       Sentry.captureEvent(event);
-
-      if (RemoteConfig.uxCamKey.isNotEmpty) {
-        String data = body != null ? body.toString() : "";
-
-        String queryString = qeuryParms ?? "";
-
-        String message = data.toString();
-        String? URL = url;
-
-        if (URL != null) {
-          FlutterUxcam.logEventWithProperties(url ?? "Error", {
-            "Url": URL.length <= 1024 ? URL : URL.substring(0, 1023),
-            "Data": data.length <= 1024 ? data : data.substring(0, 1023),
-            "QueryString":
-                queryString.length <= 1024
-                    ? queryString
-                    : queryString.substring(0, 1023),
-            "Message":
-                message.length <= 1024 ? message : message.substring(0, 1023),
-            "Environment": sl<EnvType>().name,
-          });
-        }
-      }
     } catch (error, stackTrace) {
       LogsViewModel().sendEventFromModel(
         event: ErrorExceptionModel(
@@ -562,8 +522,7 @@ class Helpers {
   }*/
 
   static Future<void> openFile(Uint8List bytes, {String? contentType}) async {
-    String extension =
-        contentType != null ? (".${contentType.split("/").last}") : "";
+    String extension = contentType != null ? (".${contentType.split("/").last}") : "";
     try {
       if (extension.isNotEmpty) {
         String dir = (await getTemporaryDirectory()).path;
@@ -591,8 +550,7 @@ class Helpers {
     try {
       CommonFunctions.showError("session_ended_error".tr());
       NavigationService.navigatorKey.currentState!.popUntil((route) {
-        if (route.settings.name == RouteName.bottomNavigation ||
-            route.settings.name == null) {
+        if (route.settings.name == RouteName.bottomNavigation || route.settings.name == null) {
           return true;
         }
         return false;

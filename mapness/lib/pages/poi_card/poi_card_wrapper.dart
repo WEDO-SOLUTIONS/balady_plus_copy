@@ -157,18 +157,26 @@ class _WrapperState extends ConsumerState<_PoiCardWrapper>
         }
       });
 
-    final poiCardState = state.value;
+    final gisPoiCardState = state.value;
     final storeParking = ref.read(parkingManageProvider(theme: context.read<ThemeController>().currentTheme).notifier);
     final storeParkingData = ref
         .read(parkingManageProvider(theme: context.read<ThemeController>().currentTheme))
         .value
         ?.convertToDirectoryObject(context);
     final isParkingPoi = widget.objectId.objectId == parkingObjectId;
-    final data = isParkingPoi ? storeParkingData : poiCardState?.gisObjectIdMessage;
+    final data = isParkingPoi ? storeParkingData : gisPoiCardState?.gisObjectIdMessage;
 
     if (isParkingPoi) {
       storeParking.addPinParking(storeParkingData?.markerPosition, context.l10n.yourParkingSpot);
     }
+    ref.watch(dgisEnvironmentProvider);
+    final poiCardState = gisPoiCardState ??
+              PoiCardState(
+                showEntrances: false,
+                isLoading: false,
+                gisObjectIdMessage: data,
+                organizations: null,
+              );
 
     final isCityscapeObject = ref.read(cityscapeProvider.notifier).showCustomPin(widget.objectId.objectId);
 
@@ -285,17 +293,6 @@ void _onDirectionsTap(
   WidgetRef ref, {
   List<RouteParamsPointWithLabel>? intermediatePoints,
 }) {
-  Metrics.logEventAdvanced(
-    MetricsConstants.poiKeys.makeRoute,
-    group: MetricsConstants.poiTag,
-    action: MetricAction.tap.toString(),
-    props: {
-      'object_id': objectId,
-      'finish_point': finishPoint.latLngToString(),
-      'intermediate_points': '${intermediatePoints?.latLngToString()}',
-    },
-  );
-
   openRoutingRoutes(context, objectId, title, finishPoint, ref, intermediatePoints: intermediatePoints);
 }
 
@@ -403,13 +400,6 @@ Future<void> _onFavoriteTap({
       .authOrOpen(
         context,
         callback: () {
-          Metrics.logEventAdvanced(
-            MetricsConstants.poiKeys.addToFavorite,
-            group: MetricsConstants.poiTag,
-            action: MetricAction.tap.toString(),
-            props: {'objectId': data.id?.objectId},
-          );
-
           toggleFavoriteDirectoryObject(context: context, ref: ref, data: data, favouriteItem: favouriteItem);
         },
       );

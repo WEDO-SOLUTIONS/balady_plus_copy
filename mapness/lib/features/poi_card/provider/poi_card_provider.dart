@@ -133,8 +133,7 @@ class PoiCardProvider extends _$PoiCardProvider {
               showHighlight: showHighlight,
             ).future,
           )
-          .timeout(const Duration(seconds: 10))
-          .onError((error, stackTrace) => null);
+          .timeout(const Duration(seconds: 10));
 
       final photosFuture = ref.watch(poiPhotoProvider(objectId).future);
       final organisationsFuture = fetchOrganizationsData(objectId: objectId);

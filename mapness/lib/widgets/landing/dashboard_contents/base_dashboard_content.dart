@@ -13,9 +13,7 @@ import 'package:mapness/features/debug/recommendations_feature_flag.dart';
 import 'package:mapness/features/special_themes/core/places_activation_config.dart';
 import 'package:mapness/features/stream_audio/ui/providers/stream_audio_prov.dart';
 import 'package:mapness/features/stream_audio/ui/widgets/explore_card.dart';
-import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
-import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/ui/dashboard_feedback/feedback_banner_card_v2.dart';
 import 'package:mapness/widgets/founding_day/dashboard_bg.dart';
 import 'package:mapness/widgets/landing/dashboard/dashboard_actions.dart';
@@ -47,7 +45,6 @@ class BaseDashboardContent extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final actions = DashboardActions(ref, bottomSheetController: bottomSheetController);
     final activeEvent = ref.watch(activeCityEventProvider);
-    final isNationalDay = activeEvent?.isSaudiNationalDay ?? false;
     final isFoundingday = activeEvent?.isFoundingDay ?? false;
     final pilgrimFeature = ref.watch(showPilgrimFeatureProvider);
     final recommendationsEnabled = ref.watch(recommendationsFeatureFlagProvider);
@@ -98,12 +95,6 @@ class BaseDashboardContent extends ConsumerWidget {
             if (pilgrimFeature != null) ...[
               KaabaVirtualJourneyCard(
                 onTap: () {
-                  Metrics.logEventAdvanced(
-                    MetricsConstants.kaabaTourKeys.cardTapped,
-                    group: MetricsConstants.kaabaTourTag,
-                    action: MetricAction.tap.name,
-                    props: const {'theme': 'base'},
-                  );
                   context.router.push(const GaussianSplattingRoute());
                 },
               ),
