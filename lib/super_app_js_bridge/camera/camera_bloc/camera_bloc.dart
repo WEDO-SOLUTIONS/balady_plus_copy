@@ -22,6 +22,16 @@ class CameraBloc extends Bloc<CameraEvent, CameraState> {
   CameraController? cameraController;
   bool initializingCamera = false;
 
+  /// Drops the reference before disposing, so a rebuild can never hand a
+  /// disposed controller to CameraPreview ("buildPreview() was called on a
+  /// disposed CameraController"); the camera package keeps
+  /// value.isInitialized true after dispose and exposes no isDisposed getter.
+  Future<void> disposeCamera() async {
+    final controller = cameraController;
+    cameraController = null;
+    await controller?.dispose();
+  }
+
   CameraBloc() : super(CameraState()) {
     on<InitCameraEvent>(
       (event, emit) async {
@@ -171,20 +181,33 @@ class CameraBloc extends Bloc<CameraEvent, CameraState> {
 
   Future<void> _onNewCameraSelectedHandler(
       OnNewCameraSelected e, Emitter emitter) async {
+    // The old controller is about to be (or already was) disposed - never
+    // advertise it as initialized: a stale `true` here made the UI rebuild
+    // CameraPreview with a dead controller.
     emitter(
       state.copyWith(
         status: BlocStatus.loading,
-        isCameraInitialized: cameraController?.value.isInitialized,
+        isCameraInitialized: false,
       ),
     );
+    final previous = cameraController;
+    final CameraDescription? description = previous?.description ??
+        ((cameras?.isNotEmpty ?? false)
+            ? cameras!.firstWhere(
+                (camera) => camera.lensDirection == CameraLensDirection.back,
+                orElse: () => cameras![0],
+              )
+            : null);
+    cameraController = null;
     try {
-      if (cameraController != null) {
-        await cameraController?.dispose();
+      await previous?.dispose();
+      if (description == null) {
+        emitter(state.copyWith(status: BlocStatus.failure));
+        return;
       }
-      emitter(state.copyWith(status: BlocStatus.loading));
 
       final CameraController controller = CameraController(
-        cameraController!.description,
+        description,
         ResolutionPreset.medium,
         enableAudio: false,
       );
@@ -205,7 +228,7 @@ class CameraBloc extends Bloc<CameraEvent, CameraState> {
     emitter(
       state.copyWith(
         status: BlocStatus.success,
-        isCameraInitialized: cameraController?.value.isInitialized,
+        isCameraInitialized: cameraController?.value.isInitialized ?? false,
       ),
     );
   }
@@ -266,6 +289,6 @@ class CameraBloc extends Bloc<CameraEvent, CameraState> {
   @override
   Future<void> close() async {
     super.close();
-    cameraController?.dispose();
+    await disposeCamera();
   }
 }

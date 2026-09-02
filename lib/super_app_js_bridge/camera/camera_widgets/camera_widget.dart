@@ -23,25 +23,33 @@ class _CameraWidgetState extends State<CameraWidget>
     with WidgetsBindingObserver {
   late CameraBloc bloc;
 
+  // Raised when the lifecycle handler disposed an initialized camera, so
+  // resume knows to re-create it (the controller reference itself is nulled
+  // by disposeCamera and can no longer serve as that signal).
+  bool _reinitCameraOnResume = false;
+
   @override
-  void dispose() async {
+  void dispose() {
     WidgetsBinding.instance.removeObserver(this);
-    bloc.cameraController?.dispose();
+    bloc.disposeCamera();
     super.dispose();
   }
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     try {
-      if (context.read<CameraBloc>().cameraController == null ||
-          !context.read<CameraBloc>().cameraController!.value.isInitialized) {
-        return;
-      }
       if (state == AppLifecycleState.inactive ||
           state == AppLifecycleState.paused) {
-        context.read<CameraBloc>().cameraController?.dispose();
+        final controller = bloc.cameraController;
+        if (controller != null && controller.value.isInitialized) {
+          _reinitCameraOnResume = true;
+          bloc.disposeCamera();
+        }
       } else if (state == AppLifecycleState.resumed) {
-        context.read<CameraBloc>().add(OnNewCameraSelected());
+        if (_reinitCameraOnResume) {
+          _reinitCameraOnResume = false;
+          bloc.add(OnNewCameraSelected());
+        }
       }
     } catch (error, stackTrace) {
       LogsViewModel().sendEventFromModel(
@@ -57,10 +65,13 @@ class _CameraWidgetState extends State<CameraWidget>
   @override
   void initState() {
     super.initState();
+    // Assigned here, not in the post-frame callback: dispose() reads `bloc`,
+    // and a fast pop used to hit LateInitializationError.
+    bloc = context.read<CameraBloc>();
     WidgetsBinding.instance.addObserver(this);
-    WidgetsBinding.instance.addPostFrameCallback((_) async {
-      context.read<CameraBloc>().add(InitCameraEvent());
-      bloc = context.read<CameraBloc>();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      bloc.add(InitCameraEvent());
     });
   }
 
@@ -68,9 +79,15 @@ class _CameraWidgetState extends State<CameraWidget>
   Widget build(BuildContext context) {
     return BlocBuilder<CameraBloc, CameraState>(
       builder: (context, state) {
+        // Guard on the live controller instance, not only the bloc flag: the
+        // flag can lag one emit behind the controller's disposal.
+        final cameraController = context.read<CameraBloc>().cameraController;
+        final isCameraReady = (state.isCameraInitialized ?? false) &&
+            cameraController != null &&
+            cameraController.value.isInitialized;
         return Stack(
           children: [
-            (state.isCameraInitialized ?? false)
+            isCameraReady
                 ? GestureDetector(
                     behavior: HitTestBehavior.translucent,
                     onScaleStart: (details) {
@@ -85,9 +102,9 @@ class _CameraWidgetState extends State<CameraWidget>
                     },
                     child: SizedBox(
                       height: double.infinity,
-                      child: CameraPreview(
-                        context.read<CameraBloc>().cameraController!,
-                      ),
+                      // Non-null by isCameraReady; a boolean local does not
+                      // promote the variable for the compiler.
+                      child: CameraPreview(cameraController!),
                     ),
                   )
                 : const Center(),
