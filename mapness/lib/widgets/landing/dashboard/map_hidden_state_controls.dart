@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/_features/common/providers/ui_direction.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
+import 'package:mapness/features/balady_analytics/events/navigation_events.dart';
 import 'package:mapness/features/city_event/active_city_event.dart';
 import 'package:mapness/features/free_roam/free_roam_animation_mixin.dart';
 import 'package:mapness/features/free_roam/free_roam_starter.dart';
@@ -85,6 +86,8 @@ class _MapHiddenStateControlsState extends ConsumerState<MapHiddenStateControls>
         specialThemeMode == SpecialThemeMode.nationalDay ||
         specialThemeMode == SpecialThemeMode.mekkahBase ||
         specialThemeMode == SpecialThemeMode.ramadan;
+    final bool showCityEventBanner =
+        specialThemeMode == SpecialThemeMode.foundationDay || (activeEvent?.isLeap ?? false);
     final isCityscapeDay = ref.watch(cityscapeProvider);
     final freeRoamState = ref.watch(freeRoamStarterProvider);
     ref.listen(freeRoamStarterProvider, (_, state) {
@@ -106,6 +109,11 @@ class _MapHiddenStateControlsState extends ConsumerState<MapHiddenStateControls>
       children: [
         Stack(
           alignment: Alignment.bottomCenter,
+          // CityEventDisplay's logo is deliberately taller than its own banner
+          // and paints past its bounds (see city_event_display.dart) so it
+          // doesn't inflate the measured topHeader height — don't clip that
+          // overflow here either.
+          clipBehavior: Clip.none,
           children: [
             Padding(
               padding: EdgeInsets.only(bottom: showSpecialBanner ? Spacing.$4x : 0.0),
@@ -116,7 +124,7 @@ class _MapHiddenStateControlsState extends ConsumerState<MapHiddenStateControls>
                 duration: const Duration(milliseconds: 300),
               ),
             ),
-            if (specialThemeMode == SpecialThemeMode.foundationDay)
+            if (showCityEventBanner)
               CityEventDisplay(
                 activeEvent: activeEvent,
                 controller: widget.controller,
@@ -277,6 +285,7 @@ class _FreeRoamState extends ConsumerState<_FreeRoamQuickAction>
           child: InkWell(
             borderRadius: BorderRadius.circular(borderRadius),
             onTap: () {
+              BaladyNavigationEvents.trackFreeRoamStarted(BaladyFreeRoamSource.dashboard);
               context.router.push(const FreeRoamRoute());
               ref.read(freeRoamStarterProvider.notifier).setShown();
             },

@@ -8,7 +8,7 @@ class BaldayDeeplink {
   static const String qKey = 'q';
   static const String typeKey = 'type';
   static const String dgisObjectIdKey = 'dgis-object-id';
-  static const String baseAuthority = 'plus.balady.sa';
+  static const String baseAuthority = 'plus.balady.gov.sa';
   static const String streamId = 'streamId';
   static const String tokenId = 'tokenId';
   static const String homeWidget = 'homeWidget';

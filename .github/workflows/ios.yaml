@@ -107,9 +107,31 @@ jobs:
           just ios_setup
           just prebuild
 
+      - name: Install PostHog CLI
+        continue-on-error: true
+        run: |
+          # This job runs on a self-hosted Mac, where Node is not guaranteed —
+          # so the vendor's standalone installer is used rather than npm. It
+          # drops the binary in ~/.posthog, which is the first place the pod's
+          # upload-symbols.sh looks, so no PATH wiring is needed.
+          # Reused across runs when the runner keeps $HOME between jobs.
+          if [ -x "$HOME/.posthog/posthog-cli" ]; then
+            echo "posthog-cli already installed: $("$HOME/.posthog/posthog-cli" --version)"
+            exit 0
+          fi
+          curl --proto '=https' --tlsv1.2 -LsSf https://download.posthog.com/cli | sh
+          "$HOME/.posthog/posthog-cli" --version
+
       - name: Build app
         env:
           IPADROME_API_KEY: ${{ secrets.IPADROME_API_KEY }}
+          # Symbol upload for crash reporting. Absent secrets simply skip the
+          # upload — see .github/scripts/upload_ios_symbols.sh. Project ids
+          # differ per flavor because each flavor writes to its own PostHog
+          # project; stg and pre share one.
+          POSTHOG_CLI_API_KEY: ${{ secrets.POSTHOG_CLI_API_KEY }}
+          POSTHOG_PROJECT_ID_PROD: ${{ vars.POSTHOG_PROJECT_ID_PROD }}
+          POSTHOG_PROJECT_ID_STG: ${{ vars.POSTHOG_PROJECT_ID_STG }}
         run: |
           KC="$HOME/Library/Keychains/build.keychain"
           KC_PASS='build-pass'
@@ -150,6 +172,8 @@ jobs:
           echo "Created pre-production channel with ID: $PRE_CHANNEL_ID"
 
           fvm flutter build ipa --release --export-options-plist ios/ad_hoc_options.plist --target lib/main_prod.dart --flavor prod  --dart-define=CI_BUILD_NAME="${CI_ARTIFACT_SUFFIX}" --dart-define=CI_RELEASE_VERSION="${CI_RELEASE_VERSION}"
+          # Right after the build: the next one overwrites the xcarchive.
+          .github/scripts/upload_ios_symbols.sh "${POSTHOG_PROJECT_ID_PROD}"
           RESPONSE=$(curl -s -X POST "https://baladyapp-builds.urbi.ae/api/channels/$PROD_CHANNEL_ID/builds" \
             -H "$AUTH_HEADER" \
             -F "version=${CI_ARTIFACT_SUFFIX}" \
@@ -161,6 +185,7 @@ jobs:
           echo "BUILD_URL_PROD=${BUILD_URL}" >> ${GITHUB_ENV}
 
           fvm flutter build ipa --release --export-options-plist ios/ad_hoc_options.plist --target lib/main_stg.dart --flavor stg
+          .github/scripts/upload_ios_symbols.sh "${POSTHOG_PROJECT_ID_STG}"
           RESPONSE=$(curl -s -X POST "https://baladyapp-builds.urbi.ae/api/channels/$STG_CHANNEL_ID/builds" \
             -H "$AUTH_HEADER" \
             -F "version=${CI_ARTIFACT_SUFFIX}-stg" \
@@ -172,6 +197,8 @@ jobs:
           echo "BUILD_URL_STAGE=${BUILD_URL}" >> ${GITHUB_ENV}
 
           fvm flutter build ipa --release --export-options-plist ios/ad_hoc_options.plist --target lib/main_urbi_pre.dart --flavor pre
+          # pre writes to the same PostHog project as stg (shared phc_ key).
+          .github/scripts/upload_ios_symbols.sh "${POSTHOG_PROJECT_ID_STG}"
           RESPONSE=$(curl -s -X POST "https://baladyapp-builds.urbi.ae/api/channels/$PRE_CHANNEL_ID/builds" \
             -H "$AUTH_HEADER" \
             -F "version=${CI_ARTIFACT_SUFFIX}-pre" \

@@ -36,7 +36,11 @@ class EnvironmentConfig {
   final CityEventDateRange cityscapeDateTimeRange;
   final CityEventDateRange saudiNationalDayDateRange;
   final CityEventDateRange foundingDayDateRange;
+  final CityEventDateRange leapDateRange;
   final CityEventDateRange wrcEventDateRange;
+  // TIFO isn't a city event itself — it just reuses the same remote-config
+  // shape (see CityEventDateRange.tifoDefault for the placeholder window).
+  final CityEventDateRange tifoDateRange;
 
   EnvironmentConfig({
     required this.url,
@@ -59,7 +63,9 @@ class EnvironmentConfig {
     required this.cityscapeDateTimeRange,
     required this.saudiNationalDayDateRange,
     required this.foundingDayDateRange,
+    required this.leapDateRange,
     required this.wrcEventDateRange,
+    required this.tifoDateRange,
   });
 
   factory EnvironmentConfig.fromEnvType(String envType) => switch (envType) {
@@ -101,9 +107,17 @@ class EnvironmentConfig {
       json['saudiNationalDayDateRange'] as Map<String, dynamic>?,
       CityEventDateRange.saudiNationalDayDefault(),
     ),
+    leapDateRange: CityEventDateRange.fromJson(
+      json['leapDateRange'] as Map<String, dynamic>?,
+      CityEventDateRange.leapDefault(),
+    ),
     wrcEventDateRange: CityEventDateRange.fromJson(
       json['wrcEventDateRange'] as Map<String, dynamic>?,
       CityEventDateRange.wrcDefault(),
+    ),
+    tifoDateRange: CityEventDateRange.fromJson(
+      json['tifoDateRange'] as Map<String, dynamic>?,
+      CityEventDateRange.tifoDefault(),
     ),
   );
 
@@ -142,13 +156,15 @@ class EnvironmentConfig {
     appFeedbackApi: 'https://momrah-balady-dev.public-poc.urbi.ae/api',
     appFeedbackEnable: true,
     bssApi: 'https://casino-bss-receiver-api-qa.k8s.2gis.dev',
-    baladyBusinessUrl: 'https://business-stg.balady.sa',
+    baladyBusinessUrl: 'https://business-stg.balady.gov.sa',
     saudiPassApi: 'https://apiservicesstg.balady.gov.sa/',
     favoriteListsApi: 'https://urbi-lifestyle-stg.momah.gov.sa/1.0/api/v1/favorite',
     cityscapeDateTimeRange: CityEventDateRange.cityscapeDefault(),
     saudiNationalDayDateRange: CityEventDateRange.saudiNationalDayDefault(),
     foundingDayDateRange: CityEventDateRange.foundingDayDefault(),
+    leapDateRange: CityEventDateRange.leapDefault(),
     wrcEventDateRange: CityEventDateRange.wrcDefault(),
+    tifoDateRange: CityEventDateRange.tifoDefault(),
   );
 
   factory EnvironmentConfig.momrahStaging() => EnvironmentConfig(
@@ -166,13 +182,15 @@ class EnvironmentConfig {
     appFeedbackEnable: true,
     proxy: null,
     bssApi: 'https://casino-bss-receiver-api-qa.k8s.2gis.dev',
-    baladyBusinessUrl: 'https://business-stg.balady.sa',
+    baladyBusinessUrl: 'https://business-stg.balady.gov.sa',
     saudiPassApi: 'https://apiservicesstg.balady.gov.sa/',
     favoriteListsApi: 'https://urbi-lifestyle-stg.momah.gov.sa/1.0/api/v1/favorite',
     cityscapeDateTimeRange: CityEventDateRange.cityscapeDefault(),
     saudiNationalDayDateRange: CityEventDateRange.saudiNationalDayDefault(),
     foundingDayDateRange: CityEventDateRange.foundingDayDefault(),
+    leapDateRange: CityEventDateRange.leapDefault(),
     wrcEventDateRange: CityEventDateRange.wrcDefault(),
+    tifoDateRange: CityEventDateRange.tifoDefault(),
   );
 
   factory EnvironmentConfig.momrahProd() => EnvironmentConfig(
@@ -196,7 +214,9 @@ class EnvironmentConfig {
     cityscapeDateTimeRange: CityEventDateRange.cityscapeDefault(),
     saudiNationalDayDateRange: CityEventDateRange.saudiNationalDayDefault(),
     foundingDayDateRange: CityEventDateRange.foundingDayDefault(),
+    leapDateRange: CityEventDateRange.leapDefault(),
     wrcEventDateRange: CityEventDateRange.wrcDefault(),
+    tifoDateRange: CityEventDateRange.tifoDefault(),
   );
 
   factory EnvironmentConfig.urbiPreProd() => EnvironmentConfig(
@@ -216,12 +236,14 @@ class EnvironmentConfig {
     appFeedbackApi: 'https://momrah-balady-dev.iaas.urbi-sa.com/api',
     appFeedbackEnable: true,
     bssApi: 'https://casino-bss-receiver-api-qa.k8s.2gis.dev',
-    baladyBusinessUrl: 'https://business-stg.balady.sa',
+    baladyBusinessUrl: 'https://business-stg.balady.gov.sa',
     saudiPassApi: 'https://apiservicesstg.balady.gov.sa/',
     favoriteListsApi: 'https://urbi-lifestyle-stg.momah.gov.sa/1.0/api/v1/favorite',
     cityscapeDateTimeRange: CityEventDateRange.cityscapeDefault(),
     saudiNationalDayDateRange: CityEventDateRange.saudiNationalDayDefault(),
     foundingDayDateRange: CityEventDateRange.foundingDayDefault(),
+    leapDateRange: CityEventDateRange.leapDefault(),
     wrcEventDateRange: CityEventDateRange.wrcDefault(),
+    tifoDateRange: CityEventDateRange.tifoDefault(),
   );
 }

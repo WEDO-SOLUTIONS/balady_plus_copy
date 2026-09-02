@@ -1,0 +1,25 @@
+{
+  "name": "procedural_goalkeeper_full_model",
+  "sourceAsset": "assets/models/goalkeeper.glb",
+  "source": {
+    "title": "Cesium Man",
+    "url": "https://github.com/KhronosGroup/glTF-Sample-Models/tree/main/2.0/CesiumMan",
+    "license": "Creative Commons Attribution 4.0 International"
+  },
+  "palette": {
+    "jersey": "#FFA726",
+    "shorts": "#223A5E",
+    "skin": "#F1BE91",
+    "socks": "#E9F0F7",
+    "gloves": "#F7F7F2",
+    "boots": "#111318",
+    "hair": "#3A2417"
+  },
+  "body": {
+    "height": 1.94,
+    "shoulderWidth": 1.04,
+    "torsoHeight": 1.03,
+    "headRadius": 0.24,
+    "gloveRadius": 0.16
+  }
+}

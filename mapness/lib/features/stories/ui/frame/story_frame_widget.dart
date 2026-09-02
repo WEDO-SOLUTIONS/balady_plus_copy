@@ -13,6 +13,7 @@ import 'package:mapness/features/app_analytics/app_analytics.dart';
 import 'package:mapness/features/stories/models/story_frame_action.dart';
 import 'package:mapness/features/stories/models/story_frame_controller.dart';
 import 'package:mapness/features/stories/models/story_frame_data.dart';
+import 'package:mapness/features/balady_analytics/events/service_events.dart';
 import 'package:mapness/features/stories/models/story_frame_theme_data.dart';
 import 'package:mapness/features/stories/models/story_types.dart';
 import 'package:mapness/features/stories/ui/story_args_provider.dart';

@@ -9,6 +9,14 @@ struct MarkerId {
     let id: String
 }
 
+private struct ModelId {
+    init(_ id: String) {
+        self.id = id
+    }
+
+    let id: String
+}
+
 class ObjectTapHandler {
     class Events {
         static let onObjectTap = "onObjectTap"
@@ -18,6 +26,7 @@ class ObjectTapHandler {
         static let onIdleTap = "onIdleTap"
         static let onRoadEventTap = "onRoadEventTap"
         static let onMarkerTap = "onMarkerTap"
+        static let onModelTap = "onModelTap"
         static let onPolygonTap = "onPolygonTap"
         static let onCircleTap = "onCircleTap"
         static let onPolylineTap = "onPolylineTap"
@@ -60,6 +69,7 @@ class ObjectTapHandler {
     private let mapObjectManager: MapObjectManager
     private let panoramasObjectManager: MapObjectManager
     private let imageFactory: IImageFactory
+    private let modelFactory: IModelFactory
     private let flutterApi: FlutterMapApi
     private let eventChannel: DgisStreamHandler
     private let ioObjectManager: MapObjectManager
@@ -76,7 +86,9 @@ class ObjectTapHandler {
     private var cancelable: Array<Cancellable> = []
 
     private var markers: Dictionary<String, (Marker, String?)> = [:]
+    private var models: Dictionary<String, (ModelMapObject, String?)> = [:]
     private var managers: Dictionary<String, MapObjectManager> = [:]
+    private lazy var modelManager = MapObjectManager(map: self.map)
     private var polygons: Dictionary<String, (Polygon, String?)> = [:]
     private var circles: Dictionary<String, (Circle, String?)> = [:]
     private var polylines: Dictionary<String, (Polyline, String?)> = [:]
@@ -85,6 +97,7 @@ class ObjectTapHandler {
     private var ioLayerMarkers: Array<Marker> = []
     
     private var iconCache: Dictionary<String, Image> = [:]
+    private var modelDataCache: Dictionary<String, ModelData> = [:]
 
     private var selectedPanorama: Marker?
     
@@ -94,6 +107,7 @@ class ObjectTapHandler {
         panoramasMapObjectManager: MapObjectManager,
         ioObjectManager: MapObjectManager,
         imageFactory: IImageFactory,
+        modelFactory: IModelFactory,
         routeHandler: RouteHandler?,
         eventChannel: DgisStreamHandler,
         registrar: FlutterPluginRegistrar
@@ -110,6 +124,7 @@ class ObjectTapHandler {
             qos: .userInitiated // check the performance of search
         )
         self.registrar = registrar
+        self.modelFactory = modelFactory
         self.flutterApi = FlutterMapApi(binaryMessenger: registrar.messenger())
     }
     
@@ -124,6 +139,11 @@ class ObjectTapHandler {
             case is Marker:
                 self.onMarkerTap(tappedObject as! Marker)
                 return
+            case let model as ModelMapObject:
+                if let id = model.userData as? ModelId {
+                    self.onModelTap(id.id)
+                    return
+                }
             case let polygon as Polygon:
                 if let id = polygon.userData as? PolygonId {
                     eventChannel.success([
@@ -201,6 +221,11 @@ class ObjectTapHandler {
         case let marker as Marker:
             if let markerId = (marker.userData as? MarkerId)?.id, markerId.hasPrefix("dynamic_poi_") {
                 self.onMarkerTap(marker)
+            }
+            return
+        case let model as ModelMapObject:
+            if let id = model.userData as? ModelId {
+                self.onModelTap(id.id)
             }
             return
         case let cluster as SimpleClusterObject:
@@ -495,6 +520,157 @@ class ObjectTapHandler {
         removeAllObjects(managerId, &self.markers, completion: completion)
     }
     
+    // MARK: 3D Model
+    
+    private func getModelData(fromAsset modelPath: String, completion: @escaping (Result<Void, any Error>) -> Void) -> ModelData? {
+        if let cachedModel = modelDataCache[modelPath] {
+            return cachedModel
+        }
+        
+        let assetKey = registrar.lookupKey(forAsset: modelPath)
+        guard let assetPath = Bundle.main.path(forResource: assetKey, ofType: nil),
+              let data = try? Data(contentsOf: URL(fileURLWithPath: assetPath)) else {
+            completion(Result.failure(
+                FlutterError(
+                    code: "Error loading asset for 3D model",
+                    message: "Failed to find model asset <\(modelPath)> with key <\(assetKey)>.",
+                    details: nil
+                )
+            ))
+            return nil
+        }
+        
+        let modelData = modelFactory.make(modelData: data)
+        modelDataCache[modelPath] = modelData
+        return modelData
+    }
+    
+    private func mapModel(_ model: ModelMapObjectMessage, completion: @escaping (Result<Void, any Error>) -> Void) -> ModelMapObject? {
+        guard let modelData = getModelData(fromAsset: model.options.modelPath, completion: completion) else {
+            return nil
+        }
+        
+        let options = ModelMapObjectOptions(
+            position: model.options.position.geoPointWithElevation,
+            data: modelData,
+            size: model.options.size.modelSize,
+            mapDirection: model.options.mapDirection.map {
+                MapDirection(value: $0.degree)
+            },
+            opacity: Opacity(value: Float(model.options.opacity ?? 1.0)),
+            visible: model.options.isVisible ?? true,
+            userData: ModelId(model.id),
+            levelId: model.options.levelId?.toLevelId()
+        )
+        
+        do {
+            let modelObject = try ModelMapObject(options: options)
+            if let zIndex = model.options.zIndex {
+                modelObject.zIndex = ZIndex(value: UInt32(zIndex))
+            }
+            return modelObject
+        } catch {
+            completion(
+                Result.failure(
+                    FlutterError(
+                        code: "Error creating 3D model \(error.localizedDescription)",
+                        message: nil,
+                        details: nil
+                    )
+                )
+            )
+            return nil
+        }
+    }
+    
+    func addModel(_ model: ModelMapObjectMessage, to managerId: String?, completion: @escaping (Result<Void, any Error>) -> Void) {
+        guard let modelObject = mapModel(model, completion: completion) else {
+            return
+        }
+        
+        self.objectsQueue.async {
+            self.models[model.id] = (modelObject, managerId)
+            self.modelManager.addObject(item: modelObject)
+            completion(Result.success(()))
+        }
+    }
+    
+    func setModelOptions(_ id: String, options: ChangeModelMapObjectOptionsMessage, completion: @escaping (Result<Void, any Error>) -> Void) {
+        guard let modelObject = self.models[id]?.0 else {
+            completion(Result.success(()))
+            return
+        }
+        
+        if let position = options.position {
+            modelObject.position = position.geoPointWithElevation
+        }
+        if let modelPath = options.modelPath {
+            guard let modelData = getModelData(fromAsset: modelPath, completion: completion) else {
+                return
+            }
+            modelObject.modelData = modelData
+        }
+        if let size = options.size {
+            modelObject.size = size.modelSize
+        }
+        if let mapDirection = options.mapDirection {
+            modelObject.mapDirection = MapDirection(value: mapDirection.degree)
+        }
+        if let opacity = options.opacity {
+            modelObject.opacity = Opacity(value: Float(opacity))
+        }
+        if let isVisible = options.isVisible {
+            modelObject.isVisible = isVisible
+        }
+        if let zIndex = options.zIndex {
+            modelObject.zIndex = ZIndex(value: UInt32(zIndex))
+        }
+        
+        completion(Result.success(()))
+    }
+    
+    func addModels(_ models: [ModelMapObjectMessage], to managerId: String?, completion: @escaping (Result<Void, any Error>) -> Void) {
+        self.objectsQueue.async {
+            var modelObjects = [String: ModelMapObject]()
+            for model in models {
+                guard let modelObject = self.mapModel(model, completion: completion) else {
+                    return
+                }
+                modelObjects[model.id] = modelObject
+            }
+            
+            modelObjects.forEach { id, object in
+                self.models[id] = (object, managerId)
+            }
+            self.modelManager.addObjects(objects: Array(modelObjects.values))
+            completion(Result.success(()))
+        }
+    }
+    
+    func removeModel(_ id: String, from managerId: String?, completion: @escaping (Result<Void, any Error>) -> Void) {
+        self.objectsQueue.async {
+            if let modelObject = self.models.removeValue(forKey: id) {
+                self.modelManager.removeObject(item: modelObject.0)
+            }
+            completion(Result.success(()))
+        }
+    }
+    
+    func removeAllModels(from managerId: String?, completion: @escaping (Result<Void, any Error>) -> Void) {
+        self.objectsQueue.async {
+            let hasManager = managerId != nil && self.managers[managerId!] != nil
+            if hasManager {
+                let removed = self.models.filter { $0.value.1 == managerId }
+                removed.values.forEach { self.modelManager.removeObject(item: $0.0) }
+                removed.keys.forEach { self.models.removeValue(forKey: $0) }
+            } else {
+                self.modelManager.removeAll()
+                self.models.removeAll()
+            }
+            completion(Result.success(()))
+        }
+    }
+    
     // MARK: Cluster
     
     func createClusteringMapObjectManager(_ options: ClusteringMapObjectManagerOptionsMessage, _ layerId: String?, completion: @escaping (Result<MapObjectManagerMessage, any Error>) -> Void) {
@@ -585,15 +761,20 @@ class ObjectTapHandler {
 
     func removeMapObjectManager(_ manager: MapObjectManagerMessage, completion: @escaping (Result<Void, any Error>) -> Void) {
         self.objectsQueue.async {
-            if self.managers.removeValue(forKey: manager.id) != nil {
-                completion(Result.success(()))
-            }
+            self.managers.removeValue(forKey: manager.id)
+            let removed = self.models.filter { $0.value.1 == manager.id }
+            removed.values.forEach { self.modelManager.removeObject(item: $0.0) }
+            removed.keys.forEach { self.models.removeValue(forKey: $0) }
+            completion(Result.success(()))
         }
     }
     
     func setMapObjectManagerIsVisible(_ isVisible: Bool, for managerId: String?,  completion: @escaping (Result<Void, any Error>) -> Void) {
         self.objectsQueue.async {
             self.getManager(managerId).isVisible = isVisible
+            if managerId == nil {
+                self.modelManager.isVisible = isVisible
+            }
             completion(Result.success(()))
         }
     }
@@ -1130,6 +1311,13 @@ class ObjectTapHandler {
         }
     }
     
+    private func onModelTap(_ id: String) {
+        eventChannel.success([
+            "event": Events.onModelTap,
+            "id": id,
+        ] as [String : Any])
+    }
+    
     private func onRoadEventTap(_ event: RoadEventMapObject) {
         switch event.event.type {
         case .roadRestriction:
@@ -1237,5 +1425,16 @@ class ObjectTapHandler {
                 )))
             }
         )
+    }
+}
+
+private extension ModelSizeMessage {
+    var modelSize: ModelSize {
+        switch type {
+        case .logicalPixel:
+            return .logicalPixel(LogicalPixel(value: Float(value)))
+        case .scale:
+            return .scale(ModelScale(value: Float(value)))
+        }
     }
 }
