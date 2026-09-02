@@ -1,6 +1,7 @@
 import 'package:mapness/features/road_events/data/road_events_datasource.dart';
 import 'package:mapness/features/road_events/data/road_events_dio.dart';
 import 'package:mapness/features/road_events/domain/road_event.dart';
+import 'package:mapness/features/road_events/providers/road_events_config.dart';
 import 'package:mapness/features/routing/providers/current_route.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -38,8 +39,9 @@ class RoadEventsAlongRoute extends _$RoadEventsAlongRoute {
 
     final dio = await ref.watch(roadEventsDioProvider.future);
     final datasource = RoadEventsDatasource(dio: dio);
+    final config = await ref.watch(roadEventsConfigProvider.future);
     try {
-      return await datasource.fetchAlongRoute(routeGeometry: waypoints);
+      return await datasource.fetchAlongRoute(routeGeometry: waypoints, corridorMeters: config.corridorWidthMeters);
     } on Object {
       return const [];
     }

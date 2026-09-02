@@ -143,3 +143,25 @@ class RoadEvent {
   final DateTime? expiresAt;
   final DateTime? updatedAt;
 }
+
+/// Client-side tunables from `GET /config` (Road Event Service). Only the
+/// fields consumed by the client so far are kept here — the full response is
+/// captured in `RoadEventConfigResponseDto`.
+class RoadEventConfig {
+  const RoadEventConfig({required this.feedbackCardDismissSeconds, required this.corridorWidthMeters});
+
+  /// Fallback when `/config` is unreachable or a field is missing — matches
+  /// the values hardcoded before this config was wired in.
+  static const int defaultFeedbackCardDismissSeconds = 5;
+  static const double defaultCorridorWidthMeters = 100;
+
+  static const fallback = RoadEventConfig(
+    feedbackCardDismissSeconds: defaultFeedbackCardDismissSeconds,
+    corridorWidthMeters: defaultCorridorWidthMeters,
+  );
+
+  final int feedbackCardDismissSeconds;
+  final double corridorWidthMeters;
+
+  Duration get feedbackCardDismissDuration => Duration(seconds: feedbackCardDismissSeconds);
+}

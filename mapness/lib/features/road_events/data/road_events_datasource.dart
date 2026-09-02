@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:mapness/entities/road_events/dto/create_road_event_request_dto.dart';
+import 'package:mapness/entities/road_events/dto/road_event_config_response_dto.dart';
 import 'package:mapness/entities/road_events/dto/road_event_feedback_request_dto.dart';
 import 'package:mapness/entities/road_events/dto/road_event_response_dto.dart';
 import 'package:mapness/features/road_events/domain/road_event.dart';
@@ -131,9 +132,18 @@ class RoadEventsDatasource {
     return RoadEventsChangesPage(upserts: upserts, removedIds: removedIds, nextCursor: data['nextCursor'] as String?);
   }
 
+  Future<RoadEventConfig> fetchConfig({CancelToken? cancelToken}) async {
+    final response = await dio.get<Map<String, dynamic>>('/config', cancelToken: cancelToken);
+    final json = response.data;
+    if (json == null) {
+      return RoadEventConfig.fallback;
+    }
+    return RoadEventConfigResponseDto.fromJson(json).toDomain();
+  }
+
   Future<List<RoadEvent>> fetchAlongRoute({
     required List<RoadEventLocation> routeGeometry,
-    double corridorMeters = 100,
+    required double corridorMeters,
     double travelledMeters = 0,
     int limit = 50,
     CancelToken? cancelToken,

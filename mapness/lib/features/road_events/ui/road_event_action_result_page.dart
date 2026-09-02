@@ -8,12 +8,15 @@ import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:mapness/_features/common/widgets/dragger.dart';
 import 'package:mapness/features/road_events/domain/road_event.dart';
+import 'package:mapness/features/road_events/providers/road_events_config.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/hooks/toggle_sheet_controller_hook.dart';
 import 'package:sheetify/sheetify.dart';
 
 /// Shown after a road-event action (`RoadEventActionType`) completes successfully
-/// (e.g. "Still there" / "Not anymore"). Auto-closes after [_autoCloseDuration].
+/// (e.g. "Still there" / "Not anymore"). Auto-closes after
+/// `RoadEventConfig.feedbackCardDismissDuration` (from `GET /config`, falling
+/// back to `RoadEventConfig.fallback` if unavailable).
 /// Stub content — layout to be filled in separately; [_countdownController] is
 /// wired up for a future remaining-time indicator widget.
 @RoutePage()
@@ -28,10 +31,8 @@ class RoadEventActionResultPage extends StatefulHookConsumerWidget {
 
 class _RoadEventActionResultPageState extends ConsumerState<RoadEventActionResultPage>
     with SingleTickerProviderStateMixin {
-  static const _autoCloseDuration = Duration(seconds: 5);
-
   // Counts down from 1.0 (just opened) to 0.0 (about to close) over
-  // _autoCloseDuration — feed .value directly into a countdown-visual widget.
+  // the auto-close duration — feed .value directly into a countdown-visual widget.
   late final AnimationController _countdownController;
   Timer? _autoCloseTimer;
   bool _isClosing = false;
@@ -39,8 +40,11 @@ class _RoadEventActionResultPageState extends ConsumerState<RoadEventActionResul
   @override
   void initState() {
     super.initState();
-    _countdownController = AnimationController(vsync: this, duration: _autoCloseDuration)..reverse(from: 1);
-    _autoCloseTimer = Timer(_autoCloseDuration, _close);
+    final autoCloseDuration =
+        ref.read(roadEventsConfigProvider).value?.feedbackCardDismissDuration ??
+        RoadEventConfig.fallback.feedbackCardDismissDuration;
+    _countdownController = AnimationController(vsync: this, duration: autoCloseDuration)..reverse(from: 1);
+    _autoCloseTimer = Timer(autoCloseDuration, _close);
   }
 
   void _close() {
