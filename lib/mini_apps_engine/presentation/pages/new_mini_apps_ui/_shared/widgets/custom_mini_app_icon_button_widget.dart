@@ -36,7 +36,11 @@ class CustomMiniAppsIconButton extends StatelessWidget {
           onPressed:
               onPressed ??
               () {
-                Navigator.pop(context);
+                // The nested services navigator holds only two routes; popping
+                // an already-empty stack throws "Bad state: No element".
+                if (Navigator.of(context).canPop()) {
+                  Navigator.pop(context);
+                }
               },
           icon: Icon(context.isRTL ? icon ?? Icons.east : icon ?? Icons.west),
           color: iconColor ?? (Theme.of(context).brightness == Brightness.dark ? Colors.white : Colors.black),
