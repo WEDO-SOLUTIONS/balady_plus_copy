@@ -262,5 +262,3 @@ flutter_gen:
   integrations:
     flutter_svg: true
 
-dependency_overrides:
-  sdga_design_system: 1.0.0

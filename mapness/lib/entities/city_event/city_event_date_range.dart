@@ -21,6 +21,12 @@ class CityEventDateRange extends Equatable {
   factory CityEventDateRange.leapDefault() =>
       CityEventDateRange(DateTime(DateTime.now().year, 8, 31), DateTime(DateTime.now().year, 9, 3, 23, 59, 59));
 
+  /// TIFO isn't a city event, but shares this same Remote Config shape.
+  /// Default window: 12 Aug 2026 through end of Oct 2026 — a placeholder
+  /// until the backend actually ships its own `tifoDateRange` value.
+  factory CityEventDateRange.tifoDefault() =>
+      CityEventDateRange(DateTime(2026, 8, 12), DateTime(2026, 10, 31, 23, 59, 59));
+      
   factory CityEventDateRange.fromJson(Map<String, dynamic>? json, CityEventDateRange defaults) {
     try {
       final fromValue = json?['from'] as String?;

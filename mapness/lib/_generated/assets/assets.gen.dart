@@ -181,9 +181,6 @@ class $AssetsImagesGen {
   /// File path: assets/images/leap_logo.png
   AssetGenImage get leapLogo => const AssetGenImage('assets/images/leap_logo.png');
 
-  /// File path: assets/images/light_map_preview.jpg
-  AssetGenImage get lightMapPreview => const AssetGenImage('assets/images/light_map_preview.jpg');
-
   /// Directory path: assets/images/makkah_quick_actions
   $AssetsImagesMakkahQuickActionsGen get makkahQuickActions => const $AssetsImagesMakkahQuickActionsGen();
 
@@ -273,7 +270,6 @@ class $AssetsImagesGen {
     imgNearbyPlaceholder,
     ishanSeefromtheskyUnsplash,
     leapLogo,
-    lightMapPreview,
     markerEtaMask,
     qibla,
     regionNotAvailable,

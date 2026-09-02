@@ -382,7 +382,6 @@ class _DebugTogglesCard extends ConsumerWidget {
     final ramadan = ref.watch(ramadanSeasonDebugProvider);
     final hajj = ref.watch(hajjSeasonDebugProvider);
     final pilgrimFeature = ref.watch(pilgrimFeatureDebugProvider);
-    final recommendationsFeature = ref.watch(recommendationsFeatureFlagProvider);
     final leap = ref.watch(leapDebugProvider);
 
     return _GlassCard(
