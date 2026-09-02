@@ -1,3 +1,5 @@
+import 'dart:math' as math;
+
 import 'package:mapness/features/road_events/domain/road_event.dart';
 
 /// Hand-written, defensive parsing (rather than `json_serializable`) matching a
@@ -86,6 +88,10 @@ class RoadEventConfigResponseDto {
   RoadEventConfig toDomain() => RoadEventConfig(
     feedbackCardDismissSeconds: feedbackCardDismissSeconds ?? RoadEventConfig.defaultFeedbackCardDismissSeconds,
     corridorWidthMeters: corridorWidthMeters ?? RoadEventConfig.defaultCorridorWidthMeters,
+    pollIntervalSeconds: math.max(
+      RoadEventConfig.minPollIntervalSeconds,
+      pollIntervalSeconds ?? RoadEventConfig.defaultPollIntervalSeconds,
+    ),
   );
 }
 

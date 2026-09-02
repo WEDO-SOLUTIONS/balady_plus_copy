@@ -148,20 +148,32 @@ class RoadEvent {
 /// fields consumed by the client so far are kept here — the full response is
 /// captured in `RoadEventConfigResponseDto`.
 class RoadEventConfig {
-  const RoadEventConfig({required this.feedbackCardDismissSeconds, required this.corridorWidthMeters});
+  const RoadEventConfig({
+    required this.feedbackCardDismissSeconds,
+    required this.corridorWidthMeters,
+    required this.pollIntervalSeconds,
+  });
 
   /// Fallback when `/config` is unreachable or a field is missing — matches
   /// the values hardcoded before this config was wired in.
   static const int defaultFeedbackCardDismissSeconds = 5;
   static const double defaultCorridorWidthMeters = 100;
+  static const int defaultPollIntervalSeconds = 30;
+
+  /// Floor for `pollIntervalSeconds` — guards against an anomalous `0`/negative
+  /// value from the backend spinning the delta-sync `Timer.periodic` too fast.
+  static const int minPollIntervalSeconds = 15;
 
   static const fallback = RoadEventConfig(
     feedbackCardDismissSeconds: defaultFeedbackCardDismissSeconds,
     corridorWidthMeters: defaultCorridorWidthMeters,
+    pollIntervalSeconds: defaultPollIntervalSeconds,
   );
 
   final int feedbackCardDismissSeconds;
   final double corridorWidthMeters;
+  final int pollIntervalSeconds;
 
   Duration get feedbackCardDismissDuration => Duration(seconds: feedbackCardDismissSeconds);
+  Duration get pollInterval => Duration(seconds: pollIntervalSeconds);
 }

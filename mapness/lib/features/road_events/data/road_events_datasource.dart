@@ -99,10 +99,19 @@ class RoadEventsDatasource {
         .toList();
   }
 
-  Future<RoadEventsChangesPage> fetchChanges({String? cursor, int limit = 100, CancelToken? cancelToken}) async {
+  Future<RoadEventsChangesPage> fetchChanges({
+    String? cursor,
+    RoadEventsBbox? bbox,
+    int limit = 100,
+    CancelToken? cancelToken,
+  }) async {
     final response = await dio.get<Map<String, dynamic>>(
       '/events/changes',
-      queryParameters: {if (cursor != null) 'cursor': cursor, 'limit': limit},
+      queryParameters: {
+        if (cursor != null) 'cursor': cursor,
+        if (bbox != null) 'bbox': bbox.queryValue,
+        'limit': limit,
+      },
       cancelToken: cancelToken,
     );
     final data = response.data ?? const {};

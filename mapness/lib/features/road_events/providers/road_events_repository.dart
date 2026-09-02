@@ -5,6 +5,7 @@ import 'package:dio/dio.dart';
 import 'package:mapness/features/road_events/data/road_events_datasource.dart';
 import 'package:mapness/features/road_events/data/road_events_dio.dart';
 import 'package:mapness/features/road_events/domain/road_event.dart';
+import 'package:mapness/features/road_events/providers/road_events_config.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:mapness/shared/providers/map/road_event_source.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -22,25 +23,35 @@ const double _bboxGap = 0.25;
 @Riverpod(keepAlive: true)
 class RoadEventsRepository extends _$RoadEventsRepository {
   CancelToken? _cancelToken;
+  CancelToken? _deltaCancelToken;
   StreamSubscription? _subscription;
+  Timer? _pollTimer;
+
+  /// Delta-sync cursor for `fetchChanges` — reset whenever a fresh bbox
+  /// snapshot lands, since the cursor and the bbox it was scoped to must stay
+  /// in sync (see `_refresh`).
+  String? _cursor;
+
+  /// The bbox `_refresh` last fetched successfully — `_poll` scopes its
+  /// `fetchChanges` call to it, and won't run before it's set.
+  RoadEventsBbox? _lastBbox;
 
   @override
   Future<List<RoadEvent>> build() async {
     final isVisible = ref.watch(roadEventSourceControlProvider);
+    final config = await ref.watch(roadEventsConfigProvider.future);
 
     ref.onDispose(() {
-      final token = _cancelToken;
-      if (token != null && !token.isCancelled) {
-        token.cancel('RoadEventsRepository disposed');
-      }
+      _cancelActiveRequests('RoadEventsRepository disposed');
       _subscription?.cancel();
+      _pollTimer?.cancel();
     });
 
     _subscription?.cancel();
-    final token = _cancelToken;
-    if (token != null && !token.isCancelled) {
-      token.cancel('road events layer hidden');
-    }
+    _pollTimer?.cancel();
+    _cancelActiveRequests('road events layer hidden');
+    _cursor = null;
+    _lastBbox = null;
 
     if (!isVisible) {
       return state.value ?? const [];
@@ -58,10 +69,28 @@ class RoadEventsRepository extends _$RoadEventsRepository {
           await _refresh(datasource, event.visibleRect);
         });
 
+    _pollTimer = Timer.periodic(config.pollInterval, (_) => unawaited(_poll(datasource)));
+
     return state.value ?? const [];
   }
 
+  void _cancelActiveRequests(String reason) {
+    final token = _cancelToken;
+    if (token != null && !token.isCancelled) {
+      token.cancel(reason);
+    }
+    final deltaToken = _deltaCancelToken;
+    if (deltaToken != null && !deltaToken.isCancelled) {
+      deltaToken.cancel(reason);
+    }
+  }
+
   Future<void> _refresh(RoadEventsDatasource datasource, VisibleRect visibleRect) async {
+    final oldDeltaToken = _deltaCancelToken;
+    if (oldDeltaToken != null && !oldDeltaToken.isCancelled) {
+      oldDeltaToken.cancel('superseded by viewport refresh');
+    }
+
     final oldToken = _cancelToken;
     if (oldToken != null && !oldToken.isCancelled) {
       oldToken.cancel('superseded');
@@ -83,12 +112,75 @@ class RoadEventsRepository extends _$RoadEventsRepository {
         return;
       }
       state = AsyncData(events);
+      // Fresh full snapshot for this bbox — the delta cursor from the
+      // previous bbox is no longer meaningful, restart delta-sync from it.
+      _lastBbox = bbox;
+      _cursor = null;
     } on Object {
       if (cancel.isCancelled) {
         return;
       }
       // Keep prior data on transient failure to avoid a blank flash.
     }
+  }
+
+  /// Polls `/events/changes` for updates since `_cursor`, scoped to the last
+  /// bbox `_refresh` fetched — coalesces upserts/removals between viewport
+  /// changes without a full bbox re-fetch. No-ops until `_refresh` has run at
+  /// least once (nothing to scope the delta to yet).
+  Future<void> _poll(RoadEventsDatasource datasource) async {
+    final bbox = _lastBbox;
+    if (bbox == null) {
+      return;
+    }
+
+    final oldToken = _deltaCancelToken;
+    if (oldToken != null && !oldToken.isCancelled) {
+      oldToken.cancel('superseded');
+    }
+    final cancel = _deltaCancelToken = CancelToken();
+
+    try {
+      final page = await datasource.fetchChanges(cursor: _cursor, bbox: bbox, cancelToken: cancel);
+      if (!ref.mounted || cancel.isCancelled || !identical(_deltaCancelToken, cancel)) {
+        return;
+      }
+      _mergeChanges(page);
+      _cursor = page.nextCursor ?? _cursor;
+    } on DioException catch (e) {
+      if (cancel.isCancelled) {
+        return;
+      }
+      final status = e.response?.statusCode;
+      if (status != null && status >= 400 && status < 500) {
+        // The Road Event Service doesn't document a dedicated "stale cursor"
+        // error — treat any 4xx as an invalid cursor and restart delta-sync
+        // from scratch on the next tick, rather than retrying the same
+        // request forever.
+        _cursor = null;
+      }
+      // 5xx/timeout/no-response: transient — retry with the same cursor on
+      // the next tick.
+    } on Object {
+      if (cancel.isCancelled) {
+        return;
+      }
+    }
+  }
+
+  /// Applies a delta page to the current list by `id` — upserts overwrite,
+  /// removals drop. Safe to call with an empty/idempotent page.
+  void _mergeChanges(RoadEventsChangesPage page) {
+    if (page.upserts.isEmpty && page.removedIds.isEmpty) {
+      return;
+    }
+    final current = state.value ?? const [];
+    final removedIds = page.removedIds.toSet();
+    final upsertIds = page.upserts.map((e) => e.id).toSet();
+    state = AsyncData([
+      ...current.where((e) => !removedIds.contains(e.id) && !upsertIds.contains(e.id)),
+      ...page.upserts,
+    ]);
   }
 
   /// Optimistically inserts a just-created event so it shows up immediately,
