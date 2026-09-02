@@ -286,6 +286,23 @@ class _DgisBottomSheetState extends State<DgisBottomSheet>
   AnimationController? _animationController;
   bool _hasActiveAnimation = false;
 
+  /// [_hasActiveAnimation] can outlive the controller it was raised for
+  /// (setExpansion disposes and replaces the controller mid-animation, and a
+  /// disposed controller's forward() future never completes), so never call
+  /// `stop()` unguarded: in release the stripped assert turns it into a
+  /// null-check `_TypeError` inside layout. `isAnimating` is safe on a
+  /// disposed controller.
+  void _stopActiveAnimation() {
+    if (!_hasActiveAnimation) {
+      return;
+    }
+    final controller = _animationController;
+    if (controller != null && controller.isAnimating) {
+      controller.stop();
+    }
+    _hasActiveAnimation = false;
+  }
+
   late DgisScrollController _scrollController;
 
   @override
@@ -341,23 +358,18 @@ class _DgisBottomSheetState extends State<DgisBottomSheet>
 
     if (!widget.availableExpansions.contains(_expansion)) {
       _printDebugLog('availableExpansions not contains current expansion -> update it');
-      if (_hasActiveAnimation) {
-        _animationController!.stop();
-        _hasActiveAnimation = false;
-      }
+      _stopActiveAnimation();
       setExpansion(_closestExpansionByVisibleHeight(_visibleHeight));
     } else if (_visibleHeightByExpansion(_expansion, oldWidget) != _visibleHeightByExpansion(_expansion)) {
       _printDebugLog('height for current expansion changed -> update it');
-      if (_hasActiveAnimation) {
-        _animationController!.stop();
-        _hasActiveAnimation = false;
-      }
+      _stopActiveAnimation();
       setExpansion(_expansion);
     }
   }
 
   @override
   void dispose() {
+    _hasActiveAnimation = false;
     _animationController?.dispose();
     _bottomSheetHeightListener.dispose();
     super.dispose();
@@ -417,10 +429,7 @@ class _DgisBottomSheetState extends State<DgisBottomSheet>
                           WidgetsBinding.instance.addPostFrameCallback((_) {
                             widget.onVisibleHeightChanged?.call(_visibleHeight);
                           });
-                          if (_hasActiveAnimation) {
-                            _animationController!.stop();
-                            _hasActiveAnimation = false;
-                          }
+                          _stopActiveAnimation();
                         }
 
                         return Stack(
