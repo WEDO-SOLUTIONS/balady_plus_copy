@@ -23,6 +23,8 @@ class EditFavoriteListItemNamePage extends HookConsumerWidget {
 
   const EditFavoriteListItemNamePage({required this.listId, required this.place, super.key});
 
+  static const _customNameMaxLength = 64;
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final list = ref.watch(favoriteListDetailProvider(listId: listId)).value?.list;
@@ -33,7 +35,9 @@ class EditFavoriteListItemNamePage extends HookConsumerWidget {
     final isSubmitting = useState(false);
 
     final value = useValueListenable(nameController);
-    final isValid = value.text.trim().isNotEmpty;
+    final trimmedLength = value.text.trim().length;
+    final isTooLong = trimmedLength > _customNameMaxLength;
+    final isValid = trimmedLength > 0 && !isTooLong;
 
     return ToggleSheet(
       scrollController: scrollController,
@@ -70,12 +74,16 @@ class EditFavoriteListItemNamePage extends HookConsumerWidget {
       content: [
         BaladyTextInput(
           controller: nameController,
+          inputState: isTooLong ? BaladyInputState.error : BaladyInputState.defaultValue,
           config: BaladyInputConfig(
             hintText: context.l10n.favoriteListCustomName,
             fillColor: context.colors.backgroundSurface1,
             hintColor: context.colors.foregroundSoft,
           ),
-          supportingText: BaladySupportingText(text: '     ${context.l10n.favoriteListCustomNameHelperText}'),
+          supportingText: BaladySupportingText(
+            text:
+                '     ${isTooLong ? context.l10n.favoriteListNameTooLongError : context.l10n.favoriteListCustomNameHelperText}',
+          ),
         ),
         const SizedBox(height: Spacing.$10x),
         BaladyAppButton(
