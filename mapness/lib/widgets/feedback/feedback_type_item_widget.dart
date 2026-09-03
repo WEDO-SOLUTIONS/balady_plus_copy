@@ -19,28 +19,28 @@ class FeedbackTypeItemWidget extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) => ContentRow(
-        onTap: onTap,
-        options: ContentRowOptions(
-          leadingIcon: iconUrl == null
-              ? null
-              : NetworkSvg(
-                  iconUrl!,
-                  width: 24,
-                  height: 24,
-                  colorFilter: ColorFilter.mode(
-                    context.colors.accentDefault,
-                    BlendMode.srcIn,
-                  ),
-                ),
-          title: title,
-          titleStyle: context.textStyles.bodyLargeRegular,
-          titleMaxlines: 2,
-          actionWidget: ContentRowActionOptions(
-            actionIcon: AppIcons(
-              iconData: SystemIcons.arrowCornerRightSmall,
-              color: context.colors.neutralDefault,
+    onTap: onTap,
+    options: ContentRowOptions(
+      leadingIcon: iconUrl == null
+          ? null
+          : NetworkSvg(
+              iconUrl!,
+              width: 24,
+              height: 24,
+              colorFilter: ColorFilter.mode(
+                context.colors.accentDefault,
+                BlendMode.srcIn,
+              ),
             ),
-          ),
+      title: title,
+      titleStyle: context.textStyles.bodyLargeRegular,
+      titleMaxlines: 2,
+      actionWidget: ContentRowActionOptions(
+        actionIcon: AppIcons(
+          iconData: SystemIcons.arrowCornerRightSmall,
+          color: context.colors.neutralDefault,
         ),
-      );
+      ),
+    ),
+  );
 }
