@@ -18,37 +18,32 @@ class MetroLayer extends _$MetroLayer {
 
   // Performances improvements, we don't need to update the map on every zoom change
   int _zoomSegment(int? zoom) => switch (zoom) {
-        null => 0,
-        >= 18 => 1,
-        >= 17 => 2,
-        >= 16 => 3,
-        >= 14 => 4,
-        >= 5 => 5,
-        _ => 6,
-      };
+    null => 0,
+    >= 18 => 1,
+    >= 17 => 2,
+    >= 16 => 3,
+    >= 14 => 4,
+    >= 5 => 5,
+    _ => 6,
+  };
 
   bool _disposed = false;
   Future<void>? _showInFlight;
 
   @override
   Future<List<MetroLineModel>> build() async {
-    // Every ref registration happens in the synchronous phase of build: a
-    // ref.watch placed after an await leaves the autoDispose object manager
-    // unlistened across the suspension, so it was torn down and recreated on
-    // every build - and its loading->data transition rebuilt this provider
-    // again, a self-sustaining cycle firing showMetro at frame speed (13k
-    // telemetry events from 5 users a week). The manager is watched by
-    // identity only: its loading/data churn must not rebuild us.
     ref
       ..onDispose(() => _disposed = true)
       ..watch(darkModeProvider)
       // .notifier: keep the manager alive by identity without rebuilding on
       // its loading/data churn (watching the AsyncValue was the feedback edge
       // of the cycle).
-      ..watch(mapObjectManagerProvider(
-        named: mapOptions.name,
-        layerId: mapOptions.layerId,
-      ).notifier)
+      ..watch(
+        mapObjectManagerProvider(
+          named: mapOptions.name,
+          layerId: mapOptions.layerId,
+        ).notifier,
+      )
       ..listen(cameraPositionProvider, (prev, positon) {
         final oldZoomSeg = _zoomSegment(prev?.zoom.ceil());
         final newZoomSeg = _zoomSegment(positon?.zoom.ceil());
@@ -96,10 +91,12 @@ class MetroLayer extends _$MetroLayer {
 
     final metroLines = state.value!;
 
-    final mapManager = ref.read(mapObjectManagerProvider(
-      named: mapOptions.name,
-      layerId: mapOptions.layerId,
-    ).notifier);
+    final mapManager = ref.read(
+      mapObjectManagerProvider(
+        named: mapOptions.name,
+        layerId: mapOptions.layerId,
+      ).notifier,
+    );
     final darkMode = await ref.read(darkModeProvider.future);
     final isDarkMode = darkMode.isDark;
     if (_disposed) {
@@ -179,10 +176,12 @@ class MetroLayer extends _$MetroLayer {
   }
 
   Future<void> hideMetro() async {
-    final mapManager = ref.read(mapObjectManagerProvider(
-      named: mapOptions.name,
-      layerId: mapOptions.layerId,
-    ).notifier);
+    final mapManager = ref.read(
+      mapObjectManagerProvider(
+        named: mapOptions.name,
+        layerId: mapOptions.layerId,
+      ).notifier,
+    );
     await mapManager.removeAllPolyLines();
 
     ref.read(metroLayerRepositoryProvider.notifier).hideMetro();
