@@ -24,6 +24,10 @@ class RoutingHistory extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    // Captured synchronously: the clear/delete callbacks can run after this
+    // element is defunct; the notifier object outlives the widget.
+    final historyNotifier = ref.read(searchHistoryProvider(SearchScopeEnum.routes.value).notifier);
+
     final history = ref.watch(searchHistoryProvider(SearchScopeEnum.routes.value));
 
     if (history.isEmpty) {
@@ -34,10 +38,10 @@ class RoutingHistory extends ConsumerWidget {
       history: history,
       iconColor: context.colors.foregroundSoft,
       onClear: () {
-        ref.read(searchHistoryProvider(SearchScopeEnum.routes.value).notifier).clear();
+        historyNotifier.clear();
       },
       onDelete: (item, index) {
-        ref.read(searchHistoryProvider(SearchScopeEnum.routes.value).notifier).delete(index);
+        historyNotifier.delete(index);
       },
       onTap: (item, index, historyList) async {
         // BALADY-3618: the routes history holds two kinds of entries — directory
@@ -88,6 +92,13 @@ class RoutingHistory extends ConsumerWidget {
     int index,
     int objectId,
   ) async {
+    // Captured before the awaits: updatePoint pops the hosting sheet, so the
+    // error-sheet callbacks below run with this widget's element already
+    // defunct — touching `context` there threw (543 events / ~100 users on
+    // 3.13.5). The router and notifier objects outlive the widget.
+    final router = AutoRouter.of(context);
+    final tryAgainLabel = context.l10n.tryAgain;
+    final historyNotifier = ref.read(searchHistoryProvider(SearchScopeEnum.routes.value).notifier);
     final dgisController = await ref.read(dgisControllerProvider.future);
     try {
       final object = await dgisController.searchByObjectId(
@@ -100,18 +111,17 @@ class RoutingHistory extends ConsumerWidget {
       final point = RoutePointDirectoryObject(object);
       updatePoint(point);
     } catch (e) {
-      if (!context.mounted) {
-        return;
-      }
-      final result = await context.router.push(
+      final result = await router.push(
         ErrorSheetDialogRoute(
-          buttonLabel: context.l10n.tryAgain,
-          onRetry: () => context.router.pop(true),
-          onClose: (_) => context.router.pop(true),
-          onBarrierTap: () => context.router.pop(true),
+          buttonLabel: tryAgainLabel,
+          // maybePop: retry/close/barrier can each fire for one dismissal;
+          // the second pop must not target an already-removed route.
+          onRetry: () => router.maybePop(true),
+          onClose: (_) => router.maybePop(true),
+          onBarrierTap: () => router.maybePop(true),
         ),
       );
-      await ref.read(searchHistoryProvider(SearchScopeEnum.routes.value).notifier).delete(index);
+      await historyNotifier.delete(index);
       if (result != null && result as bool) {
         searchByQuery(item.title);
       }
