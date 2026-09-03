@@ -36,54 +36,49 @@ class CreateOrUpdateFavoriteListPage extends HookConsumerWidget {
     final descriptionController = useTextEditingController();
     final color = useState(MarkerColorCode.blue);
     final isSubmitting = useState(false);
-    final isLoadingList = useState(isEditing);
     final selectedIcon = useState<FavoriteIconType>(FavoriteIconType.$default);
     final isIconPickerExpanded = useState(false);
     final originalValues = useState<({String name, String description, MarkerColorCode color, FavoriteIconType icon})?>(
       null,
     );
 
+    final editingListId = switch (params) {
+      UpdateFavoriteListParams(:final listId) => listId,
+      _ => null,
+    };
+    final listDetailAsync = editingListId != null ? ref.watch(favoriteListDetailProvider(listId: editingListId)) : null;
+
     useEffect(() {
-      switch (params) {
-        case CreateFavoriteListParams():
-          return null;
-
-        case AcceptSharedFavoriteListParams(:final preview):
-          listNameController.text = preview.list.name;
-          descriptionController.text = preview.list.description ?? '';
-          color.value = preview.list.markerColorCode;
-          return null;
-
-        case UpdateFavoriteListParams(:final listId):
-          Future<void> loadList() async {
-            try {
-              final dataSource = await ref.read(favoriteListsRemoteDataSourceProvider.future);
-              final list = (await dataSource.getFavoriteListById(listId)).list;
-              listNameController.text = list.name;
-              descriptionController.text = list.description ?? '';
-              color.value = list.markerColorCode;
-              selectedIcon.value = list.iconType ?? FavoriteIconType.$default;
-              originalValues.value = (
-                name: list.name,
-                description: list.description ?? '',
-                color: list.markerColorCode,
-                icon: selectedIcon.value,
-              );
-            } catch (e) {
-              if (context.mounted) {
-                showFavoriteListsErrorSheet(context, ref, e);
-              }
-            } finally {
-              if (context.mounted) {
-                isLoadingList.value = false;
-              }
-            }
-          }
-
-          loadList();
-          return null;
+      if (params is! AcceptSharedFavoriteListParams) {
+        return null;
       }
+      final preview = params.preview;
+      listNameController.text = preview.list.name;
+      descriptionController.text = preview.list.description ?? '';
+      color.value = preview.list.markerColorCode;
+      return null;
     }, [params]);
+
+    useEffect(() {
+      final list = listDetailAsync?.value?.list;
+      if (list != null && originalValues.value == null) {
+        listNameController.text = list.name;
+        descriptionController.text = list.description ?? '';
+        color.value = list.markerColorCode;
+        selectedIcon.value = list.iconType ?? FavoriteIconType.$default;
+        originalValues.value = (
+          name: list.name,
+          description: list.description ?? '',
+          color: list.markerColorCode,
+          icon: selectedIcon.value,
+        );
+      }
+      final error = listDetailAsync?.error;
+      if (error != null && context.mounted) {
+        showFavoriteListsErrorSheet(context, ref, error);
+      }
+      return null;
+    }, [listDetailAsync]);
 
     final value = useValueListenable(listNameController);
     final descriptionValue = useValueListenable(descriptionController);
@@ -248,7 +243,7 @@ class CreateOrUpdateFavoriteListPage extends HookConsumerWidget {
               : context.l10n.favoriteListCreateButton,
           buttonColorScheme: isUnchanged ? ButtonColorScheme.accentSecondary : ButtonColorScheme.accent,
           buttonType: isUnchanged ? ButtonType.secondary : ButtonType.primary,
-          buttonState: isSubmitting.value || isLoadingList.value
+          buttonState: isSubmitting.value || (listDetailAsync?.isLoading ?? false)
               ? ButtonState.loading
               : (isValid ? ButtonState.defaultState : ButtonState.disabled),
           onTap: isUnchanged
