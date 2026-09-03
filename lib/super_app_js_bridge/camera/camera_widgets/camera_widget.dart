@@ -19,8 +19,7 @@ class CameraWidget extends StatefulWidget {
   State<CameraWidget> createState() => _CameraWidgetState();
 }
 
-class _CameraWidgetState extends State<CameraWidget>
-    with WidgetsBindingObserver {
+class _CameraWidgetState extends State<CameraWidget> with WidgetsBindingObserver {
   late CameraBloc bloc;
 
   // Raised when the lifecycle handler disposed an initialized camera, so
@@ -29,17 +28,22 @@ class _CameraWidgetState extends State<CameraWidget>
   bool _reinitCameraOnResume = false;
 
   @override
-  void dispose() {
-    WidgetsBinding.instance.removeObserver(this);
-    bloc.disposeCamera();
-    super.dispose();
+  void initState() {
+    super.initState();
+    // Assigned here, not in the post-frame callback: dispose() reads `bloc`,
+    // and a fast pop used to hit LateInitializationError.
+    bloc = context.read<CameraBloc>();
+    WidgetsBinding.instance.addObserver(this);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      bloc.add(InitCameraEvent());
+    });
   }
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     try {
-      if (state == AppLifecycleState.inactive ||
-          state == AppLifecycleState.paused) {
+      if (state == AppLifecycleState.inactive || state == AppLifecycleState.paused) {
         final controller = bloc.cameraController;
         if (controller != null && controller.value.isInitialized) {
           _reinitCameraOnResume = true;
@@ -63,16 +67,10 @@ class _CameraWidgetState extends State<CameraWidget>
   }
 
   @override
-  void initState() {
-    super.initState();
-    // Assigned here, not in the post-frame callback: dispose() reads `bloc`,
-    // and a fast pop used to hit LateInitializationError.
-    bloc = context.read<CameraBloc>();
-    WidgetsBinding.instance.addObserver(this);
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (!mounted) return;
-      bloc.add(InitCameraEvent());
-    });
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    bloc.disposeCamera();
+    super.dispose();
   }
 
   @override
@@ -81,48 +79,30 @@ class _CameraWidgetState extends State<CameraWidget>
       builder: (context, state) {
         // Guard on the live controller instance, not only the bloc flag: the
         // flag can lag one emit behind the controller's disposal.
-        final cameraController = context.read<CameraBloc>().cameraController;
-        final isCameraReady = (state.isCameraInitialized ?? false) &&
-            cameraController != null &&
-            cameraController.value.isInitialized;
+        final cameraController = bloc.cameraController;
+        final isCameraReady =
+            (state.isCameraInitialized ?? false) && cameraController != null && cameraController.value.isInitialized;
         return Stack(
           children: [
             isCameraReady
                 ? GestureDetector(
                     behavior: HitTestBehavior.translucent,
                     onScaleStart: (details) {
-                      context
-                          .read<CameraBloc>()
-                          .add(SetZoomLevelEvent(zoom: state.scaleFactor));
+                      bloc.add(SetZoomLevelEvent(zoom: state.scaleFactor));
                     },
                     onScaleUpdate: (details) {
-                      context
-                          .read<CameraBloc>()
-                          .add(UpdateScaleLevelEvent(scale: details.scale));
+                      bloc.add(UpdateScaleLevelEvent(scale: details.scale));
                     },
-                    child: SizedBox(
-                      height: double.infinity,
-                      // Non-null by isCameraReady; a boolean local does not
-                      // promote the variable for the compiler.
-                      child: CameraPreview(cameraController!),
-                    ),
+                    child: SizedBox(height: double.infinity, child: CameraPreview(cameraController)),
                   )
                 : const Center(),
             GestureDetector(
               behavior: HitTestBehavior.translucent,
               onScaleStart: (details) {
-                context.read<CameraBloc>().add(
-                      SetZoomLevelEvent(
-                        zoom: state.scaleFactor,
-                      ),
-                    );
+                bloc.add(SetZoomLevelEvent(zoom: state.scaleFactor));
               },
               onScaleUpdate: (details) {
-                context.read<CameraBloc>().add(
-                      UpdateScaleLevelEvent(
-                        scale: details.scale,
-                      ),
-                    );
+                bloc.add(UpdateScaleLevelEvent(scale: details.scale));
               },
               child: Align(
                 alignment: Alignment.center,
@@ -135,9 +115,7 @@ class _CameraWidgetState extends State<CameraWidget>
                       margin: const EdgeInsets.symmetric(horizontal: 24),
                       decoration: BoxDecoration(
                         border: Border.all(color: AppColor.white, width: 2),
-                        borderRadius: BorderRadius.circular(
-                          24,
-                        ),
+                        borderRadius: BorderRadius.circular(24),
                       ),
                     ),
                     const CustomVerticalSpace(height: 24),
@@ -162,29 +140,19 @@ class _CameraWidgetState extends State<CameraWidget>
                   children: [
                     // take photo button
                     GestureDetector(
-                        onTap: () async {
-                          context.read<CameraBloc>().add(TakePhoto());
-                        },
-                        child: Image.asset(
-                          IconPath.vdButtonCameraIcon,
-                          height: 72,
-                          width: 72,
-                        )),
-                    const CustomVerticalSpace(height: 30)
+                      onTap: () async {
+                        bloc.add(TakePhoto());
+                      },
+                      child: Image.asset(IconPath.vdButtonCameraIcon, height: 72, width: 72),
+                    ),
+                    const CustomVerticalSpace(height: 30),
                   ],
                 ),
               ),
             if (state.status == BlocStatus.loading)
-              const Align(
-                alignment: Alignment.center,
-                child: CustomCircularLoadingWidget(),
-              ),
+              const Align(alignment: Alignment.center, child: CustomCircularLoadingWidget()),
             Padding(
-              padding: EdgeInsets.only(
-                top: MediaQuery.of(context).padding.top + 16,
-                left: 16,
-                right: 16,
-              ),
+              padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top + 16, left: 16, right: 16),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -194,18 +162,18 @@ class _CameraWidgetState extends State<CameraWidget>
                     btnHeight: 40,
                     btnWidth: 40,
                     onPressed: () {
-                      Navigator.of(context).pop();
+                      if (Navigator.canPop(context)) {
+                        Navigator.of(context).pop();
+                      }
                     },
                   ),
                   CustomIconButtonWidget(
-                    icon: !state.isFlashOn
-                        ? IconPath.vdCameraFlashOff
-                        : IconPath.vdCameraFlashOn,
+                    icon: !state.isFlashOn ? IconPath.vdCameraFlashOff : IconPath.vdCameraFlashOn,
                     iconSize: 32,
                     btnHeight: 32,
                     btnWidth: 32,
                     onPressed: () {
-                      context.read<CameraBloc>().add(ToggleCameraFlashEvent());
+                      bloc.add(ToggleCameraFlashEvent());
                     },
                   ),
                 ],
