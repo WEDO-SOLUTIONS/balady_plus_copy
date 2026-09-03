@@ -6,6 +6,7 @@ import 'package:balady_uikit/core/widgets/dragger.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:mapness/widgets/common/network_svg.dart';
 import 'package:mapness/entities/feedback/feedback_base_entity.dart';
 import 'package:mapness/entities/feedback/fields_entity/feedback_text_type_entity.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
@@ -108,12 +109,17 @@ class _FeedbackSubChipsSelectorState extends State<_FeedbackSubChipsSelector> {
     if (uri == null || !uri.hasScheme || uri.host.isEmpty) {
       return const SizedBox.square(dimension: 24);
     }
-    return SvgPicture.network(
+    // NetworkSvg, not bare SvgPicture.network: an errorBuilder alone does not
+    // stop the telemetry flood - flutter_svg caches the failed decode
+    // permanently with no error handler, so every rebuild (each search
+    // keystroke here) re-leaked one unhandled zone error per broken icon.
+    // The blocklist makes a broken URL cost one report total.
+    return NetworkSvg(
       uri.toString(),
       width: 24,
       height: 24,
       colorFilter: ColorFilter.mode(color, BlendMode.srcIn),
-      errorBuilder: (_, __, ___) => const SizedBox.square(dimension: 24),
+      fallback: const SizedBox.square(dimension: 24),
     );
   }
 

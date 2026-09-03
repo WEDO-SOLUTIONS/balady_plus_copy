@@ -1,4 +1,5 @@
 import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/widget_label.dart';
+import 'package:mapness/widgets/common/network_svg.dart';
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/widgets.dart';
@@ -47,7 +48,7 @@ class FeedbackChips extends StatelessWidget {
                     leadingIcon: variant.iconUrl == null
                         ? null
                         : ChipIconWidget(
-                            ({color}) => SvgPicture.network(
+                            ({color}) => NetworkSvg(
                               variant.iconUrl!,
                               colorFilter: ColorFilter.mode(
                                 isSelected ? context.colors.backgroundSurface1 : context.colors.foregroundDefault,
