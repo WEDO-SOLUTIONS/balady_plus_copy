@@ -207,7 +207,10 @@ class ObjectTapHandler {
                 self.onRoadEventTap(tappedObject as! RoadEventMapObject)
                 return
             default:
-                self.eventChannel.error(code: Events.objectTapError)
+                // No handler for this object type is a normal tap, not an
+                // error: reporting it billed one telemetry event per ordinary
+                // POI tap (BALADY-3941).
+                return
             }
         }
 
@@ -241,7 +244,9 @@ class ObjectTapHandler {
             return
 
         default:
-            self.eventChannel.error(code: Events.objectTapError)
+            // No handler for this object type is a normal tap, not an error
+            // (BALADY-3941).
+            return
         }
     }
     
