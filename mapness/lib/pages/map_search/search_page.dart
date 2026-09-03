@@ -18,10 +18,6 @@ class SearchPage extends StatelessWidget {
     this.initialState,
   });
 
-  // No LayoutBuilder here: it forced the whole search sheet subtree to build
-  // during the layout phase (any exception from it then surfaced inside
-  // _RenderLayoutBuilder.performLayout), and its only product — biggestHeight —
-  // was never read by MapSearchSheet.
   @override
   Widget build(BuildContext context) => MapSearchSheet(
     initialState: initialState,

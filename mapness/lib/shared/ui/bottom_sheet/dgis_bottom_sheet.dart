@@ -286,12 +286,6 @@ class _DgisBottomSheetState extends State<DgisBottomSheet>
   AnimationController? _animationController;
   bool _hasActiveAnimation = false;
 
-  /// [_hasActiveAnimation] can outlive the controller it was raised for
-  /// (setExpansion disposes and replaces the controller mid-animation, and a
-  /// disposed controller's forward() future never completes), so never call
-  /// `stop()` unguarded: in release the stripped assert turns it into a
-  /// null-check `_TypeError` inside layout. `isAnimating` is safe on a
-  /// disposed controller.
   void _stopActiveAnimation() {
     if (!_hasActiveAnimation) {
       return;
