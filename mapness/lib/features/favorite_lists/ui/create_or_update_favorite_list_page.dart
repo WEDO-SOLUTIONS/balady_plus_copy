@@ -34,7 +34,7 @@ class CreateOrUpdateFavoriteListPage extends HookConsumerWidget {
     final scrollController = useToggleSheetController(onClose: (_) => context.router.pop());
     final listNameController = useTextEditingController();
     final descriptionController = useTextEditingController();
-    final color = useState(MarkerColorCode.blue);
+    final color = useState(MarkerColorCode.green);
     final isSubmitting = useState(false);
     final selectedIcon = useState<FavoriteIconType>(FavoriteIconType.$default);
     final isIconPickerExpanded = useState(false);
