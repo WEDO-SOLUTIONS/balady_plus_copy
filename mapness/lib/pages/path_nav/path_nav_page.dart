@@ -678,7 +678,10 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
     await mapObjectProvider.setMapObjectManagerIsVisible(isVisible: true);
 
     if (isLandscape) {
-      await context.router.push(const FlipsContinueRoute());
+      // ~6 awaits above; the page can be gone by now.
+      if (mounted) {
+        await context.router.push(const FlipsContinueRoute());
+      }
       action?.call();
       return;
     }
@@ -724,6 +727,12 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
 
   // Show the home page after the trip is finished
   Future<void> _endTripAndShowHome() async {
+    // Resolved while this State is still mounted: the action below pops
+    // PathNavPage, so by the post-frame callback `State.context` is gone —
+    // touching it there (even for l10n) is the crash. The callback must run
+    // entirely on the root context.
+    final arrivedTitle = context.l10n.youArrived;
+
     await ref.read(urbiAnalyticsProvider).track(MapnessConstants.analyticsTripStopped);
 
     await _endTrip(
@@ -738,10 +747,11 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
     if (!_arrivalToastShown) {
       _arrivalToastShown = true;
       WidgetsBinding.instance.addPostFrameCallback((_) {
-        final toastCtx = rootNavigatorKey.currentContext ?? context;
-        if (toastCtx.mounted) {
-          ToastOverlay.of(toastCtx).show(title: context.l10n.youArrived);
+        final toastCtx = rootNavigatorKey.currentContext;
+        if (toastCtx == null || !toastCtx.mounted) {
+          return;
         }
+        toastCtx.findAncestorStateOfType<ToastOverlayState>()?.show(title: arrivedTitle);
       });
     }
   }
