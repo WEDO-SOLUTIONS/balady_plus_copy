@@ -24,6 +24,14 @@ class RoutingHistory extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    // Captured synchronously: the onTap flow awaits, and both host screens pop
+    // this sheet in updatePoint — the error-sheet callbacks below then run with
+    // this widget's element already defunct, so touching `context` there threw.
+    // The router and the notifier objects outlive the widget.
+    final router = AutoRouter.of(context);
+    final tryAgainLabel = context.l10n.tryAgain;
+    final historyNotifier = ref.read(searchHistoryProvider(SearchScopeEnum.routes.value).notifier);
+
     final history = ref.watch(searchHistoryProvider(SearchScopeEnum.routes.value))
       ..where((e) => e.id?.objectId != null);
 
@@ -35,10 +43,10 @@ class RoutingHistory extends ConsumerWidget {
       history: history,
       iconColor: context.colors.foregroundSoft,
       onClear: () {
-        ref.read(searchHistoryProvider(SearchScopeEnum.routes.value).notifier).clear();
+        historyNotifier.clear();
       },
       onDelete: (item, index) {
-        ref.read(searchHistoryProvider(SearchScopeEnum.routes.value).notifier).delete(index);
+        historyNotifier.delete(index);
       },
       onTap: (item, index, historyList) async {
         final dgisController = await ref.read(dgisControllerProvider.future);
@@ -53,15 +61,17 @@ class RoutingHistory extends ConsumerWidget {
           final point = RoutePointDirectoryObject(object);
           updatePoint(point);
         } catch (e) {
-          final result = await context.router.push(
+          final result = await router.push(
             ErrorSheetDialogRoute(
-              buttonLabel: context.l10n.tryAgain,
-              onRetry: () => context.router.pop(true),
-              onClose: (_) => context.router.pop(true),
-              onBarrierTap: () => context.router.pop(true),
+              buttonLabel: tryAgainLabel,
+              // maybePop: retry/close/barrier can each fire for one dismissal;
+              // the second pop must not target an already-removed route.
+              onRetry: () => router.maybePop(true),
+              onClose: (_) => router.maybePop(true),
+              onBarrierTap: () => router.maybePop(true),
             ),
           );
-          await ref.read(searchHistoryProvider(SearchScopeEnum.routes.value).notifier).delete(index);
+          await historyNotifier.delete(index);
           if (result != null && result as bool) {
             searchByQuery(item.title);
           }
