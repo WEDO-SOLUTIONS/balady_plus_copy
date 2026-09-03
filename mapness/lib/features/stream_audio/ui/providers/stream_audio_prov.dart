@@ -1,3 +1,5 @@
+// ignore_for_file: always_put_control_body_on_new_line
+
 import 'dart:async';
 import 'package:balady_plus/app/core/services/local/shared_prefs_manager.dart';
 import 'package:flutter/material.dart';
@@ -69,24 +71,24 @@ class StreamAudioProvider extends ChangeNotifier {
 
   Future<void> _initializeService() async {
     await _audioService.init();
-    _audioService.addListener(_onAudioServiceChanged);
+    _audioService
+      ..addListener(_onAudioServiceChanged)
+      // Set callback for notification dismissal
+      ..setOnNotificationDismissedCallback(() {
+        debugPrint('StreamAudioProvider: Notification dismissed callback received - forcing exit (like mustRemove)');
+        // When notification is dismissed from outside, ALWAYS exit (like mustRemove)
+        // This is a user action that should take precedence over any ongoing operations
+        if (_isSelectingChannel) {
+          debugPrint('StreamAudioProvider: Currently selecting channel, canceling selection and exiting');
+          // Cancel the selection flag immediately so exitPlayer can proceed
+          _isSelectingChannel = false;
+        }
 
-    // Set callback for notification dismissal
-    _audioService.setOnNotificationDismissedCallback(() {
-      debugPrint('StreamAudioProvider: Notification dismissed callback received - forcing exit (like mustRemove)');
-      // When notification is dismissed from outside, ALWAYS exit (like mustRemove)
-      // This is a user action that should take precedence over any ongoing operations
-      if (_isSelectingChannel) {
-        debugPrint('StreamAudioProvider: Currently selecting channel, canceling selection and exiting');
-        // Cancel the selection flag immediately so exitPlayer can proceed
-        _isSelectingChannel = false;
-      }
-
-      // Always exit when notification is dismissed (user action)
-      if (!_isExited) {
-        exitPlayer();
-      }
-    });
+        // Always exit when notification is dismissed (user action)
+        if (!_isExited) {
+          exitPlayer();
+        }
+      });
 
     _isInitialized = true;
     notifyListeners();
@@ -295,23 +297,17 @@ class StreamAudioProvider extends ChangeNotifier {
 
   bool get hasChannels => filteredChannels.isNotEmpty;
 
-  void setDraggingState(bool isDragging) {
-    debugPrint('StreamAudioProvider: setDraggingState called - old: $_isDragging, new: $isDragging');
-    _isDragging = isDragging;
-    notifyListeners();
-    debugPrint('StreamAudioProvider: notifyListeners called');
-  }
-
-  void setInWeb(bool inWeb) {
+  void setInWeb({required bool inWeb}) {
     debugPrint('StreamAudioProvider: setInWeb called - old: $isInWeb, new: $inWeb');
     isInWeb = inWeb;
     notifyListeners();
     debugPrint('StreamAudioProvider: InWeb state changed to $inWeb');
   }
 
-  void setFloatingPlayerVisibility(bool isVisible) {
+  void setFloatingPlayerVisibility({required bool isVisible}) {
     debugPrint(
-        'StreamAudioProvider: setFloatingPlayerVisibility called - old: $_isFloatingPlayerVisible, new: $isVisible');
+      'StreamAudioProvider: setFloatingPlayerVisibility called - old: $_isFloatingPlayerVisible, new: $isVisible',
+    );
     if (isInWeb && isVisible) {
       _isFloatingPlayerVisible = false;
     } else {
@@ -325,6 +321,16 @@ class StreamAudioProvider extends ChangeNotifier {
   void setTogglePanelCallback(VoidCallback? callback) {
     _togglePanelCallback = callback;
     debugPrint('StreamAudioProvider: Toggle panel callback ${callback != null ? 'registered' : 'unregistered'}');
+  }
+
+  // Identity-aware unregister: during a shell rebuild the new StreamAudio can
+  // register its callback before the old one disposes — a blind null here
+  // would silently kill the live hook.
+  void clearTogglePanelCallback(VoidCallback callback) {
+    if (identical(_togglePanelCallback, callback)) {
+      _togglePanelCallback = null;
+      debugPrint('StreamAudioProvider: Toggle panel callback unregistered');
+    }
   }
 
   // Trigger the panel toggle from external widgets (like mini apps)
@@ -501,16 +507,20 @@ class StreamAudioProvider extends ChangeNotifier {
 
       _selectedChannel = channel;
       _isExited = false;
-      setFloatingPlayerVisibility(true); // Show floating player when selecting a channel
+      setFloatingPlayerVisibility(isVisible: true); // Show floating player when selecting a channel
 
-      final playlistArgs = filteredChannels.map((c) => {
-        'url': c.streamUrl ?? '',
-        'id': c.id?.toString() ?? '',
-        'title': c.name,
-        'programName': c.currentPlayedProgram?.name,
-        'artUri': c.logo,
-      }).toList();
-      
+      final playlistArgs = filteredChannels
+          .map(
+            (c) => {
+              'url': c.streamUrl ?? '',
+              'id': c.id?.toString() ?? '',
+              'title': c.name,
+              'programName': c.currentPlayedProgram?.name,
+              'artUri': c.logo,
+            },
+          )
+          .toList();
+
       final initialIndex = filteredChannels.indexWhere((c) => c.id == channel.id);
 
       await _audioService.playStream(
@@ -549,24 +559,24 @@ class StreamAudioProvider extends ChangeNotifier {
     await _audioService.reinitialize();
 
     // Add listener to the reinitialized service
-    _audioService.addListener(_onAudioServiceChanged);
+    _audioService
+      ..addListener(_onAudioServiceChanged)
+      // Re-set callback for notification dismissal
+      ..setOnNotificationDismissedCallback(() {
+        debugPrint('StreamAudioProvider: Notification dismissed callback received - forcing exit (like mustRemove)');
+        // When notification is dismissed from outside, ALWAYS exit (like mustRemove)
+        // This is a user action that should take precedence over any ongoing operations
+        if (_isSelectingChannel) {
+          debugPrint('StreamAudioProvider: Currently selecting channel, canceling selection and exiting');
+          // Cancel the selection flag immediately so exitPlayer can proceed
+          _isSelectingChannel = false;
+        }
 
-    // Re-set callback for notification dismissal
-    _audioService.setOnNotificationDismissedCallback(() {
-      debugPrint('StreamAudioProvider: Notification dismissed callback received - forcing exit (like mustRemove)');
-      // When notification is dismissed from outside, ALWAYS exit (like mustRemove)
-      // This is a user action that should take precedence over any ongoing operations
-      if (_isSelectingChannel) {
-        debugPrint('StreamAudioProvider: Currently selecting channel, canceling selection and exiting');
-        // Cancel the selection flag immediately so exitPlayer can proceed
-        _isSelectingChannel = false;
-      }
-
-      // Always exit when notification is dismissed (user action)
-      if (!_isExited) {
-        exitPlayer();
-      }
-    });
+        // Always exit when notification is dismissed (user action)
+        if (!_isExited) {
+          exitPlayer();
+        }
+      });
 
     _isInitialized = true;
 
@@ -589,17 +599,21 @@ class StreamAudioProvider extends ChangeNotifier {
     }
 
     _isExited = false;
-    setFloatingPlayerVisibility(true); // Show floating player when playing
+    setFloatingPlayerVisibility(isVisible: true); // Show floating player when playing
 
     try {
-      final playlistArgs = filteredChannels.map((c) => {
-        'url': c.streamUrl ?? '',
-        'id': c.id?.toString() ?? '',
-        'title': c.name,
-        'programName': c.currentPlayedProgram?.name,
-        'artUri': c.logo,
-      }).toList();
-      
+      final playlistArgs = filteredChannels
+          .map(
+            (c) => {
+              'url': c.streamUrl ?? '',
+              'id': c.id?.toString() ?? '',
+              'title': c.name,
+              'programName': c.currentPlayedProgram?.name,
+              'artUri': c.logo,
+            },
+          )
+          .toList();
+
       final initialIndex = filteredChannels.indexWhere((c) => c.id == _selectedChannel!.id);
 
       await _audioService.playStream(
@@ -637,7 +651,8 @@ class StreamAudioProvider extends ChangeNotifier {
 
   Future<void> togglePlayPause() async {
     debugPrint(
-        'StreamAudioProvider: togglePlayPause called - selectedChannel: ${_selectedChannel?.name}, isPlaying: ${_audioService.isPlaying}, isLoading: ${_audioService.isLoading}');
+      'StreamAudioProvider: togglePlayPause called - selectedChannel: ${_selectedChannel?.name}, isPlaying: ${_audioService.isPlaying}, isLoading: ${_audioService.isLoading}',
+    );
 
     // If no channel is selected, select the first available channel and start playing
     if (_selectedChannel == null) {
@@ -746,7 +761,7 @@ class StreamAudioProvider extends ChangeNotifier {
     _isExited = true;
     _selectedChannel = null;
     _isInitialized = false;
-    setFloatingPlayerVisibility(false); // Hide floating player when exiting
+    setFloatingPlayerVisibility(isVisible: false); // Hide floating player when exiting
 
     debugPrint('StreamAudioProvider: Player exited successfully');
     notifyListeners();
@@ -831,40 +846,6 @@ class StreamAudioProvider extends ChangeNotifier {
     }
   }
 
-  // Method to restore after mini app navigation
-  // Future<void> restoreAfterMiniAppNavigation() async {
-  //   debugPrint('StreamAudioProvider: Restoring after mini app navigation');
-  //
-  //   try {
-  //     // Restart background monitoring if we have a selected channel
-  //     if (_selectedChannel != null && !_isExited) {
-  //       _startBackgroundMonitoring();
-  //     }
-  //
-  //     notifyListeners();
-  //   } catch (e) {
-  //     debugPrint('StreamAudioProvider: Error restoring after mini app navigation: $e');
-  //   }
-  // }
-
-  // Program reordering (for UI)
-  // void reorderPrograms(int oldIndex, int passedNewIndex) {
-  //   final ln = liveNow;
-  //   if (ln == null) {
-  //     return;
-  //   }
-  //
-  //   final list = [...ln.programs];
-  //   int newIndex = passedNewIndex;
-  //   if (passedNewIndex > oldIndex) {
-  //     newIndex = passedNewIndex - 1;
-  //   }
-  //   final item = list.removeAt(oldIndex);
-  //   list.insert(newIndex, item);
-  //
-  //   liveNow = ln.copyWith(programs: list);
-  // }
-
   @override
   void dispose() {
     debugPrint('StreamAudioProvider: Starting dispose');
@@ -875,9 +856,6 @@ class StreamAudioProvider extends ChangeNotifier {
     // Cancel all timers
     _contextualMessageTimer?.cancel();
     _contextualMessageTimer = null;
-
-    // _backgroundMonitorTimer?.cancel();
-    // _backgroundMonitorTimer = null;
 
     // Clear any pending channels request
     _currentChannelsRequest = null;
@@ -904,8 +882,7 @@ class StreamAudioProvider extends ChangeNotifier {
 // Provider definition
 final streamAudioProvider = ChangeNotifierProvider<StreamAudioProvider>(
   (ref) {
-    final provider = StreamAudioProvider()
-    ..setRef(ref);
+    final provider = StreamAudioProvider()..setRef(ref);
     return provider;
   },
 );
