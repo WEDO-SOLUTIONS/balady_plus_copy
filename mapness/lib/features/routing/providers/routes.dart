@@ -376,3 +376,13 @@ class BetterRouteSettings extends _$BetterRouteSettings {
 }
 
 final currentNavigationDestinationProvider = StateProvider<RouteParamsPoint?>((ref) => null);
+
+/// True while the turn-by-turn navigation page is on screen.
+///
+/// Driven by `PathNavPage`'s own widget lifecycle rather than derived from
+/// `currentRouteProvider`: navigation can be left WITHOUT going through
+/// "end trip" (system back, swipe back, a `popUntil` from elsewhere), and those
+/// exits leave the route state set — so anything that changes how the map looks
+/// during navigation would stay changed for the rest of the session. A widget's
+/// `dispose` covers every exit there is.
+final navigationActiveProvider = StateProvider<bool>((ref) => false);
