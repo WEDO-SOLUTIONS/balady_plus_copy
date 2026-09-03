@@ -240,8 +240,12 @@ void _openPoiCard(BuildContext context, FavouriteItem? item) {
   if (objectId == null) {
     return;
   }
+  final entranceId = parseEntranceIdFromFavouriteEntityId(item?.entity?.id) ?? 0;
   context.router.replaceOrPush(
-    route: PoiCardWidgetRoute(objectId: DgisObjectIdMessage(objectId: objectId, entranceId: 0)),
+    route: PoiCardWidgetRoute(
+      objectId: DgisObjectIdMessage(objectId: objectId, entranceId: entranceId),
+      closestPoint: LatLng(latitude: item!.coordinates.latitude, longitude: item.coordinates.longitude),
+    ),
     toCompareRoutes: [PoiCardWidgetRoute.page],
   );
 }

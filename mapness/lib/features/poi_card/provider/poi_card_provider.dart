@@ -97,6 +97,7 @@ class PoiCardProvider extends _$PoiCardProvider {
     PoiCameraConfig? cameraConfig,
     LatLng? closestPoint,
     bool showHighlight = true,
+    int entranceId = 0,
   }) async {
     state = const AsyncValue.loading();
     // We need to use [appLang] to cache different data for different locales
@@ -110,7 +111,7 @@ class PoiCardProvider extends _$PoiCardProvider {
       ref
           .read(
             pointOfInterestProvider(
-              DgisObjectId(objectId: objectId, entranceId: 0),
+              DgisObjectId(objectId: objectId, entranceId: entranceId),
               closestPoint,
               theme,
               showHighlight: showHighlight,
@@ -127,7 +128,7 @@ class PoiCardProvider extends _$PoiCardProvider {
       final poiFuture = ref
           .watch(
             pointOfInterestProvider(
-              DgisObjectId(objectId: objectId, entranceId: 0),
+              DgisObjectId(objectId: objectId, entranceId: entranceId),
               closestPoint,
               theme,
               showHighlight: showHighlight,

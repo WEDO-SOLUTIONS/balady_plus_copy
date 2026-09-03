@@ -7,6 +7,7 @@ import 'package:mapness/features/favorite_lists/data/models/map_marker_dto.dart'
 import 'package:mapness/features/favorite_lists/data/models/marker_color_code.dart';
 import 'package:mapness/features/favorite_lists/providers/aggregated_favorite_markers.dart';
 import 'package:mapness/features/favourites/helpers/construct_marker.dart';
+import 'package:mapness/features/favourites/helpers/favourite_entity_id.dart';
 import 'package:mapness/features/favourites/providers/favourite_cache.dart';
 import 'package:mapness/features/lifestyle_layers/configs/layers_consts.dart';
 import 'package:mapness/features/lifestyle_layers/providers/active_layer.dart';
@@ -181,11 +182,13 @@ class _FavouriteMarkers extends _$FavouriteMarkers {
       if (!ref.mounted) {
         return;
       }
+      final homeObjectId = parseObjectIdFromFavouriteEntityId(favItems.home!.entity?.id);
       markers.add(
         constructMarker(
           favItems.home!,
           PngBytesMarkerIcon(pngData: homeIconBytes, width: 24),
           router,
+          markerId: homeObjectId != null ? homeWorkMarkerId(homeObjectId) : null,
         ),
       );
     }
@@ -202,11 +205,13 @@ class _FavouriteMarkers extends _$FavouriteMarkers {
       if (!ref.mounted) {
         return;
       }
+      final workObjectId = parseObjectIdFromFavouriteEntityId(favItems.work!.entity?.id);
       markers.add(
         constructMarker(
           favItems.work!,
           PngBytesMarkerIcon(pngData: workIconBytes, width: 24),
           router,
+          markerId: workObjectId != null ? homeWorkMarkerId(workObjectId) : null,
         ),
       );
     }

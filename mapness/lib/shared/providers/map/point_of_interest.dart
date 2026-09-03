@@ -26,6 +26,7 @@ import 'package:mapness/shared/providers/map/rubric_marker_type_mapper.dart';
 import 'package:mapness/shared/providers/map/selected_marker.dart';
 import 'package:mapness/shared/ui/markers/markers.dart';
 import 'package:mapness/shared/ui/toast/app_locale.dart';
+import 'package:riverpod/riverpod.dart' show ProviderListenableSelect;
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'point_of_interest.g.dart';
@@ -61,15 +62,23 @@ Future<DirectoryObjectMessage?> pointOfInterest(
       .getMarkerPath(rubrics, objectId.objectId, closestPoint: closestPoint?.geoPoint);
   final favoriteMarker = await ref.read(favoritePlaceMarkerProvider(objectId.objectId.toString()).future);
   final favoritePinBitmap = ref.read(favoritePinMarkerBitmapProvider);
-  FavoriteIconType? homeWorkIconType;
-  if (favoriteMarker == null) {
-    final favourites = await ref.watch(favouriteCacheProvider.future);
-    if (parseObjectIdFromFavouriteEntityId(favourites.home?.entity?.id) == objectId.objectId) {
-      homeWorkIconType = FavoriteIconType.home;
-    } else if (parseObjectIdFromFavouriteEntityId(favourites.work?.entity?.id) == objectId.objectId) {
-      homeWorkIconType = FavoriteIconType.building;
-    }
-  }
+  final homeWorkIconType = favoriteMarker != null
+      ? null
+      : ref.watch(
+          favouriteCacheProvider.select((asyncFavourites) {
+            final favourites = asyncFavourites.value;
+            if (favourites == null) {
+              return null;
+            }
+            if (parseObjectIdFromFavouriteEntityId(favourites.home?.entity?.id) == objectId.objectId) {
+              return FavoriteIconType.home;
+            }
+            if (parseObjectIdFromFavouriteEntityId(favourites.work?.entity?.id) == objectId.objectId) {
+              return FavoriteIconType.building;
+            }
+            return null;
+          }),
+        );
   final isFavoritePin = favoriteMarker != null || homeWorkIconType != null;
   Uint8List? favoriteIconBytes;
   if (isFavoritePin) {
@@ -144,7 +153,9 @@ Future<DirectoryObjectMessage?> pointOfInterest(
       isDark: isDark,
     ),
     objectId: objectId.objectId,
-    favouriteMarkerId: favoriteMarker != null ? favoriteListPlaceMarkerId(objectId.objectId.toString()) : null,
+    favouriteMarkerId: favoriteMarker != null
+        ? favoriteListPlaceMarkerId(objectId.objectId.toString())
+        : (homeWorkIconType != null ? homeWorkMarkerId(objectId.objectId) : null),
   );
 
   final highlightController = ref.watch(highlightProvider.notifier);

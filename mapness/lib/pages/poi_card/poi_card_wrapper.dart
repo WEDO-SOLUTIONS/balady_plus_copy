@@ -135,6 +135,7 @@ class _WrapperState extends ConsumerState<_PoiCardWrapper>
       cameraConfig: widget.cameraConfig,
       closestPoint: widget.closestPoint,
       showHighlight: widget.showHighlight,
+      entranceId: widget.objectId.entranceId,
     );
     final state = ref.watch(viewModelProvider);
     ref
@@ -170,13 +171,14 @@ class _WrapperState extends ConsumerState<_PoiCardWrapper>
       storeParking.addPinParking(storeParkingData?.markerPosition, context.l10n.yourParkingSpot);
     }
     ref.watch(dgisEnvironmentProvider);
-    final poiCardState = gisPoiCardState ??
-              PoiCardState(
-                showEntrances: false,
-                isLoading: false,
-                gisObjectIdMessage: data,
-                organizations: null,
-              );
+    final poiCardState =
+        gisPoiCardState ??
+        PoiCardState(
+          showEntrances: false,
+          isLoading: false,
+          gisObjectIdMessage: data,
+          organizations: null,
+        );
 
     final isCityscapeObject = ref.read(cityscapeProvider.notifier).showCustomPin(widget.objectId.objectId);
 
@@ -394,6 +396,8 @@ Future<void> _onFavoriteTap({
   required WidgetRef ref,
   required DirectoryObjectMessage data,
 }) async {
+  toggleFavoriteDirectoryObject(context: context, ref: ref, data: data);
+  return;
   await ref
       .read(authMethodsProvider.notifier)
       .authOrOpen(
