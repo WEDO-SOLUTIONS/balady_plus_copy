@@ -1,10 +1,10 @@
 import 'package:balady_uikit/core/colorsV2/themes.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/widgets.dart';
-import 'package:mapness/_generated/assets/assets.gen.dart';
 import 'package:mapness/app/auto_route/app_routes.dart';
 import 'package:mapness/features/favorite_lists/data/models/icon_type.dart';
 import 'package:mapness/features/favorite_lists/data/models/map_marker_dto.dart';
+import 'package:mapness/features/favorite_lists/data/models/marker_color_code.dart';
 import 'package:mapness/features/favorite_lists/providers/aggregated_favorite_markers.dart';
 import 'package:mapness/features/favourites/helpers/construct_marker.dart';
 import 'package:mapness/features/favourites/providers/favourite_cache.dart';
@@ -175,10 +175,16 @@ class _FavouriteMarkers extends _$FavouriteMarkers {
 
     /// add home if exists
     if (favItems.home != null) {
+      final homeIconBytes = await ref
+          .read(favoritePinMarkerBitmapProvider)
+          .render(tint: MarkerColorCode.green.color, icon: FavoriteIconType.home, devicePixelRatio: devicePixelRatio);
+      if (!ref.mounted) {
+        return;
+      }
       markers.add(
         constructMarker(
           favItems.home!,
-          Assets.icons.svg.layers.icFavHome.keyName.markerIcon(),
+          PngBytesMarkerIcon(pngData: homeIconBytes, width: 24),
           router,
         ),
       );
@@ -186,10 +192,20 @@ class _FavouriteMarkers extends _$FavouriteMarkers {
 
     /// add work if exists
     if (favItems.work != null) {
+      final workIconBytes = await ref
+          .read(favoritePinMarkerBitmapProvider)
+          .render(
+            tint: MarkerColorCode.green.color,
+            icon: FavoriteIconType.building,
+            devicePixelRatio: devicePixelRatio,
+          );
+      if (!ref.mounted) {
+        return;
+      }
       markers.add(
         constructMarker(
           favItems.work!,
-          Assets.icons.svg.layers.icFavWork.keyName.markerIcon(),
+          PngBytesMarkerIcon(pngData: workIconBytes, width: 24),
           router,
         ),
       );

@@ -6,9 +6,12 @@ import 'package:flutter/widgets.dart';
 import 'package:mapness/entities/urbi_map_x/lat_lng_x.dart';
 import 'package:mapness/features/city_event/active_city_event.dart';
 import 'package:mapness/features/favorite_lists/data/models/icon_type.dart';
+import 'package:mapness/features/favorite_lists/data/models/marker_color_code.dart';
 import 'package:mapness/features/favorite_lists/providers/favorite_list_membership.dart';
 import 'package:mapness/features/favourites/helpers/construct_marker.dart';
+import 'package:mapness/features/favourites/helpers/favourite_entity_id.dart';
 import 'package:mapness/features/favourites/mappers/directory_object_message_mapper.dart';
+import 'package:mapness/features/favourites/providers/favourite_cache.dart';
 import 'package:mapness/features/leap/leap.dart';
 import 'package:mapness/shared/constants/constants.dart';
 import 'package:mapness/shared/extensions/change_marker_options_ext.dart';
@@ -58,16 +61,26 @@ Future<DirectoryObjectMessage?> pointOfInterest(
       .getMarkerPath(rubrics, objectId.objectId, closestPoint: closestPoint?.geoPoint);
   final favoriteMarker = await ref.read(favoritePlaceMarkerProvider(objectId.objectId.toString()).future);
   final favoritePinBitmap = ref.read(favoritePinMarkerBitmapProvider);
+  FavoriteIconType? homeWorkIconType;
+  if (favoriteMarker == null) {
+    final favourites = await ref.watch(favouriteCacheProvider.future);
+    if (parseObjectIdFromFavouriteEntityId(favourites.home?.entity?.id) == objectId.objectId) {
+      homeWorkIconType = FavoriteIconType.home;
+    } else if (parseObjectIdFromFavouriteEntityId(favourites.work?.entity?.id) == objectId.objectId) {
+      homeWorkIconType = FavoriteIconType.building;
+    }
+  }
+  final isFavoritePin = favoriteMarker != null || homeWorkIconType != null;
   Uint8List? favoriteIconBytes;
-  if (favoriteMarker != null) {
+  if (isFavoritePin) {
     final devicePixelRatio = WidgetsBinding.instance.platformDispatcher.views.first.devicePixelRatio;
     favoriteIconBytes = await favoritePinBitmap.renderTeardropPin(
-      tint: favoriteMarker.markerColorCode.color,
-      icon: favoriteMarker.iconType ?? FavoriteIconType.$default,
+      tint: favoriteMarker != null ? favoriteMarker.markerColorCode.color : MarkerColorCode.green.color,
+      icon: favoriteMarker != null ? (favoriteMarker.iconType ?? FavoriteIconType.$default) : homeWorkIconType!,
       devicePixelRatio: devicePixelRatio,
     );
   }
-  final bigIconPath = favoriteMarker == null ? mapMarkerMapper.$2 : null;
+  final bigIconPath = isFavoritePin ? null : mapMarkerMapper.$2;
 
   final markerPosition = directoryObject.markerPosition;
   final fallbackPosition = closestPoint;
@@ -122,10 +135,10 @@ Future<DirectoryObjectMessage?> pointOfInterest(
       textStyle: textStyle.copyWith(suppressOnOverlap: false),
       icon: bigIconPath,
       iconBytes: favoriteIconBytes,
-      anchor: favoriteMarker != null
+      anchor: isFavoritePin
           ? MarkerAnchorMessage(x: favoritePinBitmap.teardropAnchor.x, y: favoritePinBitmap.teardropAnchor.y)
           : MarkerAnchorMessage(x: 0.5, y: 0.5),
-      width: favoriteMarker != null ? favoritePinBitmap.teardropLogicalSize : null,
+      width: isFavoritePin ? favoritePinBitmap.teardropLogicalSize : null,
       id: poiPinId,
       activeCityEvent: ref.read(activeCityEventProvider),
       isDark: isDark,
