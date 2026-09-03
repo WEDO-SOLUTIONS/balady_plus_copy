@@ -580,6 +580,14 @@ class _PersonalDataState extends ConsumerState<PersonalData> {
   }
 
   void _showOtpBottomSheet() {
+    // Captured before the sheet opens: the builder reruns on every keyboard
+    // inset / transition frame, and cancel (X) nulls _pendingEmail while the
+    // ~250ms exit animation still rebuilds the sheet — `_pendingEmail!` there
+    // crashed on nearly every explicit close.
+    final pendingEmail = _pendingEmail ?? _emailController.text.trim();
+    if (pendingEmail.isEmpty) {
+      return;
+    }
     // Use listen:false — this runs from async save / post-frame callbacks.
     final colors = context.themeRead.colors;
     final sheetBackground = context.profileCardColor;
@@ -592,7 +600,7 @@ class _PersonalDataState extends ConsumerState<PersonalData> {
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
       builder: (context) => OtpBottomSheetWidget(
-        pendingEmail: _pendingEmail!,
+        pendingEmail: pendingEmail,
         onVerify: _verifyOtp,
         onResend: _resendOtp,
         onCancel: _cancelOtpVerification,
