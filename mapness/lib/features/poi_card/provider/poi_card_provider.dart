@@ -133,7 +133,11 @@ class PoiCardProvider extends _$PoiCardProvider {
               showHighlight: showHighlight,
             ).future,
           )
-          .timeout(const Duration(seconds: 10));
+          .timeout(const Duration(seconds: 10))
+          // BALADY-3805: swallow timeout/transport errors so the POI card falls back to the
+          // "no data" state instead of spinning forever ("circle of death").
+          // Removed by 4e2d7d2d ("fix: remove circle of death") on the Aug tifo/leap release; restored here.
+          .onError((error, stackTrace) => null);
 
       final photosFuture = ref.watch(poiPhotoProvider(objectId).future);
       final organisationsFuture = fetchOrganizationsData(objectId: objectId);
