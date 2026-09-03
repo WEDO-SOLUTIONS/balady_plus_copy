@@ -49,8 +49,7 @@ void main() {
     });
 
     test('empty offsets still resolve to index 0 and offset 0.0', () {
-      final behavior = FractionSnappingBehavior<int>(fractions: {0.0, 1.0})
-        ..snappingOffsets = SplayTreeSet();
+      final behavior = FractionSnappingBehavior<int>(fractions: {0.0, 1.0})..snappingOffsets = SplayTreeSet();
 
       expect(behavior.stateToIndex(3), 0);
       expect(behavior.offsetFromState(3), 0.0);
