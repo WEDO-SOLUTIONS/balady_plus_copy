@@ -214,7 +214,19 @@ class CameraBloc extends Bloc<CameraEvent, CameraState> {
   Future<void> _onUpdateScaleLevelHandler(UpdateScaleLevelEvent e, Emitter emitter) async {
     double scale = state.zoom * e.scale;
     if (scale >= 1 && scale <= 7) {
-      cameraController?.setZoomLevel(scale);
+      final controller = cameraController;
+      if (controller == null || !controller.value.isInitialized) {
+        // onScaleUpdate fires per pointer frame (~60/s); an unguarded
+        // setZoomLevel on a not-yet-initialized controller throws
+        // synchronously, bloc rethrows it into the zone, and telemetry
+        // was billed one event per frame of pinching on a black preview.
+        return;
+      }
+      try {
+        controller.setZoomLevel(scale);
+      } on CameraException {
+        // Controller torn down between the check and the call - drop the sample.
+      }
       emitter(state.copyWith(scaleFactor: scale));
     }
   }
