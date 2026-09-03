@@ -818,7 +818,10 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
     await mapObjectProvider.setMapObjectManagerIsVisible(isVisible: true);
 
     if (isLandscape) {
-      await context.router.push(const FlipsContinueRoute());
+      // ~6 awaits above; the page can be gone by now.
+      if (mounted) {
+        await context.router.push(const FlipsContinueRoute());
+      }
       action?.call();
       return;
     }
@@ -873,6 +876,10 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
         }
       },
     );
+    // No arrival toast here: core moved the "You arrived" string into the
+    // native live-updates widgets, which also removes the crash source this
+    // fix originally targeted (a post-frame callback touching the popped
+    // State's context - 1.1k events / 816 users on 3.13.5).
   }
 
   // Show the feedback page after the trip is finished manually
