@@ -5,7 +5,9 @@ import 'package:dgis_map/library.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/app/auto_route/app_routes.dart';
+import 'package:mapness/features/routing/providers/routes.dart';
 import 'package:mapness/features/tifo/building_sheet.dart';
+import 'package:mapness/features/tifo/data/tifo_debug_route_opacity.dart';
 import 'package:mapness/features/tifo/data/tifo_models.dart';
 import 'package:mapness/features/tifo/data/tifo_region_outline.dart';
 import 'package:mapness/features/tifo/district_sheet.dart';
@@ -89,6 +91,10 @@ class TifoBuildingsMapLayer extends Notifier<bool> {
   MapObjectManagerMessage? _districtsManager;
   StreamSubscription<VisibleRectEvent>? _visibleSub;
   Timer? _debounce;
+
+  /// Coalesces a debug slider drag into one repaint.
+  Timer? _opacityDebounce;
+  static const Duration _opacityDebounceDelay = Duration(milliseconds: 150);
   String? _lastBbox;
 
   /// LOD the district layer is currently painted at, or null when it isn't
@@ -303,6 +309,28 @@ class TifoBuildingsMapLayer extends Notifier<bool> {
           unawaited(_redrawDistricts(ref.read(tifoDistrictsProvider)));
         }
       })
+      // While navigation owns the map the capture layer steps back — see
+      // [_paintArgb]. Only the repaint of what is ALREADY drawn is driven from
+      // here; the alphas themselves are read live on every paint, so no state
+      // of this listener's own can go stale.
+      ..listen<bool>(navigationActiveProvider, (prev, next) {
+        if (prev == next || !state) {
+          return;
+        }
+        logger.log('[tifo-map] navigation ${next ? 'started → dimming' : 'ended → restoring'} overlay');
+        unawaited(_repaintCurrentTier());
+      })
+      // Debug panel: the in-route alphas are dialled in live. Only meaningful
+      // during navigation (that's the only time they're applied), and
+      // debounced because a slider drag emits a change per pixel while a
+      // repaint can touch a couple of thousand polygons.
+      ..listen<TifoRouteOpacity>(tifoDebugRouteOpacityProvider, (prev, next) {
+        if (!state || !_inNavigation) {
+          return;
+        }
+        _opacityDebounce?.cancel();
+        _opacityDebounce = Timer(_opacityDebounceDelay, () => unawaited(_repaintCurrentTier()));
+      })
       // The Remote Config schedule can close mid-session (an admin ends the
       // event window while players are on the map) — turn the layer off
       // itself rather than leaving an unschedulable game running.
@@ -504,6 +532,11 @@ class TifoBuildingsMapLayer extends Notifier<bool> {
   /// had so [disable] can hand their 3D view back. No-op when already flat,
   /// so the debounced re-assert costs one `getCameraPosition` per viewport.
   Future<void> _forceTopDown(DgisMapController controller) async {
+    if (_inNavigation) {
+      // Navigation owns the camera while a route is being driven; flattening
+      // it on every viewport event reads as the tilt being broken.
+      return;
+    }
     try {
       final pos = await controller.getCameraPosition();
       if (pos.tilt <= _flatTiltEpsilon) {
@@ -848,8 +881,8 @@ class TifoBuildingsMapLayer extends Notifier<bool> {
       final session = ref.read(tifoSessionProvider);
       for (final building in ordered) {
         final club = session.clubById(building.ownerClubSlug);
-        final fill = club?.fillArgb ?? kTifoNeutralFillArgb;
-        final stroke = club?.strokeArgb ?? kTifoNeutralStrokeArgb;
+        final fill = _paintArgb(club?.fillArgb ?? kTifoNeutralFillArgb, _routeBuildingAlpha);
+        final stroke = _paintArgb(club?.strokeArgb ?? kTifoNeutralStrokeArgb, _routeBuildingAlpha);
         final prev = _drawnFill[building.id];
         if (prev == fill) {
           continue; // already drawn, unchanged → keep it
@@ -912,6 +945,50 @@ class TifoBuildingsMapLayer extends Notifier<bool> {
       }
     } catch (error, stackTrace) {
       logger.log('[tifo-map] buildings sync failed: $error\n$stackTrace');
+    }
+  }
+
+  /// Alpha each tier is painted at while a route is being driven — 50% for
+  /// buildings, 10% for the district mosaic and 20% for the clustered region
+  /// by default, overridable per tier from the debug panel (see
+  /// [TifoRouteOpacity]).
+  int get _routeBuildingAlpha => ref.read(tifoDebugRouteOpacityProvider).buildingsAlpha;
+
+  int get _routeDistrictAlpha => ref.read(tifoDebugRouteOpacityProvider).districtsAlpha;
+
+  int get _routeClusterAlpha => ref.read(tifoDebugRouteOpacityProvider).clusterAlpha;
+
+  /// Whether turn-by-turn navigation owns the map right now.
+  ///
+  /// Read live from the provider on every paint instead of being mirrored into
+  /// a field: a cached copy is a second source of truth that can outlive the
+  /// navigation it describes (this notifier survives a hot reload, and an exit
+  /// that skips "end trip" used to leave the old signal set), and every polygon
+  /// on the map would then stay invisible with no route in sight.
+  bool get _inNavigation => ref.read(navigationActiveProvider);
+
+  /// A team colour as it must be PAINTED right now: its own alpha normally,
+  /// [routeAlpha] while a route is being driven.
+  int _paintArgb(int argb, int routeAlpha) => _inNavigation ? (argb & 0x00FFFFFF) | routeAlpha : argb;
+
+  /// Repaints whatever tier is on screen — for when the alphas change under
+  /// the polygons already drawn. The `_drawn*Fill` maps hold the PAINTED
+  /// colour, so the ordinary recolour diff sees every polygon differ from its
+  /// target and replaces it; nothing extra is needed here.
+  Future<void> _repaintCurrentTier() async {
+    if (!state) {
+      return;
+    }
+    try {
+      if (_buildingsMode) {
+        await _syncBuildings(ref.read(tifoBuildingsProvider));
+      } else if (_lod == _TifoLod.cluster) {
+        await _redrawRegion(ref.read(tifoDistrictsProvider));
+      } else {
+        await _redrawDistricts(ref.read(tifoDistrictsProvider));
+      }
+    } catch (error) {
+      logger.log('[tifo-map] repaint failed: $error');
     }
   }
 
@@ -1067,7 +1144,7 @@ class TifoBuildingsMapLayer extends Notifier<bool> {
         // leaderColor is server-side paint-ready — the leader's hex OR the
         // neutral palette color — so use it directly (fallback grey if absent).
         final baseArgb = summary?.leaderColorArgb ?? _neutralDistrictArgb;
-        final fill = (baseArgb & 0x00FFFFFF) | 0xE6000000;
+        final fill = _paintArgb((baseArgb & 0x00FFFFFF) | 0xE6000000, _routeDistrictAlpha);
         final prev = _drawnDistrictFill[district.id];
         // A district first painted at the region-wide zoom carries coarse
         // geometry; zooming in re-adds it at the finer grid so it never looks
@@ -1097,7 +1174,7 @@ class TifoBuildingsMapLayer extends Notifier<bool> {
               options: PolygonOptionsMessage(
                 contours: [PolylineGeometryMessage(points: rings[i])],
                 color: fill,
-                strokeColor: (baseArgb & 0x00FFFFFF) | 0xCC000000,
+                strokeColor: _paintArgb((baseArgb & 0x00FFFFFF) | 0xCC000000, _routeDistrictAlpha),
                 strokeWidth: 1.5,
               ),
             ),
@@ -1180,7 +1257,7 @@ class TifoBuildingsMapLayer extends Notifier<bool> {
       return; // only the cluster tier shows the region
     }
     final baseArgb = _seasonLeaderColor(districtsState) ?? _neutralDistrictArgb;
-    final fill = (baseArgb & 0x00FFFFFF) | _polygonAlpha;
+    final fill = _paintArgb((baseArgb & 0x00FFFFFF) | _polygonAlpha, _routeClusterAlpha);
     if (_drawnRegionFill == fill) {
       return; // already painted in this color
     }
@@ -1212,7 +1289,7 @@ class TifoBuildingsMapLayer extends Notifier<bool> {
               // the region's shape on its own: a darker shade of the fill rather
               // than the fill's own hue at lower alpha, and wider than the
               // district borders.
-              strokeColor: _borderArgb(baseArgb),
+              strokeColor: _paintArgb(_borderArgb(baseArgb), _routeClusterAlpha),
               strokeWidth: 3,
             ),
           ),
@@ -1285,6 +1362,7 @@ class TifoBuildingsMapLayer extends Notifier<bool> {
 
   void _teardown() {
     _debounce?.cancel();
+    _opacityDebounce?.cancel();
     unawaited(_visibleSub?.cancel());
   }
 }

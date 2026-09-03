@@ -9,6 +9,7 @@ import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:flutter_riverpod/legacy.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:mapness/_features/common/providers/shared_prefs.dart';
 import 'package:mapness/_generated/assets/assets.gen.dart';
@@ -33,12 +34,12 @@ import 'package:mapness/features/routing/providers/current_route.dart';
 import 'package:mapness/features/routing/providers/routes.dart';
 import 'package:mapness/features/search/providers/search.dart';
 import 'package:mapness/features/search/ui/search_scope.dart';
-import 'package:mapness/features/tifo/tifo_trip_rewards.dart';
 import 'package:mapness/features/share_eta/entities/route_params_point_mapper.dart';
 import 'package:mapness/features/share_eta/models/eta_route_info.dart';
 import 'package:mapness/features/share_eta/providers/eta_route_info_provider.dart';
 import 'package:mapness/features/share_eta/providers/share_eta_provider.dart';
 import 'package:mapness/features/stream_audio/ui/providers/stream_audio_prov.dart';
+import 'package:mapness/features/tifo/tifo_trip_rewards.dart';
 import 'package:mapness/pages/path_nav/path_nav_wrapper.dart';
 import 'package:mapness/pages/routing/route_details_sheet.dart';
 import 'package:mapness/shared/constants/constants.dart';
@@ -114,6 +115,10 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
 
   late ToggleSheetController sheetController;
 
+  /// Captured in `initState` so `dispose` doesn't have to touch `ref` while
+  /// this element is being unmounted.
+  late final StateController<bool> _navigationActive;
+
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     _checkBackgroundNavigationSound(state);
@@ -146,6 +151,10 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
   @override
   void initState() {
     super.initState();
+    _navigationActive = ref.read(navigationActiveProvider.notifier);
+    // Deferred: Riverpod forbids writing to a provider while the widget tree
+    // is building, and `initState` runs inside that phase.
+    _setNavigationActive(active: true);
     WidgetsBinding.instance
       ..addPostFrameCallback((_) async {
         await SystemChrome.setPreferredOrientations([
@@ -187,6 +196,9 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
 
   @override
   void dispose() {
+    // Whatever ended the trip — arrival, cancel, back, an outside `popUntil` —
+    // navigation is over once this page is gone.
+    _setNavigationActive(active: false);
     SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
 
     WidgetsBinding.instance.removeObserver(this);
@@ -213,6 +225,20 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
 
     await ref.read(sharedPrefsProvider).setString(MapnessConstants.navigatorStateKey, base64.encode(state));
     await ref.read(sharedPrefsProvider).setString(MapnessConstants.navigatorStateTypeKey, widget.navType.name);
+  }
+
+  /// Publishes "navigation is / isn't on screen" outside the current build
+  /// phase — see the `initState` call site for why it can't be written
+  /// directly, and `navigationActiveProvider` for what reads it.
+  void _setNavigationActive({required bool active}) {
+    final controller = _navigationActive;
+    Future.microtask(() {
+      try {
+        controller.state = active;
+      } catch (_) {
+        // Provider container already gone (app shutting down).
+      }
+    });
   }
 
   Future<bool> restoreNavigationState() async {

@@ -376,3 +376,18 @@ class BetterRouteSettings extends _$BetterRouteSettings {
 }
 
 final currentNavigationDestinationProvider = StateProvider<RouteParamsPoint?>((ref) => null);
+
+/// True while a driving screen owns the map — turn-by-turn navigation
+/// (`PathNavPage`) or Free Roam (`FreeRoamPage`).
+///
+/// Driven by `PathNavPage`'s own widget lifecycle rather than derived from
+/// `currentRouteProvider`: navigation can be left WITHOUT going through
+/// "end trip" (system back, swipe back, a `popUntil` from elsewhere), and those
+/// exits leave the route state set — so anything that changes how the map looks
+/// during navigation would stay changed for the rest of the session. A widget's
+/// `dispose` covers every exit there is.
+///
+/// Both writers are mutually exclusive by construction — Free Roam is only
+/// entered when no navigation is running (see `CarEnableFreeRoam`) — so a
+/// plain bool is enough; if the two ever nest, this needs to become a count.
+final navigationActiveProvider = StateProvider<bool>((ref) => false);
