@@ -77,7 +77,13 @@ class CameraBloc extends Bloc<CameraEvent, CameraState> {
         );
       } finally {
         initializingCamera = false;
-        cameraController?.setFlashMode(FlashMode.off);
+        // Only on a successfully initialized controller: on the failure path
+        // setFlashMode throws the same 'Uninitialized CameraController'
+        // exception out of this finally as an unawaited zone error.
+        final controller = cameraController;
+        if (controller != null && controller.value.isInitialized) {
+          controller.setFlashMode(FlashMode.off);
+        }
       }
     }
     emitter(

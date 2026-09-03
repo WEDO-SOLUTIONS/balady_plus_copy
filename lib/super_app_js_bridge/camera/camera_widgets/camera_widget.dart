@@ -98,10 +98,15 @@ class _CameraWidgetState extends State<CameraWidget> with WidgetsBindingObserver
                 : const Center(),
             GestureDetector(
               behavior: HitTestBehavior.translucent,
+              // Unlike the preview above, this overlay is always mounted:
+              // pinching a not-yet-initialized camera fired zoom events at
+              // frame rate into a dead controller (~30k telemetry events/7d).
               onScaleStart: (details) {
+                if (!isCameraReady) return;
                 bloc.add(SetZoomLevelEvent(zoom: state.scaleFactor));
               },
               onScaleUpdate: (details) {
+                if (!isCameraReady) return;
                 bloc.add(UpdateScaleLevelEvent(scale: details.scale));
               },
               child: Align(
