@@ -127,12 +127,11 @@ class ObjectTapHandler(
                 }
             }
 
-            else ->
-                    eventSink.error(
-                            "ClassCastException",
-                            "No suitable handler for tapped object: " + tappedObject.javaClass,
-                            null,
-                    )
+            else -> {
+                // No handler for this object type is a normal tap, not an
+                // error: reporting it billed one telemetry event per ordinary
+                // POI tap (BALADY-3941).
+            }
         }
     }
     fun objectLongTapListener(roi: RenderedObjectInfo) {
@@ -210,12 +209,11 @@ class ObjectTapHandler(
             is RoadEventMapObject -> {
                 onRoadEventTap(tappedObject)
             }
-            else ->
-                    eventSink.error(
-                            "ClassCastException",
-                            "No suitable handler for tapped object: " + tappedObject.javaClass,
-                            null,
-                    )
+            else -> {
+                // No handler for this object type is a normal tap, not an
+                // error: reporting it billed one telemetry event per ordinary
+                // POI tap (BALADY-3941).
+            }
         }
     }
 

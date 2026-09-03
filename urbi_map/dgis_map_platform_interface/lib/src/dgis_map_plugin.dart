@@ -218,7 +218,19 @@ class DgisMapPlugin extends FlutterMapApi {
   }
 
   StreamSubscription _initEventChannel() {
-    return EventChannel('com.dgis.map_view_events_$_viewId').receiveBroadcastStream().listen((event) {
+    return EventChannel('com.dgis.map_view_events_$_viewId').receiveBroadcastStream().listen(
+        onError: (Object error, StackTrace stackTrace) {
+      // The native tap handlers emit a channel error for every tapped object
+      // type they have no handler for - i.e. every ordinary short tap on a
+      // 2GIS POI since the long-press-only rewrite (~35k telemetry events a
+      // week). Nothing on the Dart side ever consumed it; without this
+      // onError the stream error went straight to the zone reporter.
+      if (error is PlatformException &&
+          (error.code == 'ObjectTapError' || error.code == 'ClassCastException')) {
+        return;
+      }
+      Zone.current.handleUncaughtError(error, stackTrace);
+    }, (event) {
       final map = event as Map<dynamic, dynamic>;
       switch (map['event']) {
         case MyLocationTapEvent.name:
