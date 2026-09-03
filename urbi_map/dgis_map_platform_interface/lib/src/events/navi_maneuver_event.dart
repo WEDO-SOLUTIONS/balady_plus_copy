@@ -1,3 +1,5 @@
+// ignore_for_file: public_member_api_docs
+
 abstract class NaviManeuverEvent {
   const NaviManeuverEvent();
 }
@@ -9,12 +11,7 @@ class ManeuverEventHidden extends NaviManeuverEvent {
 }
 
 class ManeuverEvent extends NaviManeuverEvent {
-  const ManeuverEvent({
-    required this.distance,
-    required this.unit,
-    required this.roadName,
-    required this.instruction,
-  });
+  const ManeuverEvent({required this.distance, required this.unit, required this.roadName, required this.instruction});
 
   final String distance;
   final String unit;

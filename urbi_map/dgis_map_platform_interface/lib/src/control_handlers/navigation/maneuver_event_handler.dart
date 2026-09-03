@@ -1,3 +1,5 @@
+// ignore_for_file: public_member_api_docs
+
 import 'dart:async';
 import 'dart:math';
 
@@ -22,12 +24,14 @@ class ManeuverEventHandler {
           return _controller.sink.add(const ManeuverEventHidden());
         }
         final formattedDistance = formatMeters((map['distance'] as num).toInt());
-        return _controller.sink.add(ManeuverEvent(
-          distance: formattedDistance.value,
-          unit: formattedDistance.unit,
-          roadName: '${map['roadName'] ?? ''}',
-          instruction: instruction,
-        ));
+        return _controller.sink.add(
+          ManeuverEvent(
+            distance: formattedDistance.value,
+            unit: formattedDistance.unit,
+            roadName: '${map['roadName'] ?? ''}',
+            instruction: instruction,
+          ),
+        );
     }
   }
 
