@@ -221,11 +221,6 @@ class _MapSearchBarState extends ConsumerState<MapSearchBar> {
     super.dispose();
   }
 
-  // No listener ping when the text is unchanged: BaladyTextInput (uikit 6.0.1)
-  // registers a controller listener it never removes, so recreated fields leave
-  // dead listeners behind and every extra notifyListeners() fired them all —
-  // ~17k error reports/week in prod. The stale clear-icon it papered over is
-  // the lesser evil until the uikit listener leak is fixed (BALADY-3925).
   void _updateText(String text) {
     _safeControllerWrite(() {
       if (text != _controller.text) {
