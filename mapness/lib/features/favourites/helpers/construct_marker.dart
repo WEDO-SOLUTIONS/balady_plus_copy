@@ -41,7 +41,6 @@ String favoriteListPlaceMarkerId(String placeId) => 'favorite-list-place-$placeI
 Marker constructFavoriteListPlaceMarker(
   MapMarkerDto marker,
   GeoPointWithElevationMessage position,
-  String title,
   MarkerIconMessage icon,
   AppRouter router,
 ) {
@@ -49,7 +48,7 @@ Marker constructFavoriteListPlaceMarker(
 
   return Marker(
     id: favoriteListPlaceMarkerId(marker.placeId),
-    options: MarkerOptionsMessage(position: position, icon: icon, text: title),
+    options: MarkerOptionsMessage(position: position, icon: icon),
     onTap: objectId == null
         ? null
         : () => router.replaceOrPush(

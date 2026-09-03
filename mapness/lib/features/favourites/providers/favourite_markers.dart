@@ -11,7 +11,6 @@ import 'package:mapness/features/favourites/providers/favourite_cache.dart';
 import 'package:mapness/features/lifestyle_layers/configs/layers_consts.dart';
 import 'package:mapness/features/lifestyle_layers/providers/active_layer.dart';
 import 'package:mapness/features/lifestyle_layers/providers/layers_state.dart';
-import 'package:mapness/shared/extensions/string_ext.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:mapness/shared/providers/map/favorite_pin_marker_bitmap.dart';
 import 'package:mapness/shared/providers/map/object_manager.dart';
@@ -222,7 +221,6 @@ class _FavouriteMarkers extends _$FavouriteMarkers {
           return constructFavoriteListPlaceMarker(
             marker,
             resolved.position,
-            resolved.title.breakMarkerLabel(maxCharsPerLine: 20) ?? '',
             PngBytesMarkerIcon(pngData: iconBytes, width: 24),
             router,
           );
