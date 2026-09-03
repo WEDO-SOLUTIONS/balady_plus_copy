@@ -20,11 +20,6 @@ import 'package:mapness/shared/providers/analytic/models/payload/bss_payload.dar
 import 'package:mapness/shared/providers/urbi_analytics.dart';
 import 'package:provider/provider.dart';
 
-/// Exposes listener notification for uikit sync when [BaladyTextInput] is recreated but text is unchanged.
-class _MapSearchTextEditingController extends TextEditingController {
-  void notifySuffixSync() => notifyListeners();
-}
-
 /// Search field for map / navi / favourites. Owns [TextEditingController] and [FocusNode]
 /// so the parent sheet must not create or dispose them — avoids use-after-dispose races.
 class MapSearchBar extends ConsumerStatefulWidget {
@@ -57,7 +52,7 @@ class MapSearchBar extends ConsumerStatefulWidget {
 }
 
 class _MapSearchBarState extends ConsumerState<MapSearchBar> {
-  late final _MapSearchTextEditingController _controller;
+  late final TextEditingController _controller;
   late final FocusNode _focusNode;
   ProviderSubscription<SearchState>? _searchSubscription;
   final _scope = scope.SearchScopeEnum.map.value;
@@ -97,7 +92,7 @@ class _MapSearchBarState extends ConsumerState<MapSearchBar> {
   @override
   void initState() {
     super.initState();
-    _controller = _MapSearchTextEditingController();
+    _controller = TextEditingController();
     _focusNode = FocusNode();
     // DataFinder: fire `search_box_click` whenever the box GAINS FOCUS, not just
     // on a manual tap — this covers programmatic auto-focus on open (BRD:
@@ -226,19 +221,17 @@ class _MapSearchBarState extends ConsumerState<MapSearchBar> {
     super.dispose();
   }
 
+  // No listener ping when the text is unchanged: BaladyTextInput (uikit 6.0.1)
+  // registers a controller listener it never removes, so recreated fields leave
+  // dead listeners behind and every extra notifyListeners() fired them all —
+  // ~17k error reports/week in prod. The stale clear-icon it papered over is
+  // the lesser evil until the uikit listener leak is fixed (BALADY-3925).
   void _updateText(String text) {
     _safeControllerWrite(() {
-      final unchanged = text == _controller.text;
-      if (!unchanged) {
+      if (text != _controller.text) {
         _controller
           ..text = text
           ..selection = TextSelection.collapsed(offset: _controller.text.length);
-      } else if (text.isNotEmpty) {
-        // Programmatic text already matches, but BaladyTextInput may have been recreated (e.g. toggling
-        // more-filters changes BaladySearchWithBackButtonV2 layout: option null vs Row). New State starts
-        // with _showClearButton=false and only the controller listener updates it — no notification if text
-        // did not change. Ping listeners so the in-field clear icon syncs.
-        _controller.notifySuffixSync();
       }
     });
   }
