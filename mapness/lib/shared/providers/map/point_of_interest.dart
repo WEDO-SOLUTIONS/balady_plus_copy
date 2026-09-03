@@ -33,6 +33,11 @@ part 'point_of_interest.g.dart';
 
 const poiPinId = 'poi_pin_id';
 
+// Pin-tip dot centred at (35, 61) in the shared `places_big_new` icon set's
+// 70x70 viewBox (e.g. ic_hotels.svg, ic_pin_new.svg) — anchoring here instead
+// of the icon centre makes the pin point at the coordinate with its tip.
+const _poiPinTipAnchorY = 61 / 70;
+
 @riverpod
 Future<DirectoryObjectMessage?> pointOfInterest(
   Ref ref,
@@ -146,7 +151,7 @@ Future<DirectoryObjectMessage?> pointOfInterest(
       iconBytes: favoriteIconBytes,
       anchor: isFavoritePin
           ? MarkerAnchorMessage(x: favoritePinBitmap.teardropAnchor.x, y: favoritePinBitmap.teardropAnchor.y)
-          : MarkerAnchorMessage(x: 0.5, y: 0.5),
+          : MarkerAnchorMessage(x: 0.5, y: _poiPinTipAnchorY),
       width: isFavoritePin ? favoritePinBitmap.teardropLogicalSize : null,
       id: poiPinId,
       activeCityEvent: ref.read(activeCityEventProvider),

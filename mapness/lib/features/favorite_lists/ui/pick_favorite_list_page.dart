@@ -48,6 +48,11 @@ class PickFavoriteListPage extends HookConsumerWidget {
     final overrides = useState<Map<String, bool>>(const {});
     final lists = favoriteListsAsync.value ?? const [];
 
+    final favouriteCacheState = ref.watch(favouriteCacheProvider).value;
+    final favouriteItemId = canSetHomeOrWork ? data.mapToFavourite().id : null;
+    final isHomeSelected = favouriteItemId != null && favouriteItemId == favouriteCacheState?.home?.id;
+    final isWorkSelected = favouriteItemId != null && favouriteItemId == favouriteCacheState?.work?.id;
+
     final membershipAsync = placeId == null
         ? const AsyncValue<Map<String, bool>>.data(<String, bool>{})
         : ref.watch(favoriteListMembershipMapProvider(placeId));
@@ -111,7 +116,10 @@ class PickFavoriteListPage extends HookConsumerWidget {
       try {
         final favItem = data.mapToFavourite();
         final notifier = ref.read(favouriteCacheProvider.notifier);
-        if (isHome) {
+        final alreadySelected = isHome ? isHomeSelected : isWorkSelected;
+        if (alreadySelected) {
+          await notifier.deleteItem(favItem);
+        } else if (isHome) {
           await notifier.setHome(favItem);
         } else {
           await notifier.setWork(favItem);
@@ -171,7 +179,9 @@ class PickFavoriteListPage extends HookConsumerWidget {
             if (canSetHomeOrWork) ...[
               ContentRow(
                 leading: Icon(GeneralIcons.home, color: context.colors.foregroundSoft),
-                text: ContentRowTextOptions(title: context.l10n.favoriteListSetAsHome),
+                text: ContentRowTextOptions(
+                  title: isHomeSelected ? context.l10n.favoriteListRemoveAsHome : context.l10n.favoriteListSetAsHome,
+                ),
                 onTap: () {
                   if (isSubmitting.value) {
                     return;
@@ -181,7 +191,9 @@ class PickFavoriteListPage extends HookConsumerWidget {
               ),
               ContentRow(
                 leading: Icon(GeneralIcons.buildings, color: context.colors.foregroundSoft),
-                text: ContentRowTextOptions(title: context.l10n.favoriteListSetAsWork),
+                text: ContentRowTextOptions(
+                  title: isWorkSelected ? context.l10n.favoriteListRemoveAsWork : context.l10n.favoriteListSetAsWork,
+                ),
                 isDividerEnabled: true,
                 onTap: () {
                   if (isSubmitting.value) {
