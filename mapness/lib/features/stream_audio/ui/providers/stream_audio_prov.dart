@@ -327,6 +327,16 @@ class StreamAudioProvider extends ChangeNotifier {
     debugPrint('StreamAudioProvider: Toggle panel callback ${callback != null ? 'registered' : 'unregistered'}');
   }
 
+  // Identity-aware unregister: during a shell rebuild the new StreamAudio can
+  // register its callback before the old one disposes — a blind null here
+  // would silently kill the live hook.
+  void clearTogglePanelCallback(VoidCallback callback) {
+    if (identical(_togglePanelCallback, callback)) {
+      _togglePanelCallback = null;
+      debugPrint('StreamAudioProvider: Toggle panel callback unregistered');
+    }
+  }
+
   // Trigger the panel toggle from external widgets (like mini apps)
   void togglePanel() {
     debugPrint('StreamAudioProvider: togglePanel called');
