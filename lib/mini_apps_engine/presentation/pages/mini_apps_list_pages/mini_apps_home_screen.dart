@@ -40,10 +40,6 @@ class MiniAppsHomeScreen extends StatefulWidget {
 }
 
 class _MiniAppsHomeScreenState extends State<MiniAppsHomeScreen> {
-  // The app-level BlocProvider serves this same get_it singleton, so callbacks
-  // use this field instead of context.read: reorder/refresh callbacks fire
-  // after their drop/snap animations, when a loading emit may have already
-  // swapped the subtree and left the callback's context defunct.
   late final NewMiniAppLogicCubit _miniAppsCubit;
   StreamSubscription<dynamic>? _authSubscription;
 
@@ -239,12 +235,9 @@ class _MiniAppsHomeScreenState extends State<MiniAppsHomeScreen> {
                                                         child: ReorderableListView.builder(
                                                           scrollDirection: Axis.horizontal,
                                                           itemCount: state.favoriteApps.length,
-                                                          onReorder: (oldIndex, newIndex) {
+                                                          onReorderItem: (oldIndex, newIndex) {
                                                             // Fires ~250ms after the drop; ctx may be defunct by then.
-                                                            _miniAppsCubit.reorderFavoriteApps(
-                                                              oldIndex,
-                                                              newIndex,
-                                                            );
+                                                            _miniAppsCubit.reorderFavoriteApps(oldIndex, newIndex);
                                                           },
                                                           itemBuilder: (context, index) {
                                                             final favMiniApp = state.favoriteApps[index];
@@ -257,9 +250,7 @@ class _MiniAppsHomeScreenState extends State<MiniAppsHomeScreen> {
                                                                 key: Key(favMiniApp.id),
                                                                 width: context.screenWidth * 0.14,
                                                                 onTap: () {
-                                                                  _miniAppsCubit.openMiniApp(
-                                                                    favMiniApp,
-                                                                  );
+                                                                  _miniAppsCubit.openMiniApp(favMiniApp);
                                                                 },
                                                                 text: favMiniApp.name,
                                                                 titlesHeight: defaultTitleHeight,
@@ -477,9 +468,7 @@ class _MiniAppsHomeScreenState extends State<MiniAppsHomeScreen> {
                                                             width: context.w(177) * (1.0 + (textScale - 1.0) * 0.2),
                                                             child: GestureDetector(
                                                               onTap: () {
-                                                                _miniAppsCubit.openMiniApp(
-                                                                  miniApp,
-                                                                );
+                                                                _miniAppsCubit.openMiniApp(miniApp);
                                                               },
                                                               child: DecoratedBox(
                                                                 decoration: BoxDecoration(
