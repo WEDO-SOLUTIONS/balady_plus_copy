@@ -65,14 +65,15 @@ class _WebMiniAppsScreenState extends ConsumerState<WebMiniAppsScreen> {
     _quiet(controller.setBackgroundColor(Colors.transparent));
 
     _quiet(controller.setJavaScriptMode(JavaScriptMode.unrestricted));
-    _quiet(controller.setNavigationDelegate(
-      NavigationDelegate(
-        onPageStarted: (url) {
-          _isLoading.value = true;
-        },
-        onPageFinished: (url) async {
-          try {
-            await controller.runJavaScriptReturningResult("""
+    _quiet(
+      controller.setNavigationDelegate(
+        NavigationDelegate(
+          onPageStarted: (url) {
+            _isLoading.value = true;
+          },
+          onPageFinished: (url) async {
+            try {
+              await controller.runJavaScriptReturningResult("""
             new Promise(resolve => {
               if (document.readyState === 'complete') {
                 resolve(true);
@@ -81,14 +82,15 @@ class _WebMiniAppsScreenState extends ConsumerState<WebMiniAppsScreen> {
               }
             });
           """);
-          } catch (_) {}
-          _isLoading.value = false;
-        },
-        onWebResourceError: (_) {
-          _isLoading.value = false;
-        },
+            } catch (_) {}
+            _isLoading.value = false;
+          },
+          onWebResourceError: (_) {
+            _isLoading.value = false;
+          },
+        ),
       ),
-    ));
+    );
 
     if (clearCache) {
       _quiet(controller.clearCache());
@@ -96,11 +98,13 @@ class _WebMiniAppsScreenState extends ConsumerState<WebMiniAppsScreen> {
 
     if (Platform.isAndroid) {
       final androidController = _controller.platform as AndroidWebViewController;
-      _quiet(androidController.setGeolocationPermissionsPromptCallbacks(
-        onShowPrompt: (request) async {
-          return const GeolocationPermissionsResponse(allow: true, retain: true);
-        },
-      ));
+      _quiet(
+        androidController.setGeolocationPermissionsPromptCallbacks(
+          onShowPrompt: (request) async {
+            return const GeolocationPermissionsResponse(allow: true, retain: true);
+          },
+        ),
+      );
       _quiet(androidController.setAllowContentAccess(true));
       _quiet(androidController.setAllowFileAccess(true));
 
@@ -119,14 +123,16 @@ class _WebMiniAppsScreenState extends ConsumerState<WebMiniAppsScreen> {
       _initialized = true;
     }
 
-    return WillPopScope(
-      onWillPop: () async {
-        final canPop = await _controller.canGoBack();
-        if (canPop) {
+    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: (didPop, result) async {
+        if (didPop) return;
+        final canGoBack = await _controller.canGoBack();
+        if (canGoBack) {
           _controller.goBack();
-          return false;
+        } else if (context.mounted) {
+          Navigator.of(context).maybePop();
         }
-        return true;
       },
       child: ValueListenableBuilder<bool>(
         valueListenable: _isLoading,
