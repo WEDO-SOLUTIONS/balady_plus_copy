@@ -4,13 +4,20 @@ import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:mapness/_features/common/widgets/dragger.dart';
+import 'package:mapness/app/auto_route/app_routes.gr.dart';
+import 'package:mapness/entities/favourites/favourite_item.dart';
+import 'package:mapness/features/favorite_lists/ui/models/sheet_action_button.dart';
+import 'package:mapness/features/favourites/providers/favourite_cache.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/hooks/toggle_sheet_controller_hook.dart';
 import 'package:sheetify/sheetify.dart';
 
 @RoutePage()
 class EditMyAddressesPage extends HookConsumerWidget {
-  const EditMyAddressesPage({super.key});
+  final FavouriteItem? item;
+  final bool isHome;
+
+  const EditMyAddressesPage({required this.item, required this.isHome, super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -48,8 +55,32 @@ class EditMyAddressesPage extends HookConsumerWidget {
                 title: context.l10n.delete,
                 titleOptions: ContentRowTextOption(baseColor: context.colors.errorDefault),
               ),
-              onTap: () {
-                // todo delete
+              onTap: () async {
+                final favItem = item;
+                if (favItem == null) {
+                  return;
+                }
+                final shouldClose = await context.router.push(
+                  ConfirmationSheetRoute(
+                    title: context.l10n.favoriteListAddressDeletionTitle,
+                    message: isHome
+                        ? context.l10n.favoriteListConfirmDeleteHomeAddressMessage
+                        : context.l10n.favoriteListConfirmDeleteWorkAddressMessage,
+                    buttons: [
+                      SheetActionButton(label: context.l10n.keep, onTap: () async => context.router.pop()),
+                      SheetActionButton(
+                        label: context.l10n.delete,
+                        buttonColorScheme: ButtonColorScheme.error,
+                        buttonType: ButtonType.primary,
+                        showsLoadingAndHandlesErrors: true,
+                        onTap: () => ref.read(favouriteCacheProvider.notifier).deleteItem(favItem),
+                      ),
+                    ],
+                  ),
+                );
+                if (shouldClose == true && context.mounted) {
+                  context.router.pop();
+                }
               },
             ),
           ],

@@ -106,7 +106,7 @@ class FavoriteListsPage extends HookConsumerWidget {
                         icon: SystemIcons.ellipsis,
                         iconColor: context.colors.foregroundSoft,
                         onPressed: () {
-                          context.router.push(const EditMyAddressesRoute());
+                          context.router.push(EditMyAddressesRoute(item: home, isHome: true));
                         },
                       ),
                       onTap: () => _openPoiCard(context, home),
@@ -125,7 +125,7 @@ class FavoriteListsPage extends HookConsumerWidget {
                         icon: SystemIcons.ellipsis,
                         iconColor: context.colors.foregroundSoft,
                         onPressed: () {
-                          // todo open menu
+                          context.router.push(EditMyAddressesRoute(item: work, isHome: false));
                         },
                       ),
                       onTap: () => _openPoiCard(context, work),
