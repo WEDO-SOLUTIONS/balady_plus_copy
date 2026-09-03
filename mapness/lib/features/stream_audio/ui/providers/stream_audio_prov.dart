@@ -380,7 +380,9 @@ class StreamAudioProvider extends ChangeNotifier {
       _isLoadingChannels = false;
       notifyListeners();
       debugPrint('StreamAudioProvider: Failed to load channels: $e');
-      rethrow; // Re-throw to let callers handle the error
+      // No rethrow: every call site is fire-and-forget, so a rethrow became
+      // an unhandled zone error billed to telemetry rather than something a
+      // caller handled. UI reads state via hasChannels / isLoadingChannels.
     }
   }
 
