@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:balady_plus/app/core/dependency_injection/injection_container.dart';
 import 'package:balady_plus/app/core/utils/common_functions.dart';
@@ -38,25 +40,38 @@ class MiniAppsHomeScreen extends StatefulWidget {
 }
 
 class _MiniAppsHomeScreenState extends State<MiniAppsHomeScreen> {
+  // The app-level BlocProvider serves this same get_it singleton, so callbacks
+  // use this field instead of context.read: reorder/refresh callbacks fire
+  // after their drop/snap animations, when a loading emit may have already
+  // swapped the subtree and left the callback's context defunct.
+  late final NewMiniAppLogicCubit _miniAppsCubit;
+  StreamSubscription<dynamic>? _authSubscription;
+
   @override
   void initState() {
     super.initState();
 
-    final miniAppsCubit = sl<NewMiniAppLogicCubit>();
+    _miniAppsCubit = sl<NewMiniAppLogicCubit>();
     final authenticationBloc = sl<AuthenticationBloc>();
     if (authenticationBloc.state is UnAuthenticatedState) {
-      if (miniAppsCubit.state.isInitial) {
-        miniAppsCubit.loadMiniApps();
+      if (_miniAppsCubit.state.isInitial) {
+        _miniAppsCubit.loadMiniApps();
       }
     } else {
-      authenticationBloc.stream.listen((state) {
+      _authSubscription = authenticationBloc.stream.listen((state) {
         if (state is UnAuthenticatedState) {
-          if (miniAppsCubit.state.isInitial) {
-            miniAppsCubit.loadMiniApps();
+          if (_miniAppsCubit.state.isInitial) {
+            _miniAppsCubit.loadMiniApps();
           }
         }
       });
     }
+  }
+
+  @override
+  void dispose() {
+    _authSubscription?.cancel();
+    super.dispose();
   }
 
   @override
@@ -93,7 +108,7 @@ class _MiniAppsHomeScreenState extends State<MiniAppsHomeScreen> {
               return RefreshIndicator(
                 color: Theme.of(context).primaryColor,
                 onRefresh: () async {
-                  return context.read<NewMiniAppLogicCubit>().refreshMiniApps();
+                  return _miniAppsCubit.refreshMiniApps();
                 },
                 child: SingleChildScrollView(
                   physics: const AlwaysScrollableScrollPhysics(parent: ClampingScrollPhysics()),
@@ -179,7 +194,7 @@ class _MiniAppsHomeScreenState extends State<MiniAppsHomeScreen> {
                                                       Navigator.of(context).push(
                                                         MaterialPageRoute(
                                                           builder: (_) => BlocProvider.value(
-                                                            value: context.read<NewMiniAppLogicCubit>(),
+                                                            value: _miniAppsCubit,
                                                             child: const AddFavMiniApps(),
                                                           ),
                                                         ),
@@ -225,7 +240,8 @@ class _MiniAppsHomeScreenState extends State<MiniAppsHomeScreen> {
                                                           scrollDirection: Axis.horizontal,
                                                           itemCount: state.favoriteApps.length,
                                                           onReorder: (oldIndex, newIndex) {
-                                                            ctx.read<NewMiniAppLogicCubit>().reorderFavoriteApps(
+                                                            // Fires ~250ms after the drop; ctx may be defunct by then.
+                                                            _miniAppsCubit.reorderFavoriteApps(
                                                               oldIndex,
                                                               newIndex,
                                                             );
@@ -241,7 +257,7 @@ class _MiniAppsHomeScreenState extends State<MiniAppsHomeScreen> {
                                                                 key: Key(favMiniApp.id),
                                                                 width: context.screenWidth * 0.14,
                                                                 onTap: () {
-                                                                  context.read<NewMiniAppLogicCubit>().openMiniApp(
+                                                                  _miniAppsCubit.openMiniApp(
                                                                     favMiniApp,
                                                                   );
                                                                 },
@@ -284,12 +300,11 @@ class _MiniAppsHomeScreenState extends State<MiniAppsHomeScreen> {
                                               ),
                                               child: GestureDetector(
                                                 onTap: () {
-                                                  final miniAppsCubit = sl<NewMiniAppLogicCubit>();
-                                                  final MiniApp? miniApp = miniAppsCubit.getMiniAppByServiceId(
+                                                  final MiniApp? miniApp = _miniAppsCubit.getMiniAppByServiceId(
                                                     "BaladyUrbiImtithal",
                                                   );
                                                   if (miniApp != null) {
-                                                    context.read<NewMiniAppLogicCubit>().openMiniApp(miniApp);
+                                                    _miniAppsCubit.openMiniApp(miniApp);
                                                   }
                                                 },
                                                 child: ClipRRect(
@@ -462,7 +477,7 @@ class _MiniAppsHomeScreenState extends State<MiniAppsHomeScreen> {
                                                             width: context.w(177) * (1.0 + (textScale - 1.0) * 0.2),
                                                             child: GestureDetector(
                                                               onTap: () {
-                                                                context.read<NewMiniAppLogicCubit>().openMiniApp(
+                                                                _miniAppsCubit.openMiniApp(
                                                                   miniApp,
                                                                 );
                                                               },
