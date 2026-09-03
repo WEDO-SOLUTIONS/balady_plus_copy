@@ -10,6 +10,7 @@ import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/features/favorite_lists/data/favorite_lists_api_exception.dart';
 import 'package:mapness/features/favorite_lists/data/favorite_lists_remote_datasource.dart';
 import 'package:mapness/features/favorite_lists/data/models/favorite_list_dto.dart';
+import 'package:mapness/features/favorite_lists/data/models/icon_type.dart';
 import 'package:mapness/features/favorite_lists/providers/aggregated_favorite_markers.dart';
 import 'package:mapness/features/favorite_lists/providers/favorite_list_detail.dart';
 import 'package:mapness/features/favorite_lists/providers/favorite_list_membership_map.dart';
@@ -220,7 +221,9 @@ class PickFavoriteListPage extends HookConsumerWidget {
                         final isSelected = overrides.value[list.id] ?? actualMembership(list);
 
                         return ContentRow(
-                          leading: Icon(SystemIcons.bookmarkFill, color: list.markerColorCode.color),
+                          leading: (list.iconType ?? FavoriteIconType.$default).getIcon().svg(
+                            colorFilter: ColorFilter.mode(list.markerColorCode.color, BlendMode.srcIn),
+                          ),
                           text: ContentRowTextOptions(
                             title: list.name,
                             subtitle: favoriteListPlacesCountText(context.l10n, list.placeCount ?? 0),
