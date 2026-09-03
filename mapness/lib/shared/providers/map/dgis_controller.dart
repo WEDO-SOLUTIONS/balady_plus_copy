@@ -41,7 +41,8 @@ class DgisController extends _$DgisController {
   late LocationSetupHelper _locationHelper;
 
   // Non-final so build() can replace it with a fresh open subject on each rebuild.
-  BehaviorSubject<VisibleRectEvent?> _visibleRectSubject = BehaviorSubject<VisibleRectEvent?>();
+  // Seeded so `.value` reads never throw before map init delivers the first event.
+  BehaviorSubject<VisibleRectEvent?> _visibleRectSubject = BehaviorSubject<VisibleRectEvent?>.seeded(null);
   bool? _indoorFloorPlansEnabled;
   StreamSubscription<Position>? _firstFixSubscription;
   bool _startupRecenterSuppressed = false;
@@ -58,7 +59,7 @@ class DgisController extends _$DgisController {
   @override
   Future<DgisMapController> build() {
     _completer = Completer();
-    _visibleRectSubject = BehaviorSubject<VisibleRectEvent?>();
+    _visibleRectSubject = BehaviorSubject<VisibleRectEvent?>.seeded(null);
     // onDispose below calls cancelFirstFixCameraMove, which raises the flag;
     // a rebuilt map starts a fresh startup sequence.
     _startupRecenterSuppressed = false;
