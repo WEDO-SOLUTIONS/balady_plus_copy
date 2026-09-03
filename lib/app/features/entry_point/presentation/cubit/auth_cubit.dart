@@ -85,7 +85,11 @@ class EntryPointCubit extends Cubit<EntryPointState> {
        super(const EntryPointState()) {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       sl<LocationCubit>().getLocationInit();
-      Permission.notification.request();
+      // Unawaited: a PlatformException here (no Activity yet) must not become
+      // an unhandled zone error reported to telemetry.
+      Permission.notification
+          .request()
+          .catchError((_) => PermissionStatus.denied);
     });
     refreshAPIGeeToken();
     // Restore authentication state on app startup (non-blocking)
