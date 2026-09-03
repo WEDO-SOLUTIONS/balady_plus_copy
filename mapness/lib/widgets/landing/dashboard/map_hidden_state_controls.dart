@@ -98,12 +98,6 @@ class _MapHiddenStateControlsState extends ConsumerState<MapHiddenStateControls>
         ref.read(freeRoamStarterProvider.notifier).setShown();
       } else if (state.canStart && state.isAutorun) {
         widget.controller.setState(ThreeStateSheet.hidden);
-        // No setState around this: scrollTo mutates no widget state, and the
-        // listener can fire while the tree is building. isAttached guard:
-        // scrollTo on a detached ItemScrollController null-checks its list
-        // state in release. Today QuickSearchBar (the only consumer of this
-        // controller) is not in the tree at all, so this was a guaranteed
-        // throw on every free-roam autorun with a non-expanded sheet.
         if (quickScrollController.isAttached) {
           quickScrollController.scrollTo(index: 0, duration: const Duration(milliseconds: 150), alignment: 0.05);
         }
