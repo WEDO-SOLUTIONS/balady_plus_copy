@@ -326,14 +326,14 @@ class TifoBuildingsMapLayer extends Notifier<bool> {
       if (!ref.mounted) {
         return;
       }
-      // TFS 86083: absent means "never chosen", and that used to read as OFF —
-      // so a new install sat on a plain map through a live season until the
-      // player found the ⚽ control. Only an explicit `false` (the player having
-      // turned the layer off themselves) keeps it off now; the season schedule
-      // still has the final say through `tifoAvailableProvider`.
+      // Absent means "never chosen", and that reads as OFF: a fresh install
+      // cold-starts on a plain map and the player opts in through the ⚽
+      // control. Only an explicit `true` (the player having turned the layer
+      // on themselves) restores it; the season schedule still has the final
+      // say through `tifoAvailableProvider`.
       final stored = box.get(_persistKey);
-      if (stored != false && ref.read(tifoAvailableProvider)) {
-        logger.log('[tifo-map] restoring layer: stored=${stored ?? 'unset (default on)'}');
+      if (stored == true && ref.read(tifoAvailableProvider)) {
+        logger.log('[tifo-map] restoring layer: stored=true');
         await enable();
       }
     } catch (error, stackTrace) {
