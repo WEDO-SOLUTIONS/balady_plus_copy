@@ -4,6 +4,7 @@ import 'dart:math';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/services.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:mapness/features/navigation_cursor/navigation_cursor_controller.dart';
 import 'package:mapness/features/routing/providers/routes.dart';
 import 'package:mapness/shared/constants/constants.dart';
 import 'package:mapness/shared/providers/app_language.dart';
@@ -112,12 +113,22 @@ class DgisController extends _$DgisController {
     ref
       ..listen(darkModeProvider, (previous, next) {
         controller.setAppearance(next.value?.isDark ?? false ? MapAppearanceMessage.night : MapAppearanceMessage.day);
+        // The bundled classic car has distinct day/night meshes; the
+        // navigation-cursor model is set explicitly on the my-location
+        // object (BALADY-3772), so re-push it for the new appearance.
+        unawaited(ref.read(navigationCursorControllerProvider.notifier).applyActive(controller));
       })
       ..listen(appLanguageProvider, (previous, next) {
         controller.overrideLocales(next == Language.arabic ? ['ar-SA'] : ['en-SA']);
       });
 
     await controller.setBetterRouteSettings(BetterRouteSettings.prod);
+
+    // BALADY-3772: the persisted navigation cursor is set on the live
+    // my-location object rather than baked into the style, so push it once
+    // the map is up (and again on every recreate/init). The native side only
+    // caches it here — the model becomes visible when turn-by-turn starts.
+    await ref.read(navigationCursorControllerProvider.notifier).applyActive(controller);
 
     try {
       // Voice
