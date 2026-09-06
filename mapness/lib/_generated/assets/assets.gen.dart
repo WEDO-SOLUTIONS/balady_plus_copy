@@ -502,6 +502,9 @@ class $AssetsTifoGen {
 
   /// Directory path: assets/tifo/sprites
   $AssetsTifoSpritesGen get sprites => const $AssetsTifoSpritesGen();
+
+  /// Directory path: assets/tifo/tutorial
+  $AssetsTifoTutorialGen get tutorial => const $AssetsTifoTutorialGen();
 }
 
 class $AssetsIconsLottieGen {
@@ -1471,6 +1474,28 @@ class $AssetsTifoSpritesGen {
     strikerReady,
     strikerWindup,
   ];
+}
+
+class $AssetsTifoTutorialGen {
+  const $AssetsTifoTutorialGen();
+
+  /// File path: assets/tifo/tutorial/long_press.svg
+  SvgGenImage get longPress => const SvgGenImage('assets/tifo/tutorial/long_press.svg');
+
+  /// File path: assets/tifo/tutorial/long_press_dark.svg
+  SvgGenImage get longPressDark => const SvgGenImage('assets/tifo/tutorial/long_press_dark.svg');
+
+  /// File path: assets/tifo/tutorial/token_building.webp
+  AssetGenImage get tokenBuilding => const AssetGenImage('assets/tifo/tutorial/token_building.webp');
+
+  /// File path: assets/tifo/tutorial/token_car.webp
+  AssetGenImage get tokenCar => const AssetGenImage('assets/tifo/tutorial/token_car.webp');
+
+  /// File path: assets/tifo/tutorial/token_coin.webp
+  AssetGenImage get tokenCoin => const AssetGenImage('assets/tifo/tutorial/token_coin.webp');
+
+  /// List of all assets
+  List<dynamic> get values => [longPress, longPressDark, tokenBuilding, tokenCar, tokenCoin];
 }
 
 class $AssetsIconsSvgAudioGen {

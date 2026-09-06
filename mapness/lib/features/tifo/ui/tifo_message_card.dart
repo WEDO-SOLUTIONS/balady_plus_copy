@@ -159,10 +159,10 @@ class TifoMessageCard extends ConsumerWidget {
 }
 
 /// Presents [card] as a full-width bottom sheet — the same shape as every
-/// other TIFO sheet in the app (`showTifoTutorialSheet`, the guided tour's
-/// coach sheet): flush to the screen edges, rounded top corners only, a
-/// centered dragger. Shared shell behind every state in the Figma "Messages"
-/// frame (noticeCard / Not enough tokens / Idle prompt / sheet / system).
+/// other TIFO sheet in the app (the guided tour's coach sheet): flush to the
+/// screen edges, rounded top corners only, a centered dragger. Shared shell
+/// behind every state in the Figma "Messages" frame (noticeCard / Not enough
+/// tokens / Idle prompt / sheet / system).
 Future<T?> showTifoMessageDialog<T>(
   BuildContext context, {
   required Widget card,

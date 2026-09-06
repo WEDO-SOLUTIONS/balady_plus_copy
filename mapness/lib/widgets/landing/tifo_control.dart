@@ -4,7 +4,6 @@ import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/_features/common/providers/ui_direction.dart';
-import 'package:mapness/_generated/assets/assets.gen.dart';
 import 'package:mapness/app/auto_route/app_routes.dart';
 import 'package:mapness/features/tifo/entry_screen.dart';
 import 'package:mapness/features/tifo/leaderboard_sheet.dart';
@@ -13,6 +12,7 @@ import 'package:mapness/features/tifo/tifo_flow_provider.dart';
 import 'package:mapness/features/tifo/tifo_journey.dart';
 import 'package:mapness/features/tifo/tifo_surface.dart';
 import 'package:mapness/features/tifo/tutorial/tifo_guided_tutorial.dart';
+import 'package:mapness/features/tifo/tutorial/tifo_spotlight.dart';
 import 'package:mapness/features/tifo/ui/tifo_theme.dart';
 import 'package:mapness/l10n/generated/app_localizations.dart';
 import 'package:mapness/shared/ui/buttons/map_button.dart';
@@ -165,13 +165,31 @@ class TifoLeaderboardControl extends StatelessWidget {
 class TifoHelpControl extends StatelessWidget {
   const TifoHelpControl({super.key});
 
+  /// Width of the label box inside the 48-wide button (Figma 1872:93850).
+  /// Pinning it keeps the control square: `MapButton` only sets a *minimum*
+  /// width, so an unconstrained label would stretch it past its neighbours.
+  static const double _labelWidth = 41;
+
   @override
   Widget build(BuildContext context) => MapButton(
+    // The tour's closing step dims the dashboard and cuts a window around
+    // this button; the key is how [TifoSpotlight] finds where it landed.
+    key: tifoHelpControlKey,
+    semanticsLabel: AppLocalizations.of(context).gameTutorial,
     onTap: () => unawaited(showTifoGuidedTutorial(context, initialStep: TifoGuidedTutorial.lastStep)),
-    child: Assets.imagesSvg.tifoHelp.svg(
-      width: 24,
-      height: 24,
-      colorFilter: ColorFilter.mode(context.colors.foregroundDefault, BlendMode.srcIn),
+    child: SizedBox(
+      width: _labelWidth,
+      child: Text(
+        AppLocalizations.of(context).gameTutorial,
+        textAlign: TextAlign.center,
+        // Two lines by design ("Game" / "Tutorial"); a longer translation
+        // ellipsises rather than overflowing the map control.
+        maxLines: 2,
+        overflow: TextOverflow.ellipsis,
+        // Design says #161616; `foregroundDefault` is #1B1B1B in light and
+        // flips to white in dark, which the flat hex would not.
+        style: TifoText.captionMedium.copyWith(color: context.colors.foregroundDefault),
+      ),
     ),
   );
 }

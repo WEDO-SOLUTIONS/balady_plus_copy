@@ -451,7 +451,10 @@ class TifoDemoPenaltyPreview extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => ColoredBox(
-    color: const Color(0xFF0A0F0B),
+    // Figma "Game preview": the screen is one deep-green field (#0C3330) in
+    // both themes, with a 10% accent wash over it. It was a near-black
+    // (#0A0F0B) here, which read as a different screen entirely.
+    color: TifoColors.penaltyField,
     child: SafeArea(
       child: Padding(
         padding: const EdgeInsets.all(20),
@@ -462,7 +465,7 @@ class TifoDemoPenaltyPreview extends StatelessWidget {
                 const SizedBox(height: 12),
                 Text(
                   AppLocalizations.of(context).tifoPenaltyChallenge,
-                  style: TifoText.h3.copyWith(color: TifoColors.accentMuted),
+                  style: TifoText.h3.copyWith(color: TifoColors.accent),
                 ),
                 const SizedBox(height: 16),
                 Expanded(
@@ -483,15 +486,15 @@ class TifoDemoPenaltyPreview extends StatelessWidget {
                       Expanded(
                         child: Container(
                           padding: const EdgeInsets.all(14),
-                          decoration: _card(bg: const Color(0xFF141A15), border: _amber.withValues(alpha: 0.7)),
+                          decoration: _card(bg: TifoColors.warnWash, border: TifoColors.warn),
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Text(
                                 '🪙 ${AppLocalizations.of(context).tokensNeeded}',
-                                style: TifoText.captionMedium.copyWith(color: _amber),
+                                style: TifoText.captionMedium.copyWith(color: TifoColors.warn),
                               ),
-                              Text('2', style: TifoText.h2.copyWith(color: _amber)),
+                              Text('2', style: TifoText.h2.copyWith(color: TifoColors.warnStrong)),
                             ],
                           ),
                         ),
@@ -500,10 +503,7 @@ class TifoDemoPenaltyPreview extends StatelessWidget {
                       Expanded(
                         child: Container(
                           padding: const EdgeInsets.all(14),
-                          decoration: _card(
-                            bg: const Color(0xFF141A15),
-                            border: TifoColors.accentSoft.withValues(alpha: 0.7),
-                          ),
+                          decoration: _card(bg: TifoColors.accentContainer, border: TifoColors.accent),
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
@@ -511,7 +511,7 @@ class TifoDemoPenaltyPreview extends StatelessWidget {
                                 '🏢 ${AppLocalizations.of(context).claimTheBuilding}',
                                 style: TifoText.captionMedium.copyWith(color: TifoColors.accentMuted),
                               ),
-                              Text('12', style: TifoText.h2.copyWith(color: TifoColors.accentMuted)),
+                              Text('12', style: TifoText.h2.copyWith(color: TifoColors.accentBright)),
                               Text(
                                 AppLocalizations.of(context).beatTheScore,
                                 style: TifoText.captionRegular.copyWith(color: TifoColors.accentMuted),
@@ -527,7 +527,7 @@ class TifoDemoPenaltyPreview extends StatelessWidget {
                 Container(
                   width: double.infinity,
                   padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                  decoration: _card(bg: const Color(0xFF141A15), border: TifoColors.accentSoft.withValues(alpha: 0.4)),
+                  decoration: _card(bg: TifoColors.accentContainer, border: TifoColors.accentMuted),
                   child: Text(
                     '${AppLocalizations.of(context).youGet3Misses}  ⚽ ⚽ ⚽',
                     style: TifoText.bodyLSemi.copyWith(color: TifoColors.accentMuted),
