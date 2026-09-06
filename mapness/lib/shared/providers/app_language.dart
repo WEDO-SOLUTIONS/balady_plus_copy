@@ -7,7 +7,8 @@ import 'package:balady_plus/app/core/utils/utils_exports.dart';
 import 'package:flutter/material.dart';
 import 'package:mapness/_features/common/providers/shared_prefs.dart';
 import 'package:mapness/_generated/assets/assets.gen.dart';
-import 'package:mapness/features/favourites/providers/favourite_cache.dart';
+import 'package:mapness/features/favorite_lists/providers/aggregated_favorite_markers.dart';
+import 'package:mapness/features/favorite_lists/providers/home_work_favorites.dart';
 import 'package:mapness/features/sso_auth/data/auth_provider.dart';
 import 'package:mapness/features/tifo/providers/tifo_session_provider.dart';
 import 'package:mapness/features/weather/provider/forecast_weather_provider.dart';
@@ -120,8 +121,10 @@ class AppLanguage extends _$AppLanguage {
     ref.read(navigatorVoiceProvider.notifier).update(value.navigatorVoice);
     // Update the SSO profile to get the information in the new language
     unawaited(ref.read(authProvider.notifier).forceUpdate());
-    // Update cached text for the favourites items
-    unawaited(ref.read(favouriteCacheProvider.notifier).forceRefresh());
+    // Re-resolve favourite place titles (Home/Work + regular lists) in the new locale
+    ref
+      ..invalidate(homeWorkFavoritesProvider)
+      ..invalidate(aggregatedFavoriteMarkersProvider);
     // Re-fetch the TIFO roster so club names come back in the new locale
     unawaited(ref.read(tifoSessionProvider.notifier).forceRefresh());
 

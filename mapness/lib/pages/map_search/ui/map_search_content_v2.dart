@@ -10,7 +10,7 @@ import 'package:mapness/app/auto_route/poi_card_ext.dart';
 import 'package:mapness/features/discover/discover.dart';
 import 'package:mapness/entities/search/models/search_history.dart';
 import 'package:mapness/features/app_analytics/app_analytics.dart';
-import 'package:mapness/features/favourites/providers/favourite_cache.dart';
+import 'package:mapness/features/favorite_lists/providers/aggregated_favorite_markers.dart';
 import 'package:mapness/features/search/models/search_scope.dart';
 import 'package:mapness/features/search/models/search_state.dart';
 import 'package:mapness/features/search/providers/search.dart';
@@ -263,8 +263,8 @@ class _MapSearchContentState extends ConsumerState<MapSearchContent> {
         child: MapSearchEmpty(),
       ),
       history: () {
-        final favourites = ref.watch(favouriteCacheProvider);
-        final hasFavourites = favourites.hasValue && favourites.requireValue.items.isNotEmpty;
+        final favourites = ref.watch(aggregatedFavoriteMarkersProvider);
+        final hasFavourites = favourites.hasValue && favourites.requireValue.isNotEmpty;
 
         final history = ref.watch(searchHistoryProvider(scope.value));
         final shouldShowHistoryAndFavorites = !widget.showMoreQuickFilters;
@@ -286,7 +286,9 @@ class _MapSearchContentState extends ConsumerState<MapSearchContent> {
                   // this path runs via searchByText(), so fire `quick_search_click`
                   // here and flag the search so its exposure reports
                   // `search_type: Quick search`.
-                  ref.read(appAnalyticsProvider).quickSearchClick(
+                  ref
+                      .read(appAnalyticsProvider)
+                      .quickSearchClick(
                         eventSource: searcher.dataFinderEventSource,
                         searchText: q,
                       );

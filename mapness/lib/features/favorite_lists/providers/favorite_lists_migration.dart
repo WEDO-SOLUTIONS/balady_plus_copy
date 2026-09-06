@@ -1,6 +1,7 @@
 import 'package:mapness/_features/common/providers/shared_prefs.dart';
 import 'package:mapness/features/favorite_lists/data/favorite_lists_remote_datasource.dart';
 import 'package:mapness/features/favorite_lists/data/models/migrate_legacy_favorites_result_dto.dart';
+import 'package:mapness/features/favorite_lists/providers/aggregated_favorite_markers.dart';
 import 'package:mapness/features/favourites/providers/favourite_cache.dart';
 import 'package:mapness/features/sso_auth/data/auth_provider.dart';
 import 'package:mapness/shared/utils/logger/logger.dart';
@@ -26,12 +27,11 @@ class FavoriteListsMigration extends _$FavoriteListsMigration {
       return null;
     }
 
+    // Home/Work are migrated separately by `HomeWorkFavoritesMigration`, into their own
+    // system lists — kept out of this generic set so they don't also become plain,
+    // un-tagged favorites here.
     final legacy = await ref.read(favouriteCacheProvider.future);
-    final legacyPlaceIds = {
-      ...legacy.items.map((e) => e.id),
-      if (legacy.home != null) legacy.home!.id,
-      if (legacy.work != null) legacy.work!.id,
-    }.toList();
+    final legacyPlaceIds = legacy.items.map((e) => e.id).toList();
 
     if (legacyPlaceIds.isEmpty) {
       await prefs.setBool(flagKey, true);
@@ -42,6 +42,7 @@ class FavoriteListsMigration extends _$FavoriteListsMigration {
       final dataSource = await ref.read(favoriteListsRemoteDataSourceProvider.future);
       final result = await dataSource.migrateLegacyFavorites(legacyPlaceIds);
       await prefs.setBool(flagKey, true);
+      ref.invalidate(aggregatedFavoriteMarkersProvider);
       logger.log(
         'Favorite lists migration succeeded: alreadyMigrated=${result.alreadyMigrated}, '
         'showMigrationBanner=${result.showMigrationBanner}',

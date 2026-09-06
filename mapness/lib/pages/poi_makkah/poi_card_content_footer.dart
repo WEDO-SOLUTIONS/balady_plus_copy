@@ -82,41 +82,8 @@ class _MakkahPoiFooterPlaceholder extends ConsumerWidget {
   }
 
   void _onBookmarkTap(BuildContext context, WidgetRef ref) {
-    final objectId = data.id?.objectId;
-    if (objectId == null || data.markerPosition == null) return;
-
-    final favState = ref.read(favouriteCacheProvider).value;
-    final favNotifier = ref.read(favouriteCacheProvider.notifier);
-    final favouriteItem = favNotifier.getFavouriteOrNull(objectId);
-
-    if (favouriteItem != null) {
-      favNotifier.deleteItem(favouriteItem);
-      return;
-    }
-
-    final favItem = FavouriteItem(
-      coordinates: Coordinates(
-        latitude: data.markerPosition!.latitude,
-        longitude: data.markerPosition!.longitude,
-      ),
-      id: 'overriden',
-      subtitle: data.subtitle,
-      title: data.title,
-      entity: FavouriteItemEntity(
-        sourceType: EntitySourceType.urbi,
-        id: objectId.toString(),
-      ),
-    );
-
-    if (favState?.home != null && favState?.work != null) {
-      favNotifier.addItem(favItem);
-    } else {
-      // Build the rich POI here, where [data] (addr/type/marker) is available,
-      // so `favorite_add` reports poi_addr/poi_type/poi_distance.
-      final loc = ref.read(locationProvider);
-      final favoritePoi = data.toDataFinderPoi(myLat: loc?.latitude, myLon: loc?.longitude);
-      context.router.push(PoiFavoriteDialogRoute(favItem: favItem, favoritePoi: favoritePoi));
-    }
+    if (data.id == null) return;
+    context.router.push(PickFavoriteListRoute(data: data));
   }
 
   void _onParkingTap(BuildContext context, WidgetRef ref) {
@@ -187,9 +154,7 @@ class _MakkahPoiFooterPlaceholder extends ConsumerWidget {
     final objectId = data.id?.objectId;
     final dgisId = makkahPlace?.dgisId;
     final canShare = (dgisId != null && dgisId.isNotEmpty) || (objectId != null && objectId != 0);
-    ref.watch(favouriteCacheProvider).value;
-    final provider = ref.watch(favouriteCacheProvider.notifier);
-    final isFavourite = objectId != null && provider.isFavourite(objectId);
+    final isFavourite = objectId != null && ref.watch(isPlaceFavoritedByObjectIdProvider(objectId));
 
     final hasParking =
         ref.watch(parkingManageProvider(theme: context.read<ThemeController>().currentTheme)).value != null;

@@ -6,12 +6,13 @@ import 'package:mapness/features/favorite_lists/data/models/icon_type.dart';
 import 'package:mapness/features/favorite_lists/data/models/map_marker_dto.dart';
 import 'package:mapness/features/favorite_lists/data/models/marker_color_code.dart';
 import 'package:mapness/features/favorite_lists/providers/aggregated_favorite_markers.dart';
+import 'package:mapness/features/favorite_lists/providers/home_work_favorites.dart';
 import 'package:mapness/features/favourites/helpers/construct_marker.dart';
 import 'package:mapness/features/favourites/helpers/favourite_entity_id.dart';
-import 'package:mapness/features/favourites/providers/favourite_cache.dart';
 import 'package:mapness/features/lifestyle_layers/configs/layers_consts.dart';
 import 'package:mapness/features/lifestyle_layers/providers/active_layer.dart';
 import 'package:mapness/features/lifestyle_layers/providers/layers_state.dart';
+import 'package:mapness/shared/providers/app_language.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:mapness/shared/providers/map/favorite_pin_marker_bitmap.dart';
 import 'package:mapness/shared/providers/map/object_manager.dart';
@@ -64,6 +65,11 @@ class _FavouriteMarkers extends _$FavouriteMarkers {
   // unrelated dependency changes don't re-issue native searchByObjectId
   // calls for placeIds already resolved.
   final Map<String, ({GeoPointWithElevationMessage position, String title})> _resolvedPlaces = {};
+
+  // Resolved titles are locale-dependent (native searchByObjectId returns them in the
+  // current app locale); clear the cache when the locale changes so stale-language
+  // titles don't linger for the lifetime of this keepAlive provider.
+  Language? _lastLanguage;
 
   Future<({GeoPointWithElevationMessage position, String title})?> _resolvePlace(
     DgisMapController dgisController,
@@ -149,43 +155,41 @@ class _FavouriteMarkers extends _$FavouriteMarkers {
       ).notifier,
     );
     final router = ref.watch(appRouterProvider);
-    final favItemsAsync = ref.watch(favouriteCacheProvider);
     final showMarkers = ref.watch(favouriteToggleProvider);
 
-    /// don't show markers if user disabled them or if there are no favourites
-    if (!showMarkers || favItemsAsync.value == null) {
+    /// don't show markers if user disabled them
+    if (!showMarkers) {
+      return;
+    }
+
+    final language = ref.watch(appLanguageProvider);
+    if (_lastLanguage != null && _lastLanguage != language) {
+      _resolvedPlaces.clear();
+    }
+    _lastLanguage = language;
+
+    final homeWork = await ref.watch(homeWorkFavoritesProvider.future);
+    if (!ref.mounted) {
       return;
     }
 
     final markers = <Marker>[];
-    final favItems = favItemsAsync.requireValue;
-
     final devicePixelRatio = WidgetsBinding.instance.platformDispatcher.views.first.devicePixelRatio;
-    final favoritePinIcon = PngBytesMarkerIcon(
-      pngData: await ref
-          .read(favoritePinMarkerBitmapProvider)
-          .render(tint: const Color(0xFF1E928F), icon: FavoriteIconType.$default, devicePixelRatio: devicePixelRatio),
-      width: 24,
-    );
-    if (!ref.mounted) {
-      return;
-    }
-    for (final element in favItems.items) {
-      markers.add(constructMarker(element, favoritePinIcon, router));
-    }
 
     /// add home if exists
-    if (favItems.home != null) {
+    String? homePlaceId;
+    if (homeWork.home != null) {
       final homeIconBytes = await ref
           .read(favoritePinMarkerBitmapProvider)
           .render(tint: MarkerColorCode.green.color, icon: FavoriteIconType.home, devicePixelRatio: devicePixelRatio);
       if (!ref.mounted) {
         return;
       }
-      final homeObjectId = parseObjectIdFromFavouriteEntityId(favItems.home!.entity?.id);
+      final homeObjectId = parseObjectIdFromFavouriteEntityId(homeWork.home!.entity?.id);
+      homePlaceId = homeObjectId?.toString();
       markers.add(
         constructMarker(
-          favItems.home!,
+          homeWork.home!,
           PngBytesMarkerIcon(pngData: homeIconBytes, width: 24),
           router,
           markerId: homeObjectId != null ? homeWorkMarkerId(homeObjectId) : null,
@@ -194,7 +198,8 @@ class _FavouriteMarkers extends _$FavouriteMarkers {
     }
 
     /// add work if exists
-    if (favItems.work != null) {
+    String? workPlaceId;
+    if (homeWork.work != null) {
       final workIconBytes = await ref
           .read(favoritePinMarkerBitmapProvider)
           .render(
@@ -205,10 +210,11 @@ class _FavouriteMarkers extends _$FavouriteMarkers {
       if (!ref.mounted) {
         return;
       }
-      final workObjectId = parseObjectIdFromFavouriteEntityId(favItems.work!.entity?.id);
+      final workObjectId = parseObjectIdFromFavouriteEntityId(homeWork.work!.entity?.id);
+      workPlaceId = workObjectId?.toString();
       markers.add(
         constructMarker(
-          favItems.work!,
+          homeWork.work!,
           PngBytesMarkerIcon(pngData: workIconBytes, width: 24),
           router,
           markerId: workObjectId != null ? homeWorkMarkerId(workObjectId) : null,
@@ -226,7 +232,12 @@ class _FavouriteMarkers extends _$FavouriteMarkers {
       return;
     }
     final favoriteListMarkers = await Future.wait(
-      aggregatedMarkers.map((marker) async {
+      // Home/Work are rendered above with their own dedicated icon — the aggregated
+      // API also includes them (they're just two more hidden list memberships), so
+      // skip them here to avoid rendering the same place twice.
+      aggregatedMarkers.where((marker) => marker.placeId != homePlaceId && marker.placeId != workPlaceId).map((
+        marker,
+      ) async {
         final resolved = await _resolvePlace(dgisController, marker);
         if (resolved == null) {
           return null;

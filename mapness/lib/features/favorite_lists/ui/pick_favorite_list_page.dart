@@ -15,11 +15,11 @@ import 'package:mapness/features/favorite_lists/providers/aggregated_favorite_ma
 import 'package:mapness/features/favorite_lists/providers/favorite_list_detail.dart';
 import 'package:mapness/features/favorite_lists/providers/favorite_list_membership_map.dart';
 import 'package:mapness/features/favorite_lists/providers/favorite_lists.dart';
+import 'package:mapness/features/favorite_lists/providers/home_work_favorites.dart';
 import 'package:mapness/features/favorite_lists/ui/favorite_list_subtitle_parts.dart';
 import 'package:mapness/features/favorite_lists/ui/show_favorite_lists_error_sheet.dart';
 import 'package:mapness/features/favorite_lists/ui/widgets/favorite_progress_indicator.dart';
 import 'package:mapness/features/favourites/mappers/directory_object_message_mapper.dart';
-import 'package:mapness/features/favourites/providers/favourite_cache.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/hooks/multi_state_sheet_controller_hook.dart';
 import 'package:mapness/shared/providers/app_language.dart';
@@ -27,7 +27,7 @@ import 'package:sheetify/sheetify.dart';
 
 /// Простой экран «добавить в избранное»: отметить чекбоксами один или несколько
 /// списков (новое API, сохраняется по кнопке Save через bulkAssignPlaceToLists)
-/// или отметить точку как Дом/Работу (старая реализация, favouriteCacheProvider).
+/// или отметить точку как Дом/Работу (homeWorkFavoritesActionsProvider, новое API).
 @RoutePage()
 class PickFavoriteListPage extends HookConsumerWidget {
   final DirectoryObjectMessage data;
@@ -42,16 +42,16 @@ class PickFavoriteListPage extends HookConsumerWidget {
       initialState: ThreeStateSheet.open,
     );
     final isSubmitting = useState(false);
-    final favoriteListsAsync = ref.watch(favoriteListsProvider);
+    final favoriteListsAsync = ref.watch(visibleFavoriteListsProvider);
     final placeId = data.id?.objectId.toString();
     final canSetHomeOrWork = data.markerPosition != null && data.id != null;
     final overrides = useState<Map<String, bool>>(const {});
     final lists = favoriteListsAsync.value ?? const [];
 
-    final favouriteCacheState = ref.watch(favouriteCacheProvider).value;
+    final homeWorkState = ref.watch(homeWorkFavoritesProvider).value;
     final favouriteItemId = canSetHomeOrWork ? data.mapToFavourite().id : null;
-    final isHomeSelected = favouriteItemId != null && favouriteItemId == favouriteCacheState?.home?.id;
-    final isWorkSelected = favouriteItemId != null && favouriteItemId == favouriteCacheState?.work?.id;
+    final isHomeSelected = favouriteItemId != null && favouriteItemId == homeWorkState?.home?.id;
+    final isWorkSelected = favouriteItemId != null && favouriteItemId == homeWorkState?.work?.id;
 
     final membershipAsync = placeId == null
         ? const AsyncValue<Map<String, bool>>.data(<String, bool>{})
@@ -115,10 +115,10 @@ class PickFavoriteListPage extends HookConsumerWidget {
       isSubmitting.value = true;
       try {
         final favItem = data.mapToFavourite();
-        final notifier = ref.read(favouriteCacheProvider.notifier);
+        final notifier = ref.read(homeWorkFavoritesActionsProvider.notifier);
         final alreadySelected = isHome ? isHomeSelected : isWorkSelected;
         if (alreadySelected) {
-          await notifier.deleteItem(favItem);
+          await (isHome ? notifier.deleteHome() : notifier.deleteWork());
         } else if (isHome) {
           await notifier.setHome(favItem);
         } else {

@@ -8,6 +8,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:mapness/_features/common/widgets/dragger.dart';
 import 'package:mapness/features/favorite_lists/data/favorite_lists_remote_datasource.dart';
 import 'package:mapness/features/favorite_lists/data/models/favorite_list_place_dto.dart';
+import 'package:mapness/features/favorite_lists/providers/aggregated_favorite_markers.dart';
 import 'package:mapness/features/favorite_lists/providers/custom_place_nickname.dart';
 import 'package:mapness/features/favorite_lists/providers/favorite_list_detail.dart';
 import 'package:mapness/features/favorite_lists/providers/favorite_lists.dart';
@@ -108,7 +109,8 @@ class EditFavoriteListItemNamePage extends HookConsumerWidget {
                 ref
                   ..invalidate(favoriteListsResponseProvider)
                   ..invalidate(favoriteListDetailProvider(listId: listId))
-                  ..invalidate(customPlaceNicknameProvider(place.placeId));
+                  ..invalidate(customPlaceNicknameProvider(place.placeId))
+                  ..invalidate(aggregatedFavoriteMarkersProvider);
                 if (context.mounted) {
                   context.router.pop(true);
                 }

@@ -8,10 +8,10 @@ import 'package:mapness/features/city_event/active_city_event.dart';
 import 'package:mapness/features/favorite_lists/data/models/icon_type.dart';
 import 'package:mapness/features/favorite_lists/data/models/marker_color_code.dart';
 import 'package:mapness/features/favorite_lists/providers/favorite_list_membership.dart';
+import 'package:mapness/features/favorite_lists/providers/home_work_favorites.dart';
 import 'package:mapness/features/favourites/helpers/construct_marker.dart';
 import 'package:mapness/features/favourites/helpers/favourite_entity_id.dart';
 import 'package:mapness/features/favourites/mappers/directory_object_message_mapper.dart';
-import 'package:mapness/features/favourites/providers/favourite_cache.dart';
 import 'package:mapness/features/leap/leap.dart';
 import 'package:mapness/shared/constants/constants.dart';
 import 'package:mapness/shared/extensions/change_marker_options_ext.dart';
@@ -65,20 +65,20 @@ Future<DirectoryObjectMessage?> pointOfInterest(
   final mapMarkerMapper = await ref
       .watch(rubricMarkerMapperProvider.notifier)
       .getMarkerPath(rubrics, objectId.objectId, closestPoint: closestPoint?.geoPoint);
-  final favoriteMarker = await ref.read(favoritePlaceMarkerProvider(objectId.objectId.toString()).future);
+  final favoriteMarker = await ref.watch(favoritePlaceMarkerProvider(objectId.objectId.toString()).future);
   final favoritePinBitmap = ref.read(favoritePinMarkerBitmapProvider);
   final homeWorkIconType = favoriteMarker != null
       ? null
       : ref.watch(
-          favouriteCacheProvider.select((asyncFavourites) {
-            final favourites = asyncFavourites.value;
-            if (favourites == null) {
+          homeWorkFavoritesProvider.select((asyncHomeWork) {
+            final homeWork = asyncHomeWork.value;
+            if (homeWork == null) {
               return null;
             }
-            if (parseObjectIdFromFavouriteEntityId(favourites.home?.entity?.id) == objectId.objectId) {
+            if (parseObjectIdFromFavouriteEntityId(homeWork.home?.entity?.id) == objectId.objectId) {
               return FavoriteIconType.home;
             }
-            if (parseObjectIdFromFavouriteEntityId(favourites.work?.entity?.id) == objectId.objectId) {
+            if (parseObjectIdFromFavouriteEntityId(homeWork.work?.entity?.id) == objectId.objectId) {
               return FavoriteIconType.building;
             }
             return null;

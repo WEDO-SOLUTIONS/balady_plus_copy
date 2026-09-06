@@ -211,11 +211,6 @@ class AppRouter extends RootStackRouter {
           page: FeedbackSentRoute.page,
         ),
         CustomRoute(
-          path: 'favourites',
-          page: FavouritesRoute.page,
-          customRouteBuilder: RouteBuilders.cupertinoRouteBuilder,
-        ),
-        CustomRoute(
           path: 'navi_search_favorites',
           page: NaviFavoritesRoute.page,
         ),
@@ -309,10 +304,6 @@ class AppRouter extends RootStackRouter {
           page: AppFeedbackInputSheet.page,
           opaque: false,
           fullscreenDialog: true,
-        ),
-        CustomRoute(
-          path: 'poi_favorite_dialog',
-          page: PoiFavoriteDialogRoute.page,
         ),
         CustomRoute(
           path: 'remove_history_confirmation',

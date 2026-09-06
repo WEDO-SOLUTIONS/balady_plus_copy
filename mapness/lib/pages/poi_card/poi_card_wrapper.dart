@@ -396,8 +396,6 @@ Future<void> _onFavoriteTap({
   required WidgetRef ref,
   required DirectoryObjectMessage data,
 }) async {
-  toggleFavoriteDirectoryObject(context: context, ref: ref, data: data);
-  return;
   await ref
       .read(authMethodsProvider.notifier)
       .authOrOpen(

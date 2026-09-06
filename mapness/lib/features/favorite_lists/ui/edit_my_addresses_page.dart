@@ -6,8 +6,8 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:mapness/_features/common/widgets/dragger.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/entities/favourites/favourite_item.dart';
+import 'package:mapness/features/favorite_lists/providers/home_work_favorites.dart';
 import 'package:mapness/features/favorite_lists/ui/models/sheet_action_button.dart';
-import 'package:mapness/features/favourites/providers/favourite_cache.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/hooks/toggle_sheet_controller_hook.dart';
 import 'package:sheetify/sheetify.dart';
@@ -80,7 +80,9 @@ class EditMyAddressesPage extends HookConsumerWidget {
                         buttonColorScheme: ButtonColorScheme.error,
                         buttonType: ButtonType.primary,
                         showsLoadingAndHandlesErrors: true,
-                        onTap: () => ref.read(favouriteCacheProvider.notifier).deleteItem(favItem),
+                        onTap: () => isHome
+                            ? ref.read(homeWorkFavoritesActionsProvider.notifier).deleteHome()
+                            : ref.read(homeWorkFavoritesActionsProvider.notifier).deleteWork(),
                       ),
                     ],
                   ),

@@ -5,7 +5,7 @@ import 'package:balady_uikit/core/icons/system_icons.dart';
 import 'package:balady_uikit/core/typography/text_theme_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:mapness/features/favourites/providers/favourite_cache.dart';
+import 'package:mapness/features/favorite_lists/providers/all_favourite_items.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/ui/sheets/error_sheet.dart';
 import 'package:mapness/widgets/favourites/empty_result_widget.dart';
@@ -17,7 +17,7 @@ class FavouritesPickerPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final asyncState = ref.watch(favouriteCacheProvider);
+    final asyncState = ref.watch(allFavouriteItemsProvider);
     if (asyncState.isLoading) {
       return Material(
         color: context.colors.backgroundSurface1,
@@ -27,11 +27,11 @@ class FavouritesPickerPage extends ConsumerWidget {
     if (asyncState.hasError) {
       return ErrorSheetWidget(
         buttonLabel: context.l10n.tryAgain,
-        onRetry: () => ref.invalidate(favouriteCacheProvider),
+        onRetry: () => ref.invalidate(allFavouriteItemsProvider),
         onClose: (_) => context.router.pop(),
       );
     }
-    final state = asyncState.requireValue;
+    final items = asyncState.requireValue;
 
     return Material(
       color: NonThemeColor.color11,
@@ -64,14 +64,14 @@ class FavouritesPickerPage extends ConsumerWidget {
                         label: context.l10n.a11yBack,
                         button: true,
                         child: InkWell(
-                        onTap: () {
-                          context.router.pop();
-                        },
-                        borderRadius: BorderRadius.circular(8),
-                        child: Padding(
-                          padding: const EdgeInsets.all(8),
-                          child: Icon(SystemIcons.arrowCornerLeftLarge, color: context.colors.foregroundDefault),
-                        ),
+                          onTap: () {
+                            context.router.pop();
+                          },
+                          borderRadius: BorderRadius.circular(8),
+                          child: Padding(
+                            padding: const EdgeInsets.all(8),
+                            child: Icon(SystemIcons.arrowCornerLeftLarge, color: context.colors.foregroundDefault),
+                          ),
                         ),
                       ),
                     ),
@@ -84,7 +84,7 @@ class FavouritesPickerPage extends ConsumerWidget {
             child: Material(
               child: Container(
                 color: context.colors.backgroundSurface1,
-                child: state.items.isEmpty
+                child: items.isEmpty
                     ? Padding(
                         padding: const EdgeInsets.only(left: 16, right: 16, top: 63),
                         child: EmptyResultWidget(
@@ -95,16 +95,14 @@ class FavouritesPickerPage extends ConsumerWidget {
                       /// items
                       ListView.separated(
                         padding: const EdgeInsets.only(left: 16, right: 16, top: 16),
-                        itemCount: state.items.length,
+                        itemCount: items.length,
                         separatorBuilder: (_, __) => const SizedBox(height: 8),
                         itemBuilder: (_, index) {
-                          final item = state.items[index];
+                          final item = items[index];
 
                           /// item
                           return Padding(
-                            padding: index == (state.items.length - 1)
-                                ? const EdgeInsets.only(bottom: 8)
-                                : EdgeInsets.zero,
+                            padding: index == (items.length - 1) ? const EdgeInsets.only(bottom: 8) : EdgeInsets.zero,
                             child: FavouriteItemWidget(
                               key: ValueKey(item.id),
                               onTap: () => context.router.pop(item),

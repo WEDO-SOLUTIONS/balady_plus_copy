@@ -16,6 +16,11 @@ bool isPlaceFavorited(Ref ref, String placeId) {
   return markers?.any((marker) => marker.placeId == placeId) ?? false;
 }
 
+/// Удобная обёртка для мест, для которых есть только числовой DGIS objectId, а не строковый
+/// `placeId` из favorite_lists API (например, POI-карточки).
+@riverpod
+bool isPlaceFavoritedByObjectId(Ref ref, int objectId) => ref.watch(isPlaceFavoritedProvider(objectId.toString()));
+
 /// Маркер места в агрегированном списке избранного (цвет + иконка), если оно избранное (иначе `null`).
 @riverpod
 Future<MapMarkerDto?> favoritePlaceMarker(Ref ref, String placeId) async {

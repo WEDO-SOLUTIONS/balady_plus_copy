@@ -9,9 +9,8 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:mapness/_generated/assets/assets.gen.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/app/auto_route/poi_card_ext.dart';
-import 'package:mapness/entities/favourites/favourite_item.dart';
+import 'package:mapness/features/favorite_lists/providers/all_favourite_items.dart';
 import 'package:mapness/features/favourites/helpers/favourite_entity_id.dart';
-import 'package:mapness/features/favourites/providers/favourite_cache.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/providers/app_language.dart';
 import 'package:mapness/shared/ui/sheets/error_sheet.dart';
@@ -24,12 +23,12 @@ class NaviFavoritesPage extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final asyncState = ref.watch(favouriteCacheProvider);
+    final asyncState = ref.watch(allFavouriteItemsProvider);
     return asyncState.map(
       error: (error) => ErrorSheetWidget(
         buttonLabel: context.l10n.tryAgain,
         onRetry: () {
-          ref.invalidate(favouriteCacheProvider);
+          ref.invalidate(allFavouriteItemsProvider);
         },
         onClose: (_) => context.router.pop(),
       ),
@@ -38,12 +37,7 @@ class NaviFavoritesPage extends HookConsumerWidget {
         child: Center(child: CircularProgressIndicator(color: context.colors.accentDefault)),
       ),
       data: (data) {
-        final state = data.value;
-        final allFav = <FavouriteItem>[
-          if (state.home != null) state.home!,
-          if (state.work != null) state.work!,
-          ...List.of(state.items),
-        ];
+        final allFav = data.value;
 
         return Scaffold(
           appBar: BaladyTopBar(

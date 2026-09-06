@@ -20,12 +20,12 @@ import 'package:mapness/features/favorite_lists/data/models/marker_color_code.da
 import 'package:mapness/features/favorite_lists/data/models/migrate_legacy_favorites_result_dto.dart';
 import 'package:mapness/features/favorite_lists/providers/favorite_lists.dart';
 import 'package:mapness/features/favorite_lists/providers/favorite_lists_migration.dart';
+import 'package:mapness/features/favorite_lists/providers/home_work_favorites.dart';
 import 'package:mapness/features/favorite_lists/ui/favorite_list_subtitle_parts.dart';
 import 'package:mapness/features/favorite_lists/ui/models/sheet_action_button.dart';
 import 'package:mapness/features/favorite_lists/ui/widgets/favorite_list_places_content.dart';
 import 'package:mapness/features/favorite_lists/ui/widgets/favorite_progress_indicator.dart';
 import 'package:mapness/features/favourites/helpers/favourite_entity_id.dart';
-import 'package:mapness/features/favourites/providers/favourite_cache.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/providers/app_language.dart';
 
@@ -64,11 +64,11 @@ class FavoriteListsPage extends HookConsumerWidget {
       },
     );
 
-    final favoriteListsAsync = ref.watch(favoriteListsProvider);
+    final favoriteListsAsync = ref.watch(visibleFavoriteListsProvider);
     final favoriteListLimitsAsync = ref.watch(favoriteListLimitsProvider);
-    final favouritesAsync = ref.watch(favouriteCacheProvider);
-    final home = favouritesAsync.value?.home;
-    final work = favouritesAsync.value?.work;
+    final homeWorkAsync = ref.watch(homeWorkFavoritesProvider);
+    final home = homeWorkAsync.value?.home;
+    final work = homeWorkAsync.value?.work;
     final canCreateMoreLists = favoriteListsAsync.maybeWhen(
       data: (lists) => favoriteListLimitsAsync.maybeWhen(
         data: (limits) => lists.length < limits.maxLists,

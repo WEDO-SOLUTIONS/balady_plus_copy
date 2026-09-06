@@ -1204,7 +1204,7 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> with Widg
 
   Future<void> _openFavourites({bool fromQuickAction = false}) async {
     if (fromQuickAction) {
-      await ref.read(appRouterProvider).push(const FavouritesRoute());
+      await ref.read(appRouterProvider).push(const FavoriteListsRoute());
       return;
     }
 
@@ -1216,7 +1216,7 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> with Widg
         .read(authMethodsProvider.notifier)
         .authAndOpen(
           context,
-          callback: () => ref.read(appRouterProvider).push(const FavouritesRoute()),
+          callback: () => ref.read(appRouterProvider).push(const FavoriteListsRoute()),
         );
   }
 

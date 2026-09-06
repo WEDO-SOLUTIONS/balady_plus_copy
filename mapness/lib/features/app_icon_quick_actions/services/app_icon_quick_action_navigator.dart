@@ -30,7 +30,7 @@ class AppIconQuickActionNavigator {
 
     switch (path) {
       case '/favourites':
-        await router.push(const FavouritesRoute());
+        await router.push(const FavoriteListsRoute());
       case '/directions':
         // Tab route — permissions are handled in [AppIconQuickActionHandler].
         await router.navigate(const BottomMenuRoute(children: [RoutingPointsRoute()]));
