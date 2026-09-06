@@ -7,6 +7,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:mapness/_features/common/widgets/dragger.dart';
 import 'package:mapness/_generated/assets/assets.gen.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
+import 'package:mapness/features/favorite_lists/data/favorite_lists_api_exception.dart';
 import 'package:mapness/features/favorite_lists/data/favorite_lists_remote_datasource.dart';
 import 'package:mapness/features/favorite_lists/data/models/favorite_list_dto.dart';
 import 'package:mapness/features/favorite_lists/data/models/icon_type.dart';
@@ -15,6 +16,7 @@ import 'package:mapness/features/favorite_lists/providers/aggregated_favorite_ma
 import 'package:mapness/features/favorite_lists/providers/favorite_list_detail.dart';
 import 'package:mapness/features/favorite_lists/providers/favorite_lists.dart';
 import 'package:mapness/features/favorite_lists/ui/models/favorite_list_form_params.dart';
+import 'package:mapness/features/favorite_lists/ui/show_duplicate_list_name_error_sheet.dart';
 import 'package:mapness/features/favorite_lists/ui/show_favorite_lists_error_sheet.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/hooks/toggle_sheet_controller_hook.dart';
@@ -282,7 +284,14 @@ class CreateOrUpdateFavoriteListPage extends HookConsumerWidget {
                   } catch (e) {
                     isSubmitting.value = false;
                     if (context.mounted) {
-                      showFavoriteListsErrorSheet(context, ref, e);
+                      if (e is FavoriteListsApiException && e.code == 'DUPLICATE_LIST_NAME') {
+                        final shouldCloseForm = await showDuplicateListNameErrorSheet(context, ref, e);
+                        if (shouldCloseForm == true && context.mounted) {
+                          context.router.pop();
+                        }
+                      } else {
+                        showFavoriteListsErrorSheet(context, ref, e);
+                      }
                     }
                   }
                 },
