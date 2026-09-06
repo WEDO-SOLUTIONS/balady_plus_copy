@@ -236,67 +236,72 @@ class CreateOrUpdateFavoriteListPage extends HookConsumerWidget {
             ),
           ],
         ),
-        const SizedBox(height: Spacing.$4x),
-        BaladyAppButton(
-          primaryLabel: isUnchanged
-              ? context.l10n.favoriteListCloseWithoutSaving
-              : isEditing
-              ? context.l10n.save
-              : context.l10n.favoriteListCreateButton,
-          buttonColorScheme: isUnchanged ? ButtonColorScheme.accentSecondary : ButtonColorScheme.accent,
-          buttonType: isUnchanged ? ButtonType.secondary : ButtonType.primary,
-          buttonState: isSubmitting.value || (listDetailAsync?.isLoading ?? false)
-              ? ButtonState.loading
-              : (isValid ? ButtonState.defaultState : ButtonState.disabled),
-          onTap: isUnchanged
-              ? () => context.router.pop()
-              : () async {
-                  final listName = listNameController.value.text.trim();
-                  final description = descriptionController.value.text.trim();
+      ],
+      footer: Padding(
+        padding: const EdgeInsets.all(Spacing.$4x).copyWith(top: 0),
+        child: SizedBox(
+          width: double.infinity,
+          child: BaladyAppButton(
+            primaryLabel: isUnchanged
+                ? context.l10n.favoriteListCloseWithoutSaving
+                : isEditing
+                ? context.l10n.save
+                : context.l10n.favoriteListCreateButton,
+            buttonColorScheme: isUnchanged ? ButtonColorScheme.accentSecondary : ButtonColorScheme.accent,
+            buttonType: isUnchanged ? ButtonType.secondary : ButtonType.primary,
+            buttonState: isSubmitting.value || (listDetailAsync?.isLoading ?? false)
+                ? ButtonState.loading
+                : (isValid ? ButtonState.defaultState : ButtonState.disabled),
+            onTap: isUnchanged
+                ? () => context.router.pop()
+                : () async {
+                    final listName = listNameController.value.text.trim();
+                    final description = descriptionController.value.text.trim();
 
-                  isSubmitting.value = true;
-                  try {
-                    final dataSource = await ref.read(favoriteListsRemoteDataSourceProvider.future);
-                    final request = FavoriteListRequestDto(
-                      name: listName,
-                      description: description.isEmpty ? null : description,
-                      markerColorCode: color.value,
-                      iconType: selectedIcon.value,
-                    );
-                    switch (params) {
-                      case CreateFavoriteListParams():
-                        await dataSource.createFavoriteList(request);
-                      case UpdateFavoriteListParams(:final listId):
-                        await dataSource.updateFavoriteList(listId, request);
-                        ref.invalidate(favoriteListDetailProvider(listId: listId));
-                      case AcceptSharedFavoriteListParams(:final shareToken):
-                        final acceptResult = await dataSource.acceptShareLink(shareToken);
-                        final listId = acceptResult.list.id;
-                        await dataSource.updateFavoriteList(listId, request);
-                        ref.invalidate(favoriteListDetailProvider(listId: listId));
-                    }
-                    ref
-                      ..invalidate(favoriteListsResponseProvider)
-                      ..invalidate(aggregatedFavoriteMarkersProvider);
-                    if (context.mounted) {
-                      context.router.pop(true);
-                    }
-                  } catch (e) {
-                    isSubmitting.value = false;
-                    if (context.mounted) {
-                      if (e is FavoriteListsApiException && e.code == 'DUPLICATE_LIST_NAME') {
-                        final shouldCloseForm = await showDuplicateListNameErrorSheet(context, ref, e);
-                        if (shouldCloseForm == true && context.mounted) {
-                          context.router.pop();
+                    isSubmitting.value = true;
+                    try {
+                      final dataSource = await ref.read(favoriteListsRemoteDataSourceProvider.future);
+                      final request = FavoriteListRequestDto(
+                        name: listName,
+                        description: description.isEmpty ? null : description,
+                        markerColorCode: color.value,
+                        iconType: selectedIcon.value,
+                      );
+                      switch (params) {
+                        case CreateFavoriteListParams():
+                          await dataSource.createFavoriteList(request);
+                        case UpdateFavoriteListParams(:final listId):
+                          await dataSource.updateFavoriteList(listId, request);
+                          ref.invalidate(favoriteListDetailProvider(listId: listId));
+                        case AcceptSharedFavoriteListParams(:final shareToken):
+                          final acceptResult = await dataSource.acceptShareLink(shareToken);
+                          final listId = acceptResult.list.id;
+                          await dataSource.updateFavoriteList(listId, request);
+                          ref.invalidate(favoriteListDetailProvider(listId: listId));
+                      }
+                      ref
+                        ..invalidate(favoriteListsResponseProvider)
+                        ..invalidate(aggregatedFavoriteMarkersProvider);
+                      if (context.mounted) {
+                        context.router.pop(true);
+                      }
+                    } catch (e) {
+                      isSubmitting.value = false;
+                      if (context.mounted) {
+                        if (e is FavoriteListsApiException && e.code == 'DUPLICATE_LIST_NAME') {
+                          final shouldCloseForm = await showDuplicateListNameErrorSheet(context, ref, e);
+                          if (shouldCloseForm == true && context.mounted) {
+                            context.router.pop();
+                          }
+                        } else {
+                          showFavoriteListsErrorSheet(context, ref, e);
                         }
-                      } else {
-                        showFavoriteListsErrorSheet(context, ref, e);
                       }
                     }
-                  }
-                },
+                  },
+          ),
         ),
-      ],
+      ),
     );
   }
 }

@@ -85,38 +85,43 @@ class EditFavoriteListItemNamePage extends HookConsumerWidget {
                 '     ${isTooLong ? context.l10n.favoriteListNameTooLongError : context.l10n.favoriteListCustomNameHelperText}',
           ),
         ),
-        const SizedBox(height: Spacing.$10x),
-        BaladyAppButton(
-          primaryLabel: context.l10n.favoriteListConfirmButton,
-          buttonColorScheme: ButtonColorScheme.accentSecondary,
-          buttonState: isSubmitting.value
-              ? ButtonState.loading
-              : (isValid ? ButtonState.defaultState : ButtonState.disabled),
-          onTap: () async {
-            if (isSubmitting.value) {
-              return;
-            }
-            isSubmitting.value = true;
-            try {
-              final name = nameController.value.text.trim();
-              final dataSource = await ref.read(favoriteListsRemoteDataSourceProvider.future);
-              await dataSource.setCustomPlaceNickname(place.placeId, name, placeType: place.placeType);
-              ref
-                ..invalidate(favoriteListsResponseProvider)
-                ..invalidate(favoriteListDetailProvider(listId: listId))
-                ..invalidate(customPlaceNicknameProvider(place.placeId));
-              if (context.mounted) {
-                context.router.pop(true);
-              }
-            } catch (e) {
-              isSubmitting.value = false;
-              if (context.mounted) {
-                showFavoriteListsErrorSheet(context, ref, e);
-              }
-            }
-          },
-        ),
       ],
+      footer: Padding(
+        padding: const EdgeInsets.all(Spacing.$4x),
+        child: SizedBox(
+          width: double.infinity,
+          child: BaladyAppButton(
+            primaryLabel: context.l10n.favoriteListConfirmButton,
+            buttonColorScheme: ButtonColorScheme.accentSecondary,
+            buttonState: isSubmitting.value
+                ? ButtonState.loading
+                : (isValid ? ButtonState.defaultState : ButtonState.disabled),
+            onTap: () async {
+              if (isSubmitting.value) {
+                return;
+              }
+              isSubmitting.value = true;
+              try {
+                final name = nameController.value.text.trim();
+                final dataSource = await ref.read(favoriteListsRemoteDataSourceProvider.future);
+                await dataSource.setCustomPlaceNickname(place.placeId, name, placeType: place.placeType);
+                ref
+                  ..invalidate(favoriteListsResponseProvider)
+                  ..invalidate(favoriteListDetailProvider(listId: listId))
+                  ..invalidate(customPlaceNicknameProvider(place.placeId));
+                if (context.mounted) {
+                  context.router.pop(true);
+                }
+              } catch (e) {
+                isSubmitting.value = false;
+                if (context.mounted) {
+                  showFavoriteListsErrorSheet(context, ref, e);
+                }
+              }
+            },
+          ),
+        ),
+      ),
     );
   }
 }
