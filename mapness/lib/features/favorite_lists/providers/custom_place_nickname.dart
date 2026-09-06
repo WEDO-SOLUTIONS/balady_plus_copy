@@ -4,13 +4,13 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'custom_place_nickname.g.dart';
 
-/// Пользовательское имя (nickname) для места, если оно задано.
+/// Custom nickname for a place, if one is set.
 ///
-/// Запрос делается только если место уже в хотя бы одном списке избранного
-/// (`isPlaceFavoritedProvider`) — единственный существующий UI для установки
-/// customName требует, чтобы место уже было в списке, так что для всех
-/// остальных (подавляющее большинство просматриваемых POI) запрос заведомо
-/// вернул бы пусто — не делаем его вообще.
+/// The request is only made if the place is already in at least one
+/// favorite list (`isPlaceFavoritedProvider`) — the only existing UI for
+/// setting customName requires the place to already be in a list, so for
+/// everything else (the vast majority of viewed POIs) the request would
+/// come back empty anyway — skip it entirely.
 @riverpod
 Future<String?> customPlaceNickname(Ref ref, String placeId) async {
   final isFavorited = ref.watch(isPlaceFavoritedProvider(placeId));

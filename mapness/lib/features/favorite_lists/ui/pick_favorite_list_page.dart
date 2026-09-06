@@ -25,9 +25,9 @@ import 'package:mapness/shared/hooks/multi_state_sheet_controller_hook.dart';
 import 'package:mapness/shared/providers/app_language.dart';
 import 'package:sheetify/sheetify.dart';
 
-/// Простой экран «добавить в избранное»: отметить чекбоксами один или несколько
-/// списков (новое API, сохраняется по кнопке Save через bulkAssignPlaceToLists)
-/// или отметить точку как Дом/Работу (homeWorkFavoritesActionsProvider, новое API).
+/// Simple "add to favorites" screen: check one or more lists via checkboxes
+/// (new API, saved by the Save button via bulkAssignPlaceToLists), or mark
+/// the point as Home/Work (homeWorkFavoritesActionsProvider, new API).
 @RoutePage()
 class PickFavoriteListPage extends HookConsumerWidget {
   final DirectoryObjectMessage data;

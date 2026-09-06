@@ -4,12 +4,12 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'favorite_list_membership_map.g.dart';
 
-/// Для каждого списка избранного — состоит ли в нём [placeId].
+/// For every favorite list — whether it contains [placeId].
 ///
-/// Все запросы по спискам (`favoriteListDetailProvider` на каждый listId)
-/// запускаются одновременно через `Future.wait`, и экран получает ОДИН
-/// AsyncValue вместо N независимых — единый лоадер вместо чекбоксов,
-/// появляющихся по одному по мере ответа от каждого списка.
+/// All per-list requests (`favoriteListDetailProvider` for each listId)
+/// run concurrently via `Future.wait`, so the screen gets ONE AsyncValue
+/// instead of N independent ones — a single loader instead of checkboxes
+/// popping in one by one as each list responds.
 @riverpod
 Future<Map<String, bool>> favoriteListMembershipMap(Ref ref, String placeId) async {
   final lists = await ref.watch(favoriteListsProvider.future);

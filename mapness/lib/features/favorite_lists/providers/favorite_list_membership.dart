@@ -5,23 +5,23 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'favorite_list_membership.g.dart';
 
-/// Находится ли [placeId] хотя бы в одном списке избранного.
+/// Whether [placeId] is present in at least one favorite list.
 ///
-/// Источник — агрегированные маркеры по всем спискам (`getAggregatedMapMarkers`),
-/// а не `places` из `getFavoriteLists()` — последнее на практике не заполнено
-/// бэкендом, хотя DTO-комментарий утверждает обратное.
+/// Source is the aggregated markers across all lists (`getAggregatedMapMarkers`),
+/// not `places` from `getFavoriteLists()` — the latter is not actually populated
+/// by the backend in practice, even though the DTO comment claims otherwise.
 @riverpod
 bool isPlaceFavorited(Ref ref, String placeId) {
   final markers = ref.watch(aggregatedFavoriteMarkersProvider).value;
   return markers?.any((marker) => marker.placeId == placeId) ?? false;
 }
 
-/// Удобная обёртка для мест, для которых есть только числовой DGIS objectId, а не строковый
-/// `placeId` из favorite_lists API (например, POI-карточки).
+/// Convenience wrapper for places that only have a numeric DGIS objectId rather than
+/// a string `placeId` from the favorite_lists API (e.g. POI cards).
 @riverpod
 bool isPlaceFavoritedByObjectId(Ref ref, int objectId) => ref.watch(isPlaceFavoritedProvider(objectId.toString()));
 
-/// Маркер места в агрегированном списке избранного (цвет + иконка), если оно избранное (иначе `null`).
+/// The place's marker in the aggregated favorites list (color + icon), if it's favorited (`null` otherwise).
 @riverpod
 Future<MapMarkerDto?> favoritePlaceMarker(Ref ref, String placeId) async {
   final markers = await ref.watch(aggregatedFavoriteMarkersProvider.future);
