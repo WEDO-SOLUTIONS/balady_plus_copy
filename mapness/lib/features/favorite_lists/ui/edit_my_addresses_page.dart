@@ -45,8 +45,15 @@ class EditMyAddressesPage extends HookConsumerWidget {
                 titleOptions: ContentRowTextOption(baseColor: context.colors.foregroundDefault),
               ),
               isDividerEnabled: true,
-              onTap: () {
-                // todo edit somehow
+              onTap: () async {
+                await context.router.push<FavouriteItem>(
+                  FavouritesSearchRoute(
+                    markerType: isHome ? FavouriteItemMarkerType.home : FavouriteItemMarkerType.work,
+                  ),
+                );
+                if (context.mounted) {
+                  context.router.pop();
+                }
               },
             ),
             ContentRow(
