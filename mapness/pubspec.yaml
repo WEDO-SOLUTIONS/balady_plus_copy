@@ -239,6 +239,7 @@ flutter:
     - assets/tifo/sprites/goalkeeper_motion/
     - assets/tifo/sprites/goalkeeper_v2/
     - assets/tifo/sprites/striker_v2/
+    - assets/tifo/tutorial/
     - packages/map_styles/src/styles.2gis
     - packages/map_styles/src/styles_saudi_day.2gis
   fonts:

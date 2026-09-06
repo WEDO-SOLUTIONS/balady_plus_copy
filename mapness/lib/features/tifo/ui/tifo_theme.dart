@@ -1,3 +1,4 @@
+import 'package:balady_uikit/core/colorsV2/themes.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:mapness/l10n/generated/app_localizations.dart';
@@ -20,6 +21,18 @@ abstract final class TifoColors {
   static const Color textSoft = Color(0xFF9DA4AE); // neutral/foreground-soft
   static const Color border = Color(0xFFE7EAEE);
   static const Color amber = Color(0xFFD9A400);
+
+  /// Penalty-preview field — the deep green the design paints the whole
+  /// "Game preview" screen with, in light and dark alike (Figma `App` frame).
+  static const Color penaltyField = Color(0xFF0C3330);
+
+  /// Score green on the preview's "Claim the building" card.
+  static const Color accentBright = Color(0xFF17B26A);
+
+  /// Token-cost amber: border/label, the big numeral, and its 10% wash.
+  static const Color warn = Color(0xFFF79009);
+  static const Color warnStrong = Color(0xFFFDB022);
+  static const Color warnWash = Color(0x1AF79009);
 
   /// Fallback fill for a neutral / unowned entity.
   static const Color neutralFill = Color(0xFFFCFBF2);
@@ -441,4 +454,119 @@ class TifoMissMark extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Icon(Icons.close_rounded, size: size, color: TifoColors.miss);
+}
+
+/// True while the app runs one of the dark palettes.
+///
+/// `Theme.of(context).brightness` is NOT a substitute here. The uikit resolves
+/// `context.colors` from its own [ThemeController], which the ambient
+/// [ThemeData] does not track — so the two can disagree, and did: the
+/// tutorial's coach sheet painted its light body under text that
+/// `foregroundDefault` had already turned white.
+bool tifoIsDarkTheme(BuildContext context) => switch (context.themeController.currentTheme) {
+  BaladyAppThemes.dark || BaladyAppThemes.darkDGA => true,
+  _ => false,
+};
+
+/// Tokens the guided tutorial introduces on its own (Figma page "Tutorial",
+/// row "Tutorial - Confirmed ENG" and its dark twin).
+///
+/// Anything the design shares with the uikit DGA palette is deliberately NOT
+/// duplicated here — the overlay reads `context.colors` for it, so the tour
+/// follows the app's light/dark switch for free:
+///   * title / body text → `foregroundDefault` (#1B1B1B / #FFFFFF)
+///   * muted tooltip link → `foregroundSoft` (#9DA4AE)
+///   * `Next` button and the lit tooltip link → `accentDefault` (#1B8354)
+///   * icon tile fill → `accentContainerDefault`
+///   * dark sheet / tooltip body → `backgroundSurface2` (#0D121C)
+///   * dark `‹` button → `neutralMuted` (#1F2A37)
+abstract final class TifoTutorialTokens {
+  /// Light coach sheet: the design's diagonal wash. Dark is flat
+  /// `backgroundSurface2`, so it has no constant of its own.
+  static const Color sheetWashStart = Color(0xFFFAFCFA);
+  static const Color sheetWashEnd = Color(0xFFF5F0F8);
+
+  /// Lit progress pill — a deeper green than `accent/default`.
+  static const Color dotActive = Color(0xFF1A5E35);
+
+  /// Dragger and the unlit dots, in both themes.
+  static const Color hairline = Color(0x26000000); // #000 @15%
+
+  /// Light-theme fill behind the ✕ and `‹` buttons. Dark swaps the `‹` for
+  /// `neutralMuted`; the ✕ keeps this wash in both themes, per the design.
+  static const Color buttonWash = Color(0x0F000000); // #000 @6%
+
+  /// Wash behind each token icon tile.
+  ///
+  /// Not `accentContainerDefault`: the uikit token lands on the design in
+  /// light (#25935F @10%) but drifts in dark, where DGA mixes it from
+  /// `accentDefault` — #1B8354 @20% instead of the #25935F @20% the design
+  /// asks for. Close, but a different hue, so the tile pins its own value.
+  static const Color tileWash = Color(0x1A25935F);
+  static const Color tileWashDark = Color(0x3325935F);
+
+  /// Glyph strokes: ✕ in the sheet header, `‹` in the footer.
+  static const Color closeStroke = Color(0xFF5A7566);
+  static const Color backStroke = Color(0xFF3A5040);
+
+  /// Sheet shadow — `0 -12 60 rgba(0,0,0,.25)`.
+  static const BoxShadow sheetShadow = BoxShadow(
+    color: Color(0x40000000),
+    offset: Offset(0, -12),
+    blurRadius: 60,
+  );
+
+  /// Tooltip shadows — `0 18 56 rgba(0,0,0,.07)` over `0 18 20 rgba(0,0,0,.05)`.
+  static const List<BoxShadow> tooltipShadow = [
+    BoxShadow(color: Color(0x12000000), offset: Offset(0, 18), blurRadius: 56),
+    BoxShadow(color: Color(0x0D000000), offset: Offset(0, 18), blurRadius: 20),
+  ];
+
+  static const double sheetRadius = 24;
+  static const double tooltipRadius = 16;
+
+  /// Both the 36×36 ✕ and the 44×44 `‹` carry this radius.
+  static const double buttonRadius = 14;
+
+  /// Sheet header title — `Golos Text 600 18/20`. Heavier than [TifoText.h4],
+  /// which the rest of TIFO uses at the same size.
+  static const TextStyle title = TextStyle(fontSize: 18, fontWeight: FontWeight.w600, height: 20 / 18);
+
+  /// Sheet body and the tile captions — `Golos Text 400 14/18`.
+  static const TextStyle body = TextStyle(fontSize: 14, fontWeight: FontWeight.w400, height: 18 / 14);
+
+  /// Tooltip `Previous` / `Next` links — `Golos Text 400 16/20`.
+  static const TextStyle link = TextStyle(fontSize: 16, fontWeight: FontWeight.w400, height: 20 / 16);
+
+  /// `Next` CTA label — `700 14/20`.
+  static const TextStyle cta = TextStyle(fontSize: 14, fontWeight: FontWeight.w700, height: 20 / 14, color: Colors.white);
+}
+
+/// The tutorial's progress pills. Only the three coach-sheet steps are
+/// counted — the tooltips between them carry no dot (Figma "Tutorial").
+class TifoCoachDots extends StatelessWidget {
+  const TifoCoachDots({required this.active, super.key});
+
+  static const int total = 3;
+
+  final int active;
+
+  @override
+  Widget build(BuildContext context) => Row(
+    mainAxisAlignment: MainAxisAlignment.center,
+    children: [
+      for (var i = 0; i < total; i++) ...[
+        if (i > 0) const SizedBox(width: TifoSpacing.x2),
+        AnimatedContainer(
+          duration: const Duration(milliseconds: 150),
+          width: i == active ? 24 : 7,
+          height: 6,
+          decoration: BoxDecoration(
+            color: i == active ? TifoTutorialTokens.dotActive : TifoTutorialTokens.hairline,
+            borderRadius: BorderRadius.circular(3),
+          ),
+        ),
+      ],
+    ],
+  );
 }
