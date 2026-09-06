@@ -99,14 +99,20 @@ class ObjectTapHandler(
         // supported", null)
         //        }
         // Dynamic-POI markers open the POI card on short tap (and update
-        // the selected-state). All other markers stay on the long-press-only
-        // contract introduced in iter4 — short taps on them fall through.
+        // the selected-state). The my-location object also reacts to short
+        // tap (BALADY-3764: opens Navigator Customization during guidance).
+        // All other markers stay on the long-press-only contract introduced
+        // in iter4 — short taps on them fall through.
         when (val tappedObject = roi.item.item) {
             is Marker -> {
                 val markerId = (tappedObject.userData as? MarkerId)?.id
                 if (markerId != null && markerId.startsWith("dynamic_poi_")) {
                     onMarkerTap(tappedObject)
                 }
+                return
+            }
+            is MyLocationMapObject -> {
+                sendDgisMyLocationEvent(roi.closestMapPoint)
                 return
             }
             is ModelMapObject -> {
