@@ -122,7 +122,13 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
             eventChannel: eventChannel,
             view: self._view
         )
-        
+        self.navigationHandler?.onMyLocationSourceReplaced = { [weak self] in
+            self?.reapplyNavigationCursorModel()
+        }
+        self.navigationHandler?.onNavigationSessionEnded = { [weak self] in
+            self?.resetNavigationCursorModelOnMap()
+        }
+
         self.carPlayHandler = CarPlayHandler(eventChannel: eventChannel)
         
         self.routeHandler = RouteHandler(
@@ -522,6 +528,65 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
                 details: nil
             )))
         }
+    }
+
+    /// BALADY-3772: swap the 3D model of the my-location object (navigation
+    /// cursor) on the live map via `MyLocationMapObject.setModelData`. No style
+    /// reload, no MapView recreate — route, maneuvers and camera stay untouched.
+    ///
+    /// Regression follow-up: the custom model is only visible during
+    /// turn-by-turn guidance. Outside a session the bytes are just cached —
+    /// NavigationHandler pushes them when guidance starts and resets the marker
+    /// when it ends, so Explore (and free roam, which auto-starts from the
+    /// Explore dashboard) keeps the standard my-location marker.
+    func setNavigationCursorModel(glb: FlutterStandardTypedData, completion: @escaping (Result<Void, any Error>) -> Void) {
+        guard let map = self.map else {
+            completion(.failure(PigeonError(code: "map_not_ready", message: "setNavigationCursorModel: map is not ready", details: nil)))
+            return
+        }
+        let modelData: ModelData
+        do {
+            modelData = try self.sdk.modelFactory.make(modelData: glb.data)
+        } catch {
+            completion(.failure(PigeonError(code: "model_factory_unavailable", message: "setNavigationCursorModel: \(error)", details: nil)))
+            return
+        }
+        self.navigationCursorModel = modelData
+        guard self.navigationHandler?.isTurnByTurn == true else {
+            completion(.success(()))
+            return
+        }
+        guard let source = map.sources.first(where: { $0 is MyLocationMapObjectSource }) as? MyLocationMapObjectSource else {
+            completion(.failure(PigeonError(code: "no_source", message: "setNavigationCursorModel: no MyLocationMapObjectSource on map", details: nil)))
+            return
+        }
+        source.item.setModelData(data: modelData)
+        completion(.success(()))
+    }
+
+    /// BALADY-3772: the navigation-cursor 3D model last set via
+    /// `setNavigationCursorModel`. The custom model is a turn-by-turn-only
+    /// visual: NavigationHandler applies it when a guidance session starts
+    /// (after the source swap and once `State.navigation` is reached) and
+    /// resets the marker back to the style default when the session ends.
+    /// Outside a session the model is only cached here.
+    private var navigationCursorModel: ModelData?
+
+    private func reapplyNavigationCursorModel() {
+        guard let model = self.navigationCursorModel,
+              let source = self.map?.sources.first(where: { $0 is MyLocationMapObjectSource }) as? MyLocationMapObjectSource
+        else { return }
+        source.item.setModelData(data: model)
+    }
+
+    /// BALADY-3772 (regression): once the navigation session ends the
+    /// my-location marker must return to the standard style default — the
+    /// custom car model must not stick around on Explore. The chosen model
+    /// stays cached in `navigationCursorModel` for the next session.
+    private func resetNavigationCursorModelOnMap() {
+        guard let source = self.map?.sources.first(where: { $0 is MyLocationMapObjectSource }) as? MyLocationMapObjectSource
+        else { return }
+        source.item.setModelData(data: nil)
     }
 
     func searchByObjectId(objectId: DgisObjectIdMessage, completion: @escaping (Result<DirectoryObjectMessage, any Error>) -> Void) {
