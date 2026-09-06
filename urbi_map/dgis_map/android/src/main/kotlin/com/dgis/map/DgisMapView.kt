@@ -124,11 +124,12 @@ class DgisMapView(
 
     /**
      * BALADY-3772: the navigation-cursor 3D model last set via
-     * [setNavigationCursorModel]. The custom model is a turn-by-turn-only
-     * visual: [NavigationHandler] applies it when a guidance session starts
-     * (after the source swap and once State.NAVIGATION is reached) and resets
-     * the marker back to the style default when the session ends. Outside a
-     * session the model is only cached here.
+     * [setNavigationCursorModel]. The custom model is only shown while
+     * [NavigationHandler.usesCustomCursor] is true — turn-by-turn guidance,
+     * and per BALADY-3924 free roam too: [NavigationHandler] applies it when
+     * such a session starts (after the source swap and once State.NAVIGATION
+     * is reached) and resets the marker back to the style default when the
+     * session ends. Outside a session the model is only cached here.
      */
     private var navigationCursorModel: ModelData? = null
 
@@ -530,11 +531,12 @@ class DgisMapView(
      * on the live map via MyLocationMapObject.setModelData. No style reload, no
      * MapView recreate — the route, maneuvers and camera stay untouched.
      *
-     * Regression follow-up: the custom model is only visible during turn-by-turn
-     * guidance. Outside a session the bytes are just cached —
-     * [NavigationHandler] pushes them when guidance starts and resets the marker
-     * when it ends, so Explore (and free roam, which auto-starts from the
-     * Explore dashboard) keeps the standard my-location marker.
+     * Regression follow-up / BALADY-3924: the custom model is only visible
+     * while [NavigationHandler.usesCustomCursor] is true — turn-by-turn
+     * guidance and free roam. Outside such a session the bytes are just
+     * cached — [NavigationHandler] pushes them when the session starts and
+     * resets the marker when it ends, so Explore (and route search outside
+     * guidance) keeps the standard my-location marker.
      */
     override fun setNavigationCursorModel(glb: ByteArray, callback: (Result<Unit>) -> Unit) {
         val currentMap = map
@@ -545,8 +547,8 @@ class DgisMapView(
         try {
             val model = createModelData(sdkContext, glb)
             navigationCursorModel = model
-            val turnByTurn = navigationHandlerLazy.isInitialized() && navigationHandler.isTurnByTurn
-            if (!turnByTurn) {
+            val usesCustomCursor = navigationHandlerLazy.isInitialized() && navigationHandler.usesCustomCursor
+            if (!usesCustomCursor) {
                 callback(Result.success(Unit))
                 return
             }

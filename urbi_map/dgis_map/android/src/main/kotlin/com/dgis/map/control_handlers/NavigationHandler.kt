@@ -50,13 +50,14 @@ class NavigationHandler(
         // BALADY-3772: the navigation-cursor 3D model is set on the my-location
         // object via setModelData. It has to be re-applied whenever that object
         // may have (re)materialised its model: after guidance swaps the source
-        // in, and once a turn-by-turn session reaches State.NAVIGATION — a
-        // model set while the cursor was still the idle dashboard marker is
-        // not shown.
+        // in, and once a session that uses the custom cursor (turn-by-turn or,
+        // per BALADY-3924, free roam) reaches State.NAVIGATION — a model set
+        // while the cursor was still the idle dashboard marker is not shown.
         private val onMyLocationSourceReplaced: () -> Unit = {},
-        // BALADY-3772 (regression): the custom model is a turn-by-turn-only
-        // visual. Fired when a session ends so the owner resets the
-        // my-location marker back to the standard style default.
+        // BALADY-3772 / BALADY-3924 (regression): the custom model only
+        // applies while a session uses it. Fired when a session ends so the
+        // owner resets the my-location marker back to the standard style
+        // default.
         private val onNavigationSessionEnded: () -> Unit = {},
 ) : AutoCloseable {
         private val context: SdkContext = sdkContext
@@ -78,12 +79,27 @@ class NavigationHandler(
          * BALADY-3772: true only while a turn-by-turn session (guidance or its
          * simulation) started via [startNavigation]/[startSimulation] is
          * active. Unlike [isNavigating] it stays false for free roam and for
-         * route search outside guidance — the custom cursor model must not
-         * replace the standard my-location marker there (free roam auto-starts
-         * right from the Explore dashboard).
+         * route search outside guidance.
          */
         var isTurnByTurn: Boolean = false
                 private set
+
+        /**
+         * BALADY-3924: true while a free-roam session started via
+         * [startFreeRoam] is active. Free roam shows the chosen navigation
+         * cursor too, same as turn-by-turn guidance — see [usesCustomCursor].
+         */
+        var isFreeRoam: Boolean = false
+                private set
+
+        /**
+         * BALADY-3924: whichever kind of session currently wants the custom
+         * navigation cursor instead of the standard my-location marker (route
+         * search outside guidance keeps the standard marker). Single source
+         * of truth so a future session type cannot forget to gate the model.
+         */
+        val usesCustomCursor: Boolean
+                get() = isTurnByTurn || isFreeRoam
 
         // Models to observe channels and send events to Flutter
         private val speedControlModel =
@@ -221,10 +237,11 @@ class NavigationHandler(
                         map.addSource(oldSource!!)
                         oldSource = null
                 }
-                // BALADY-3772 (regression): the session is over — drop the custom
-                // cursor model so the marker returns to the standard one. Called
-                // unconditionally: free roam does not swap the source at all.
+                // BALADY-3772 (regression) / BALADY-3924: the session is over — drop
+                // the custom cursor model so the marker returns to the standard one.
+                // Called unconditionally: free roam does not swap the source at all.
                 isTurnByTurn = false
+                isFreeRoam = false
                 onNavigationSessionEnded()
         }
 
@@ -411,9 +428,9 @@ class NavigationHandler(
 
         fun startFreeRoam(speedRangeZoom: List<SpeedRangeZoom>) {
                 setupCamera(speedRangeZoom = speedRangeZoom)
-                // BALADY-3772 (regression): free roam is NOT turn-by-turn — no
-                // re-apply here, the standard my-location marker stays (free roam
-                // auto-starts right from the Explore dashboard).
+                // BALADY-3924: arm the flag before the session reaches
+                // State.NAVIGATION so the reapply below picks it up.
+                isFreeRoam = true
                 navigationManager.start()
         }
 
@@ -432,10 +449,11 @@ class NavigationHandler(
                                         )
                                 )
                                 isNavigating = false
-                                // BALADY-3772: defensive — a session that ends without
-                                // passing stopNavigation/stopFreeRoam must not leave the
-                                // turn-by-turn flag (and thus the custom cursor) armed.
+                                // BALADY-3772 / BALADY-3924: defensive — a session that ends
+                                // without passing stopNavigation/stopFreeRoam must not leave
+                                // either custom-cursor flag armed.
                                 isTurnByTurn = false
+                                isFreeRoam = false
                         }
                         State.FINISHED -> {
                                 eventSink.success(
@@ -455,13 +473,14 @@ class NavigationHandler(
                                         )
                                 )
                                 isNavigating = true
-                                // BALADY-3772: the my-location object switches to its
-                                // navigation (3D model) representation only once the
-                                // session is actually running — a model pushed earlier is
-                                // not shown. Re-apply it here, but only for turn-by-turn:
-                                // free roam raises the same state and must keep the
+                                // BALADY-3772 / BALADY-3924: the my-location object switches
+                                // to its navigation (3D model) representation only once the
+                                // session is actually running — a model pushed earlier is not
+                                // shown. Re-apply it here for any session that wants the
+                                // custom cursor (turn-by-turn or free roam); route search
+                                // outside guidance also raises this state and must keep the
                                 // standard marker.
-                                if (isTurnByTurn) {
+                                if (usesCustomCursor) {
                                         onMyLocationSourceReplaced()
                                 }
                         }
