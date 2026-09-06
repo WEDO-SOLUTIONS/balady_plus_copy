@@ -534,11 +534,12 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
     /// cursor) on the live map via `MyLocationMapObject.setModelData`. No style
     /// reload, no MapView recreate — route, maneuvers and camera stay untouched.
     ///
-    /// Regression follow-up: the custom model is only visible during
-    /// turn-by-turn guidance. Outside a session the bytes are just cached —
-    /// NavigationHandler pushes them when guidance starts and resets the marker
-    /// when it ends, so Explore (and free roam, which auto-starts from the
-    /// Explore dashboard) keeps the standard my-location marker.
+    /// Regression follow-up / BALADY-3924: the custom model is only visible
+    /// while `NavigationHandler.usesCustomCursor` is true — turn-by-turn
+    /// guidance and free roam. Outside such a session the bytes are just
+    /// cached — NavigationHandler pushes them when the session starts and
+    /// resets the marker when it ends, so Explore (and route search outside
+    /// guidance) keeps the standard my-location marker.
     func setNavigationCursorModel(glb: FlutterStandardTypedData, completion: @escaping (Result<Void, any Error>) -> Void) {
         guard let map = self.map else {
             completion(.failure(PigeonError(code: "map_not_ready", message: "setNavigationCursorModel: map is not ready", details: nil)))
@@ -552,7 +553,7 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
             return
         }
         self.navigationCursorModel = modelData
-        guard self.navigationHandler?.isTurnByTurn == true else {
+        guard self.navigationHandler?.usesCustomCursor == true else {
             completion(.success(()))
             return
         }
@@ -565,11 +566,13 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
     }
 
     /// BALADY-3772: the navigation-cursor 3D model last set via
-    /// `setNavigationCursorModel`. The custom model is a turn-by-turn-only
-    /// visual: NavigationHandler applies it when a guidance session starts
-    /// (after the source swap and once `State.navigation` is reached) and
-    /// resets the marker back to the style default when the session ends.
-    /// Outside a session the model is only cached here.
+    /// `setNavigationCursorModel`. The custom model is only shown while
+    /// `NavigationHandler.usesCustomCursor` is true — turn-by-turn guidance,
+    /// and per BALADY-3924 free roam too: NavigationHandler applies it when
+    /// such a session starts (after the source swap and once
+    /// `State.navigation` is reached) and resets the marker back to the
+    /// style default when the session ends. Outside a session the model is
+    /// only cached here.
     private var navigationCursorModel: ModelData?
 
     private func reapplyNavigationCursorModel() {
