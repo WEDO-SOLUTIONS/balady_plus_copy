@@ -11,24 +11,41 @@ import 'package:mapness/shared/ui/safe_area_padding.dart';
 import 'package:mapness/widgets/path_nav/ui/navi_sheet_panel.dart';
 import 'package:sheetify/sheetify.dart';
 
+/// BALADY-3923: a tap-and-hold on the navigation cursor delivers more than
+/// one `onMyLocationTap` event natively (long-press plus the tap on
+/// release), and each one used to call [showCursorsSheet] independently,
+/// stacking several sheets. Guard with a single "is open" flag so repeated
+/// calls while the sheet is still up are ignored.
+bool _isCursorsSheetOpen = false;
+
 /// BALADY-3764: Navigator Customization opened from a tap on the navigation
 /// cursor during guidance / free roam. Shown as a modal ToggleSheet over the
 /// map (same pattern as EndTripModal) instead of a full-screen route, so the
 /// driver keeps the route context behind the sheet.
-Future<void> showCursorsSheet(BuildContext context) => showModalBottomSheet<void>(
-  backgroundColor: Colors.transparent,
-  barrierColor: Colors.transparent,
-  isScrollControlled: true,
-  // The route must never pop around the ToggleSheetController (barrier tap /
-  // route drag): the controller's AnimationController uses the sheet state's
-  // vsync and an instant unmount mid-animation trips the "disposed with an
-  // active Ticker" assert. All closes go through controller.close() — see
-  // the PopScope in [CursorsSheet].
-  isDismissible: false,
-  enableDrag: false,
-  context: context,
-  builder: (_) => const CursorsSheet(),
-);
+Future<void> showCursorsSheet(BuildContext context) async {
+  if (_isCursorsSheetOpen) {
+    return;
+  }
+  _isCursorsSheetOpen = true;
+  try {
+    await showModalBottomSheet<void>(
+      backgroundColor: Colors.transparent,
+      barrierColor: Colors.transparent,
+      isScrollControlled: true,
+      // The route must never pop around the ToggleSheetController (barrier tap /
+      // route drag): the controller's AnimationController uses the sheet state's
+      // vsync and an instant unmount mid-animation trips the "disposed with an
+      // active Ticker" assert. All closes go through controller.close() — see
+      // the PopScope in [CursorsSheet].
+      isDismissible: false,
+      enableDrag: false,
+      context: context,
+      builder: (_) => const CursorsSheet(),
+    );
+  } finally {
+    _isCursorsSheetOpen = false;
+  }
+}
 
 class CursorsSheet extends HookWidget {
   const CursorsSheet({super.key});
