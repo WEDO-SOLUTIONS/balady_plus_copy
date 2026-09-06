@@ -58,6 +58,7 @@ class FreeRoamPageState extends ConsumerState<FreeRoamPage> with WidgetsBindingO
   /// element is being unmounted.
   late final StateController<bool> _navigationActive;
   late final VoidCallback _deactivateFreeRoam;
+  bool _isEndingTrip = false;
 
   late final ToggleSheetController _bottomSheetController = ToggleSheetController(
     onClose: (_) => _bottomSheetController.close,
@@ -157,6 +158,21 @@ class FreeRoamPageState extends ConsumerState<FreeRoamPage> with WidgetsBindingO
     });
   }
 
+  /// System back must end the free-roam session the same way "End trip" does;
+  /// otherwise the native session keeps running on Explore and the custom
+  /// cursor leaks onto the dashboard (BALADY-3772 regression).
+  Future<void> _onPopInvoked(bool didPop, Object? result) async {
+    if (didPop || _isEndingTrip) {
+      return;
+    }
+    _isEndingTrip = true;
+    try {
+      await ref.read(freeRoamManagerProvider.notifier).endTripAndShowHome(context: context);
+    } finally {
+      _isEndingTrip = false;
+    }
+  }
+
   void startControlsDisapearTimer() {
     timer = Timer(const Duration(seconds: 15), () {
       if (mounted) {
@@ -173,7 +189,7 @@ class FreeRoamPageState extends ConsumerState<FreeRoamPage> with WidgetsBindingO
     final systemDirectionality = Directionality.of(context);
     final isPortrait = MediaQuery.orientationOf(context) == Orientation.portrait;
 
-    return Directionality(
+    final content = Directionality(
       textDirection: TextDirection.ltr,
       child: Stack(
         children: [
@@ -300,6 +316,12 @@ class FreeRoamPageState extends ConsumerState<FreeRoamPage> with WidgetsBindingO
           const ParkingBottomSheetPage(),
         ],
       ),
+    );
+
+    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: _onPopInvoked,
+      child: content,
     );
   }
 }
