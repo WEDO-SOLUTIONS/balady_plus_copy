@@ -78,11 +78,12 @@ class NavigationCursorState {
 /// [DgisMapController.setNavigationCursorModel] (SDK
 /// `MyLocationMapObject.setModelData`) — no style repack, no MapView
 /// recreate, so the route, maneuvers and camera are never disturbed
-/// (BALADY-3772). The native side keeps the model turn-by-turn-only:
-/// outside a navigation session the bytes are merely cached and the
-/// standard my-location marker stays (regression follow-up — the car must
-/// not show on Explore); the model is applied when guidance starts and
-/// reset when it ends. Every path persists activeId; [applyActive]
+/// (BALADY-3772). The native side keeps the model session-only: outside a
+/// turn-by-turn guidance or free-roam session the bytes are merely cached
+/// and the standard my-location marker stays (regression follow-up — the
+/// car must not show on Explore or route search; BALADY-3924 extended the
+/// same treatment to free roam); the model is applied when such a session
+/// starts and reset when it ends. Every path persists activeId; [applyActive]
 /// re-applies it whenever a map (re)initialises and when the day/night
 /// appearance flips (the bundled classic car has distinct day/night
 /// meshes).
