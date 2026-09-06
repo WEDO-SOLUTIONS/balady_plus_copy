@@ -17,7 +17,7 @@ class FavouritesSearchPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => SearchScope(
-    named: SearchScopeEnum.map,
+    named: SearchScopeEnum.favourites,
     child: Material(
       color: context.colors.screenOverlayDimming40,
       child: FavouritesSearch(markerType: _getMarkerType()),
