@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/app/auto_route/app_routes.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
+import 'package:mapness/shared/lib/auth/auth_methods.dart';
 import 'package:mapness/shared/ui/buttons/map_button.dart';
 
 /// Opens [ReportRoadEventMapSelectRoute] to let the user pick a map location for
@@ -18,7 +19,7 @@ class ReportRoadEventMapSelectControl extends ConsumerWidget {
 
     return MapButton(
       semanticsLabel: context.l10n.roadEventReportButton,
-      onTap: () => _onTap(ref),
+      onTap: () => _onTap(context, ref),
       child: Padding(
         padding: const EdgeInsets.only(bottom: 4),
         child: Icon(GeneralIcons.warning, size: iconSize, color: context.colors.errorDefault),
@@ -26,7 +27,14 @@ class ReportRoadEventMapSelectControl extends ConsumerWidget {
     );
   }
 
-  Future<void> _onTap(WidgetRef ref) async {
-    await ref.read(appRouterProvider).push(const ReportRoadEventMapSelectRoute());
+  Future<void> _onTap(BuildContext context, WidgetRef ref) async {
+    await ref
+        .read(authMethodsProvider.notifier)
+        .authAndOpen(
+          context,
+          callback: () async {
+            await ref.read(appRouterProvider).push(const ReportRoadEventMapSelectRoute());
+          },
+        );
   }
 }

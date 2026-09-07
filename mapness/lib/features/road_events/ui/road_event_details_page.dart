@@ -23,6 +23,7 @@ import 'package:mapness/features/road_events/providers/road_events_markers.dart'
 import 'package:mapness/l10n/generated/app_localizations.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/hooks/toggle_sheet_controller_hook.dart';
+import 'package:mapness/shared/lib/auth/auth_methods.dart';
 import 'package:mapness/shared/providers/app_language.dart';
 import 'package:mapness/shared/providers/location.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
@@ -129,38 +130,48 @@ class _RoadEventDetailsPageState extends ConsumerState<RoadEventDetailsPage> {
     if (_isSubmitting) {
       return;
     }
-    setState(() => _isSubmitting = true);
-    try {
-      final userLocation = ref.read(locationProvider);
-      if (userLocation == null) {
-        throw Exception('No user location available for road event feedback');
-      }
-      final dio = await ref.read(roadEventsDioProvider.future);
-      final datasource = RoadEventsDatasource(dio: dio);
-      await datasource.submitFeedback(
-        eventId: _currentRoadEventState.id,
-        type: type,
-        location: RoadEventLocation(latitude: userLocation.latitude, longitude: userLocation.longitude),
-        source: 'map',
-      );
-      if (!mounted) {
-        return;
-      }
-      await _onClose();
-      if (!mounted) {
-        return;
-      }
-      await context.router.push(RoadEventActionResultRoute(type: type));
-      await _onClose();
-    } catch (e) {
-      if (mounted) {
-        ToastOverlay.of(context).show(title: context.l10n.somethingWentWrong);
-      }
-    } finally {
-      if (mounted) {
-        setState(() => _isSubmitting = false);
-      }
-    }
+    await ref
+        .read(authMethodsProvider.notifier)
+        .authAndOpen(
+          context,
+          callback: () async {
+            if (!mounted) {
+              return;
+            }
+            setState(() => _isSubmitting = true);
+            try {
+              final userLocation = ref.read(locationProvider);
+              if (userLocation == null) {
+                throw Exception('No user location available for road event feedback');
+              }
+              final dio = await ref.read(roadEventsDioProvider.future);
+              final datasource = RoadEventsDatasource(dio: dio);
+              await datasource.submitFeedback(
+                eventId: _currentRoadEventState.id,
+                type: type,
+                location: RoadEventLocation(latitude: userLocation.latitude, longitude: userLocation.longitude),
+                source: 'map',
+              );
+              if (!mounted) {
+                return;
+              }
+              await _onClose();
+              if (!mounted) {
+                return;
+              }
+              await context.router.push(RoadEventActionResultRoute(type: type));
+              await _onClose();
+            } catch (e) {
+              if (mounted) {
+                ToastOverlay.of(context).show(title: context.l10n.somethingWentWrong);
+              }
+            } finally {
+              if (mounted) {
+                setState(() => _isSubmitting = false);
+              }
+            }
+          },
+        );
   }
 
   String _laneLabel(RoadEventLane lane, AppLocalizations l10n) => switch (lane) {
