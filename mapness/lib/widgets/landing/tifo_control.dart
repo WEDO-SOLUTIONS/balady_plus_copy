@@ -162,36 +162,150 @@ class TifoLeaderboardControl extends StatelessWidget {
 /// same tour the play-gate autoruns for a first-time player
 /// ([TifoJourney.ensurePlayReady]). Shown only while the TIFO layer is on: a
 /// disabled game has no rules screen to explain.
-class TifoHelpControl extends StatelessWidget {
+class TifoHelpControl extends ConsumerStatefulWidget {
   const TifoHelpControl({super.key});
 
+  @override
+  ConsumerState<TifoHelpControl> createState() => _TifoHelpControlState();
+}
+
+class _TifoHelpControlState extends ConsumerState<TifoHelpControl> with SingleTickerProviderStateMixin {
   /// Width of the label box inside the 48-wide button (Figma 1872:93850).
   /// Pinning it keeps the control square: `MapButton` only sets a *minimum*
   /// width, so an unconstrained label would stretch it past its neighbours.
   static const double _labelWidth = 41;
 
+  /// One pass of the sheen across the button.
+  static const Duration _sweepPeriod = Duration(milliseconds: 2600);
+
+  /// Length of one repeat of the sheen, as a fraction of the button diagonal.
+  /// The gradient tiles, so this is also the distance the pattern travels in a
+  /// single cycle — which is what makes the loop seamless.
+  static const double _tile = 0.6;
+
+  late final AnimationController _sweep = AnimationController(vsync: this, duration: _sweepPeriod);
+
   @override
-  Widget build(BuildContext context) => MapButton(
-    // The tour's closing step dims the dashboard and cuts a window around
-    // this button; the key is how [TifoSpotlight] finds where it landed.
-    key: tifoHelpControlKey,
-    semanticsLabel: AppLocalizations.of(context).gameTutorial,
-    onTap: () => unawaited(showTifoGuidedTutorial(context, initialStep: TifoGuidedTutorial.lastStep)),
-    child: SizedBox(
-      width: _labelWidth,
-      child: Text(
-        AppLocalizations.of(context).gameTutorial,
-        textAlign: TextAlign.center,
-        // Two lines by design ("Game" / "Tutorial"); a longer translation
-        // ellipsises rather than overflowing the map control.
-        maxLines: 2,
-        overflow: TextOverflow.ellipsis,
-        // Design says #161616; `foregroundDefault` is #1B1B1B in light and
-        // flips to white in dark, which the flat hex would not.
-        style: TifoText.captionMedium.copyWith(color: context.colors.foregroundDefault),
+  void dispose() {
+    _sweep.dispose();
+    super.dispose();
+  }
+
+  /// Runs the sheen only while it is actually wanted. A repeating controller
+  /// schedules a frame forever, so it is stopped rather than left spinning
+  /// behind a button that no longer shows a gradient.
+  void _syncSweep({required bool animate}) {
+    if (animate) {
+      if (!_sweep.isAnimating) {
+        unawaited(_sweep.repeat());
+      }
+    } else if (_sweep.isAnimating) {
+      _sweep.stop();
+    }
+  }
+
+  /// Diagonal green wash worn until the control's first tap, with a lighter
+  /// band sliding along it.
+  ///
+  /// [phase] is the raw 0..1 controller value, and the last frame of a cycle
+  /// is pixel-identical to the first: the gradient tiles with
+  /// [TileMode.repeated], and one cycle slides it by exactly one tile, so the
+  /// pattern lands back on itself. That is why the sweep runs at constant
+  /// speed and forward only — easing it, or ping-ponging, would break the
+  /// property this relies on.
+  ///
+  /// The tile is periodic for the same reason: it opens and closes on the same
+  /// colour, so neighbouring tiles join with no seam. Only begin/end move;
+  /// the stops stay put.
+  LinearGradient _highlight(BuildContext context, double phase) {
+    // Alignment spans -1..1 across the box, so one tile is `2 * _tile` wide
+    // and a full cycle shifts the pattern by that much.
+    final shift = -1 + 2 * _tile * phase;
+    final span = 2 * _tile;
+    return LinearGradient(
+      begin: Alignment(shift, shift),
+      end: Alignment(shift + span, shift + span),
+      tileMode: TileMode.repeated,
+      colors: _tileColors(context),
+      stops: const [0.0, 0.25, 0.5, 0.75, 1.0],
+    );
+  }
+
+  /// The sheen's five-colour tile, taken from opposite ends of the accent ramp
+  /// depending on the theme.
+  ///
+  /// The ramp is theme-independent in the DGA palette (`accentActive`
+  /// #14573A, `accentDefault` #1B8354, `accentSoft` #25935F, `accentMuted`
+  /// #54C08A), so the split has to be made here rather than left to the
+  /// tokens. Each theme takes the end that its label can sit on: light runs
+  /// the pale greens under `foregroundDefault`'s near-black ink, dark runs the
+  /// deep ones under white.
+  ///
+  /// Both lists are a plateau with a seam: the middle three stops hold one
+  /// colour and the ends hold the other, so what travels is the seam between
+  /// tiles rather than a highlight sweeping over a ramp. That keeps most of
+  /// the button at the contrast the label was chosen for, and it is why the
+  /// pairs are only one step apart on the ramp — widening them dropped the
+  /// label under 4.5:1 while the seam passed under it.
+  List<Color> _tileColors(BuildContext context) {
+    final colors = context.colors;
+    return tifoIsDarkTheme(context)
+        ? [colors.accentActive, colors.accentDefault, colors.accentDefault, colors.accentDefault, colors.accentActive]
+        : [colors.accentSoft, colors.accentMuted, colors.accentMuted, colors.accentMuted, colors.accentSoft];
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    // Until the control has been tapped once it wears the gradient, so a
+    // first-time player notices the tour exists. While the persisted flag is
+    // still loading, assume it HAS been tapped: that is the common case, and
+    // guessing the other way would flash a highlight at returning players.
+    final tapped = ref.watch(tifoTutorialControlTappedProvider).value ?? true;
+    // Honour the platform's reduce-motion setting: the highlight still shows,
+    // it just stops travelling.
+    final still = MediaQuery.disableAnimationsOf(context);
+    _syncSweep(animate: !tapped && !still);
+
+    final label = AppLocalizations.of(context).gameTutorial;
+    return AnimatedBuilder(
+      animation: _sweep,
+      builder: (context, _) => MapButton(
+        // The tour's closing step dims the dashboard and cuts a window around
+        // this button; the key is how [TifoSpotlight] finds where it landed.
+        key: tifoHelpControlKey,
+        semanticsLabel: label,
+        gradient: tapped ? null : _highlight(context, still ? 0.5 : _sweep.value),
+        onTap: () => unawaited(_open()),
+        child: SizedBox(
+          width: _labelWidth,
+          child: Text(
+            label,
+            textAlign: TextAlign.center,
+            // Two lines by design ("Game" / "Tutorial"); a longer translation
+            // ellipsises rather than overflowing the map control.
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
+            // Design says #161616; `foregroundDefault` is #1B1B1B in light and
+            // flips to white in dark, which the flat hex would not. The same
+            // ink is used over the gradient, so the label follows the theme in
+            // both states rather than pinning itself to on-accent white.
+            style: TifoText.captionMedium.copyWith(color: context.colors.foregroundDefault),
+          ),
+        ),
       ),
-    ),
-  );
+    );
+  }
+
+  /// Stamps the "seen" flag before opening the tour, so the highlight is
+  /// already gone when the player returns to the map — and stays gone across
+  /// restarts, since the flag is persisted.
+  Future<void> _open() async {
+    await ref.read(tifoTutorialControlTappedProvider.notifier).markTapped();
+    if (!mounted) {
+      return;
+    }
+    await showTifoGuidedTutorial(context, initialStep: TifoGuidedTutorial.lastStep);
+  }
 }
 
 /// Floating "Dominate with your team →" pill over the map while the TIFO layer
