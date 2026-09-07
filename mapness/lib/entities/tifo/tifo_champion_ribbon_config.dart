@@ -24,6 +24,7 @@ import 'package:mapness/entities/city_event/city_event.dart';
 /// ```
 class TifoChampionRibbonConfig extends Equatable {
   const TifoChampionRibbonConfig({
+    required this.enabled,
     required this.window,
     required this.color,
     required this.teamName,
@@ -34,6 +35,7 @@ class TifoChampionRibbonConfig extends Equatable {
   /// Nothing to show — what the app falls back to when Remote Config carries
   /// no `tifoChampionRibbon`, or carries one it cannot render.
   factory TifoChampionRibbonConfig.absent() => TifoChampionRibbonConfig(
+    enabled: false,
     window: _absentWindow(),
     color: defaultColor,
     teamName: '',
@@ -47,10 +49,13 @@ class TifoChampionRibbonConfig extends Equatable {
   /// depend on Remote Config carrying a payload — on a fresh environment there
   /// is none, and the toggle would look broken. Values are fixed rather than
   /// derived from the clock so two testers always see the same ribbon.
-  factory TifoChampionRibbonConfig.debugSample() => TifoChampionRibbonConfig(
+  factory TifoChampionRibbonConfig.debugSample(String teamName, {Color? color}) => TifoChampionRibbonConfig(
+    enabled: true,
     window: CityEventDateRange(DateTime.utc(1970), DateTime.utc(9999, 12, 31)),
-    color: defaultColor,
-    teamName: 'Black Team',
+    // Passed in rather than looked up here: the club palettes live in the
+    // feature layer, and an entity must not reach up into it.
+    color: color ?? defaultColor,
+    teamName: teamName,
     month: 9,
     year: 2026,
   );
@@ -78,7 +83,12 @@ class TifoChampionRibbonConfig extends Equatable {
         return TifoChampionRibbonConfig.absent();
       }
       return TifoChampionRibbonConfig(
-        // `from`/`to`/`enabled` sit at the top level of the same object, in the
+        // Read here rather than taken from the parsed window: the shared
+        // parser substitutes the *defaults* object's `enabled` when the key is
+        // missing, so relying on it made an omitted flag mean whatever the
+        // fallback happened to say.
+        enabled: json['enabled'] as bool? ?? false,
+        // `from`/`to` sit at the top level of the same object, in the
         // `dd-MM-yy` form every other event uses, so the window parses with
         // the shared code rather than a second date format to keep in step.
         window: CityEventDateRange.fromJson(json, _absentWindow()),
@@ -97,7 +107,12 @@ class TifoChampionRibbonConfig extends Equatable {
   /// ships with (Figma `dashboard_ribbon03`).
   static const Color defaultColor = Color(0xFF161C31);
 
-  /// Window the ribbon may appear in, plus its `enabled` kill switch.
+  /// Master switch. Nothing shows while this is false, however right the
+  /// dates are — and an absent key counts as false, so the ribbon has to be
+  /// switched on deliberately rather than by a window someone left behind.
+  final bool enabled;
+
+  /// Window the ribbon may appear in.
   final CityEventDateRange window;
 
   /// Flat ribbon body. The design's confetti flecks are deliberately not
@@ -115,12 +130,13 @@ class TifoChampionRibbonConfig extends Equatable {
   final int month;
   final int year;
 
-  /// True while the ribbon should be on screen.
+  /// True while the ribbon should be on screen: [enabled] first, then the
+  /// window.
   ///
-  /// Stricter than [CityEventDateRange.isVisibleNow], which drops the `from`
-  /// bound as soon as `enabled` is set — that would put a ribbon on screen for
-  /// a month that has not been won yet.
-  bool get isVisibleNow => (window.enabled ?? true) && window.isNow;
+  /// Both bounds of the window count, unlike [CityEventDateRange.isVisibleNow],
+  /// which drops `from` as soon as `enabled` is set — that would announce a
+  /// month before it had been won.
+  bool get isVisibleNow => enabled && window.isNow;
 
   /// The month's name in [locale]'s language.
   String monthName(Locale locale) => DateFormat.MMMM(locale.toLanguageTag()).format(DateTime(year, month));
@@ -149,5 +165,5 @@ class TifoChampionRibbonConfig extends Equatable {
       CityEventDateRange(DateTime.utc(1970), DateTime.utc(1970), enabled: false);
 
   @override
-  List<Object?> get props => [window, color, teamName, month, year];
+  List<Object?> get props => [enabled, window, color, teamName, month, year];
 }
