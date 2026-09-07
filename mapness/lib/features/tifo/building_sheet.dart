@@ -12,6 +12,7 @@ import 'package:mapness/features/tifo/data/tifo_debug_color_override.dart';
 import 'package:mapness/features/tifo/data/tifo_debug_goalkeeper_difficulty.dart';
 import 'package:mapness/features/tifo/data/tifo_models.dart';
 import 'package:mapness/features/tifo/penalty/penalty_game.dart';
+import 'package:mapness/features/tifo/penalty/penalty_app_3d.dart';
 import 'package:mapness/features/tifo/penalty/penalty_result_screen.dart';
 import 'package:mapness/features/tifo/providers/tifo_buildings_poller.dart';
 import 'package:mapness/features/tifo/providers/tifo_buildings_provider.dart';
@@ -428,7 +429,8 @@ class _TifoBuildingSheetState extends ConsumerState<_TifoBuildingSheet> {
       navigator.push<void>(
         MaterialPageRoute<void>(
           fullscreenDialog: true,
-          builder: (_) => PenaltyApp(
+          // Unity spike: PenaltyApp3D mirrors PenaltyApp 1:1 — swap the name to go back.
+          builder: (_) => PenaltyApp3D(
             missesAllowed: missesAllowed,
             scoreToBeat: _building.scoreToBeat,
             strikerColor: strikerColor,

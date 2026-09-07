@@ -18,6 +18,10 @@ allprojects {
     repositories {
         google()
         mavenCentral()
+        // Unity export ships prebuilt .aar files in unityLibrary/libs
+        flatDir {
+            dirs "${project(':unityLibrary').projectDir}/libs"
+        }
         maven { url 'https://developer.huawei.com/repo/' }
         maven {url "https://mobilesdk.useinsider.com/android"}
         // BytePlus RangersAppLog (DataFinder) native Android SDK.
