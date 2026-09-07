@@ -1,4 +1,5 @@
 import 'package:mapness/entities/city_event/city_event.dart';
+import 'package:mapness/entities/tifo/tifo_champion_ribbon_config.dart';
 
 enum DgisEnv { urbiDev, momrahStaging, momrahProd, urbiPreprod }
 
@@ -39,6 +40,11 @@ class EnvironmentConfig {
   // shape (see CityEventDateRange.tifoDefault for the placeholder window).
   final CityEventDateRange tifoDateRange;
 
+  /// TIFO "champions of the month" ribbon. Carries its own copy of the window
+  /// because, unlike every event above, it also carries what to draw — team,
+  /// month and colour — and may run at any time.
+  final TifoChampionRibbonConfig tifoChampionRibbon;
+
   EnvironmentConfig({
     required this.url,
     required this.meteoblue,
@@ -62,7 +68,11 @@ class EnvironmentConfig {
     required this.leapDateRange,
     required this.wrcEventDateRange,
     required this.tifoDateRange,
-  });
+    // Optional, and absent by default: every environment constructor below
+    // predates the ribbon, and a Remote Config without the key must leave the
+    // banner slot to the city events rather than fail to parse.
+    TifoChampionRibbonConfig? tifoChampionRibbon,
+  }) : tifoChampionRibbon = tifoChampionRibbon ?? TifoChampionRibbonConfig.absent();
 
   factory EnvironmentConfig.fromEnvType(String envType) => switch (envType) {
     'urbiDev' => EnvironmentConfig.urbiDev(),
@@ -113,6 +123,8 @@ class EnvironmentConfig {
       json['tifoDateRange'] as Map<String, dynamic>?,
       CityEventDateRange.tifoDefault(),
     ),
+    // Deliberately uncast — see TifoChampionRibbonConfig.fromJson.
+    tifoChampionRibbon: TifoChampionRibbonConfig.fromJson(json['tifoChampionRibbon']),
   );
 
   Map<String, dynamic> toJson() => {

@@ -16,8 +16,8 @@ import 'package:sheetify/utils/math_helper.dart';
 import 'package:sheetify/utils/round_double.dart';
 import 'package:sheetify/utils/snapping_simulation.dart';
 
-part 'render_multi_state_sheet.dart';
 part 'multi_state_sheet_controller.dart';
+part 'render_multi_state_sheet.dart';
 part 'state_snapping/behaviors/snapping_behavior.dart';
 
 /// A customizable and animated multi snap-state sheet widget.
