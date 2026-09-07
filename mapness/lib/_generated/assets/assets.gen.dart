@@ -510,11 +510,14 @@ class $AssetsIconsLottieGen {
   /// File path: assets/icons/lottie/hand_tap_pin_animated.json
   String get handTapPinAnimated => 'packages/mapness/assets/icons/lottie/hand_tap_pin_animated.json';
 
+  /// File path: assets/icons/lottie/hand_tap_pin_animated_dark.json
+  String get handTapPinAnimatedDark => 'packages/mapness/assets/icons/lottie/hand_tap_pin_animated_dark.json';
+
   /// File path: assets/icons/lottie/pin_logo_animated.json
   String get pinLogoAnimated => 'packages/mapness/assets/icons/lottie/pin_logo_animated.json';
 
   /// List of all assets
-  List<String> get values => [handTapPinAnimated, pinLogoAnimated];
+  List<String> get values => [handTapPinAnimated, handTapPinAnimatedDark, pinLogoAnimated];
 }
 
 class $AssetsIconsSvgGen {
