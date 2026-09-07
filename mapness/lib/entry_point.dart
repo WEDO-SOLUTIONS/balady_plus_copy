@@ -742,6 +742,13 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> with Widg
       BaladyAnalyticsChannel.urbi,
       UrbiBaladyAnalyticsSink(analyticsClient),
     );
+    // UXCam session recording: an always-on channel, so every facade event,
+    // screen tag and identity lands on the recording. No-op on flavors with an
+    // empty key (dev, urbiPre).
+    final uxcam = UxcamBaladyAnalyticsSink.tryCreate(appKey: RemoteConfig.uxCamKey);
+    if (uxcam != null) {
+      BaladyAnalytics.instance.registerChannel(BaladyAnalyticsChannel.uxcam, uxcam, alwaysOn: true);
+    }
     logger.log('BaladyAnalytics mode: ${BaladyAnalytics.instance.mode.name}');
   }
 
