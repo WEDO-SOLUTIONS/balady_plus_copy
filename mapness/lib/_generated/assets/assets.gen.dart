@@ -516,8 +516,11 @@ class $AssetsIconsLottieGen {
   /// File path: assets/icons/lottie/pin_logo_animated.json
   String get pinLogoAnimated => 'packages/mapness/assets/icons/lottie/pin_logo_animated.json';
 
+  /// File path: assets/icons/lottie/tifo_tutorial_button_animated.json
+  String get tifoTutorialButtonAnimated => 'packages/mapness/assets/icons/lottie/tifo_tutorial_button_animated.json';
+
   /// List of all assets
-  List<String> get values => [handTapPinAnimated, handTapPinAnimatedDark, pinLogoAnimated];
+  List<String> get values => [handTapPinAnimated, handTapPinAnimatedDark, pinLogoAnimated, tifoTutorialButtonAnimated];
 }
 
 class $AssetsIconsSvgGen {
