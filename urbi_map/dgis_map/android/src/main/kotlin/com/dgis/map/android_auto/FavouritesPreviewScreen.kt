@@ -25,6 +25,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.flow.drop
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import ru.dgis.sdk.Duration
@@ -74,7 +75,13 @@ class FavouritesPreviewScreen(
         }
 
         authObserverJob = CoroutineScope(Dispatchers.Default).launch {
-            UserAuthorizedNotifier.events.collect { value ->
+            // The StateFlow replays its current value to every new subscriber — that replay is
+            // not a real auth-change event, just a (possibly stale/default) echo, and racing it
+            // against the one-shot isAuthorized() RPC above (on Main, via withContext) is what
+            // caused the button to flash and then disappear: the replay's Main-thread assignment
+            // could land after the RPC's and silently override it. Drop it and react only to
+            // genuine subsequent sendEvent() calls.
+            UserAuthorizedNotifier.events.drop(1).collect { value ->
                 withContext(Dispatchers.Main) {
                     isAuthorized = value
                     invalidate()
