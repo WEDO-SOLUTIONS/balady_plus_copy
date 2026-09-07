@@ -514,9 +514,13 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
             completion(.failure(PigeonError(code: "map_not_ready", message: "setNavigationCursorModel: map is not ready", details: nil)))
             return
         }
-        // modelFactory.make(modelData:) is non-throwing (see ObjectTapHandler's
-        // getModelData, the only other call site in this codebase).
-        let modelData = self.sdk.modelFactory.make(modelData: glb.data)
+        let modelData: ModelData
+        do {
+            modelData = try self.sdk.modelFactory.make(modelData: glb.data)
+        } catch {
+            completion(.failure(PigeonError(code: "model_factory_unavailable", message: "setNavigationCursorModel: \(error)", details: nil)))
+            return
+        }
         self.navigationCursorModel = modelData
         guard self.navigationHandler?.isTurnByTurn == true else {
             completion(.success(()))
