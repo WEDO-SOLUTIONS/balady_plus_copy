@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:balady_plus/app/core/utils/common_functions.dart';
 import 'package:balady_uikit/core/colors/non_theme_colors.dart';
 import 'package:dgis_map/library.dart';
 import 'package:dio/dio.dart';
@@ -35,14 +36,9 @@ import 'package:mapness/features/satellite/providers/satellite_map_controller.da
 import 'package:mapness/features/shuttle_bus/provider.dart';
 import 'package:mapness/features/shuttle_bus/repo.dart';
 import 'package:mapness/features/shuttle_bus/visible_provider.dart';
-import 'package:mapness/l10n/generated/app_localizations_en.dart';
-import 'package:mapness/shared/constants/constants.dart';
 import 'package:mapness/shared/config/environment_config.dart';
-import 'package:mapness/shared/constants/metrics_constants.dart';
-import 'package:balady_plus/app/core/utils/common_functions.dart';
+import 'package:mapness/shared/constants/constants.dart';
 import 'package:mapness/shared/lib/search/compute_camera_position.dart';
-import 'package:mapness/shared/lib/urbi_metrics.dart';
-import 'package:mapness/shared/utils/logger/logger.dart';
 import 'package:mapness/shared/providers/dgis_environment.dart';
 import 'package:mapness/shared/providers/location.dart';
 import 'package:mapness/shared/providers/map/camera_position.dart';
@@ -52,6 +48,7 @@ import 'package:mapness/shared/providers/map/parking_state.dart';
 import 'package:mapness/shared/providers/map/road_event_source.dart';
 import 'package:mapness/shared/providers/map/selected_marker.dart';
 import 'package:mapness/shared/providers/map/traffic_state.dart';
+import 'package:mapness/shared/utils/logger/logger.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:rxdart/rxdart.dart';
 
@@ -440,12 +437,6 @@ class LayersControls extends _$LayersControls {
   void setSelection({LayerType? selectedType}) {
     if (selectedType != null) {
       _saveLayersState(selectedType);
-      Metrics.logEventAdvanced(
-        MetricsConstants.layersKeys.layerSelect,
-        group: MetricsConstants.layersTag,
-        action: MetricAction.tap.toString(),
-        props: {'type': selectedType.titleLocale(AppLocalizationsEn())},
-      );
     } else {
       _removeLayersState();
 
@@ -1068,12 +1059,6 @@ class LayersControls extends _$LayersControls {
     logger.log(
       'layers: toggleTraffic wasEnabled=$wasEnabled selectedType=$currentState',
       logLevel: MapnessLogLevel.info,
-    );
-
-    Metrics.logEventAdvanced(
-      MetricsConstants.exploreKeys.trafficLightButton,
-      group: MetricsConstants.exploreTag,
-      action: MetricAction.tap.name,
     );
 
     // BALADY-3615: when enabling traffic while another overlay is on, hide

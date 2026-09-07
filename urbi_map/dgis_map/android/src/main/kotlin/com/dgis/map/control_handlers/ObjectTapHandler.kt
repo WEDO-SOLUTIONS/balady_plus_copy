@@ -73,15 +73,21 @@ class ObjectTapHandler(
 
     private data class CircleId(val id: String)
 
+    private data class ModelId(val id: String)
+
     private val markers = mutableMapOf<String, Pair<Marker, String?>>()
+    private val models = mutableMapOf<String, Pair<ModelMapObject, String?>>()
     private val polygons = mutableMapOf<String, Pair<Polygon, String?>>()
     private val circles = mutableMapOf<String, Pair<Circle, String?>>()
     private val polylines = mutableMapOf<String, Pair<Polyline, String?>>()
     private val clusters = mutableMapOf<String, SimpleClusterObject>()
     private val ioLayerMarkers = mutableListOf<Marker>()
     private val managers = mutableMapOf<String, MapObjectManager>()
+    private val managerLayerIds = mutableMapOf<String, String?>()
+    private val defaultModelManager by unsafeLazy { MapObjectManager(map) }
 
     private val iconCache = mutableMapOf<String, Image>()
+    private val modelDataCache = mutableMapOf<String, ModelData>()
 
     private var renderedObjectsCloseable: AutoCloseable? = null
 
@@ -105,6 +111,13 @@ class ObjectTapHandler(
                 val markerId = (tappedObject.userData as? MarkerId)?.id
                 if (markerId != null && markerId.startsWith("dynamic_poi_")) {
                     onMarkerTap(tappedObject)
+                }
+                return
+            }
+            is ModelMapObject -> {
+                val userData = tappedObject.userData
+                if (userData is ModelId) {
+                    onModelTap(userData.id)
                 }
                 return
             }
@@ -132,6 +145,14 @@ class ObjectTapHandler(
             is Marker -> {
                 onMarkerTap(tappedObject)
                 return
+            }
+            is ModelMapObject -> {
+                val userData = tappedObject.userData
+
+                if (userData is ModelId) {
+                    onModelTap(userData.id)
+                    return
+                }
             }
             is Polygon -> {
                 val userData = tappedObject.userData
@@ -457,6 +478,145 @@ class ObjectTapHandler(
         removeAllObjects(managerId, markers, callback)
     }
 
+    /// --- 3D MODEL ---
+
+    private fun getModelDataFromAsset(
+            modelPath: String,
+            callback: (Result<Unit>) -> Unit
+    ): ModelData? {
+        modelDataCache[modelPath]?.let { return it }
+
+        return try {
+            val asset = FlutterInjector.instance().flutterLoader().getLookupKeyForAsset(modelPath)
+            val bytes = androidContext.assets.open(asset).use { it.readBytes() }
+            val modelData = createModelData(sdkContext, bytes)
+            modelDataCache[modelPath] = modelData
+            modelData
+        } catch (e: Exception) {
+            callback(Result.failure(e))
+            null
+        }
+    }
+
+    private fun ModelSizeMessage.toModelSize(): ModelSize =
+            when (type) {
+                ModelSizeTypeMessage.LOGICAL_PIXEL -> ModelSize(LogicalPixel(value.toFloat()))
+                ModelSizeTypeMessage.SCALE -> ModelSize(ModelScale(value.toFloat()))
+            }
+
+    private fun mapModel(
+            model: ModelMapObjectMessage,
+            callback: (Result<Unit>) -> Unit
+    ): ModelMapObject? {
+        val modelData = getModelDataFromAsset(model.options.modelPath, callback) ?: return null
+
+        val options =
+                ModelMapObjectOptions(
+                        position = model.options.position.toGeoPointWithElevation(),
+                        data = modelData,
+                        size = model.options.size.toModelSize(),
+                        mapDirection =
+                                model.options.mapDirection?.let {
+                                    MapDirection(it.degree)
+                                },
+                        opacity = Opacity(model.options.opacity?.toFloat() ?: 1.0f),
+                        visible = model.options.isVisible ?: true,
+                        userData = ModelId(model.id),
+                        levelId = model.options.levelId?.let { LevelId(value = it.value) },
+                )
+
+        return try {
+            ModelMapObject(options).also { modelObject ->
+                model.options.zIndex?.let { zIndex -> modelObject.zIndex = ZIndex(zIndex.toInt()) }
+            }
+        } catch (e: Exception) {
+            callback(Result.failure(e))
+            null
+        }
+    }
+
+    fun addModel(
+            model: ModelMapObjectMessage,
+            managerId: String?,
+            callback: (Result<Unit>) -> Unit
+    ) {
+        val modelObject = mapModel(model, callback) ?: return
+
+        mapObjectsExecutorService.submit {
+            models[model.id] = Pair(modelObject, managerId)
+            defaultModelManager.addObject(modelObject)
+            callback(Result.success(Unit))
+        }
+    }
+
+    fun setModelOptions(
+            id: String,
+            options: ChangeModelMapObjectOptionsMessage,
+            callback: (Result<Unit>) -> Unit
+    ) {
+        val modelObject = models[id]?.first
+        if (modelObject == null) {
+            callback(Result.success(Unit))
+            return
+        }
+
+        options.position?.let { position ->
+            modelObject.position = position.toGeoPointWithElevation()
+        }
+        options.modelPath?.let { modelPath ->
+            val modelData = getModelDataFromAsset(modelPath, callback) ?: return
+            modelObject.modelData = modelData
+        }
+        options.size?.let { size -> modelObject.size = size.toModelSize() }
+        options.mapDirection?.let { mapDirection ->
+            modelObject.mapDirection = MapDirection(mapDirection.degree)
+        }
+        options.opacity?.let { opacity -> modelObject.opacity = Opacity(opacity.toFloat()) }
+        options.isVisible?.let { isVisible -> modelObject.isVisible = isVisible }
+        options.zIndex?.let { zIndex -> modelObject.zIndex = ZIndex(zIndex.toInt()) }
+        callback(Result.success(Unit))
+    }
+
+    fun addModels(
+            models: List<ModelMapObjectMessage>,
+            managerId: String?,
+            callback: (Result<Unit>) -> Unit
+    ) {
+        val modelObjects = mutableMapOf<String, Pair<ModelMapObject, String?>>()
+        for (model in models) {
+            val modelObject = mapModel(model, callback) ?: return
+            modelObjects[model.id] = Pair(modelObject, managerId)
+        }
+
+        mapObjectsExecutorService.submit {
+            this.models.putAll(modelObjects)
+            defaultModelManager.addObjects(getObjectsFromPair(modelObjects))
+            callback(Result.success(Unit))
+        }
+    }
+
+    fun removeModel(id: String, managerId: String?, callback: (Result<Unit>) -> Unit) {
+        mapObjectsExecutorService.submit {
+            models.remove(id)?.also { defaultModelManager.removeObject(it.first) }
+            callback(Result.success(Unit))
+        }
+    }
+
+    fun removeAllModels(managerId: String?, callback: (Result<Unit>) -> Unit) {
+        mapObjectsExecutorService.submit {
+            val hasManager = managerId != null && managers[managerId] != null
+            if (hasManager) {
+                val removed = models.filter { it.value.second == managerId }
+                removed.values.forEach { defaultModelManager.removeObject(it.first) }
+                removed.keys.forEach { models.remove(it) }
+            } else {
+                defaultModelManager.removeAll()
+                models.clear()
+            }
+            callback(Result.success(Unit))
+        }
+    }
+
     /// --- MAP OBJECT ---
     fun createClusteringMapObjectManager(
             message: ClusteringMapObjectManagerOptionsMessage,
@@ -483,6 +643,7 @@ class ObjectTapHandler(
 
         mapObjectsExecutorService.submit {
             this.managers[managerId] = manager
+            this.managerLayerIds[managerId] = layerId
             callback(Result.success(managerMessage))
         }
     }
@@ -504,13 +665,19 @@ class ObjectTapHandler(
 
         mapObjectsExecutorService.submit {
             this.managers[managerId] = manager
+            this.managerLayerIds[managerId] = layerId
             callback(Result.success(managerMessage))
         }
     }
 
     fun removeMapObjectManager(manager: MapObjectManagerMessage, callback: (Result<Unit>) -> Unit) {
         mapObjectsExecutorService.submit {
-            this.managers.remove(manager.id).also { callback(Result.success(Unit)) }
+            this.managers.remove(manager.id)
+            this.managerLayerIds.remove(manager.id)
+            val removed = models.filter { it.value.second == manager.id }
+            removed.values.forEach { defaultModelManager.removeObject(it.first) }
+            removed.keys.forEach { models.remove(it) }
+            callback(Result.success(Unit))
         }
     }
 
@@ -519,6 +686,9 @@ class ObjectTapHandler(
             manager: MapObjectManagerMessage?,
     ) {
         getManager(manager?.id).isVisible = isVisible
+        if (manager == null) {
+            defaultModelManager.isVisible = isVisible
+        }
     }
 
     /// --- CLUSTER ---
@@ -1023,6 +1193,10 @@ class ObjectTapHandler(
         eventSink.success(mapOf("event" to Events.onMarkerTap.name, "id" to id))
     }
 
+    private fun onModelTap(id: String) {
+        eventSink.success(mapOf("event" to Events.onModelTap.name, "id" to id))
+    }
+
     private fun onRoadEventTap(event: RoadEventMapObject) {
         // Handles taps for all RoadEventType categories (not just ROAD_RESTRICTION) now that the
         // Road Events layer button shows every category — they all route to the same Dart-side card.
@@ -1243,6 +1417,7 @@ private enum class Events {
     onIdleTap,
     onRoadEventTap,
     onMarkerTap,
+    onModelTap,
     onPolygonTap,
     onCircleTap,
     onPolylineTap,

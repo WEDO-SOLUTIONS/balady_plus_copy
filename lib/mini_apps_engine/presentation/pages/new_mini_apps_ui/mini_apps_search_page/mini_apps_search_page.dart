@@ -13,6 +13,7 @@ import 'package:balady_plus/mini_apps_engine/presentation/pages/new_mini_apps_ui
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
+import 'package:mapness/features/balady_analytics/events/service_events.dart';
 
 //!
 class MiniAppsSearchPage extends StatefulWidget {
@@ -176,6 +177,7 @@ class _MiniAppsSearchPageState extends State<MiniAppsSearchPage> {
                                         title: miniApp.name,
                                         iconPath: miniApp.iconPath,
                                         onTap: () {
+                                          ServiceEvents.setPendingOpenSource(ServiceEvents.sourceSearch);
                                           context.read<NewMiniAppLogicCubit>().openMiniApp(miniApp);
                                         },
                                       );

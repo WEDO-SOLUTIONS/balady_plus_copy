@@ -13,6 +13,14 @@ class MarkerTapEvent extends TapEvent {
   final int id;
 }
 
+class ModelTapEvent extends TapEvent {
+  const ModelTapEvent(this.id);
+
+  static const name = "onModelTap";
+
+  final String id;
+}
+
 class ClusterTapEvent extends TapEvent {
   static const name = "onClusterTap";
 }

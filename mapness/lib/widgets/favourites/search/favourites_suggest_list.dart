@@ -12,7 +12,6 @@ import 'package:mapness/features/search/providers/search.dart';
 import 'package:mapness/features/search/ui/suggest_item.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
-import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/providers/analytic/bss_service.dart';
 import 'package:mapness/shared/providers/analytic/models/bss_request.dart';
 import 'package:mapness/shared/providers/analytic/models/payload/bss_payload.dart';
@@ -40,13 +39,6 @@ class FavouritesSuggestList extends ConsumerWidget {
     Future<void> onObjectTap(DirectoryObjectMessage object) async {
       final objectId = object.id?.objectId;
       if (objectId != null) {
-        Metrics.logEventAdvanced(
-          MetricsConstants.searchKeys.suggestion,
-          group: MetricsConstants.searchTag,
-          action: MetricAction.tap.toString(),
-          props: {'object': objectId},
-        );
-
         final favItem = object.mapToFavourite();
         FocusManager.instance.primaryFocus?.unfocus();
         final repo = ref.read(favouriteCacheProvider.notifier);

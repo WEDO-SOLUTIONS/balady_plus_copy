@@ -13,8 +13,6 @@ import 'package:mapness/features/poi_card/domain/model/poi_camera_config.dart';
 import 'package:mapness/features/road_events/domain/road_event.dart';
 import 'package:mapness/features/search/providers/search.dart';
 import 'package:mapness/features/search/ui/search_scope.dart';
-import 'package:mapness/shared/constants/metrics_constants.dart';
-import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/providers/location.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:mapness/shared/providers/map/selected_marker.dart';
@@ -42,12 +40,6 @@ class RoadEvents extends _$RoadEvents {
   }
 
   void handleTap(RoadEvent event) {
-    Metrics.logEventAdvanced(
-      MetricsConstants.poiKeys.roadEvent,
-      group: MetricsConstants.poiTag,
-      action: MetricAction.tap.toString(),
-      props: {'event': event.id, 'type': event.type},
-    );
     final nextState = RoadEventSheetState.fromDomain(event);
     final router = ref.read(appRouterProvider);
 
@@ -187,13 +179,6 @@ class MapTapHandler extends _$MapTapHandler with GuardTapEventMixin {
     // (BRD `Map-Main Page`). Carried through Directions → Go → Search → favorite.
     ref.read(dataFinderSourceTrackerProvider.notifier).stampOrigin(DataFinderOrigin.map);
 
-    Metrics.logEventAdvanced(
-      MetricsConstants.poiKeys.map,
-      group: MetricsConstants.poiTag,
-      action: MetricAction.tap.toString(),
-      props: {'objectId': event.dgisObjectId.objectId},
-    );
-
     ref
         .read(appRouterProvider)
         .replaceOrPush(
@@ -218,12 +203,6 @@ class MapTapHandler extends _$MapTapHandler with GuardTapEventMixin {
   }
 
   void _handleMyLocationTapEvent(MyLocationTapEvent event) {
-    Metrics.logEventAdvanced(
-      MetricsConstants.poiKeys.myLocation,
-      group: MetricsConstants.poiTag,
-      action: MetricAction.tap.toString(),
-    );
-
     ref.read(advertMetricsProvider.notifier).sendEvent(AdvertMetricsKeys.exploreLandingEngagement);
 
     final userLocation = ref.read(locationProvider);

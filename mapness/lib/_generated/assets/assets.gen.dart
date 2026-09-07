@@ -1,3 +1,5 @@
+// dart format width=120
+
 /// GENERATED CODE - DO NOT MODIFY BY HAND
 /// *****************************************************
 ///  FlutterGen
@@ -5,7 +7,7 @@
 
 // coverage:ignore-file
 // ignore_for_file: type=lint
-// ignore_for_file: directives_ordering,unnecessary_import,implicit_dynamic_list_literal,deprecated_member_use
+// ignore_for_file: deprecated_member_use,directives_ordering,implicit_dynamic_list_literal,unnecessary_import
 
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
@@ -180,6 +182,9 @@ class $AssetsImagesGen {
   /// Directory path: assets/images/layers
   $AssetsImagesLayersGen get layers => const $AssetsImagesLayersGen();
 
+  /// File path: assets/images/leap_logo.png
+  AssetGenImage get leapLogo => const AssetGenImage('assets/images/leap_logo.png');
+
   /// File path: assets/images/light_map_preview.jpg
   AssetGenImage get lightMapPreview => const AssetGenImage('assets/images/light_map_preview.jpg');
 
@@ -246,70 +251,71 @@ class $AssetsImagesGen {
 
   /// List of all assets
   List<dynamic> get values => [
-        addCompany,
-        addCompanyFoundingDay,
-        addPhoto,
-        addPhotoFoundingDay,
-        backgroundOrnamentSaudiday,
-        calendarCard,
-        cityExpert,
-        cityExpertFoundingDay,
-        cityExpertSaudiDay,
-        cityscapeGlobal,
-        darkMapPreview,
-        dashboardBgPattern,
-        driveHomeArrowFoundingDay,
-        driveHomeArrow,
-        driveHomeArrowSaudiday,
-        driveHomeBackground,
-        driveHomeBackgroundDark,
-        driveHomeBackgroundFoundingDay,
-        driveHomeBackgroundSaudiday,
-        etaSheetBackground,
-        exploreMbc,
-        favoritesExampleArabic,
-        favoritesExampleArabicSaudiday,
-        favoritesExampleEnglish,
-        favoritesExampleEnglishSaudiday,
-        feedbackDashboard,
-        feedbackDashboardFoundingDay,
-        feedbackDashboardSaudiday,
-        feedbackEyes,
-        foundationDayBgPattern,
-        foundingDayAlHamdanHeritage,
-        foundingDayCircleLogo,
-        foundingDayDiriyahCulturalInstitution,
-        foundingDayHistoricalDirYiyah,
-        foundingDayLogo,
-        foundingDayNationalMuseum,
-        gaussianSplattingEntryPointDarkAr,
-        gaussianSplattingEntryPointDarkEn,
-        gaussianSplattingEntryPointLightAr,
-        gaussianSplattingEntryPointLightEn,
-        icArrowFeedback,
-        illustrationFlipContinueDark,
-        illustrationFlipContinueLight,
-        imgNearbyPlaceholder,
-        ishanSeefromtheskyUnsplash,
-        lightMapPreview,
-        markerEtaMask,
-        onboardingStory1,
-        onboardingStory2,
-        onboardingStory3,
-        qibla,
-        regionNotAvailable,
-        routeStory1,
-        routeStory2,
-        routeStory3,
-        saudiDaySplash,
-        saudiNationalFlag,
-        successAppFeedback,
-        successAppFeedbackDark,
-        sunrisePray,
-        treeAndParkBenchWhiteBackground,
-        wavinghand,
-        wrcDashboard
-      ];
+    addCompany,
+    addCompanyFoundingDay,
+    addPhoto,
+    addPhotoFoundingDay,
+    backgroundOrnamentSaudiday,
+    calendarCard,
+    cityExpert,
+    cityExpertFoundingDay,
+    cityExpertSaudiDay,
+    cityscapeGlobal,
+    darkMapPreview,
+    dashboardBgPattern,
+    driveHomeArrowFoundingDay,
+    driveHomeArrow,
+    driveHomeArrowSaudiday,
+    driveHomeBackground,
+    driveHomeBackgroundDark,
+    driveHomeBackgroundFoundingDay,
+    driveHomeBackgroundSaudiday,
+    etaSheetBackground,
+    exploreMbc,
+    favoritesExampleArabic,
+    favoritesExampleArabicSaudiday,
+    favoritesExampleEnglish,
+    favoritesExampleEnglishSaudiday,
+    feedbackDashboard,
+    feedbackDashboardFoundingDay,
+    feedbackDashboardSaudiday,
+    feedbackEyes,
+    foundationDayBgPattern,
+    foundingDayAlHamdanHeritage,
+    foundingDayCircleLogo,
+    foundingDayDiriyahCulturalInstitution,
+    foundingDayHistoricalDirYiyah,
+    foundingDayLogo,
+    foundingDayNationalMuseum,
+    gaussianSplattingEntryPointDarkAr,
+    gaussianSplattingEntryPointDarkEn,
+    gaussianSplattingEntryPointLightAr,
+    gaussianSplattingEntryPointLightEn,
+    icArrowFeedback,
+    illustrationFlipContinueDark,
+    illustrationFlipContinueLight,
+    imgNearbyPlaceholder,
+    ishanSeefromtheskyUnsplash,
+    leapLogo,
+    lightMapPreview,
+    markerEtaMask,
+    onboardingStory1,
+    onboardingStory2,
+    onboardingStory3,
+    qibla,
+    regionNotAvailable,
+    routeStory1,
+    routeStory2,
+    routeStory3,
+    saudiDaySplash,
+    saudiNationalFlag,
+    successAppFeedback,
+    successAppFeedbackDark,
+    sunrisePray,
+    treeAndParkBenchWhiteBackground,
+    wavinghand,
+    wrcDashboard,
+  ];
 }
 
 class $AssetsImagesSvgGen {
@@ -403,39 +409,51 @@ class $AssetsImagesSvgGen {
   /// Directory path: assets/images_svg/saudi_pass
   $AssetsImagesSvgSaudiPassGen get saudiPass => const $AssetsImagesSvgSaudiPassGen();
 
+  /// File path: assets/images_svg/tifo_help.svg
+  SvgGenImage get tifoHelp => const SvgGenImage('assets/images_svg/tifo_help.svg');
+
+  /// File path: assets/images_svg/tifo_tokens.svg
+  SvgGenImage get tifoTokens => const SvgGenImage('assets/images_svg/tifo_tokens.svg');
+
+  /// File path: assets/images_svg/tifo_trip_marker.svg
+  SvgGenImage get tifoTripMarker => const SvgGenImage('assets/images_svg/tifo_trip_marker.svg');
+
   /// File path: assets/images_svg/union.svg
   SvgGenImage get union => const SvgGenImage('assets/images_svg/union.svg');
 
   /// List of all assets
   List<SvgGenImage> get values => [
-        illustrationErrorFoundationDay,
-        illustrationNotificationsFoundatonDay,
-        activeStar,
-        arBaladyLogo,
-        emptySearch,
-        enBaladyLogo,
-        etaAuthBlankUserMarker,
-        etaLostConnectionControl,
-        etaLostConnectionMarker,
-        etaNamedUser,
-        etaPhotoUser,
-        etaUnknownUser,
-        etaUnknownUserMarker,
-        happyFace,
-        illustrationError,
-        illustrationErrorDark,
-        illustrationNotifications,
-        illustrationNotificationsDark,
-        illustrationPercent,
-        illustrationPercentDark,
-        illustrationPercentFoundingDay,
-        illustrationThanks,
-        inactiveStar,
-        lostLocation,
-        lostLocationDark,
-        sadFace,
-        union
-      ];
+    illustrationErrorFoundationDay,
+    illustrationNotificationsFoundatonDay,
+    activeStar,
+    arBaladyLogo,
+    emptySearch,
+    enBaladyLogo,
+    etaAuthBlankUserMarker,
+    etaLostConnectionControl,
+    etaLostConnectionMarker,
+    etaNamedUser,
+    etaPhotoUser,
+    etaUnknownUser,
+    etaUnknownUserMarker,
+    happyFace,
+    illustrationError,
+    illustrationErrorDark,
+    illustrationNotifications,
+    illustrationNotificationsDark,
+    illustrationPercent,
+    illustrationPercentDark,
+    illustrationPercentFoundingDay,
+    illustrationThanks,
+    inactiveStar,
+    lostLocation,
+    lostLocationDark,
+    sadFace,
+    tifoHelp,
+    tifoTokens,
+    tifoTripMarker,
+    union,
+  ];
 }
 
 class $AssetsMapsGen {
@@ -446,6 +464,44 @@ class $AssetsMapsGen {
 
   /// Directory path: assets/maps/configs
   $AssetsMapsConfigsGen get configs => const $AssetsMapsConfigsGen();
+}
+
+class $AssetsModelsGen {
+  const $AssetsModelsGen();
+
+  /// File path: assets/models/LIGHT_THEME_CAR_MODEL.glb
+  String get lightThemeCarModel => 'packages/mapness/assets/models/LIGHT_THEME_CAR_MODEL.glb';
+
+  /// File path: assets/models/blue_stadium_fix.glb
+  String get blueStadiumFix => 'packages/mapness/assets/models/blue_stadium_fix.glb';
+
+  /// File path: assets/models/yellowe_stadium_fix.glb
+  String get yelloweStadiumFix => 'packages/mapness/assets/models/yellowe_stadium_fix.glb';
+
+  /// List of all assets
+  List<String> get values => [lightThemeCarModel, blueStadiumFix, yelloweStadiumFix];
+}
+
+class $AssetsTifoGen {
+  const $AssetsTifoGen();
+
+  /// Directory path: assets/tifo/audio
+  $AssetsTifoAudioGen get audio => const $AssetsTifoAudioGen();
+
+  /// Directory path: assets/tifo/backgrounds
+  $AssetsTifoBackgroundsGen get backgrounds => const $AssetsTifoBackgroundsGen();
+
+  /// Directory path: assets/tifo/images
+  $AssetsTifoImagesGen get images => const $AssetsTifoImagesGen();
+
+  /// Directory path: assets/tifo/models
+  $AssetsTifoModelsGen get models => const $AssetsTifoModelsGen();
+
+  /// Directory path: assets/tifo/preview
+  $AssetsTifoPreviewGen get preview => const $AssetsTifoPreviewGen();
+
+  /// Directory path: assets/tifo/sprites
+  $AssetsTifoSpritesGen get sprites => const $AssetsTifoSpritesGen();
 }
 
 class $AssetsIconsLottieGen {
@@ -729,6 +785,9 @@ class $AssetsIconsSvgGen {
   /// Directory path: assets/icons/svg/layers
   $AssetsIconsSvgLayersGen get layers => const $AssetsIconsSvgLayersGen();
 
+  /// File path: assets/icons/svg/leap_unique_marker.svg
+  SvgGenImage get leapUniqueMarker => const SvgGenImage('assets/icons/svg/leap_unique_marker.svg');
+
   /// File path: assets/icons/svg/parking_control.svg
   SvgGenImage get parkingControl => const SvgGenImage('assets/icons/svg/parking_control.svg');
 
@@ -812,103 +871,104 @@ class $AssetsIconsSvgGen {
 
   /// List of all assets
   List<SvgGenImage> get values => [
-        car,
-        carActive,
-        carActiveFoundingDay,
-        carActiveSaudi,
-        cityscapeUniqueDefaultMarker,
-        cityscapeUniqueMarker,
-        currentLocationIcon,
-        darkCar,
-        darkCarActive,
-        foundingDayProfile,
-        historicDiriyahFort,
-        historicDiriyahFortDark,
-        ic2d,
-        ic3d,
-        icActionsContainer,
-        icArrowCompass,
-        icBestRoute,
-        icBug,
-        icCar,
-        icCarPoi,
-        icChevronDown,
-        icCityscapePin,
-        icClose,
-        icComplete,
-        icControlCompass,
-        icControlLocation,
-        icCopy,
-        icDarkCompass,
-        icDashboardSearch,
-        icDragIndicator,
-        icEntrance,
-        icFav,
-        icFilter,
-        icIwishMarkerCompleted,
-        icIwishMarkerPlanned,
-        icIwishMarkerSelected,
-        icKiblah,
-        icLangAr,
-        icLangEn,
-        icLanguageChange,
-        icMarkerMNewSaudiDay,
-        icMbcMood,
-        icMetroMarker,
-        icNotification,
-        icPhone,
-        icPinNewSaudiDay,
-        icPinPlaceholderRed,
-        icProfile,
-        icProfile2,
-        icProfileLang,
-        icProfileLogout,
-        icRadioOff,
-        icRadioOn,
-        icRoutingCircle,
-        icRoutingLocation,
-        icSearchClear,
-        icShare,
-        icWrcMapMarkerAwardCeremony,
-        icWrcMapMarkerFanZone,
-        icWrcMapMarkerJeddahCornicheParade,
-        icWrcMapMarkerParking,
-        icWrcMapMarkerRallyStage,
-        icWrcMapMarkerServicePark,
-        icWrcMapMarkerShakedownStage,
-        icWrcMapMarkerSpecialSuperStage,
-        icWrcPinAwardCeremony,
-        icWrcPinFanZone,
-        icWrcPinJeddahCornicheParade,
-        icWrcPinParking,
-        icWrcPinRallyStage,
-        icWrcPinServicePark,
-        icWrcPinShakedownStage,
-        icWrcPinSpecialSuperStage,
-        icWrcSearchMarkerAwardCeremony,
-        icWrcSearchMarkerFanZone,
-        icWrcSearchMarkerJeddahCornicheParade,
-        icWrcSearchMarkerParking,
-        icWrcSearchMarkerRallyStage,
-        icWrcSearchMarkerServicePark,
-        icWrcSearchMarkerShakedownStage,
-        icWrcSearchMarkerSpecialSuperStage,
-        parkingControl,
-        percent,
-        photoGallery,
-        saFlag,
-        tadalalLogoAr,
-        tadalalLogoEn,
-        tagArrival,
-        tagDesign,
-        tagDirections,
-        tagEasyToUse,
-        tagGps,
-        tagNavi,
-        tagParking,
-        tagTraffic,
-        ukFlag
-      ];
+    car,
+    carActive,
+    carActiveFoundingDay,
+    carActiveSaudi,
+    cityscapeUniqueDefaultMarker,
+    cityscapeUniqueMarker,
+    currentLocationIcon,
+    darkCar,
+    darkCarActive,
+    foundingDayProfile,
+    historicDiriyahFort,
+    historicDiriyahFortDark,
+    ic2d,
+    ic3d,
+    icActionsContainer,
+    icArrowCompass,
+    icBestRoute,
+    icBug,
+    icCar,
+    icCarPoi,
+    icChevronDown,
+    icCityscapePin,
+    icClose,
+    icComplete,
+    icControlCompass,
+    icControlLocation,
+    icCopy,
+    icDarkCompass,
+    icDashboardSearch,
+    icDragIndicator,
+    icEntrance,
+    icFav,
+    icFilter,
+    icIwishMarkerCompleted,
+    icIwishMarkerPlanned,
+    icIwishMarkerSelected,
+    icKiblah,
+    icLangAr,
+    icLangEn,
+    icLanguageChange,
+    icMarkerMNewSaudiDay,
+    icMbcMood,
+    icMetroMarker,
+    icNotification,
+    icPhone,
+    icPinNewSaudiDay,
+    icPinPlaceholderRed,
+    icProfile,
+    icProfile2,
+    icProfileLang,
+    icProfileLogout,
+    icRadioOff,
+    icRadioOn,
+    icRoutingCircle,
+    icRoutingLocation,
+    icSearchClear,
+    icShare,
+    icWrcMapMarkerAwardCeremony,
+    icWrcMapMarkerFanZone,
+    icWrcMapMarkerJeddahCornicheParade,
+    icWrcMapMarkerParking,
+    icWrcMapMarkerRallyStage,
+    icWrcMapMarkerServicePark,
+    icWrcMapMarkerShakedownStage,
+    icWrcMapMarkerSpecialSuperStage,
+    icWrcPinAwardCeremony,
+    icWrcPinFanZone,
+    icWrcPinJeddahCornicheParade,
+    icWrcPinParking,
+    icWrcPinRallyStage,
+    icWrcPinServicePark,
+    icWrcPinShakedownStage,
+    icWrcPinSpecialSuperStage,
+    icWrcSearchMarkerAwardCeremony,
+    icWrcSearchMarkerFanZone,
+    icWrcSearchMarkerJeddahCornicheParade,
+    icWrcSearchMarkerParking,
+    icWrcSearchMarkerRallyStage,
+    icWrcSearchMarkerServicePark,
+    icWrcSearchMarkerShakedownStage,
+    icWrcSearchMarkerSpecialSuperStage,
+    leapUniqueMarker,
+    parkingControl,
+    percent,
+    photoGallery,
+    saFlag,
+    tadalalLogoAr,
+    tadalalLogoEn,
+    tagArrival,
+    tagDesign,
+    tagDirections,
+    tagEasyToUse,
+    tagGps,
+    tagNavi,
+    tagParking,
+    tagTraffic,
+    ukFlag,
+  ];
 }
 
 class $AssetsImagesAudioPlaceholdersGen {
@@ -1036,8 +1096,18 @@ class $AssetsImagesRamadanQuickActionsGen {
   AssetGenImage get transport => const AssetGenImage('assets/images/ramadan_quick_actions/transport.png');
 
   /// List of all assets
-  List<AssetGenImage> get values =>
-      [athkar, freeRoam, parking, qibla, quaran, roadEvent, safetyTips, sendLocation, snapAndSend, transport];
+  List<AssetGenImage> get values => [
+    athkar,
+    freeRoam,
+    parking,
+    qibla,
+    quaran,
+    roadEvent,
+    safetyTips,
+    sendLocation,
+    snapAndSend,
+    transport,
+  ];
 }
 
 class $AssetsImagesSaudiPassGen {
@@ -1099,8 +1169,17 @@ class $AssetsImagesSvgLayersGen {
   SvgGenImage get traffic => const SvgGenImage('assets/images_svg/layers/traffic.svg');
 
   /// List of all assets
-  List<SvgGenImage> get values =>
-      [a3D, busSubMenu, favourites, makkahBus, metro, parking, roadEvents, shuttleBus, traffic];
+  List<SvgGenImage> get values => [
+    a3D,
+    busSubMenu,
+    favourites,
+    makkahBus,
+    metro,
+    parking,
+    roadEvents,
+    shuttleBus,
+    traffic,
+  ];
 }
 
 class $AssetsImagesSvgSaudiPassGen {
@@ -1163,6 +1242,244 @@ class $AssetsMapsConfigsGen {
   List<String> get values => [momrahProdVendorConfig, momrahStagingVendorConfig, urbiPreProdVendorConfig];
 }
 
+class $AssetsTifoAudioGen {
+  const $AssetsTifoAudioGen();
+
+  /// File path: assets/tifo/audio/crowd_ambience_1.mp3
+  String get crowdAmbience1 => 'packages/mapness/assets/tifo/audio/crowd_ambience_1.mp3';
+
+  /// File path: assets/tifo/audio/kick_1.mp3
+  String get kick1 => 'packages/mapness/assets/tifo/audio/kick_1.mp3';
+
+  /// File path: assets/tifo/audio/kick_2.mp3
+  String get kick2 => 'packages/mapness/assets/tifo/audio/kick_2.mp3';
+
+  /// List of all assets
+  List<String> get values => [crowdAmbience1, kick1, kick2];
+}
+
+class $AssetsTifoBackgroundsGen {
+  const $AssetsTifoBackgroundsGen();
+
+  /// File path: assets/tifo/backgrounds/entry_hero_ar.jpg
+  AssetGenImage get entryHeroAr => const AssetGenImage('assets/tifo/backgrounds/entry_hero_ar.jpg');
+
+  /// File path: assets/tifo/backgrounds/entry_hero_en.jpg
+  AssetGenImage get entryHeroEn => const AssetGenImage('assets/tifo/backgrounds/entry_hero_en.jpg');
+
+  /// File path: assets/tifo/backgrounds/result_draw.jpg
+  AssetGenImage get resultDraw => const AssetGenImage('assets/tifo/backgrounds/result_draw.jpg');
+
+  /// File path: assets/tifo/backgrounds/result_lose_black.png
+  AssetGenImage get resultLoseBlack => const AssetGenImage('assets/tifo/backgrounds/result_lose_black.png');
+
+  /// File path: assets/tifo/backgrounds/result_lose_black_en.png
+  AssetGenImage get resultLoseBlackEn => const AssetGenImage('assets/tifo/backgrounds/result_lose_black_en.png');
+
+  /// File path: assets/tifo/backgrounds/result_lose_blue.png
+  AssetGenImage get resultLoseBlue => const AssetGenImage('assets/tifo/backgrounds/result_lose_blue.png');
+
+  /// File path: assets/tifo/backgrounds/result_lose_blue_en.png
+  AssetGenImage get resultLoseBlueEn => const AssetGenImage('assets/tifo/backgrounds/result_lose_blue_en.png');
+
+  /// File path: assets/tifo/backgrounds/result_lose_red.png
+  AssetGenImage get resultLoseRed => const AssetGenImage('assets/tifo/backgrounds/result_lose_red.png');
+
+  /// File path: assets/tifo/backgrounds/result_lose_red_en.png
+  AssetGenImage get resultLoseRedEn => const AssetGenImage('assets/tifo/backgrounds/result_lose_red_en.png');
+
+  /// File path: assets/tifo/backgrounds/result_lose_sand.png
+  AssetGenImage get resultLoseSand => const AssetGenImage('assets/tifo/backgrounds/result_lose_sand.png');
+
+  /// File path: assets/tifo/backgrounds/result_lose_sand_en.png
+  AssetGenImage get resultLoseSandEn => const AssetGenImage('assets/tifo/backgrounds/result_lose_sand_en.png');
+
+  /// File path: assets/tifo/backgrounds/result_lose_unclaimed.png
+  AssetGenImage get resultLoseUnclaimed => const AssetGenImage('assets/tifo/backgrounds/result_lose_unclaimed.png');
+
+  /// File path: assets/tifo/backgrounds/result_lose_unclaimed_en.png
+  AssetGenImage get resultLoseUnclaimedEn =>
+      const AssetGenImage('assets/tifo/backgrounds/result_lose_unclaimed_en.png');
+
+  /// File path: assets/tifo/backgrounds/result_lose_yellow.png
+  AssetGenImage get resultLoseYellow => const AssetGenImage('assets/tifo/backgrounds/result_lose_yellow.png');
+
+  /// File path: assets/tifo/backgrounds/result_lose_yellow_en.png
+  AssetGenImage get resultLoseYellowEn => const AssetGenImage('assets/tifo/backgrounds/result_lose_yellow_en.png');
+
+  /// File path: assets/tifo/backgrounds/result_loss.jpg
+  AssetGenImage get resultLoss => const AssetGenImage('assets/tifo/backgrounds/result_loss.jpg');
+
+  /// File path: assets/tifo/backgrounds/result_win.jpg
+  AssetGenImage get resultWin => const AssetGenImage('assets/tifo/backgrounds/result_win.jpg');
+
+  /// File path: assets/tifo/backgrounds/result_win_black.png
+  AssetGenImage get resultWinBlack => const AssetGenImage('assets/tifo/backgrounds/result_win_black.png');
+
+  /// File path: assets/tifo/backgrounds/result_win_black_en.png
+  AssetGenImage get resultWinBlackEn => const AssetGenImage('assets/tifo/backgrounds/result_win_black_en.png');
+
+  /// File path: assets/tifo/backgrounds/result_win_blue.png
+  AssetGenImage get resultWinBlue => const AssetGenImage('assets/tifo/backgrounds/result_win_blue.png');
+
+  /// File path: assets/tifo/backgrounds/result_win_blue_en.png
+  AssetGenImage get resultWinBlueEn => const AssetGenImage('assets/tifo/backgrounds/result_win_blue_en.png');
+
+  /// File path: assets/tifo/backgrounds/result_win_red.png
+  AssetGenImage get resultWinRed => const AssetGenImage('assets/tifo/backgrounds/result_win_red.png');
+
+  /// File path: assets/tifo/backgrounds/result_win_red_en.png
+  AssetGenImage get resultWinRedEn => const AssetGenImage('assets/tifo/backgrounds/result_win_red_en.png');
+
+  /// File path: assets/tifo/backgrounds/result_win_sand.png
+  AssetGenImage get resultWinSand => const AssetGenImage('assets/tifo/backgrounds/result_win_sand.png');
+
+  /// File path: assets/tifo/backgrounds/result_win_sand_en.png
+  AssetGenImage get resultWinSandEn => const AssetGenImage('assets/tifo/backgrounds/result_win_sand_en.png');
+
+  /// File path: assets/tifo/backgrounds/result_win_yellow.png
+  AssetGenImage get resultWinYellow => const AssetGenImage('assets/tifo/backgrounds/result_win_yellow.png');
+
+  /// File path: assets/tifo/backgrounds/result_win_yellow_en.png
+  AssetGenImage get resultWinYellowEn => const AssetGenImage('assets/tifo/backgrounds/result_win_yellow_en.png');
+
+  /// File path: assets/tifo/backgrounds/stadium_goal_background.jpg
+  AssetGenImage get stadiumGoalBackground => const AssetGenImage('assets/tifo/backgrounds/stadium_goal_background.jpg');
+
+  /// List of all assets
+  List<AssetGenImage> get values => [
+    entryHeroAr,
+    entryHeroEn,
+    resultDraw,
+    resultLoseBlack,
+    resultLoseBlackEn,
+    resultLoseBlue,
+    resultLoseBlueEn,
+    resultLoseRed,
+    resultLoseRedEn,
+    resultLoseSand,
+    resultLoseSandEn,
+    resultLoseUnclaimed,
+    resultLoseUnclaimedEn,
+    resultLoseYellow,
+    resultLoseYellowEn,
+    resultLoss,
+    resultWin,
+    resultWinBlack,
+    resultWinBlackEn,
+    resultWinBlue,
+    resultWinBlueEn,
+    resultWinRed,
+    resultWinRedEn,
+    resultWinSand,
+    resultWinSandEn,
+    resultWinYellow,
+    resultWinYellowEn,
+    stadiumGoalBackground,
+  ];
+}
+
+class $AssetsTifoImagesGen {
+  const $AssetsTifoImagesGen();
+
+  /// File path: assets/tifo/images/ball.png
+  AssetGenImage get ball => const AssetGenImage('assets/tifo/images/ball.png');
+
+  /// File path: assets/tifo/images/illustration_error.svg
+  SvgGenImage get illustrationError => const SvgGenImage('assets/tifo/images/illustration_error.svg');
+
+  /// File path: assets/tifo/images/illustration_error_dark.svg
+  SvgGenImage get illustrationErrorDark => const SvgGenImage('assets/tifo/images/illustration_error_dark.svg');
+
+  /// File path: assets/tifo/images/penalty_preview.png
+  AssetGenImage get penaltyPreview => const AssetGenImage('assets/tifo/images/penalty_preview.png');
+
+  /// List of all assets
+  List<dynamic> get values => [ball, illustrationError, illustrationErrorDark, penaltyPreview];
+}
+
+class $AssetsTifoModelsGen {
+  const $AssetsTifoModelsGen();
+
+  /// File path: assets/tifo/models/MODEL_SOURCES.md
+  String get modelSources => 'packages/mapness/assets/tifo/models/MODEL_SOURCES.md';
+
+  /// File path: assets/tifo/models/goalkeeper.model.json
+  String get goalkeeperModel => 'packages/mapness/assets/tifo/models/goalkeeper.model.json';
+
+  /// File path: assets/tifo/models/soccer_ball.model.json
+  String get soccerBallModel => 'packages/mapness/assets/tifo/models/soccer_ball.model.json';
+
+  /// List of all assets
+  List<String> get values => [modelSources, goalkeeperModel, soccerBallModel];
+}
+
+class $AssetsTifoPreviewGen {
+  const $AssetsTifoPreviewGen();
+
+  /// File path: assets/tifo/preview/preview_1.png
+  AssetGenImage get preview1 => const AssetGenImage('assets/tifo/preview/preview_1.png');
+
+  /// File path: assets/tifo/preview/preview_2.png
+  AssetGenImage get preview2 => const AssetGenImage('assets/tifo/preview/preview_2.png');
+
+  /// File path: assets/tifo/preview/preview_3.png
+  AssetGenImage get preview3 => const AssetGenImage('assets/tifo/preview/preview_3.png');
+
+  /// List of all assets
+  List<AssetGenImage> get values => [preview1, preview2, preview3];
+}
+
+class $AssetsTifoSpritesGen {
+  const $AssetsTifoSpritesGen();
+
+  /// File path: assets/tifo/sprites/SPRITE_SOURCES.md
+  String get spriteSources => 'packages/mapness/assets/tifo/sprites/SPRITE_SOURCES.md';
+
+  /// File path: assets/tifo/sprites/goalkeeper_dive_high_left.png
+  AssetGenImage get goalkeeperDiveHighLeft => const AssetGenImage('assets/tifo/sprites/goalkeeper_dive_high_left.png');
+
+  /// File path: assets/tifo/sprites/goalkeeper_dive_left.png
+  AssetGenImage get goalkeeperDiveLeft => const AssetGenImage('assets/tifo/sprites/goalkeeper_dive_left.png');
+
+  /// File path: assets/tifo/sprites/goalkeeper_dive_low_left.png
+  AssetGenImage get goalkeeperDiveLowLeft => const AssetGenImage('assets/tifo/sprites/goalkeeper_dive_low_left.png');
+
+  /// File path: assets/tifo/sprites/goalkeeper_idle.png
+  AssetGenImage get goalkeeperIdle => const AssetGenImage('assets/tifo/sprites/goalkeeper_idle.png');
+
+  /// Directory path: assets/tifo/sprites/goalkeeper_v2
+  $AssetsTifoSpritesGoalkeeperV2Gen get goalkeeperV2 => const $AssetsTifoSpritesGoalkeeperV2Gen();
+
+  /// File path: assets/tifo/sprites/soccer_ball.png
+  AssetGenImage get soccerBall => const AssetGenImage('assets/tifo/sprites/soccer_ball.png');
+
+  /// File path: assets/tifo/sprites/striker_kick.png
+  AssetGenImage get strikerKick => const AssetGenImage('assets/tifo/sprites/striker_kick.png');
+
+  /// File path: assets/tifo/sprites/striker_ready.png
+  AssetGenImage get strikerReady => const AssetGenImage('assets/tifo/sprites/striker_ready.png');
+
+  /// Directory path: assets/tifo/sprites/striker_v2
+  $AssetsTifoSpritesStrikerV2Gen get strikerV2 => const $AssetsTifoSpritesStrikerV2Gen();
+
+  /// File path: assets/tifo/sprites/striker_windup.png
+  AssetGenImage get strikerWindup => const AssetGenImage('assets/tifo/sprites/striker_windup.png');
+
+  /// List of all assets
+  List<dynamic> get values => [
+    spriteSources,
+    goalkeeperDiveHighLeft,
+    goalkeeperDiveLeft,
+    goalkeeperDiveLowLeft,
+    goalkeeperIdle,
+    soccerBall,
+    strikerKick,
+    strikerReady,
+    strikerWindup,
+  ];
+}
+
 class $AssetsIconsSvgAudioGen {
   const $AssetsIconsSvgAudioGen();
 
@@ -1194,8 +1511,17 @@ class $AssetsIconsSvgAudioGen {
   SvgGenImage get waves => const SvgGenImage('assets/icons/svg/audio/waves.svg');
 
   /// List of all assets
-  List<SvgGenImage> get values =>
-      [audioStream, check, close, contextualBanner, pause, resume, seekBackward, seekForward, waves];
+  List<SvgGenImage> get values => [
+    audioStream,
+    check,
+    close,
+    contextualBanner,
+    pause,
+    resume,
+    seekBackward,
+    seekForward,
+    waves,
+  ];
 }
 
 class $AssetsIconsSvgDynamicPoiGen {
@@ -1274,16 +1600,16 @@ class $AssetsIconsSvgLayersGen {
 
   /// List of all assets
   List<SvgGenImage> get values => [
-        icBuildingPin,
-        icFancyPin,
-        icFavHome,
-        icFavPin,
-        icFavWork,
-        icInvestPin,
-        icJoyPin,
-        icParkingPin,
-        icRoadEventCongestion
-      ];
+    icBuildingPin,
+    icFancyPin,
+    icFavHome,
+    icFavPin,
+    icFavWork,
+    icInvestPin,
+    icJoyPin,
+    icParkingPin,
+    icRoadEventCongestion,
+  ];
 }
 
 class $AssetsIconsSvgPlacesBigNewGen {
@@ -1401,38 +1727,38 @@ class $AssetsIconsSvgPlacesBigNewSaudiDayGen {
 
   /// List of all assets
   List<SvgGenImage> get values => [
-        icAdditional,
-        icBarbershop,
-        icBeach,
-        icBeauty,
-        icCarServices,
-        icEvents,
-        icFireStation,
-        icGasstationLtr,
-        icGym,
-        icHajjSupport,
-        icHealthCenter,
-        icHospital,
-        icHospitalPlace,
-        icHotels,
-        icKiosksRetail,
-        icLostAndFound,
-        icMarkets,
-        icMedicalHelp,
-        icMedicineLtr,
-        icMosques,
-        icPark,
-        icPoliceStation,
-        icQibla,
-        icRecreation,
-        icRestaurant,
-        icSchoolLtr,
-        icShopping,
-        icStairs,
-        icTooth,
-        icWaterPlaces,
-        icWc
-      ];
+    icAdditional,
+    icBarbershop,
+    icBeach,
+    icBeauty,
+    icCarServices,
+    icEvents,
+    icFireStation,
+    icGasstationLtr,
+    icGym,
+    icHajjSupport,
+    icHealthCenter,
+    icHospital,
+    icHospitalPlace,
+    icHotels,
+    icKiosksRetail,
+    icLostAndFound,
+    icMarkets,
+    icMedicalHelp,
+    icMedicineLtr,
+    icMosques,
+    icPark,
+    icPoliceStation,
+    icQibla,
+    icRecreation,
+    icRestaurant,
+    icSchoolLtr,
+    icShopping,
+    icStairs,
+    icTooth,
+    icWaterPlaces,
+    icWc,
+  ];
 }
 
 class $AssetsIconsSvgPlacesNewGen {
@@ -1527,31 +1853,31 @@ class $AssetsIconsSvgPlacesNewFoundingDayGen {
 
   /// List of all assets
   List<SvgGenImage> get values => [
-        icBarbershop,
-        icBeach,
-        icBeauty,
-        icCarServices,
-        icDefault,
-        icEvents,
-        icFireStation,
-        icGasstationLtr,
-        icGym,
-        icHospital,
-        icHotels,
-        icMarkets,
-        icMedicineLtr,
-        icMosques,
-        icPark,
-        icPoliceStation,
-        icQibla,
-        icRecreation,
-        icRestaurant,
-        icSchoolLtr,
-        icShopping,
-        icTooth,
-        icWaterPlaces,
-        icWc
-      ];
+    icBarbershop,
+    icBeach,
+    icBeauty,
+    icCarServices,
+    icDefault,
+    icEvents,
+    icFireStation,
+    icGasstationLtr,
+    icGym,
+    icHospital,
+    icHotels,
+    icMarkets,
+    icMedicineLtr,
+    icMosques,
+    icPark,
+    icPoliceStation,
+    icQibla,
+    icRecreation,
+    icRestaurant,
+    icSchoolLtr,
+    icShopping,
+    icTooth,
+    icWaterPlaces,
+    icWc,
+  ];
 }
 
 class $AssetsIconsSvgPlacesNewFoundingDayBigGen {
@@ -1637,31 +1963,31 @@ class $AssetsIconsSvgPlacesNewFoundingDayBigGen {
 
   /// List of all assets
   List<SvgGenImage> get values => [
-        icBarbershop,
-        icBeach,
-        icBeauty,
-        icCarServices,
-        icDefault,
-        icEvents,
-        icFireStation,
-        icGasstationLtr,
-        icGym,
-        icHospital,
-        icHotels,
-        icMarkets,
-        icMedicineLtr,
-        icMosques,
-        icPark,
-        icPoliceStation,
-        icQibla,
-        icRecreation,
-        icRestaurant,
-        icSchoolLtr,
-        icShopping,
-        icTooth,
-        icWaterPlaces,
-        icWc
-      ];
+    icBarbershop,
+    icBeach,
+    icBeauty,
+    icCarServices,
+    icDefault,
+    icEvents,
+    icFireStation,
+    icGasstationLtr,
+    icGym,
+    icHospital,
+    icHotels,
+    icMarkets,
+    icMedicineLtr,
+    icMosques,
+    icPark,
+    icPoliceStation,
+    icQibla,
+    icRecreation,
+    icRestaurant,
+    icSchoolLtr,
+    icShopping,
+    icTooth,
+    icWaterPlaces,
+    icWc,
+  ];
 }
 
 class $AssetsIconsSvgPlacesNewFoundingDayBigDarkGen {
@@ -1798,44 +2124,44 @@ class $AssetsIconsSvgPlacesNewFoundingDayBigDarkGen {
 
   /// List of all assets
   List<SvgGenImage> get values => [
-        icAirport,
-        icAnimals,
-        icArtAndDesign,
-        icBanks,
-        icBarbershop,
-        icBeach,
-        icBeauty,
-        icBuildingMaterials,
-        icBusiness,
-        icCarServices,
-        icChildrensGoods,
-        icCityTransport,
-        icClothingAndFootwear,
-        icConnection,
-        icConstruction,
-        icDefault,
-        icEvents,
-        icGasstationLtr,
-        icGym,
-        icHospital,
-        icHotels,
-        icMarkets,
-        icMedia,
-        icMedicineLtr,
-        icMosques,
-        icMunicipalities,
-        icPark,
-        icPoliceStation,
-        icQibla,
-        icRailwayTransport,
-        icRecreation,
-        icRestaurant,
-        icSchoolLtr,
-        icShopping,
-        icTooth,
-        icWaterPlaces,
-        icWc
-      ];
+    icAirport,
+    icAnimals,
+    icArtAndDesign,
+    icBanks,
+    icBarbershop,
+    icBeach,
+    icBeauty,
+    icBuildingMaterials,
+    icBusiness,
+    icCarServices,
+    icChildrensGoods,
+    icCityTransport,
+    icClothingAndFootwear,
+    icConnection,
+    icConstruction,
+    icDefault,
+    icEvents,
+    icGasstationLtr,
+    icGym,
+    icHospital,
+    icHotels,
+    icMarkets,
+    icMedia,
+    icMedicineLtr,
+    icMosques,
+    icMunicipalities,
+    icPark,
+    icPoliceStation,
+    icQibla,
+    icRailwayTransport,
+    icRecreation,
+    icRestaurant,
+    icSchoolLtr,
+    icShopping,
+    icTooth,
+    icWaterPlaces,
+    icWc,
+  ];
 }
 
 class $AssetsIconsSvgPlacesNewFoundingDayDarkGen {
@@ -1967,44 +2293,44 @@ class $AssetsIconsSvgPlacesNewFoundingDayDarkGen {
 
   /// List of all assets
   List<SvgGenImage> get values => [
-        icAirport,
-        icAnimals,
-        icArtAndDesign,
-        icBanks,
-        icBarbershop,
-        icBeach,
-        icBeauty,
-        icBuildingMaterials,
-        icBusiness,
-        icCarServices,
-        icChildrensGoods,
-        icCityTransport,
-        icClothingAndFootwear,
-        icConnection,
-        icConstruction,
-        icDefault,
-        icEvents,
-        icGasstationLtr,
-        icGym,
-        icHospital,
-        icHotels,
-        icMarkets,
-        icMedia,
-        icMedicineLtr,
-        icMosques,
-        icMunicipalities,
-        icPark,
-        icPoliceStation,
-        icQibla,
-        icRailwayTransport,
-        icRecreation,
-        icRestaurant,
-        icSchoolLtr,
-        icShopping,
-        icTooth,
-        icWaterPlaces,
-        icWc
-      ];
+    icAirport,
+    icAnimals,
+    icArtAndDesign,
+    icBanks,
+    icBarbershop,
+    icBeach,
+    icBeauty,
+    icBuildingMaterials,
+    icBusiness,
+    icCarServices,
+    icChildrensGoods,
+    icCityTransport,
+    icClothingAndFootwear,
+    icConnection,
+    icConstruction,
+    icDefault,
+    icEvents,
+    icGasstationLtr,
+    icGym,
+    icHospital,
+    icHotels,
+    icMarkets,
+    icMedia,
+    icMedicineLtr,
+    icMosques,
+    icMunicipalities,
+    icPark,
+    icPoliceStation,
+    icQibla,
+    icRailwayTransport,
+    icRecreation,
+    icRestaurant,
+    icSchoolLtr,
+    icShopping,
+    icTooth,
+    icWaterPlaces,
+    icWc,
+  ];
 }
 
 class $AssetsIconsSvgPlacesNewSaudiDayGen {
@@ -2108,39 +2434,39 @@ class $AssetsIconsSvgPlacesNewSaudiDayGen {
 
   /// List of all assets
   List<SvgGenImage> get values => [
-        icAdditional,
-        icBarbershop,
-        icBeach,
-        icBeauty,
-        icCarServices,
-        icEventsLtr,
-        icFireStation,
-        icGasstationLtr,
-        icGym,
-        icHajjSupport,
-        icHealthCenter,
-        icHospital,
-        icHospitalPlace,
-        icHotels,
-        icKiosksRetail,
-        icLostAndFound,
-        icMarkets,
-        icMedicalHelp,
-        icMedicineLtr,
-        icMosques,
-        icPark,
-        icParking,
-        icPoliceStation,
-        icQibla,
-        icRecreation,
-        icRestaurant,
-        icSchoolLtr,
-        icShopping,
-        icStairs,
-        icTooth,
-        icWaterPlaces,
-        icWc
-      ];
+    icAdditional,
+    icBarbershop,
+    icBeach,
+    icBeauty,
+    icCarServices,
+    icEventsLtr,
+    icFireStation,
+    icGasstationLtr,
+    icGym,
+    icHajjSupport,
+    icHealthCenter,
+    icHospital,
+    icHospitalPlace,
+    icHotels,
+    icKiosksRetail,
+    icLostAndFound,
+    icMarkets,
+    icMedicalHelp,
+    icMedicineLtr,
+    icMosques,
+    icPark,
+    icParking,
+    icPoliceStation,
+    icQibla,
+    icRecreation,
+    icRestaurant,
+    icSchoolLtr,
+    icShopping,
+    icStairs,
+    icTooth,
+    icWaterPlaces,
+    icWc,
+  ];
 }
 
 class $AssetsIconsSvgProfileGen {
@@ -2275,6 +2601,469 @@ class $AssetsImagesMakkahQuickActionsDarkGen {
   List<AssetGenImage> get values => [athkar, freeRoam, parking, qibla, quaran, roadEvent, sendLocation, snapAndSend];
 }
 
+class $AssetsTifoSpritesGoalkeeperV2Gen {
+  const $AssetsTifoSpritesGoalkeeperV2Gen();
+
+  /// File path: assets/tifo/sprites/goalkeeper_v2/conceded_sheet.png
+  AssetGenImage get concededSheet => const AssetGenImage('assets/tifo/sprites/goalkeeper_v2/conceded_sheet.png');
+
+  /// File path: assets/tifo/sprites/goalkeeper_v2/dive_high_left_sheet.png
+  AssetGenImage get diveHighLeftSheet =>
+      const AssetGenImage('assets/tifo/sprites/goalkeeper_v2/dive_high_left_sheet.png');
+
+  /// File path: assets/tifo/sprites/goalkeeper_v2/dive_low_left_sheet.png
+  AssetGenImage get diveLowLeftSheet =>
+      const AssetGenImage('assets/tifo/sprites/goalkeeper_v2/dive_low_left_sheet.png');
+
+  /// File path: assets/tifo/sprites/goalkeeper_v2/dive_mid_left_sheet.png
+  AssetGenImage get diveMidLeftSheet =>
+      const AssetGenImage('assets/tifo/sprites/goalkeeper_v2/dive_mid_left_sheet.png');
+
+  /// File path: assets/tifo/sprites/goalkeeper_v2/keeper_diveLowCenter.png
+  AssetGenImage get keeperDiveLowCenter =>
+      const AssetGenImage('assets/tifo/sprites/goalkeeper_v2/keeper_diveLowCenter.png');
+
+  /// File path: assets/tifo/sprites/goalkeeper_v2/keeper_diveLowCenter_Black.png
+  AssetGenImage get keeperDiveLowCenterBlack =>
+      const AssetGenImage('assets/tifo/sprites/goalkeeper_v2/keeper_diveLowCenter_Black.png');
+
+  /// File path: assets/tifo/sprites/goalkeeper_v2/keeper_diveLowCenter_Blue.png
+  AssetGenImage get keeperDiveLowCenterBlue =>
+      const AssetGenImage('assets/tifo/sprites/goalkeeper_v2/keeper_diveLowCenter_Blue.png');
+
+  /// File path: assets/tifo/sprites/goalkeeper_v2/keeper_diveLowCenter_Green.png
+  AssetGenImage get keeperDiveLowCenterGreen =>
+      const AssetGenImage('assets/tifo/sprites/goalkeeper_v2/keeper_diveLowCenter_Green.png');
+
+  /// File path: assets/tifo/sprites/goalkeeper_v2/keeper_diveLowCenter_Red.png
+  AssetGenImage get keeperDiveLowCenterRed =>
+      const AssetGenImage('assets/tifo/sprites/goalkeeper_v2/keeper_diveLowCenter_Red.png');
+
+  /// File path: assets/tifo/sprites/goalkeeper_v2/keeper_diveLowCenter_Sand.png
+  AssetGenImage get keeperDiveLowCenterSand =>
+      const AssetGenImage('assets/tifo/sprites/goalkeeper_v2/keeper_diveLowCenter_Sand.png');
+
+  /// File path: assets/tifo/sprites/goalkeeper_v2/keeper_diveLowCenter_Yellow.png
+  AssetGenImage get keeperDiveLowCenterYellow =>
+      const AssetGenImage('assets/tifo/sprites/goalkeeper_v2/keeper_diveLowCenter_Yellow.png');
+
+  /// File path: assets/tifo/sprites/goalkeeper_v2/keeper_diveLowLeft.png
+  AssetGenImage get keeperDiveLowLeft =>
+      const AssetGenImage('assets/tifo/sprites/goalkeeper_v2/keeper_diveLowLeft.png');
+
+  /// File path: assets/tifo/sprites/goalkeeper_v2/keeper_diveLowLeft_Black.png
+  AssetGenImage get keeperDiveLowLeftBlack =>
+      const AssetGenImage('assets/tifo/sprites/goalkeeper_v2/keeper_diveLowLeft_Black.png');
+
+  /// File path: assets/tifo/sprites/goalkeeper_v2/keeper_diveLowLeft_Blue.png
+  AssetGenImage get keeperDiveLowLeftBlue =>
+      const AssetGenImage('assets/tifo/sprites/goalkeeper_v2/keeper_diveLowLeft_Blue.png');
+
+  /// File path: assets/tifo/sprites/goalkeeper_v2/keeper_diveLowLeft_Green.png
+  AssetGenImage get keeperDiveLowLeftGreen =>
+      const AssetGenImage('assets/tifo/sprites/goalkeeper_v2/keeper_diveLowLeft_Green.png');
+
+  /// File path: assets/tifo/sprites/goalkeeper_v2/keeper_diveLowLeft_Red.png
+  AssetGenImage get keeperDiveLowLeftRed =>
+      const AssetGenImage('assets/tifo/sprites/goalkeeper_v2/keeper_diveLowLeft_Red.png');
+
+  /// File path: assets/tifo/sprites/goalkeeper_v2/keeper_diveLowLeft_Sand.png
+  AssetGenImage get keeperDiveLowLeftSand =>
+      const AssetGenImage('assets/tifo/sprites/goalkeeper_v2/keeper_diveLowLeft_Sand.png');
+
+  /// File path: assets/tifo/sprites/goalkeeper_v2/keeper_diveLowLeft_Yellow.png
+  AssetGenImage get keeperDiveLowLeftYellow =>
+      const AssetGenImage('assets/tifo/sprites/goalkeeper_v2/keeper_diveLowLeft_Yellow.png');
+
+  /// File path: assets/tifo/sprites/goalkeeper_v2/keeper_diveLowRight.png
+  AssetGenImage get keeperDiveLowRight =>
+      const AssetGenImage('assets/tifo/sprites/goalkeeper_v2/keeper_diveLowRight.png');
+
+  /// File path: assets/tifo/sprites/goalkeeper_v2/keeper_diveLowRight_Black.png
+  AssetGenImage get keeperDiveLowRightBlack =>
+      const AssetGenImage('assets/tifo/sprites/goalkeeper_v2/keeper_diveLowRight_Black.png');
+
+  /// File path: assets/tifo/sprites/goalkeeper_v2/keeper_diveLowRight_Blue.png
+  AssetGenImage get keeperDiveLowRightBlue =>
+      const AssetGenImage('assets/tifo/sprites/goalkeeper_v2/keeper_diveLowRight_Blue.png');
+
+  /// File path: assets/tifo/sprites/goalkeeper_v2/keeper_diveLowRight_Green.png
+  AssetGenImage get keeperDiveLowRightGreen =>
+      const AssetGenImage('assets/tifo/sprites/goalkeeper_v2/keeper_diveLowRight_Green.png');
+
+  /// File path: assets/tifo/sprites/goalkeeper_v2/keeper_diveLowRight_Red.png
+  AssetGenImage get keeperDiveLowRightRed =>
+      const AssetGenImage('assets/tifo/sprites/goalkeeper_v2/keeper_diveLowRight_Red.png');
+
+  /// File path: assets/tifo/sprites/goalkeeper_v2/keeper_diveLowRight_Sand.png
+  AssetGenImage get keeperDiveLowRightSand =>
+      const AssetGenImage('assets/tifo/sprites/goalkeeper_v2/keeper_diveLowRight_Sand.png');
+
+  /// File path: assets/tifo/sprites/goalkeeper_v2/keeper_diveLowRight_Yellow.png
+  AssetGenImage get keeperDiveLowRightYellow =>
+      const AssetGenImage('assets/tifo/sprites/goalkeeper_v2/keeper_diveLowRight_Yellow.png');
+
+  /// File path: assets/tifo/sprites/goalkeeper_v2/keeper_diveUpCenter.png
+  AssetGenImage get keeperDiveUpCenter =>
+      const AssetGenImage('assets/tifo/sprites/goalkeeper_v2/keeper_diveUpCenter.png');
+
+  /// File path: assets/tifo/sprites/goalkeeper_v2/keeper_diveUpCenter_Black.png
+  AssetGenImage get keeperDiveUpCenterBlack =>
+      const AssetGenImage('assets/tifo/sprites/goalkeeper_v2/keeper_diveUpCenter_Black.png');
+
+  /// File path: assets/tifo/sprites/goalkeeper_v2/keeper_diveUpCenter_Blue.png
+  AssetGenImage get keeperDiveUpCenterBlue =>
+      const AssetGenImage('assets/tifo/sprites/goalkeeper_v2/keeper_diveUpCenter_Blue.png');
+
+  /// File path: assets/tifo/sprites/goalkeeper_v2/keeper_diveUpCenter_Green.png
+  AssetGenImage get keeperDiveUpCenterGreen =>
+      const AssetGenImage('assets/tifo/sprites/goalkeeper_v2/keeper_diveUpCenter_Green.png');
+
+  /// File path: assets/tifo/sprites/goalkeeper_v2/keeper_diveUpCenter_Red.png
+  AssetGenImage get keeperDiveUpCenterRed =>
+      const AssetGenImage('assets/tifo/sprites/goalkeeper_v2/keeper_diveUpCenter_Red.png');
+
+  /// File path: assets/tifo/sprites/goalkeeper_v2/keeper_diveUpCenter_Sand.png
+  AssetGenImage get keeperDiveUpCenterSand =>
+      const AssetGenImage('assets/tifo/sprites/goalkeeper_v2/keeper_diveUpCenter_Sand.png');
+
+  /// File path: assets/tifo/sprites/goalkeeper_v2/keeper_diveUpCenter_Yellow.png
+  AssetGenImage get keeperDiveUpCenterYellow =>
+      const AssetGenImage('assets/tifo/sprites/goalkeeper_v2/keeper_diveUpCenter_Yellow.png');
+
+  /// File path: assets/tifo/sprites/goalkeeper_v2/keeper_diveUpRight.png
+  AssetGenImage get keeperDiveUpRight =>
+      const AssetGenImage('assets/tifo/sprites/goalkeeper_v2/keeper_diveUpRight.png');
+
+  /// File path: assets/tifo/sprites/goalkeeper_v2/keeper_diveUpRight_Black.png
+  AssetGenImage get keeperDiveUpRightBlack =>
+      const AssetGenImage('assets/tifo/sprites/goalkeeper_v2/keeper_diveUpRight_Black.png');
+
+  /// File path: assets/tifo/sprites/goalkeeper_v2/keeper_diveUpRight_Blue.png
+  AssetGenImage get keeperDiveUpRightBlue =>
+      const AssetGenImage('assets/tifo/sprites/goalkeeper_v2/keeper_diveUpRight_Blue.png');
+
+  /// File path: assets/tifo/sprites/goalkeeper_v2/keeper_diveUpRight_Green.png
+  AssetGenImage get keeperDiveUpRightGreen =>
+      const AssetGenImage('assets/tifo/sprites/goalkeeper_v2/keeper_diveUpRight_Green.png');
+
+  /// File path: assets/tifo/sprites/goalkeeper_v2/keeper_diveUpRight_Red.png
+  AssetGenImage get keeperDiveUpRightRed =>
+      const AssetGenImage('assets/tifo/sprites/goalkeeper_v2/keeper_diveUpRight_Red.png');
+
+  /// File path: assets/tifo/sprites/goalkeeper_v2/keeper_diveUpRight_Sand.png
+  AssetGenImage get keeperDiveUpRightSand =>
+      const AssetGenImage('assets/tifo/sprites/goalkeeper_v2/keeper_diveUpRight_Sand.png');
+
+  /// File path: assets/tifo/sprites/goalkeeper_v2/keeper_diveUpRight_Yellow.png
+  AssetGenImage get keeperDiveUpRightYellow =>
+      const AssetGenImage('assets/tifo/sprites/goalkeeper_v2/keeper_diveUpRight_Yellow.png');
+
+  /// File path: assets/tifo/sprites/goalkeeper_v2/keeper_groundLeft.png
+  AssetGenImage get keeperGroundLeft => const AssetGenImage('assets/tifo/sprites/goalkeeper_v2/keeper_groundLeft.png');
+
+  /// File path: assets/tifo/sprites/goalkeeper_v2/keeper_groundLeft_Black.png
+  AssetGenImage get keeperGroundLeftBlack =>
+      const AssetGenImage('assets/tifo/sprites/goalkeeper_v2/keeper_groundLeft_Black.png');
+
+  /// File path: assets/tifo/sprites/goalkeeper_v2/keeper_groundLeft_Blue.png
+  AssetGenImage get keeperGroundLeftBlue =>
+      const AssetGenImage('assets/tifo/sprites/goalkeeper_v2/keeper_groundLeft_Blue.png');
+
+  /// File path: assets/tifo/sprites/goalkeeper_v2/keeper_groundLeft_Green.png
+  AssetGenImage get keeperGroundLeftGreen =>
+      const AssetGenImage('assets/tifo/sprites/goalkeeper_v2/keeper_groundLeft_Green.png');
+
+  /// File path: assets/tifo/sprites/goalkeeper_v2/keeper_groundLeft_Red.png
+  AssetGenImage get keeperGroundLeftRed =>
+      const AssetGenImage('assets/tifo/sprites/goalkeeper_v2/keeper_groundLeft_Red.png');
+
+  /// File path: assets/tifo/sprites/goalkeeper_v2/keeper_groundLeft_Sand.png
+  AssetGenImage get keeperGroundLeftSand =>
+      const AssetGenImage('assets/tifo/sprites/goalkeeper_v2/keeper_groundLeft_Sand.png');
+
+  /// File path: assets/tifo/sprites/goalkeeper_v2/keeper_groundLeft_Yellow.png
+  AssetGenImage get keeperGroundLeftYellow =>
+      const AssetGenImage('assets/tifo/sprites/goalkeeper_v2/keeper_groundLeft_Yellow.png');
+
+  /// File path: assets/tifo/sprites/goalkeeper_v2/keeper_groundRight.png
+  AssetGenImage get keeperGroundRight =>
+      const AssetGenImage('assets/tifo/sprites/goalkeeper_v2/keeper_groundRight.png');
+
+  /// File path: assets/tifo/sprites/goalkeeper_v2/keeper_groundRight_Black.png
+  AssetGenImage get keeperGroundRightBlack =>
+      const AssetGenImage('assets/tifo/sprites/goalkeeper_v2/keeper_groundRight_Black.png');
+
+  /// File path: assets/tifo/sprites/goalkeeper_v2/keeper_groundRight_Blue.png
+  AssetGenImage get keeperGroundRightBlue =>
+      const AssetGenImage('assets/tifo/sprites/goalkeeper_v2/keeper_groundRight_Blue.png');
+
+  /// File path: assets/tifo/sprites/goalkeeper_v2/keeper_groundRight_Green.png
+  AssetGenImage get keeperGroundRightGreen =>
+      const AssetGenImage('assets/tifo/sprites/goalkeeper_v2/keeper_groundRight_Green.png');
+
+  /// File path: assets/tifo/sprites/goalkeeper_v2/keeper_groundRight_Red.png
+  AssetGenImage get keeperGroundRightRed =>
+      const AssetGenImage('assets/tifo/sprites/goalkeeper_v2/keeper_groundRight_Red.png');
+
+  /// File path: assets/tifo/sprites/goalkeeper_v2/keeper_groundRight_Sand.png
+  AssetGenImage get keeperGroundRightSand =>
+      const AssetGenImage('assets/tifo/sprites/goalkeeper_v2/keeper_groundRight_Sand.png');
+
+  /// File path: assets/tifo/sprites/goalkeeper_v2/keeper_groundRight_Yellow.png
+  AssetGenImage get keeperGroundRightYellow =>
+      const AssetGenImage('assets/tifo/sprites/goalkeeper_v2/keeper_groundRight_Yellow.png');
+
+  /// File path: assets/tifo/sprites/goalkeeper_v2/keeper_idle.png
+  AssetGenImage get keeperIdle => const AssetGenImage('assets/tifo/sprites/goalkeeper_v2/keeper_idle.png');
+
+  /// File path: assets/tifo/sprites/goalkeeper_v2/keeper_idle_Black.png
+  AssetGenImage get keeperIdleBlack => const AssetGenImage('assets/tifo/sprites/goalkeeper_v2/keeper_idle_Black.png');
+
+  /// File path: assets/tifo/sprites/goalkeeper_v2/keeper_idle_Blue.png
+  AssetGenImage get keeperIdleBlue => const AssetGenImage('assets/tifo/sprites/goalkeeper_v2/keeper_idle_Blue.png');
+
+  /// File path: assets/tifo/sprites/goalkeeper_v2/keeper_idle_Green.png
+  AssetGenImage get keeperIdleGreen => const AssetGenImage('assets/tifo/sprites/goalkeeper_v2/keeper_idle_Green.png');
+
+  /// File path: assets/tifo/sprites/goalkeeper_v2/keeper_idle_Red.png
+  AssetGenImage get keeperIdleRed => const AssetGenImage('assets/tifo/sprites/goalkeeper_v2/keeper_idle_Red.png');
+
+  /// File path: assets/tifo/sprites/goalkeeper_v2/keeper_idle_Sand.png
+  AssetGenImage get keeperIdleSand => const AssetGenImage('assets/tifo/sprites/goalkeeper_v2/keeper_idle_Sand.png');
+
+  /// File path: assets/tifo/sprites/goalkeeper_v2/keeper_idle_Yellow.png
+  AssetGenImage get keeperIdleYellow => const AssetGenImage('assets/tifo/sprites/goalkeeper_v2/keeper_idle_Yellow.png');
+
+  /// File path: assets/tifo/sprites/goalkeeper_v2/keeper_ready.png
+  AssetGenImage get keeperReady => const AssetGenImage('assets/tifo/sprites/goalkeeper_v2/keeper_ready.png');
+
+  /// File path: assets/tifo/sprites/goalkeeper_v2/keeper_ready_Black.png
+  AssetGenImage get keeperReadyBlack => const AssetGenImage('assets/tifo/sprites/goalkeeper_v2/keeper_ready_Black.png');
+
+  /// File path: assets/tifo/sprites/goalkeeper_v2/keeper_ready_Blue.png
+  AssetGenImage get keeperReadyBlue => const AssetGenImage('assets/tifo/sprites/goalkeeper_v2/keeper_ready_Blue.png');
+
+  /// File path: assets/tifo/sprites/goalkeeper_v2/keeper_ready_Green.png
+  AssetGenImage get keeperReadyGreen => const AssetGenImage('assets/tifo/sprites/goalkeeper_v2/keeper_ready_Green.png');
+
+  /// File path: assets/tifo/sprites/goalkeeper_v2/keeper_ready_Red.png
+  AssetGenImage get keeperReadyRed => const AssetGenImage('assets/tifo/sprites/goalkeeper_v2/keeper_ready_Red.png');
+
+  /// File path: assets/tifo/sprites/goalkeeper_v2/keeper_ready_Sand.png
+  AssetGenImage get keeperReadySand => const AssetGenImage('assets/tifo/sprites/goalkeeper_v2/keeper_ready_Sand.png');
+
+  /// File path: assets/tifo/sprites/goalkeeper_v2/keeper_ready_Yellow.png
+  AssetGenImage get keeperReadyYellow =>
+      const AssetGenImage('assets/tifo/sprites/goalkeeper_v2/keeper_ready_Yellow.png');
+
+  /// File path: assets/tifo/sprites/goalkeeper_v2/missed_reaction_sheet.png
+  AssetGenImage get missedReactionSheet =>
+      const AssetGenImage('assets/tifo/sprites/goalkeeper_v2/missed_reaction_sheet.png');
+
+  /// File path: assets/tifo/sprites/goalkeeper_v2/ready_sheet.png
+  AssetGenImage get readySheet => const AssetGenImage('assets/tifo/sprites/goalkeeper_v2/ready_sheet.png');
+
+  /// List of all assets
+  List<AssetGenImage> get values => [
+    concededSheet,
+    diveHighLeftSheet,
+    diveLowLeftSheet,
+    diveMidLeftSheet,
+    keeperDiveLowCenter,
+    keeperDiveLowCenterBlack,
+    keeperDiveLowCenterBlue,
+    keeperDiveLowCenterGreen,
+    keeperDiveLowCenterRed,
+    keeperDiveLowCenterSand,
+    keeperDiveLowCenterYellow,
+    keeperDiveLowLeft,
+    keeperDiveLowLeftBlack,
+    keeperDiveLowLeftBlue,
+    keeperDiveLowLeftGreen,
+    keeperDiveLowLeftRed,
+    keeperDiveLowLeftSand,
+    keeperDiveLowLeftYellow,
+    keeperDiveLowRight,
+    keeperDiveLowRightBlack,
+    keeperDiveLowRightBlue,
+    keeperDiveLowRightGreen,
+    keeperDiveLowRightRed,
+    keeperDiveLowRightSand,
+    keeperDiveLowRightYellow,
+    keeperDiveUpCenter,
+    keeperDiveUpCenterBlack,
+    keeperDiveUpCenterBlue,
+    keeperDiveUpCenterGreen,
+    keeperDiveUpCenterRed,
+    keeperDiveUpCenterSand,
+    keeperDiveUpCenterYellow,
+    keeperDiveUpRight,
+    keeperDiveUpRightBlack,
+    keeperDiveUpRightBlue,
+    keeperDiveUpRightGreen,
+    keeperDiveUpRightRed,
+    keeperDiveUpRightSand,
+    keeperDiveUpRightYellow,
+    keeperGroundLeft,
+    keeperGroundLeftBlack,
+    keeperGroundLeftBlue,
+    keeperGroundLeftGreen,
+    keeperGroundLeftRed,
+    keeperGroundLeftSand,
+    keeperGroundLeftYellow,
+    keeperGroundRight,
+    keeperGroundRightBlack,
+    keeperGroundRightBlue,
+    keeperGroundRightGreen,
+    keeperGroundRightRed,
+    keeperGroundRightSand,
+    keeperGroundRightYellow,
+    keeperIdle,
+    keeperIdleBlack,
+    keeperIdleBlue,
+    keeperIdleGreen,
+    keeperIdleRed,
+    keeperIdleSand,
+    keeperIdleYellow,
+    keeperReady,
+    keeperReadyBlack,
+    keeperReadyBlue,
+    keeperReadyGreen,
+    keeperReadyRed,
+    keeperReadySand,
+    keeperReadyYellow,
+    missedReactionSheet,
+    readySheet,
+  ];
+}
+
+class $AssetsTifoSpritesStrikerV2Gen {
+  const $AssetsTifoSpritesStrikerV2Gen();
+
+  /// File path: assets/tifo/sprites/striker_v2/striker_idle.png
+  AssetGenImage get strikerIdle => const AssetGenImage('assets/tifo/sprites/striker_v2/striker_idle.png');
+
+  /// File path: assets/tifo/sprites/striker_v2/striker_idle_Black.png
+  AssetGenImage get strikerIdleBlack => const AssetGenImage('assets/tifo/sprites/striker_v2/striker_idle_Black.png');
+
+  /// File path: assets/tifo/sprites/striker_v2/striker_idle_Blue.png
+  AssetGenImage get strikerIdleBlue => const AssetGenImage('assets/tifo/sprites/striker_v2/striker_idle_Blue.png');
+
+  /// File path: assets/tifo/sprites/striker_v2/striker_idle_Red.png
+  AssetGenImage get strikerIdleRed => const AssetGenImage('assets/tifo/sprites/striker_v2/striker_idle_Red.png');
+
+  /// File path: assets/tifo/sprites/striker_v2/striker_idle_Sand.png
+  AssetGenImage get strikerIdleSand => const AssetGenImage('assets/tifo/sprites/striker_v2/striker_idle_Sand.png');
+
+  /// File path: assets/tifo/sprites/striker_v2/striker_idle_White.png
+  AssetGenImage get strikerIdleWhite => const AssetGenImage('assets/tifo/sprites/striker_v2/striker_idle_White.png');
+
+  /// File path: assets/tifo/sprites/striker_v2/striker_idle_Yellow.png
+  AssetGenImage get strikerIdleYellow => const AssetGenImage('assets/tifo/sprites/striker_v2/striker_idle_Yellow.png');
+
+  /// File path: assets/tifo/sprites/striker_v2/striker_kick.png
+  AssetGenImage get strikerKick => const AssetGenImage('assets/tifo/sprites/striker_v2/striker_kick.png');
+
+  /// File path: assets/tifo/sprites/striker_v2/striker_kick_Black.png
+  AssetGenImage get strikerKickBlack => const AssetGenImage('assets/tifo/sprites/striker_v2/striker_kick_Black.png');
+
+  /// File path: assets/tifo/sprites/striker_v2/striker_kick_Blue.png
+  AssetGenImage get strikerKickBlue => const AssetGenImage('assets/tifo/sprites/striker_v2/striker_kick_Blue.png');
+
+  /// File path: assets/tifo/sprites/striker_v2/striker_kick_Red.png
+  AssetGenImage get strikerKickRed => const AssetGenImage('assets/tifo/sprites/striker_v2/striker_kick_Red.png');
+
+  /// File path: assets/tifo/sprites/striker_v2/striker_kick_Sand.png
+  AssetGenImage get strikerKickSand => const AssetGenImage('assets/tifo/sprites/striker_v2/striker_kick_Sand.png');
+
+  /// File path: assets/tifo/sprites/striker_v2/striker_kick_White.png
+  AssetGenImage get strikerKickWhite => const AssetGenImage('assets/tifo/sprites/striker_v2/striker_kick_White.png');
+
+  /// File path: assets/tifo/sprites/striker_v2/striker_kick_Yellow.png
+  AssetGenImage get strikerKickYellow => const AssetGenImage('assets/tifo/sprites/striker_v2/striker_kick_Yellow.png');
+
+  /// File path: assets/tifo/sprites/striker_v2/striker_settle.png
+  AssetGenImage get strikerSettle => const AssetGenImage('assets/tifo/sprites/striker_v2/striker_settle.png');
+
+  /// File path: assets/tifo/sprites/striker_v2/striker_settle_Black.png
+  AssetGenImage get strikerSettleBlack =>
+      const AssetGenImage('assets/tifo/sprites/striker_v2/striker_settle_Black.png');
+
+  /// File path: assets/tifo/sprites/striker_v2/striker_settle_Blue.png
+  AssetGenImage get strikerSettleBlue => const AssetGenImage('assets/tifo/sprites/striker_v2/striker_settle_Blue.png');
+
+  /// File path: assets/tifo/sprites/striker_v2/striker_settle_Red.png
+  AssetGenImage get strikerSettleRed => const AssetGenImage('assets/tifo/sprites/striker_v2/striker_settle_Red.png');
+
+  /// File path: assets/tifo/sprites/striker_v2/striker_settle_Sand.png
+  AssetGenImage get strikerSettleSand => const AssetGenImage('assets/tifo/sprites/striker_v2/striker_settle_Sand.png');
+
+  /// File path: assets/tifo/sprites/striker_v2/striker_settle_White.png
+  AssetGenImage get strikerSettleWhite =>
+      const AssetGenImage('assets/tifo/sprites/striker_v2/striker_settle_White.png');
+
+  /// File path: assets/tifo/sprites/striker_v2/striker_settle_Yellow.png
+  AssetGenImage get strikerSettleYellow =>
+      const AssetGenImage('assets/tifo/sprites/striker_v2/striker_settle_Yellow.png');
+
+  /// File path: assets/tifo/sprites/striker_v2/striker_windup.png
+  AssetGenImage get strikerWindup => const AssetGenImage('assets/tifo/sprites/striker_v2/striker_windup.png');
+
+  /// File path: assets/tifo/sprites/striker_v2/striker_windup_Black.png
+  AssetGenImage get strikerWindupBlack =>
+      const AssetGenImage('assets/tifo/sprites/striker_v2/striker_windup_Black.png');
+
+  /// File path: assets/tifo/sprites/striker_v2/striker_windup_Blue.png
+  AssetGenImage get strikerWindupBlue => const AssetGenImage('assets/tifo/sprites/striker_v2/striker_windup_Blue.png');
+
+  /// File path: assets/tifo/sprites/striker_v2/striker_windup_Red.png
+  AssetGenImage get strikerWindupRed => const AssetGenImage('assets/tifo/sprites/striker_v2/striker_windup_Red.png');
+
+  /// File path: assets/tifo/sprites/striker_v2/striker_windup_Sand.png
+  AssetGenImage get strikerWindupSand => const AssetGenImage('assets/tifo/sprites/striker_v2/striker_windup_Sand.png');
+
+  /// File path: assets/tifo/sprites/striker_v2/striker_windup_White.png
+  AssetGenImage get strikerWindupWhite =>
+      const AssetGenImage('assets/tifo/sprites/striker_v2/striker_windup_White.png');
+
+  /// File path: assets/tifo/sprites/striker_v2/striker_windup_Yellow.png
+  AssetGenImage get strikerWindupYellow =>
+      const AssetGenImage('assets/tifo/sprites/striker_v2/striker_windup_Yellow.png');
+
+  /// List of all assets
+  List<AssetGenImage> get values => [
+    strikerIdle,
+    strikerIdleBlack,
+    strikerIdleBlue,
+    strikerIdleRed,
+    strikerIdleSand,
+    strikerIdleWhite,
+    strikerIdleYellow,
+    strikerKick,
+    strikerKickBlack,
+    strikerKickBlue,
+    strikerKickRed,
+    strikerKickSand,
+    strikerKickWhite,
+    strikerKickYellow,
+    strikerSettle,
+    strikerSettleBlack,
+    strikerSettleBlue,
+    strikerSettleRed,
+    strikerSettleSand,
+    strikerSettleWhite,
+    strikerSettleYellow,
+    strikerWindup,
+    strikerWindupBlack,
+    strikerWindupBlue,
+    strikerWindupRed,
+    strikerWindupSand,
+    strikerWindupWhite,
+    strikerWindupYellow,
+  ];
+}
+
 class $AssetsIconsSvgDynamicPoiGlyphsGen {
   const $AssetsIconsSvgDynamicPoiGlyphsGen();
 
@@ -2346,25 +3135,25 @@ class $AssetsIconsSvgDynamicPoiGlyphsGen {
 
   /// List of all assets
   List<SvgGenImage> get values => [
-        a900001MedicalHelp,
-        a900002LostAndFound,
-        a900003HajjSupport,
-        a900004KioskAndPos,
-        a900005AdditionalCategory,
-        a900006Stair,
-        a900007Service,
-        a900008Gate,
-        a900009PrayerHall,
-        a900010Landmark,
-        a900011LuggageStorage,
-        a900012WheelchairsCarts,
-        a900013PrayerAreaDisabled,
-        a900014EmergencyAssembly,
-        a900015RestrictedZone,
-        a900016VolunteerPoint,
-        a900017FreeWifi,
-        a900018PilgrimCamp
-      ];
+    a900001MedicalHelp,
+    a900002LostAndFound,
+    a900003HajjSupport,
+    a900004KioskAndPos,
+    a900005AdditionalCategory,
+    a900006Stair,
+    a900007Service,
+    a900008Gate,
+    a900009PrayerHall,
+    a900010Landmark,
+    a900011LuggageStorage,
+    a900012WheelchairsCarts,
+    a900013PrayerAreaDisabled,
+    a900014EmergencyAssembly,
+    a900015RestrictedZone,
+    a900016VolunteerPoint,
+    a900017FreeWifi,
+    a900018PilgrimCamp,
+  ];
 }
 
 class $AssetsIconsSvgPlacesBigNewDarkGen {
@@ -2492,46 +3281,46 @@ class $AssetsIconsSvgPlacesBigNewDarkGen {
 
   /// List of all assets
   List<SvgGenImage> get values => [
-        icAirport,
-        icAnimals,
-        icArtAndDesign,
-        icBanks,
-        icBarbershop,
-        icBeach,
-        icBeauty,
-        icBuildingMaterials,
-        icBusiness,
-        icCarService,
-        icChildrensGoods,
-        icCityTransport,
-        icClothingAndFootwear,
-        icConnection,
-        icConstruction,
-        icDentist,
-        icEducation,
-        icEvents,
-        icFuel,
-        icGym,
-        icHospital,
-        icHotels,
-        icMalls,
-        icMedia,
-        icMedicine,
-        icMosques,
-        icMunicipalities,
-        icNature,
-        icNewPin,
-        icOffersPin,
-        icParking,
-        icPolice,
-        icQibla,
-        icRailwayTransport,
-        icRecreation,
-        icRestaurant,
-        icShops,
-        icWaterTransport,
-        icWc
-      ];
+    icAirport,
+    icAnimals,
+    icArtAndDesign,
+    icBanks,
+    icBarbershop,
+    icBeach,
+    icBeauty,
+    icBuildingMaterials,
+    icBusiness,
+    icCarService,
+    icChildrensGoods,
+    icCityTransport,
+    icClothingAndFootwear,
+    icConnection,
+    icConstruction,
+    icDentist,
+    icEducation,
+    icEvents,
+    icFuel,
+    icGym,
+    icHospital,
+    icHotels,
+    icMalls,
+    icMedia,
+    icMedicine,
+    icMosques,
+    icMunicipalities,
+    icNature,
+    icNewPin,
+    icOffersPin,
+    icParking,
+    icPolice,
+    icQibla,
+    icRailwayTransport,
+    icRecreation,
+    icRestaurant,
+    icShops,
+    icWaterTransport,
+    icWc,
+  ];
 }
 
 class $AssetsIconsSvgPlacesBigNewLightGen {
@@ -2659,46 +3448,46 @@ class $AssetsIconsSvgPlacesBigNewLightGen {
 
   /// List of all assets
   List<SvgGenImage> get values => [
-        icAirport,
-        icAnimals,
-        icArtAndDesign,
-        icBanks,
-        icBarbershop,
-        icBeach,
-        icBeauty,
-        icBuildingMaterials,
-        icBusiness,
-        icCarService,
-        icChildrensGoods,
-        icCityTransport,
-        icClothingAndFootwear,
-        icConnection,
-        icConstruction,
-        icDentist,
-        icEducation,
-        icEvents,
-        icFuel,
-        icGym,
-        icHospital,
-        icHotels,
-        icMalls,
-        icMedia,
-        icMedicine,
-        icMosques,
-        icMunicipalities,
-        icNature,
-        icOffersPin,
-        icParking,
-        icPinNew,
-        icPolice,
-        icQibla,
-        icRailwayTransport,
-        icRecreation,
-        icRestaurant,
-        icShops,
-        icWaterTransport,
-        icWc
-      ];
+    icAirport,
+    icAnimals,
+    icArtAndDesign,
+    icBanks,
+    icBarbershop,
+    icBeach,
+    icBeauty,
+    icBuildingMaterials,
+    icBusiness,
+    icCarService,
+    icChildrensGoods,
+    icCityTransport,
+    icClothingAndFootwear,
+    icConnection,
+    icConstruction,
+    icDentist,
+    icEducation,
+    icEvents,
+    icFuel,
+    icGym,
+    icHospital,
+    icHotels,
+    icMalls,
+    icMedia,
+    icMedicine,
+    icMosques,
+    icMunicipalities,
+    icNature,
+    icOffersPin,
+    icParking,
+    icPinNew,
+    icPolice,
+    icQibla,
+    icRailwayTransport,
+    icRecreation,
+    icRestaurant,
+    icShops,
+    icWaterTransport,
+    icWc,
+  ];
 }
 
 class $AssetsIconsSvgPlacesBigNewOldGen {
@@ -2805,40 +3594,40 @@ class $AssetsIconsSvgPlacesBigNewOldGen {
 
   /// List of all assets
   List<SvgGenImage> get values => [
-        icAdditional,
-        icBarbershop,
-        icBeach,
-        icBeauty,
-        icCarServices,
-        icEvents,
-        icFireStation,
-        icGasstationLtr,
-        icGym,
-        icHajjSupport,
-        icHealthCenter,
-        icHospital,
-        icHospitalPlace,
-        icHotels,
-        icKiosksRetail,
-        icLostAndFound,
-        icMarkets,
-        icMedicalHelp,
-        icMedicineLtr,
-        icMosques,
-        icOffersPin,
-        icPark,
-        icPinNew,
-        icPoliceStation,
-        icQibla,
-        icRecreation,
-        icRestaurant,
-        icSchoolLtr,
-        icShopping,
-        icStairs,
-        icTooth,
-        icWaterPlaces,
-        icWc
-      ];
+    icAdditional,
+    icBarbershop,
+    icBeach,
+    icBeauty,
+    icCarServices,
+    icEvents,
+    icFireStation,
+    icGasstationLtr,
+    icGym,
+    icHajjSupport,
+    icHealthCenter,
+    icHospital,
+    icHospitalPlace,
+    icHotels,
+    icKiosksRetail,
+    icLostAndFound,
+    icMarkets,
+    icMedicalHelp,
+    icMedicineLtr,
+    icMosques,
+    icOffersPin,
+    icPark,
+    icPinNew,
+    icPoliceStation,
+    icQibla,
+    icRecreation,
+    icRestaurant,
+    icSchoolLtr,
+    icShopping,
+    icStairs,
+    icTooth,
+    icWaterPlaces,
+    icWc,
+  ];
 }
 
 class $AssetsIconsSvgPlacesNewDarkGen {
@@ -2969,47 +3758,47 @@ class $AssetsIconsSvgPlacesNewDarkGen {
 
   /// List of all assets
   List<SvgGenImage> get values => [
-        icAirport,
-        icAnimals,
-        icArtAndDesign,
-        icBanks,
-        icBarbershop,
-        icBeach,
-        icBeauty,
-        icBuildingMaterials,
-        icBusiness,
-        icCarService,
-        icChildrensGoods,
-        icCityTransport,
-        icClothingAndFootwear,
-        icConnection,
-        icConstruction,
-        icDentist,
-        icEducation,
-        icEvents,
-        icFuel,
-        icGym,
-        icHospital,
-        icHotels,
-        icMalls,
-        icMedia,
-        icMedicine,
-        icMosques,
-        icMunicipalities,
-        icNature,
-        icNewPin,
-        icOffers,
-        icOffersClusteringMarkerDark,
-        icParking,
-        icPolice,
-        icQibla,
-        icRailwayTransport,
-        icRecreation,
-        icRestaurant,
-        icShops,
-        icWaterTransport,
-        icWc
-      ];
+    icAirport,
+    icAnimals,
+    icArtAndDesign,
+    icBanks,
+    icBarbershop,
+    icBeach,
+    icBeauty,
+    icBuildingMaterials,
+    icBusiness,
+    icCarService,
+    icChildrensGoods,
+    icCityTransport,
+    icClothingAndFootwear,
+    icConnection,
+    icConstruction,
+    icDentist,
+    icEducation,
+    icEvents,
+    icFuel,
+    icGym,
+    icHospital,
+    icHotels,
+    icMalls,
+    icMedia,
+    icMedicine,
+    icMosques,
+    icMunicipalities,
+    icNature,
+    icNewPin,
+    icOffers,
+    icOffersClusteringMarkerDark,
+    icParking,
+    icPolice,
+    icQibla,
+    icRailwayTransport,
+    icRecreation,
+    icRestaurant,
+    icShops,
+    icWaterTransport,
+    icWc,
+  ];
 }
 
 class $AssetsIconsSvgPlacesNewLightGen {
@@ -3140,47 +3929,47 @@ class $AssetsIconsSvgPlacesNewLightGen {
 
   /// List of all assets
   List<SvgGenImage> get values => [
-        icAirport,
-        icAnimals,
-        icArtAndDesign,
-        icBanks,
-        icBarbershop,
-        icBeach,
-        icBeauty,
-        icBuildingMaterials,
-        icBusiness,
-        icCarService,
-        icChildrensGoods,
-        icCityTransport,
-        icClothingAndFootwear,
-        icConnection,
-        icConstruction,
-        icDentist,
-        icEducation,
-        icEvents,
-        icFuel,
-        icGym,
-        icHospital,
-        icHotels,
-        icMalls,
-        icMedia,
-        icMedicine,
-        icMosques,
-        icMunicipalities,
-        icNature,
-        icNewPin,
-        icOffers,
-        icOffersClusteringMarker,
-        icParking,
-        icPolice,
-        icQibla,
-        icRailwayTransport,
-        icRecreation,
-        icRestaurant,
-        icShops,
-        icWaterTransport,
-        icWc
-      ];
+    icAirport,
+    icAnimals,
+    icArtAndDesign,
+    icBanks,
+    icBarbershop,
+    icBeach,
+    icBeauty,
+    icBuildingMaterials,
+    icBusiness,
+    icCarService,
+    icChildrensGoods,
+    icCityTransport,
+    icClothingAndFootwear,
+    icConnection,
+    icConstruction,
+    icDentist,
+    icEducation,
+    icEvents,
+    icFuel,
+    icGym,
+    icHospital,
+    icHotels,
+    icMalls,
+    icMedia,
+    icMedicine,
+    icMosques,
+    icMunicipalities,
+    icNature,
+    icNewPin,
+    icOffers,
+    icOffersClusteringMarker,
+    icParking,
+    icPolice,
+    icQibla,
+    icRailwayTransport,
+    icRecreation,
+    icRestaurant,
+    icShops,
+    icWaterTransport,
+    icWc,
+  ];
 }
 
 class $AssetsIconsSvgPlacesNewOldGen {
@@ -3304,50 +4093,48 @@ class $AssetsIconsSvgPlacesNewOldGen {
 
   /// List of all assets
   List<SvgGenImage> get values => [
-        icAdditional,
-        icBarbershop,
-        icBeach,
-        icBeauty,
-        icCarServices,
-        icEventsLtr,
-        icFireStation,
-        icGasstationLtr,
-        icGym,
-        icHajjSupport,
-        icHealthCenter,
-        icHospital,
-        icHospitalPlace,
-        icHotels,
-        icKiosksRetail,
-        icLostAndFound,
-        icMarkerMNew,
-        icMarkets,
-        icMedicalHelp,
-        icMedicineLtr,
-        icMosques,
-        icOfferMarker,
-        icOfferMarkerDark,
-        icOffersClusteringMarker,
-        icOffersClusteringMarkerDark,
-        icPark,
-        icParking,
-        icParkingSpot,
-        icPoliceStation,
-        icQibla,
-        icRecreation,
-        icRestaurant,
-        icSchoolLtr,
-        icShopping,
-        icStairs,
-        icTooth,
-        icWaterPlaces,
-        icWc
-      ];
+    icAdditional,
+    icBarbershop,
+    icBeach,
+    icBeauty,
+    icCarServices,
+    icEventsLtr,
+    icFireStation,
+    icGasstationLtr,
+    icGym,
+    icHajjSupport,
+    icHealthCenter,
+    icHospital,
+    icHospitalPlace,
+    icHotels,
+    icKiosksRetail,
+    icLostAndFound,
+    icMarkerMNew,
+    icMarkets,
+    icMedicalHelp,
+    icMedicineLtr,
+    icMosques,
+    icOfferMarker,
+    icOfferMarkerDark,
+    icOffersClusteringMarker,
+    icOffersClusteringMarkerDark,
+    icPark,
+    icParking,
+    icParkingSpot,
+    icPoliceStation,
+    icQibla,
+    icRecreation,
+    icRestaurant,
+    icSchoolLtr,
+    icShopping,
+    icStairs,
+    icTooth,
+    icWaterPlaces,
+    icWc,
+  ];
 }
 
-class Assets {
-  Assets._();
-
+abstract final class Assets {
   static const String package = 'mapness';
 
   static const String config = 'packages/mapness/assets/config.json';
@@ -3355,18 +4142,16 @@ class Assets {
   static const $AssetsImagesGen images = $AssetsImagesGen();
   static const $AssetsImagesSvgGen imagesSvg = $AssetsImagesSvgGen();
   static const $AssetsMapsGen maps = $AssetsMapsGen();
+  static const $AssetsModelsGen models = $AssetsModelsGen();
   static const String quickActionsConfig = 'packages/mapness/assets/quick_actions_config.json';
+  static const $AssetsTifoGen tifo = $AssetsTifoGen();
 
   /// List of all assets
   static List<String> get values => [config, quickActionsConfig];
 }
 
 class AssetGenImage {
-  const AssetGenImage(
-    this._assetName, {
-    this.size,
-    this.flavors = const {},
-  });
+  const AssetGenImage(this._assetName, {this.size, this.flavors = const {}, this.animation});
 
   final String _assetName;
 
@@ -3374,6 +4159,7 @@ class AssetGenImage {
 
   final Size? size;
   final Set<String> flavors;
+  final AssetGenImageAnimation? animation;
 
   Image image({
     Key? key,
@@ -3396,7 +4182,7 @@ class AssetGenImage {
     bool gaplessPlayback = true,
     bool isAntiAlias = false,
     @Deprecated('Do not specify package for a generated library asset') String? package = package,
-    FilterQuality filterQuality = FilterQuality.low,
+    FilterQuality filterQuality = FilterQuality.medium,
     int? cacheWidth,
     int? cacheHeight,
   }) {
@@ -3432,11 +4218,7 @@ class AssetGenImage {
     AssetBundle? bundle,
     @Deprecated('Do not specify package for a generated library asset') String? package = package,
   }) {
-    return AssetImage(
-      _assetName,
-      bundle: bundle,
-      package: package,
-    );
+    return AssetImage(_assetName, bundle: bundle, package: package);
   }
 
   String get path => _assetName;
@@ -3444,18 +4226,18 @@ class AssetGenImage {
   String get keyName => 'packages/mapness/$_assetName';
 }
 
-class SvgGenImage {
-  const SvgGenImage(
-    this._assetName, {
-    this.size,
-    this.flavors = const {},
-  }) : _isVecFormat = false;
+class AssetGenImageAnimation {
+  const AssetGenImageAnimation({required this.isAnimation, required this.duration, required this.frames});
 
-  const SvgGenImage.vec(
-    this._assetName, {
-    this.size,
-    this.flavors = const {},
-  }) : _isVecFormat = true;
+  final bool isAnimation;
+  final Duration duration;
+  final int frames;
+}
+
+class SvgGenImage {
+  const SvgGenImage(this._assetName, {this.size, this.flavors = const {}}) : _isVecFormat = false;
+
+  const SvgGenImage.vec(this._assetName, {this.size, this.flavors = const {}}) : _isVecFormat = true;
 
   final String _assetName;
   final Size? size;
@@ -3478,6 +4260,7 @@ class SvgGenImage {
     String? semanticsLabel,
     bool excludeFromSemantics = false,
     _svg.SvgTheme? theme,
+    _svg.ColorMapper? colorMapper,
     ColorFilter? colorFilter,
     Clip clipBehavior = Clip.hardEdge,
     @deprecated Color? color,
@@ -3486,17 +4269,14 @@ class SvgGenImage {
   }) {
     final _svg.BytesLoader loader;
     if (_isVecFormat) {
-      loader = _vg.AssetBytesLoader(
-        _assetName,
-        assetBundle: bundle,
-        packageName: package,
-      );
+      loader = _vg.AssetBytesLoader(_assetName, assetBundle: bundle, packageName: package);
     } else {
       loader = _svg.SvgAssetLoader(
         _assetName,
         assetBundle: bundle,
         packageName: package,
         theme: theme,
+        colorMapper: colorMapper,
       );
     }
     return _svg.SvgPicture(

@@ -1,7 +1,7 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_uxcam/flutter_uxcam.dart';
+import 'package:mapness/features/balady_analytics/balady_analytics.dart';
 import 'package:mapness/shared/providers/top_route_name_notifier.dart';
 import 'package:mapness/shared/providers/urbi_analytics.dart';
 import 'package:mapness/shared/utils/logger/logger.dart';
@@ -23,7 +23,7 @@ class RoutesObserver extends AutoRouteObserver {
       final path = (route.settings as AutoRoutePage).routeData.path;
 
       final currentPath = path.startsWith('/') ? path : '/$path';
-      FlutterUxcam.tagScreenName(currentPath);
+      BaladyAnalytics.instance.screen(currentPath);
       analytics.screen(currentPath);
       logger.log('New route pushed: $currentPath');
     } else {
@@ -45,7 +45,7 @@ class RoutesObserver extends AutoRouteObserver {
     super.didChangeTabRoute(route, previousRoute);
 
     final path = route.path.startsWith('/') ? route.path : '/${route.path}';
-    FlutterUxcam.tagScreenName(path);
+    BaladyAnalytics.instance.screen(path);
     ref.read(urbiAnalyticsProvider).screen(path);
     logger.log('Tab changed: ${route.name}');
   }

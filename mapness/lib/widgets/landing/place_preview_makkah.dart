@@ -17,10 +17,8 @@ import 'package:mapness/features/makkah_places/makkah_multilingual_helper.dart';
 import 'package:mapness/features/makkah_places/makkah_places_repository.dart';
 import 'package:mapness/features/poi_card/domain/model/poi_camera_config.dart';
 import 'package:mapness/features/special_themes/modes/saudi_national_day/saudi_national_day.dart';
-import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/extensions/brief_route_info_message_ext.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
-import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/providers/location.dart';
 import 'package:mapness/shared/providers/map/camera_position.dart';
 import 'package:mapness/shared/providers/dark_mode.dart';
@@ -139,25 +137,6 @@ class _PlacePreviewMakkahState extends ConsumerState<PlacePreviewMakkah> with Au
                 if (item == null) return;
 
                 final dgisId = int.tryParse(item.dgisId ?? '') ?? 0;
-
-                Metrics.logEventAdvanced(
-                  MetricsConstants.exploreKeys.placesToVisitBanner,
-                  action: MetricAction.tap.name,
-                  group: MetricsConstants.exploreTag,
-                  props: {'id': dgisId, 'title': item.titleEn ?? ''},
-                );
-
-                // Track Makkah places specific metric
-                Metrics.logEventAdvanced(
-                  MetricsConstants.makkahPlacesKeys.placeCardTapped,
-                  action: MetricAction.tap.name,
-                  group: MetricsConstants.makkahPlacesTag,
-                  props: {
-                    'placeId': item.placeId ?? '',
-                    'dgisId': dgisId,
-                    'title': item.titleEn ?? '',
-                  },
-                );
 
                 // Fly to marker location
                 if (item.lat != null && item.lon != null) {
