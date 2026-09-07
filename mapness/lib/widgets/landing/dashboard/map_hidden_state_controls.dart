@@ -12,10 +12,12 @@ import 'package:mapness/features/city_event/active_city_event.dart';
 import 'package:mapness/features/free_roam/free_roam_animation_mixin.dart';
 import 'package:mapness/features/free_roam/free_roam_starter.dart';
 import 'package:mapness/features/special_themes/core/special_theme_mode.dart';
+import 'package:mapness/features/tifo/providers/tifo_champion_ribbon.dart';
 import 'package:mapness/pages/free_roam/ui/go_to_navigator_button.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/widgets/landing/dashboard/city_event_display.dart';
 import 'package:mapness/widgets/landing/dashboard/special_theme_header.dart';
+import 'package:mapness/widgets/landing/dashboard/tifo_champion_ribbon.dart';
 import 'package:mapness/widgets/landing/map_quick_filters.dart';
 import 'package:mapness/widgets/quick_filters/models/filter_item.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
@@ -88,6 +90,11 @@ class _MapHiddenStateControlsState extends ConsumerState<MapHiddenStateControls>
         specialThemeMode == SpecialThemeMode.ramadan;
     final bool showCityEventBanner =
         specialThemeMode == SpecialThemeMode.foundationDay || (activeEvent?.isLeap ?? false);
+    // The champions ribbon shares the city events' banner slot and wins it:
+    // it is driven by the backend naming a month's winner, so it can be live
+    // at any time, over any event, and is not silenced by the TIFO layer the
+    // way `activeCityEventProvider` is.
+    final championRibbon = ref.watch(tifoChampionRibbonProvider);
     final isCityscapeDay = ref.watch(cityscapeProvider);
     final freeRoamState = ref.watch(freeRoamStarterProvider);
     ref.listen(freeRoamStarterProvider, (_, state) {
@@ -124,7 +131,13 @@ class _MapHiddenStateControlsState extends ConsumerState<MapHiddenStateControls>
                 duration: const Duration(milliseconds: 300),
               ),
             ),
-            if (showCityEventBanner)
+            if (championRibbon != null)
+              TifoChampionRibbon(
+                config: championRibbon,
+                controller: widget.controller,
+                confettiController: widget.fireworksController,
+              )
+            else if (showCityEventBanner)
               CityEventDisplay(
                 activeEvent: activeEvent,
                 controller: widget.controller,
