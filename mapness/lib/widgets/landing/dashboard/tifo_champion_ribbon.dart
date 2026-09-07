@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mapness/_generated/assets/assets.gen.dart';
 import 'package:mapness/entities/tifo/tifo_champion_ribbon_config.dart';
+import 'package:mapness/features/tifo/ui/tifo_champion_confetti.dart';
 import 'package:mapness/l10n/generated/app_localizations.dart';
 import 'package:mapness/widgets/landing/dashboard/city_event_background.dart';
 import 'package:mapness/widgets/landing/dashboard/city_event_config.dart';
@@ -79,7 +80,9 @@ class _ChampionRibbonConfig extends CityEventConfig {
 
   @override
   String getText(AppLocalizations l10n) => l10n.tifoChampionRibbon(
-    _isolate(ribbon.teamName),
+    // A club the app recognises is named from its own translation; anything
+    // else falls back to the string Remote Config sent.
+    _isolate(TifoChampionConfetti.localisedTeamName(l10n, ribbon.teamName)),
     _isolate(ribbon.monthName(locale)),
     _isolate(ribbon.year.toString()),
   );

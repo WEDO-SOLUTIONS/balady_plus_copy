@@ -1,30 +1,35 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:mapness/entities/tifo/tifo_champion_ribbon_config.dart';
 import 'package:mapness/features/tifo/providers/tifo_champion_ribbon.dart';
 import 'package:mapness/shared/providers/dgis_environment.dart';
 import 'package:mapness/widgets/debug_overlay/debug_theme.dart';
 
-/// Swaps the TIFO champions ribbon between what Remote Config sent and a
-/// built-in sample.
+/// Picks which champions ribbon the dashboard shows: one of the clubs, or
+/// whatever Remote Config holds.
 ///
-/// Off, the ribbon behaves exactly as in production: it appears only inside
-/// the configured `from`/`to` window, and not at all when Firebase carries no
-/// `tifoChampionRibbon`. On, it draws a fixed sample instead, so the ribbon
-/// can be reviewed on any environment without waiting for a date or asking
-/// the backend for a payload.
-///
-/// The card names whichever of the two is in effect, so a tester can tell a
-/// real payload from the sample at a glance.
+/// Each row overrides the ribbon with a sample built from that club's name and
+/// nothing else — the name is what Remote Config sends, and what the ribbon
+/// resolves both its translation and its confetti palette from, so the rows
+/// exercise the real path rather than a shortcut. "Unknown club" is
+/// deliberately a name no club matches: it is how the default confetti and the
+/// untranslated-name fallback get tested.
 class TifoChampionRibbonDebugSwitcher extends ConsumerWidget {
   const TifoChampionRibbonDebugSwitcher({super.key});
 
+  /// Names, not ids, and spelled as the backend spells them.
+  static const List<(String?, String, String)> _entries = [
+    (null, 'Off (Remote Config)', 'Follow the configured from/to window'),
+    ('Black Team', 'Black Team', 'Graphite and silver confetti'),
+    ('Blue Team', 'Blue Team', 'Indigo and violet confetti'),
+    ('Yellow Team', 'Yellow Team', 'Gold and amber confetti'),
+    ('Red Team', 'Red Team', 'Scarlet and coral confetti'),
+    ('Sand Team', 'Sand Team', 'Currently Red is palette — spec repeats it'),
+    ('Riyadh Rovers', 'Unknown club', 'Falls back to default confetti and the raw name'),
+  ];
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final forced = ref.watch(tifoChampionRibbonDebugProvider);
-    final resolved = ref.watch(tifoChampionRibbonProvider);
-    // What production would show right now, so the "off" subtitle can say
-    // whether Firebase actually has anything in the window.
+    final active = ref.watch(tifoChampionRibbonDebugProvider);
     final fromRemote = ref.watch(dgisEnvironmentProvider.select((env) => env.value?.tifoChampionRibbon));
 
     return DebugCard(
@@ -34,41 +39,88 @@ class TifoChampionRibbonDebugSwitcher extends ConsumerWidget {
           const DebugSectionHeader(
             icon: Icons.emoji_events_rounded,
             title: 'TIFO champions ribbon',
-            subtitle: 'Ignore the configured dates and show the ribbon',
+            subtitle: 'Show a sample ribbon for any club',
             gradient: DebugTheme.gradientTeal,
           ),
           const SizedBox(height: 12),
-          SwitchListTile.adaptive(
-            value: forced,
-            contentPadding: EdgeInsets.zero,
-            title: const Text(
-              'Show built-in sample',
-              style: TextStyle(color: Colors.white, fontWeight: FontWeight.w600, fontSize: 13),
+          for (final (value, label, subtitle) in _entries)
+            Padding(
+              padding: const EdgeInsets.only(bottom: 8),
+              child: _TeamRow(
+                label: label,
+                // The "off" row says what production would actually do right
+                // now, so an empty dashboard can be told from a missed window.
+                subtitle: value == null ? _remoteSubtitle(fromRemote) : subtitle,
+                isActive: value == active,
+                onTap: () => ref.read(tifoChampionRibbonDebugProvider.notifier).state = value,
+              ),
             ),
-            subtitle: Text(_subtitle(forced: forced, resolved: resolved, fromRemote: fromRemote),
-              style: TextStyle(color: Colors.white.withOpacity(0.5), fontSize: 11),
-            ),
-            onChanged: (value) => ref.read(tifoChampionRibbonDebugProvider.notifier).state = value,
-          ),
         ],
       ),
     );
   }
 
-  String _subtitle({
-    required bool forced,
-    required TifoChampionRibbonConfig? resolved,
-    required TifoChampionRibbonConfig? fromRemote,
-  }) {
-    if (forced) {
-      return 'Sample: ${resolved?.teamName ?? '-'} · ${resolved?.month}/${resolved?.year}';
-    }
-    if (resolved != null) {
-      return 'Firebase: ${resolved.teamName} · ${resolved.month}/${resolved.year}';
-    }
-    if (fromRemote == null || fromRemote.teamName.isEmpty) {
+  String _remoteSubtitle(Object? fromRemote) {
+    if (fromRemote == null) {
       return 'Firebase sent no tifoChampionRibbon';
     }
-    return 'Firebase payload is outside its from/to window';
+    return 'Follow the configured from/to window';
   }
+}
+
+class _TeamRow extends StatelessWidget {
+  const _TeamRow({required this.label, required this.subtitle, required this.isActive, required this.onTap});
+
+  final String label;
+  final String subtitle;
+  final bool isActive;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) => GestureDetector(
+    behavior: HitTestBehavior.opaque,
+    onTap: onTap,
+    child: Container(
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+      decoration: BoxDecoration(
+        gradient: isActive ? DebugTheme.gradientTeal : null,
+        color: isActive ? null : Colors.white.withOpacity(0.04),
+        borderRadius: BorderRadius.circular(8),
+        border: Border.all(color: isActive ? Colors.transparent : Colors.white.withOpacity(0.12)),
+      ),
+      child: Row(
+        children: [
+          Icon(
+            isActive ? Icons.radio_button_checked_rounded : Icons.radio_button_unchecked_rounded,
+            color: isActive ? Colors.white : Colors.white.withOpacity(0.5),
+            size: 18,
+          ),
+          const SizedBox(width: 10),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  label,
+                  style: TextStyle(
+                    color: isActive ? Colors.white : Colors.white.withOpacity(0.85),
+                    fontWeight: FontWeight.w600,
+                    fontSize: 13,
+                  ),
+                ),
+                const SizedBox(height: 2),
+                Text(
+                  subtitle,
+                  style: TextStyle(
+                    color: isActive ? Colors.white.withOpacity(0.85) : Colors.white.withOpacity(0.45),
+                    fontSize: 11,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    ),
+  );
 }
