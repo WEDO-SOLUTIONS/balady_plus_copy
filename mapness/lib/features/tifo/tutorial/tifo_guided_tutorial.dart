@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:lottie/lottie.dart';
 import 'package:mapness/_generated/assets/assets.gen.dart';
 import 'package:mapness/features/tifo/tifo_flow_provider.dart';
 import 'package:mapness/features/tifo/tutorial/tifo_spotlight.dart';
@@ -566,19 +567,36 @@ class _NextButton extends StatelessWidget {
   );
 }
 
-/// Screen 2's artwork: a finger pressing and holding a building.
+/// Screen 2's artwork: a looping Lottie of a finger pressing and holding a
+/// building.
 ///
-/// The only asset in the tour that the design draws twice: light fills the
-/// hand white over a `#1B1B1B` outline, dark inverts it to a `#111927` fill
-/// under a white one. The three token icons are byte-identical across themes,
-/// so they are exported once.
+/// The only asset in the tour that the design draws twice: light strokes the
+/// hand `#1B1B1B` over a white fill, dark inverts it to a white stroke over
+/// `#111927`. The three token icons are byte-identical across themes, so they
+/// are exported once.
 class _LongPressGraphic extends StatelessWidget {
   const _LongPressGraphic();
 
+  /// The composition's own canvas (135x142 at 60fps, 3s). Given to Lottie
+  /// verbatim so the artwork is never resampled.
+  static const double _width = 135;
+  static const double _height = 142;
+
   @override
   Widget build(BuildContext context) {
-    final art = tifoIsDarkTheme(context) ? Assets.tifo.tutorial.longPressDark : Assets.tifo.tutorial.longPress;
-    return Center(child: art.svg(width: 135, height: 128));
+    final art = tifoIsDarkTheme(context)
+        ? Assets.tifo.tutorial.longPressDark
+        : Assets.tifo.tutorial.longPress;
+    return Center(
+      child: Lottie.asset(
+        art,
+        width: _width,
+        height: _height,
+        // The coach sheet stays up until the player taps Next, so the hint
+        // has to keep cycling rather than freeze on its last frame.
+        repeat: true,
+      ),
+    );
   }
 }
 

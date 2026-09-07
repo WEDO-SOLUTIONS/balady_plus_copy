@@ -13,6 +13,9 @@ class MapButton extends StatefulWidget {
     this.height = defaultSize,
     bool? disabled,
     BorderRadius? borderRadius,
+    /// Paints the button body instead of the flat on-map surface. The ink
+    /// ripple still draws on top, so a gradient button reacts like any other.
+    this.gradient,
     /// When set, screen readers announce this label for the map control (icon stays decorative).
     this.semanticsLabel,
     super.key,
@@ -21,6 +24,7 @@ class MapButton extends StatefulWidget {
   final Widget child;
   final bool disabled;
   final BorderRadius borderRadius;
+  final Gradient? gradient;
   final void Function()? onTap;
   final void Function(TapUpDetails)? onTapUp;
   final void Function(TapDownDetails)? onTapDown;
@@ -42,6 +46,7 @@ class _MapButtonState extends State<MapButton> {
       height: widget.height,
       decoration: BoxDecoration(
         borderRadius: widget.borderRadius,
+        gradient: widget.gradient,
         boxShadow: [
           BoxShadow(color: Colors.black.withOpacity(0.07), blurRadius: 1),
           BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 4, offset: const Offset(0, 2)),
@@ -49,7 +54,8 @@ class _MapButtonState extends State<MapButton> {
       ),
       child: Material(
         borderRadius: widget.borderRadius,
-        color: context.colors.onMapSurfaceOnMap,
+        // Let the gradient on the wrapper show through when there is one.
+        color: widget.gradient == null ? context.colors.onMapSurfaceOnMap : Colors.transparent,
         child: InkWell(
           customBorder: RoundedRectangleBorder(borderRadius: widget.borderRadius),
           onTap: widget.onTap,
