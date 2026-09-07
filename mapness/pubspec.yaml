@@ -158,6 +158,7 @@ dependencies:
 
   # 1.35.x is the latest line compatible with Flutter 3.38.5 (1.36+ requires Flutter >=3.41).
   flame: ^1.35.1
+  flutter_embed_unity: ^2.0.0
 
 
   map_styles:

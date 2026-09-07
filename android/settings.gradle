@@ -29,3 +29,5 @@ plugins {
 }
 
 include ":app"
+// Unity penalty game (flutter_embed_unity) — exported from tifo-penalty-unity
+include ":unityLibrary"
