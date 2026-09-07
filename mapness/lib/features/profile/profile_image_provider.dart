@@ -9,6 +9,7 @@ import 'package:mapness/_features/common/providers/shared_prefs.dart';
 import 'package:mapness/_generated/protocol/protocol.pb.dart' as proto;
 import 'package:mapness/entities/profile/user_profile_data.dart';
 import 'package:mapness/entry_point.dart';
+import 'package:mapness/features/balady_analytics/metrics.dart';
 import 'package:mapness/shared/providers/base_dio.dart';
 import 'package:mapness/shared/providers/dgis_network.dart';
 import 'package:mapness/shared/utils/logger/logger.dart';
@@ -96,6 +97,7 @@ class ProfileImage extends _$ProfileImage {
   Future<String> _uploadImage(Uint8List bytes) async {
     final compressedBytes = await _comporessList(bytes);
     // start the timer for the event "Image Upload"
+    Metrics.logEvent('Profile_Image_Upload');
     mixpanel?.timeEvent('Profile Image Upload');
 
     final dio = await ref.read(dGisNetworkProvider.future);

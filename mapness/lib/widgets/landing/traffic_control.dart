@@ -21,6 +21,7 @@ class TrafficControl extends ConsumerWidget {
       // overlay mutex and selectedType bookkeeping, so traffic enabled from
       // the landing button coexisted with any overlay enabled from the
       // layers sheet (both tiles highlighted, both layers rendered).
+      // toggleTraffic also logs the same metric this button used to log.
       onTap: () => ref.read(layersControlsProvider.notifier).toggleTraffic(),
     );
   }

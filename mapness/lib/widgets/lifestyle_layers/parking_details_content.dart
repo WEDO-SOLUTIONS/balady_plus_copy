@@ -4,7 +4,9 @@ import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/features/lifestyle_layers/providers/layers_controls.dart';
+import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
+import 'package:mapness/features/balady_analytics/metrics.dart';
 import 'package:mapness/widgets/lifestyle_layers/parking_lot_row.dart';
 
 class ParkingDetailsContent extends ConsumerWidget {
@@ -25,14 +27,19 @@ class ParkingDetailsContent extends ConsumerWidget {
               Text(
                 context.l10n.parkingLots,
                 style: context.textStyles.h4SemiBold.copyWith(
-                  color: context.colors.foregroundDefault,
+                    color: context.colors.foregroundDefault,
                 ),
               ),
               const Spacer(),
-              AppButton.close(
-                color: context.colors.backgroundSurface1,
+              AppButton.close(color: context.colors.backgroundSurface1,
                 onTap: () {
                   onPanelClose();
+                  Metrics.logEventAdvanced(
+                    MetricsConstants.layersKeys.exitIcon,
+                    group: MetricsConstants.layersTag,
+                    action: MetricAction.tap.toString(),
+                  );
+
                   layersControlsProviderNotifier.update(
                     layersWidgetType: LayersPanelType.layers,
                   );
@@ -42,25 +49,17 @@ class ParkingDetailsContent extends ConsumerWidget {
             ],
           ),
           const SizedBox(height: Spacing.$2x),
-          ContentWrapper(
+           ContentWrapper(
             color: context.colors.backgroundSurface1,
-            children: [
+            children:  [
               const ParkingLotRow(
                 type: ParkingFilter.all,
               ),
-              Divider(
-                color: context.colors.borderDefault,
-                endIndent: 10,
-                indent: 10,
-              ),
+              Divider(color: context.colors.borderDefault,endIndent: 10,indent: 10,),
               const ParkingLotRow(
                 type: ParkingFilter.free,
               ),
-              Divider(
-                color: context.colors.borderDefault,
-                endIndent: 10,
-                indent: 10,
-              ),
+              Divider(color: context.colors.borderDefault,endIndent: 10,indent: 10,),
               const ParkingLotRow(type: ParkingFilter.paid),
             ],
           ),

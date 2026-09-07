@@ -17,10 +17,11 @@ BaladyAnalytics.instance.error(e, stack);
 BaladyAnalytics.instance.identify(userId: sub, traits: {...}); // null = logout
 ```
 
-Inside `mapness`, call the facade directly (the legacy ex-UXCam `Metrics`
-wrapper has been retired; new deliberate events follow
-`docs/analytics-tracking-plan.md`). In the host shell, use
-`CommonFunctions.sendAnalyticsEvent[WithProperties]`.
+New deliberate events go through the facade directly and follow
+`docs/analytics-tracking-plan.md`; in the host shell, use
+`CommonFunctions.sendAnalyticsEvent[WithProperties]`. The legacy `Metrics`
+wrapper (`metrics.dart`, next to this file) is the marketing UI stream and
+routes to the `uxcam` channel only — see *Channels*.
 
 ## Kill switch (modes)
 
@@ -77,10 +78,13 @@ Live legacy streams status (probed 2026-07-16 — all three vendor endpoints
 respond, none can be deleted yet):
 
 - **UXCam** — session recording, back as the always-on `uxcam` channel
-  (`UxcamBaladyAnalyticsSink`). Key per flavor from `RemoteConfig.uxCamKey`
-  (empty on dev/urbiPre → the SDK never starts). Crash handling stays off:
-  PostHog Error Tracking owns crashes, handled exceptions still arrive here via
-  `BaladyAnalytics.error`.
+  (`UxcamBaladyAnalyticsSink`). Removed in July 2026; restored on 2026-09-06 at
+  marketing's request — they work with these recordings. Key per flavor from
+  `RemoteConfig.uxCamKey` (empty on dev/urbiPre → the SDK never starts). Crash
+  handling stays off: PostHog Error Tracking owns crashes, handled exceptions
+  still arrive here via `BaladyAnalytics.error`. The ~145 `Metrics` UI events
+  restored with it route to this channel **only**, so our own pipeline keeps
+  the event set it has today.
 - **Urbi** — first stream under the umbrella: `UrbiBaladyAnalyticsSink`,
   call sites fan out with `channels: {ours, urbi}`.
 - **Insider + BytePlus (DataFinder)** — keep flowing through
@@ -92,9 +96,10 @@ respond, none can be deleted yet):
 
 ## Legacy stream migration plan (next steps)
 
-1. UXCam — was removed in July 2026 (events retargeted to the facade), brought
-   back afterwards as the always-on `uxcam` channel. Feature code no longer
-   talks to `FlutterUxcam` directly: everything reaches it through the facade.
+1. UXCam — removed in July 2026 (events retargeted to the facade), restored on
+   2026-09-06 because marketing uses it, now as the always-on `uxcam` channel.
+   Feature code no longer talks to `FlutterUxcam` directly: everything reaches
+   it through the facade.
 2. ~~Urbi Analytics~~ — under the umbrella as the `urbi` channel.
 3. ~~Insider/BytePlus product events~~ — mirrored into the facade via
    `AppAnalyticsBaladyMirrorImpl` in `appAnalyticsProvider`.

@@ -14,6 +14,7 @@ import 'package:mapness/features/search/providers/search_history.dart';
 import 'package:mapness/features/search/ui/search_scope.dart' as scope;
 import 'package:mapness/shared/constants/metrics_constants.dart' as metric_const;
 import 'package:mapness/shared/extensions/build_context_ext.dart';
+import 'package:mapness/features/balady_analytics/metrics.dart' as metrics;
 import 'package:mapness/shared/providers/analytic/bss_service.dart';
 import 'package:mapness/shared/providers/analytic/models/bss_request.dart';
 import 'package:mapness/shared/providers/analytic/models/payload/bss_payload.dart';
@@ -76,7 +77,9 @@ class _MapSearchBarState extends ConsumerState<MapSearchBar> {
   /// Guards against `search_box_click` firing twice for the same activation
   /// (focus listener + `onTap`). Reset whenever the box loses focus, so the
   /// next genuine activation reports again.
-  // bool _boxClickFiredThisFocus = false;
+ // bool _boxClickFiredThisFocus = false;
+
+
 
   void _safeControllerWrite(VoidCallback action) {
     try {
@@ -134,7 +137,6 @@ class _MapSearchBarState extends ConsumerState<MapSearchBar> {
         }
       }
     }
-
     _routeAnimation = animation;
     _routeAnimationStatusListener = listener;
     animation.addStatusListener(listener);
@@ -165,9 +167,7 @@ class _MapSearchBarState extends ConsumerState<MapSearchBar> {
     // }
     // _boxClickFiredThisFocus = true;
     final searcher = ref.read(searchProvider(_scope).notifier);
-    ref
-        .read(appAnalyticsProvider)
-        .searchBoxClick(
+    ref.read(appAnalyticsProvider).searchBoxClick(
           eventSource: searcher.dataFinderEventSource,
           isFirstClick: !_searchBoxClicked,
         );
@@ -283,6 +283,12 @@ class _MapSearchBarState extends ConsumerState<MapSearchBar> {
                 payload: BssPayload(searchRequest: BssSearchRequest(text: query)),
               ),
             );
+            metrics.Metrics.logEventAdvanced(
+              metric_const.MetricsConstants.searchKeys.searchField,
+              group: metric_const.MetricsConstants.searchTag,
+              action: metrics.MetricAction.type.toString(),
+              props: {'query': query},
+            );
           },
           onTap: () {
             ref.read(advertMetricsProvider.notifier).sendEvent(AdvertMetricsKeys.journeySearch);
@@ -305,6 +311,12 @@ class _MapSearchBarState extends ConsumerState<MapSearchBar> {
             );
           },
           onSubmitted: (query) {
+            metrics.Metrics.logEventAdvanced(
+              metric_const.MetricsConstants.searchKeys.searchField,
+              group: metric_const.MetricsConstants.searchTag,
+              action: metrics.MetricAction.type.toString(),
+              props: {'query': query},
+            );
             BssService.instance.sendEvent(
               BssRequest(
                 eventType: BSSEventType.action,

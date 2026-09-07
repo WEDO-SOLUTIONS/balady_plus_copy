@@ -7,6 +7,9 @@ import 'package:mapness/features/balady_analytics/balady_analytics_sink.dart';
 
 /// UXCam session recording, back under the facade as the `uxcam` channel.
 ///
+/// Removed in July 2026 as a dead vendor stream; restored on 2026-09-06 —
+/// marketing works with the session recordings and asked for them back.
+///
 /// UXCam used to be wired into feature code directly (`FlutterUxcam.logEvent`,
 /// `tagScreenName`, `setUserIdentity`, …). It is now a sink like any other:
 /// the events the facade already collects are mirrored here, so the recordings
