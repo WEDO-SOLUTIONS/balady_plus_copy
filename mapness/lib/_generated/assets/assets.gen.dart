@@ -507,11 +507,14 @@ class $AssetsTifoGen {
 class $AssetsIconsLottieGen {
   const $AssetsIconsLottieGen();
 
+  /// File path: assets/icons/lottie/hand_tap_pin_animated.json
+  String get handTapPinAnimated => 'packages/mapness/assets/icons/lottie/hand_tap_pin_animated.json';
+
   /// File path: assets/icons/lottie/pin_logo_animated.json
   String get pinLogoAnimated => 'packages/mapness/assets/icons/lottie/pin_logo_animated.json';
 
   /// List of all assets
-  List<String> get values => [pinLogoAnimated];
+  List<String> get values => [handTapPinAnimated, pinLogoAnimated];
 }
 
 class $AssetsIconsSvgGen {
