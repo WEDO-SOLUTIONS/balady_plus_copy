@@ -229,9 +229,6 @@ class LayersControls extends _$LayersControls {
       case LayerType.three3D:
         await toggle3D();
         break;
-      case LayerType.roadEvents:
-        await toggleRoadEvents();
-        break;
       case LayerType.traffic:
         await toggleTraffic();
         break;
@@ -658,24 +655,21 @@ class LayersControls extends _$LayersControls {
 
   bool _roadEventsAutoShown = false;
 
-  /// Auto-shows road events for car navigation if it isn't already visible.
+  /// Force-shows road events for car navigation (US-02), regardless of the
+  /// current Traffic toggle state.
   void showRoadEventsForNavigation() {
-    if (state.selectedType == LayerType.roadEvents) {
-      return;
-    }
     _roadEventsAutoShown = true;
-    handleTap(LayerType.roadEvents);
+    unawaited(ref.read(roadEventSourceControlProvider.notifier).show());
   }
 
-  /// Restores road events visibility to what it was before [showRoadEventsForNavigation].
+  /// Clears the navigation override and resyncs road events visibility to
+  /// whatever the Traffic toggle currently says.
   void restoreRoadEventsAfterNavigation() {
     if (!_roadEventsAutoShown) {
       return;
     }
     _roadEventsAutoShown = false;
-    if (state.selectedType == LayerType.roadEvents) {
-      handleTap(LayerType.roadEvents);
-    }
+    unawaited(_syncRoadEventsWithTraffic(ref.read(trafficStateProvider.notifier).isTrafficEnabled));
   }
 
   MapRequestParams _createParams(VisibleRect visibleRect, LayerType layer, EnvironmentConfig env) => MapRequestParams(
@@ -820,12 +814,10 @@ class LayersControls extends _$LayersControls {
         );
         if (trafficNotifier.isTrafficEnabled) {
           trafficNotifier.onTrafficTap();
+          await _syncRoadEventsWithTraffic(false);
         }
         break;
       case LayerType.three3D:
-        break;
-      case LayerType.roadEvents:
-        await ref.read(roadEventSourceControlProvider.notifier).hide();
         break;
       case LayerType.defaultMap:
       case LayerType.satellite:
@@ -1039,14 +1031,18 @@ class LayersControls extends _$LayersControls {
     await ref.read(mapDimensionsControlProvider.notifier).toggleMapDimensions();
   }
 
-  Future<void> toggleRoadEvents() async {
+  // BE-94: road events have no standalone tile — their visibility mirrors
+  // the Traffic toggle, except while `_roadEventsAutoShown` overrides it
+  // during active car navigation.
+  Future<void> _syncRoadEventsWithTraffic(bool trafficEnabled) async {
+    if (_roadEventsAutoShown) {
+      return;
+    }
     final notifier = ref.read(roadEventSourceControlProvider.notifier);
-    if (state.selectedType != (LayerType.roadEvents)) {
+    if (trafficEnabled) {
       await notifier.show();
-      setSelection(selectedType: LayerType.roadEvents);
     } else {
       await notifier.hide();
-      setSelection();
     }
   }
 
@@ -1068,6 +1064,7 @@ class LayersControls extends _$LayersControls {
     }
 
     trafficNotifier.onTrafficTap();
+    await _syncRoadEventsWithTraffic(!wasEnabled);
 
     if (wasEnabled) {
       if (currentState == LayerType.traffic) {

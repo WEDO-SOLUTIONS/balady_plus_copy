@@ -23,8 +23,7 @@ extension LayerTypeExt on LayerType {
     LayerType.traffic ||
     LayerType.three3D ||
     LayerType.defaultMap ||
-    LayerType.satellite ||
-    LayerType.roadEvents => null,
+    LayerType.satellite => null,
   };
 
   IconData iconData() => switch (this) {
@@ -38,11 +37,7 @@ extension LayerTypeExt on LayerType {
     LayerType.shuttleBus => PlacesIcons.qibla,
     LayerType.jeddahBus => PlacesIcons.qibla,
     LayerType.parkingLots => TransportIcons.parkingEnable,
-    LayerType.traffic ||
-    LayerType.three3D ||
-    LayerType.defaultMap ||
-    LayerType.satellite ||
-    LayerType.roadEvents => GeneralIcons.placeholder,
+    LayerType.traffic || LayerType.three3D || LayerType.defaultMap || LayerType.satellite => GeneralIcons.placeholder,
   };
 
   (ImageAssetType, String) imageAsset() => switch (this) {
@@ -58,7 +53,6 @@ extension LayerTypeExt on LayerType {
     LayerType.parkingLots => (ImageAssetType.svg, Assets.imagesSvg.layers.parking.keyName),
     LayerType.traffic => (ImageAssetType.svg, Assets.imagesSvg.layers.traffic.keyName),
     LayerType.three3D => (ImageAssetType.svg, Assets.imagesSvg.layers.a3D.keyName),
-    LayerType.roadEvents => (ImageAssetType.image, Assets.images.layers.imgLayerRoadEvents.keyName),
     // Raster thumbnails — LayerSwitcherCard switches to Image.asset based on
     // file extension. Use .keyName (not .path) so the package prefix is
     // applied — mapness is consumed as a package by balady_plus, so bare
@@ -83,6 +77,5 @@ extension LayerTypeExt on LayerType {
     // TODO(satellite): switch to l10n keys once added to Localazy.
     LayerType.defaultMap => l10n.defaultLayerTitle,
     LayerType.satellite => l10n.satelliteLayerTitle,
-    LayerType.roadEvents => l10n.roadEvents.toLowerCase().toCapitalized(),
   };
 }

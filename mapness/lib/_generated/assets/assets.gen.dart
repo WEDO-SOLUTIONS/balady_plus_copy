@@ -1018,14 +1018,11 @@ class $AssetsImagesLayersGen {
   /// File path: assets/images/layers/img_layer_jeddah_bus.png
   AssetGenImage get imgLayerJeddahBus => const AssetGenImage('assets/images/layers/img_layer_jeddah_bus.png');
 
-  /// File path: assets/images/layers/img_layer_road_events.png
-  AssetGenImage get imgLayerRoadEvents => const AssetGenImage('assets/images/layers/img_layer_road_events.png');
-
   /// File path: assets/images/layers/satellite.png
   AssetGenImage get satellite => const AssetGenImage('assets/images/layers/satellite.png');
 
   /// List of all assets
-  List<AssetGenImage> get values => [defaultMap, imgLayerJeddahBus, imgLayerRoadEvents, satellite];
+  List<AssetGenImage> get values => [defaultMap, imgLayerJeddahBus, satellite];
 }
 
 class $AssetsImagesMakkahQuickActionsGen {
@@ -1159,9 +1156,6 @@ class $AssetsImagesSvgLayersGen {
   /// File path: assets/images_svg/layers/parking.svg
   SvgGenImage get parking => const SvgGenImage('assets/images_svg/layers/parking.svg');
 
-  /// File path: assets/images_svg/layers/road_events.svg
-  SvgGenImage get roadEvents => const SvgGenImage('assets/images_svg/layers/road_events.svg');
-
   /// File path: assets/images_svg/layers/shuttle_bus.svg
   SvgGenImage get shuttleBus => const SvgGenImage('assets/images_svg/layers/shuttle_bus.svg');
 
@@ -1169,17 +1163,7 @@ class $AssetsImagesSvgLayersGen {
   SvgGenImage get traffic => const SvgGenImage('assets/images_svg/layers/traffic.svg');
 
   /// List of all assets
-  List<SvgGenImage> get values => [
-    a3D,
-    busSubMenu,
-    favourites,
-    makkahBus,
-    metro,
-    parking,
-    roadEvents,
-    shuttleBus,
-    traffic,
-  ];
+  List<SvgGenImage> get values => [a3D, busSubMenu, favourites, makkahBus, metro, parking, shuttleBus, traffic];
 }
 
 class $AssetsImagesSvgSaudiPassGen {
