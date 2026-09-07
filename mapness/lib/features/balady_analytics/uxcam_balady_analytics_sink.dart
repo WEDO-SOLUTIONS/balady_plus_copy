@@ -61,7 +61,9 @@ class UxcamBaladyAnalyticsSink implements BaladyAnalyticsSink {
         // after widget classes and fight the manual tags.
         enableAutomaticScreenNameTagging: false,
       );
-      await FlutterUxcam.optIntoSchematicRecordings();
+      // No `optIntoSchematicRecordings()` here, unlike the pre-removal code:
+      // since native SDK 3.8.0 it is a deprecated no-op that only logs a
+      // warning — schematic vs video recording is a dashboard setting now.
       await FlutterUxcam.startWithConfiguration(config);
       debugPrint('[BaladyAnalytics] UXCam started');
       return true;
