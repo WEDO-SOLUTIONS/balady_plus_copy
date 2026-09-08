@@ -171,9 +171,10 @@ class SpecialThemeHeader extends ConsumerWidget {
     if (mode == SpecialThemeMode.nationalDay) {
       return Text(
         context.l10n.happy95thYears,
-        style: balady_ctx.BuildContextExt(
-          context,
-        ).textStyles.bodySmallSemiBold.copyWith(
+        style:
+            balady_ctx.BuildContextExt(
+              context,
+            ).textStyles.bodySmallSemiBold.copyWith(
               color: balady_ctx.BuildContextExt(context).colors.successOnSuccess,
             ),
         textAlign: TextAlign.center,
@@ -183,9 +184,10 @@ class SpecialThemeHeader extends ConsumerWidget {
     if (mode == SpecialThemeMode.ramadan) {
       return Text(
         context.l10n.ramadanDateRange('18 Feb', '19 Mar 2026'),
-        style: balady_ctx.BuildContextExt(
-          context,
-        ).textStyles.bodySmallSemiBold.copyWith(
+        style:
+            balady_ctx.BuildContextExt(
+              context,
+            ).textStyles.bodySmallSemiBold.copyWith(
               color: balady_ctx.BuildContextExt(context).colors.successOnSuccess,
             ),
         maxLines: 1,

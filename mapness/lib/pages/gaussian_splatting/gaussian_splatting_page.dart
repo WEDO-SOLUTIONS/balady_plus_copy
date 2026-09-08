@@ -122,29 +122,29 @@ class _GaussianSplattingPageWidgetState extends State<_GaussianSplattingPageWidg
             child: Align(
               alignment: AlignmentDirectional.topStart,
               child: Semantics(
-                    label: context.l10n.a11yBack,
-                    button: true,
-                    child: GestureDetector(
-                      onTap: () => context.router.maybePop(),
-                      child: ExcludeSemantics(
-                        child: Container(
+                label: context.l10n.a11yBack,
+                button: true,
+                child: GestureDetector(
+                  onTap: () => context.router.maybePop(),
+                  child: ExcludeSemantics(
+                    child: Container(
                       padding: const EdgeInsets.all(4),
                       decoration: BoxDecoration(
                         color: Colors.black54,
                         borderRadius: BorderRadius.circular(32),
-                  ),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      const Icon(Icons.arrow_back, color: Colors.white, size: 18),
-                      const SizedBox(width: 4),
-                      Text(
-                        context.l10n.pilgrimVirtualTourBackButton,
-                        // Force LTR rendering so the `+` glyph sits on the
-                        // same side of the word in both languages (right of
-                        // the brand name, mirroring `Balady+`).
-                        textDirection: TextDirection.ltr,
-                        style: const TextStyle(
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          const Icon(Icons.arrow_back, color: Colors.white, size: 18),
+                          const SizedBox(width: 4),
+                          Text(
+                            context.l10n.pilgrimVirtualTourBackButton,
+                            // Force LTR rendering so the `+` glyph sits on the
+                            // same side of the word in both languages (right of
+                            // the brand name, mirroring `Balady+`).
+                            textDirection: TextDirection.ltr,
+                            style: const TextStyle(
                               color: Colors.white,
                               fontSize: 14,
                               fontWeight: FontWeight.w500,
@@ -153,14 +153,14 @@ class _GaussianSplattingPageWidgetState extends State<_GaussianSplattingPageWidg
                           const SizedBox(width: 4),
                         ],
                       ),
-                        ),
-                      ),
                     ),
                   ),
                 ),
               ),
             ),
-          ],
+          ),
         ),
-      );
+      ],
+    ),
+  );
 }

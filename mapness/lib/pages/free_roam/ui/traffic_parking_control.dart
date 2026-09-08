@@ -86,7 +86,7 @@ class _TrafficParkingState extends ConsumerState<TrafficParkingControl> {
                   },
                 );
               },
-            )
+            ),
         ],
       ),
     );
@@ -106,27 +106,27 @@ class _ParkingWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => MapButton(
-        semanticsLabel: context.l10n.layersParking,
-        borderRadius: isNoTopBorderRadius
-            ? const BorderRadius.only(
-                bottomLeft: Radius.circular(RadiusBorder.ml),
-                bottomRight: Radius.circular(RadiusBorder.ml),
-              )
-            : null,
-        onTap: onParkingTap,
-        child: SizedBox(
-          width: 24,
-          height: 24,
-          child: Icon(
-            TransportIcons.parkingEnable,
-            color: isEnabled
-                ? SaudiNationalDay.isNow()
-                    ? context.colors.accentDefault
-                    : context.colors.foregroundDefault
-                : context.colors.foregroundDefault,
-          ),
-        ),
-      );
+    semanticsLabel: context.l10n.layersParking,
+    borderRadius: isNoTopBorderRadius
+        ? const BorderRadius.only(
+            bottomLeft: Radius.circular(RadiusBorder.ml),
+            bottomRight: Radius.circular(RadiusBorder.ml),
+          )
+        : null,
+    onTap: onParkingTap,
+    child: SizedBox(
+      width: 24,
+      height: 24,
+      child: Icon(
+        TransportIcons.parkingEnable,
+        color: isEnabled
+            ? SaudiNationalDay.isNow()
+                  ? context.colors.accentDefault
+                  : context.colors.foregroundDefault
+            : context.colors.foregroundDefault,
+      ),
+    ),
+  );
 }
 
 class _TrafficControl extends StatelessWidget {
@@ -147,23 +147,22 @@ class _TrafficControl extends StatelessWidget {
   @override
   Widget build(
     BuildContext context,
-  ) =>
-      TrafficControlWidget(
-        opacity: isVisable ? 1 : 0,
-        isEnabled: isEnabled,
-        borderRadius: BorderRadius.only(
-          topLeft: const Radius.circular(RadiusBorder.ml),
-          topRight: const Radius.circular(RadiusBorder.ml),
-          bottomRight: parkingVisible ? Radius.zero : const Radius.circular(RadiusBorder.ml),
-          bottomLeft: parkingVisible ? Radius.zero : const Radius.circular(RadiusBorder.ml),
-        ),
-        onTap: () {
-          Metrics.logEventAdvanced(
-            MetricsConstants.exploreKeys.trafficLightButton,
-            group: _tag,
-            action: MetricAction.tap.name,
-          );
-          trafficState.onTrafficTap();
-        },
+  ) => TrafficControlWidget(
+    opacity: isVisable ? 1 : 0,
+    isEnabled: isEnabled,
+    borderRadius: BorderRadius.only(
+      topLeft: const Radius.circular(RadiusBorder.ml),
+      topRight: const Radius.circular(RadiusBorder.ml),
+      bottomRight: parkingVisible ? Radius.zero : const Radius.circular(RadiusBorder.ml),
+      bottomLeft: parkingVisible ? Radius.zero : const Radius.circular(RadiusBorder.ml),
+    ),
+    onTap: () {
+      Metrics.logEventAdvanced(
+        MetricsConstants.exploreKeys.trafficLightButton,
+        group: _tag,
+        action: MetricAction.tap.name,
       );
+      trafficState.onTrafficTap();
+    },
+  );
 }

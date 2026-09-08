@@ -77,9 +77,7 @@ class _MapSearchBarState extends ConsumerState<MapSearchBar> {
   /// Guards against `search_box_click` firing twice for the same activation
   /// (focus listener + `onTap`). Reset whenever the box loses focus, so the
   /// next genuine activation reports again.
- // bool _boxClickFiredThisFocus = false;
-
-
+  // bool _boxClickFiredThisFocus = false;
 
   void _safeControllerWrite(VoidCallback action) {
     try {
@@ -137,6 +135,7 @@ class _MapSearchBarState extends ConsumerState<MapSearchBar> {
         }
       }
     }
+
     _routeAnimation = animation;
     _routeAnimationStatusListener = listener;
     animation.addStatusListener(listener);
@@ -167,7 +166,9 @@ class _MapSearchBarState extends ConsumerState<MapSearchBar> {
     // }
     // _boxClickFiredThisFocus = true;
     final searcher = ref.read(searchProvider(_scope).notifier);
-    ref.read(appAnalyticsProvider).searchBoxClick(
+    ref
+        .read(appAnalyticsProvider)
+        .searchBoxClick(
           eventSource: searcher.dataFinderEventSource,
           isFirstClick: !_searchBoxClicked,
         );

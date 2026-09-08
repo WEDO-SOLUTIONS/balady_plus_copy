@@ -175,8 +175,8 @@ class _ContentState extends State<_PoiCardContent> with SingleTickerProviderStat
                       Directionality.of(context),
                     )
                   : (widget.data.address?.buildingName ??
-                      widget.poiCardDataFromGoogle?.displayName ??
-                      widget.data.pinTitle(context.l10n)),
+                        widget.poiCardDataFromGoogle?.displayName ??
+                        widget.data.pinTitle(context.l10n)),
               subTitleWidget: _MakkahPoiSubtitle(
                 colors: colors,
                 data: widget.data,

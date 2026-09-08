@@ -115,7 +115,9 @@ class MapSuggestList extends ConsumerWidget {
 
                 search.searchMore(title);
 
-                ref.read(urbiAnalyticsProvider).track(
+                ref
+                    .read(urbiAnalyticsProvider)
+                    .track(
                       '${MetricsConstants.searchTag}::${MetricsConstants.searchKeys.searchButtonPressed}',
                     );
                 BssService.instance.sendEvent(
@@ -133,7 +135,7 @@ class MapSuggestList extends ConsumerWidget {
                 );
               },
             ),
-          )
+          ),
         ],
       ),
     );

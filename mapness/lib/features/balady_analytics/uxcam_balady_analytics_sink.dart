@@ -125,9 +125,7 @@ class UxcamBaladyAnalyticsSink implements BaladyAnalyticsSink {
       return;
     }
     unawaited(
-      _ready
-          .then((ok) => ok ? FlutterUxcam.setSessionProperty(key, value.toString()) : null)
-          .catchError(_swallow),
+      _ready.then((ok) => ok ? FlutterUxcam.setSessionProperty(key, value.toString()) : null).catchError(_swallow),
     );
   }
 

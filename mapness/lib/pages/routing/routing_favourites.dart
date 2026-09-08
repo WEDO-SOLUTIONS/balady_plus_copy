@@ -13,57 +13,57 @@ class RoutingFavouritesPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) => Column(
-        children: [
-          SafeArea(
-            bottom: false,
-            child: Stack(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.only(
-                    top: 7.5,
-                    bottom: 8.5,
-                    left: 16,
-                    right: 16,
-                  ),
-                  child: Text(
-                    context.l10n.favourites,
-                    style: context.textStyle.callout.copyWith(color: Colors.white),
-                  ),
-                ),
-                Align(
-                  alignment: Alignment.centerRight,
-                  child: Material(
-                    borderRadius: BorderRadius.circular(8),
-                    color: Colors.transparent,
-                  child: Semantics(
-                    label: context.l10n.a11yBack,
-                    button: true,
-                    child: InkWell(
-                      onTap: () {
-                        Metrics.logEventAdvanced(
-                          MetricsConstants.routesKeys.favoriteBack,
-                          group: MetricsConstants.routesTag,
-                          action: MetricAction.tap.toString(),
-                        );
+    children: [
+      SafeArea(
+        bottom: false,
+        child: Stack(
+          children: [
+            Padding(
+              padding: const EdgeInsets.only(
+                top: 7.5,
+                bottom: 8.5,
+                left: 16,
+                right: 16,
+              ),
+              child: Text(
+                context.l10n.favourites,
+                style: context.textStyle.callout.copyWith(color: Colors.white),
+              ),
+            ),
+            Align(
+              alignment: Alignment.centerRight,
+              child: Material(
+                borderRadius: BorderRadius.circular(8),
+                color: Colors.transparent,
+                child: Semantics(
+                  label: context.l10n.a11yBack,
+                  button: true,
+                  child: InkWell(
+                    onTap: () {
+                      Metrics.logEventAdvanced(
+                        MetricsConstants.routesKeys.favoriteBack,
+                        group: MetricsConstants.routesTag,
+                        action: MetricAction.tap.toString(),
+                      );
 
-                        context.router.pop();
-                      },
-                      borderRadius: BorderRadius.circular(8),
-                      child: Padding(
-                        padding: const EdgeInsets.all(8),
-                        child: Icon(
-                          SystemIcons.arrowCornerLeftLarge,
-                          size: 24,
-                          color: context.colors.foregroundDefault,
-                    ),
-                  ),
+                      context.router.pop();
+                    },
+                    borderRadius: BorderRadius.circular(8),
+                    child: Padding(
+                      padding: const EdgeInsets.all(8),
+                      child: Icon(
+                        SystemIcons.arrowCornerLeftLarge,
+                        size: 24,
+                        color: context.colors.foregroundDefault,
                       ),
                     ),
                   ),
                 ),
-              ],
+              ),
             ),
-          ),
-        ],
-      );
+          ],
+        ),
+      ),
+    ],
+  );
 }
