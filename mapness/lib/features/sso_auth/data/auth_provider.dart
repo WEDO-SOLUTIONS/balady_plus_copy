@@ -7,6 +7,7 @@ import 'package:mapness/features/balady_analytics/balady_analytics.dart';
 import 'package:mapness/features/favourites/providers/favourite_cache.dart';
 import 'package:mapness/features/profile/profile_image_provider.dart';
 import 'package:mapness/shared/lib/auth/auth_methods.dart';
+import 'package:mapness/features/balady_analytics/metrics.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:mapness/shared/utils/logger/logger.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -16,6 +17,7 @@ part 'auth_provider.g.dart';
 @riverpod
 class Auth extends _$Auth {
   Future<void> doAuth() async {
+    Metrics.logEvent('Auth/doAuth');
     mixpanel?.timeEvent('Auth: doAuth');
     await CommonFunctions.onLogin();
     ref.invalidateSelf();
@@ -26,6 +28,7 @@ class Auth extends _$Auth {
   }
 
   Future<void> logOut() async {
+    Metrics.logEvent('Auth/logOut');
     mixpanel?.timeEvent('Auth: logOut');
     await ref.read(profileImageProvider.notifier).clear();
 
@@ -48,6 +51,7 @@ class Auth extends _$Auth {
   }
 
   Future<void> tokenExpireLogout() async {
+    Metrics.logEvent('Auth/tokenExpireLogout');
     mixpanel?.timeEvent('Auth: tokenExpireLogout');
     await ref.read(profileImageProvider.notifier).clear();
     await sl<EntryPointCubit>().autoLogout();

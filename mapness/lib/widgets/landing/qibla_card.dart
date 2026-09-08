@@ -7,7 +7,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/_generated/assets/assets.gen.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
+import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
+import 'package:mapness/features/balady_analytics/metrics.dart';
 import 'package:mapness/shared/providers/location.dart';
 
 class QiblaCard extends ConsumerWidget {
@@ -15,74 +17,79 @@ class QiblaCard extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) => ClipRRect(
-    borderRadius: BorderRadius.circular(RadiusBorder.xl),
-    child: GestureDetector(
-      onTap: () async {
-        final location = ref.read(locationProvider.notifier);
+        borderRadius: BorderRadius.circular(RadiusBorder.xl),
+        child: GestureDetector(
+          onTap: () async {
+            Metrics.logEventAdvanced(
+              MetricsConstants.exploreKeys.qibla,
+              action: MetricAction.tap.name,
+              group: MetricsConstants.exploreTag,
+            );
+            final location = ref.read(locationProvider.notifier);
 
-        await location.checkLocationPermission().then((allowed) {
-          if (allowed) {
-            context.router.push(const KiblahRoute());
-          }
-        });
-      },
-      child: SizedBox(
-        height: 118,
-        child: DecoratedBox(
-          decoration: const BoxDecoration(
-            gradient: LinearGradient(
-              colors: [
-                Color(0xFF525252),
-                Color(0xFF1B1B1B),
-              ],
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-            ),
-          ),
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Column(
+            await location.checkLocationPermission().then((allowed) {
+              if (allowed) {
+                context.router.push(const KiblahRoute());
+              }
+            });
+          },
+          child: SizedBox(
+            height: 118,
+            child: DecoratedBox(
+              decoration: const BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [
+                    Color(0xFF525252),
+                    Color(0xFF1B1B1B),
+                  ],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                ),
+              ),
+              child: Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Padding(
-                    padding: const EdgeInsetsDirectional.only(top: Spacing.$3x, start: Spacing.$4x),
-                    child: Text(
-                      context.l10n.qibla,
-                      style: context.textStyles.h2Medium.copyWith(
-                        color: context.colors.staticWhite,
-                        fontWeight: FontWeight.w400,
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsetsDirectional.only(top: Spacing.$3x, start: Spacing.$4x),
+                        child: Text(
+                          context.l10n.qibla,
+                          style: context.textStyles.h2Medium.copyWith(
+                            color: context.colors.staticWhite,
+                            fontWeight: FontWeight.w400,
+                          ),
+                        ),
                       ),
-                    ),
+                      const Spacer(),
+                      Padding(
+                        padding: const EdgeInsetsDirectional.only(bottom: Spacing.$4x, start: Spacing.$4x),
+                        child: Text(
+                          context.l10n.showDirection,
+                          style: context.textStyles.captionLargeRegular.copyWith(
+                            color: context.colors.staticWhite,
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
-                  const Spacer(),
-                  Padding(
-                    padding: const EdgeInsetsDirectional.only(bottom: Spacing.$4x, start: Spacing.$4x),
-                    child: Text(
-                      context.l10n.showDirection,
-                      style: context.textStyles.captionLargeRegular.copyWith(
-                        color: context.colors.staticWhite,
+                  Align(
+                    alignment: Alignment.bottomRight,
+                    child: Transform(
+                      alignment: Alignment.center,
+                      transform: context.isLTR ? Matrix4.identity() : Matrix4.rotationY(pi),
+                      child: Image.asset(
+                        Assets.images.qibla.keyName,
+                        fit: BoxFit.fitHeight,
                       ),
                     ),
                   ),
                 ],
               ),
-              Align(
-                alignment: Alignment.bottomRight,
-                child: Transform(
-                  alignment: Alignment.center,
-                  transform: context.isLTR ? Matrix4.identity() : Matrix4.rotationY(pi),
-                  child: Image.asset(
-                    Assets.images.qibla.keyName,
-                    fit: BoxFit.fitHeight,
-                  ),
-                ),
-              ),
-            ],
+            ),
           ),
         ),
-      ),
-    ),
-  );
+      );
 }

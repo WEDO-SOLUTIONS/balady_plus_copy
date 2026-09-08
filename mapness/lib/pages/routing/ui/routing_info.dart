@@ -29,8 +29,10 @@ import 'package:mapness/features/routing/ui/routes_carousel.dart';
 import 'package:mapness/pages/path_nav/path_nav_page.dart';
 import 'package:mapness/pages/routing/lib/route_point_extension.dart';
 import 'package:mapness/pages/routing/ui/routing_tab_bar.dart';
+import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/extensions/double_ext.dart';
 import 'package:mapness/shared/lib/common_functions.dart';
+import 'package:mapness/features/balady_analytics/metrics.dart';
 import 'package:mapness/shared/providers/car_connection.dart';
 import 'package:mapness/shared/providers/location.dart';
 import 'package:mapness/shared/providers/map/camera_position.dart';
@@ -457,6 +459,12 @@ class _RoutingInfoState extends ConsumerState<RoutingInfo> {
 
       ref.read(appAnalyticsProvider).transportModeSelected(type: navigatingType.name);
 
+      Metrics.logEventAdvanced(
+        MetricsConstants.routesKeys.routeSelectionGoButton,
+        group: MetricsConstants.routesTag,
+        action: MetricAction.tap.toString(),
+      );
+
       // log advert analytics event
       ref.read(advertMetricsProvider.notifier).sendEvent(AdvertMetricsKeys.navigationRoutingStartedJorney);
       ref
@@ -532,6 +540,17 @@ class _RoutingInfoState extends ConsumerState<RoutingInfo> {
   }
 
   void _onChanged(RouteSearchOptionsMessage routeSearch) {
+    Metrics.logEventAdvanced(
+      MetricsConstants.routesKeys.routeSelectionChangeNavType,
+      group: MetricsConstants.routesTag,
+      action: MetricAction.tap.toString(),
+      props: {
+        'navType': routeSearch.name,
+        'points':
+            '[${widget.points.map((e) => 'objectId: ${e?.objectId} coords: ${e?.latitude}, ${e?.longitude}').join(', ')}]',
+      },
+    );
+
     ref.read(routesUpdateTabProvider.notifier).update = routeSearch;
     _navType.value = routeSearch;
   }
