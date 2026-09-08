@@ -147,10 +147,19 @@ class _LayersTabChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Styling per Figma node 6194:9044: rectangular neutral button, 1px
-    // borderDefault always present, fill flips to backgroundSurface5 on the
-    // active tab. No accent border / accent text — selection is signalled
-    // by fill, like an iOS segmented control.
+    // BALADY-3752: the selected tab carries an accent (green) highlight, not a
+    // neutral one. The previous iteration signalled selection with a
+    // backgroundSurface5 fill per Figma node 6194:9044; QA re-tested against
+    // Figma "Layers on Map v3.0" and reports the green highlight as missing.
+    //
+    // Tokens follow the uikit's own selected-chip recipe (ChipsType.accent in
+    // balady_uikit chips/tools/colors.dart — accentDefault fill +
+    // accentOnAccent label), already used for a selectable chip row in
+    // FeedbackChips, and echo the accent selection of the layer cards directly
+    // below this row in the same sheet (LayerSwitcherCard uses an accentDefault
+    // border). accentOnAccent is white in every palette and accentDefault is
+    // brand-owned, so contrast holds in dark mode (darkDGA shares light's
+    // #1B8354/#FFFFFF) and the special themes retint the chip on their own.
     final colors = context.colors;
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
@@ -163,9 +172,9 @@ class _LayersTabChip extends StatelessWidget {
         height: 40,
         padding: const EdgeInsets.symmetric(horizontal: Spacing.$2x),
         decoration: BoxDecoration(
-          color: isSelected ? colors.backgroundSurface5 : Colors.transparent,
+          color: isSelected ? colors.accentDefault : Colors.transparent,
           borderRadius: BorderRadius.circular(4),
-          border: Border.all(color: colors.borderDefault),
+          border: Border.all(color: isSelected ? colors.accentDefault : colors.borderDefault),
         ),
         alignment: Alignment.center,
         // BALADY-3736: Arabic labels (e.g. "المواصلات العامة") are wider than
@@ -177,7 +186,9 @@ class _LayersTabChip extends StatelessWidget {
           minFontSize: 9,
           overflow: TextOverflow.ellipsis,
           textAlign: TextAlign.center,
-          style: context.textStyles.bodySmallMedium.copyWith(color: colors.foregroundDefault),
+          style: context.textStyles.bodySmallMedium.copyWith(
+            color: isSelected ? colors.accentOnAccent : colors.foregroundDefault,
+          ),
         ),
       ),
     );

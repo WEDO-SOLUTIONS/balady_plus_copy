@@ -9,7 +9,6 @@ import 'package:mapness/_generated/assets/assets.gen.dart';
 import 'package:mapness/app/auto_route/app_routes.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/features/advert_metrics/advert_metrics.dart';
-import 'package:mapness/features/debug/recommendations_feature_flag.dart';
 import 'package:mapness/features/special_themes/core/places_activation_config.dart';
 import 'package:mapness/features/stream_audio/ui/providers/stream_audio_prov.dart';
 import 'package:mapness/features/stream_audio/ui/widgets/explore_card.dart';
@@ -49,7 +48,6 @@ class BaseDashboardContent extends ConsumerWidget {
     final activeEvent = ref.watch(activeCityEventProvider);
     final isFoundingday = activeEvent?.isFoundingDay ?? false;
     final pilgrimFeature = ref.watch(showPilgrimFeatureProvider);
-    final recommendationsEnabled = ref.watch(recommendationsFeatureFlagProvider);
 
     return Stack(
       alignment: Alignment.bottomCenter,
@@ -124,14 +122,12 @@ class BaseDashboardContent extends ConsumerWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    if (recommendationsEnabled) ...[
-                      QuickActionButton(
-                        text: context.l10n.nearby,
-                        icon: GeneralIcons.location,
-                        onTap: () => actions.openNearby(context),
-                      ),
-                      const SizedBox(width: Spacing.$2x),
-                    ],
+                    QuickActionButton(
+                      text: context.l10n.nearby,
+                      icon: GeneralIcons.location,
+                      onTap: () => actions.openNearby(context),
+                    ),
+                    const SizedBox(width: Spacing.$2x),
                     QuickActionButton(
                       text: context.l10n.sendLocation,
                       icon: General32Icons.locationAction,

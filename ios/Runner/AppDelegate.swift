@@ -100,6 +100,9 @@ extension AVAudioSession {
 
         AppIconQuickActionChannel.register(messenger: sharedSingleFlutterEngine.binaryMessenger)
 
+        // Lock-screen navigation Live Activity (metadata channel + native event observers).
+        NavigationLiveUpdatesChannel.register(messenger: sharedSingleFlutterEngine.binaryMessenger)
+
         // Native radio player — bypasses just_audio_background interruption handling.
         nativeRadioPlayer = NativeRadioPlayer(messenger: sharedSingleFlutterEngine.binaryMessenger)
 

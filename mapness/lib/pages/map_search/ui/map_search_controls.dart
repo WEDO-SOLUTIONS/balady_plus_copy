@@ -21,6 +21,8 @@ import 'package:mapness/widgets/map_dimensions_control/dimension_contrtol.dart';
 import 'package:mapness/widgets/weather/weather_control.dart';
 import 'package:sheetify/sheetify.dart';
 
+import '../../../widgets/landing/map_attribution_label.dart';
+
 class MapSearchSheetControls extends ConsumerStatefulWidget {
   // In percent of the screen
   final double? currentSize;
@@ -196,6 +198,11 @@ class MapSearchSheetControlsState extends ConsumerState<MapSearchSheetControls> 
                       ),
                     ),
                   ),
+                const Spacer(),
+                const Padding(
+                  padding: EdgeInsetsDirectional.only(end: uikit.Spacing.$4x, bottom: uikit.Spacing.$4x),
+                  child: Align(alignment: AlignmentDirectional.bottomEnd, child: MapAttributionLabel()),
+                ),
               ],
             ),
           ),

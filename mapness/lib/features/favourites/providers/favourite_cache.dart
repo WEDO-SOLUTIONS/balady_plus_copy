@@ -10,6 +10,7 @@ import 'package:mapness/entities/favourites/favourites_state.dart';
 import 'package:mapness/entry_point.dart';
 import 'package:mapness/features/favourites/data/models/favorite_cache_item.dart';
 import 'package:mapness/features/favourites/helpers/favourite_entity_id.dart';
+import 'package:mapness/features/favourites/helpers/favourite_sync_merge.dart';
 import 'package:mapness/features/favourites/mappers/add_request_item.dart';
 import 'package:mapness/features/favourites/mappers/delete_favourite_items_request_item_mapper.dart';
 import 'package:mapness/features/favourites/mappers/favorite_cache_item_mapper.dart';
@@ -42,9 +43,18 @@ class _FavouriteCache extends _$FavouriteCache {
 
   static const _cacheFor = Duration(minutes: 30);
 
+  /// Write requests (POST/DELETE) get a longer timeout than the shared 5 s of [dGisNetworkProvider]:
+  /// a timed-out add is retried by the retry interceptor and shows up as a duplicate on the server.
+  static const _writeTimeout = Duration(seconds: 15);
+
   DateTime? _lastUpdate;
 
+  /// One-shot flags consumed by the next [build]. Set by [forceRefresh] (locale change) or when the user changes.
   bool _isForceRefresh = false;
+
+  /// The pending force refresh is a locale refresh: the server response is merged with the local list
+  /// (re-localise titles) instead of replacing it, so items that are missing from the response survive.
+  bool _localeRefresh = false;
 
   bool get isCacheValid => _lastUpdate?.isAfter(DateTime.now().subtract(_cacheFor)) ?? false;
 
@@ -346,7 +356,11 @@ class _FavouriteCache extends _$FavouriteCache {
       group: _tag,
       props: {'items': items.map((e) => e.id).toList()},
     );
-    await dio.delete('favourites', data: request.writeToBuffer());
+    await dio.delete(
+      'favourites',
+      data: request.writeToBuffer(),
+      options: Options(sendTimeout: _writeTimeout, receiveTimeout: _writeTimeout),
+    );
   }
 
   Future<void> _addItemsRequest({
@@ -368,7 +382,11 @@ class _FavouriteCache extends _$FavouriteCache {
       }),
     );
     try {
-      final raw = await dio.post('favourites', data: request.writeToBuffer());
+      final raw = await dio.post(
+        'favourites',
+        data: request.writeToBuffer(),
+        options: Options(sendTimeout: _writeTimeout, receiveTimeout: _writeTimeout),
+      );
       final newState = proto.FavouritesResponse.fromBuffer(raw.data as List<int>).toDomain();
       await _updateState(newState);
     } on DioException catch (e) {
@@ -397,12 +415,38 @@ class _FavouriteCache extends _$FavouriteCache {
     return response.toDomain();
   }
 
+  /// Re-fetches favourites after a locale change so cached titles get re-localised.
+  ///
+  /// Schedules a regular rebuild instead of calling [build] by hand (which ran a second, detached build whose result
+  /// was thrown away while its side effect — `cache` overwritten by the server response — stayed). The rebuild merges
+  /// the response with the local list, see [_localeRefresh].
   Future<void> forceRefresh() async {
     _isForceRefresh = true;
-    try {
-      await build();
-    } catch (_) {}
-    _isForceRefresh = false;
+    _localeRefresh = true;
+    ref.invalidateSelf();
+  }
+
+  /// Overlays the not-yet-synced queues on top of [state] for display: pending additions that the server does not
+  /// know about yet stay visible, pending deletions stay hidden. The Hive `cache` itself is not touched — it keeps
+  /// mirroring the server (or the merged locale-refresh) list; the queues are applied on every read.
+  Future<FavouritesState> _applyPendingSync(FavouritesState state, {required FavouritesState local}) async {
+    final favoritesBox = await ref.read(hiveProvider(_boxName).future);
+    final addSync = (favoritesBox.get(_keyAddSync, defaultValue: <FavoriteCacheItem>[]) as List<dynamic>)
+        .cast<FavoriteCacheItem>();
+    final deleteSync = (favoritesBox.get(_keyDeleteSync, defaultValue: <FavoriteCacheItem>[]) as List<dynamic>)
+        .cast<FavoriteCacheItem>();
+    if (addSync.isEmpty && deleteSync.isEmpty) {
+      return state;
+    }
+
+    return applyPendingFavouriteSync(
+      state,
+      pendingAdd: addSync.map((e) => e.toDomain()).toList(),
+      pendingDelete: deleteSync.map((e) => e.toDomain()).toList(),
+      // The queues do not carry the item type; like [_sync], resolve home/work from the local list.
+      homeKey: local.home == null ? null : favouriteItemKey(local.home!),
+      workKey: local.work == null ? null : favouriteItemKey(local.work!),
+    );
   }
 
   @override
@@ -432,7 +476,6 @@ class _FavouriteCache extends _$FavouriteCache {
       final favoritesBox = await ref.read(hiveProvider(_boxName).future);
       await favoritesBox.delete(_keyCache);
       _lastUpdate = null;
-      _isForceRefresh = true;
     } else {
       // Only initialize last update if user hasn't changed
       await _initLastUpdate();
@@ -443,20 +486,38 @@ class _FavouriteCache extends _$FavouriteCache {
 
     final favoritesBox = await ref.read(hiveProvider(_boxName).future);
 
+    // Consume the one-shot flags now: a forceRefresh() that lands while this build is in flight sets them again
+    // and schedules another rebuild, which picks them up. A user change always means a plain (non-merge) fetch —
+    // the local cache has just been dropped.
+    final forceRefresh = _isForceRefresh || userHasChanged;
+    final mergeWithLocal = _localeRefresh && !userHasChanged;
+    _isForceRefresh = false;
+    _localeRefresh = false;
+
+    // Local list as it was before this build touched the network (post-sync): the base for the locale-refresh merge
+    // and the source of home/work identity for the pending-sync overlay.
+    final localState = await getFavouritesStateFromHive();
+
     FavouritesState result;
     try {
-      if (_isForceRefresh || !isCacheValid) {
-        logger.log('Fetching favorites from API for user: $currentUserId (forceRefresh: $_isForceRefresh, cacheValid: $isCacheValid)', logLevel: MapnessLogLevel.info);
+      if (forceRefresh || !isCacheValid) {
+        logger.log(
+          'Fetching favorites from API for user: $currentUserId (forceRefresh: $forceRefresh, mergeWithLocal: $mergeWithLocal, cacheValid: $isCacheValid)',
+          logLevel: MapnessLogLevel.info,
+        );
         final apiData = await _fetchFavourites();
-        await favoritesBox.put(_keyCache, apiData.toHive());
+        // A locale refresh is about re-localising what the user already has, not about reconciling with the
+        // server: keep local items the response lacks (freshly added ones may not be visible server-side yet).
+        final cacheData = mergeWithLocal ? mergeFavouritesWithLocal(server: apiData, local: localState) : apiData;
+        await favoritesBox.put(_keyCache, cacheData.toHive());
         _lastUpdate = DateTime.now();
         await _saveLastUpdate(currentUserId);
-        await _notifyMapAboutFavourites(apiData);
-        result = apiData;
-        logger.log('Successfully fetched ${result.items.length} favorites from API', logLevel: MapnessLogLevel.info);
+        result = await _applyPendingSync(cacheData, local: localState);
+        await _notifyMapAboutFavourites(result);
+        logger.log('Successfully fetched ${apiData.items.length} favorites from API', logLevel: MapnessLogLevel.info);
       } else {
         logger.log('Using cached favorites for user: $currentUserId', logLevel: MapnessLogLevel.info);
-        result = await getFavouritesStateFromHive();
+        result = await _applyPendingSync(localState, local: localState);
       }
     } on Exception catch (e) {
       logger.log('Error fetching favorites: $e', logLevel: MapnessLogLevel.critical);
@@ -466,13 +527,13 @@ class _FavouriteCache extends _$FavouriteCache {
         logger.log('User changed but failed to fetch favorites from API, returning empty state', logLevel: MapnessLogLevel.warning);
       } else {
         // For existing users, fall back to cache
-        result = await getFavouritesStateFromHive();
+        result = await _applyPendingSync(localState, local: localState);
       }
     }
 
     final link = ref.keepAlive();
     final timer = Timer(_cacheFor, link.close);
-    ref.onDispose(() => timer.cancel);
+    ref.onDispose(timer.cancel);
 
     return result;
   }

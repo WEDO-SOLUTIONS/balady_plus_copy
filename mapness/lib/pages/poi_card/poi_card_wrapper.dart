@@ -170,13 +170,14 @@ class _WrapperState extends ConsumerState<_PoiCardWrapper>
       storeParking.addPinParking(storeParkingData?.markerPosition, context.l10n.yourParkingSpot);
     }
     ref.watch(dgisEnvironmentProvider);
-    final poiCardState = gisPoiCardState ??
-              PoiCardState(
-                showEntrances: false,
-                isLoading: false,
-                gisObjectIdMessage: data,
-                organizations: null,
-              );
+    final poiCardState =
+        gisPoiCardState ??
+        PoiCardState(
+          showEntrances: false,
+          isLoading: false,
+          gisObjectIdMessage: data,
+          organizations: null,
+        );
 
     final isCityscapeObject = ref.read(cityscapeProvider.notifier).showCustomPin(widget.objectId.objectId);
 

@@ -106,6 +106,8 @@ import 'package:sheetify/sheetify.dart';
 import 'package:sliver_tools/sliver_tools.dart';
 import 'package:urbi_utils/urbi_utils.dart';
 
+import '../../widgets/landing/map_attribution_label.dart';
+
 part 'cityscape_card_content.dart';
 part 'founding_day_card_content.dart';
 part 'poi_card_content.dart';

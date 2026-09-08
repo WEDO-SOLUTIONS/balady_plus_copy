@@ -2,7 +2,6 @@ import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/app/auto_route/app_routes.dart';
-import 'package:mapness/features/debug/recommendations_feature_flag.dart';
 import 'package:mapness/features/special_themes/core/places_activation_config.dart';
 import 'package:mapness/features/special_themes/core/special_theme_mode.dart';
 import 'package:mapness/features/special_themes/core/theme_splash_config.dart';
@@ -393,7 +392,6 @@ class _DebugTogglesCard extends ConsumerWidget {
     final ramadan = ref.watch(ramadanSeasonDebugProvider);
     final hajj = ref.watch(hajjSeasonDebugProvider);
     final pilgrimFeature = ref.watch(pilgrimFeatureDebugProvider);
-    final recommendationsFeature = ref.watch(recommendationsFeatureFlagProvider);
     final leap = ref.watch(leapDebugProvider);
 
     return _GlassCard(
@@ -452,12 +450,12 @@ class _DebugTogglesCard extends ConsumerWidget {
             gradient: _DebugColors.gradientGreen,
           ),
           _ToggleRow(
-            label: 'Recommendations Feature',
-            value: recommendationsFeature,
+            label: 'LEAP Event',
+            value: leap,
             onChanged: (v) {
-              ref.read(recommendationsFeatureFlagProvider.notifier).set(v);
+              ref.read(leapDebugProvider.notifier).enabled = v;
             },
-            gradient: _DebugColors.gradientGreen,
+            gradient: _DebugColors.gradientTeal,
           ),
           _ToggleRow(
             label: 'LEAP Event',

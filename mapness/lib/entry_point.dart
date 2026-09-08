@@ -97,6 +97,7 @@ import 'package:mapness/shared/providers/map/camera_position.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:mapness/shared/providers/map/rubric_marker_type_mapper.dart';
 import 'package:mapness/shared/providers/map/selected_marker.dart';
+import 'package:mapness/shared/providers/map/tunnel_state.dart';
 import 'package:mapness/shared/providers/media_query.dart';
 import 'package:mapness/shared/providers/short_link_repository.dart';
 import 'package:mapness/shared/providers/urbi_analytics.dart';
@@ -518,11 +519,15 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> with Widg
     final themeController = context.read<ThemeController>();
     final baladyTheme = context.read<BaladyThemeNotifier>();
     final specialThemeMode = ref.read(specialThemeModeProvider);
+    // Driving through a tunnel darkens the whole app, not just the map surface, and
+    // outranks both the day/night preference and the special themes while it lasts.
+    final inTunnel = ref.read(tunnelStateProvider);
+    final effectiveDark = isDark || inTunnel;
     if (kDebugMode) {
-      debugPrint('[DarkThemeDebug] _themeChanged isDark=$isDark mode=$specialThemeMode');
+      debugPrint('[DarkThemeDebug] _themeChanged isDark=$isDark inTunnel=$inTunnel mode=$specialThemeMode');
     }
     baladyTheme.toggleTheme(isDark);
-    if (isDark) {
+    if (effectiveDark) {
       await themeController.setTheme(BaladyAppThemes.darkDGA);
     } else {
       final theme = switch (specialThemeMode) {
@@ -539,6 +544,10 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> with Widg
       final baladyTheme = p.Provider.of<BaladyThemeNotifier>(context, listen: false);
       final mapMode = ref.read(darkModeProvider).value?.currentMapMode;
 
+      // Transient on purpose: the tunnel must not overwrite the mode the user picked,
+      // so the branches below keep writing the preference underneath the override.
+      baladyTheme.setTransientThemeMode(inTunnel ? ThemeMode.dark : null);
+
       if (mapMode == DarkMapStateEnum.asInASystem) {
         baladyTheme.resetTheme();
       } else if (mapMode == DarkMapStateEnum.alwaysEnabled) {
@@ -553,11 +562,22 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> with Widg
 
   @override
   Widget build(BuildContext context) {
-    ref.listen(darkModeProvider, (prev, next) {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        _themeChanged(isDark: next.value?.isDark == true);
+    ref
+      ..listen(darkModeProvider, (prev, next) {
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          _themeChanged(isDark: next.value?.isDark == true);
+        });
+      })
+      // Entering or leaving a tunnel re-runs the same resolution, which picks the
+      // override up from `tunnelStateProvider` itself.
+      ..listen(tunnelStateProvider, (prev, next) {
+        if (prev == next) {
+          return;
+        }
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          _themeChanged(isDark: ref.read(darkModeProvider).value?.isDark ?? false);
+        });
       });
-    });
 
     final language = ref.watch(appLanguageProvider);
     final direction = ref.watch(uiDirectionProvider);

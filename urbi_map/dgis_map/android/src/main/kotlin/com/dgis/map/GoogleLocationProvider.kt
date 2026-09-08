@@ -37,7 +37,11 @@ class GoogleLocationProvider(private val context: Context) {
                 }
             }
         }
-        client?.requestLocationUpdates(request, callback!!, thread.looper)
+        try {
+            client?.requestLocationUpdates(request, callback!!, thread.looper)
+        } catch (e: SecurityException) {
+            Log.w("GoogleLocationProvider", "requestLocationUpdates without location permission", e)
+        }
     }
 
     @SuppressLint("MissingPermission")
@@ -47,11 +51,16 @@ class GoogleLocationProvider(private val context: Context) {
             return
         }
 
-        client?.lastLocation?.addOnSuccessListener { location ->
-            lastLocation = location
-            onResult(location)
-        }?.addOnFailureListener {
-            Log.e("GoogleLocationProvider", "Failed to get last location", it)
+        try {
+            client?.lastLocation?.addOnSuccessListener { location ->
+                lastLocation = location
+                onResult(location)
+            }?.addOnFailureListener {
+                Log.e("GoogleLocationProvider", "Failed to get last location", it)
+                onResult(null)
+            }
+        } catch (e: SecurityException) {
+            Log.w("GoogleLocationProvider", "lastLocation without location permission", e)
             onResult(null)
         }
     }

@@ -265,7 +265,7 @@ class MakkahBasedDashboardContent extends ConsumerWidget {
           const DecoratedBox(
             decoration: BoxDecoration(
               image: DecorationImage(
-                image: AssetImage('assets/images/places_makkah.png'),
+                image: AssetImage('assets/images/places_makkah.webp'),
                 matchTextDirection: true,
                 fit: BoxFit.fitWidth,
                 alignment: Alignment.bottomCenter,

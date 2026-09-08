@@ -7,6 +7,7 @@ import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/_features/common/widgets/dragger.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/entities/routing/route_params_point.dart';
@@ -15,6 +16,11 @@ import 'package:mapness/l10n/generated/app_localizations.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/features/balady_analytics/metrics.dart';
+import 'package:mapness/pages/routing/lib/route_point_extension.dart';
+import 'package:mapness/shared/constants/metrics_constants.dart';
+import 'package:mapness/shared/extensions/build_context_ext.dart';
+import 'package:mapness/shared/providers/map/dgis_controller.dart';
+import 'package:mapness/widgets/routing/lib/duration_distance_fmt.dart';
 
 typedef ConfirmReorder = void Function(List<RouteParamsPointWithLabel> points);
 
@@ -22,13 +28,14 @@ typedef ConfirmReorder = void Function(List<RouteParamsPointWithLabel> points);
 ///
 /// We have to pass a lot of parameters to this widget because we need to manipulate
 /// the data locally and then send it back to the parent widget
-class ChangePathSheet extends StatefulWidget {
+class ChangePathSheet extends ConsumerStatefulWidget {
   final ConfirmReorder onConfirm;
   final VoidCallback onTap;
   final List<RouteParamsPointWithLabel> points;
   final VoidCallback onClose;
   final BuildContext externalContext;
   final GeoPointMessage? myLocation;
+  final RouteSearchOptionsMessage navType;
 
   const ChangePathSheet({
     required this.onConfirm,
@@ -37,16 +44,20 @@ class ChangePathSheet extends StatefulWidget {
     required this.onClose,
     required this.externalContext,
     required this.myLocation,
+    required this.navType,
     super.key,
   });
 
   @override
-  State<ChangePathSheet> createState() => _ChangePathSheetState();
+  ConsumerState<ChangePathSheet> createState() => _ChangePathSheetState();
 }
 
-class _ChangePathSheetState extends State<ChangePathSheet> {
+class _ChangePathSheetState extends ConsumerState<ChangePathSheet> {
   final pointsModels = <ABRouteModel>[];
   late final List<RouteParamsPointWithLabel> points;
+
+  int? _etaSeconds;
+  int _etaRequestId = 0;
 
   int get intermediatePointCount {
     final count = pointsModels.length - 2;
@@ -59,6 +70,7 @@ class _ChangePathSheetState extends State<ChangePathSheet> {
     // a new list is needed to compare to initial point count on close confirmation
     points = List.of(widget.points);
     _updatePoints();
+    _loadEta();
   }
 
   // Update [pointsModels] list with the new values from [points] and [labels]
@@ -124,13 +136,78 @@ class _ChangePathSheetState extends State<ChangePathSheet> {
               onTap: () {
                 widget.onConfirm(points);
               },
-              primaryLabel: widget.externalContext.l10n.buildRoute,
+              primaryLabel: _buildRouteLabel,
             ),
           ),
         ),
       ],
     ),
   );
+
+  String get _buildRouteLabel {
+    final l10n = widget.externalContext.l10n;
+    final label = l10n.buildRoute;
+    final eta = _etaSeconds;
+
+    if (eta == null) {
+      return label;
+    }
+
+    return '$label · ${eta.formatDurationShort(l10n)}';
+  }
+
+  Future<void> _loadEta() async {
+    final requestId = ++_etaRequestId;
+    final myLocation = widget.myLocation;
+    final resolved = points
+        .map(
+          (point) =>
+              point.value ??
+              (myLocation == null
+                  ? null
+                  : RouteParamsPoint(latitude: myLocation.latitude, longitude: myLocation.longitude)),
+        )
+        .toList();
+
+    if (resolved.length < 2 || resolved.any((point) => point == null)) {
+      _setEta(null, requestId);
+      return;
+    }
+
+    final controller = ref.read(dgisControllerProvider).value;
+    if (controller == null) {
+      _setEta(null, requestId);
+      return;
+    }
+
+    try {
+      final result = await controller.findRoute(
+        options: widget.navType,
+        startPoint: resolved.first!.routeSearchPointMessage,
+        finishPoint: resolved.last!.routeSearchPointMessage,
+        intermediatePoints: resolved
+            .sublist(1, resolved.length - 1)
+            .map((point) => point!.routeSearchPointMessage)
+            .toList(),
+      );
+
+      final durations = result.routes.map((route) => route.duration);
+      _setEta(durations.isEmpty ? null : durations.reduce((a, b) => a < b ? a : b).round(), requestId);
+      // ignore: avoid_catches_without_on_clauses
+    } catch (_) {
+      _setEta(null, requestId);
+    }
+  }
+
+  void _setEta(int? seconds, int requestId) {
+    if (!mounted || requestId != _etaRequestId || _etaSeconds == seconds) {
+      return;
+    }
+
+    setState(() {
+      _etaSeconds = seconds;
+    });
+  }
 
   void _onClose(BuildContext context) {
     if (points.length != widget.points.length) {
@@ -170,6 +247,7 @@ class _ChangePathSheetState extends State<ChangePathSheet> {
       _swap(points, oldIndex, currentIndex);
       _swap(pointsModels, oldIndex, currentIndex);
     });
+    _loadEta();
   }
 
   /// Swap the items in the list
@@ -260,6 +338,7 @@ class _ChangePathSheetState extends State<ChangePathSheet> {
 
         // Don't use setState in [_updatePoints] because it will cause an error during the initState
         setState(() {});
+        _loadEta();
       }
     }
   }
@@ -276,6 +355,7 @@ class _ChangePathSheetState extends State<ChangePathSheet> {
 
       // Don't use setState in [_updatePoints] because it will cause an error during the initState
       setState(() {});
+      _loadEta();
     };
   }
 

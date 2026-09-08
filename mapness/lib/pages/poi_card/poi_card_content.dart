@@ -323,13 +323,21 @@ class _ContentState extends ConsumerState<_PoiCardContent> with SingleTickerProv
                   // we should not use objectIdForIndoorLevels if POI has levelId
                   objectIdForIndoorLevels: poiCardState?.gisObjectIdMessage?.levelId != null ? null : widget.objectId,
                 ),
-
-                topHeader: isGooglePoi
-                    ? null
-                    : PoiPhotosHeader(
+                topHeader: Column(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x).copyWith(bottom: Spacing.$4x),
+                      child: const MapAttributionLabel(),
+                    ),
+                    if (!isGooglePoi)
+                      PoiPhotosHeader(
                         objectId: widget.objectId,
                         bottomSheetController: _bottomSheetController,
                       ),
+                  ],
+                ),
                 topHeaderOffset: PoiCardStateMapper.topHeaderOffsetDelegate,
                 footer: PoiCardFooter(
                   // Animated to zero, because safeAreaColor can't be animated now

@@ -98,8 +98,11 @@ class _FreeRoamManager extends _$FreeRoamManager {
   }
 
   void deactivate() {
+    // Only the camera anchor is restored here. The location follow state must not be
+    // toggled: `toggleFollowState` is a cycle (off -> position -> direction), so on iOS it
+    // turned the follow back on and pulled the camera to the current location right after
+    // free roam was ended, while Android kept the last roaming position (TFS #34904).
     ref.read(dgisControllerProvider).value?.setCameraPositionPoint(CameraPositionPointMessage(x: 0.5, y: 0.5));
-    ref.read(dgisControllerProvider).value?.toggleFollowState();
   }
 }
 
