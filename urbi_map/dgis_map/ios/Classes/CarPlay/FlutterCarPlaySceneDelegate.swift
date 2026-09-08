@@ -111,7 +111,8 @@ public class FlutterCarPlaySceneDelegate: UIResponder, CPTemplateApplicationScen
     ///
     /// The request is advisory: the system may turn it down (it is the head
     /// unit, not the app, that owns the car screen), in which case the car
-    /// screen stays where it is — today's behaviour — and the reason is logged.
+    /// screen stays where it is — today's behaviour — and the reason is logged
+    /// in debug builds.
     /// No-op when CarPlay is not connected.
     static func activateCarScreen() {
         DispatchQueue.main.async {
@@ -120,7 +121,9 @@ public class FlutterCarPlaySceneDelegate: UIResponder, CPTemplateApplicationScen
             else { return }
 
             let onError: (any Error) -> Void = { error in
+                #if DEBUG
                 print("CarPlay: scene activation refused — \(error.localizedDescription)")
+                #endif
             }
 
             if #available(iOS 17.0, *) {
