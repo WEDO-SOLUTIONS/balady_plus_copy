@@ -47,13 +47,14 @@ class _PlacePreviewState extends ConsumerState<PlacePreview> with AutomaticKeepA
                 .toList();
 
             return SliderListView(
-              dotColor:isDGADark?context.colors.staticWhite: context.colors.borderMuted,
+              dotColor: isDGADark ? context.colors.staticWhite : context.colors.borderMuted,
               items: places,
               horizontalPadding: Spacing.$3x,
               separationWidth: Spacing.$2x,
               viewportWidth: MediaQuery.sizeOf(context).width,
               contentSize: kPlaceCardSize,
-              activeDotColor:context.colors.accentDefault  ,
+              activeDotColor: context.colors.accentDefault,
+
               ///todo must fix this with real color
               // activeDotColor: SaudiNationalDay.isNow() ? context.colors.staticWhite : null,
               onTap: (item) {

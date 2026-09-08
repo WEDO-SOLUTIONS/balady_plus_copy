@@ -176,7 +176,7 @@ class DashboardHeaderState extends ConsumerState<DashboardHeader> {
     final headerHintColor = themeConfig.searchHintColor ?? context.colors.foregroundSoft;
 
     return GestureDetector(
-      onTap: (){
+      onTap: () {
         // Here we clean the search query on tap on the search field
         // So the user can see the search history, not previous search results
         final text = ref.read(searchProvider(_scope)).searchText;
@@ -204,14 +204,14 @@ class DashboardHeaderState extends ConsumerState<DashboardHeader> {
           ref
               .read(urbiAnalyticsProvider.notifier)
               .trackWithPrint(
-            '${MetricsConstants.searchTag}::${MetricsConstants.searchKeys.uniqueSearchInitialized}',
-          );
+                '${MetricsConstants.searchTag}::${MetricsConstants.searchKeys.uniqueSearchInitialized}',
+              );
         });
       },
       child: Container(
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(RadiusBorder.m),
-          color: isDark?context.colors.staticBlack: context.colors.staticWhite,
+          color: isDark ? context.colors.staticBlack : context.colors.staticWhite,
 
           border: Border.all(
             color: context.colors.borderDefault,

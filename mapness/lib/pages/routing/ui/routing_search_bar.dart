@@ -76,7 +76,9 @@ class _RoutingSearchBarState extends ConsumerState<RoutingSearchBar> {
     _boxClickFiredThisFocus = true;
     final scopeValue = context.read<SearchScope>().value;
     final searcher = ref.read(searchProvider(scopeValue).notifier);
-    ref.read(appAnalyticsProvider).searchBoxClick(
+    ref
+        .read(appAnalyticsProvider)
+        .searchBoxClick(
           eventSource: searcher.dataFinderEventSource,
           isFirstClick: !_searchBoxClicked,
         );
@@ -122,7 +124,9 @@ class _RoutingSearchBarState extends ConsumerState<RoutingSearchBar> {
             );
 
             // DataFinder: report the manual text input.
-            ref.read(appAnalyticsProvider).searchBoxInput(
+            ref
+                .read(appAnalyticsProvider)
+                .searchBoxInput(
                   operationType: DataFinderInputOperation.manual,
                   inputText: query,
                 );
@@ -138,7 +142,9 @@ class _RoutingSearchBarState extends ConsumerState<RoutingSearchBar> {
             );
             // DataFinder: report the search submit (keyboard action).
             if (query.trim().isNotEmpty) {
-              ref.read(appAnalyticsProvider).searchButtonClick(
+              ref
+                  .read(appAnalyticsProvider)
+                  .searchButtonClick(
                     eventSource: ref.read(searchProvider(scope.value).notifier).dataFinderEventSource,
                     searchText: query,
                   );

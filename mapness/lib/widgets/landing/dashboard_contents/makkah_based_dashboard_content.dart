@@ -146,7 +146,7 @@ class MakkahBasedDashboardContent extends ConsumerWidget {
                     final streamAudio = ref.watch(streamAudioProvider);
                     final isLoading = streamAudio.isLoadingChannels;
                     final hasChannels = streamAudio.hasChannels;
-                
+
                     return QuickActionButton(
                       text: Directionality.of(context) == TextDirection.rtl ? 'البث الصوتي' : 'Stream Audio',
                       icon: Icons.wifi,
@@ -171,16 +171,16 @@ class MakkahBasedDashboardContent extends ConsumerWidget {
                             ),
                       onTap: () async {
                         final provider = ref.read(streamAudioProvider.notifier);
-                
+
                         try {
                           // Reset if needed before getting live programs
                           if (provider.needsReinitialization) {
                             await provider.reset();
                           }
-                
+
                           // Always try to get channels (this will show loading state)
                           await provider.getChannels(forceRefresh: !hasChannels);
-                
+
                           if (provider.filteredChannels.isNotEmpty) {
                             await provider.selectChannel(provider.filteredChannels.first);
                           } else {

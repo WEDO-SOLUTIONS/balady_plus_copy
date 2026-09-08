@@ -56,7 +56,9 @@ class _StoriesWidgetState extends ConsumerState<StoriesWidget> with AutomaticKee
     );
 
     ref.read(storiesOpenStateProvider.notifier).open();
-    ref.read(appRouterProvider).push(
+    ref
+        .read(appRouterProvider)
+        .push(
           StoriesRoute(
             type: StoryTypes.network,
             initialStoryId: id,

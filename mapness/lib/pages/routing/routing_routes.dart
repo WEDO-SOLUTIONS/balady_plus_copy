@@ -146,46 +146,46 @@ class _RoutingRoutesPageState extends ConsumerState<RoutingRoutesPage> {
                   ),
                   if (points.length > 2)
                     Semantics(
-                    label: context.l10n.edit,
+                      label: context.l10n.edit,
+                      button: true,
+                      child: ExcludeSemantics(
+                        child: AppButton(
+                          primaryIcon: General16Icons.edit,
+                          iconColor: colors.neutralOnContainer,
+                          buttonColorScheme: ButtonColorScheme.neutral,
+                          buttonType: ButtonType.secondary,
+                          size: ButtonSize.large,
+                          onTap: _changeRoute,
+                        ),
+                      ),
+                    )
+                  else
+                    Semantics(
+                      label: context.l10n.a11ySwapRouteEndpoints,
+                      button: true,
+                      child: ExcludeSemantics(
+                        child: AppButton(
+                          primaryIcon: TransportIcons.verticalChange,
+                          buttonColorScheme: ButtonColorScheme.neutral,
+                          buttonType: ButtonType.secondary,
+                          size: ButtonSize.large,
+                          onTap: _onSwipeRoutes,
+                        ),
+                      ),
+                    ),
+                  Semantics(
+                    label: context.l10n.a11yClose,
                     button: true,
                     child: ExcludeSemantics(
                       child: AppButton(
-                        primaryIcon: General16Icons.edit,
+                        primaryIcon: SystemIcons.close,
                         iconColor: colors.neutralOnContainer,
                         buttonColorScheme: ButtonColorScheme.neutral,
                         buttonType: ButtonType.secondary,
                         size: ButtonSize.large,
-                        onTap: _changeRoute,
+                        onTap: _onClose,
                       ),
                     ),
-                  )
-                else
-                  Semantics(
-                    label: context.l10n.a11ySwapRouteEndpoints,
-                    button: true,
-                    child: ExcludeSemantics(
-                      child: AppButton(
-                        primaryIcon: TransportIcons.verticalChange,
-                        buttonColorScheme: ButtonColorScheme.neutral,
-                        buttonType: ButtonType.secondary,
-                        size: ButtonSize.large,
-                        onTap: _onSwipeRoutes,
-                      ),
-                    ),
-                  ),
-                Semantics(
-                  label: context.l10n.a11yClose,
-                  button: true,
-                  child: ExcludeSemantics(
-                    child: AppButton(
-                      primaryIcon: SystemIcons.close,
-                      iconColor: colors.neutralOnContainer,
-                      buttonColorScheme: ButtonColorScheme.neutral,
-                      buttonType: ButtonType.secondary,
-                      size: ButtonSize.large,
-                      onTap: _onClose,
-                    ),
-                  ),
                   ),
                 ].insertBetween(Spacing.$3x.widthBox).toList(),
               ),
