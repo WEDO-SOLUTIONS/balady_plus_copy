@@ -83,13 +83,30 @@ class MetroLayer extends _$MetroLayer {
   }
 
   Future<void> _showMetro() async {
-    if (_disposed || state.hasValue == false || state.value == null || state.value?.isEmpty == true) {
+    if (_disposed) {
+      return;
+    }
+
+    // The layer switcher calls showMetro() on the .notifier right after
+    // build() starts (compute()-isolate JSON parse still in flight), so
+    // `state` is still AsyncLoading here. Bailing out on state.hasValue used
+    // to drop that first tap silently and permanently: metroLayerVisibleProvider
+    // is only ever set at the end of this method, so build()'s own
+    // isMetroShown check never saw it become true either. Await the build's
+    // own future instead - it resolves with this same in-flight run once
+    // data lands (or throws, which we just swallow like the old bail-out did).
+    List<MetroLineModel> metroLines;
+    try {
+      metroLines = await future;
+    } catch (_) {
+      return;
+    }
+
+    if (_disposed || metroLines.isEmpty) {
       return;
     }
 
     final zoom = ref.read(cameraPositionProvider)?.zoom.ceil();
-
-    final metroLines = state.value!;
 
     final mapManager = ref.read(
       mapObjectManagerProvider(
