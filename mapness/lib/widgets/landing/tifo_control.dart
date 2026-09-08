@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lottie/lottie.dart';
@@ -13,6 +14,7 @@ import 'package:mapness/features/balady_analytics/events/tifo_events.dart'
     show TifoActivationSource, TifoEntryAction, TifoEvents;
 import 'package:mapness/features/tifo/entry_screen.dart';
 import 'package:mapness/features/tifo/leaderboard_sheet.dart';
+import 'package:mapness/features/tifo/penalty/penalty_app_3d.dart';
 import 'package:mapness/features/tifo/tifo_buildings_map_layer.dart';
 import 'package:mapness/features/tifo/tifo_flow_provider.dart';
 import 'package:mapness/features/tifo/tifo_journey.dart';
@@ -38,14 +40,39 @@ class TifoControl extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final enabled = ref.watch(tifoBuildingsMapLayerProvider);
-    if (enabled) {
-      // Active: green fill + white ball (design's toggled state). Same
-      // geometry/shadow as [MapButton] so the controls column stays uniform.
-      return _ActiveTifoButton(onTap: () => _guardedTap(context, ref, enabled: true));
+    final Widget button = enabled
+        // Active: green fill + white ball (design's toggled state). Same
+        // geometry/shadow as [MapButton] so the controls column stays uniform.
+        ? _ActiveTifoButton(onTap: () => _guardedTap(context, ref, enabled: true))
+        : MapButton(
+            onTap: () => _guardedTap(context, ref, enabled: false),
+            child: const TifoBallIcon(),
+          );
+    // SPIKE (feat/tifo-unity-spike): long-press the ⚽ button launches the
+    // Unity penalty game directly — no building, no /play/start, no auth — so
+    // the Unity roundtrip can be tested without a valid TIFO session. Gated to
+    // debug builds (compiled out of release); remove with the rest of the
+    // spike scaffolding.
+    if (kDebugMode) {
+      return GestureDetector(onLongPress: () => _debugLaunchUnity(context), child: button);
     }
-    return MapButton(
-      onTap: () => _guardedTap(context, ref, enabled: false),
-      child: const TifoBallIcon(),
+    return button;
+  }
+
+  void _debugLaunchUnity(BuildContext context) {
+    logger.log('[tifo] SPIKE: long-press → PenaltyApp3D (no backend)');
+    unawaited(
+      Navigator.of(context, rootNavigator: true).push<void>(
+        MaterialPageRoute<void>(
+          fullscreenDialog: true,
+          builder: (_) => PenaltyApp3D(
+            onComplete: (outcome) {
+              logger.log('[tifo] SPIKE complete: goals=${outcome.goals} misses=${outcome.misses}');
+              Navigator.of(context, rootNavigator: true).pop();
+            },
+          ),
+        ),
+      ),
     );
   }
 

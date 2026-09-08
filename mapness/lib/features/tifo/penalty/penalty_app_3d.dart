@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_embed_unity/flutter_embed_unity.dart';
+import 'package:mapness/features/tifo/data/tifo_debug_goalkeeper_difficulty.dart';
 import 'package:mapness/features/tifo/data/tifo_models.dart';
 
 /// Unity-backed drop-in replacement for the Flame [PenaltyApp]: identical
