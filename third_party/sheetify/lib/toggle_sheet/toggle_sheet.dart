@@ -288,6 +288,17 @@ class _StatelessSheetState extends State<ToggleSheet>
   void dispose() {
     controller._heightAnimationController?.dispose();
     controller._heightAnimationController = null;
+    // _initAnimation creates *two* controllers on this state's vsync: the
+    // height one above and the extent's safe-area one. Only disposing the
+    // first left the safe-area ticker running, and super.dispose() below then
+    // tripped "disposed with an active Ticker" whenever the sheet was
+    // unmounted mid-animation (open then close in quick succession, where
+    // _onHeightChanged has just started its animateTo(1.0)). Nulled out like
+    // the height controller so the owning ToggleSheetController.dispose()
+    // does not double-dispose it later.
+    controller._extent._safeAreaAnimationController?.stop();
+    controller._extent._safeAreaAnimationController?.dispose();
+    controller._extent._safeAreaAnimationController = null;
     super.dispose();
   }
 
