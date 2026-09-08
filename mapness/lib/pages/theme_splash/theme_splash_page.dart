@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:mapness/features/special_themes/core/special_theme_mode.dart';
 import 'package:mapness/features/special_themes/core/theme_splash_config.dart';
 import 'package:mapness/pages/stories/stories_page.dart';
+import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
+import 'package:mapness/features/balady_analytics/metrics.dart';
 
 /// Generic themed splash screen page.
 ///
@@ -43,7 +45,25 @@ class ThemeSplashPage extends StatefulWidget {
 }
 
 class _ThemeSplashPageState extends State<ThemeSplashPage> {
+  @override
+  void initState() {
+    super.initState();
+    // Track splash shown
+    Metrics.logEventAdvanced(
+      MetricsConstants.themesKeys.splashShown,
+      group: MetricsConstants.themesTag,
+      props: {'theme': widget.theme.name},
+    );
+  }
+
   void _handleClose() {
+    // Track splash closed
+    Metrics.logEventAdvanced(
+      MetricsConstants.themesKeys.splashClosed,
+      group: MetricsConstants.themesTag,
+      action: MetricAction.tap.name,
+      props: {'theme': widget.theme.name},
+    );
     widget.onClose?.call();
   }
 

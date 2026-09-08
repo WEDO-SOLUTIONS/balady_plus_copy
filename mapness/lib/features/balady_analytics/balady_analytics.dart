@@ -6,12 +6,17 @@ export 'package:mapness/features/balady_analytics/balady_analytics_navigator_obs
 export 'package:mapness/features/balady_analytics/balady_analytics_sink.dart';
 export 'package:mapness/features/balady_analytics/posthog_balady_analytics_sink.dart';
 export 'package:mapness/features/balady_analytics/urbi_balady_analytics_sink.dart';
+export 'package:mapness/features/balady_analytics/uxcam_balady_analytics_sink.dart';
 
 /// Named destinations an event can be routed to. [ours] is our own pipeline
 /// (PostHog Cloud EU) and obeys [BaladyAnalyticsMode]; the rest are legacy
 /// production streams that keep flowing regardless of mode until their
 /// migration phase ends.
-enum BaladyAnalyticsChannel { ours, urbi }
+///
+/// [urbi] is opt-in per call site; [uxcam] is registered as always-on
+/// (see [registerChannel]) because a session recording is only worth watching
+/// if the whole event timeline is on it.
+enum BaladyAnalyticsChannel { ours, urbi, uxcam }
 
 /// Single entry point for Balady's own analytics pipeline (product + tech
 /// events into our PostHog Cloud EU project). See README.md next to this file.
@@ -35,6 +40,7 @@ class BaladyAnalytics {
   bool _configured = false;
   BaladyAnalyticsSink _sink = LoggingBaladyAnalyticsSink();
   final Map<BaladyAnalyticsChannel, BaladyAnalyticsSink> _channelSinks = {};
+  final Set<BaladyAnalyticsChannel> _alwaysOnChannels = {};
   final List<(BaladyAnalyticsEvent, Set<BaladyAnalyticsChannel>)> _pending = [];
   // is_authenticated defaults to false: events fired before the auth provider
   // restores a session carry an explicit "anonymous" flag rather than nothing.
@@ -63,9 +69,23 @@ class BaladyAnalytics {
   /// Attach a legacy stream as a named channel, so call sites can fan an event
   /// out to it through the facade ([ours] is fixed and configured via
   /// [configure]). Events routed to a channel before registration are dropped.
-  void registerChannel(BaladyAnalyticsChannel channel, BaladyAnalyticsSink sink) {
+  ///
+  /// [alwaysOn] makes the channel receive every event, screen view, identity
+  /// and session property regardless of what a call site asked for — what a
+  /// session recorder needs (UXCam), and what UXCam had before it was wired
+  /// through this facade. Unlike [ours] an always-on channel ignores
+  /// [BaladyAnalyticsMode]: it is a legacy stream, and the mode switch governs
+  /// our own pipeline only.
+  void registerChannel(
+    BaladyAnalyticsChannel channel,
+    BaladyAnalyticsSink sink, {
+    bool alwaysOn = false,
+  }) {
     assert(channel != BaladyAnalyticsChannel.ours, 'ours is the configure()d sink, not a registered channel');
     _channelSinks[channel] = sink;
+    if (alwaysOn) {
+      _alwaysOnChannels.add(channel);
+    }
   }
 
   /// Product/tech event. [properties] must be JSON-serializable. [channels]
@@ -86,12 +106,14 @@ class BaladyAnalytics {
     );
   }
 
-  /// Screen view — replaces UXCam `tagScreenName`.
+  /// Screen view — feeds UXCam `tagScreenName` and, when enabled, `$screen`.
   ///
-  /// Deferred to tracking-plan Phase 1.5: `$screen` dominates event quota (~80%
-  /// of projected volume) while the dependent screen-time metric is not a
-  /// priority. Call sites stay wired; flip [_screenCaptureEnabled] to re-enable
-  /// (docs/analytics-tracking-plan.md).
+  /// `ours` is deferred to tracking-plan Phase 1.5: `$screen` dominates event
+  /// quota (~80% of projected volume) while the dependent screen-time metric is
+  /// not a priority. Call sites stay wired; flip [_screenCaptureEnabled] to
+  /// re-enable (docs/analytics-tracking-plan.md). Always-on channels get the
+  /// screen view either way — quota is a PostHog concern, and an untagged
+  /// UXCam recording is unnavigable.
   static const _screenCaptureEnabled = false;
 
   void screen(String path) {
@@ -99,15 +121,13 @@ class BaladyAnalytics {
     // off: PostHog's reserved name fills the "URL / Screen" column in Activity
     // and gives any event a screen breakdown, at zero extra event volume.
     _sessionProperties[r'$screen_name'] = path;
-    if (!_screenCaptureEnabled) {
-      return;
-    }
     _dispatch(
       BaladyAnalyticsEvent(
         name: r'$screen',
         kind: BaladyAnalyticsEventKind.screen,
         properties: {..._sessionProperties, 'path': path},
       ),
+      channels: _screenCaptureEnabled ? const {BaladyAnalyticsChannel.ours} : const {},
     );
   }
 
@@ -146,6 +166,9 @@ class BaladyAnalytics {
     if (!_configured || _mode.sendToOurs) {
       _sink.identify(userId, traits ?? const {});
     }
+    for (final sink in _alwaysOnSinks) {
+      sink.identify(userId, traits ?? const {});
+    }
   }
 
   /// Logout — resets user identity in the sink.
@@ -154,13 +177,22 @@ class BaladyAnalytics {
     if (!_configured || _mode.sendToOurs) {
       _sink.identify(null, const {});
     }
+    for (final sink in _alwaysOnSinks) {
+      sink.identify(null, const {});
+    }
   }
 
-  /// Sticky property attached to every subsequent event of this app run —
-  /// replaces UXCam `setSessionProperty`.
+  /// Sticky property attached to every subsequent event of this app run, and
+  /// set on the session itself in sinks that have the notion (UXCam).
   void setSessionProperty(String key, Object? value) {
     _sessionProperties[key] = value;
+    for (final sink in _alwaysOnSinks) {
+      sink.setSessionProperty(key, value);
+    }
   }
+
+  Iterable<BaladyAnalyticsSink> get _alwaysOnSinks =>
+      _alwaysOnChannels.map((channel) => _channelSinks[channel]).nonNulls;
 
   void _dispatch(
     BaladyAnalyticsEvent event, {
@@ -176,7 +208,7 @@ class BaladyAnalytics {
   }
 
   void _send(BaladyAnalyticsEvent event, Set<BaladyAnalyticsChannel> channels) {
-    for (final channel in channels) {
+    for (final channel in {...channels, ..._alwaysOnChannels}) {
       if (channel == BaladyAnalyticsChannel.ours) {
         if (_mode.sendToOurs) {
           _sink.track(event);

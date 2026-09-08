@@ -8,7 +8,9 @@ import 'package:mapness/entities/routing/route_point.dart';
 import 'package:mapness/features/search/providers/search_history.dart';
 import 'package:mapness/features/search/ui/search_scope.dart';
 import 'package:mapness/pages/routing/ui/routing_history_empty.dart';
+import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
+import 'package:mapness/features/balady_analytics/metrics.dart';
 import 'package:mapness/shared/providers/analytic/bss_service.dart';
 import 'package:mapness/shared/providers/analytic/models/bss_request.dart';
 import 'package:mapness/shared/providers/analytic/models/extensions/search_type_ext.dart';
@@ -38,12 +40,29 @@ class RoutingHistory extends ConsumerWidget {
       history: history,
       iconColor: context.colors.foregroundSoft,
       onClear: () {
+        Metrics.logEventAdvanced(
+          MetricsConstants.routesKeys.searchClearButton,
+          group: MetricsConstants.routesTag,
+          action: MetricAction.tap.toString(),
+        );
         historyNotifier.clear();
       },
       onDelete: (item, index) {
+        Metrics.logEventAdvanced(
+          MetricsConstants.routesKeys.searchOnDelete,
+          group: MetricsConstants.routesTag,
+          action: MetricAction.tap.toString(),
+          props: {'item': item.id?.objectId},
+        );
         historyNotifier.delete(index);
       },
       onTap: (item, index, historyList) async {
+        Metrics.logEventAdvanced(
+          MetricsConstants.routesKeys.routeSelectionChangeNavType,
+          group: MetricsConstants.routesTag,
+          action: MetricAction.tap.toString(),
+          props: {'item': item.id?.objectId},
+        );
         // BALADY-3618: the routes history holds two kinds of entries — directory
         // objects (`SearchHistoryItem.fromDirectoryObject`, `id` set) and plain
         // text queries (`SearchHistoryItem.fromQuery`, `id` null), written by the

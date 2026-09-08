@@ -5,7 +5,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/features/poi_card/extensions/organizations_ext.dart';
 import 'package:mapness/features/poi_card/provider/poi_card_provider.dart';
 import 'package:mapness/features/poi_card/provider/poi_photo_provider.dart';
+import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
+import 'package:mapness/features/balady_analytics/metrics.dart';
 
 class PoiTabs extends ConsumerStatefulWidget {
   final PoiCardState? poiCardState;
@@ -54,6 +56,12 @@ class _PoiTabsState extends ConsumerState<PoiTabs> {
             child: _PoiTabItem(
               title: context.l10n.info,
               onTap: () {
+                Metrics.logEventAdvanced(
+                  MetricsConstants.poiKeys.tab,
+                  group: MetricsConstants.poiTag,
+                  action: MetricAction.tap.toString(),
+                  props: {'tab': context.l10n.info},
+                );
                 widget.tabController.animateTo(0);
               },
               isActive: widget.tabController.index == 0,
@@ -65,6 +73,13 @@ class _PoiTabsState extends ConsumerState<PoiTabs> {
               title: context.l10n.photos,
               count: photoCount,
               onTap: () {
+                Metrics.logEventAdvanced(
+                  MetricsConstants.poiKeys.tab,
+                  group: MetricsConstants.poiTag,
+                  action: MetricAction.tap.toString(),
+                  props: {'tab': context.l10n.photos},
+                );
+
                 widget.tabController.animateTo(1);
               },
               isActive: widget.tabController.index == 1,
