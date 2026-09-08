@@ -18,6 +18,8 @@ import 'package:mapness/features/favourites/mappers/favourite_item_mapper.dart';
 import 'package:mapness/features/favourites/mappers/favourites_response_mapper.dart';
 import 'package:mapness/features/favourites/providers/favourite_markers.dart';
 import 'package:mapness/features/sso_auth/data/auth_provider.dart';
+import 'package:mapness/shared/constants/metrics_constants.dart';
+import 'package:mapness/features/balady_analytics/metrics.dart';
 import 'package:mapness/shared/providers/dgis_network.dart';
 import 'package:mapness/shared/providers/hive.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
@@ -36,6 +38,8 @@ class _FavouriteCache extends _$FavouriteCache {
   static const _keyAddSync = 'add_sync';
   static const _keyLastUpdate = 'last_update';
   static const _keyLastUserId = 'last_user_id';
+
+  static const _tag = MetricsConstants.favoriteTag;
 
   static const _cacheFor = Duration(minutes: 30);
 
@@ -343,6 +347,11 @@ class _FavouriteCache extends _$FavouriteCache {
         return DeleteFavouriteItemsRequestItemMapper.fromDomain(e, itemType);
       }),
     );
+    Metrics.logEventAdvanced(
+      MetricsConstants.favoritesKeys.deleteItems,
+      group: _tag,
+      props: {'items': items.map((e) => e.id).toList()},
+    );
     await dio.delete(
       'favourites',
       data: request.writeToBuffer(),
@@ -355,6 +364,11 @@ class _FavouriteCache extends _$FavouriteCache {
     required String? workId,
     required String? homeId,
   }) async {
+    Metrics.logEventAdvanced(
+      MetricsConstants.favoritesKeys.addItems,
+      group: _tag,
+      props: {'items': items.map((e) => e.id).toList()},
+    );
     mixpanel?.timeEvent('Favorites: addItems');
     final dio = await ref.read(dGisNetworkProvider.future);
     final request = proto.AddFavouriteItemsRequest(

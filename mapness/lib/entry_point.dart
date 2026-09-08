@@ -75,8 +75,10 @@ import 'package:mapness/pages/debug_overlay/debug_overlay.dart';
 import 'package:mapness/pages/landing/landing_page.dart';
 import 'package:mapness/pages/path_nav/path_nav_page.dart';
 import 'package:mapness/shared/constants/constants.dart';
+import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/lib/auth/auth_methods.dart';
 import 'package:mapness/shared/lib/deeplink_functions.dart';
+import 'package:mapness/features/balady_analytics/metrics.dart';
 import 'package:mapness/shared/lib/urbi_metrics_utils.dart';
 import 'package:mapness/shared/providers/analytic/bss_common.dart';
 import 'package:mapness/shared/providers/analytic/bss_dio.dart';
@@ -595,6 +597,23 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> with Widg
           return;
         }
 
+        // Track theme deactivation
+        if (prev != null && prev != SpecialThemeMode.base) {
+          Metrics.logEventAdvanced(
+            MetricsConstants.themesKeys.themeDeactivated,
+            group: MetricsConstants.themesTag,
+            props: {'theme': prev.name},
+          );
+        }
+
+        // Track theme activation
+        if (next != SpecialThemeMode.base) {
+          Metrics.logEventAdvanced(
+            MetricsConstants.themesKeys.themeActivated,
+            group: MetricsConstants.themesTag,
+            props: {'theme': next.name},
+          );
+        }
         final isDark = ref.read(darkModeProvider).value?.isDark ?? false;
         _themeChanged(isDark: isDark);
       })
@@ -748,6 +767,14 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> with Widg
         ..log('StackTrace: $stackTrace', logLevel: MapnessLogLevel.error);
     }
 
+    // UXCam session recording: an always-on channel, so every facade event,
+    // screen tag and identity lands on the recording. No-op on flavors with an
+    // empty key (dev, urbiPre). Registered before `configure`, which is what
+    // flushes events buffered during startup — otherwise those would miss it.
+    final uxcam = UxcamBaladyAnalyticsSink.tryCreate(appKey: RemoteConfig.uxCamKey);
+    if (uxcam != null) {
+      BaladyAnalytics.instance.registerChannel(BaladyAnalyticsChannel.uxcam, uxcam, alwaysOn: true);
+    }
     // Idempotent: the host shell may have configured the facade already.
     BaladyAnalytics.instance.configure(
       mode: BaladyAnalyticsMode.parse(RemoteConfig.baladyAnalyticsMode),
@@ -1236,6 +1263,11 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> with Widg
   Future<void> _openQibla() async {
     final AppRouter router = await ref.watch(appRouterProvider);
     ref.read(appAnalyticsProvider).quickActionSelected('qibla');
+    Metrics.logEventAdvanced(
+      MetricsConstants.exploreKeys.qibla,
+      action: MetricAction.tap.name,
+      group: MetricsConstants.exploreTag,
+    );
     final location = ref.read(locationProvider.notifier);
 
     await location.checkLocationPermission().then((allowed) async {
@@ -1325,6 +1357,13 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> with Widg
 
   Future<void> _openStories(String id) async {
     final AppRouter router = await ref.watch(appRouterProvider);
+
+    Metrics.logEventAdvanced(
+      MetricsConstants.exploreKeys.storyBanner,
+      group: MetricsConstants.exploreTag,
+      action: MetricAction.tap.name,
+      props: {'id': id},
+    );
 
     ref.read(storiesOpenStateProvider.notifier).open();
 

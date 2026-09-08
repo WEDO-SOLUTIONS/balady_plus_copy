@@ -11,7 +11,9 @@ import 'package:mapness/features/lifestyle_layers/providers/active_layer.dart';
 import 'package:mapness/features/lifestyle_layers/providers/layers_controls.dart';
 import 'package:mapness/features/lifestyle_layers/providers/layers_state.dart';
 import 'package:mapness/shared/constants/constants.dart';
+import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/constants/navigation_constants.dart';
+import 'package:mapness/features/balady_analytics/metrics.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:mapness/shared/providers/navigator_voice.dart';
 import 'package:mapness/shared/providers/urbi_analytics.dart';
@@ -66,6 +68,11 @@ class _FreeRoamManager extends _$FreeRoamManager {
   // Show the home page after the trip is finished
   Future<void> endTripAndShowHome({required BuildContext context}) async {
     final dgisController = ref.read(dgisControllerProvider);
+    Metrics.logEventAdvanced(
+      MetricsConstants.navigationKeys.endTripAndShowHome,
+      group: MetricsConstants.navigationTag,
+      action: MetricAction.tap.toString(),
+    );
     await ref.read(urbiAnalyticsProvider).track(MapnessConstants.analyticsTripStopped);
     await dgisController.value?.freeRoamController.stop();
     await dgisController.value?.setMapAttributeBool(_navigatorOn, value: false);

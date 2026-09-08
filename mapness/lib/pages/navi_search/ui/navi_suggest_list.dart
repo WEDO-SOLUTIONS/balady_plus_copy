@@ -10,6 +10,8 @@ import 'package:mapness/features/poi_card/domain/model/poi_camera_config.dart';
 import 'package:mapness/features/search/models/search_scope.dart';
 import 'package:mapness/features/search/providers/search.dart';
 import 'package:mapness/features/search/ui/suggest_item.dart';
+import 'package:mapness/shared/constants/metrics_constants.dart';
+import 'package:mapness/features/balady_analytics/metrics.dart';
 import 'package:mapness/shared/providers/analytic/models/payload/bss_payload.dart';
 import 'package:mapness/shared/providers/location.dart';
 import 'package:provider/provider.dart';
@@ -32,6 +34,15 @@ class NaviSuggestList extends ConsumerWidget {
     void onObjectTap(DirectoryObjectMessage object) {
       final objectId = object.id?.objectId;
       if (objectId != null) {
+        Metrics.logEventAdvanced(
+          MetricsConstants.searchKeys.suggestion,
+          group: MetricsConstants.searchTag,
+          action: MetricAction.tap.toString(),
+          props: {
+            'object': objectId,
+          },
+        );
+
         context.router.replaceOrPush(
           route: PoiCardWidgetRoute(
             objectId: DgisObjectIdMessage(

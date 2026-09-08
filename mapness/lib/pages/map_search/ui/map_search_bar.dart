@@ -14,6 +14,7 @@ import 'package:mapness/features/search/providers/search_history.dart';
 import 'package:mapness/features/search/ui/search_scope.dart' as scope;
 import 'package:mapness/shared/constants/metrics_constants.dart' as metric_const;
 import 'package:mapness/shared/extensions/build_context_ext.dart';
+import 'package:mapness/features/balady_analytics/metrics.dart' as metrics;
 import 'package:mapness/shared/providers/analytic/bss_service.dart';
 import 'package:mapness/shared/providers/analytic/models/bss_request.dart';
 import 'package:mapness/shared/providers/analytic/models/payload/bss_payload.dart';
@@ -283,6 +284,12 @@ class _MapSearchBarState extends ConsumerState<MapSearchBar> {
                 payload: BssPayload(searchRequest: BssSearchRequest(text: query)),
               ),
             );
+            metrics.Metrics.logEventAdvanced(
+              metric_const.MetricsConstants.searchKeys.searchField,
+              group: metric_const.MetricsConstants.searchTag,
+              action: metrics.MetricAction.type.toString(),
+              props: {'query': query},
+            );
           },
           onTap: () {
             ref.read(advertMetricsProvider.notifier).sendEvent(AdvertMetricsKeys.journeySearch);
@@ -305,6 +312,12 @@ class _MapSearchBarState extends ConsumerState<MapSearchBar> {
             );
           },
           onSubmitted: (query) {
+            metrics.Metrics.logEventAdvanced(
+              metric_const.MetricsConstants.searchKeys.searchField,
+              group: metric_const.MetricsConstants.searchTag,
+              action: metrics.MetricAction.type.toString(),
+              props: {'query': query},
+            );
             BssService.instance.sendEvent(
               BssRequest(
                 eventType: BSSEventType.action,
