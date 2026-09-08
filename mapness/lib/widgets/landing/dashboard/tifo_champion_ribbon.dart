@@ -135,21 +135,29 @@ class _ChampionRibbonConfig extends CityEventConfig {
   @override
   bool get hasLogo => true;
 
-  /// How far the trophy is pushed down from where the banner shell would
-  /// otherwise put it.
+  /// How far the trophy is pushed down from the bottom of the visible band.
   ///
-  /// The shell draws the ribbon *below* its own box — `verticalOffset` plus an
-  /// inner height taller than the outer one — so a logo pinned to the stack's
-  /// bottom lands at the ribbon's TOP edge, floating clear of it. This is the
-  /// single knob that seats the trophy back into the ribbon; raise it to sink
-  /// the trophy further, lower it to lift the trophy up.
-  static const double _trophyDrop = 12;
+  /// Zero, and derived rather than eyeballed. The logo is pinned by
+  /// `Positioned(bottom: 0)` to the bottom of a stack exactly
+  /// [bannerBoxHeight] tall, so at zero the artwork's last row lands on the
+  /// ribbon's bottom edge. The artwork has no transparent margin — its alpha
+  /// bounds fill the frame and its final row is opaque — so that row IS the
+  /// base of the trophy.
+  ///
+  /// Positive therefore hides the base behind the sheet, negative leaves a
+  /// strip of ribbon body showing under it. There is no slack to reclaim at
+  /// the sheet's rounded corners either: that radius is 16 and the trophy
+  /// stands at x 40 to 68, where the edge is already straight.
+  static const double _trophyDrop = 4;
 
   @override
   EventLogoConfig get logoConfig => EventLogoConfig(
     imagePath: Assets.tifo.images.championTrophy.keyName,
-    // Height follows from the artwork's own 0.41 aspect.
-    width: 24,
+    // Sized by width because that is all `EventLogoConfig` exposes; 28 against
+    // the artwork's own 0.49 aspect lands the trophy at the ~57 tall the
+    // design draws it. Re-derive this if the artwork is ever swapped again —
+    // the previous one was 0.41, and reusing its width made this one squat.
+    width: 28,
     padding: const EdgeInsets.only(left: 40),
     imageOffset: const Offset(0, _trophyDrop),
     // The trophy is a still object; a sweeping highlight over it reads as a
