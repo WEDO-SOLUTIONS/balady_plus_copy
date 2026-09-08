@@ -1492,11 +1492,17 @@ class $AssetsTifoSpritesGen {
 class $AssetsTifoTutorialGen {
   const $AssetsTifoTutorialGen();
 
-  /// File path: assets/tifo/tutorial/long_press.svg
-  SvgGenImage get longPress => const SvgGenImage('assets/tifo/tutorial/long_press.svg');
+  /// File path: assets/tifo/tutorial/game_tutorial_dark.json
+  String get gameTutorialDark => 'packages/mapness/assets/tifo/tutorial/game_tutorial_dark.json';
 
-  /// File path: assets/tifo/tutorial/long_press_dark.svg
-  SvgGenImage get longPressDark => const SvgGenImage('assets/tifo/tutorial/long_press_dark.svg');
+  /// File path: assets/tifo/tutorial/game_tutorial_light.json
+  String get gameTutorialLight => 'packages/mapness/assets/tifo/tutorial/game_tutorial_light.json';
+
+  /// File path: assets/tifo/tutorial/long_press.json
+  String get longPress => 'packages/mapness/assets/tifo/tutorial/long_press.json';
+
+  /// File path: assets/tifo/tutorial/long_press_dark.json
+  String get longPressDark => 'packages/mapness/assets/tifo/tutorial/long_press_dark.json';
 
   /// File path: assets/tifo/tutorial/token_building.webp
   AssetGenImage get tokenBuilding => const AssetGenImage('assets/tifo/tutorial/token_building.webp');
@@ -1508,7 +1514,15 @@ class $AssetsTifoTutorialGen {
   AssetGenImage get tokenCoin => const AssetGenImage('assets/tifo/tutorial/token_coin.webp');
 
   /// List of all assets
-  List<dynamic> get values => [longPress, longPressDark, tokenBuilding, tokenCar, tokenCoin];
+  List<dynamic> get values => [
+    gameTutorialDark,
+    gameTutorialLight,
+    longPress,
+    longPressDark,
+    tokenBuilding,
+    tokenCar,
+    tokenCoin,
+  ];
 }
 
 class $AssetsIconsSvgAudioGen {
@@ -4161,7 +4175,9 @@ class $AssetsIconsSvgPlacesNewOldGen {
   ];
 }
 
-abstract final class Assets {
+class Assets {
+  const Assets._();
+
   static const String package = 'mapness';
 
   static const String config = 'packages/mapness/assets/config.json';
