@@ -201,7 +201,7 @@ class TifoHelpControl extends ConsumerWidget {
           // The animation bakes the same ink as `foregroundDefault` — #161616
           // in its light variant, white in its dark one — so the live label
           // matches the artwork it replaced.
-          style: TifoText.captionMedium.copyWith(color: context.colors.foregroundDefault),
+          style: TifoText.captionMedium.copyWith(color: !tapped ? Colors.white : context.colors.foregroundDefault),
         ),
       ),
     );
