@@ -80,6 +80,16 @@ class HajjSeasonDebug extends _$HajjSeasonDebug {
   }
 }
 
+@Riverpod(keepAlive: true)
+class LeapDebug extends _$LeapDebug {
+  @override
+  bool build() => false;
+
+  bool get enabled => state;
+
+  set enabled(bool value) => state = value;
+}
+
 /// Debug override for [SpecialThemeMode].
 ///
 /// When `state` is non-null, [specialThemeModeProvider] will return this

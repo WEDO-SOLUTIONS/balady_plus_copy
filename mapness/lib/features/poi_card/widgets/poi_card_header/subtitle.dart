@@ -64,7 +64,7 @@ class SubtitleComponent extends SheetAnimatedWidget<PoiCardBottomSheetState> {
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     strutStyle: StrutStyle(
-                      height: 1.4 * scale,
+                      height: 1.6 * scale,
                       forceStrutHeight: true,
                     ),
                   ),

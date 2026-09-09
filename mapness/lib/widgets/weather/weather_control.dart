@@ -5,8 +5,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/entities/weather/weather_info.dart';
 import 'package:mapness/features/weather/provider/forecast_weather_provider.dart';
-import 'package:mapness/shared/constants/metrics_constants.dart';
-import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 
 class WeatherControl extends ConsumerWidget {
@@ -20,12 +18,6 @@ class WeatherControl extends ConsumerWidget {
       context: context,
       data: allWeatherInfoModel,
       onTap: () {
-        Metrics.logEventAdvanced(
-          MetricsConstants.exploreKeys.weatherIcon,
-          action: MetricAction.tap.name,
-          group: MetricsConstants.exploreTag,
-        );
-
         context.router.push(const WeatherRoute());
       },
     );

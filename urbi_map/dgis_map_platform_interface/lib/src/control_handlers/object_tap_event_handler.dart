@@ -21,6 +21,7 @@ class ObjectTapEventHandler {
   final _objectTapController = StreamController<TapEvent>.broadcast();
 
   final Map<String, TapIdPair> markerHandlers = {};
+  final Map<String, TapIdPair> modelHandlers = {};
   final Map<String, TapIdPair> polygonHandlers = {};
   final Map<String, TapIdPair> polylineHandlers = {};
   final Map<String, TapIdPair> circleHandlers = {};
@@ -52,9 +53,7 @@ class ObjectTapEventHandler {
     final position = cluster["position"];
 
     final List<SimpleMapObjectModel> objects = ((cluster['objects'] as List?) ?? const [])
-        .map((e) => SimpleMapObjectModel.fromJson(
-              (e as Map).cast<String, dynamic>(),
-            ))
+        .map((e) => SimpleMapObjectModel.fromJson((e as Map).cast<String, dynamic>()))
         .toList();
 
     final clusterObject = SimpleClusterObject(
@@ -67,19 +66,14 @@ class ObjectTapEventHandler {
       ),
       cluster["objectCount"],
       objects,
-      MarkerAnchorMessage(
-        x: cluster["anchor"]["x"],
-        y: cluster["anchor"]["y"],
-      ),
+      MarkerAnchorMessage(x: cluster["anchor"]["x"], y: cluster["anchor"]["y"]),
       cluster["iconOpacity"],
       MarkerTextStyleMessage(
         fontSize: textStyle["fontSize"],
         color: textStyle["color"],
         strokeWidth: textStyle["strokeWidth"],
         strokeColor: textStyle["strokeColor"],
-        textPlacement: MarkerTextPlacementMessage(
-          placement: TextPlacementMessage.values[textStyle["textPlacement"]],
-        ),
+        textPlacement: MarkerTextPlacementMessage(placement: TextPlacementMessage.values[textStyle["textPlacement"]]),
         textOffset: textStyle["textOffset"],
         fontName: textStyle["fontName"],
       ),
@@ -107,6 +101,23 @@ class ObjectTapEventHandler {
     markerHandlers[map["id"]]?.tap.call();
   }
 
+  /// --- 3D MODEL ---
+  void addModelHandler(String id, OnObjectTap onTap, String? managerId) {
+    modelHandlers[id] = TapIdPair(onTap, managerId);
+  }
+
+  void removeModelHandler(String id) {
+    modelHandlers.remove(id);
+  }
+
+  void removeAllModelHandlers(String? managerId) {
+    modelHandlers.removeWhere((key, value) => value.id == managerId);
+  }
+
+  void modelTapEvent(Map<dynamic, dynamic> map) {
+    modelHandlers[map["id"]]?.tap.call();
+  }
+
   /// --- POLYGON ---
   void addPolygonHandler(String id, OnObjectTap onTap, String? managerId) {
     polygonHandlers[id] = TapIdPair(onTap, managerId);
@@ -116,8 +127,8 @@ class ObjectTapEventHandler {
     polygonHandlers.remove(id);
   }
 
-  void removeAllPolygonHandlers() {
-    polygonHandlers.clear();
+  void removeAllPolygonHandlers(String? managerId) {
+    polygonHandlers.removeWhere((key, value) => value.id == managerId);
   }
 
   void polygonTapEvent(Map<dynamic, dynamic> map) {
@@ -133,8 +144,8 @@ class ObjectTapEventHandler {
     polylineHandlers.remove(id);
   }
 
-  void removeAllPolylineHandlers() {
-    polylineHandlers.clear();
+  void removeAllPolylineHandlers(String? managerId) {
+    polylineHandlers.removeWhere((key, value) => value.id == managerId);
   }
 
   void polylineTapEvent(Map<dynamic, dynamic> map) {
@@ -150,8 +161,8 @@ class ObjectTapEventHandler {
     circleHandlers.remove(id);
   }
 
-  void removeAllCircleHandlers() {
-    circleHandlers.clear();
+  void removeAllCircleHandlers(String? managerId) {
+    circleHandlers.removeWhere((key, value) => value.id == managerId);
   }
 
   void circleTapEvent(Map<dynamic, dynamic> map) {
@@ -163,28 +174,21 @@ class ObjectTapEventHandler {
     final dgisObjectMap = map["dgisObjectId"];
     final latLngMap = map["latlng"];
 
-    _objectTapController.sink.add(ObjectTapEvent(
-      DgisObjectId(
-        objectId: dgisObjectMap["objectId"],
-        entranceId: dgisObjectMap["entranceId"],
+    _objectTapController.sink.add(
+      ObjectTapEvent(
+        DgisObjectId(objectId: dgisObjectMap["objectId"], entranceId: dgisObjectMap["entranceId"]),
+        LatLng(latitude: latLngMap["latitude"], longitude: latLngMap["longitude"]),
+        map["levelId"],
       ),
-      LatLng(
-        latitude: latLngMap["latitude"],
-        longitude: latLngMap["longitude"],
-      ),
-      map["levelId"],
-    ));
+    );
   }
 
   void myLocationTapEvent(Map<dynamic, dynamic> map) {
     final latLngMap = map["latlng"];
 
-    _objectTapController.sink.add(MyLocationTapEvent(
-      LatLng(
-        latitude: latLngMap["latitude"],
-        longitude: latLngMap["longitude"],
-      ),
-    ));
+    _objectTapController.sink.add(
+      MyLocationTapEvent(LatLng(latitude: latLngMap["latitude"], longitude: latLngMap["longitude"])),
+    );
   }
 
   // Asia/Riyadh has no DST; Hajj closure schedules are authored in KSA wall time
@@ -203,18 +207,12 @@ class ObjectTapEventHandler {
 
     _objectTapController.sink.add(
       RoadEventTapEvent(
-        DgisObjectId(
-          objectId: dgisObjectMap["objectId"],
-          entranceId: dgisObjectMap["entranceId"],
-        ),
+        DgisObjectId(objectId: dgisObjectMap["objectId"], entranceId: dgisObjectMap["entranceId"]),
         map["title"],
         map["description"],
         startTime,
         finishTime,
-        LatLng(
-          latitude: map["latitude"],
-          longitude: map["longitude"],
-        ),
+        LatLng(latitude: map["latitude"], longitude: map["longitude"]),
       ),
     );
   }
@@ -232,10 +230,7 @@ class ObjectTapEventHandler {
       price: map["price"],
       startDate: map["startDate"],
       endDate: map["endDate"],
-      latLng: LatLng(
-        latitude: map["latitude"],
-        longitude: map["longitude"],
-      ),
+      latLng: LatLng(latitude: map["latitude"], longitude: map["longitude"]),
     );
 
     _objectTapController.sink.add(event);
@@ -254,10 +249,7 @@ class ObjectTapEventHandler {
       status: map["status"],
       streetName: map["streetName"],
       planNo: map["planNo"],
-      latLng: LatLng(
-        latitude: map["latitude"],
-        longitude: map["longitude"],
-      ),
+      latLng: LatLng(latitude: map["latitude"], longitude: map["longitude"]),
     );
 
     _objectTapController.sink.add(event);
