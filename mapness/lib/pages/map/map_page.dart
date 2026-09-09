@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:auto_route/auto_route.dart';
@@ -8,6 +9,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/app/auto_route/app_routes.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
+import 'package:mapness/features/friends_on_map/models/friends_on_map_activation_status.dart';
+import 'package:mapness/features/friends_on_map/providers/friends_on_map_activated.dart';
+import 'package:mapness/features/friends_on_map/providers/friends_on_map_activation.dart';
 import 'package:mapness/features/lifestyle_layers/providers/layers_controls.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/providers/first_start.dart';
@@ -67,6 +71,13 @@ class _MapPageState extends ConsumerState<MapPage>
         _needRefresh = false;
       });
     }
+    // R-07: re-check the OS location permission on resume so a revoked grant
+    // is reflected without the user reopening Friends on Map. Gated on the
+    // persisted flag so this is a no-op before the feature is ever
+    // activated.
+    if (state == AppLifecycleState.resumed && ref.read(friendsOnMapActivatedProvider)) {
+      unawaited(ref.read(friendsOnMapActivationProvider.notifier).refreshPermissionStatus());
+    }
   }
 
   @override
@@ -82,6 +93,19 @@ class _MapPageState extends ConsumerState<MapPage>
   @override
   Widget build(BuildContext context) {
     super.build(context);
+
+    // R-07: inform the user the moment their friends can no longer see them,
+    // even while they're not on the Friends on Map screen itself.
+    ref.listen<AsyncValue<FriendsOnMapActivationStatus>>(friendsOnMapActivationProvider, (previous, next) {
+      final wasRevoked = previous?.value == FriendsOnMapActivationStatus.revoked;
+      final isRevoked = next.value == FriendsOnMapActivationStatus.revoked;
+      if (isRevoked && !wasRevoked) {
+        ToastOverlay.of(context).show(
+          title: context.l10n.friendsOnMapRevokedToast,
+          isDismissible: true,
+        );
+      }
+    });
 
     final dgisController = ref.watch(dgisControllerProvider.notifier);
 
@@ -173,8 +197,7 @@ class _MapPageState extends ConsumerState<MapPage>
   @override
   bool get wantKeepAlive => true;
 
-  void _trace(String event) {
-  }
+  void _trace(String event) {}
 
   Future<void> _initToastMessage() async {
     final isFirstStart = ref.read(firstStartProvider);

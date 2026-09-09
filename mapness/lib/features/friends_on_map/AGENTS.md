@@ -4,7 +4,7 @@ This subtree will own the Friends on Map domain (BE-213): consent/activation, lo
 
 ## Status
 
-No code has landed here yet. This file is the entry point for continuing work across sessions and context resets — read the roadmap below before writing any code, and keep this file updated as parts land, the same way `favourites/AGENTS.md` and `satellite/AGENTS.md` do for their subtrees.
+S-01 (Activate Friends on Map) + S-02 (manage location permission) have landed: disclosure screen, foreground/background permission flow, persisted activation flag, resume-triggered revocation detection, mocked activation "backend". Reached from Profile → Friends on Map. Nothing else from the roadmap has started — no friend graph, no map markers, no position reporting beyond the permission plumbing itself. Read the roadmap below before starting the next part.
 
 ## Roadmap
 
@@ -45,7 +45,16 @@ Full rationale for each of these is in the roadmap artifact above.
 
 ## Important Files
 
-_(empty — update as code lands, following the pattern in `favourites/AGENTS.md` / `satellite/AGENTS.md`: one line per file naming its responsibility)_
+- `models/friends_on_map_activation_status.dart`: `notActivated | foregroundDenied | activeForegroundOnly | activeWithBackground | revoked`. `foregroundDenied`/`revoked` are live permission reads, not persisted — see the doc comment on each value.
+- `providers/friends_on_map_activated.dart`: persisted "has the user ever completed activation" bool (SharedPreferences), copied from `shared/providers/onboarding.dart`'s pattern. Also the S-01 AC-05 "don't repeat the disclosure" flag.
+- `providers/friends_on_map_activation.dart`: `@Riverpod(keepAlive: true)` orchestrator — derives status from the persisted flag + a live `Geolocator.checkPermission()` read (never permission_handler for foreground-vs-background, it can't distinguish whileInUse from always). Exposes `requestForegroundPermission()`, `requestBackgroundPermission()`, `completeActivation()`, `refreshPermissionStatus()` (called on resume, both pre- and post-activation).
+- `data/friends_on_map_activation_repository.dart` + `data/fake_friends_on_map_activation_repository.dart`: the mocked-backend seam for activation. Swap the binding in `providers/friends_on_map_activation_repository.dart` for a Dio-backed implementation once a real endpoint exists — nothing above it should need to change.
+- `ui/friends_on_map_page.dart`: `@RoutePage()`, one screen that switches on activation status. Owns the pre-activation local step (disclosure → optional background prompt) as plain widget state, since that's ephemeral to one user action, not shared app-wide state.
+- `ui/widgets/`: one view per status — disclosure (R-02), permission-denied (R-05), background-prompt (R-04), status (R-06/R-07 copy, active + revoked variants).
+- Entry point: `pages/profile/profile_page.dart`, a `ContentRowV2` alongside Account/Help Center/About/Privacy (not under `SettingsRoute` — that page holds device/app preferences like Dark Mode and Language, not feature entry points).
+- Resume-triggered revocation detection (R-07) lives partly outside this subtree: `pages/map/map_page.dart`'s existing `didChangeAppLifecycleState` gets a guarded `refreshPermissionStatus()` call, and its `build()` gets a `ref.listen` that toasts the moment status flips to `revoked` — `MapPage` is the always-mounted screen, so this is how the user is informed even off the Friends on Map page itself.
+- `android/app/src/main/AndroidManifest.xml` (repo root) now declares `ACCESS_BACKGROUND_LOCATION` — required for `Geolocator.checkPermission()` to ever return `always` on Android; it was missing before this slice.
+- l10n keys: `friendsOnMap*` in `mapness/lib/l10n/app_en.arb` / `app_ar.arb`. Placeholder copy — not reviewed by legal/design, per R-02's disclosure requirement in the BRD.
 
 ## Verification
 

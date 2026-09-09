@@ -143,6 +143,13 @@ class ProfilePage extends HookConsumerWidget {
                                 children: [
                                   ContentRowV2(
                                     isDividerEnabled: true,
+                                    onTap: () => context.router.push(const FriendsOnMapRoute()),
+                                    trailing: trailing,
+                                    leading: leadingIconBuilder(GeneralIcons.user),
+                                    text: ContentRowTextOptions(title: context.l10n.friendsOnMapTitle),
+                                  ),
+                                  ContentRowV2(
+                                    isDividerEnabled: true,
                                     onTap: () => context.router.push(const HelpCenterRoute()),
                                     trailing: trailing,
                                     leading: leadingIconBuilder(GeneralIcons.questionCircle),
