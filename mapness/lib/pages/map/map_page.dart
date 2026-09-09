@@ -12,6 +12,7 @@ import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/features/friends_on_map/models/friends_on_map_activation_status.dart';
 import 'package:mapness/features/friends_on_map/providers/friends_on_map_activated.dart';
 import 'package:mapness/features/friends_on_map/providers/friends_on_map_activation.dart';
+import 'package:mapness/features/friends_on_map/providers/friends_on_map_position_reporter.dart';
 import 'package:mapness/features/lifestyle_layers/providers/layers_controls.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/providers/first_start.dart';
@@ -96,16 +97,23 @@ class _MapPageState extends ConsumerState<MapPage>
 
     // R-07: inform the user the moment their friends can no longer see them,
     // even while they're not on the Friends on Map screen itself.
-    ref.listen<AsyncValue<FriendsOnMapActivationStatus>>(friendsOnMapActivationProvider, (previous, next) {
-      final wasRevoked = previous?.value == FriendsOnMapActivationStatus.revoked;
-      final isRevoked = next.value == FriendsOnMapActivationStatus.revoked;
-      if (isRevoked && !wasRevoked) {
-        ToastOverlay.of(context).show(
-          title: context.l10n.friendsOnMapRevokedToast,
-          isDismissible: true,
-        );
-      }
-    });
+    ref
+      ..listen<AsyncValue<FriendsOnMapActivationStatus>>(friendsOnMapActivationProvider, (previous, next) {
+        final wasRevoked = previous?.value == FriendsOnMapActivationStatus.revoked;
+        final isRevoked = next.value == FriendsOnMapActivationStatus.revoked;
+        if (isRevoked && !wasRevoked) {
+          ToastOverlay.of(context).show(
+            title: context.l10n.friendsOnMapRevokedToast,
+            isDismissible: true,
+          );
+        }
+      })
+      // R-13: keeps the position-reporting Timer alive for as long as
+      // activation status says it should, independent of whether the
+      // Friends on Map screen itself is open — MapPage is the
+      // always-mounted root route, same rationale as the resume/revocation
+      // wiring above.
+      ..watch(friendsOnMapPositionReporterProvider);
 
     final dgisController = ref.watch(dgisControllerProvider.notifier);
 

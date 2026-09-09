@@ -77,6 +77,17 @@ class FriendsOnMapActivation extends _$FriendsOnMapActivation {
     state = AsyncData(await _statusFromLivePermission());
   }
 
+  /// S-06/R-08: deactivates the feature. Flipping the persisted flag is the
+  /// single source of truth `FriendsOnMapPositionReporter` watches, so
+  /// reporting stops as a direct consequence of that provider's `build()`
+  /// re-running — no separate "stop reporting" call is needed here. Per BR-03
+  /// of S-06, the pause flag is untouched: it has no expiry and isn't tied
+  /// to the activation lifecycle.
+  Future<void> deactivate() async {
+    ref.read(friendsOnMapActivatedProvider.notifier).setActivated(activated: false);
+    state = const AsyncData(FriendsOnMapActivationStatus.notActivated);
+  }
+
   /// R-07 (post-activation) / denied-view recovery (pre-activation):
   /// re-checks the live OS permission and updates [state] accordingly. Safe
   /// to call whenever the app resumes, activated or not.

@@ -4,7 +4,7 @@ This subtree will own the Friends on Map domain (BE-213): consent/activation, lo
 
 ## Status
 
-S-01 (Activate Friends on Map) + S-02 (manage location permission) have landed: disclosure screen, foreground/background permission flow, persisted activation flag, resume-triggered revocation detection, mocked activation "backend". Reached from Profile → Friends on Map. Nothing else from the roadmap has started — no friend graph, no map markers, no position reporting beyond the permission plumbing itself. Read the roadmap below before starting the next part.
+Part A (Foundations) is done: S-01 (activate) + S-02 (manage location permission) + S-03 (position reporting) + S-05 (global pause) + S-06 (deactivate). Reached from Profile → Friends on Map. Nothing from Part B (friend graph) or Part C (map) has started — no friends to report a position *to* yet, no map markers. Read the roadmap below before starting Part B.
 
 ## Roadmap
 
@@ -55,6 +55,12 @@ Full rationale for each of these is in the roadmap artifact above.
 - Resume-triggered revocation detection (R-07) lives partly outside this subtree: `pages/map/map_page.dart`'s existing `didChangeAppLifecycleState` gets a guarded `refreshPermissionStatus()` call, and its `build()` gets a `ref.listen` that toasts the moment status flips to `revoked` — `MapPage` is the always-mounted screen, so this is how the user is informed even off the Friends on Map page itself.
 - `android/app/src/main/AndroidManifest.xml` (repo root) now declares `ACCESS_BACKGROUND_LOCATION` — required for `Geolocator.checkPermission()` to ever return `always` on Android; it was missing before this slice.
 - l10n keys: `friendsOnMap*` in `mapness/lib/l10n/app_en.arb` / `app_ar.arb`. Placeholder copy — not reviewed by legal/design, per R-02's disclosure requirement in the BRD.
+- `data/friends_on_map_position_repository.dart` + `data/fake_friends_on_map_position_repository.dart`: mocked-backend seam for `reportPosition()`. The fake overwrites one field, never appends — satisfies R-15 (no history) by construction.
+- `data/friends_on_map_visibility_repository.dart` + `data/fake_friends_on_map_visibility_repository.dart`: mocked-backend seam for the pause (`setPaused()`). Kept separate from the position/activation repositories rather than combined, matching how the API description separates `/v1/me/position` from `/v1/me/visibility`.
+- `providers/friends_on_map_position_reporter.dart`: `@Riverpod(keepAlive: true)` — a `Timer.periodic` loop (currently a placeholder fixed 30s interval, `// TODO(BE-213)`: not yet the BRD's N-01–N-04 adaptive intervals) that calls the position repository whenever activation status is one of the active variants. Reads position from the existing `shared/providers/location.dart`'s `locationProvider` rather than opening a second `Geolocator` stream. Deliberately never gated on the pause flag — R-16 requires reporting to continue while paused, with suppression happening at the read side once Part B's visibility authorization exists. Must be kept alive by something watching it even when the Friends on Map screen is closed — `pages/map/map_page.dart`'s `build()` does this (`ref.watch(friendsOnMapPositionReporterProvider)`), same rationale as its existing resume/revocation wiring.
+- `providers/friends_on_map_paused.dart`: persisted bool (SharedPreferences), same shape as `friends_on_map_activated.dart`. Deliberately independent of the activation flag — per BR-03 of S-06, `FriendsOnMapActivation.deactivate()` must not touch it, so a pause set before deactivating is still in effect after reactivating.
+- `providers/friends_on_map_activation.dart` also now exposes `deactivate()` (S-06) — flips the persisted activated flag back to `false`, which is what the position reporter watches, so reporting stops as a direct consequence rather than through a separate "stop" call.
+- The pause toggle and deactivate button currently live directly on `ui/widgets/friends_on_map_status_view.dart` (now a `ConsumerWidget`), ahead of the real privacy screen (R-95) which depends on the friend-list hub from Part B. This is a deliberate, temporary placement — moving them onto that screen later is a pure relocation, not a rework.
 
 ## Verification
 
