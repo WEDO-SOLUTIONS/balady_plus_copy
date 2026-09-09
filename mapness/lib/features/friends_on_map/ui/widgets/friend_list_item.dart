@@ -1,0 +1,68 @@
+import 'package:balady_uikit/balady_uikit.dart';
+import 'package:balady_uikit/core/extensions/build_context_ext.dart';
+import 'package:flutter/material.dart';
+import 'package:mapness/features/friends_on_map/models/friend.dart';
+import 'package:mapness/shared/extensions/build_context_ext.dart';
+
+/// R-41: avatar (or initials fallback) + display name. Deliberately no
+/// presence indicator, district or elapsed time yet — see
+/// `friends_on_map/AGENTS.md` for why.
+class FriendListItem extends StatelessWidget {
+  final Friend friend;
+
+  const FriendListItem({required this.friend, super.key});
+
+  @override
+  Widget build(BuildContext context) => Padding(
+    padding: const EdgeInsets.symmetric(vertical: Spacing.$2x, horizontal: Spacing.$4x),
+    child: Row(
+      children: [
+        _Avatar(friend: friend),
+        const SizedBox(width: Spacing.$3x),
+        Expanded(
+          child: Text(
+            friend.displayName,
+            overflow: TextOverflow.ellipsis,
+            style: context.textStyles.bodyLargeMedium.copyWith(color: context.colors.foregroundDefault),
+          ),
+        ),
+      ],
+    ),
+  );
+}
+
+class _Avatar extends StatelessWidget {
+  final Friend friend;
+
+  const _Avatar({required this.friend});
+
+  @override
+  Widget build(BuildContext context) {
+    final pictureUrl = friend.profilePictureUrl;
+    return CircleAvatar(
+      radius: 20,
+      backgroundColor: context.colors.accentSecondaryContainerDefault,
+      backgroundImage: pictureUrl != null ? NetworkImage(pictureUrl) : null,
+      child: pictureUrl == null
+          ? Text(
+              _initials(friend.displayName),
+              style: context.textStyles.bodySmallSemiBold.copyWith(color: context.colors.accentSecondaryOnContainer),
+            )
+          : null,
+    );
+  }
+
+  // D-09 (BRD open decision): how initials are derived for a single-word
+  // display name is a design decision, not settled here — first letter only
+  // in that case, first letter of the first two words otherwise.
+  String _initials(String displayName) {
+    final words = displayName.trim().split(RegExp(r'\s+')).where((w) => w.isNotEmpty).toList();
+    if (words.isEmpty) {
+      return '';
+    }
+    if (words.length == 1) {
+      return words.first.substring(0, 1).toUpperCase();
+    }
+    return (words.first.substring(0, 1) + words[1].substring(0, 1)).toUpperCase();
+  }
+}

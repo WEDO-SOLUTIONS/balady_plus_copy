@@ -1,7 +1,9 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/features/friends_on_map/providers/friends_on_map_activation.dart';
 import 'package:mapness/features/friends_on_map/providers/friends_on_map_paused.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
@@ -69,6 +71,13 @@ class FriendsOnMapStatusView extends ConsumerWidget {
             ContentWrapper(
               color: context.colors.backgroundSurface1,
               children: [
+                // Temporary entry point ahead of BR-05's "friend list is the
+                // single hub" restructuring — see friends_on_map/AGENTS.md.
+                ContentRow(
+                  isDividerEnabled: true,
+                  onTap: () => context.router.push(const FriendListRoute()),
+                  text: ContentRowTextOptions(title: context.l10n.friendsOnMapFriendsCta),
+                ),
                 ContentRow(
                   text: ContentRowTextOptions(title: context.l10n.friendsOnMapPauseToggleLabel),
                   trailing: ContentRowToggleTrailingOptions(
