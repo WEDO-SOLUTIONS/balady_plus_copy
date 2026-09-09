@@ -178,3 +178,4 @@ reports/
 
 # Build runner
 **/*.gen.dartmapness/pubspec.lock
+mapness/lib/_generated/assets/assets.gen.dart
