@@ -7,6 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/features/makkah_places/makkah_places_layer_provider.dart';
 import 'package:mapness/features/special_themes/core/special_theme_mode.dart';
 import 'package:mapness/features/special_themes/modes/mekkah_base/makkah_poi_constants.dart';
+import 'package:mapness/features/special_themes/modes/saudi_national_day/saudi_national_day_resolved_config.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/providers/dark_mode.dart';
 import 'package:mapness/widgets/landing/dashboard/national_flag.dart';
@@ -32,7 +33,10 @@ class SpecialThemeHeader extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final isDark = ref.watch(darkModeProvider).value?.isDark ?? false;
-    final banner = _buildBanner(context, isDark: isDark);
+    // Anniversary number is remote-driven, so a wrong year is a Console edit
+    // rather than an app release.
+    final anniversary = ref.watch(saudiNationalDayResolvedConfigProvider).anniversary;
+    final banner = _buildBanner(context, isDark: isDark, anniversary: anniversary);
     final flag = _buildFlag();
 
     if (banner == null && flag == null) {
@@ -46,7 +50,7 @@ class SpecialThemeHeader extends ConsumerWidget {
     );
   }
 
-  Widget? _buildBanner(BuildContext context, {required bool isDark}) {
+  Widget? _buildBanner(BuildContext context, {required bool isDark, required int anniversary}) {
     final bool hasBanner =
         mode == SpecialThemeMode.nationalDay || mode == SpecialThemeMode.mekkahBase || mode == SpecialThemeMode.ramadan;
     if (!hasBanner) return null;
@@ -155,7 +159,7 @@ class SpecialThemeHeader extends ConsumerWidget {
                     right: Spacing.$4x,
                     bottom: Spacing.$4x,
                   ),
-                  child: _buildBannerText(context),
+                  child: _buildBannerText(context, anniversary),
                 ),
               ),
             ),
@@ -165,10 +169,10 @@ class SpecialThemeHeader extends ConsumerWidget {
     );
   }
 
-  Widget _buildBannerText(BuildContext context) {
+  Widget _buildBannerText(BuildContext context, int anniversary) {
     if (mode == SpecialThemeMode.nationalDay) {
       return Text(
-        context.l10n.happy95thYears,
+        context.l10n.happyNationalDayYears(anniversary),
         style:
             balady_ctx.BuildContextExt(
               context,

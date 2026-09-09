@@ -5,6 +5,7 @@ import 'package:mapness/app/auto_route/app_routes.dart';
 import 'package:mapness/features/debug/recommendations_feature_flag.dart';
 import 'package:mapness/features/special_themes/core/places_activation_config.dart';
 import 'package:mapness/features/special_themes/core/special_theme_mode.dart';
+import 'package:mapness/features/special_themes/modes/saudi_national_day/saudi_national_day_debug.dart';
 import 'package:mapness/features/special_themes/core/theme_splash_config.dart';
 import 'package:mapness/features/special_themes/core/theme_splash_state.dart';
 import 'package:mapness/features/special_themes/modes/mekkah_base/mekkah_base_theme.dart';
@@ -313,7 +314,9 @@ class _ThemeSelector extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final themes = [
-      // ('National', SpecialThemeMode.nationalDay, _DebugColors.gradientGreen),
+      // Re-enabled for the 2026 release: the activation window is only a few
+      // days long, so this is the only way to exercise the theme outside it.
+      ('National', SpecialThemeMode.nationalDay, _DebugColors.gradientGreen),
       ('Foundation', SpecialThemeMode.foundationDay, _DebugColors.gradientPurple),
       ('Makkah', SpecialThemeMode.mekkahBase, _DebugColors.gradientAmber),
       // ('Ramadan', SpecialThemeMode.ramadan, _DebugColors.gradientTeal),
@@ -378,6 +381,7 @@ class _ThemeChip extends StatelessWidget {
 class _DebugTogglesCard extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final nationalDay = ref.watch(saudiNationalDayDebugProvider);
     final foundationDay = ref.watch(foundationDayDebugProvider);
     final mekkahBase = ref.watch(mekkahBaseThemeDebugProvider);
     final ramadan = ref.watch(ramadanSeasonDebugProvider);
@@ -396,6 +400,19 @@ class _DebugTogglesCard extends ConsumerWidget {
             iconGradient: _DebugColors.gradientBlue,
           ),
           const SizedBox(height: 14),
+          _ToggleRow(
+            label: 'Saudi National Day',
+            value: nationalDay,
+            onChanged: (v) {
+              final notifier = ref.read(saudiNationalDayDebugProvider.notifier);
+              if (v) {
+                notifier.enable();
+              } else {
+                notifier.disable();
+              }
+            },
+            gradient: _DebugColors.gradientGreen,
+          ),
           _ToggleRow(
             label: 'Foundation Day',
             value: foundationDay,

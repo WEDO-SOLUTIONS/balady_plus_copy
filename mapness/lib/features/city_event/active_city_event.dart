@@ -3,7 +3,7 @@ import 'package:mapness/features/cityscape/cityscape.dart';
 import 'package:mapness/features/cityscape/cityscape_debug.dart';
 import 'package:mapness/features/founding_day/founding_day.dart';
 import 'package:mapness/features/founding_day/founding_day_debug.dart';
-import 'package:mapness/features/saudi_national_day/saudi_national_day_debug.dart';
+import 'package:mapness/features/special_themes/modes/saudi_national_day/saudi_national_day_debug.dart';
 import 'package:mapness/features/special_themes/core/special_theme_mode.dart';
 import 'package:mapness/features/special_themes/modes/saudi_national_day/saudi_national_day.dart';
 import 'package:mapness/features/tifo/tifo_buildings_map_layer.dart';
@@ -51,9 +51,12 @@ class ActiveCityEvent extends _$ActiveCityEvent {
 
     final activeEvents = <CityEventType>[];
 
-    if (env.saudiNationalDayDateRange.isNow) {
-      activeEvents.add(CityEventType.saudiNationalDay);
-    }
+    // National Day deliberately does NOT consult `env.saudiNationalDayDateRange`
+    // here. Its window now comes from `saudiNationalDayResolvedConfigProvider`
+    // (Firebase → OCI → bundled default), which is already checked above via
+    // `saudiNationalDayProvider`. Consulting the env range as well would
+    // re-introduce a second, wider window (Sept 18–27 of the current year) that
+    // could light up the dashboard banner outside the configured dates.
     if (env.cityscapeDateTimeRange.isNow) {
       activeEvents.add(CityEventType.cityscape);
     }

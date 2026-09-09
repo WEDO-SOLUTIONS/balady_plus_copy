@@ -173,6 +173,55 @@
             </intent-filter>
         </receiver>
 
+        <!--
+            Saudi National Day alternate launcher icon.
+
+            Android has no first-class alternate-icon API, so the icon is
+            swapped by toggling this alias against the default one below.
+            Both are LAUNCHER entries and exactly one is ever enabled:
+            `.MainActivityDefault` ships enabled, this one ships disabled,
+            and SaudiNationalDayAppIcon (Dart) flips them from remote config.
+
+            Caveats, deliberately accepted:
+              * Disabling the currently-active alias can kill the running task,
+                so the swap is only ever applied at startup — never while the
+                user is mid-session.
+              * Homescreen shortcuts pinned to the disabled alias are dropped
+                by the launcher. This is inherent to the activity-alias
+                approach and cannot be worked around.
+        -->
+        <activity-alias
+            android:name=".MainActivityNationalDay"
+            android:enabled="false"
+            android:exported="true"
+            android:icon="@mipmap/ic_launcher_national_day"
+            android:label="@string/app_name"
+            android:targetActivity=".MainActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity-alias>
+
+        <!--
+            Default launcher icon, expressed as an alias so it can be disabled
+            symmetrically with the National Day one. MainActivity itself keeps
+            no LAUNCHER intent-filter (see below), otherwise it would always
+            show a third, un-disableable icon.
+        -->
+        <activity-alias
+            android:name=".MainActivityDefault"
+            android:enabled="true"
+            android:exported="true"
+            android:icon="@mipmap/ic_launcher"
+            android:label="@string/app_name"
+            android:targetActivity=".MainActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity-alias>
+
         <activity
             android:name=".MainActivity"
             android:configChanges="orientation|keyboardHidden|keyboard|screenSize|smallestScreenSize|locale|layoutDirection|fontScale|screenLayout|density|uiMode"
@@ -199,9 +248,15 @@
             <meta-data
                 android:name="android.app.shortcuts"
                 android:resource="@xml/shortcuts" />
+            <!--
+                MAIN/LAUNCHER deliberately lives on the two activity-aliases
+                above rather than here. Keeping it on MainActivity as well
+                would surface a third launcher entry that neither alias can
+                disable, so the National Day icon would appear alongside the
+                default one instead of replacing it.
+            -->
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
 
             <!-- Deep linking -->

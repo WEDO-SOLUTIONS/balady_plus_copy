@@ -66,6 +66,8 @@ import 'package:mapness/features/poi_card/domain/model/poi_camera_config.dart';
 import 'package:mapness/features/search/providers/search_region.dart' show initializeSearchRegionServiceProvider;
 import 'package:mapness/features/share_eta/helpers/utils.dart';
 import 'package:mapness/features/share_eta/providers/share_my_location_launch_intent.dart';
+import 'package:mapness/features/special_themes/modes/saudi_national_day/saudi_national_day_app_icon.dart';
+import 'package:mapness/features/special_themes/modes/saudi_national_day/saudi_national_day_resolved_config.dart';
 import 'package:mapness/features/stories/models/story_types.dart';
 import 'package:mapness/features/stories/providers/stories_open_state.dart';
 import 'package:mapness/l10n/generated/app_localizations.dart';
@@ -193,6 +195,10 @@ class MapnessEntryPoint extends ConsumerStatefulWidget {
 }
 
 class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> with WidgetsBindingObserver {
+  /// Latches once the launcher icon has been evaluated this session, so a
+  /// rebuild cannot swap the launcher entry while the user is in the app.
+  bool _nationalDayIconApplied = false;
+
   late OverlayEntry? _debugOverlay;
   late AppLinks _appLinks;
   StreamSubscription<Uri>? _linkSubscription;
@@ -563,6 +569,19 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> with Widg
     final isNationalDay = activeEvent?.isSaudiNationalDay ?? false;
     final specialThemeMode = ref.watch(specialThemeModeProvider);
     final baladyTheme = context.watch<BaladyThemeNotifier>();
+
+    // Launcher-icon swap. Watched here rather than in runMapnessApp() because
+    // the window comes from `saudiNationalDayDateRange` in app_env_config,
+    // which is only available once the env provider has resolved.
+    //
+    // Applied once per cold start: `_nationalDayIconApplied` latches so a
+    // later rebuild cannot flip the launcher entry under the user. Not
+    // awaited — a failure here must never affect the UI.
+    final nationalDayIconActive = ref.watch(saudiNationalDayResolvedConfigProvider).isAppIconActiveAt(DateTime.now());
+    if (!_nationalDayIconApplied) {
+      _nationalDayIconApplied = true;
+      unawaited(SaudiNationalDayAppIcon.apply(shouldUseNationalDay: nationalDayIconActive));
+    }
 
     // Track theme changes for analytics
     ref
