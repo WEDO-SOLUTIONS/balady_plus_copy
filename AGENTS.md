@@ -76,6 +76,7 @@ Detailed context is also split into nearest subtree agent files so future edits 
 - `mapness/lib/features/ai_summary/AGENTS.md`
 - `mapness/lib/features/satellite/AGENTS.md`
 - `urbi_map/AGENTS.md`
+- `mapness/lib/features/friends_on_map/AGENTS.md`
 
 - Do **not** build a new APK unless the user explicitly asks. The user asked to avoid accidental production APK rebuilds during diagnosis.
 - Prefer validating this class of issues in `profile`/`release`, not only `debug`: debug timing can hide router/sheet/auth races.
@@ -89,6 +90,7 @@ Detailed context is also split into nearest subtree agent files so future edits 
 - AI Summary header layout was adjusted for long English/Arabic labels: use constrained `AutoSizeText`/ellipsis in the title and keep the badge compact with `Flexible`, not a full-width `Expanded` gap.
 - Indoor floor-plan display is controlled through the `urbi_map` bridge method `setIndoorFloorPlansEnabled`. `DgisController` disables floor plans at map initialization and enables them when visible-rect zoom reaches the configured near-max threshold.
 - Satellite base-map ([BE-243](https://wedosolutions-sa.atlassian.net/browse/BE-243)) is a separate `toggleSatellite` bridge in `urbi_map` (not the weather heatmap bridge). The Dart provider is `@Riverpod(keepAlive: true)` because layers-sheet close would otherwise auto-dispose it and the UI would desync from the native raster source on reopen. Tile URL + token live in Firebase Remote Config under `satellite_config` with a bundled default; `{TOKEN}` is substituted Dart-side. See `mapness/lib/features/satellite/AGENTS.md`.
+- Friends on Map (BE-213, branch `feat/BE-213/friends-on-map`) is a new feature, planning-only as of this note — no code has landed yet. Scope, priority tiers and rationale are tracked in a published roadmap artifact, linked and summarized in `mapness/lib/features/friends_on_map/AGENTS.md`; read that file before starting any part of the work.
 
 Useful verification commands from this session:
 
