@@ -41,7 +41,7 @@ Future<MarkerIconMessage> _iconFor(RoadEventType type, RoadEventMarkerBitmap bit
       ),
     };
 
-@riverpod
+@Riverpod(keepAlive: true)
 class RoadEventsMarkers extends _$RoadEventsMarkers {
   @override
   Future<void> build() async {

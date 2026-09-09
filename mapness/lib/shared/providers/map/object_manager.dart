@@ -100,7 +100,7 @@ class MapObjectManagerSettings {
   const MapObjectManagerSettings.wrcEvent() : this._(name: 'wrc-event', layerId: MapObjectLayers.hajjLayerId);
 
   factory MapObjectManagerSettings.roadEvents() =>
-      const MapObjectManagerSettings._(name: 'road-events', layerId: MapObjectLayers.defaultLayerId);
+      const MapObjectManagerSettings._(name: 'road-events', layerId: MapObjectLayers.priorityLayerId);
 }
 
 @riverpod

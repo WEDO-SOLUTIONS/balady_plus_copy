@@ -20,6 +20,11 @@ const Duration _viewportDebounce = Duration(milliseconds: 400);
 /// Reasonable padding for the viewport: 25% of the visible rect on each side.
 const double _bboxGap = 0.25;
 
+/// How long an optimistically-added local event is re-merged into each bbox
+/// refresh if the server hasn't returned it yet (read-after-write lag).
+/// After this, we stop force-including it.
+const Duration _pendingLocalGrace = Duration(seconds: 60);
+
 @Riverpod(keepAlive: true)
 class RoadEventsRepository extends _$RoadEventsRepository {
   CancelToken? _cancelToken;
@@ -35,6 +40,12 @@ class RoadEventsRepository extends _$RoadEventsRepository {
   /// The bbox `_refresh` last fetched successfully — `_poll` scopes its
   /// `fetchChanges` call to it, and won't run before it's set.
   RoadEventsBbox? _lastBbox;
+
+  /// Events inserted via `addLocal` that the server hasn't confirmed yet —
+  /// re-merged into each `_refresh` snapshot until confirmed or expired (see
+  /// `_pendingLocalGrace`), so a bbox refresh racing the backend's
+  /// read-after-write lag can't silently drop a just-created event.
+  final Map<String, (RoadEvent event, DateTime addedAt)> _pendingLocalEvents = {};
 
   @override
   Future<List<RoadEvent>> build() async {
@@ -111,7 +122,17 @@ class RoadEventsRepository extends _$RoadEventsRepository {
       if (!ref.mounted || cancel.isCancelled || !identical(_cancelToken, cancel)) {
         return;
       }
-      state = AsyncData(events);
+
+      final fetchedIds = events.map((e) => e.id).toSet();
+      final now = DateTime.now();
+      // Confirmed by the server, or given up on after the grace period —
+      // either way, stop tracking it.
+      _pendingLocalEvents.removeWhere(
+        (id, entry) => fetchedIds.contains(id) || now.difference(entry.$2) > _pendingLocalGrace,
+      );
+      final stillPending = _pendingLocalEvents.values.map((entry) => entry.$1);
+
+      state = AsyncData([...events, ...stillPending]);
       // Fresh full snapshot for this bbox — the delta cursor from the
       // previous bbox is no longer meaningful, restart delta-sync from it.
       _lastBbox = bbox;
@@ -188,6 +209,7 @@ class RoadEventsRepository extends _$RoadEventsRepository {
   void addLocal(RoadEvent event) {
     final current = state.value ?? const [];
     state = AsyncData([...current.where((e) => e.id != event.id), event]);
+    _pendingLocalEvents[event.id] = (event, DateTime.now());
   }
 
   /// Merges a refreshed event card (e.g. after `GET /events/{id}`) into the
