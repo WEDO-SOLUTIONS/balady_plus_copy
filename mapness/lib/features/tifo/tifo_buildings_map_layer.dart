@@ -2,9 +2,10 @@ import 'dart:async';
 import 'dart:math' as math;
 
 import 'package:dgis_map/library.dart';
-import 'package:flutter/foundation.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/app/auto_route/app_routes.dart';
+import 'package:mapness/features/balady_analytics/events/tifo_events.dart';
 import 'package:mapness/features/tifo/building_sheet.dart';
 import 'package:mapness/features/tifo/data/tifo_models.dart';
 import 'package:mapness/features/tifo/data/tifo_region_outline.dart';
@@ -223,6 +224,13 @@ class TifoBuildingsMapLayer extends Notifier<bool> {
   /// purpose: this is what stops a pan/fling from firing a
   /// `GET /buildings?bbox=` per frame.
   static const Duration _panDebounce = Duration(milliseconds: 400);
+
+  /// How recent the parsed payload must be for this paint to count as
+  /// "rendered from that response" in `tifo_surface_viewed`. Generous on
+  /// purpose — a cold district geometry load plus 413 polygons over the bridge
+  /// is seconds on a slow device — but far short of a cached repaint minutes
+  /// later.
+  static const Duration _freshPayloadWindow = Duration(seconds: 10);
 
   /// Debounce for a viewport event that CHANGES the tier. A tier change is a
   /// visual jump the player is actively waiting on (the district mosaic
@@ -466,6 +474,46 @@ class TifoBuildingsMapLayer extends Notifier<bool> {
     }
     // Keep the geometry cache (cheap re-enable); just drop the viewport set.
     ref.read(tifoBuildingsProvider.notifier).clearViewport();
+  }
+
+  /// Reports the first paint of a map tier as `tifo_surface_viewed`.
+  ///
+  /// Called from the two paint routines rather than from [_onViewport]: the
+  /// district mosaic is also painted straight off the provider listener (the
+  /// enable-time prefetch landing while the player already sits at that tier),
+  /// and the buildings the viewport asks for are painted by that same listener
+  /// AFTER [_onViewport] has returned — reporting from the viewport path would
+  /// time an empty map on one tier and miss the other entirely.
+  ///
+  /// [dataAt] is when the payload behind this paint finished parsing;
+  /// [apiDuration] is its backend round-trip, absent when the tier came out of
+  /// memory. The render clock stops on the frame AFTER the polygons crossed
+  /// the bridge — the closest honest "the player can see it" this layer can
+  /// observe (it is not a GPU-paint measurement; see the tracking plan).
+  ///
+  /// The once-per-session cap itself lives in [TifoEvents], so a repaint costs
+  /// a set lookup, not an event.
+  void _reportTierPainted(TifoSurface surface, {required Duration? apiDuration, required DateTime? dataAt}) {
+    if (!state) {
+      return;
+    }
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final renderMs = dataAt == null ? null : DateTime.now().difference(dataAt).inMilliseconds;
+      // Older than [_freshPayloadWindow] means this paint came out of the
+      // in-memory cache (a layer re-enable, a session that rolled over while
+      // the player stayed on the map) — the last request did not feed it, so
+      // BOTH timings are dropped rather than reported as a fake few seconds.
+      final fromCache = renderMs == null || renderMs > _freshPayloadWindow.inMilliseconds;
+      unawaited(
+        TifoEvents.surfaceViewed(
+          surface: surface,
+          apiMs: fromCache ? null : apiDuration?.inMilliseconds,
+          // A clock that ran backwards (the payload landed after this paint
+          // started) is reported as 0 rather than dropped.
+          renderMs: fromCache ? null : math.max(0, renderMs),
+        ),
+      );
+    });
   }
 
   Future<void> _onViewport(VisibleRect rect) async {
@@ -909,6 +957,12 @@ class TifoBuildingsMapLayer extends Notifier<bool> {
           '[tifo-map] buildings sync: ${toAdd.length} polygons in ${sw.elapsedMilliseconds}ms '
           '(${toRemove.length} removed, ${st.byId.length} cached, ${visible.length} on screen)',
         );
+        final buildings = ref.read(tifoBuildingsProvider.notifier);
+        _reportTierPainted(
+          TifoSurface.building,
+          apiDuration: buildings.lastFetchDuration,
+          dataAt: buildings.lastDataAt,
+        );
       }
     } catch (error, stackTrace) {
       logger.log('[tifo-map] buildings sync failed: $error\n$stackTrace');
@@ -1120,6 +1174,12 @@ class TifoBuildingsMapLayer extends Notifier<bool> {
           '[tifo-map] districts diff: ${toAdd.length} polygons in ${sw.elapsedMilliseconds}ms, '
           'grid 2^$exp cut $srcPoints→$outPoints pts, '
           '$culled/${districtsState.districts.length} culled, $refined refined',
+        );
+        final districts = ref.read(tifoDistrictsProvider.notifier);
+        _reportTierPainted(
+          TifoSurface.district,
+          apiDuration: districts.requestDuration,
+          dataAt: districts.lastDataAt,
         );
       }
       // Recorded here rather than in `_applyForViewport`, because the district

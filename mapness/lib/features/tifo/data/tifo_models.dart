@@ -228,15 +228,44 @@ class TifoKickEvent {
   };
 }
 
+/// How a penalty shootout run ended, as the CLIENT saw it.
+///
+/// `forfeit()` pads the kick log up to the allowed miss count, so a forfeited
+/// run is indistinguishable from a played one server-side. This is the
+/// distinction the client keeps, and the only input `tifo_play_exit` has for
+/// its `reason` property.
+enum TifoShootoutEnd {
+  /// The player shot until the `missesAllowed`-th miss.
+  completed,
+
+  /// The player confirmed "Leave" on the exit dialog.
+  forfeitExit,
+
+  /// The idle ("Still playing?") prompt was exited.
+  forfeitAfk,
+
+  /// Connectivity dropped and the run was abandoned.
+  connectionLost,
+}
+
 /// Result of a finished penalty shootout, handed back by the game to the
 /// caller so it can submit to `/buildings/{id}/play` with the full event log.
 @immutable
 class TifoShootoutOutcome {
-  const TifoShootoutOutcome({required this.goals, required this.misses, required this.events});
+  const TifoShootoutOutcome({
+    required this.goals,
+    required this.misses,
+    required this.events,
+    this.end = TifoShootoutEnd.completed,
+  });
 
   final int goals;
   final int misses;
   final List<TifoKickEvent> events;
+
+  /// How this run ended. Never submitted to the backend — it exists so the
+  /// host can report `tifo_play_exit` with the right reason.
+  final TifoShootoutEnd end;
 }
 
 /// One club row of `GET /leaderboards` (scope=clubs). BRD US-09 columns:

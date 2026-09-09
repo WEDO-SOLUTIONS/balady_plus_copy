@@ -21,6 +21,11 @@ wrapper has been retired; new deliberate events follow
 `docs/analytics-tracking-plan.md`). In the host shell, use
 `CommonFunctions.sendAnalyticsEvent[WithProperties]`.
 
+Per-feature typed event modules live under `events/`: `search_events.dart`,
+`navigation_events.dart`, `story_events.dart`, `service_events.dart`, and
+`events/tifo_events.dart` (TIFO, Event Spec v1 — five events, caps enforced inside
+the module).
+
 ## Kill switch (modes)
 
 `BALADY_ANALYTICS_MODE` in `.env.<flavor>` (compile-time):

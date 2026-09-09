@@ -1,6 +1,9 @@
+import 'dart:async';
+
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mapness/features/balady_analytics/events/tifo_events.dart';
 import 'package:mapness/features/tifo/data/tifo_models.dart';
 import 'package:mapness/features/tifo/providers/tifo_session_provider.dart';
 import 'package:mapness/features/tifo/ui/tifo_theme.dart';
@@ -22,7 +25,13 @@ import 'package:mapness/shared/utils/logger/logger.dart';
 /// choice that cannot be remade, where picking a different team just failed
 /// against the server.
 class TifoTeamSelectScreen extends ConsumerStatefulWidget {
-  const TifoTeamSelectScreen({super.key});
+  const TifoTeamSelectScreen({required this.source, super.key});
+
+  /// Entry point the play-gate walk that led here started from — reported as
+  /// `tifo_activated`'s `source` once the club pick succeeds. It answers which
+  /// door into the game actually converts, so it must describe the TAP, not
+  /// this screen.
+  final TifoActivationSource source;
 
   @override
   ConsumerState<TifoTeamSelectScreen> createState() => _TifoTeamSelectScreenState();
@@ -55,6 +64,10 @@ class _TifoTeamSelectScreenState extends ConsumerState<TifoTeamSelectScreen> {
     });
     try {
       await ref.read(tifoSessionProvider.notifier).selectClub(clubId);
+      // The moment the user becomes a player (BRD US-04). Once per install —
+      // the cap lives in TifoEvents; `/clubs/select` is the server's own
+      // one-time gate.
+      unawaited(TifoEvents.activated(clubId: clubId, source: widget.source));
       if (mounted) {
         setState(() {
           _isBusy = false;

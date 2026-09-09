@@ -70,6 +70,22 @@ class TifoDistrictsController extends Notifier<TifoDistrictsState> {
   Future<void>? _geometryRequest;
   Future<void>? _summariesRequest;
 
+  /// Round-trip of every district request made so far — geometry and standings
+  /// together, since the tier only paints once both have been asked for. Read
+  /// once, at the tier's first paint, for `tifo_surface_viewed`; null while the
+  /// layer has been served entirely from memory. Never logged.
+  final TifoRequestTiming _timing = TifoRequestTiming();
+
+  DateTime? _lastDataAt;
+
+  /// See [_timing].
+  Duration? get requestDuration => _timing.total;
+
+  /// When the payload that gates the mosaic (`/districts` geometry) finished
+  /// parsing into [state] — the start of the render clock. Standings do not
+  /// move it: they only re-tint polygons that are already on the map.
+  DateTime? get lastDataAt => _lastDataAt;
+
   @override
   TifoDistrictsState build() => const TifoDistrictsState();
 
@@ -95,11 +111,12 @@ class TifoDistrictsController extends Notifier<TifoDistrictsState> {
   Future<void> _loadGeometry() async {
     state = state.copyWith(isLoadingGeometry: true, error: null);
     try {
-      final districts = await _api.getDistricts();
+      final districts = await _api.getDistricts(timing: _timing);
       if (!ref.mounted) {
         return;
       }
       logger.log('[tifo] districts geometry loaded: ${districts.length}');
+      _lastDataAt = DateTime.now();
       state = state.copyWith(districts: districts, isLoadingGeometry: false);
     } catch (e) {
       if (!ref.mounted) {
@@ -119,10 +136,13 @@ class TifoDistrictsController extends Notifier<TifoDistrictsState> {
   Future<void> _loadSummaries() async {
     state = state.copyWith(isLoadingSummaries: true);
     try {
-      final summaries = await _api.getDistrictsSummary();
+      final summaries = await _api.getDistrictsSummary(timing: _timing);
       if (!ref.mounted) {
         return;
       }
+      // Only when geometry has not answered yet: a standings poll must not
+      // restart the render clock of a mosaic that is already painted.
+      _lastDataAt ??= DateTime.now();
       state = state.copyWith(summaries: summaries, isLoadingSummaries: false);
     } catch (_) {
       // Keep stale standings — a dropped poll must not un-color the map.

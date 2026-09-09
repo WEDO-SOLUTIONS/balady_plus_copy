@@ -112,6 +112,34 @@ Future<TifoResolvedConfig> resolveTifoConfig(Ref ref) async {
   return (baseUrl: baseUrl, token: token, isGuest: token.isEmpty);
 }
 
+/// Collects the network round-trip of the TIFO requests that feed ONE surface,
+/// so `tifo_surface_viewed` can report an `api_ms` even for a surface fed by
+/// more than one call (the district tier = `/districts` + `/districts/summary`).
+///
+/// Pass an instance to the API methods whose latency the event reports; the
+/// clock runs inside [TifoApi] around the dio call only — token resolution and
+/// JSON parsing stay outside it, since the property means "backend round-trip".
+///
+/// The raw milliseconds are never logged; they leave only as a bucket, via
+/// `TifoEvents`.
+class TifoRequestTiming {
+  Duration _total = Duration.zero;
+  int _calls = 0;
+
+  /// Sum of every recorded round-trip, or null when no request was made — a
+  /// surface served entirely from cache reports no `api_ms` rather than 0.
+  Duration? get total => _calls == 0 ? null : _total;
+
+  /// [total] in milliseconds, or null.
+  int? get totalMs => total?.inMilliseconds;
+
+  /// Records one completed round-trip.
+  void add(Duration value) {
+    _total += value;
+    _calls++;
+  }
+}
+
 /// Thrown for non-2xx responses so callers can surface the backend's message.
 class TifoApiException implements Exception {
   TifoApiException(this.statusCode, this.message);
@@ -156,8 +184,8 @@ class TifoApi {
 
   /// `GET /buildings?bbox=minLng,minLat,maxLng,maxLat`. [cancelToken] lets the
   /// map layer abort a stale viewport request when the camera moves again.
-  Future<List<TifoBuilding>> getBuildings(String bbox, {CancelToken? cancelToken}) async {
-    final res = await _get('/buildings?bbox=$bbox', cancelToken: cancelToken);
+  Future<List<TifoBuilding>> getBuildings(String bbox, {CancelToken? cancelToken, TifoRequestTiming? timing}) async {
+    final res = await _get('/buildings?bbox=$bbox', cancelToken: cancelToken, timing: timing);
     final items = (res['items'] as List?) ?? const [];
     final buildings = <TifoBuilding>[];
     for (final item in items) {
@@ -191,7 +219,8 @@ class TifoApi {
     return out;
   }
 
-  Future<TifoProfile> getMe() async => TifoProfile.fromJson(await _get('/me'));
+  Future<TifoProfile> getMe({TifoRequestTiming? timing}) async =>
+      TifoProfile.fromJson(await _get('/me', timing: timing));
 
   /// The base URL + bearer this client would send right now. Exposed so the
   /// debug console can issue requests as the app rather than guessing.
@@ -219,8 +248,8 @@ class TifoApi {
   Future<TifoGameConfig> getConfig() async => TifoGameConfig.fromJson(await _get('/config'));
 
   /// Club standings for the leaderboard (`GET /leaderboards?scope=clubs`).
-  Future<List<TifoLeaderRow>> getLeaderboards() async {
-    final res = await _get('/leaderboards?scope=clubs');
+  Future<List<TifoLeaderRow>> getLeaderboards({TifoRequestTiming? timing}) async {
+    final res = await _get('/leaderboards?scope=clubs', timing: timing);
     final out = <TifoLeaderRow>[];
     for (final item in (res['clubs'] as List?) ?? const []) {
       if (item is Map) {
@@ -234,8 +263,8 @@ class TifoApi {
   }
 
   /// District polygons (fetch once). `GET /districts`.
-  Future<List<TifoDistrict>> getDistricts({CancelToken? cancelToken}) async {
-    final res = await _get('/districts', cancelToken: cancelToken);
+  Future<List<TifoDistrict>> getDistricts({CancelToken? cancelToken, TifoRequestTiming? timing}) async {
+    final res = await _get('/districts', cancelToken: cancelToken, timing: timing);
     final out = <TifoDistrict>[];
     for (final item in (res['items'] as List?) ?? const []) {
       if (item is Map) {
@@ -250,8 +279,8 @@ class TifoApi {
 
   /// All district standings in one call (poll for the low-zoom paint).
   /// `GET /districts/summary`. Returned keyed by district id.
-  Future<Map<String, TifoDistrictSummary>> getDistrictsSummary() async {
-    final res = await _get('/districts/summary');
+  Future<Map<String, TifoDistrictSummary>> getDistrictsSummary({TifoRequestTiming? timing}) async {
+    final res = await _get('/districts/summary', timing: timing);
     final out = <String, TifoDistrictSummary>{};
     for (final item in (res['districts'] as List?) ?? const []) {
       if (item is Map) {
@@ -308,24 +337,40 @@ class TifoApi {
     return TifoPlayResult.fromJson(res);
   }
 
-  Future<Map<String, dynamic>> _get(String path, {CancelToken? cancelToken}) async {
-    final cfg = await _resolve();
-    try {
-      final response = await _dio.get<dynamic>(
-        _url(cfg.baseUrl, path),
-        options: _options(cfg.token),
-        cancelToken: cancelToken,
-      );
-      return _asMap(response.data);
-    } on DioException catch (e) {
-      throw _mapError(e);
-    }
-  }
+  Future<Map<String, dynamic>> _get(String path, {CancelToken? cancelToken, TifoRequestTiming? timing}) =>
+      _request(path, isPost: false, cancelToken: cancelToken, timing: timing);
 
-  Future<Map<String, dynamic>> _post(String path, {Object? body}) async {
+  Future<Map<String, dynamic>> _post(String path, {Object? body}) => _request(path, isPost: true, body: body);
+
+  /// The one place a TIFO request is actually issued — folded together so the
+  /// round-trip clock ([TifoRequestTiming]) exists once instead of per verb.
+  /// Only the dio call is timed: [_resolve] may open a login flow, and parsing
+  /// belongs to `render_ms`, not to the backend.
+  Future<Map<String, dynamic>> _request(
+    String path, {
+    required bool isPost,
+    Object? body,
+    CancelToken? cancelToken,
+    TifoRequestTiming? timing,
+  }) async {
     final cfg = await _resolve();
+    final stopwatch = timing == null ? null : (Stopwatch()..start());
     try {
-      final response = await _dio.post<dynamic>(_url(cfg.baseUrl, path), data: body, options: _options(cfg.token));
+      final response = isPost
+          ? await _dio.post<dynamic>(
+              _url(cfg.baseUrl, path),
+              data: body,
+              options: _options(cfg.token),
+              cancelToken: cancelToken,
+            )
+          : await _dio.get<dynamic>(
+              _url(cfg.baseUrl, path),
+              options: _options(cfg.token),
+              cancelToken: cancelToken,
+            );
+      if (stopwatch != null) {
+        timing!.add(stopwatch.elapsed);
+      }
       return _asMap(response.data);
     } on DioException catch (e) {
       throw _mapError(e);
