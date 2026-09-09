@@ -1,12 +1,11 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mapness/features/balady_analytics/balady_analytics.dart';
-import 'package:mapness/features/balady_analytics/balady_analytics_mode.dart';
 import 'package:mapness/features/balady_analytics/events/tifo_events.dart';
 
 import 'recording_sink.dart';
 
 /// Covers `tifo_events.dart` against "Tifo Analytics — Event Spec v1"
-/// (data/jira/BE-327/spec.md): the five event shapes, their caps (once per
+/// (data/jira/BE-327/spec.md): the six event shapes, their caps (once per
 /// install, once per surface per session, 30 s debounce), and the ms/day
 /// bucketing helpers. No Hive, no PostHog — `TifoEvents.now`, `.sessionId`
 /// and `.store` are swapped for fakes, and events are captured by a
@@ -220,6 +219,31 @@ void main() {
       expect(props['phase'], 'aiming');
       expect(props['reason'], 'backgrounded');
     });
+
+    test('a completed exit with an outcome carries the outcome wire value', () {
+      final before = sink.events.length;
+      TifoEvents.playExit(
+        phase: TifoPlayPhase.resultShown,
+        reason: TifoPlayExitReason.completed,
+        outcome: TifoPlayOutcome.claimed,
+      );
+      final props = sink.events[before].properties;
+      expect(props['outcome'], 'claimed');
+    });
+
+    test('no outcome given means the outcome key is absent, not null', () {
+      final before = sink.events.length;
+      TifoEvents.playExit(phase: TifoPlayPhase.aiming, reason: TifoPlayExitReason.userQuit);
+      final props = sink.events[before].properties;
+      expect(props.containsKey('outcome'), isFalse);
+    });
+
+    test('every TifoPlayOutcome wire value is the spec string', () {
+      expect(TifoPlayOutcome.claimed.wire, 'claimed');
+      expect(TifoPlayOutcome.taken.wire, 'taken');
+      expect(TifoPlayOutcome.failed.wire, 'failed');
+      expect(TifoPlayOutcome.voided.wire, 'voided');
+    });
   });
 
   group('tutorialOutcome', () {
@@ -233,6 +257,36 @@ void main() {
     });
   });
 
+  group('entryOutcome', () {
+    // Extra keys the facade itself adds on top of whatever TifoEvents passes
+    // (see BaladyAnalytics.track / .screen) — allowed alongside 'action'.
+    const facadeExtraKeys = {'is_authenticated', r'$screen_name'};
+
+    test('fires tifo_entry_outcome with action: cta and no unexpected keys', () {
+      final before = sink.events.length;
+      TifoEvents.entryOutcome(action: TifoEntryAction.cta);
+      final added = sink.events.sublist(before);
+      expect(added, hasLength(1));
+      expect(added.single.name, 'tifo_entry_outcome');
+      expect(added.single.properties['action'], 'cta');
+      for (final key in added.single.properties.keys) {
+        expect(key == 'action' || facadeExtraKeys.contains(key), isTrue, reason: 'unexpected key "$key"');
+      }
+    });
+
+    test('fires tifo_entry_outcome with action: close and no unexpected keys', () {
+      final before = sink.events.length;
+      TifoEvents.entryOutcome(action: TifoEntryAction.close);
+      final added = sink.events.sublist(before);
+      expect(added, hasLength(1));
+      expect(added.single.name, 'tifo_entry_outcome');
+      expect(added.single.properties['action'], 'close');
+      for (final key in added.single.properties.keys) {
+        expect(key == 'action' || facadeExtraKeys.contains(key), isTrue, reason: 'unexpected key "$key"');
+      }
+    });
+  });
+
   // Runs last on purpose: it inspects every event captured by `sink` over
   // the whole file, so it must not run before the groups above have added
   // theirs. `flutter test` runs a file's tests in declaration order.
@@ -240,6 +294,7 @@ void main() {
     const specEventNames = {
       'tifo_activated',
       'tifo_tutorial_outcome',
+      'tifo_entry_outcome',
       'tifo_surface_viewed',
       'tifo_blocked',
       'tifo_play_exit',
@@ -250,14 +305,14 @@ void main() {
     const facadeDollarKeys = {r'$screen_name'};
     final snakeCase = RegExp(r'^[a-z][a-z0-9_]*$');
 
-    test('every recorded event name is one of the five spec names', () {
+    test('every recorded event name is one of the six spec names', () {
       expect(sink.events, isNotEmpty);
       for (final event in sink.events) {
         expect(specEventNames.contains(event.name), isTrue, reason: 'unexpected event name "${event.name}"');
       }
     });
 
-    test('every property key is snake_case without a \$ prefix, except facade-added keys', () {
+    test(r'every property key is snake_case without a $ prefix, except facade-added keys', () {
       for (final event in sink.events) {
         for (final key in event.properties.keys) {
           if (key.startsWith(r'$')) {

@@ -46,10 +46,9 @@ class PenaltyApp extends StatelessWidget {
   /// finish a shootout that cannot be submitted (TFS 86075).
   final VoidCallback? onConnectionLost;
 
-  /// Fires once when the app is backgrounded while a shootout is still live.
-  /// The run may well come back and finish — this only tells the host that the
-  /// player left the pitch, which is the difference between "the network died"
-  /// and "they took a call" that a hung server session cannot show.
+  /// Fires once when the app is backgrounded while a shootout is still live — the run may
+  /// still come back and finish. Tells the host "player left the pitch", distinct from
+  /// "the network died" (onConnectionLost), which a hung server session cannot show.
   final VoidCallback? onBackgrounded;
 
   /// The host app's in-app language, so the message-card dialogs (Still
@@ -2160,7 +2159,9 @@ class PenaltyGame extends FlameGame with TapCallbacks, DragCallbacks {
   /// identical either way — but the host needs it to tell a deliberate exit
   /// from an AFK timeout in `tifo_play_exit`.
   void forfeit({required TifoShootoutEnd reason}) {
-    if (_completed) return;
+    if (_completed) {
+      return;
+    }
     _completed = true;
     var misses = _shotHistory.where((s) => s != _ShotState.goal).length;
     while (misses < missesAllowed) {

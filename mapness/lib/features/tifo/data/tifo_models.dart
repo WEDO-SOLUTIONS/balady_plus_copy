@@ -228,23 +228,13 @@ class TifoKickEvent {
   };
 }
 
-/// How a penalty shootout run ended, as the CLIENT saw it.
-///
-/// `forfeit()` pads the kick log up to the allowed miss count, so a forfeited
-/// run is indistinguishable from a played one server-side. This is the
-/// distinction the client keeps, and the only input `tifo_play_exit` has for
-/// its `reason` property.
+/// How a penalty shootout run ended, as the CLIENT saw it. `forfeit()` pads the kick log up to
+/// the allowed miss count, so a forfeited run is indistinguishable from a played one
+/// server-side — this is the only input `tifo_play_exit` has for its `reason`.
 enum TifoShootoutEnd {
-  /// The player shot until the `missesAllowed`-th miss.
   completed,
-
-  /// The player confirmed "Leave" on the exit dialog.
   forfeitExit,
-
-  /// The idle ("Still playing?") prompt was exited.
   forfeitAfk,
-
-  /// Connectivity dropped and the run was abandoned.
   connectionLost,
 }
 

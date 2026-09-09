@@ -36,10 +36,9 @@ class TifoJourney {
     }
   }
 
-  /// [source] is the entry point the play intent came from. It is carried all
-  /// the way to team select so `tifo_activated` can answer "which door
-  /// converts", and it decides which `surface` a `tifo_blocked` from an unmet
-  /// gate is attributed to.
+  /// [source] is the entry point the play intent came from, carried to team select so
+  /// `tifo_activated` can answer "which door converts" — it also decides the `surface` an
+  /// unmet-gate `tifo_blocked` is attributed to.
   ///
   /// [from] is the surface the play-intent was expressed on. Pass it when the
   /// caller awaits something before starting the walk (the ⚽ entry popup, the
@@ -168,13 +167,9 @@ class TifoJourney {
     return ref.read(tifoSessionProvider).nextStep == TifoJourneyStep.ready;
   }
 
-  /// Which `tifo_blocked` surface a gate stop belongs to.
-  ///
-  /// A stopped gate walk happens on a full-screen gate route, not on a TIFO
-  /// surface, so the honest answer is "wherever the intent came from". Sheet
-  /// entry points map to their own surface; the map-level entry points (the ⚽
-  /// popup and the join pill) map to `district` — the whole-map view — rather
-  /// than inventing an enum value the spec does not have.
+  /// Which `tifo_blocked` surface a gate stop belongs to — a stopped walk happens on a
+  /// full-screen gate route, not a TIFO surface, so the honest answer is "wherever the
+  /// intent came from". Map-level entry points fold into `district` rather than a new enum value.
   static TifoSurface _blockedSurface(TifoActivationSource source) => switch (source) {
     TifoActivationSource.buildingSheet => TifoSurface.building,
     TifoActivationSource.districtSheet => TifoSurface.district,

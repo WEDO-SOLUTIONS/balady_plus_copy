@@ -1,8 +1,12 @@
+import 'dart:async';
+
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mapness/features/balady_analytics/events/tifo_events.dart';
 import 'package:mapness/features/tifo/data/tifo_api.dart';
 import 'package:mapness/features/tifo/data/tifo_models.dart';
+import 'package:mapness/features/tifo/tifo_buildings_map_layer.dart';
 import 'package:mapness/shared/utils/logger/logger.dart';
 
 @immutable
@@ -110,14 +114,26 @@ class TifoBuildingsController extends Notifier<TifoBuildingsState> {
         return; // superseded — leave state to the newer request
       }
       logger.log('[tifo] buildings fetch failed (${e.response?.statusCode}) for $bbox: ${e.message}');
+      _reportFetchBlocked();
       state = state.copyWith(isLoading: false, error: e.message);
     } catch (e) {
       if (token.isCancelled) {
         return;
       }
       logger.log('[tifo] buildings fetch error for $bbox: $e');
+      _reportFetchBlocked();
       state = state.copyWith(isLoading: false, error: e.toString());
     }
+  }
+
+  /// `tifo_blocked {reason: error, surface: building}` for a `/buildings` fetch that failed
+  /// with the layer on: the tier stays empty with nothing on screen saying why. The layer
+  /// check below covers toggle-off-mid-flight; [TifoEvents.blocked] debounces a flapping backend.
+  void _reportFetchBlocked() {
+    if (!ref.read(tifoBuildingsMapLayerProvider)) {
+      return;
+    }
+    unawaited(TifoEvents.blocked(reason: TifoBlockReason.error, surface: TifoSurface.building));
   }
 
   /// Refreshes ownership/status of the visible buildings via

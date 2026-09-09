@@ -115,11 +115,13 @@ first unmet step; Close(X) leaves the map untouched):
 All TIFO analytics goes through `TifoEvents`
 (`mapness/lib/features/balady_analytics/events/tifo_events.dart`) — never call
 `BaladyAnalytics.instance.track` directly from TIFO code. The event set is exactly
-the five of Event Spec v1 (`tifo_activated`, `tifo_tutorial_outcome`,
-`tifo_surface_viewed`, `tifo_blocked`, `tifo_play_exit`) and is documented in
-`docs/analytics-tracking-plan.md` ("Phase 2 — TIFO"); an event added to code is
-added to the tracking plan in the same PR. Event names are immutable — PostHog
-cannot rename retroactively. No `identify` calls from TIFO. No raw timings —
+the six of Event Spec v1 (`tifo_activated`, `tifo_tutorial_outcome`,
+`tifo_entry_outcome`, `tifo_surface_viewed`, `tifo_blocked`, `tifo_play_exit`) and is
+documented in `docs/analytics-tracking-plan.md` ("Phase 2 — TIFO"); an event added to
+code is added to the tracking plan in the same PR. Event names are immutable — PostHog
+cannot rename retroactively. `tifo_blocked(error)` also covers silent tier-load
+failures, and `tifo_play_exit` carries the server `outcome` on completed games. No
+`identify` calls from TIFO. No raw timings —
 `api_ms`/`render_ms` are bucketed inside `TifoEvents`, never sent as numbers. No
 coordinates, no building names, no TIFO-side user id. Caps (1/lifetime,
 once-per-surface-per-session, 30 s debounce on `tifo_blocked`, one `tifo_play_exit`

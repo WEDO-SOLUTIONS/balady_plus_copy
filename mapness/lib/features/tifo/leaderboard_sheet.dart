@@ -16,12 +16,9 @@ import 'package:mapness/features/tifo/ui/tifo_message_card.dart';
 import 'package:mapness/features/tifo/ui/tifo_theme.dart';
 import 'package:mapness/l10n/generated/app_localizations.dart';
 
-/// Round-trip and parse-completion of the `/leaderboards` fetch behind the rows
-/// the Table tab is currently showing, or null before the first one.
-///
-/// Module-level because [tifoLeaderboardProvider] is `autoDispose` and has to
-/// keep returning plain rows — every other consumer of it is UI. Read exactly
-/// once per sheet, by `tifo_surface_viewed`; never logged.
+/// Round-trip and parse-completion of the `/leaderboards` fetch behind the rows the Table tab
+/// is showing, or null before the first one. Module-level because [tifoLeaderboardProvider]
+/// is `autoDispose` and must keep returning plain rows; read once per sheet, never logged.
 ({Duration? api, DateTime parsedAt})? _lastLeaderboardTiming;
 
 /// Club standings, fetched fresh each time the sheet opens.

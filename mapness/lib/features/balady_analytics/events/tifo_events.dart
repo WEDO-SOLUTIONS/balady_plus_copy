@@ -5,31 +5,9 @@ import 'package:hive_ce_flutter/hive_flutter.dart';
 import 'package:mapness/features/balady_analytics/balady_analytics.dart';
 import 'package:posthog_flutter/posthog_flutter.dart';
 
-/// Phase-2 TIFO events — "Tifo Analytics — Event Spec v1", five events, no more
-/// (docs/analytics-tracking-plan.md).
-///
-/// The game loop itself is already attributable server-side (every play goes
-/// through the TIFO API under an authenticated bearer), so these events cover
-/// only what the backend cannot see: **attention, friction, drop-off and
-/// device-side timing**. Volume is bounded by construction, not by hope — each
-/// event carries an explicit cap, implemented in this file:
-///
-///  * [activated] — once per install (persisted flag);
-///  * [surfaceViewed] — once per surface per PostHog session, ≤4/session;
-///  * [blocked] — same reason at most once per 30 s;
-///  * [playExit] — once per shootout (guarded at the call site);
-///  * [tutorialOutcome] — effectively once per user, replays included.
-///
-/// Rules this module exists to enforce:
-///  * the five event-name literals live HERE and nowhere else — PostHog cannot
-///    rename an event retroactively;
-///  * every property value comes from an enum, serialized snake_case;
-///  * raw millisecond timings never leave this file — they are bucketed
-///    ([msBucket]) so property cardinality stays flat;
-///  * no `identify()` from TIFO: anonymous events bill cheaper and logged-in
-///    players are already identified by the host auth flow;
-///  * no coordinates, no building/district ids, no bearer — the backend owns
-///    that data.
+/// TIFO analytics — Event Spec v1, six events (docs/analytics-tracking-plan.md). Covers what
+/// the backend cannot see: attention, friction, drop-off, device timing. Caps and event-name
+/// literals live here, not at call sites — see each method's doc for its cap.
 abstract final class TifoEvents {
   // ─── Event names (immutable — see the tracking plan) ───────────────────────
 
@@ -38,6 +16,7 @@ abstract final class TifoEvents {
   static const String _surfaceViewed = 'tifo_surface_viewed';
   static const String _blocked = 'tifo_blocked';
   static const String _playExit = 'tifo_play_exit';
+  static const String _entryOutcome = 'tifo_entry_outcome';
 
   // ─── Injectable dependencies (production defaults; swapped in tests) ───────
 
@@ -45,10 +24,8 @@ abstract final class TifoEvents {
   @visibleForTesting
   static DateTime Function() now = DateTime.now;
 
-  /// Current PostHog session id, or null when the SDK has no session (no key
-  /// configured for this flavor, or the call failed). A null id degrades the
-  /// per-session caps to per-app-run caps, which is the safe direction: at
-  /// most four extra `tifo_surface_viewed` per run.
+  /// Current PostHog session id, or null with no session configured/reachable — degrades the
+  /// per-session caps to per-app-run (safe direction: a few extra `tifo_surface_viewed`).
   @visibleForTesting
   static Future<String?> Function() sessionId = _posthogSessionId;
 
@@ -77,12 +54,9 @@ abstract final class TifoEvents {
 
   // ─── Events ───────────────────────────────────────────────────────────────
 
-  /// The player became a player: `POST /clubs/select` succeeded.
-  ///
-  /// [source] is the surface the gate walk STARTED from, not the screen the
-  /// confirm button lives on — that is the question this event answers ("which
-  /// entry point converts"). Capped to one per install by a persisted flag;
-  /// the server's one-time `/clubs/select` semantics remains the truth.
+  /// The player became a player: `POST /clubs/select` succeeded. [source] is where the gate
+  /// walk STARTED, not the confirm screen — answers "which entry point converts". Capped to
+  /// one per install by a persisted flag.
   static Future<void> activated({required String clubId, required TifoActivationSource source}) async {
     if (_activatedSent) {
       return;
@@ -118,16 +92,9 @@ abstract final class TifoEvents {
     );
   }
 
-  /// First open of a TIFO surface in this PostHog session.
-  ///
-  /// [apiMs] is the backend round-trip that fed the surface and [renderMs] the
-  /// parse-to-painted span on the client; both are bucketed, and either is
-  /// omitted entirely when unknown (a tier painted from cache has no request
-  /// to report — an `api_ms_bucket` of `lt100` would be a lie, and a 0 would
-  /// poison the distribution).
-  ///
-  /// `first_of_day` marks the player's first TIFO surface of the calendar day
-  /// in Asia/Riyadh — a DAU-of-TIFO marker that costs no extra event.
+  /// First open of a TIFO surface in this PostHog session. [apiMs]/[renderMs] are omitted
+  /// when unknown (a cache-painted tier has no request — `lt100` would lie). `first_of_day`
+  /// piggybacks the player's first TIFO surface of the Asia/Riyadh day, at no extra event.
   static Future<void> surfaceViewed({required TifoSurface surface, int? apiMs, int? renderMs}) async {
     await _syncCapsSession();
     if (!_viewedSurfaces.add(surface)) {
@@ -156,11 +123,9 @@ abstract final class TifoEvents {
     );
   }
 
-  /// The UI refused a user intent. [surface] is where it happened.
-  ///
-  /// Debounced: the same [reason] fires at most once per [blockedDebounce]
-  /// within a session, so a player tapping a disabled CTA repeatedly costs one
-  /// event, not ten.
+  /// The UI refused a user intent. [surface] is where it happened. Debounced: the same
+  /// [reason] fires at most once per [blockedDebounce] within a session, so a repeatedly
+  /// tapped disabled CTA costs one event, not ten.
   static Future<void> blocked({required TifoBlockReason reason, required TifoSurface surface}) async {
     await _syncCapsSession();
     final at = now();
@@ -178,17 +143,32 @@ abstract final class TifoEvents {
     );
   }
 
-  /// The client left an active game, however that happened — the client-side
-  /// half of a play session the server only sees as "opened, then silence".
-  ///
-  /// Exactly one per shootout run; the guard lives at the call site because
-  /// only it knows where a run begins and ends.
-  static void playExit({required TifoPlayPhase phase, required TifoPlayExitReason reason}) {
+  /// The client left an active game — the client-side half of a session the server only sees
+  /// as "opened, then silence". One per run; the guard lives at the call site, which alone
+  /// knows where a run begins and ends. [outcome] exists only for `completed`; never invented.
+  static void playExit({
+    required TifoPlayPhase phase,
+    required TifoPlayExitReason reason,
+    TifoPlayOutcome? outcome,
+  }) {
     BaladyAnalytics.instance.track(
       _playExit,
       properties: {
         'phase': phase.wire,
         'reason': reason.wire,
+        if (outcome != null) 'outcome': outcome.wire,
+      },
+    );
+  }
+
+  /// How the stories-style entry popup was dismissed — first fork in the activation funnel
+  /// between `tifo_surface_viewed` and `tifo_activated`. No cap of its own: the popup already
+  /// shows once per run (`hasSeenEntry`), so the event is bounded by app launches.
+  static void entryOutcome({required TifoEntryAction action}) {
+    BaladyAnalytics.instance.track(
+      _entryOutcome,
+      properties: {
+        'action': action.wire,
       },
     );
   }
@@ -260,33 +240,19 @@ abstract final class TifoEvents {
   }
 }
 
-/// Where the play-gate walk that ended in a club pick was started.
-///
-/// `building_sheet` and `leaderboard` are additions to the spec's list: both
-/// entry points exist in the shipped UI (the building sheet's Challenge CTA and
-/// the leaderboard's "Dominate with your team" footer) and folding them into
-/// `banner` would hide the two highest-intent doors into the game.
-/// `deeplink` is declared but unused — TIFO has no deep links yet.
+/// Where the play-gate walk that ended in a club pick was started. `building_sheet` and
+/// `leaderboard` extend the spec's list — folding them into `banner` would hide two
+/// highest-intent doors into the game. `deeplink` is declared but unused (no deep links yet).
 enum TifoActivationSource {
-  /// The guided tutorial routed the player onward into team select.
   tutorial('tutorial'),
-
-  /// The ⚽ control's stories-style entry popup CTA.
   banner('banner'),
-
-  /// The floating "Dominate with your team" pill over the map.
   mapPill('map_pill'),
-
-  /// The district sheet's "Take over" CTA.
   districtSheet('district_sheet'),
 
   /// Reserved: no TIFO deep link exists yet.
   deeplink('deeplink'),
 
-  /// The building sheet's Challenge / Claim CTA.
   buildingSheet('building_sheet'),
-
-  /// The leaderboard sheet's footer CTA.
   leaderboard('leaderboard');
 
   const TifoActivationSource(this.wire);
@@ -318,10 +284,7 @@ enum TifoTutorialResult {
 /// sheets that open on top of them — the funnel question is whether players
 /// cross the zoom threshold at all.
 enum TifoSurface {
-  /// District mosaic tier of the map layer.
   district('district'),
-
-  /// Individual-buildings tier of the map layer.
   building('building'),
 
   /// Leaderboard sheet, Table tab.
@@ -338,22 +301,11 @@ enum TifoSurface {
 
 /// Why the UI refused a user intent — the economy thermometer.
 enum TifoBlockReason {
-  /// Balance below the play cost.
   noTokens('no_tokens'),
-
-  /// The building is in its post-capture cooldown.
   cooldown('cooldown'),
-
-  /// Someone else holds a live session on the building.
   buildingLocked('building_locked'),
-
-  /// The gate walk stopped at the login step.
   notLoggedIn('not_logged_in'),
-
-  /// The gate walk stopped at team select.
   noClub('no_club'),
-
-  /// A backend/network failure was shown to the player.
   error('error');
 
   const TifoBlockReason(this.wire);
@@ -364,13 +316,8 @@ enum TifoBlockReason {
 
 /// How far a shootout had got when the client left it.
 enum TifoPlayPhase {
-  /// Armed and shooting, before the game reported an outcome.
   aiming('aiming'),
-
-  /// The result submit is in flight.
   resultPending('result_pending'),
-
-  /// The win/loss hero is on screen.
   resultShown('result_shown');
 
   const TifoPlayPhase(this.wire);
@@ -381,20 +328,14 @@ enum TifoPlayPhase {
 
 /// Why the client left an active game.
 enum TifoPlayExitReason {
-  /// Normal end: the result screen was shown.
   completed('completed'),
-
-  /// The app went to the background mid-game.
   backgrounded('backgrounded'),
-
-  /// Connectivity dropped and the session was written off.
   connectionLost('connection_lost'),
 
   /// The AFK prompt timed the player out, or the server voided an expired
   /// session on submit.
   timeout('timeout'),
 
-  /// The player confirmed "Leave" on the exit dialog.
   userQuit('user_quit');
 
   const TifoPlayExitReason(this.wire);
@@ -403,20 +344,52 @@ enum TifoPlayExitReason {
   final String wire;
 }
 
+/// The server's verdict on a finished shootout, as `tifo_play_exit` reports it. Mirrors the
+/// API's `outcome` one-for-one, except `unknown` (an unrecognized string) has no member —
+/// it maps to null at the call site, so a parser gap never shows up as a real result.
+enum TifoPlayOutcome {
+  /// A neutral building was taken.
+  claimed('claimed'),
+
+  /// A building was taken off another club.
+  taken('taken'),
+
+  /// The score did not beat the holder's.
+  failed('failed'),
+
+  /// The server voided the run (expired session, rejected event log).
+  voided('voided');
+
+  const TifoPlayOutcome(this.wire);
+
+  /// Value sent as the `outcome` property.
+  final String wire;
+}
+
+/// How the stories-style entry popup was dismissed.
+enum TifoEntryAction {
+  /// The popup's CTA — the player asked to go on into the game.
+  cta('cta'),
+
+  /// Close (X), a swipe-down, or system back.
+  close('close');
+
+  const TifoEntryAction(this.wire);
+
+  /// Value sent as the `action` property.
+  final String wire;
+}
+
 /// Cross-launch storage the two persisted caps need. Kept as an interface so
 /// the caps are unit-testable without Hive.
 abstract class TifoEventsStore {
-  /// Whether `tifo_activated` has already been sent on this install.
   Future<bool> isActivatedRecorded();
 
-  /// Stamps the once-per-lifetime activation flag.
   Future<void> recordActivated();
 
-  /// Asia/Riyadh day (`yyyy-mm-dd`) of the last `tifo_surface_viewed`, or null
-  /// when none was ever sent.
+  /// `yyyy-mm-dd` of the last `tifo_surface_viewed`, or null when none was ever sent.
   Future<String?> lastSurfaceDay();
 
-  /// Remembers [day] as the day of the most recent `tifo_surface_viewed`.
   Future<void> recordSurfaceDay(String day);
 }
 

@@ -225,11 +225,9 @@ class TifoBuildingsMapLayer extends Notifier<bool> {
   /// `GET /buildings?bbox=` per frame.
   static const Duration _panDebounce = Duration(milliseconds: 400);
 
-  /// How recent the parsed payload must be for this paint to count as
-  /// "rendered from that response" in `tifo_surface_viewed`. Generous on
-  /// purpose — a cold district geometry load plus 413 polygons over the bridge
-  /// is seconds on a slow device — but far short of a cached repaint minutes
-  /// later.
+  /// How recent the parsed payload must be for this paint to count as "rendered from that
+  /// response" in `tifo_surface_viewed`. Generous — a cold district load plus 413 polygons
+  /// can take seconds on a slow device — but short of a cached repaint minutes later.
   static const Duration _freshPayloadWindow = Duration(seconds: 10);
 
   /// Debounce for a viewport event that CHANGES the tier. A tier change is a
@@ -476,33 +474,18 @@ class TifoBuildingsMapLayer extends Notifier<bool> {
     ref.read(tifoBuildingsProvider.notifier).clearViewport();
   }
 
-  /// Reports the first paint of a map tier as `tifo_surface_viewed`.
-  ///
-  /// Called from the two paint routines rather than from [_onViewport]: the
-  /// district mosaic is also painted straight off the provider listener (the
-  /// enable-time prefetch landing while the player already sits at that tier),
-  /// and the buildings the viewport asks for are painted by that same listener
-  /// AFTER [_onViewport] has returned — reporting from the viewport path would
-  /// time an empty map on one tier and miss the other entirely.
-  ///
-  /// [dataAt] is when the payload behind this paint finished parsing;
-  /// [apiDuration] is its backend round-trip, absent when the tier came out of
-  /// memory. The render clock stops on the frame AFTER the polygons crossed
-  /// the bridge — the closest honest "the player can see it" this layer can
-  /// observe (it is not a GPU-paint measurement; see the tracking plan).
-  ///
-  /// The once-per-session cap itself lives in [TifoEvents], so a repaint costs
-  /// a set lookup, not an event.
+  /// Reports the first paint of a map tier as `tifo_surface_viewed`. Called from the two paint
+  /// routines, not [_onViewport]: both tiers can also paint straight off the provider listener
+  /// (prefetch, buildings after [_onViewport] returns), which the viewport path would miss.
   void _reportTierPainted(TifoSurface surface, {required Duration? apiDuration, required DateTime? dataAt}) {
     if (!state) {
       return;
     }
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final renderMs = dataAt == null ? null : DateTime.now().difference(dataAt).inMilliseconds;
-      // Older than [_freshPayloadWindow] means this paint came out of the
-      // in-memory cache (a layer re-enable, a session that rolled over while
-      // the player stayed on the map) — the last request did not feed it, so
-      // BOTH timings are dropped rather than reported as a fake few seconds.
+      // Older than [_freshPayloadWindow] means this paint came from the in-memory cache (a
+      // layer re-enable, a session rollover) — the last request didn't feed it, so both
+      // timings are dropped rather than reported as a fake few seconds.
       final fromCache = renderMs == null || renderMs > _freshPayloadWindow.inMilliseconds;
       unawaited(
         TifoEvents.surfaceViewed(

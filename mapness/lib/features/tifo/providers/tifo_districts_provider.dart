@@ -1,7 +1,11 @@
+import 'dart:async';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mapness/features/balady_analytics/events/tifo_events.dart';
 import 'package:mapness/features/tifo/data/tifo_api.dart';
 import 'package:mapness/features/tifo/data/tifo_models.dart';
+import 'package:mapness/features/tifo/tifo_buildings_map_layer.dart';
 import 'package:mapness/shared/utils/logger/logger.dart';
 
 @immutable
@@ -70,10 +74,9 @@ class TifoDistrictsController extends Notifier<TifoDistrictsState> {
   Future<void>? _geometryRequest;
   Future<void>? _summariesRequest;
 
-  /// Round-trip of every district request made so far — geometry and standings
-  /// together, since the tier only paints once both have been asked for. Read
-  /// once, at the tier's first paint, for `tifo_surface_viewed`; null while the
-  /// layer has been served entirely from memory. Never logged.
+  /// Round-trip of every district request so far — geometry and standings together, since the
+  /// tier paints once both have answered. Read once, at first paint, for
+  /// `tifo_surface_viewed`; null while served entirely from memory. Never logged.
   final TifoRequestTiming _timing = TifoRequestTiming();
 
   DateTime? _lastDataAt;
@@ -121,6 +124,12 @@ class TifoDistrictsController extends Notifier<TifoDistrictsState> {
     } catch (e) {
       if (!ref.mounted) {
         return;
+      }
+      // `tifo_blocked {reason: error, surface: district}`: without geometry the mosaic paints
+      // nothing — the one district failure worth an event (a dropped summary poll self-heals
+      // every 20 s, see [_loadSummaries]). Layer-off excluded: a fetch can outlive the toggle.
+      if (ref.read(tifoBuildingsMapLayerProvider)) {
+        unawaited(TifoEvents.blocked(reason: TifoBlockReason.error, surface: TifoSurface.district));
       }
       state = state.copyWith(
         isLoadingGeometry: false,

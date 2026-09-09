@@ -27,19 +27,16 @@ import 'package:mapness/shared/utils/logger/logger.dart';
 /// Which call-to-action the building sheet shows, and therefore whether the
 /// sheet is refusing a play intent at all.
 enum TifoBuildingCta {
-  /// Challenge / Claim is live.
   play,
 
   /// The player's own club already holds this building (the server 409s).
   ownBuilding,
 
-  /// The player hasn't cleared the play-gate (browse-only).
   notPlayReady,
 
   /// Someone else has a live session on it ("Hold on…").
   live,
 
-  /// Post-capture cooldown.
   cooldown,
 }
 
@@ -115,10 +112,9 @@ class _TifoBuildingSheetState extends ConsumerState<_TifoBuildingSheet> {
     WidgetsBinding.instance.addPostFrameCallback((_) => _reportOpenBlock());
   }
 
-  /// `tifo_blocked` for a sheet that cannot be played right now. Only the two
-  /// mechanics states are reported: `notPlayReady` is an unmet gate, which the
-  /// gate walk itself reports as `not_logged_in`/`no_club`, and `ownBuilding`
-  /// is a rule, not friction.
+  /// `tifo_blocked` for a sheet that cannot be played right now. Only the two mechanics states
+  /// are reported — `notPlayReady` is an unmet gate already reported by the gate walk, and
+  /// `ownBuilding` is a rule, not friction.
   void _reportOpenBlock() {
     if (!mounted) {
       return;
@@ -138,15 +134,27 @@ class _TifoBuildingSheetState extends ConsumerState<_TifoBuildingSheet> {
     }
   }
 
-  /// Reports how this shootout run ended, once. [_playPhase] is whatever the
-  /// run had reached when it happened.
-  void _reportPlayExit(TifoPlayExitReason reason) {
+  /// Reports how this shootout run ended, once. [_playPhase] is whatever the run had reached.
+  /// [outcome] is the server's verdict — known only for the natural end (see [_submit]);
+  /// every other exit leaves before it answers.
+  void _reportPlayExit(TifoPlayExitReason reason, {TifoPlayOutcome? outcome}) {
     if (_playExitReported) {
       return;
     }
     _playExitReported = true;
-    TifoEvents.playExit(phase: _playPhase, reason: reason);
+    TifoEvents.playExit(phase: _playPhase, reason: reason, outcome: outcome);
   }
+
+  /// The API's verdict as the analytics enum. [TifoOutcome.unknown] (an unrecognized string)
+  /// maps to null so the property is omitted, rather than folded into `voided` and read as a
+  /// server-side void that never happened.
+  static TifoPlayOutcome? _analyticsOutcome(TifoOutcome outcome) => switch (outcome) {
+    TifoOutcome.claimed => TifoPlayOutcome.claimed,
+    TifoOutcome.taken => TifoPlayOutcome.taken,
+    TifoOutcome.failed => TifoPlayOutcome.failed,
+    TifoOutcome.voided => TifoPlayOutcome.voided,
+    TifoOutcome.unknown => null,
+  };
 
   @override
   Widget build(BuildContext context) {
@@ -671,7 +679,7 @@ class _TifoBuildingSheetState extends ConsumerState<_TifoBuildingSheet> {
       final ctx = rootNavigatorKey.currentContext;
       if (ctx != null) {
         _playPhase = TifoPlayPhase.resultShown;
-        _reportPlayExit(TifoPlayExitReason.completed);
+        _reportPlayExit(TifoPlayExitReason.completed, outcome: _analyticsOutcome(result.outcome));
         unawaited(
           showTifoPenaltyResult(
             ctx,

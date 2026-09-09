@@ -112,16 +112,9 @@ Future<TifoResolvedConfig> resolveTifoConfig(Ref ref) async {
   return (baseUrl: baseUrl, token: token, isGuest: token.isEmpty);
 }
 
-/// Collects the network round-trip of the TIFO requests that feed ONE surface,
-/// so `tifo_surface_viewed` can report an `api_ms` even for a surface fed by
-/// more than one call (the district tier = `/districts` + `/districts/summary`).
-///
-/// Pass an instance to the API methods whose latency the event reports; the
-/// clock runs inside [TifoApi] around the dio call only — token resolution and
-/// JSON parsing stay outside it, since the property means "backend round-trip".
-///
-/// The raw milliseconds are never logged; they leave only as a bucket, via
-/// `TifoEvents`.
+/// Collects the network round-trip of the TIFO requests feeding ONE surface, so
+/// `tifo_surface_viewed` can report a combined `api_ms` (e.g. district tier = `/districts` +
+/// `/districts/summary`). Only the dio call is timed — not token resolution or parsing.
 class TifoRequestTiming {
   Duration _total = Duration.zero;
   int _calls = 0;
@@ -130,10 +123,8 @@ class TifoRequestTiming {
   /// surface served entirely from cache reports no `api_ms` rather than 0.
   Duration? get total => _calls == 0 ? null : _total;
 
-  /// [total] in milliseconds, or null.
   int? get totalMs => total?.inMilliseconds;
 
-  /// Records one completed round-trip.
   void add(Duration value) {
     _total += value;
     _calls++;
@@ -342,10 +333,9 @@ class TifoApi {
 
   Future<Map<String, dynamic>> _post(String path, {Object? body}) => _request(path, isPost: true, body: body);
 
-  /// The one place a TIFO request is actually issued — folded together so the
-  /// round-trip clock ([TifoRequestTiming]) exists once instead of per verb.
-  /// Only the dio call is timed: [_resolve] may open a login flow, and parsing
-  /// belongs to `render_ms`, not to the backend.
+  /// The one place a TIFO request is actually issued — folded so [TifoRequestTiming] exists
+  /// once instead of per verb. Only the dio call is timed: [_resolve] may open a login flow,
+  /// and parsing belongs to `render_ms`, not the backend.
   Future<Map<String, dynamic>> _request(
     String path, {
     required bool isPost,

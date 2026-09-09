@@ -15,6 +15,7 @@ class RecordedIdentifyCall {
 class RecordingBaladyAnalyticsSink implements BaladyAnalyticsSink {
   final List<BaladyAnalyticsEvent> events = [];
   final List<RecordedIdentifyCall> identifyCalls = [];
+  final Map<String, Object?> sessionProperties = {};
 
   @override
   void track(BaladyAnalyticsEvent event) => events.add(event);
@@ -22,6 +23,11 @@ class RecordingBaladyAnalyticsSink implements BaladyAnalyticsSink {
   @override
   void identify(String? userId, Map<String, dynamic> traits) {
     identifyCalls.add(RecordedIdentifyCall(userId, traits));
+  }
+
+  // No @override: the member exists on core's sink interface but not on development's.
+  void setSessionProperty(String key, Object? value) {
+    sessionProperties[key] = value;
   }
 }
 

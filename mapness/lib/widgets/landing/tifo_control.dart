@@ -8,7 +8,8 @@ import 'package:mapness/_generated/assets/assets.gen.dart';
 import 'package:mapness/app/auto_route/app_routes.dart';
 // `show`: `tifo_events.dart` also declares a `TifoSurface`, and this file uses
 // the visible-route snapshot of that name from `tifo_surface.dart`.
-import 'package:mapness/features/balady_analytics/events/tifo_events.dart' show TifoActivationSource;
+import 'package:mapness/features/balady_analytics/events/tifo_events.dart'
+    show TifoActivationSource, TifoEntryAction, TifoEvents;
 import 'package:mapness/features/tifo/entry_screen.dart';
 import 'package:mapness/features/tifo/leaderboard_sheet.dart';
 import 'package:mapness/features/tifo/tifo_buildings_map_layer.dart';
@@ -93,6 +94,9 @@ class TifoControl extends ConsumerWidget {
       }
       proceed = await entry;
       logger.log('[tifo] entry popup result: $proceed');
+      // Once per app run — the `hasSeenEntry` gate above is what shows this
+      // popup at most once, so the event inherits that cap.
+      TifoEvents.entryOutcome(action: proceed ? TifoEntryAction.cta : TifoEntryAction.close);
       flow.markEntrySeen();
     } else {
       await layer.enable();

@@ -121,10 +121,9 @@ class _TifoGuidedTutorialState extends ConsumerState<TifoGuidedTutorial> {
   /// Guards the async flag reset against a double tap on "Replay tutorial".
   bool _replaying = false;
 
-  /// Exactly one `tifo_tutorial_outcome` per run of this route. A "Replay
-  /// tutorial" from the Support screen rewinds the SAME route, so it does not
-  /// close one run and open another — the outcome that eventually fires
-  /// describes the replayed run, with its own `last_step`.
+  /// Exactly one `tifo_tutorial_outcome` per run of this route. A "Replay tutorial" from
+  /// Support rewinds the SAME route rather than opening a new one — the outcome that
+  /// eventually fires describes the replayed run, with its own `last_step`.
   bool _outcomeReported = false;
 
   void _reportOutcome(TifoTutorialResult result) {
@@ -219,10 +218,9 @@ class _TifoGuidedTutorialState extends ConsumerState<TifoGuidedTutorial> {
   Widget build(BuildContext context) {
     final step = _steps(context)[_index];
     return PopScope(
-      // Not a block — the tour stays dismissable. This only catches the exits
-      // `_finish` never sees (system back, a programmatic pop) so every run
-      // produces exactly one outcome; the guard in [_reportOutcome] makes the
-      // deliberate exits win.
+      // Not a block — the tour stays dismissable. This only catches exits `_finish` never
+      // sees (system back, a programmatic pop) so every run produces exactly one outcome;
+      // [_reportOutcome]'s guard makes the deliberate exits win.
       onPopInvokedWithResult: (didPop, _) {
         if (didPop) {
           _reportOutcome(TifoTutorialResult.abandoned);

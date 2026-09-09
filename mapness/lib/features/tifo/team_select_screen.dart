@@ -27,10 +27,8 @@ import 'package:mapness/shared/utils/logger/logger.dart';
 class TifoTeamSelectScreen extends ConsumerStatefulWidget {
   const TifoTeamSelectScreen({required this.source, super.key});
 
-  /// Entry point the play-gate walk that led here started from — reported as
-  /// `tifo_activated`'s `source` once the club pick succeeds. It answers which
-  /// door into the game actually converts, so it must describe the TAP, not
-  /// this screen.
+  /// Entry point the play-gate walk started from — reported as `tifo_activated`'s `source`.
+  /// Must describe the TAP, not this screen — that answers "which door actually converts".
   final TifoActivationSource source;
 
   @override
