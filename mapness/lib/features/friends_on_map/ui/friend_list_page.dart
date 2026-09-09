@@ -4,6 +4,7 @@ import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/_features/common/providers/ui_direction.dart';
+import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/features/friends_on_map/models/friend.dart';
 import 'package:mapness/features/friends_on_map/providers/friend_search_query.dart';
 import 'package:mapness/features/friends_on_map/providers/friends_list.dart';
@@ -34,6 +35,13 @@ class FriendListPage extends ConsumerWidget {
             title: context.l10n.friendListTitle,
             colorEnabled: context.colors.accentDefault,
             leading: ActionModel(onPressed: () => context.router.pop(), icon: SystemIcons.arrowCornerLeftLarge),
+            // Persistent add-friend entry — the empty state's own CTA only
+            // reaches this once the list has zero friends; once it doesn't,
+            // this is the only way back in.
+            trailing: ActionModel(
+              onPressed: () => context.router.push(const AddFriendRoute()),
+              icon: SystemIcons.plusCircleFilled,
+            ),
           ),
           body: SafeArea(
             child: friendsAsync.when(

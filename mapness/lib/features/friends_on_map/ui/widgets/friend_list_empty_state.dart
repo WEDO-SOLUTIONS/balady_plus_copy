@@ -1,13 +1,11 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
+import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
-import 'package:mapness/shared/ui/toast/toast_overlay.dart';
 
-/// R-46. The add-friend action is required by the requirement even though
-/// it isn't wired to a real flow yet — S-07 (invite link/QR) is a later
-/// slice. It shows a "coming soon" toast rather than silently doing
-/// nothing or being omitted.
+/// R-46.
 class FriendListEmptyState extends StatelessWidget {
   const FriendListEmptyState({super.key});
 
@@ -33,8 +31,7 @@ class FriendListEmptyState extends StatelessWidget {
           buttonColorScheme: ButtonColorScheme.accentSecondary,
           size: ButtonSize.large,
           primaryLabel: context.l10n.friendListEmptyAddCta,
-          // TODO(BE-213): wire to the real add-friend flow once S-07 lands.
-          onTap: () => ToastOverlay.of(context).show(title: context.l10n.friendListAddFriendComingSoonToast),
+          onTap: () => context.router.push(const AddFriendRoute()),
         ),
       ],
     ),
