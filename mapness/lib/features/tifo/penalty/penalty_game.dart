@@ -28,6 +28,7 @@ class PenaltyApp extends StatelessWidget {
     this.onComplete,
     this.onReady,
     this.onConnectionLost,
+    this.onBackgrounded,
     this.missesAllowed = 3,
     this.scoreToBeat = 0,
     this.strikerColor,
@@ -44,6 +45,11 @@ class PenaltyApp extends StatelessWidget {
   /// `expiresAt` — so the host should abandon it instead of letting the player
   /// finish a shootout that cannot be submitted (TFS 86075).
   final VoidCallback? onConnectionLost;
+
+  /// Fires once when the app is backgrounded while a shootout is still live — the run may
+  /// still come back and finish. Tells the host "player left the pitch", distinct from
+  /// "the network died" (onConnectionLost), which a hung server session cannot show.
+  final VoidCallback? onBackgrounded;
 
   /// The host app's in-app language, so the message-card dialogs (Still
   /// playing? / Leave challenge?) read in the right language — this page runs
@@ -110,6 +116,7 @@ class PenaltyApp extends StatelessWidget {
       onComplete: onComplete,
       onReady: onReady,
       onConnectionLost: onConnectionLost,
+      onBackgrounded: onBackgrounded,
       missesAllowed: missesAllowed,
       scoreToBeat: scoreToBeat,
       strikerColor: strikerColor,
@@ -148,7 +155,7 @@ class _PenaltyExitButton extends StatelessWidget {
       ),
     );
     if (leave ?? false) {
-      game.forfeit();
+      game.forfeit(reason: TifoShootoutEnd.forfeitExit);
     }
   }
 
@@ -176,6 +183,7 @@ class PenaltyGamePage extends StatefulWidget {
     this.onComplete,
     this.onReady,
     this.onConnectionLost,
+    this.onBackgrounded,
     this.missesAllowed = 3,
     this.scoreToBeat = 0,
     this.strikerColor,
@@ -188,6 +196,9 @@ class PenaltyGamePage extends StatefulWidget {
   final ValueChanged<TifoShootoutOutcome>? onComplete;
   final void Function(VoidCallback arm)? onReady;
   final VoidCallback? onConnectionLost;
+
+  /// See [PenaltyApp.onBackgrounded].
+  final VoidCallback? onBackgrounded;
   final int missesAllowed;
   final int scoreToBeat;
   final String? strikerColor;
@@ -200,8 +211,12 @@ class PenaltyGamePage extends StatefulWidget {
   State<PenaltyGamePage> createState() => _PenaltyGamePageState();
 }
 
-class _PenaltyGamePageState extends State<PenaltyGamePage> {
+class _PenaltyGamePageState extends State<PenaltyGamePage> with WidgetsBindingObserver {
   _PenaltyView _view = _PenaltyView.perspective;
+
+  /// One background report per run — a player who switches apps twice is still
+  /// one "they left the pitch", and the run may yet come back and complete.
+  bool _backgroundReported = false;
 
   /// Created once so the HUD panel can listen to the same instance the
   /// GameWidget renders.
@@ -331,7 +346,7 @@ class _PenaltyGamePageState extends State<PenaltyGamePage> {
       return;
     }
     if (exit ?? false) {
-      _perspectiveGame.forfeit();
+      _perspectiveGame.forfeit(reason: TifoShootoutEnd.forfeitAfk);
     } else {
       _onActivity();
     }
@@ -348,8 +363,20 @@ class _PenaltyGamePageState extends State<PenaltyGamePage> {
   AudioPlayer? _ambiencePlayer;
 
   @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    // `paused` (not `inactive`): iOS reports `inactive` for a notification
+    // shade pull or a control-centre swipe, which is not leaving the game.
+    if (state != AppLifecycleState.paused || _backgroundReported || _perspectiveGame.isCompleted) {
+      return;
+    }
+    _backgroundReported = true;
+    widget.onBackgrounded?.call();
+  }
+
+  @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
     unawaited(_startAmbience());
     _perspectiveGame.armedNotifier.addListener(_onArmedChanged);
     _perspectiveGame.goalsNotifier.addListener(_onActivity);
@@ -408,6 +435,7 @@ class _PenaltyGamePageState extends State<PenaltyGamePage> {
 
   @override
   void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
     unawaited(_ambiencePlayer?.dispose());
     _idleCheckTimer?.cancel();
     _offlineTimer?.cancel();
@@ -2127,8 +2155,13 @@ class PenaltyGame extends FlameGame with TapCallbacks, DragCallbacks {
   /// away server-side. Instead, pad the log with synthetic misses up to
   /// `missesAllowed` (real goals are kept as scored) and complete normally,
   /// so the goals already scored still count.
-  void forfeit() {
-    if (_completed) return;
+  /// [reason] is not sent to the backend — the padded log it produces is
+  /// identical either way — but the host needs it to tell a deliberate exit
+  /// from an AFK timeout in `tifo_play_exit`.
+  void forfeit({required TifoShootoutEnd reason}) {
+    if (_completed) {
+      return;
+    }
     _completed = true;
     var misses = _shotHistory.where((s) => s != _ShotState.goal).length;
     while (misses < missesAllowed) {
@@ -2138,8 +2171,12 @@ class PenaltyGame extends FlameGame with TapCallbacks, DragCallbacks {
     }
     goalsNotifier.value = _goals;
     missesNotifier.value = misses;
-    logger.log('[tifo-game] session forfeited via exit: scored=$_goals misses=$misses (padded to $missesAllowed)');
-    onComplete?.call(TifoShootoutOutcome(goals: _goals, misses: misses, events: List.unmodifiable(_events)));
+    logger.log(
+      '[tifo-game] session forfeited (${reason.name}): scored=$_goals misses=$misses (padded to $missesAllowed)',
+    );
+    onComplete?.call(
+      TifoShootoutOutcome(goals: _goals, misses: misses, events: List.unmodifiable(_events), end: reason),
+    );
   }
 
   void _resetRound() {

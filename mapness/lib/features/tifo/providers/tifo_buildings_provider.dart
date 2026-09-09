@@ -1,8 +1,12 @@
+import 'dart:async';
+
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mapness/features/balady_analytics/events/tifo_events.dart';
 import 'package:mapness/features/tifo/data/tifo_api.dart';
 import 'package:mapness/features/tifo/data/tifo_models.dart';
+import 'package:mapness/features/tifo/tifo_buildings_map_layer.dart';
 import 'package:mapness/shared/utils/logger/logger.dart';
 
 @immutable
@@ -48,6 +52,17 @@ class TifoBuildingsState {
 /// [applyOwnership] after a capture.
 class TifoBuildingsController extends Notifier<TifoBuildingsState> {
   CancelToken? _inFlight;
+  Duration? _lastFetchDuration;
+  DateTime? _lastDataAt;
+
+  /// Backend round-trip of the `/buildings` request behind the cache's newest
+  /// entries, or null while nothing has been fetched. Read once by the map
+  /// layer for `tifo_surface_viewed`; never logged.
+  Duration? get lastFetchDuration => _lastFetchDuration;
+
+  /// When that response finished parsing into [state] — the start of the
+  /// render clock the map layer stops on the frame after the polygons are up.
+  DateTime? get lastDataAt => _lastDataAt;
 
   @override
   TifoBuildingsState build() {
@@ -64,8 +79,9 @@ class TifoBuildingsController extends Notifier<TifoBuildingsState> {
     _inFlight = token;
 
     state = state.copyWith(isLoading: true, error: null);
+    final timing = TifoRequestTiming();
     try {
-      final items = await ref.read(tifoApiProvider).getBuildings(bbox, cancelToken: token);
+      final items = await ref.read(tifoApiProvider).getBuildings(bbox, cancelToken: token, timing: timing);
       if (token.isCancelled) {
         return;
       }
@@ -86,6 +102,8 @@ class TifoBuildingsController extends Notifier<TifoBuildingsState> {
       for (final b in items) {
         merged[b.id] = b;
       }
+      _lastFetchDuration = timing.total;
+      _lastDataAt = DateTime.now();
       state = state.copyWith(
         byId: merged,
         visibleIds: {for (final b in items) b.id},
@@ -96,14 +114,26 @@ class TifoBuildingsController extends Notifier<TifoBuildingsState> {
         return; // superseded — leave state to the newer request
       }
       logger.log('[tifo] buildings fetch failed (${e.response?.statusCode}) for $bbox: ${e.message}');
+      _reportFetchBlocked();
       state = state.copyWith(isLoading: false, error: e.message);
     } catch (e) {
       if (token.isCancelled) {
         return;
       }
       logger.log('[tifo] buildings fetch error for $bbox: $e');
+      _reportFetchBlocked();
       state = state.copyWith(isLoading: false, error: e.toString());
     }
+  }
+
+  /// `tifo_blocked {reason: error, surface: building}` for a `/buildings` fetch that failed
+  /// with the layer on: the tier stays empty with nothing on screen saying why. The layer
+  /// check below covers toggle-off-mid-flight; [TifoEvents.blocked] debounces a flapping backend.
+  void _reportFetchBlocked() {
+    if (!ref.read(tifoBuildingsMapLayerProvider)) {
+      return;
+    }
+    unawaited(TifoEvents.blocked(reason: TifoBlockReason.error, surface: TifoSurface.building));
   }
 
   /// Refreshes ownership/status of the visible buildings via
