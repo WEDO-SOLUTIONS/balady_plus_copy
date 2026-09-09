@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lottie/lottie.dart';
 import 'package:mapness/_generated/assets/assets.gen.dart';
+import 'package:mapness/features/balady_analytics/events/tifo_events.dart';
 import 'package:mapness/features/tifo/tifo_flow_provider.dart';
 import 'package:mapness/features/tifo/tutorial/tifo_spotlight.dart';
 import 'package:mapness/features/tifo/tutorial/tifo_tutorial_demos.dart';
@@ -156,6 +157,20 @@ class _TifoGuidedTutorialState extends ConsumerState<TifoGuidedTutorial> {
   /// Guards the async flag reset against a double tap on "Replay tutorial".
   bool _replaying = false;
 
+  /// Exactly one `tifo_tutorial_outcome` per run of this route. A "Replay tutorial" from
+  /// Support rewinds the SAME route rather than opening a new one — the outcome that
+  /// eventually fires describes the replayed run, with its own `last_step`.
+  bool _outcomeReported = false;
+
+  void _reportOutcome(TifoTutorialResult result) {
+    if (_outcomeReported) {
+      return;
+    }
+    _outcomeReported = true;
+    // 1-based: the step the player was looking at when they left.
+    TifoEvents.tutorialOutcome(result: result, lastStep: _index + 1);
+  }
+
   bool get _isLast => _index == _stepCount - 1;
 
   void _next() {
@@ -192,6 +207,10 @@ class _TifoGuidedTutorialState extends ConsumerState<TifoGuidedTutorial> {
   /// skipped) — otherwise the next play attempt, or a later sign-in that mints
   /// a fresh profile, would push the tour again unasked.
   Future<void> _finish({required bool completed}) async {
+    // The only two DELIBERATE exits: Next on the last screen, and a confirmed
+    // Skip. Anything else that pops this route is `abandoned` (see [PopScope]
+    // in `build`).
+    _reportOutcome(completed ? TifoTutorialResult.completed : TifoTutorialResult.skipped);
     if (_replayedFromSupport) {
       await ref.read(tifoFlowProvider.notifier).markTutorialCompletedOnDevice();
     }
@@ -234,46 +253,56 @@ class _TifoGuidedTutorialState extends ConsumerState<TifoGuidedTutorial> {
   @override
   Widget build(BuildContext context) {
     final step = _steps(context)[_index];
-    return Scaffold(
-      backgroundColor: Colors.transparent,
-      body: Stack(
-        fit: StackFit.expand,
-        children: [
-          // Swallow taps so the live map behind the transparent route stays
-          // inert while the tour is up.
-          const ModalBarrier(dismissible: false, color: Colors.transparent),
-          if (step.background != null) step.background!,
-          if (step.bottomPanel != null)
-            Align(
-              alignment: Alignment.bottomCenter,
-              child: SingleChildScrollView(reverse: true, child: step.bottomPanel),
-            ),
-          switch (step.overlay) {
-            _OverlayKind.coachSheet => Align(
-              alignment: Alignment.bottomCenter,
-              child: _CoachSheet(
-                title: step.title ?? '',
-                text: step.text ?? '',
-                dot: step.dot ?? 0,
-                graphic: step.graphic,
-                showBack: _index > 0,
-                onBack: _previous,
-                onNext: _next,
-                onClose: _exit,
+    return PopScope(
+      // Not a block — the tour stays dismissable. This only catches exits `_finish` never
+      // sees (system back, a programmatic pop) so every run produces exactly one outcome;
+      // [_reportOutcome]'s guard makes the deliberate exits win.
+      onPopInvokedWithResult: (didPop, _) {
+        if (didPop) {
+          _reportOutcome(TifoTutorialResult.abandoned);
+        }
+      },
+      child: Scaffold(
+        backgroundColor: Colors.transparent,
+        body: Stack(
+          fit: StackFit.expand,
+          children: [
+            // Swallow taps so the live map behind the transparent route stays
+            // inert while the tour is up.
+            const ModalBarrier(dismissible: false, color: Colors.transparent),
+            if (step.background != null) step.background!,
+            if (step.bottomPanel != null)
+              Align(
+                alignment: Alignment.bottomCenter,
+                child: SingleChildScrollView(reverse: true, child: step.bottomPanel),
               ),
-            ),
-            _OverlayKind.tooltip => Align(
-              alignment: Alignment.topCenter,
-              child: _CoachTooltip(
-                text: step.text ?? '',
-                showPrevious: _index > 0,
-                onPrevious: _previous,
-                onNext: _next,
-                onClose: _exit,
+            switch (step.overlay) {
+              _OverlayKind.coachSheet => Align(
+                alignment: Alignment.bottomCenter,
+                child: _CoachSheet(
+                  title: step.title ?? '',
+                  text: step.text ?? '',
+                  dot: step.dot ?? 0,
+                  graphic: step.graphic,
+                  showBack: _index > 0,
+                  onBack: _previous,
+                  onNext: _next,
+                  onClose: _exit,
+                ),
               ),
-            ),
-          },
-        ],
+              _OverlayKind.tooltip => Align(
+                alignment: Alignment.topCenter,
+                child: _CoachTooltip(
+                  text: step.text ?? '',
+                  showPrevious: _index > 0,
+                  onPrevious: _previous,
+                  onNext: _next,
+                  onClose: _exit,
+                ),
+              ),
+            },
+          ],
+        ),
       ),
     );
   }

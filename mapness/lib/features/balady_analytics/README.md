@@ -23,6 +23,11 @@ New deliberate events go through the facade directly and follow
 wrapper (`metrics.dart`, next to this file) is the marketing UI stream and
 routes to the `uxcam` channel only — see *Channels*.
 
+Per-feature typed event modules live under `events/`: `search_events.dart`,
+`navigation_events.dart`, `story_events.dart`, `service_events.dart`, and
+`events/tifo_events.dart` (TIFO, Event Spec v1 — five events, caps enforced inside
+the module).
+
 ## Kill switch (modes)
 
 `BALADY_ANALYTICS_MODE` in `.env.<flavor>` (compile-time):
