@@ -25,7 +25,8 @@ class RecordingBaladyAnalyticsSink implements BaladyAnalyticsSink {
     identifyCalls.add(RecordedIdentifyCall(userId, traits));
   }
 
-  // No @override: the member exists on core's sink interface but not on development's.
+  // @override is for core, where BaladyAnalyticsSink declares this member; development warns instead.
+  @override
   void setSessionProperty(String key, Object? value) {
     sessionProperties[key] = value;
   }
