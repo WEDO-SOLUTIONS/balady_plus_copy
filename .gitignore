@@ -177,5 +177,5 @@ reports/
 /.fvm/
 
 # Build runner
-**/*.gen.dartmapness/pubspec.lock
-mapness/lib/_generated/assets/assets.gen.dart
+**/*.gen.dart
+mapness/pubspec.lock
