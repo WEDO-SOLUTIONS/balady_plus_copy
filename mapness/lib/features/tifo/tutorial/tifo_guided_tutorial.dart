@@ -584,9 +584,7 @@ class _LongPressGraphic extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final art = tifoIsDarkTheme(context)
-        ? Assets.tifo.tutorial.longPressDark
-        : Assets.tifo.tutorial.longPress;
+    final art = tifoIsDarkTheme(context) ? Assets.tifo.tutorial.longPressDark : Assets.tifo.tutorial.longPress;
     return Center(
       child: Lottie.asset(
         art,
@@ -609,8 +607,8 @@ class _TokenFlowGraphic extends StatelessWidget {
   static const double _arrow = 24;
 
   List<(AssetGenImage, String)> _steps(AppLocalizations l10n) => [
-    (Assets.tifo.tutorial.tokenCar, l10n.tifoTutorialTokensStepDaily),
-    (Assets.tifo.tutorial.tokenCoin, l10n.tifoTutorialTokensStepTrips),
+    (Assets.tifo.tutorial.tokenCoin, l10n.tifoTutorialTokensStepDaily),
+    (Assets.tifo.tutorial.tokenCar, l10n.tifoTutorialTokensStepTrips),
     (Assets.tifo.tutorial.tokenBuilding, l10n.tifoTutorialTokensStepClaim),
   ];
 
