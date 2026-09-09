@@ -1,10 +1,16 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mapness/features/balady_analytics/events/tifo_events.dart';
 import 'package:mapness/features/tifo/providers/tifo_session_provider.dart';
 import 'package:mapness/features/tifo/team_select_screen.dart';
 import 'package:mapness/features/tifo/tifo_flow_provider.dart';
 import 'package:mapness/features/tifo/tifo_login.dart';
-import 'package:mapness/features/tifo/tifo_surface.dart';
+// Prefixed: this file needs BOTH `TifoSurface`s — the visible-route snapshot
+// that guards the gate walk (here) and the analytics surface enum
+// (`tifo_events.dart`), which the spec names identically.
+import 'package:mapness/features/tifo/tifo_surface.dart' as route;
 import 'package:mapness/features/tifo/tutorial/tifo_guided_tutorial.dart';
 import 'package:mapness/shared/utils/logger/logger.dart';
 
@@ -30,12 +36,20 @@ class TifoJourney {
     }
   }
 
+  /// [source] is the entry point the play intent came from, carried to team select so
+  /// `tifo_activated` can answer "which door converts" — it also decides the `surface` an
+  /// unmet-gate `tifo_blocked` is attributed to.
+  ///
   /// [from] is the surface the play-intent was expressed on. Pass it when the
   /// caller awaits something before starting the walk (the ⚽ entry popup, the
   /// map-layer toggle) so the gate is anchored to the tap, not to whatever is
   /// on screen once those awaits resolve. Defaults to "here, now".
-  Future<bool> ensurePlayReady(BuildContext context, {TifoSurface? from}) async {
-    final surface = from ?? TifoSurface.capture(ref);
+  Future<bool> ensurePlayReady(
+    BuildContext context, {
+    required TifoActivationSource source,
+    route.TifoSurface? from,
+  }) async {
+    final surface = from ?? route.TifoSurface.capture(ref);
     final session = ref.read(tifoSessionProvider.notifier);
 
     // Ensure we have a fresh profile to gate on. On staging this also lazily
@@ -69,6 +83,7 @@ class TifoJourney {
           await session.load();
           final reloaded = ref.read(tifoSessionProvider);
           if (reloaded.isGuest || reloaded.profile == null) {
+            unawaited(TifoEvents.blocked(reason: TifoBlockReason.notLoggedIn, surface: _blockedSurface(source)));
             return false;
           }
 
@@ -137,14 +152,31 @@ class TifoJourney {
 
         case TifoJourneyStep.teamSelect:
           final picked = await Navigator.of(context).push<bool>(
-            MaterialPageRoute<bool>(fullscreenDialog: true, builder: (_) => const TifoTeamSelectScreen()),
+            MaterialPageRoute<bool>(
+              fullscreenDialog: true,
+              builder: (_) => TifoTeamSelectScreen(source: source),
+            ),
           );
           // "Maybe Later" (or back) → browse-only; stop the gate walk.
           if (picked != true) {
+            unawaited(TifoEvents.blocked(reason: TifoBlockReason.noClub, surface: _blockedSurface(source)));
             return false;
           }
       }
     }
     return ref.read(tifoSessionProvider).nextStep == TifoJourneyStep.ready;
   }
+
+  /// Which `tifo_blocked` surface a gate stop belongs to — a stopped walk happens on a
+  /// full-screen gate route, not a TIFO surface, so the honest answer is "wherever the
+  /// intent came from". Map-level entry points fold into `district` rather than a new enum value.
+  static TifoSurface _blockedSurface(TifoActivationSource source) => switch (source) {
+    TifoActivationSource.buildingSheet => TifoSurface.building,
+    TifoActivationSource.districtSheet => TifoSurface.district,
+    TifoActivationSource.leaderboard => TifoSurface.leaderboard,
+    TifoActivationSource.banner ||
+    TifoActivationSource.mapPill ||
+    TifoActivationSource.tutorial ||
+    TifoActivationSource.deeplink => TifoSurface.district,
+  };
 }

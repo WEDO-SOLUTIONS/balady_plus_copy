@@ -4,7 +4,9 @@ import 'package:balady_uikit/core/icons/system_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
+import 'package:mapness/features/balady_analytics/metrics.dart';
 
 class RoutingFavouritesPage extends ConsumerWidget {
   const RoutingFavouritesPage({super.key});
@@ -38,6 +40,12 @@ class RoutingFavouritesPage extends ConsumerWidget {
                   button: true,
                   child: InkWell(
                     onTap: () {
+                      Metrics.logEventAdvanced(
+                        MetricsConstants.routesKeys.favoriteBack,
+                        group: MetricsConstants.routesTag,
+                        action: MetricAction.tap.toString(),
+                      );
+
                       context.router.pop();
                     },
                     borderRadius: BorderRadius.circular(8),

@@ -75,12 +75,14 @@ import 'package:mapness/pages/feedback/quick_feedback_page.dart';
 import 'package:mapness/pages/path_nav/path_nav_page.dart';
 import 'package:mapness/pages/poi_card/parking_content.dart';
 import 'package:mapness/pages/poi_card/poi_card_error_or_loading.dart';
+import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/extensions/brief_route_info_message_ext.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/extensions/parking_store_model_ext.dart';
 import 'package:mapness/shared/hooks/toggle_sheet_controller_hook.dart';
 import 'package:mapness/shared/lib/auth/auth_methods.dart';
 import 'package:mapness/shared/lib/make_address.dart';
+import 'package:mapness/features/balady_analytics/metrics.dart';
 import 'package:mapness/shared/providers/analytic/bss_service.dart';
 import 'package:mapness/shared/providers/analytic/models/bss_request.dart';
 import 'package:mapness/shared/providers/analytic/models/extensions/directory_obj_ext.dart';
@@ -103,6 +105,8 @@ import 'package:provider/provider.dart';
 import 'package:sheetify/sheetify.dart';
 import 'package:sliver_tools/sliver_tools.dart';
 import 'package:urbi_utils/urbi_utils.dart';
+
+import '../../widgets/landing/map_attribution_label.dart';
 
 part 'cityscape_card_content.dart';
 part 'founding_day_card_content.dart';

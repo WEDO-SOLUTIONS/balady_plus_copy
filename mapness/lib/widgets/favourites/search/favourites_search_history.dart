@@ -10,7 +10,9 @@ import 'package:mapness/features/search/models/search_scope.dart';
 import 'package:mapness/features/search/providers/search.dart';
 import 'package:mapness/features/search/providers/search_history.dart';
 import 'package:mapness/features/search/ui/search_history.dart' as ui;
+import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
+import 'package:mapness/features/balady_analytics/metrics.dart';
 import 'package:mapness/shared/providers/analytic/bss_service.dart';
 import 'package:mapness/shared/providers/analytic/models/bss_request.dart';
 import 'package:mapness/shared/providers/analytic/models/extensions/search_type_ext.dart';
@@ -68,6 +70,13 @@ class FavouritesSearchHistory extends ConsumerWidget {
                 objectId: item.id?.objectId ?? 0,
                 entranceId: item.id?.entranceId ?? 0,
               ),
+            );
+
+            Metrics.logEventAdvanced(
+              MetricsConstants.searchKeys.suggestion,
+              group: MetricsConstants.searchTag,
+              action: MetricAction.tap.toString(),
+              props: {'object': item.id?.objectId},
             );
 
             final favItem = object.mapToFavourite();

@@ -19,6 +19,7 @@ import 'package:mapness/shared/constants/advanced_metrics_constants.dart';
 import 'package:mapness/shared/constants/constants.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/lib/geo_point_ext.dart';
+import 'package:mapness/features/balady_analytics/metrics.dart';
 import 'package:mapness/shared/lib/urbi_metrics_utils.dart';
 import 'package:mapness/shared/providers/app_language.dart';
 import 'package:mapness/shared/providers/map/camera_position.dart';
@@ -277,6 +278,11 @@ class Search extends _$Search {
   }
 
   Future<void> searchQueryChanged(String query) async {
+    Metrics.logEvent(
+      'SearchQuery',
+      object: runtimeType,
+      extras: {'value': query},
+    );
     _searchQueryDebounce?.cancel();
     // A fresh keystroke must cancel the 1s BSA-1931 fallback armed for an older,
     // partial query — otherwise it fires searchByText() mid-typing.
@@ -363,6 +369,10 @@ class Search extends _$Search {
       AdvancedMetrics.instance.startSearchResponse(
         queryType: _previousType!.name,
         searchQuery: query,
+      );
+      Metrics.logEvent(
+        'fetchSuggest',
+        object: runtimeType,
       );
       mixpanel?.timeEvent('Search: fetchSuggest');
       // -- Analytics
@@ -458,6 +468,11 @@ class Search extends _$Search {
         queryType: _previousType!.name,
         searchQuery: searchQuery,
       );
+      Metrics.logEvent(
+        'quickSearch',
+        object: runtimeType,
+        extras: {'query': searchQuery},
+      );
       mixpanel?.timeEvent('Search: quickSearch');
       // -- Analytics
 
@@ -517,6 +532,11 @@ class Search extends _$Search {
       AdvancedMetrics.instance.startSearchResponse(
         queryType: _previousType!.name,
         searchQuery: query,
+      );
+      Metrics.logEvent(
+        'searchByText',
+        object: runtimeType,
+        extras: {'query': query},
       );
       mixpanel?.timeEvent('Search: searchByText');
       // -- Analytics
@@ -595,6 +615,11 @@ class Search extends _$Search {
       AdvancedMetrics.instance.startSearchResponse(
         queryType: _previousType!.name,
         searchQuery: text,
+      );
+      Metrics.logEvent(
+        'Search/searchByQuery',
+        object: runtimeType,
+        extras: {'query_id': query.id},
       );
       mixpanel?.timeEvent('Search: searchByQuery');
       // -- Analytics

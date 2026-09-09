@@ -6,9 +6,7 @@ import '../../../../_shared_feature_/shared_feature_exports.dart';
 import '../../../../location/presentation/pages/acquire_location_page.dart';
 
 class LocationHomeCard extends StatelessWidget {
-  const LocationHomeCard({
-    super.key,
-  });
+  const LocationHomeCard({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -19,10 +17,7 @@ class LocationHomeCard extends StatelessWidget {
       margin: const EdgeInsets.only(left: 16, right: 16, top: 24),
       decoration: const BoxDecoration(
         borderRadius: BorderRadius.all(Radius.circular(16)),
-        image: DecorationImage(
-          image: AssetImage("assets/images/home_location_background.png"),
-          fit: BoxFit.fill,
-        ),
+        image: DecorationImage(image: AssetImage("assets/images/home_location_background.webp"), fit: BoxFit.fill),
       ),
       child: Row(
         children: [
@@ -34,7 +29,6 @@ class LocationHomeCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 //
-
                 const CustomTextWidget(
                   "للاستفادة من الميزات الكاملة للتطبيق يرجى تفعيل الموقع من الإعدادات",
                   fontColor: Color(0x6b111111),
@@ -55,10 +49,15 @@ class LocationHomeCard extends StatelessWidget {
                   btnWidth: 157,
                   text: "تفعيل الموقع",
                   onPressed: () async {
-                    Navigator.pushAndRemoveUntil(context,
-                        MaterialPageRoute(builder: (ctx) {
-                      return AcquireLocationPage();
-                    }), (Route<dynamic> route) => false);
+                    Navigator.pushAndRemoveUntil(
+                      context,
+                      MaterialPageRoute(
+                        builder: (ctx) {
+                          return AcquireLocationPage();
+                        },
+                      ),
+                      (Route<dynamic> route) => false,
+                    );
                   },
                 ),
               ],

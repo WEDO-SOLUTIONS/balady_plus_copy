@@ -17,6 +17,7 @@ import 'package:mapness/features/search/ui/search_scope.dart';
 import 'package:mapness/features/special_themes/core/special_theme_mode.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
+import 'package:mapness/features/balady_analytics/metrics.dart';
 import 'package:mapness/shared/providers/analytic/bss_service.dart';
 import 'package:mapness/shared/providers/analytic/models/bss_request.dart';
 import 'package:mapness/shared/providers/dark_mode.dart';
@@ -187,6 +188,11 @@ class DashboardHeaderState extends ConsumerState<DashboardHeader> {
         unawaited(context.router.push(SearchRoute(expansion: Expansion.expanded, initialState: text)));
 
         scheduleMicrotask(() {
+          Metrics.logEventAdvanced(
+            MetricsConstants.exploreKeys.searchField,
+            action: MetricAction.tap.name,
+            group: MetricsConstants.exploreTag,
+          );
           BssService.instance.sendEvent(
             const BssRequest(
               eventType: BSSEventType.action,

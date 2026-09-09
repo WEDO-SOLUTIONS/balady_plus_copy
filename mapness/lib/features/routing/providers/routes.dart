@@ -14,6 +14,7 @@ import 'package:mapness/shared/providers/location.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:mapness/shared/providers/map/navigator_route_settings.dart';
 import 'package:mapness/shared/providers/urbi_analytics.dart';
+import 'package:mapness/shared/utils/logger/logger.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'routes.g.dart';

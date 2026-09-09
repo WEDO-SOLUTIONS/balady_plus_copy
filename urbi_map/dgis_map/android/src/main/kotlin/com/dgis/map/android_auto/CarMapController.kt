@@ -268,6 +268,10 @@ class CarMapController(
         navigationHandler.rejectBetterRoute()
     }
 
+    fun timeoutBetterRoute() {
+        navigationHandler.timeoutBetterRoute()
+    }
+
     fun searchByDirectoryObjectId(
         objectId: DgisObjectId,
         resultCallback: (result: DirectoryObject?) -> Unit,

@@ -10,6 +10,7 @@ import 'package:mapness/features/search/ui/search_scope.dart';
 import 'package:mapness/features/tifo/tifo_buildings_map_layer.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart' hide Search;
 import 'package:mapness/shared/extensions/build_context_ext.dart';
+import 'package:mapness/features/balady_analytics/metrics.dart';
 import 'package:mapness/widgets/landing/compass_control.dart';
 import 'package:mapness/widgets/landing/complience_building_legend.dart';
 import 'package:mapness/widgets/landing/dashboard_header.dart';
@@ -19,6 +20,8 @@ import 'package:mapness/widgets/landing/tifo_control.dart';
 import 'package:mapness/widgets/map_dimensions_control/dimension_contrtol.dart';
 import 'package:mapness/widgets/weather/weather_control.dart';
 import 'package:sheetify/sheetify.dart';
+
+import '../../../widgets/landing/map_attribution_label.dart';
 
 class MapSearchSheetControls extends ConsumerStatefulWidget {
   // In percent of the screen
@@ -46,6 +49,12 @@ class MapSearchSheetControlsState extends ConsumerState<MapSearchSheetControls> 
   final _scope = SearchScopeEnum.map.value;
 
   void _searchInArea() {
+    Metrics.logEventAdvanced(
+      MetricsConstants.searchKeys.searchInThisArea,
+      group: MetricsConstants.searchTag,
+      action: MetricAction.tap.toString(),
+    );
+
     ref.read(searchInRectProvider(_scope).notifier).update();
     ref.read(searchProvider(_scope).notifier).searchInThisArea(_scope);
   }
@@ -189,6 +198,11 @@ class MapSearchSheetControlsState extends ConsumerState<MapSearchSheetControls> 
                       ),
                     ),
                   ),
+                const Spacer(),
+                const Padding(
+                  padding: EdgeInsetsDirectional.only(end: uikit.Spacing.$4x, bottom: uikit.Spacing.$4x),
+                  child: Align(alignment: AlignmentDirectional.bottomEnd, child: MapAttributionLabel()),
+                ),
               ],
             ),
           ),
