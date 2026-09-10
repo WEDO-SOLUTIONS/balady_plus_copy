@@ -1381,6 +1381,12 @@ class $AssetsTifoImagesGen {
   /// File path: assets/tifo/images/ball.png
   AssetGenImage get ball => const AssetGenImage('assets/tifo/images/ball.png');
 
+  /// File path: assets/tifo/images/champion_ribbon_confetti.svg
+  SvgGenImage get championRibbonConfetti => const SvgGenImage('assets/tifo/images/champion_ribbon_confetti.svg');
+
+  /// File path: assets/tifo/images/champion_trophy.webp
+  AssetGenImage get championTrophy => const AssetGenImage('assets/tifo/images/champion_trophy.webp');
+
   /// File path: assets/tifo/images/illustration_error.svg
   SvgGenImage get illustrationError => const SvgGenImage('assets/tifo/images/illustration_error.svg');
 
@@ -1391,7 +1397,14 @@ class $AssetsTifoImagesGen {
   AssetGenImage get penaltyPreview => const AssetGenImage('assets/tifo/images/penalty_preview.png');
 
   /// List of all assets
-  List<dynamic> get values => [ball, illustrationError, illustrationErrorDark, penaltyPreview];
+  List<dynamic> get values => [
+    ball,
+    championRibbonConfetti,
+    championTrophy,
+    illustrationError,
+    illustrationErrorDark,
+    penaltyPreview,
+  ];
 }
 
 class $AssetsTifoModelsGen {

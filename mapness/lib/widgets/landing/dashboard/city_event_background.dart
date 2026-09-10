@@ -25,13 +25,20 @@ class CityEventBackground extends StatelessWidget {
       builder: (context, state, interpolation, child) => Padding(
         padding: EdgeInsets.only(top: state == ThreeStateSheet.hidden ? Spacing.$1x * (1 - interpolation) : 0),
         child: SizedBox(
-          height: (Spacing.$10x) * (state == ThreeStateSheet.hidden ? clampDouble(interpolation * 3, 0, 1) : 1.0),
+          height: config.bannerBoxHeight * (state == ThreeStateSheet.hidden ? clampDouble(interpolation * 3, 0, 1) : 1.0),
           width: double.infinity,
           child: Transform.translate(
             offset: Offset(0, config.verticalOffset),
-            child: SizedBox(
-              height: Spacing.$12x,
-              child: _EventBanner(config: config),
+            // The box above sets a tight height, which would otherwise squash
+            // the banner to it. Releasing the constraint lets a config draw
+            // taller than its box and tuck the surplus under the sheet.
+            child: OverflowBox(
+              alignment: Alignment.topCenter,
+              maxHeight: double.infinity,
+              child: SizedBox(
+                height: config.bannerDrawHeight ?? config.bannerBoxHeight,
+                child: _EventBanner(config: config),
+              ),
             ),
           ),
         ),
@@ -49,13 +56,20 @@ class _EventBanner extends StatelessWidget {
   Widget build(BuildContext context) {
     final formattedDate = config.getFormattedDate(context);
 
+    const shape = BorderRadius.vertical(top: Radius.circular(RadiusBorder.xl));
+    final overlay = config.backgroundOverlay(context);
+
     return DecoratedBox(
-      decoration: BoxDecoration(
-        borderRadius: const BorderRadius.vertical(top: Radius.circular(RadiusBorder.xl)),
-        color: config.getBackgroundColor(context),
-      ),
-      child: Align(
-        alignment: const Alignment(1, -0.2),
+      decoration: BoxDecoration(borderRadius: shape, color: config.getBackgroundColor(context)),
+      child: Stack(
+        fit: StackFit.passthrough,
+        children: [
+          // Sits over the flat colour and under the text. Clipped to the
+          // banner's own rounded top, which the DecoratedBox only applies to
+          // its decoration — a child would otherwise paint over the corners.
+          if (overlay != null) Positioned.fill(child: ClipRRect(borderRadius: shape, child: overlay)),
+          Align(
+        alignment: config.textAlignment,
         child: Padding(
           padding: const EdgeInsets.only(right: Spacing.$4x),
           child: formattedDate != null
@@ -87,6 +101,10 @@ class _EventBanner extends StatelessWidget {
                     final style = context.textStyles.captionLargeSemiBold.copyWith(
                       color: context.colors.successOnSuccess,
                     );
+                    final wordmark = config.trailingWordmark;
+                    if (wordmark == null) {
+                      return Text(config.getText(context.l10n), style: style);
+                    }
                     return Row(
                       textDirection: TextDirection.rtl,
                       children: [
@@ -100,7 +118,7 @@ class _EventBanner extends StatelessWidget {
                           style: style,
                         ),
                         Text(
-                          'LEAP 2026',
+                          wordmark,
                           textDirection: TextDirection.rtl,
                           style: style,
                         ),
@@ -108,7 +126,9 @@ class _EventBanner extends StatelessWidget {
                     );
                   },
                 ),
-        ),
+            ),
+          ),
+        ],
       ),
     );
   }
