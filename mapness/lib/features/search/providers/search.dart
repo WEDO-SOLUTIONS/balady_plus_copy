@@ -284,6 +284,9 @@ class Search extends _$Search {
       extras: {'value': query},
     );
     _searchQueryDebounce?.cancel();
+    // A fresh keystroke must cancel the 1s BSA-1931 fallback armed for an older,
+    // partial query — otherwise it fires searchByText() mid-typing.
+    _fullSearchTimer?.cancel();
 
     if (query.isEmpty) {
       clear();
