@@ -110,7 +110,10 @@ class DgisMapView(
                 java.util.EnumSet.noneOf(ru.dgis.sdk.navigation.SoundCategory::class.java)
         }
     }
-    private val navigationHandler by unsafeLazy {
+    // Held as the Lazy itself, not just its value: `dispose` has to know whether the
+    // handler was ever created before touching it, and `by unsafeLazy { ... }` alone
+    // gives no way to ask — reading the delegated property would construct it.
+    private val navigationHandlerLazy = unsafeLazy {
         NavigationHandler(
                 sdkContext = sdkContext,
                 navigationManager = navigationManager,
@@ -119,6 +122,7 @@ class DgisMapView(
                 appContext = context,
         )
     }
+    private val navigationHandler by navigationHandlerLazy
     private val packagesHandler by unsafeLazy {
         PackagesHandler(
                 sdkContext = sdkContext,
@@ -171,6 +175,12 @@ class DgisMapView(
         (context.applicationContext as? Application)
                 ?.unregisterActivityLifecycleCallbacks(lifecycleCallbacks)
         soundUpdateJob?.cancel()
+        // The navigation handler subscribes to the shared NavigationManager's channels;
+        // it must be closed before the map, otherwise a late state event (e.g. FINISHED)
+        // touches the already-closed map and crashes with "Access to closed Java object".
+        if (navigationHandlerLazy.isInitialized()) {
+            navigationHandler.close()
+        }
         map?.close()
         routeHandler?.close()
         zoomControlHandler?.close()
