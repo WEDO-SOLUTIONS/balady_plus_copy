@@ -181,11 +181,6 @@ class TifoHelpControl extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // Until the control has been tapped once it wears the designed animation,
-    // so a first-time player notices the tour exists. While the persisted flag
-    // is still loading, assume it HAS been tapped: that is the common case, and
-    // guessing the other way would flash the highlight at returning players.
-    final tapped = ref.watch(tifoTutorialControlTappedProvider).value ?? true;
     final dark = tifoIsDarkTheme(context);
     final label = AppLocalizations.of(context).gameTutorial;
 
@@ -194,7 +189,10 @@ class TifoHelpControl extends ConsumerWidget {
       // this button; the key is how [TifoSpotlight] finds where it landed.
       key: tifoHelpControlKey,
       semanticsLabel: label,
-      background: tapped ? null : _Highlight(dark: dark),
+      // Always worn, tapped or not: the control is meant to read as the live
+      // green game button for the whole time the TIFO layer is on, not just
+      // until a first-time player has noticed it.
+      background: _Highlight(dark: dark),
       onTap: () => unawaited(_open(context, ref)),
       child: SizedBox(
         width: _labelWidth,
@@ -205,18 +203,20 @@ class TifoHelpControl extends ConsumerWidget {
           // ellipsises rather than overflowing the map control.
           maxLines: 2,
           overflow: TextOverflow.ellipsis,
-          // The animation bakes the same ink as `foregroundDefault` — #161616
-          // in its light variant, white in its dark one — so the live label
-          // matches the artwork it replaced.
-          style: TifoText.captionMedium.copyWith(color: !tapped ? Colors.white : context.colors.foregroundDefault),
+          // White in both variants: the label sits on the animation's green
+          // body, which `foregroundDefault` would not read against in light
+          // theme.
+          style: TifoText.captionMedium.copyWith(color: Colors.white),
         ),
       ),
     );
   }
 
-  /// Stamps the "seen" flag before opening the tour, so the highlight is
-  /// already gone when the player returns to the map — and stays gone across
-  /// restarts, since the flag is persisted.
+  /// Stamps the persisted "seen" flag before opening the tour.
+  ///
+  /// The flag no longer gates the animation — the control stays green either
+  /// way — but it still records that this player has opened the tour, which is
+  /// what a future first-run treatment would key off.
   Future<void> _open(BuildContext context, WidgetRef ref) async {
     await ref.read(tifoTutorialControlTappedProvider.notifier).markTapped();
     if (!context.mounted) {
@@ -226,9 +226,9 @@ class TifoHelpControl extends ConsumerWidget {
   }
 }
 
-/// The designed "gold and ivory" animation worn by an un-tapped control:
-/// ivory and gold waves breathing in counter-phase over a green body, on a
-/// seamless six-second loop.
+/// The designed "gold and ivory" animation worn by [TifoHelpControl]: ivory
+/// and gold waves breathing in counter-phase over a green body, on a seamless
+/// six-second loop. Runs for as long as the control is on screen.
 ///
 /// Shipped as the design's own Lottie rather than rebuilt as a Flutter
 /// gradient — the earlier hand-rolled sheen could only approximate its timing.
