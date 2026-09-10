@@ -22,11 +22,6 @@ class CameraWidget extends StatefulWidget {
 class _CameraWidgetState extends State<CameraWidget> with WidgetsBindingObserver {
   late CameraBloc bloc;
 
-  // Raised when the lifecycle handler disposed an initialized camera, so
-  // resume knows to re-create it (the controller reference itself is nulled
-  // by disposeCamera and can no longer serve as that signal).
-  bool _reinitCameraOnResume = false;
-
   @override
   void initState() {
     super.initState();
@@ -43,16 +38,23 @@ class _CameraWidgetState extends State<CameraWidget> with WidgetsBindingObserver
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     try {
-      if (state == AppLifecycleState.inactive || state == AppLifecycleState.paused) {
+      if (state == AppLifecycleState.inactive) {
+        // Transient: Control Center, a notification banner, the app switcher.
+        // These never take the camera away, and a teardown here costs seconds
+        // of black preview on the way back - freeze the preview instead.
+        bloc.pausePreview();
+      } else if (state == AppLifecycleState.paused || state == AppLifecycleState.hidden) {
         final controller = bloc.cameraController;
         if (controller != null && controller.value.isInitialized) {
-          _reinitCameraOnResume = true;
           bloc.disposeCamera();
         }
       } else if (state == AppLifecycleState.resumed) {
-        if (_reinitCameraOnResume) {
-          _reinitCameraOnResume = false;
+        // No live controller means the background teardown ran, or an earlier
+        // re-init failed - so every resume doubles as the retry.
+        if (bloc.cameraController == null) {
           bloc.add(OnNewCameraSelected());
+        } else {
+          bloc.resumePreview();
         }
       }
     } catch (error, stackTrace) {
