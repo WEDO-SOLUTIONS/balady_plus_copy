@@ -8,6 +8,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/_features/common/providers/network_status.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
+import 'package:mapness/entities/routing/route_params_point.dart';
+import 'package:mapness/entities/routing/route_point.dart';
 import 'package:mapness/features/app_analytics/app_analytics.dart';
 import 'package:mapness/features/city_by_location/city_by_location.dart';
 import 'package:mapness/features/search/models/search_scope.dart';
@@ -230,7 +232,30 @@ class _MapSearchContentState extends ConsumerState<NaviSearchContent> {
       FocusManager.instance.primaryFocus?.unfocus();
     }
 
-    await context.router.push(const RoutingMapSelectRoute());
+    final result = await context.router.push(const RoutingMapSelectRoute());
+    if (!context.mounted || result is! RoutePoint || result.latitude == null || result.longitude == null) {
+      return;
+    }
+
+    final points = [
+      RouteParamsPointWithLabel(value: null, label: context.l10n.myLocation),
+      RouteParamsPointWithLabel(
+        value: RouteParamsPoint(
+          latitude: result.latitude!,
+          longitude: result.longitude!,
+          objectId: result.objectId,
+          entranceId: result.entranceId,
+          levelId: result.levelId,
+        ),
+        label: result.title(context.l10n) ?? '',
+      ),
+    ];
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!context.mounted) {
+        return;
+      }
+      context.router.push(RoutingRoutesRoute(points: points));
+    });
   }
 
   Future<void> _onYourLocationTap(BuildContext context, WidgetRef ref) async {

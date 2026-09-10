@@ -4,7 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/features/lifestyle_layers/providers/layers_controls.dart';
 import 'package:mapness/features/lifestyle_layers/providers/layers_state.dart' as layers_state;
+import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
+import 'package:mapness/features/balady_analytics/metrics.dart';
 import 'package:mapness/widgets/layers/layer_sliver_list.dart';
 import 'package:sliver_tools/sliver_tools.dart';
 
@@ -39,6 +41,12 @@ class BusDetailsContent extends ConsumerWidget {
                   AppButton.close(
                     onTap: () {
                       onPanelClose();
+                      Metrics.logEventAdvanced(
+                        MetricsConstants.layersKeys.exitIcon,
+                        group: MetricsConstants.layersTag,
+                        action: MetricAction.tap.toString(),
+                      );
+
                       layersControlsProviderNotifier.update(
                         layersWidgetType: LayersPanelType.layers,
                       );

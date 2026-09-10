@@ -15,7 +15,7 @@ final List<StoryData> mockStories = [
       StoryFrameData(
         storyId: 'mbc-001',
         // Local asset for full-screen frame
-        imageUrl: 'assets/images/explore_mbc.png',
+        imageUrl: 'assets/images/explore_mbc.webp',
         isAssetImage: true,
         duration: 8,
       ),
@@ -44,7 +44,7 @@ final List<StoryData> mockStories = [
       StoryFrameData(
         storyId: 'mbc-002',
         // Local asset for full-screen frame
-        imageUrl: 'assets/images/explore_mbc.png',
+        imageUrl: 'assets/images/explore_mbc.webp',
         isAssetImage: true,
         duration: 8,
       ),

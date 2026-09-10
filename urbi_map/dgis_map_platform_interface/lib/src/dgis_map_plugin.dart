@@ -14,6 +14,7 @@ import 'package:dgis_map_platform_interface/src/control_handlers/object_tap_even
 import 'package:dgis_map_platform_interface/src/control_handlers/package_handler.dart';
 import 'package:dgis_map_platform_interface/src/control_handlers/public_transport_event_handler.dart';
 import 'package:dgis_map_platform_interface/src/control_handlers/traffic_and_parking_event_handler.dart';
+import 'package:dgis_map_platform_interface/src/control_handlers/tunnel_state_event_handler.dart';
 import 'package:dgis_map_platform_interface/src/control_handlers/visible_rect_event_handler.dart';
 import 'package:dgis_map_platform_interface/src/control_handlers/zoom_event_handler.dart';
 import 'package:dgis_map_platform_interface/src/events/object_tap_events.dart';
@@ -52,6 +53,7 @@ class DgisMapPlugin extends FlutterMapApi {
   late final _naviManeuverEventHandler = ManeuverEventHandler();
   late final _trafficAndParkingStateEventHandler = TrafficAndParkingEventHandler();
   late final _packagesHandler = PackageEventHandler();
+  late final _tunnelStateEventHandler = TunnelStateEventHandler();
 
   /// Zoom control enabled events stream.
   Stream<ZoomControlEnabledEvent> get zoomControlEnabledEvents => _zoomEventHandler.zoomControlEnabledEvents;
@@ -148,6 +150,12 @@ class DgisMapPlugin extends FlutterMapApi {
   /// Route options events stream.
   Stream<RouteOptionsEvent> get routeOptionsEvent => _navigationEventHandler.routeOptionEvents;
 
+  /// Tunnel enter/leave events on the active navigation route.
+  Stream<TunnelStateEvent> get tunnelStateEvents => _tunnelStateEventHandler.tunnelStateEvents;
+
+  /// Whether the last event reported the vehicle as being inside a tunnel.
+  bool get isInTunnel => _tunnelStateEventHandler.isInTunnel;
+
   /// isInitialized getter.
   bool get isInitialized => _isInitialized;
 
@@ -190,6 +198,7 @@ class DgisMapPlugin extends FlutterMapApi {
     await _naviManeuverEventHandler.dispose();
     await _trafficAndParkingStateEventHandler.dispose();
     await _publicTransportEventHandler.dispose();
+    await _tunnelStateEventHandler.dispose();
   }
 
   /// On zoom action event.
@@ -321,6 +330,8 @@ class DgisMapPlugin extends FlutterMapApi {
           return _packagesHandler.packageProgressEvent(map);
         case PackageInfoChangedEvent.name:
           return _packagesHandler.packageInfoChangedEvent(map);
+        case TunnelStateEvent.name:
+          return _tunnelStateEventHandler.tunnelStateChanged(map);
       }
     });
   }
@@ -338,6 +349,12 @@ class DgisMapPlugin extends FlutterMapApi {
   /// Load styles from asset.
   Future<void> loadStyles(String asset) {
     return _api.loadStyles(asset);
+  }
+
+  /// Load styles from an absolute filesystem path (e.g. a repacked `.2gis`
+  /// written to the app's support/cache directory).
+  Future<void> loadStylesFromPath(String absolutePath) {
+    return _api.loadStylesFromPath(absolutePath);
   }
 
   /// Override locales.
@@ -427,6 +444,12 @@ class DgisMapPlugin extends FlutterMapApi {
   /// Get current camera position.
   Future<CameraPositionMessage> getCameraPosition() {
     return _api.getCameraPosition();
+  }
+
+  /// Swap the navigation-cursor 3D model on the live map (raw GLB bytes).
+  /// See `MapApi.setNavigationCursorModel`.
+  Future<void> setNavigationCursorModel(Uint8List glb) {
+    return _api.setNavigationCursorModel(glb);
   }
 
   /// Get nearest objects.

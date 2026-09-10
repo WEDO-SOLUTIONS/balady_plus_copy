@@ -26,7 +26,7 @@ class CityEventDateRange extends Equatable {
   /// until the backend actually ships its own `tifoDateRange` value.
   factory CityEventDateRange.tifoDefault() =>
       CityEventDateRange(DateTime(2026, 8, 12), DateTime(2026, 10, 31, 23, 59, 59));
-
+      
   factory CityEventDateRange.fromJson(Map<String, dynamic>? json, CityEventDateRange defaults) {
     try {
       final fromValue = json?['from'] as String?;

@@ -8,7 +8,6 @@
 "tripPreviewMoreRoutesButton" = "Route Options";
 "tripPreviewBackButton" = "Back";
 "tripFinishedAlertTitle" = "You arrived";
-"tripFinishedAlertEndTripButton" = "End trip";
 "tripFinishedAlertNewRouteButton" = "New route";
 "searchScreenGridHistory" = "History";
 "keyboardSearchScreenEmptyPlaceholderTitle" = "Nothing was found";
@@ -22,11 +21,13 @@
 "settingsScreenSound" = "Sound";
 "settingsScreenParking" = "Parking";
 "navigationRerouting" = "Rerouting…";
+"gpsSignalLost" = "GPS signal lost";
 "quickFilterEatOut" = "Eat out";
 "quickFilterMosques" = "Mosques";
 "quickFilterMarkets" = "Market";
 "quickFilterHotels" = "Hotels";
 "quickFilterFuel" = "Fuel";
+"quickFilterSearchScreenLoadMoreTitle" = "Show more results";
 "favouritesScreenTitle" = "Favourites";
 "favouritesScreenBackButton" = "Search";
 "favouritesScreenLoadingPlaceholder" = "Loading";
@@ -37,3 +38,4 @@
 "favouritesScreenItemSubtitlePlaceholder" = "Add an address in your phone";
 "favouritesScreenPlaceholderEmptyTitle" = "There's nothing here yet";
 "favouritesScreenPlaceholderEmptySubtitle" = "You can add your favorite places through Balady+ app on your phone";
+"baladyMaps" = "Balady+ Maps";

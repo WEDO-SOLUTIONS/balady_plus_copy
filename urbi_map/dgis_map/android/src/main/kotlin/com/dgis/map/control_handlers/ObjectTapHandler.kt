@@ -85,6 +85,8 @@ class ObjectTapHandler(
     private val modelDataCache = mutableMapOf<String, ModelData>()
 
     private var renderedObjectsCloseable: AutoCloseable? = null
+    private var overlayPoiCloseable: AutoCloseable? = null
+    private val overlayPoiSearchRadius = ScreenDistance(5F)
 
     fun objectTapListener(roi: RenderedObjectInfo) {
         //        when (val tappedObject = roi.item.item) {
@@ -99,14 +101,20 @@ class ObjectTapHandler(
         // supported", null)
         //        }
         // Dynamic-POI markers open the POI card on short tap (and update
-        // the selected-state). All other markers stay on the long-press-only
-        // contract introduced in iter4 — short taps on them fall through.
+        // the selected-state). The my-location object also reacts to short
+        // tap (BALADY-3764: opens Navigator Customization during guidance).
+        // All other markers stay on the long-press-only contract introduced
+        // in iter4 — short taps on them fall through.
         when (val tappedObject = roi.item.item) {
             is Marker -> {
                 val markerId = (tappedObject.userData as? MarkerId)?.id
                 if (markerId != null && markerId.startsWith("dynamic_poi_")) {
                     onMarkerTap(tappedObject)
                 }
+                return
+            }
+            is MyLocationMapObject -> {
+                sendDgisMyLocationEvent(roi.closestMapPoint)
                 return
             }
             is ModelMapObject -> {
@@ -168,7 +176,7 @@ class ObjectTapHandler(
                 val userData = tappedObject.userData
 
                 if (userData is PolylineId) {
-                    onPolylineTap(userData.id)
+                    dispatchPoiUnderOverlay(roi) { onPolylineTap(userData.id) }
                     return
                 }
             }
@@ -215,6 +223,29 @@ class ObjectTapHandler(
                 // POI tap (BALADY-3941).
             }
         }
+    }
+
+    private fun dispatchPoiUnderOverlay(roi: RenderedObjectInfo, onNoObjectFound: () -> Unit) {
+        val screenPoint = map.camera.projection.mapToScreen(roi.closestMapPoint)
+
+        if (screenPoint == null) {
+            onNoObjectFound()
+            return
+        }
+
+        overlayPoiCloseable =
+                map.getRenderedObjects(screenPoint, overlayPoiSearchRadius).apply {
+                    onResult { objects ->
+                        val poi = objects.firstOrNull { it.item.item is DgisMapObject }
+
+                        if (poi == null) {
+                            onNoObjectFound()
+                        } else {
+                            onDgisMapObjectTap(poi.item.item as DgisMapObject, poi)
+                        }
+                    }
+                    onError { onNoObjectFound() }
+                }
     }
 
     /// --- HELPERS ---
