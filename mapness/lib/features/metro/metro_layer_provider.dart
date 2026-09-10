@@ -28,10 +28,23 @@ class MetroLayer extends _$MetroLayer {
   };
 
   bool _disposed = false;
+
+  /// Bumped on every rebuild so a run started by the previous build aborts
+  /// instead of drawing through a ref that has already been torn down.
+  int _generation = 0;
   Future<void>? _showInFlight;
+  int _showInFlightGeneration = -1;
 
   @override
   Future<List<MetroLineModel>> build() async {
+    // onDispose callbacks registered in build() also run on every *rebuild*
+    // (element.dart _performRebuild/invalidateSelf), while the notifier
+    // instance itself is reused across rebuilds. Without this reset the flag
+    // latched true on the first rebuild (a theme change, or the map object
+    // manager being recreated) and every later showMetro() bailed out at once
+    // - the layer simply stopped drawing.
+    _disposed = false;
+    _generation++;
     ref
       ..onDispose(() => _disposed = true)
       ..watch(darkModeProvider)
@@ -73,23 +86,50 @@ class MetroLayer extends _$MetroLayer {
   /// switcher can all ask at once, and 7 sequential awaits x N overlapping
   /// runs is what turned one manager dispose into thousands of events.
   Future<void> showMetro() {
+    // Only coalesce into a run from the current build: one started before a
+    // rebuild aborts on its generation check, so handing it back to a fresh
+    // caller would silently drop that caller's request.
     final inFlight = _showInFlight;
-    if (inFlight != null) {
+    if (inFlight != null && _showInFlightGeneration == _generation) {
       return inFlight;
     }
-    final run = _showMetro().whenComplete(() => _showInFlight = null);
+    final generation = _generation;
+    final run = _showMetro().whenComplete(() {
+      if (_showInFlightGeneration == generation) {
+        _showInFlight = null;
+      }
+    });
     _showInFlight = run;
+    _showInFlightGeneration = generation;
     return run;
   }
 
   Future<void> _showMetro() async {
-    if (_disposed || state.hasValue == false || state.value == null || state.value?.isEmpty == true) {
+    final generation = _generation;
+    if (_disposed) {
+      return;
+    }
+
+    // The layer switcher calls showMetro() on the .notifier right after
+    // build() starts (compute()-isolate JSON parse still in flight), so
+    // `state` is still AsyncLoading here. Bailing out on state.hasValue used
+    // to drop that first tap silently and permanently: metroLayerVisibleProvider
+    // is only ever set at the end of this method, so build()'s own
+    // isMetroShown check never saw it become true either. Await the build's
+    // own future instead - it resolves with this same in-flight run once
+    // data lands (or throws, which we just swallow like the old bail-out did).
+    List<MetroLineModel> metroLines;
+    try {
+      metroLines = await future;
+    } catch (_) {
+      return;
+    }
+
+    if (_disposed || generation != _generation || metroLines.isEmpty) {
       return;
     }
 
     final zoom = ref.read(cameraPositionProvider)?.zoom.ceil();
-
-    final metroLines = state.value!;
 
     final mapManager = ref.read(
       mapObjectManagerProvider(
@@ -99,14 +139,14 @@ class MetroLayer extends _$MetroLayer {
     );
     final darkMode = await ref.read(darkModeProvider.future);
     final isDarkMode = darkMode.isDark;
-    if (_disposed) {
+    if (_disposed || generation != _generation) {
       return;
     }
 
     await mapManager.removeAllPolyLines();
 
     for (int i = 0; i < metroLines.length; i++) {
-      if (_disposed) {
+      if (_disposed || generation != _generation) {
         return;
       }
       final line = metroLines[i];
@@ -169,7 +209,7 @@ class MetroLayer extends _$MetroLayer {
       ]);
     }
 
-    if (_disposed) {
+    if (_disposed || generation != _generation) {
       return;
     }
     ref.read(metroLayerRepositoryProvider.notifier).showMetro();
