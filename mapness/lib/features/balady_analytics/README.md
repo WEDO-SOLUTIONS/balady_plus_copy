@@ -38,8 +38,9 @@ the module).
 | `dual` | work as before | facade events are sent to us |
 | `ours` | still work for now (not yet folded into the facade) | facade events are sent to us |
 
-Currently analytics is being validated on **`prod` only** (`prod` = `dual`, using
-the production PostHog project key); all other flavors stay `legacy`.
+Every flavor is `dual` today. `dev` and `prod` each have their own PostHog
+project; `stg`, `pre` and `urbiPre` share one project, so the `environment`
+session property (flavor name, set at startup) is what separates them there.
 
 ## Transport
 
