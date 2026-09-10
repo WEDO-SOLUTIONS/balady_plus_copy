@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:mapness/app/auto_route/app_routes.dart';
+import 'package:mapness/features/balady_analytics/events/tifo_events.dart';
 import 'package:mapness/features/tifo/team_select_screen.dart';
 import 'package:mapness/shared/utils/logger/logger.dart';
 import 'package:mapness/widgets/debug_overlay/debug_theme.dart';
@@ -55,7 +56,12 @@ class TifoScreensDebugPanel extends StatelessWidget {
     unawaited(
       navigator
           .push<bool>(
-            MaterialPageRoute<bool>(fullscreenDialog: true, builder: (_) => const TifoTeamSelectScreen()),
+            MaterialPageRoute<bool>(
+              fullscreenDialog: true,
+              builder: (_) => const TifoTeamSelectScreen(
+                source: TifoActivationSource.banner,
+              ),
+            ),
           )
           .then((result) => logger.log('[tifo][debug] team select popped: $result')),
     );
