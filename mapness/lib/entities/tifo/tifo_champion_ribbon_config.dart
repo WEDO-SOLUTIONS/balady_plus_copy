@@ -17,7 +17,8 @@ import 'package:mapness/entities/city_event/city_event.dart';
 ///   "from": "01-10-26",
 ///   "to": "31-10-26",
 ///   "color": "#161C31",
-///   "teamName": "Black Team",
+///   "teamName": "AL SHABAB",
+///   "teamNameAr": "الشباب",
 ///   "month": 9,
 ///   "year": 2026
 /// }
@@ -30,6 +31,7 @@ class TifoChampionRibbonConfig extends Equatable {
     required this.teamName,
     required this.month,
     required this.year,
+    this.teamNameAr,
   });
 
   /// Nothing to show — what the app falls back to when Remote Config carries
@@ -74,12 +76,14 @@ class TifoChampionRibbonConfig extends Equatable {
     }
     final json = raw.cast<String, dynamic>();
     try {
-      final teamName = (json['teamName'] as String?)?.trim();
+      final teamName = _readName(json['teamName']);
       final month = (json['month'] as num?)?.toInt();
       final year = (json['year'] as num?)?.toInt();
       // A partial payload has no sentence to render — better absent than a
-      // ribbon reading " -  Champions!".
-      if (teamName == null || teamName.isEmpty || month == null || year == null) {
+      // ribbon reading " -  Champions!". `teamNameAr` is NOT required: it only
+      // overrides one language, and an environment configured before it existed
+      // has to keep working.
+      if (teamName == null || month == null || year == null) {
         return TifoChampionRibbonConfig.absent();
       }
       return TifoChampionRibbonConfig(
@@ -94,6 +98,7 @@ class TifoChampionRibbonConfig extends Equatable {
         window: CityEventDateRange.fromJson(json, _absentWindow()),
         color: parseColor(json['color'] as String?) ?? defaultColor,
         teamName: teamName,
+        teamNameAr: _readName(json['teamNameAr']),
         month: month.clamp(1, 12),
         year: year,
       );
@@ -120,7 +125,22 @@ class TifoChampionRibbonConfig extends Equatable {
   /// overlay would fight whatever it sends.
   final Color color;
 
+  /// The team's name, rendered as-is. Also the default for Arabic when
+  /// [teamNameAr] is not configured.
+  ///
+  /// Doubles as the lookup the confetti palette is resolved from
+  /// (`TifoChampionConfetti.forTeamName`), which is why it stays the free-form
+  /// string the backend already sends (`"AL SHABAB"`, `"Blue Team"`,
+  /// `"blue-team"`) rather than becoming a translation key.
   final String teamName;
+
+  /// Arabic reading of [teamName], substituted verbatim under an Arabic locale.
+  ///
+  /// Remote Config owns the translation because the app cannot produce one: it
+  /// ships Arabic only for the five colour teams, so a real club
+  /// ("AL SHABAB") used to stay Latin for an Arabic reader. Null when the key
+  /// is absent, empty or blank — then [teamName] is used in both languages.
+  final String? teamNameAr;
 
   /// Month and year the team won, as numbers.
   ///
@@ -140,6 +160,20 @@ class TifoChampionRibbonConfig extends Equatable {
 
   /// The month's name in [locale]'s language.
   String monthName(Locale locale) => DateFormat.MMMM(locale.toLanguageTag()).format(DateTime(year, month));
+
+  /// The team's name for [locale] — [teamNameAr] under Arabic, [teamName]
+  /// otherwise. Substituted as sent; the app does not translate it.
+  String nameFor(Locale locale) => (locale.languageCode == 'ar' ? teamNameAr : null) ?? teamName;
+
+  /// Trims a name and treats blank as absent, so a key left empty in Remote
+  /// Config reads as "not configured" rather than as an empty label.
+  static String? _readName(Object? value) {
+    if (value is! String) {
+      return null;
+    }
+    final trimmed = value.trim();
+    return trimmed.isEmpty ? null : trimmed;
+  }
 
   /// Parses `#RRGGBB` or `#AARRGGBB`, with or without the leading `#`.
   /// Returns null on anything else so the caller can fall back rather than
@@ -165,5 +199,5 @@ class TifoChampionRibbonConfig extends Equatable {
       CityEventDateRange(DateTime.utc(1970), DateTime.utc(1970), enabled: false);
 
   @override
-  List<Object?> get props => [enabled, window, color, teamName, month, year];
+  List<Object?> get props => [enabled, window, color, teamName, teamNameAr, month, year];
 }
