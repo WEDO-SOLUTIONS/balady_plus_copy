@@ -44,13 +44,11 @@ import 'package:sheetify/sheetify.dart';
 class MapSearchSheet extends ConsumerStatefulWidget {
   final bool requestFocus;
   final bool withClustering;
-  final double biggestHeight;
   final Expansion? expansion;
   final String? initialState;
 
   const MapSearchSheet({
     required this.withClustering,
-    required this.biggestHeight,
     required this.requestFocus,
     this.expansion,
     super.key,

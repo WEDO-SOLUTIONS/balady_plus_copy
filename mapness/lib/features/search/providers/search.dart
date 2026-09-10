@@ -119,6 +119,15 @@ class Search extends _$Search {
 
   @override
   SearchState build(String scope) {
+    // Closing the search sheet disposes this autoDispose notifier while an
+    // in-flight suggest / fallback timer may still be pending; cancel them so
+    // they can't write `state` on a dead notifier.
+    ref.onDispose(() {
+      _searchOperation?.cancel();
+      _fullSearchTimer?.cancel();
+      _fullSearchTimer = null;
+    });
+
     if (_result != null && _previousQuery != null) {
       return SearchStateResults(results: _result!, searchText: _previousQuery!);
     }
@@ -347,12 +356,21 @@ class Search extends _$Search {
 
   Future<void> fetchSuggest(String query) async {
     try {
+      if (!ref.mounted) {
+        return;
+      }
       await _searchOperation?.cancel();
+      if (!ref.mounted) {
+        return;
+      }
       if (query.isEmpty) {
         state = const SearchStateHistory();
         return;
       }
       await _setUpLocale(query);
+      if (!ref.mounted) {
+        return;
+      }
 
       _updateSearchText(query);
       _previousType = SearchType.fetchSuggest;
@@ -394,6 +412,9 @@ class Search extends _$Search {
       );
       _searchOperation = searchOperation;
       final result = await searchOperation.value;
+      if (!ref.mounted) {
+        return;
+      }
       // BSA-1931: We need to start full search if we don't get any results
       // and user types more than 2 symbols
       if (result.suggests.isNotEmpty) {
@@ -423,7 +444,9 @@ class Search extends _$Search {
       await mixpanel?.track('Search: fetchSuggest');
       // -- Analytics
     } on Exception catch (_) {
-      state = SearchStateError(searchText: query);
+      if (ref.mounted) {
+        state = SearchStateError(searchText: query);
+      }
       rethrow;
     }
     _searchInThisAreaMetric();

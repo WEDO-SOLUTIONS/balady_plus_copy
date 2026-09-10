@@ -44,8 +44,9 @@ layout into non-normalized constraints.
 | `lib/toggle_sheet/render_toggle_sheet.dart` | `avaliableHeight` clamped to `>= 0` so a collapsed viewport cannot produce `BoxConstraints(NOT NORMALIZED)` |
 | `lib/toggle_sheet/toggle_sheet_controller.dart` | `fraction` guarded against division by a zero `maxHeight`, clamped to `[0, 1]` |
 | `lib/multi_state_sheet/multi_state_sheet_controller.dart` | `fraction` guarded against division by a zero `viewportHeight`, clamped to `[0, 1]` |
+| `lib/multi_state_sheet/state_snapping/behaviors/snapping_behavior.dart` | `stateToIndex` clamped to the offsets-list bounds: the deduplicated `snappingOffsets` set can transiently hold fewer entries than the sheet has states, and the negative index used to reach `elementAtOrNull`, which throws `RangeError` (crashed layout in release; the removed assert fired for the same legitimate geometry). Regression test: `test/bugfixes/balady_3914_snapping_state_clamp_test.dart` in the repo root |
 
-Every patch is marked with `BALADY-3755` in a comment at the site.
+Every patch is marked with its ticket ID (`BALADY-3755`, `BALADY-3914`) in a comment at the site.
 
 ## Keeping the toolchain off this code
 
