@@ -1,7 +1,6 @@
 import 'package:balady_uikit/balady_uikit.dart' show ConfettiGeneratorConfig, ShiningShape;
 import 'package:flutter/material.dart';
 import 'package:mapness/features/tifo/data/tifo_models.dart';
-import 'package:mapness/l10n/generated/app_localizations.dart';
 
 /// Per-club confetti for the champions ribbon.
 ///
@@ -26,21 +25,6 @@ abstract final class TifoChampionConfetti {
   /// has never heard of still gets a burst.
   static ConfettiGeneratorConfig forTeamName(String? teamName) =>
       _config(_palettes[tifoResultColorKeyFor(teamName)] ?? _neutral);
-
-  /// Localised club name for [teamName], or the string itself when it matches
-  /// no known club.
-  ///
-  /// Remote Config sends the name in one language only, so a matched club is
-  /// rendered from its own translation instead — otherwise an Arabic reader
-  /// would see "Black Team" inside an otherwise Arabic sentence.
-  static String localisedTeamName(AppLocalizations l10n, String teamName) => switch (tifoResultColorKeyFor(teamName)) {
-    'black' => l10n.blackTeam,
-    'blue' => l10n.blueTeam,
-    'red' => l10n.redTeam,
-    'sand' => l10n.sandTeam,
-    'yellow' => l10n.yellowTeam,
-    _ => teamName,
-  };
 
   /// The club's own colour, for a ribbon body that has to stand in for one.
   ///
