@@ -107,6 +107,11 @@ dependencies:
   sliver_tools: 0.2.12
   json_annotation: 4.9.0
   photo_view: 0.15.0
+  # Renders the tutorial's long-press coaching animation (Lottie JSON).
+  # The pre-existing assets/icons/lottie file is NOT drawn by Flutter — it is
+  # handed to the native map SDK as an animated marker — so nothing shipped a
+  # Lottie renderer until now.
+  lottie: ^3.3.1
   flutter_staggered_grid_view: 0.7.0
   app_links: ^7.0.0
   quick_actions: ^1.1.0
