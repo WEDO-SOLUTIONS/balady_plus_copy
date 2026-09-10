@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mapness/_generated/assets/assets.gen.dart';
 import 'package:mapness/entities/tifo/tifo_champion_ribbon_config.dart';
-import 'package:mapness/features/tifo/ui/tifo_champion_confetti.dart';
 import 'package:mapness/l10n/generated/app_localizations.dart';
 import 'package:mapness/widgets/landing/dashboard/city_event_background.dart';
 import 'package:mapness/widgets/landing/dashboard/city_event_config.dart';
@@ -71,8 +70,8 @@ class _ChampionRibbonConfig extends CityEventConfig {
   final TifoChampionRibbonConfig ribbon;
 
   /// Held rather than read from a `BuildContext` because [getText] is handed
-  /// only an [AppLocalizations], and the month has to be named in the reader's
-  /// language.
+  /// only an [AppLocalizations], while both the month and the team's own
+  /// `teamName`/`teamNameAr` are picked by locale, not from the l10n bundle.
   final Locale locale;
 
   @override
@@ -80,9 +79,11 @@ class _ChampionRibbonConfig extends CityEventConfig {
 
   @override
   String getText(AppLocalizations l10n) => l10n.tifoChampionRibbon(
-    // A club the app recognises is named from its own translation; anything
-    // else falls back to the string Remote Config sent.
-    _isolate(TifoChampionConfetti.localisedTeamName(l10n, ribbon.teamName)),
+    // Substituted as Remote Config sent it — `teamName`, or `teamNameAr` under
+    // an Arabic locale. The app deliberately does not translate the name: it
+    // only ever had Arabic for the five colour teams, so anything else came out
+    // Latin, and guessing a club from a colour substring got it wrong besides.
+    _isolate(ribbon.nameFor(locale)),
     _isolate(ribbon.monthName(locale)),
     _isolate(ribbon.year.toString()),
   );
