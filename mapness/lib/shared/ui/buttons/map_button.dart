@@ -13,10 +13,12 @@ class MapButton extends StatefulWidget {
     this.height = defaultSize,
     bool? disabled,
     BorderRadius? borderRadius,
+
     /// Paints the button body instead of the flat on-map surface, clipped to
     /// the button's radius. The ink ripple still draws on top, so a button
     /// with a custom body reacts like any other.
     this.background,
+
     /// When set, screen readers announce this label for the map control (icon stays decorative).
     this.semanticsLabel,
     super.key,
@@ -38,9 +40,7 @@ class MapButton extends StatefulWidget {
 class _MapButtonState extends State<MapButton> {
   @override
   Widget build(BuildContext context) {
-    final columnChild = widget.semanticsLabel != null
-        ? ExcludeSemantics(child: widget.child)
-        : widget.child;
+    final columnChild = widget.semanticsLabel != null ? ExcludeSemantics(child: widget.child) : widget.child;
 
     final background = widget.background;
 
@@ -61,7 +61,9 @@ class _MapButtonState extends State<MapButton> {
           // above only rounds itself, so an unclipped child would square off
           // the corners.
           if (background != null)
-            Positioned.fill(child: ClipRRect(borderRadius: widget.borderRadius, child: background)),
+            Positioned.fill(
+              child: ClipRRect(borderRadius: widget.borderRadius, child: background),
+            ),
           Material(
             borderRadius: widget.borderRadius,
             // A custom body replaces the flat surface, so the Material goes
