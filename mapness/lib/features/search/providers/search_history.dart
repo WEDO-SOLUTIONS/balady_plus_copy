@@ -43,7 +43,14 @@ class SearchHistory extends _$SearchHistory {
 
   Future<void> _load() async {
     await _initDataSource();
-    state = await _dataSource?.getSearchHistoryItems() ?? [];
+    // Tapping a search result calls put() and closes the sheet at once, so this
+    // autoDispose notifier is gone while the SDK round trip is still in flight
+    // and the write landed on a dead notifier (33k zone errors a week).
+    final items = await _dataSource?.getSearchHistoryItems() ?? [];
+    if (!ref.mounted) {
+      return;
+    }
+    state = items;
   }
 
   Future<void> put(SearchHistoryDirectoryObjectMessage item) async {
@@ -58,6 +65,9 @@ class SearchHistory extends _$SearchHistory {
 
   Future<void> clear() async {
     await _dataSource?.clear();
+    if (!ref.mounted) {
+      return;
+    }
     state = [];
   }
 }
