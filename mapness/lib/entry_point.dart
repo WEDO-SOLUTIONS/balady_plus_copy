@@ -783,6 +783,7 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> with Widg
         apiKey: RemoteConfig.baladyAnalyticsKey,
       ),
     );
+    BaladyAnalytics.instance.setSessionProperty('environment', RemoteConfig.env.name);
     // First legacy stream under the facade umbrella: events tracked with
     // channels: {..., urbi} keep flowing to balady-metrics.urbi.ae.
     BaladyAnalytics.instance.registerChannel(
