@@ -14,6 +14,8 @@ import 'package:mapness/features/favourites/providers/favourite_markers.dart';
 import 'package:mapness/features/founding_day/founding_day.dart';
 import 'package:mapness/features/lifestyle_layers/providers/layers_controls.dart';
 import 'package:mapness/features/thermal_monitor/thermal_monitor.dart';
+import 'package:mapness/features/tifo/providers/tifo_champion_ribbon.dart';
+import 'package:mapness/features/tifo/ui/tifo_champion_confetti.dart';
 import 'package:mapness/shared/lib/urbi_metrics_utils.dart';
 import 'package:mapness/shared/providers/map/camera_padding.dart';
 import 'package:mapness/shared/providers/map/object_manager.dart';
@@ -41,6 +43,13 @@ class _LandingPageState extends ConsumerState<LandingPage>
   ThreeStateSheet? get bottomSheetState => bottomSheetController?.state;
 
   ConfettiGeneratorConfig getConfettiConfig(BuildContext context) {
+    // A live champions ribbon takes the burst over any city event: the ribbon
+    // is what the player just tapped, and it celebrates a specific club, so
+    // the confetti wears that club's colours rather than the season's.
+    final champion = ref.read(tifoChampionRibbonProvider);
+    if (champion != null) {
+      return TifoChampionConfetti.forTeamName(champion.teamName);
+    }
     final color = ref.read(activeCityEventProvider)?.fireworkGradientColors;
     final colors = ref.read(activeCityEventProvider)?.fireworkGradientColors2;
     return ConfettiGeneratorConfig.confetti(
@@ -219,7 +228,11 @@ class _LandingPageState extends ConsumerState<LandingPage>
       ..watch(mapObjectManagerProvider(named: mappness.name, layerId: mappness.layerId).notifier)
       ..watch(mapObjectManagerProvider(named: metro.name, layerId: metro.layerId).notifier)
       ..watch(mapObjectManagerProvider(named: myLocation.name, layerId: myLocation.layerId).notifier)
-      ..watch(activeCityEventProvider);
+      ..watch(activeCityEventProvider)
+      // Subscribed, not just read: `getConfettiConfig` reads this below, and
+      // without a listener a change of champion never rebuilt the page — the
+      // burst kept the palette it was first built with.
+      ..watch(tifoChampionRibbonProvider);
 
     final confettiConfig = getConfettiConfig(context);
     final content = HajjWrapperListeners(
