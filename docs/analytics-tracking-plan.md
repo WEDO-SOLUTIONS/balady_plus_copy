@@ -171,8 +171,9 @@ Internal mini-app events are not forwarded (JS bridge forwarding — silenced).
 ### Session properties (attached to every event)
 
 `$app_version`, `$os` etc. are sent by the SDK. Via `setSessionProperty` we add:
-`environment` (flavor — duplicates the per-project split, saves us if a key is misused),
-`app_language`.
+`environment` (flavor: `dev`/`stg`/`pre`/`prod`/`urbiPre`, set at startup — implemented;
+it is the filter that separates `stg`/`pre`/`urbiPre` inside their shared PostHog
+project), `app_language` (still pending).
 
 ## Phase 1.5 — screen tracking (deferred: ~80% of event volume)
 

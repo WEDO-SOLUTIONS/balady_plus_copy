@@ -49,6 +49,11 @@ class App extends StatelessWidget {
         apiKey: RemoteConfig.baladyAnalyticsKey,
       ),
     );
+    try {
+      BaladyAnalytics.instance.setSessionProperty('environment', RemoteConfig.env.name);
+    } catch (_) {
+      // EnvType not registered yet — build() can run before DI setup.
+    }
 
     return MultiProvider(
       providers: [
