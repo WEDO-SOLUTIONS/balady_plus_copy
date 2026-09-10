@@ -24,7 +24,9 @@ import 'package:mapness/pages/landing/landing_state_mapper.dart';
 import 'package:mapness/pages/map_search/ui/map_search_bar.dart';
 import 'package:mapness/pages/map_search/ui/map_search_content_v2.dart';
 import 'package:mapness/pages/map_search/ui/map_search_controls.dart';
+import 'package:mapness/shared/constants/metrics_constants.dart' hide Search;
 import 'package:mapness/shared/extensions/markers_from_search.dart';
+import 'package:mapness/features/balady_analytics/metrics.dart';
 import 'package:mapness/shared/providers/analytic/bss_service.dart';
 import 'package:mapness/shared/providers/analytic/models/bss_request.dart';
 import 'package:mapness/shared/providers/analytic/models/extensions/directory_obj_ext.dart';
@@ -435,6 +437,11 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> with WidgetsBin
   }
 
   void onClose() {
+    Metrics.logEventAdvanced(
+      MetricsConstants.searchKeys.exitIcon,
+      group: MetricsConstants.searchTag,
+      action: MetricAction.tap.toString(),
+    );
     _removeAllMarkersAndPop();
   }
 

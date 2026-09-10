@@ -12,7 +12,9 @@ import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/entities/routing/route_params_point.dart';
 import 'package:mapness/entities/routing/route_point.dart';
 import 'package:mapness/l10n/generated/app_localizations.dart';
+import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
+import 'package:mapness/features/balady_analytics/metrics.dart';
 
 typedef ConfirmReorder = void Function(List<RouteParamsPointWithLabel> points);
 
@@ -154,6 +156,12 @@ class _ChangePathSheetState extends State<ChangePathSheet> {
   }
 
   void _onReorder(int oldIndex, int newIndex) {
+    Metrics.logEventAdvanced(
+      MetricsConstants.routesKeys.onReorder,
+      group: MetricsConstants.routesTag,
+      action: MetricAction.tap.toString(),
+    );
+
     /// According to the [ReorderableListView] documentation
     /// https://api.flutter.dev/flutter/material/ReorderableListView-class.html
     final currentIndex = newIndex > oldIndex ? newIndex - 1 : newIndex;
@@ -189,6 +197,16 @@ class _ChangePathSheetState extends State<ChangePathSheet> {
       return;
     }
     final l10n = widget.externalContext.l10n;
+
+    if (index != null) {
+      final isMyLocation = _isMyLocation(l10n, points[index]);
+      Metrics.logEventAdvanced(
+        MetricsConstants.routesKeys.changeLocation,
+        group: MetricsConstants.routesTag,
+        action: MetricAction.tap.toString(),
+        props: {'isMyLocation': isMyLocation},
+      );
+    }
 
     // Callback from the parent widget on tap
     widget.onTap();

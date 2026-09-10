@@ -43,10 +43,12 @@ import 'package:mapness/features/tifo/tifo_trip_rewards.dart';
 import 'package:mapness/pages/path_nav/path_nav_wrapper.dart';
 import 'package:mapness/pages/routing/route_details_sheet.dart';
 import 'package:mapness/shared/constants/constants.dart';
+import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/constants/navigation_constants.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/hooks/toggle_sheet_controller_hook.dart';
 import 'package:mapness/shared/lib/common_functions.dart' as cf;
+import 'package:mapness/features/balady_analytics/metrics.dart';
 import 'package:mapness/shared/providers/car_connection.dart';
 import 'package:mapness/shared/providers/location.dart';
 import 'package:mapness/shared/providers/map/camera_padding.dart';
@@ -742,6 +744,12 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
 
   // Show the route page after the trip is finished
   Future<void> _endTripAndBuildAnotherRoute() async {
+    Metrics.logEventAdvanced(
+      MetricsConstants.navigationKeys.endTripAndBuildAnother,
+      group: MetricsConstants.navigationTag,
+      action: MetricAction.tap.toString(),
+    );
+
     await _endTrip(
       action: () {
         if (context.mounted) {
@@ -759,6 +767,11 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
     // entirely on the root context.
     final arrivedTitle = context.l10n.youArrived;
 
+    Metrics.logEventAdvanced(
+      MetricsConstants.navigationKeys.endTripAndShowHome,
+      group: MetricsConstants.navigationTag,
+      action: MetricAction.tap.toString(),
+    );
     await ref.read(urbiAnalyticsProvider).track(MapnessConstants.analyticsTripStopped);
 
     await _endTrip(
@@ -784,6 +797,12 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
 
   // Show the feedback page after the trip is finished manually
   Future<void> _endTripAndShowFeedback(BuildContext ctx) async {
+    Metrics.logEventAdvanced(
+      MetricsConstants.navigationKeys.endTripAndShowHome,
+      group: MetricsConstants.navigationTag,
+      action: MetricAction.tap.toString(),
+    );
+
     await ref.read(urbiAnalyticsProvider).track(MapnessConstants.analyticsTripStopped);
 
     await _parkingCheck();
@@ -875,6 +894,11 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
 
   // Show the pause state
   Future<void> _onShowRoutePressed() async {
+    Metrics.logEventAdvanced(
+      MetricsConstants.navigationKeys.showRoute,
+      group: MetricsConstants.navigationTag,
+      action: MetricAction.tap.toString(),
+    );
     ref.read(parkingAutoenabledSheetProvider.notifier).showParkingAutoEnableSheet(value: false);
     sheetController.close();
 

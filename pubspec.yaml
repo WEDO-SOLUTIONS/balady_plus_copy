@@ -148,6 +148,7 @@ dependencies:
   # eliminate this after lazy-ass author update the package
   firebase_messaging: ^16.1.0
   firebase_analytics: ^12.1.0
+  flutter_uxcam: ^2.9.0
   carousel_slider: ^5.1.1
   add_2_calendar: ^3.0.1
   flutter_svg_provider:

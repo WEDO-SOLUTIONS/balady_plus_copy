@@ -339,8 +339,27 @@ class _ContentState extends ConsumerState<_PoiCardContent> with SingleTickerProv
                   closestPoint: widget.closestPoint,
                   bottomSheetController: _bottomSheetController,
                   data: widget.data,
-                  share: () => poiActions.share(objectId: widget.objectId, markerCoords: widget.closestPoint),
+                  share: () {
+                    Metrics.logEventAdvanced(
+                      MetricsConstants.poiKeys.share,
+                      group: MetricsConstants.poiTag,
+                      action: MetricAction.tap.toString(),
+                      props: {
+                        'object_id': widget.data.id?.objectId,
+                        'closest_point': '${widget.closestPoint?.latitude},${widget.closestPoint?.longitude}',
+                      },
+                    );
+
+                    return poiActions.share(objectId: widget.objectId, markerCoords: widget.closestPoint);
+                  },
                   callPhone: () {
+                    Metrics.logEventAdvanced(
+                      MetricsConstants.poiKeys.call,
+                      group: MetricsConstants.poiTag,
+                      action: MetricAction.tap.toString(),
+                      props: {'objectId': widget.objectId},
+                    );
+
                     final phoneNumbers = widget.data.getContactsInfoModels
                         .where((e) => e.type == ContactsInfoType.phone && e.value != null)
                         .toList();

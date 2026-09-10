@@ -7,7 +7,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/features/makkah_places/makkah_places_layer_provider.dart';
 import 'package:mapness/features/special_themes/core/special_theme_mode.dart';
 import 'package:mapness/features/special_themes/modes/mekkah_base/makkah_poi_constants.dart';
+import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
+import 'package:mapness/features/balady_analytics/metrics.dart';
 import 'package:mapness/shared/providers/dark_mode.dart';
 import 'package:mapness/widgets/landing/dashboard/national_flag.dart';
 import 'package:sheetify/sheetify.dart';
@@ -169,10 +171,9 @@ class SpecialThemeHeader extends ConsumerWidget {
     if (mode == SpecialThemeMode.nationalDay) {
       return Text(
         context.l10n.happy95thYears,
-        style:
-            balady_ctx.BuildContextExt(
-              context,
-            ).textStyles.bodySmallSemiBold.copyWith(
+        style: balady_ctx.BuildContextExt(
+          context,
+        ).textStyles.bodySmallSemiBold.copyWith(
               color: balady_ctx.BuildContextExt(context).colors.successOnSuccess,
             ),
         textAlign: TextAlign.center,
@@ -182,10 +183,9 @@ class SpecialThemeHeader extends ConsumerWidget {
     if (mode == SpecialThemeMode.ramadan) {
       return Text(
         context.l10n.ramadanDateRange('18 Feb', '19 Mar 2026'),
-        style:
-            balady_ctx.BuildContextExt(
-              context,
-            ).textStyles.bodySmallSemiBold.copyWith(
+        style: balady_ctx.BuildContextExt(
+          context,
+        ).textStyles.bodySmallSemiBold.copyWith(
               color: balady_ctx.BuildContextExt(context).colors.successOnSuccess,
             ),
         maxLines: 1,
@@ -256,6 +256,14 @@ class _MekkahQiblahIconState extends ConsumerState<_MekkahQiblahIcon> with Singl
   }
 
   void _handleTap() {
+    // Track header icon tap
+    Metrics.logEventAdvanced(
+      MetricsConstants.themesKeys.headerIconTapped,
+      group: MetricsConstants.themesTag,
+      action: MetricAction.tap.name,
+      props: {'theme': 'mekkahBase', 'icon': 'qiblah'},
+    );
+
     scaleController
       ..value = 0
       ..animateTo(1, curve: Curves.easeOut);
@@ -336,6 +344,14 @@ class _RamadanIconState extends ConsumerState<_RamadanIcon> with SingleTickerPro
   }
 
   void _handleTap() {
+    // Track header icon tap
+    Metrics.logEventAdvanced(
+      MetricsConstants.themesKeys.headerIconTapped,
+      group: MetricsConstants.themesTag,
+      action: MetricAction.tap.name,
+      props: {'theme': 'ramadan', 'icon': 'ramadan'},
+    );
+
     scaleController
       ..value = 0
       ..animateTo(1, curve: Curves.easeOut);
