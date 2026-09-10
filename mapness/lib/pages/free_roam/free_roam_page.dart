@@ -160,10 +160,9 @@ class FreeRoamPageState extends ConsumerState<FreeRoamPage> with WidgetsBindingO
     });
   }
 
-  /// System back (hardware button / edge swipe) has to end the free-roam
-  /// session the same way "End trip" does. Otherwise the native session keeps
-  /// running on Explore and the custom cursor leaks onto the dashboard
-  /// (BALADY-3772 regression, see BALADY-3924).
+  /// System back must end the free-roam session the same way "End trip" does;
+  /// otherwise the native session keeps running on Explore and the custom
+  /// cursor leaks onto the dashboard (BALADY-3772 regression).
   Future<void> _onPopInvoked(bool didPop, Object? result) async {
     if (didPop || _isEndingTrip) {
       return;
