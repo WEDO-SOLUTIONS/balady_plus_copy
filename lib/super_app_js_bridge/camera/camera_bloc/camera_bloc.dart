@@ -22,6 +22,11 @@ class CameraBloc extends Bloc<CameraEvent, CameraState> {
   CameraController? cameraController;
   bool initializingCamera = false;
 
+  /// Runs while a teardown is still in flight. dispose() in camera 0.12 awaits
+  /// the pending initialize before it closes the native session, so opening a
+  /// new one meanwhile blocks on the device until the old one is released.
+  Future<void>? _teardown;
+
   /// Drops the reference before disposing, so a rebuild can never hand a
   /// disposed controller to CameraPreview ("buildPreview() was called on a
   /// disposed CameraController"); the camera package keeps
@@ -29,7 +34,62 @@ class CameraBloc extends Bloc<CameraEvent, CameraState> {
   Future<void> disposeCamera() async {
     final controller = cameraController;
     cameraController = null;
-    await controller?.dispose();
+    if (controller == null) {
+      return;
+    }
+    final teardown = _disposeController(controller);
+    _teardown = teardown;
+    try {
+      await teardown;
+    } finally {
+      if (identical(_teardown, teardown)) {
+        _teardown = null;
+      }
+    }
+  }
+
+  /// Never completes with an error: the lifecycle callback fires this without
+  /// awaiting it, and _onNewCameraSelectedHandler awaits the same future.
+  Future<void> _disposeController(CameraController controller) async {
+    try {
+      await controller.dispose();
+    } on Object catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+    }
+  }
+
+  /// Freezes the preview on its last frame without releasing the camera, for
+  /// transient interruptions (Control Center, notification shade, the app
+  /// switcher) where a full teardown costs seconds and buys nothing.
+  Future<void> pausePreview() => _previewCall((controller) => controller.pausePreview());
+
+  Future<void> resumePreview() => _previewCall((controller) => controller.resumePreview());
+
+  /// The lifecycle callback is synchronous and cannot await these, so the
+  /// CameraException the camera package rethrows would land in the zone as an
+  /// unhandled error - the very flood this umbrella is closing.
+  Future<void> _previewCall(Future<void> Function(CameraController) call) async {
+    final controller = cameraController;
+    if (controller == null || !controller.value.isInitialized) {
+      return;
+    }
+    try {
+      await call(controller);
+    } on CameraException catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+    }
   }
 
   CameraBloc() : super(CameraState()) {
@@ -166,6 +226,11 @@ class CameraBloc extends Bloc<CameraEvent, CameraState> {
   }
 
   Future<void> _onNewCameraSelectedHandler(OnNewCameraSelected e, Emitter emitter) async {
+    // A resume can arrive while the previous re-init is still running (fast
+    // lock/unlock); two overlapping initialize() calls fight for the device.
+    if (initializingCamera) {
+      return;
+    }
     // The old controller is about to be (or already was) disposed - never
     // advertise it as initialized: a stale `true` here made the UI rebuild
     // CameraPreview with a dead controller.
@@ -182,6 +247,10 @@ class CameraBloc extends Bloc<CameraEvent, CameraState> {
     cameraController = null;
     try {
       await previous?.dispose();
+      // disposeCamera() already cleared the reference, so `previous` is null on
+      // the lifecycle path and the await above is a no-op - the teardown it
+      // started is the one that has to finish before the camera is free.
+      await _teardown;
       if (description == null) {
         emitter(state.copyWith(status: BlocStatus.failure));
         return;
@@ -190,8 +259,13 @@ class CameraBloc extends Bloc<CameraEvent, CameraState> {
       final CameraController controller = CameraController(description, ResolutionPreset.medium, enableAudio: false);
       cameraController = controller;
       initializingCamera = true;
-      await controller.initialize();
-      initializingCamera = false;
+      try {
+        await controller.initialize();
+      } finally {
+        // Never leave the flag latched: it now gates re-init, so a throwing
+        // initialize() would block every later attempt for good.
+        initializingCamera = false;
+      }
       controller.setFlashMode(FlashMode.off);
     } on CameraException catch (error, stackTrace) {
       LogsViewModel().sendEventFromModel(

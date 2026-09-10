@@ -235,6 +235,9 @@ class _MiniAppsHomeScreenState extends State<MiniAppsHomeScreen> {
                                                         child: ReorderableListView.builder(
                                                           scrollDirection: Axis.horizontal,
                                                           itemCount: state.favoriteApps.length,
+                                                          // reorderFavoriteApps de-adjusts newIndex itself, so
+                                                          // onReorderItem would shift it twice.
+                                                          // ignore: deprecated_member_use
                                                           onReorder: (oldIndex, newIndex) {
                                                             // Fires ~250ms after the drop; ctx may be defunct by then.
                                                             _miniAppsCubit.reorderFavoriteApps(oldIndex, newIndex);
