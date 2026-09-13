@@ -86,6 +86,7 @@ dependencies:
   expansion_widget: 0.1.0
   uuid: ^4.5.2
   qr_flutter: ^4.1.0
+  mobile_scanner: ^7.4.0
   rxdart: 0.28.0
   geolocator: ^14.0.2
   flutter_compass: ^0.8.1

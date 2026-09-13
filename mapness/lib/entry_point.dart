@@ -57,6 +57,7 @@ import 'package:mapness/features/favourites/data/models/favorite_cache_item.dart
 import 'package:mapness/features/favourites/mappers/favourite_item_mapper.dart';
 import 'package:mapness/features/favourites/providers/favourite_cache.dart';
 import 'package:mapness/features/founding_day/founding_day.dart';
+import 'package:mapness/features/friends_on_map/providers/invite_resolution_flow.dart';
 import 'package:mapness/features/leap/leap.dart';
 import 'package:mapness/features/lifestyle_layers/providers/layers_controls.dart';
 import 'package:mapness/features/makkah_places/makkah_places_layer_provider.dart';
@@ -1083,6 +1084,8 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> with Widg
           CommonFunctions.openMiniApp(serviceKey: params['key'].toString());
         }
         await router.push(MapnessServicesRoute());
+      } else if (url.pathSegments.length == 2 && url.pathSegments.first == 'invite') {
+        await _openInvite(url);
       } else if (url.path == '/parking') {
         _openParking();
       } else if (url.path == '/media') {
@@ -1175,6 +1178,16 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> with Widg
           context,
           callback: () => ref.read(appRouterProvider).push(const FavouritesRoute()),
         );
+  }
+
+  Future<void> _openInvite(Uri url) async {
+    final context = rootNavigatorKey.currentContext;
+    if (context == null || !context.mounted) {
+      return;
+    }
+    await ref
+        .read(authMethodsProvider.notifier)
+        .authAndOpen(context, callback: () => resolveInviteAndShowResult(context, ref, url.toString()));
   }
 
   Future<void> _openDirections({bool fromQuickAction = false}) async {
