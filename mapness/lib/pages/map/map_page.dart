@@ -11,6 +11,7 @@ import 'package:mapness/app/auto_route/app_routes.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/features/friends_on_map/models/friends_on_map_activation_status.dart';
 import 'package:mapness/features/friends_on_map/providers/friends_on_map_activated.dart';
+import 'package:mapness/features/friends_on_map/providers/friend_markers.dart';
 import 'package:mapness/features/friends_on_map/providers/friends_on_map_activation.dart';
 import 'package:mapness/features/friends_on_map/providers/friends_on_map_position_reporter.dart';
 import 'package:mapness/features/lifestyle_layers/providers/layers_controls.dart';
@@ -113,7 +114,11 @@ class _MapPageState extends ConsumerState<MapPage>
       // Friends on Map screen itself is open — MapPage is the
       // always-mounted root route, same rationale as the resume/revocation
       // wiring above.
-      ..watch(friendsOnMapPositionReporterProvider);
+      ..watch(friendsOnMapPositionReporterProvider)
+      // R-48/R-97: draws/clears friend markers whenever the friend list or
+      // the layer-visibility toggle changes — same "always-mounted root
+      // route" rationale as the position reporter above.
+      ..watch(friendMarkersProvider);
 
     final dgisController = ref.watch(dgisControllerProvider.notifier);
 

@@ -73,6 +73,9 @@ class MapObjectManagerSettings {
   factory MapObjectManagerSettings.eta() =>
       const MapObjectManagerSettings._(name: 'eta', layerId: MapObjectLayers.priorityLayerId);
 
+  factory MapObjectManagerSettings.friends() =>
+      const MapObjectManagerSettings._(name: 'friends', layerId: MapObjectLayers.priorityLayerId);
+
   factory MapObjectManagerSettings.jobs() =>
       const MapObjectManagerSettings._(name: 'jobs', layerId: MapObjectLayers.defaultLayerId);
 

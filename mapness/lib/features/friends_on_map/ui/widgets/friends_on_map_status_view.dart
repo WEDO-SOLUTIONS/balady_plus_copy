@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/features/friends_on_map/providers/friends_on_map_activation.dart';
+import 'package:mapness/features/friends_on_map/providers/friends_on_map_layer_visible.dart';
 import 'package:mapness/features/friends_on_map/providers/friends_on_map_paused.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 
@@ -79,10 +80,21 @@ class FriendsOnMapStatusView extends ConsumerWidget {
                   text: ContentRowTextOptions(title: context.l10n.friendsOnMapFriendsCta),
                 ),
                 ContentRow(
+                  isDividerEnabled: true,
                   text: ContentRowTextOptions(title: context.l10n.friendsOnMapPauseToggleLabel),
                   trailing: ContentRowToggleTrailingOptions(
                     value: ref.watch(friendsOnMapPausedProvider),
                     onChanged: (value) => ref.read(friendsOnMapPausedProvider.notifier).setPaused(paused: value),
+                  ),
+                ),
+                // R-97/R-98 (D-13 fallback): display-only — doesn't touch
+                // reporting, visibility rules, links, or notifications.
+                ContentRow(
+                  text: ContentRowTextOptions(title: context.l10n.friendsOnMapLayerToggleLabel),
+                  trailing: ContentRowToggleTrailingOptions(
+                    value: ref.watch(friendsOnMapLayerVisibleProvider),
+                    onChanged: (value) =>
+                        ref.read(friendsOnMapLayerVisibleProvider.notifier).setVisible(visible: value),
                   ),
                 ),
               ],

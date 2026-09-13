@@ -54,7 +54,22 @@ class FakeFriendRequestRepository implements FriendRequestRepository {
   Future<Friend> acceptRequest(String id) async {
     final request = _incomingRequests.firstWhere((r) => r.id == id);
     _incomingRequests.removeWhere((r) => r.id == id);
-    return Friend(id: request.id, displayName: request.displayName, profilePictureUrl: request.profilePictureUrl);
+    // Small deterministic offset from the same `_kingdomTower` landmark seed
+    // location `FakeFriendsRepository` uses (see its doc comment), so an
+    // accepted friend is immediately visible as a marker (R-48) too, not
+    // just the 3 seeded samples. Note: this offset can add up to ~0.0099
+    // degrees (~1.1km) depending on the request id's hash, which can land
+    // outside the default zoom-17 screen for some ids — not fixed here,
+    // out of scope for the "no markers visible" bug this coordinate anchor
+    // was fixing.
+    final offset = (request.id.hashCode.abs() % 100) / 10000;
+    return Friend(
+      id: request.id,
+      displayName: request.displayName,
+      profilePictureUrl: request.profilePictureUrl,
+      latitude: 24.712301 + offset,
+      longitude: 46.674175 + offset,
+    );
   }
 
   @override
