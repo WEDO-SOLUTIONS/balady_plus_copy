@@ -324,6 +324,11 @@ class AppRouter extends RootStackRouter {
           customRouteBuilder: RouteBuilders.cupertinoRouteBuilder,
         ),
         CustomRoute(
+          path: 'friend_requests',
+          page: FriendRequestsRoute.page,
+          customRouteBuilder: RouteBuilders.cupertinoRouteBuilder,
+        ),
+        CustomRoute(
           path: 'help_center',
           page: HelpCenterRoute.page,
           customRouteBuilder: RouteBuilders.cupertinoRouteBuilder,

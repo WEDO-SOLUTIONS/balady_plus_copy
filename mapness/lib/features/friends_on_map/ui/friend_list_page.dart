@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/_features/common/providers/ui_direction.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/features/friends_on_map/models/friend.dart';
+import 'package:mapness/features/friends_on_map/providers/friend_requests.dart';
 import 'package:mapness/features/friends_on_map/providers/friend_search_query.dart';
 import 'package:mapness/features/friends_on_map/providers/friends_list.dart';
 import 'package:mapness/features/friends_on_map/ui/widgets/friend_list_empty_state.dart';
@@ -13,10 +14,9 @@ import 'package:mapness/features/friends_on_map/ui/widgets/friend_list_item.dart
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 
 /// R-41/R-42/R-46: the friend list — header + count, search, empty state.
-/// Deliberately excludes the hub entry-point rows (requests, activity,
-/// shared lists, privacy, notifications) BR-05 of S-11 describes — none of
-/// those destinations exist yet, so a row for each is added when the
-/// destination itself lands, not before. See `friends_on_map/AGENTS.md`.
+/// R-36's requests entry point (below) is the first of BR-05's hub rows to
+/// actually land here — the rest (activity, shared lists, privacy,
+/// notifications) still don't exist. See `friends_on_map/AGENTS.md`.
 @RoutePage()
 class FriendListPage extends ConsumerWidget {
   const FriendListPage({super.key});
@@ -25,6 +25,7 @@ class FriendListPage extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final friendsAsync = ref.watch(friendsListProvider);
     final query = ref.watch(friendSearchQueryProvider);
+    final incomingRequestsAsync = ref.watch(incomingFriendRequestsProvider);
 
     return Directionality(
       textDirection: ref.watch(uiDirectionProvider),
@@ -44,11 +45,36 @@ class FriendListPage extends ConsumerWidget {
             ),
           ),
           body: SafeArea(
-            child: friendsAsync.when(
-              data: (friends) =>
-                  friends.isEmpty ? const FriendListEmptyState() : _buildList(context, ref, friends, query),
-              loading: () => const Center(child: CircularProgressIndicator()),
-              error: (_, _) => const FriendListEmptyState(),
+            child: Column(
+              children: [
+                // R-36: reachable regardless of whether the friend list
+                // itself is empty — pending requests are independent of
+                // current friend count. Shown only when any exist.
+                incomingRequestsAsync.maybeWhen(
+                  data: (requests) => requests.isEmpty
+                      ? const SizedBox.shrink()
+                      : ContentWrapper(
+                          color: context.colors.backgroundSurface1,
+                          children: [
+                            ContentRow(
+                              onTap: () => context.router.push(const FriendRequestsRoute()),
+                              text: ContentRowTextOptions(
+                                title: context.l10n.friendListRequestsRow(requests.length),
+                              ),
+                            ),
+                          ],
+                        ),
+                  orElse: () => const SizedBox.shrink(),
+                ),
+                Expanded(
+                  child: friendsAsync.when(
+                    data: (friends) =>
+                        friends.isEmpty ? const FriendListEmptyState() : _buildList(context, ref, friends, query),
+                    loading: () => const Center(child: CircularProgressIndicator()),
+                    error: (_, _) => const FriendListEmptyState(),
+                  ),
+                ),
+              ],
             ),
           ),
         ),
