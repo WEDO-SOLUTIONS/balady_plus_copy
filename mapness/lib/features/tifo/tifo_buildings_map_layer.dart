@@ -268,11 +268,12 @@ class TifoBuildingsMapLayer extends Notifier<bool> {
 
   bool get _buildingsMode => _lod == _TifoLod.buildings;
 
-  /// Hive box + key the ⚽ toggle is persisted under, so a killed/relaunched
-  /// app comes back up with the layer in the state the player left it in
-  /// instead of always cold-starting disabled.
-  static const String _persistBoxName = 'tifo';
-  static const String _persistKey = 'layerEnabled';
+  /// Hive box + key the ⚽ toggle *used to* be persisted under. The layer is
+  /// no longer restored across launches — it always cold-starts disabled — so
+  /// the key only survives here to be deleted from installs that still carry
+  /// it (see [_clearPersistedState]).
+  static const String _legacyPersistBoxName = 'tifo';
+  static const String _legacyPersistKey = 'layerEnabled';
 
   @override
   bool build() {
@@ -347,43 +348,26 @@ class TifoBuildingsMapLayer extends Notifier<bool> {
         }
       })
       ..onDispose(_teardown);
-    // Fire-and-forget: restore the persisted toggle once the Hive box opens
-    // and the native map is ready — `enable()` awaits `dgisControllerProvider`
-    // itself, so this doesn't race the map's own startup.
-    unawaited(_restorePersistedState());
-    return false; // disabled until the restore above (if any) flips it on
+    // Fire-and-forget: drop the legacy toggle record so installs that stored
+    // it before don't keep a stale flag around.
+    unawaited(_clearPersistedState());
+    return false; // TIFO always cold-starts disabled; the ⚽ control turns it on
   }
 
-  Future<void> _restorePersistedState() async {
+  /// Erases the legacy `layerEnabled` record. The toggle is session-only now:
+  /// every launch starts with the layer off and the player turns it on from
+  /// the ⚽ control, so nothing reads this key any more — deleting it keeps
+  /// upgraded installs from carrying a flag that no longer means anything.
+  Future<void> _clearPersistedState() async {
     try {
-      final box = await ref.read(hiveProvider(_persistBoxName).future);
-      if (!ref.mounted) {
+      final box = await ref.read(hiveProvider(_legacyPersistBoxName).future);
+      if (!ref.mounted || !box.containsKey(_legacyPersistKey)) {
         return;
       }
-      // Absent means "never chosen", and that reads as OFF: a fresh install
-      // cold-starts on a plain map and the player opts in through the ⚽
-      // control. Only an explicit `true` (the player having turned the layer
-      // on themselves) restores it; the season schedule still has the final
-      // say through `tifoAvailableProvider`.
-      final stored = box.get(_persistKey);
-      if (stored == true && ref.read(tifoAvailableProvider)) {
-        logger.log('[tifo-map] restoring layer: stored=true');
-        await enable();
-      }
+      await box.delete(_legacyPersistKey);
+      logger.log('[tifo-map] dropped legacy persisted layer state');
     } catch (error, stackTrace) {
-      logger.log('[tifo-map] failed to restore persisted layer state: $error\n$stackTrace');
-    }
-  }
-
-  Future<void> _persistEnabled(bool enabled) async {
-    try {
-      final box = await ref.read(hiveProvider(_persistBoxName).future);
-      if (!ref.mounted) {
-        return;
-      }
-      await box.put(_persistKey, enabled);
-    } catch (error, stackTrace) {
-      logger.log('[tifo-map] failed to persist layer state: $error\n$stackTrace');
+      logger.log('[tifo-map] failed to drop legacy persisted layer state: $error\n$stackTrace');
     }
   }
 
@@ -394,7 +378,6 @@ class TifoBuildingsMapLayer extends Notifier<bool> {
       return;
     }
     state = true;
-    unawaited(_persistEnabled(true));
     // Polygon colors are resolved from the clubs roster (`session.clubById`
     // in `_syncBuildings`, `_seasonLeaderColor` for the cluster tint), and
     // turning the layer on is not itself a play-intent — so nothing else in
@@ -471,7 +454,6 @@ class TifoBuildingsMapLayer extends Notifier<bool> {
       return;
     }
     state = false;
-    unawaited(_persistEnabled(false));
     _debounce?.cancel();
     await _visibleSub?.cancel();
     _visibleSub = null;
