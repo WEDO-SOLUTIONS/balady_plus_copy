@@ -56,7 +56,7 @@ class FreeRoamPageState extends ConsumerState<FreeRoamPage> with WidgetsBindingO
 
   /// Captured in `initState` so `dispose` doesn't touch `ref` while this
   /// element is being unmounted.
-  late final NavigationOwners _navigationOwners;
+  late final ScreenOwners _navigationOwners;
   late final VoidCallback _deactivateFreeRoam;
   bool _isEndingTrip = false;
 

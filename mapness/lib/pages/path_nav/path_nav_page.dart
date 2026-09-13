@@ -119,7 +119,7 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
 
   /// Captured in `initState` so `dispose` doesn't have to touch `ref` while
   /// this element is being unmounted.
-  late final NavigationOwners _navigationOwners;
+  late final ScreenOwners _navigationOwners;
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {

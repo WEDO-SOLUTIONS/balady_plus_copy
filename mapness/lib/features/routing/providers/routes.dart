@@ -398,9 +398,9 @@ final currentNavigationDestinationProvider = StateProvider<RouteParamsPoint?>((r
 /// mattering.
 final navigationActiveProvider = Provider<bool>((ref) => ref.watch(navigationOwnersProvider).isNotEmpty);
 
-/// The screens that currently own the driving camera, keyed by the `State` that
+/// The screens currently holding a claim on the map, keyed by the `State` that
 /// claimed it — a page can only ever release its own claim.
-class NavigationOwners extends Notifier<Set<Object>> {
+class ScreenOwners extends Notifier<Set<Object>> {
   @override
   Set<Object> build() => const {};
 
@@ -419,4 +419,15 @@ class NavigationOwners extends Notifier<Set<Object>> {
   }
 }
 
-final navigationOwnersProvider = NotifierProvider<NavigationOwners, Set<Object>>(NavigationOwners.new);
+/// Claimed by `PathNavPage` and `FreeRoamPage`.
+final navigationOwnersProvider = NotifierProvider<ScreenOwners, Set<Object>>(ScreenOwners.new);
+
+/// True while the player is building or comparing a route (`RoutingRoutesPage`).
+///
+/// Same construction as [navigationActiveProvider], and read for the same
+/// reason: route planning owns the map, and anything heavy drawn on top of it
+/// competes with route search for this isolate.
+final routePlanningActiveProvider = Provider<bool>((ref) => ref.watch(routePlanningOwnersProvider).isNotEmpty);
+
+/// Claimed by `RoutingRoutesPage`.
+final routePlanningOwnersProvider = NotifierProvider<ScreenOwners, Set<Object>>(ScreenOwners.new);

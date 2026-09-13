@@ -35,6 +35,20 @@ final tifoAvailableProvider = Provider<bool>((ref) {
   return env?.tifoDateRange.isVisibleNow ?? false;
 });
 
+/// True while another, route-centric screen owns the map: turn-by-turn
+/// navigation, Free Roam, or route planning.
+///
+/// The capture layer steps off the map entirely for the duration — see
+/// [TifoBuildingsMapLayer._suspendPainting]. Route planning is in here
+/// with the drive on purpose: Routes → "Go" → drive → arrival is one continuous
+/// stretch where the map belongs to the route, and treating it as one stretch
+/// means a single teardown at the start and a single repaint at the end,
+/// instead of a full ~413-polygon repaint on the routes screen that the drive
+/// would throw away moments later.
+final tifoMapSuspendedProvider = Provider<bool>(
+  (ref) => ref.watch(navigationActiveProvider) || ref.watch(routePlanningActiveProvider),
+);
+
 /// Level of detail the TIFO layer renders at, picked from the camera zoom.
 enum _TifoLod {
   /// Zoomed far out: a single bundled region-outline polygon
@@ -97,6 +111,13 @@ class TifoBuildingsMapLayer extends Notifier<bool> {
   Timer? _opacityDebounce;
   static const Duration _opacityDebounceDelay = Duration(milliseconds: 150);
   String? _lastBbox;
+
+  /// True while another screen owns the map — see [_suspendPainting].
+  ///
+  /// The layer stays logically ON (`state`) so the ⚽ control and the season
+  /// still read as enabled and the overlay comes back by itself; it simply
+  /// stops existing on the map until the map is handed back.
+  bool _suspended = false;
 
   /// LOD the district layer is currently painted at, or null when it isn't
   /// painted. LOD-aware rather than a plain bool because [_TifoLod.cluster]
@@ -279,12 +300,12 @@ class TifoBuildingsMapLayer extends Notifier<bool> {
   bool build() {
     ref
       ..listen<TifoBuildingsState>(tifoBuildingsProvider, (_, next) {
-        if (state && _buildingsMode) {
+        if (_painting && _buildingsMode) {
           unawaited(_syncBuildings(next));
         }
       })
       ..listen<TifoDistrictsState>(tifoDistrictsProvider, (_, next) {
-        if (!state || _buildingsMode) {
+        if (!_painting || _buildingsMode) {
           return;
         }
         // Standings only tint the region at the cluster tier; the polygon
@@ -305,7 +326,7 @@ class TifoBuildingsMapLayer extends Notifier<bool> {
       // claimed buildings and the cluster tint pick up their club's color as
       // soon as it's known, without waiting on a game.
       ..listen<TifoSessionState>(tifoSessionProvider, (prev, next) {
-        if (!state || identical(prev?.clubs, next.clubs)) {
+        if (!_painting || identical(prev?.clubs, next.clubs)) {
           return;
         }
         if (_buildingsMode) {
@@ -316,23 +337,23 @@ class TifoBuildingsMapLayer extends Notifier<bool> {
           unawaited(_redrawDistricts(ref.read(tifoDistrictsProvider)));
         }
       })
-      // While navigation owns the map the capture layer steps back — see
-      // [_paintArgb]. Only the repaint of what is ALREADY drawn is driven from
-      // here; the alphas themselves are read live on every paint, so no state
-      // of this listener's own can go stale.
-      ..listen<bool>(navigationActiveProvider, (prev, next) {
-        if (prev == next || !state) {
+      // A route-centric screen — route planning, turn-by-turn or Free Roam —
+      // takes the map over completely: the overlay comes OFF for the duration
+      // rather than being dimmed, see [_suspendPainting]. Both directions
+      // run even when the layer is currently off, so the suspended flag can't
+      // go stale on a game that gets switched on mid-drive.
+      ..listen<bool>(tifoMapSuspendedProvider, (prev, next) {
+        if (prev == next) {
           return;
         }
-        logger.log('[tifo-map] navigation ${next ? 'started → dimming' : 'ended → restoring'} overlay');
-        unawaited(_repaintCurrentTier());
+        unawaited(next ? _suspendPainting() : _resumePainting());
       })
       // Debug panel: the in-route alphas are dialled in live. Only meaningful
       // during navigation (that's the only time they're applied), and
       // debounced because a slider drag emits a change per pixel while a
       // repaint can touch a couple of thousand polygons.
       ..listen<TifoRouteOpacity>(tifoDebugRouteOpacityProvider, (prev, next) {
-        if (!state || !_inNavigation) {
+        if (!_painting || !_inNavigation) {
           return;
         }
         _opacityDebounce?.cancel();
@@ -398,6 +419,11 @@ class TifoBuildingsMapLayer extends Notifier<bool> {
 
   bool get isEnabled => state;
 
+  /// Whether the layer should be putting anything on the map right now. Every
+  /// paint path gates on this rather than on `state`: during navigation and
+  /// Free Roam the game is still on, but the map belongs to the driver.
+  bool get _painting => state && !_suspended;
+
   Future<void> enable() async {
     if (state || !ref.read(tifoAvailableProvider)) {
       return;
@@ -417,6 +443,22 @@ class TifoBuildingsMapLayer extends Notifier<bool> {
     if (ref.read(tifoSessionProvider).clubs.isEmpty) {
       unawaited(ref.read(tifoSessionProvider.notifier).load());
     }
+    if (_suspended) {
+      // Switched on from under another screen (the debug panel can do that):
+      // the game counts as on, but nothing reaches the map until the drive ends
+      // and `_resumePainting` runs this for us.
+      logger.log('[tifo-map] enabled while another screen owns the map — paint deferred');
+      return;
+    }
+    await _startMapWork();
+  }
+
+  /// Everything the layer does while it is actually painting: object managers,
+  /// the camera subscription, the buildings poller and the first render.
+  ///
+  /// Shared by [enable] and [_resumePainting] — getting the map back is the
+  /// same cold start as turning the game on.
+  Future<void> _startMapWork() async {
     try {
       final controller = await ref.read(dgisControllerProvider.future);
       _buildingsManager ??= await controller.createMapObjectManager(layerId: MapObjectLayers.defaultLayerId);
@@ -447,14 +489,14 @@ class TifoBuildingsMapLayer extends Notifier<bool> {
       // yet, so buildings mode would draw nothing until the user pans. Retry a
       // few times to render immediately. (Districts mode ignores bbox.)
       String? bbox;
-      for (var attempt = 0; attempt < 6 && state; attempt++) {
+      for (var attempt = 0; attempt < 6 && _painting; attempt++) {
         bbox = await _currentBbox(controller);
         if (bbox != null || !_buildingsMode) {
           break;
         }
         await Future<void>.delayed(const Duration(milliseconds: 250));
       }
-      if (state) {
+      if (_painting) {
         await _applyForViewport(bbox);
       }
       // Warm the district layer in the background. Its geometry
@@ -466,11 +508,11 @@ class TifoBuildingsMapLayer extends Notifier<bool> {
       // waits for it: this only loads data — it never moves the camera, and the
       // `tifoDistrictsProvider` listener in `build` skips the repaint entirely
       // while the player is at building zoom.
-      if (state) {
+      if (_painting) {
         unawaited(ref.read(tifoDistrictsProvider.notifier).prefetch());
       }
     } catch (error, stackTrace) {
-      logger.log('TIFO layer enable failed: $error\n$stackTrace');
+      logger.log('TIFO layer start failed: $error\n$stackTrace');
     }
   }
 
@@ -479,17 +521,28 @@ class TifoBuildingsMapLayer extends Notifier<bool> {
       return;
     }
     state = false;
+    await _stopMapWork(restoreTilt: true);
+  }
+
+  /// Takes the overlay off the map and stops everything feeding it: the camera
+  /// subscription, the buildings poll, every polygon and all paint bookkeeping.
+  ///
+  /// [restoreTilt] hands the player their tilted camera back — right when the
+  /// game is switched off, but NOT when a driving screen takes over: navigation
+  /// sets its own camera, and the two would fight over it.
+  Future<void> _stopMapWork({required bool restoreTilt}) async {
     _debounce?.cancel();
+    _opacityDebounce?.cancel();
     await _visibleSub?.cancel();
     _visibleSub = null;
     _lastBbox = null;
     ref.read(tifoBuildingsPollerProvider.notifier).stop();
     // Queued, not fired straight at the bridge: a paint that is already past
-    // its own `state` check would otherwise finish AFTER this wipe and leave
-    // its polygons on a map the player has turned the game off on. The
-    // bookkeeping is dropped INSIDE the queue for the same reason — clearing it
-    // here would let that in-flight pass stamp itself back in behind us, and
-    // the next enable would then skip everything it believes is already up.
+    // its own `_painting` check would otherwise finish AFTER this wipe and
+    // leave its polygons on a map that is no longer the game's. The bookkeeping
+    // is dropped INSIDE the queue for the same reason — clearing it here would
+    // let that in-flight pass stamp itself back in behind us, and the next
+    // start would then skip everything it believes is already up.
     await _serialized(() async {
       _drawnDistrictsLod = null;
       _drawnRegionFill = null;
@@ -506,22 +559,66 @@ class TifoBuildingsMapLayer extends Notifier<bool> {
         if (_districtsManager != null) {
           await controller.removeAllPolygons(fromManager: _districtsManager);
         }
-        // The 2D view is a TIFO rule, not the host map's — give the player
-        // their tilted view back when the overlay goes away.
-        await _restoreTilt(controller);
+        if (restoreTilt) {
+          // The 2D view is a TIFO rule, not the host map's — give the player
+          // their tilted view back when the overlay goes away.
+          await _restoreTilt(controller);
+        }
       } catch (_) {
         // Map already gone.
       }
     });
-    // Keep the geometry cache (cheap re-enable); just drop the viewport set.
+    // Keep the geometry cache (cheap restart); just drop the viewport set.
     ref.read(tifoBuildingsProvider.notifier).clearViewport();
+  }
+
+  /// Another screen has taken the map ([tifoMapSuspendedProvider]): drop the
+  /// overlay entirely for as long as it holds it.
+  ///
+  /// The capture layer is the heaviest thing on this isolate — a long poll, a
+  /// viewport diff on every camera move, and up to [_maxRendered] polygons
+  /// crossing the bridge — and all of it used to keep running (merely dimmed)
+  /// behind route planning, turn-by-turn and Free Roam, competing with route
+  /// search and with arrival, the two moments that stutter most. `state`
+  /// deliberately stays true: the game is still on, the ⚽ control still reads
+  /// as enabled, and the overlay comes back on its own afterwards.
+  Future<void> _suspendPainting() async {
+    if (_suspended) {
+      return;
+    }
+    _suspended = true;
+    if (!state) {
+      return; // nothing on the map to take off it
+    }
+    logger.log('[tifo-map] another screen took the map → dropping the overlay');
+    await _stopMapWork(restoreTilt: false);
+  }
+
+  /// The map is ours again — put the overlay back exactly as a fresh enable
+  /// would.
+  Future<void> _resumePainting() async {
+    if (!_suspended) {
+      return;
+    }
+    _suspended = false;
+    if (!state) {
+      return;
+    }
+    if (!ref.read(tifoAvailableProvider)) {
+      // The season closed while the map was elsewhere — the
+      // `tifoAvailableProvider` listener already asked for a disable; don't
+      // paint over that.
+      return;
+    }
+    logger.log('[tifo-map] map handed back → restoring the overlay');
+    await _startMapWork();
   }
 
   /// Reports the first paint of a map tier as `tifo_surface_viewed`. Called from the two paint
   /// routines, not [_onViewport]: both tiers can also paint straight off the provider listener
   /// (prefetch, buildings after [_onViewport] returns), which the viewport path would miss.
   void _reportTierPainted(TifoSurface surface, {required Duration? apiDuration, required DateTime? dataAt}) {
-    if (!state) {
+    if (!_painting) {
       return;
     }
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -625,7 +722,7 @@ class TifoBuildingsMapLayer extends Notifier<bool> {
   /// city-wide static layer, so they're drawn once per LOD on entry — NOT on
   /// every pan (413 polygons/frame would flood the bridge and jank the map).
   Future<void> _applyForViewport(String? bbox) async {
-    if (!state) {
+    if (!_painting) {
       return;
     }
     if (bbox != null) {
@@ -712,7 +809,7 @@ class TifoBuildingsMapLayer extends Notifier<bool> {
         // 413 district polygons landed ON TOP of the region silhouette the
         // cluster branch had already painted, and neither side cleared the
         // other — the overlap then survived until the next tier change.
-        if (!state || _lod != lod) {
+        if (!_painting || _lod != lod) {
           logger.log('[tifo-map] districts draw dropped: tier moved to ${_lod.name} while loading');
           return;
         }
@@ -859,8 +956,8 @@ class TifoBuildingsMapLayer extends Notifier<bool> {
     for (var i = 0; i < polygons.length; i += _addChunkSize) {
       final end = i + _addChunkSize < polygons.length ? i + _addChunkSize : polygons.length;
       await controller.addPolygons(polygons.sublist(i, end), toManager: manager);
-      if (!state) {
-        return; // layer turned off mid-stream
+      if (!_painting) {
+        return; // layer turned off (or suspended) mid-stream
       }
     }
   }
@@ -1041,7 +1138,7 @@ class TifoBuildingsMapLayer extends Notifier<bool> {
   /// colour, so the ordinary recolour diff sees every polygon differ from its
   /// target and replaces it; nothing extra is needed here.
   Future<void> _repaintCurrentTier() async {
-    if (!state) {
+    if (!_painting) {
       return;
     }
     try {
@@ -1191,7 +1288,7 @@ class TifoBuildingsMapLayer extends Notifier<bool> {
       // Re-check after the await: `dgisControllerProvider` can suspend long
       // enough for a zoom gesture to hand the manager over to the cluster
       // tier, and two tiers must never share it.
-      if (!state || _lod == _TifoLod.cluster) {
+      if (!_painting || _lod == _TifoLod.cluster) {
         return;
       }
       final toAdd = <Polygon>[];
@@ -1351,7 +1448,7 @@ class TifoBuildingsMapLayer extends Notifier<bool> {
       final controller = await ref.read(dgisControllerProvider.future);
       // Same reasoning as `_redrawDistricts`: the tier may have changed under
       // this await, and the region must not outlive the cluster zoom.
-      if (!state || _lod != _TifoLod.cluster) {
+      if (!_painting || _lod != _TifoLod.cluster) {
         return;
       }
       final geometry = _regionGeometry();

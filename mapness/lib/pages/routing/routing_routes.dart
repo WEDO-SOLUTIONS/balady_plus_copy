@@ -14,6 +14,7 @@ import 'package:mapness/entities/routing/route_point.dart';
 import 'package:mapness/features/favourites/providers/favourite_markers.dart';
 import 'package:mapness/features/lifestyle_layers/providers/layers_controls.dart';
 import 'package:mapness/features/routing/lib/active_navigation_helper.dart';
+import 'package:mapness/features/routing/providers/routes.dart';
 import 'package:mapness/features/routing/providers/routes_helper.dart';
 import 'package:mapness/features/search/providers/search.dart';
 import 'package:mapness/features/search/ui/search_scope.dart';
@@ -52,10 +53,42 @@ class _RoutingRoutesPageState extends ConsumerState<RoutingRoutesPage> {
   RouteSearchOptionsMessage? _navType;
   int? _activeRouteIndex;
 
+  /// Captured in `initState` so `dispose` doesn't touch `ref` while this element
+  /// is being unmounted.
+  late final ScreenOwners _routePlanningOwners;
+
   @override
   void initState() {
     super.initState();
+    _routePlanningOwners = ref.read(routePlanningOwnersProvider.notifier);
+    _setRoutePlanningActive(active: true);
     _initialize();
+  }
+
+  @override
+  void dispose() {
+    _setRoutePlanningActive(active: false);
+    super.dispose();
+  }
+
+  /// Claims / releases this page's hold on the map, outside the current build
+  /// phase — Riverpod forbids writing to a provider while the tree is building,
+  /// and `initState` runs inside that phase. The claim is keyed on this State,
+  /// so a page swap releasing the outgoing screen after the incoming one has
+  /// claimed cannot cancel it. See `routePlanningActiveProvider` for readers.
+  void _setRoutePlanningActive({required bool active}) {
+    final owners = _routePlanningOwners;
+    Future.microtask(() {
+      try {
+        if (active) {
+          owners.acquire(this);
+        } else {
+          owners.release(this);
+        }
+      } catch (_) {
+        // Provider container already gone (app shutting down).
+      }
+    });
   }
 
   void _initialize() {
@@ -146,46 +179,46 @@ class _RoutingRoutesPageState extends ConsumerState<RoutingRoutesPage> {
                   ),
                   if (points.length > 2)
                     Semantics(
-                    label: context.l10n.edit,
+                      label: context.l10n.edit,
+                      button: true,
+                      child: ExcludeSemantics(
+                        child: AppButton(
+                          primaryIcon: General16Icons.edit,
+                          iconColor: colors.neutralOnContainer,
+                          buttonColorScheme: ButtonColorScheme.neutral,
+                          buttonType: ButtonType.secondary,
+                          size: ButtonSize.large,
+                          onTap: _changeRoute,
+                        ),
+                      ),
+                    )
+                  else
+                    Semantics(
+                      label: context.l10n.a11ySwapRouteEndpoints,
+                      button: true,
+                      child: ExcludeSemantics(
+                        child: AppButton(
+                          primaryIcon: TransportIcons.verticalChange,
+                          buttonColorScheme: ButtonColorScheme.neutral,
+                          buttonType: ButtonType.secondary,
+                          size: ButtonSize.large,
+                          onTap: _onSwipeRoutes,
+                        ),
+                      ),
+                    ),
+                  Semantics(
+                    label: context.l10n.a11yClose,
                     button: true,
                     child: ExcludeSemantics(
                       child: AppButton(
-                        primaryIcon: General16Icons.edit,
+                        primaryIcon: SystemIcons.close,
                         iconColor: colors.neutralOnContainer,
                         buttonColorScheme: ButtonColorScheme.neutral,
                         buttonType: ButtonType.secondary,
                         size: ButtonSize.large,
-                        onTap: _changeRoute,
+                        onTap: _onClose,
                       ),
                     ),
-                  )
-                else
-                  Semantics(
-                    label: context.l10n.a11ySwapRouteEndpoints,
-                    button: true,
-                    child: ExcludeSemantics(
-                      child: AppButton(
-                        primaryIcon: TransportIcons.verticalChange,
-                        buttonColorScheme: ButtonColorScheme.neutral,
-                        buttonType: ButtonType.secondary,
-                        size: ButtonSize.large,
-                        onTap: _onSwipeRoutes,
-                      ),
-                    ),
-                  ),
-                Semantics(
-                  label: context.l10n.a11yClose,
-                  button: true,
-                  child: ExcludeSemantics(
-                    child: AppButton(
-                      primaryIcon: SystemIcons.close,
-                      iconColor: colors.neutralOnContainer,
-                      buttonColorScheme: ButtonColorScheme.neutral,
-                      buttonType: ButtonType.secondary,
-                      size: ButtonSize.large,
-                      onTap: _onClose,
-                    ),
-                  ),
                   ),
                 ].insertBetween(Spacing.$3x.widthBox).toList(),
               ),
