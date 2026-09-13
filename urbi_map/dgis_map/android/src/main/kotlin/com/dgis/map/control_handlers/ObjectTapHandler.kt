@@ -442,6 +442,17 @@ class ObjectTapHandler(
         options.isVisible?.let { isVisible ->
             markers[id]?.first?.isVisible = isVisible
         }
+
+        // If an icon change was requested but markerImage is still null,
+        // getImageFromAsset/getPngImageFromAsset already invoked `callback`
+        // with a failure above — calling it again here would double-invoke
+        // it (mirrors the pattern addMarker/mapMarker use elsewhere in this
+        // file to avoid the same double-callback after a failed icon load).
+        val iconChangeFailed =
+                (options.icon?.svgPath != null || options.icon?.pngPath != null) && markerImage == null
+        if (!iconChangeFailed) {
+            callback(Result.success(Unit))
+        }
     }
 
     fun addMarkers(

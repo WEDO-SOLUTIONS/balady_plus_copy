@@ -11,6 +11,14 @@ This subtree owns the Flutter/native map bridge packages.
 - iOS maps the bridge method to `map.indoorManager.setIndoorState(newState: .enabled/.disabled)`.
 - Native `DgisMapView` implementations should handle calls before `IndoorControlHandler` is initialized by falling back to `map.indoorManager` directly.
 
+## Known bug fixed 2026-09-13: `setMarkerOptions` never completed
+
+`ObjectTapHandler.swift` (iOS) and `ObjectTapHandler.kt` (Android)'s `setMarkerOptions` never called their `completion`/`callback` on the success path — every sibling marker method (`addMarker`, `addMarkers`, `removeMarker`) does, `setMarkerOptions` alone didn't. Since Pigeon platform-channel calls only resolve their Dart-side `Future` when the native completion fires, **every Dart-side `await ... setMarkerOptions(...)` call hung forever, silently, no exception, no timeout** — for every caller of this method, on both platforms, since it was written. It went unnoticed because no existing caller (`founding_day.dart`, `leap.dart`, `cityscape.dart`, `wrc.dart`) awaited it in a sequential loop over multiple markers; Friends on Map's periodic marker-label refresh (`mapness/lib/features/friends_on_map/providers/friend_markers.dart`) was the first caller shaped that way, which is what exposed it — only the first marker in a loop ever got updated (its field mutations apply synchronously regardless of `completion`), every marker after it silently never got its turn.
+
+**Fixed**: added the missing `completion(Result.success(()))` (iOS) / `callback(Result.success(Unit))` (Android) at the end of `setMarkerOptions`, guarded so it isn't called a *second* time when an icon-load failure already invoked completion internally (mirrors the `guard let ... else { return }` pattern `addMarker`/`mapMarker` use for the same reason — check `markerImage == nil` while an icon change was actually requested, since a genuine "no icon change requested" case must not be mistaken for a failed one).
+
+If you add a new marker-mutation bridge method here, verify by grepping this file for every early-return/failure path and confirming each one calls its completion exactly once — this exact class of bug (a forgotten success-path completion call) is easy to introduce and, per this incident, can go unnoticed for a long time since a hung `Future` throws nothing.
+
 ## Bridges (Pigeon → Native Handler)
 
 | Pigeon method | Message | Android handler | iOS handler | Notes |

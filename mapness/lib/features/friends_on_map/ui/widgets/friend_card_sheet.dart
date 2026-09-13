@@ -4,6 +4,7 @@ import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/app/auto_route/app_routes.dart';
+import 'package:mapness/features/friends_on_map/friend_elapsed_time.dart';
 import 'package:mapness/features/friends_on_map/models/friend.dart';
 import 'package:mapness/features/friends_on_map/providers/friends_controller.dart';
 import 'package:mapness/features/friends_on_map/ui/widgets/friend_avatar.dart';
@@ -54,7 +55,9 @@ class FriendCardSheet extends ConsumerWidget {
         ? CommonFunctions.distance(ownPosition.latitude, ownPosition.longitude, friend.latitude!, friend.longitude!) *
               1000
         : null;
-    final elapsedLabel = _elapsedLabel(context, friend.lastPositionAt);
+    final elapsedLabel = friend.lastPositionAt == null
+        ? null
+        : friendElapsedTimeLabel(context.l10n, friend.lastPositionAt!);
     final cameraPosition = ref.watch(cameraPositionProvider);
 
     return EtaShareSheet(
@@ -175,26 +178,5 @@ class FriendCardSheet extends ConsumerWidget {
         listen: false,
       ).read(friendsControllerProvider.notifier).blockFriend(friend),
     );
-  }
-
-  // "Just now" / "N min ago" / "N hr ago" / "N days ago" — mirrors
-  // features/tifo/leaderboard_sheet.dart's private _relativeTime shape,
-  // scoped to this feature with its own friendCardTime* l10n keys.
-  String? _elapsedLabel(BuildContext context, DateTime? at) {
-    if (at == null) {
-      return null;
-    }
-    final l10n = context.l10n;
-    final diff = DateTime.now().difference(at);
-    if (diff.inMinutes < 1) {
-      return l10n.friendCardTimeJustNow;
-    }
-    if (diff.inHours < 1) {
-      return l10n.friendCardTimeMinutesAgo(diff.inMinutes);
-    }
-    if (diff.inDays < 1) {
-      return l10n.friendCardTimeHoursAgo(diff.inHours);
-    }
-    return l10n.friendCardTimeDaysAgo(diff.inDays);
   }
 }

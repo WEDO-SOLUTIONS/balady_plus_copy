@@ -473,8 +473,18 @@ class ObjectTapHandler {
         if let isVisible = options.isVisible {
             self.markers[id]?.0.isVisible = isVisible
         }
+
+        // If an icon change was requested but markerImage is still nil,
+        // getImage(...) already called `completion` with a failure above —
+        // completing again here would double-invoke it (mirrors the
+        // guard-let-else-return that addMarker/mapMarker use to avoid the
+        // same double-completion after a failed icon load).
+        let iconChangeFailed = (options.icon?.svgPath != nil || options.icon?.pngPath != nil) && markerImage == nil
+        if !iconChangeFailed {
+            completion(Result.success(()))
+        }
     }
-    
+
     func addMarkers(_ markers: [MarkerMessage], to managerId: String?, completion: @escaping (Result<Void, any Error>) -> Void) {
         self.objectsQueue.async {
             var markerObjects = [String:Marker]()
