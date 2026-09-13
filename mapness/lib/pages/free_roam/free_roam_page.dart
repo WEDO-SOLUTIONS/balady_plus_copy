@@ -56,7 +56,7 @@ class FreeRoamPageState extends ConsumerState<FreeRoamPage> with WidgetsBindingO
 
   /// Captured in `initState` so `dispose` doesn't touch `ref` while this
   /// element is being unmounted.
-  late final StateController<bool> _navigationActive;
+  late final NavigationOwners _navigationOwners;
   late final VoidCallback _deactivateFreeRoam;
 
   late final ToggleSheetController _bottomSheetController = ToggleSheetController(
@@ -66,7 +66,7 @@ class FreeRoamPageState extends ConsumerState<FreeRoamPage> with WidgetsBindingO
   @override
   void initState() {
     super.initState();
-    _navigationActive = ref.read(navigationActiveProvider.notifier);
+    _navigationOwners = ref.read(navigationOwnersProvider.notifier);
     // Free Roam is navigation as far as the map is concerned: the camera
     // follows the driver and the TIFO capture layer has to step back the same
     // way it does on a route. Deferred for the same reason as the origin
@@ -132,13 +132,19 @@ class FreeRoamPageState extends ConsumerState<FreeRoamPage> with WidgetsBindingO
     super.dispose();
   }
 
-  /// Publishes "free roam is / isn't on screen" outside the current build
-  /// phase — see `navigationActiveProvider` for what reads it.
+  /// Claims / releases this page's hold on the driving camera, outside the
+  /// current build phase — see `navigationActiveProvider` for what reads it.
+  /// The claim is keyed on this State, so a page swap releasing the outgoing
+  /// screen after the incoming one has claimed cannot cancel it.
   void _setNavigationActive({required bool active}) {
-    final controller = _navigationActive;
+    final owners = _navigationOwners;
     Future.microtask(() {
       try {
-        controller.state = active;
+        if (active) {
+          owners.acquire(this);
+        } else {
+          owners.release(this);
+        }
       } catch (_) {
         // Provider container already gone (app shutting down).
       }

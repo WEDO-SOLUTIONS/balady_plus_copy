@@ -233,6 +233,29 @@ class ObjectTapHandler(
         return objects.values.map { it.first }.toList()
     }
 
+    /**
+     * Detaches whatever object was registered under [id] before that id is
+     * re-registered.
+     *
+     * `MapObjectManager.addObject(s)` appends — it does NOT replace by id, and
+     * these ids are ours, not the SDK's. Without this the previous object stays
+     * on the map forever AND becomes unreachable, because the map that
+     * `remove*` looks through now points at the new object. Stacked translucent
+     * fills then read as one solid colour (TIFO districts), and re-added
+     * markers pile up invisibly.
+     *
+     * Removal goes through the manager the object was ADDED to, which is not
+     * necessarily the one it is being re-added to.
+     *
+     * Must run on [mapObjectsExecutorService].
+     */
+    private fun <T : SimpleMapObject> evictExisting(
+            id: String,
+            objects: MutableMap<String, Pair<T, String?>>
+    ) {
+        objects.remove(id)?.also { getManager(it.second).removeObject(it.first) }
+    }
+
     private fun <T> removeAllObjects(
             managerId: String?,
             objects: MutableMap<String, Pair<T, String?>>,
@@ -382,6 +405,7 @@ class ObjectTapHandler(
         val markerObject = mapMarker(marker, callback) ?: return
 
         mapObjectsExecutorService.submit {
+            evictExisting(marker.id, markers)
             markers[marker.id] = Pair(markerObject, managerId)
             getManager(managerId).addObject(markerObject)
             callback(Result.success(Unit))
@@ -456,6 +480,9 @@ class ObjectTapHandler(
         }
 
         mapObjectsExecutorService.submit {
+            for (id in markerObjects.keys) {
+                evictExisting(id, this.markers)
+            }
             this.markers.putAll(markerObjects)
             getManager(managerId).addObjects(getObjectsFromPair(markerObjects))
             callback(Result.success(Unit))
@@ -464,7 +491,7 @@ class ObjectTapHandler(
 
     fun removeMarker(id: String, managerId: String?, callback: (Result<Unit>) -> Unit) {
         mapObjectsExecutorService.submit {
-            markers.remove(id)?.also { getManager(managerId).removeObject(it.first) }
+            markers.remove(id)?.also { getManager(it.second).removeObject(it.first) }
             callback(Result.success(Unit))
         }
     }
@@ -538,6 +565,8 @@ class ObjectTapHandler(
         val modelObject = mapModel(model, callback) ?: return
 
         mapObjectsExecutorService.submit {
+            // See `evictExisting` — models have their own manager.
+            models.remove(model.id)?.also { defaultModelManager.removeObject(it.first) }
             models[model.id] = Pair(modelObject, managerId)
             defaultModelManager.addObject(modelObject)
             callback(Result.success(Unit))
@@ -584,6 +613,10 @@ class ObjectTapHandler(
         }
 
         mapObjectsExecutorService.submit {
+            // See `evictExisting` — models have their own manager.
+            for (id in modelObjects.keys) {
+                this.models.remove(id)?.also { defaultModelManager.removeObject(it.first) }
+            }
             this.models.putAll(modelObjects)
             defaultModelManager.addObjects(getObjectsFromPair(modelObjects))
             callback(Result.success(Unit))
@@ -749,6 +782,7 @@ class ObjectTapHandler(
         val polygonObject = mapPolygon(polygon)
 
         mapObjectsExecutorService.submit {
+            evictExisting(polygon.id, polygons)
             polygons[polygon.id] = Pair(polygonObject, manager)
             getManager(manager).addObject(polygonObject)
             callback(Result.success(Unit))
@@ -767,6 +801,9 @@ class ObjectTapHandler(
         }
 
         mapObjectsExecutorService.submit {
+            for (id in polygonObjects.keys) {
+                evictExisting(id, this.polygons)
+            }
             this.polygons.putAll(polygonObjects)
             getManager(managerId).addObjects(getObjectsFromPair(polygonObjects))
             callback(Result.success(Unit))
@@ -775,7 +812,7 @@ class ObjectTapHandler(
 
     fun removePolygon(id: String, managerId: String?, callback: (Result<Unit>) -> Unit) {
         mapObjectsExecutorService.submit {
-            polygons.remove(id)?.also { getManager(managerId).removeObject(it.first) }
+            polygons.remove(id)?.also { getManager(it.second).removeObject(it.first) }
             callback(Result.success(Unit))
         }
     }
@@ -806,6 +843,7 @@ class ObjectTapHandler(
         val circleObject = mapCircle(circle)
 
         mapObjectsExecutorService.submit {
+            evictExisting(circle.id, circles)
             circles[circle.id] = Pair(circleObject, manager)
             getManager(manager).addObject(circleObject)
             callback(Result.success(Unit))
@@ -824,6 +862,9 @@ class ObjectTapHandler(
         }
 
         mapObjectsExecutorService.submit {
+            for (id in circleObjects.keys) {
+                evictExisting(id, this.circles)
+            }
             this.circles.putAll(circleObjects)
             getManager(managerId).addObjects(getObjectsFromPair(circleObjects))
             callback(Result.success(Unit))
@@ -832,7 +873,7 @@ class ObjectTapHandler(
 
     fun removeCircle(id: String, managerId: String?, callback: (Result<Unit>) -> Unit) {
         mapObjectsExecutorService.submit {
-            circles.remove(id)?.also { getManager(managerId).removeObject(it.first) }
+            circles.remove(id)?.also { getManager(it.second).removeObject(it.first) }
             callback(Result.success(Unit))
         }
     }
@@ -881,6 +922,7 @@ class ObjectTapHandler(
         val polylineObject = mapPolyline(polyline) ?: return
 
         mapObjectsExecutorService.submit {
+            evictExisting(polyline.id, polylines)
             polylines[polyline.id] = Pair(polylineObject, managerId)
             getManager(managerId).addObject(polylineObject)
             callback(Result.success(Unit))
@@ -899,6 +941,9 @@ class ObjectTapHandler(
         }
 
         mapObjectsExecutorService.submit {
+            for (id in polylineObjects.keys) {
+                evictExisting(id, this.polylines)
+            }
             this.polylines.putAll(polylineObjects)
             getManager(managerId).addObjects(getObjectsFromPair(polylineObjects))
             callback(Result.success(Unit))
@@ -907,7 +952,7 @@ class ObjectTapHandler(
 
     fun removePolyline(id: String, managerId: String?, callback: (Result<Unit>) -> Unit) {
         mapObjectsExecutorService.submit {
-            polylines.remove(id)?.also { getManager(managerId).removeObject(it.first) }
+            polylines.remove(id)?.also { getManager(it.second).removeObject(it.first) }
             callback(Result.success(Unit))
         }
     }
