@@ -1,9 +1,11 @@
 import 'package:dgis_map/library.dart';
 import 'package:image/image.dart' as img;
 import 'package:mapness/_generated/assets/assets.gen.dart';
+import 'package:mapness/app/auto_route/app_routes.dart';
 import 'package:mapness/features/friends_on_map/models/friend.dart';
 import 'package:mapness/features/friends_on_map/providers/friends_list.dart';
 import 'package:mapness/features/friends_on_map/providers/friends_on_map_layer_visible.dart';
+import 'package:mapness/features/friends_on_map/ui/widgets/friend_card_sheet.dart';
 import 'package:mapness/features/share_eta/helpers/utils.dart';
 import 'package:mapness/shared/providers/map/object_manager.dart';
 import 'package:mapness/shared/utils/logger/logger.dart';
@@ -42,6 +44,17 @@ class FriendMarkers extends _$FriendMarkers {
       // provider builds, since that happens during MapPage's first build,
       // before DgisMap can have created its controller.
       await ref.watch(mapObjectManagerProvider(named: settings.name, layerId: settings.layerId).future);
+      // Dart futures aren't cancellable — if something invalidates this
+      // provider again (e.g. friend_requests.dart's accept() invalidating
+      // friendsListProvider) while this build() is still awaiting, a stale
+      // execution must not go on to mutate the same still-live
+      // MapObjectManager alongside the newer one, or both add their own
+      // markers with duplicate ids and independent onTap closures — one tap
+      // then fires every leftover marker's sheet. Same guard shape as
+      // friends_on_map_position_reporter.dart.
+      if (!ref.mounted) {
+        return;
+      }
 
       if (!visible) {
         await manager.removeAllMarkers();
@@ -49,9 +62,15 @@ class FriendMarkers extends _$FriendMarkers {
       }
 
       final friends = await ref.watch(friendsListProvider.future);
+      if (!ref.mounted) {
+        return;
+      }
       final visibleFriends = friends.where((f) => f.latitude != null && f.longitude != null).toList();
 
       final markers = await Future.wait(visibleFriends.map(_buildMarker));
+      if (!ref.mounted) {
+        return;
+      }
 
       await manager.removeAllMarkers();
       await manager.addMarkers(markers);
@@ -66,8 +85,6 @@ class FriendMarkers extends _$FriendMarkers {
     }
   }
 
-  // R-52 (S-15) will wire a real onTap here later — for this slice, a
-  // marker is drawn but tapping it does nothing.
   Future<Marker> _buildMarker(Friend friend) async {
     final position = GeoPointWithElevationMessage(
       latitude: friend.latitude!,
@@ -85,6 +102,11 @@ class FriendMarkers extends _$FriendMarkers {
 
     return Marker(
       id: 'friend_marker_${friend.id}',
+      // S-15: no per-marker friend data flows through the map's own tap
+      // event, so the card is opened directly off this closure's captured
+      // `friend`, using the root navigator's context the same way
+      // share_eta's marker onTap does.
+      onTap: () => showFriendCardSheet(rootNavigatorKey.currentContext!, friend),
       options: MarkerOptionsMessage(position: position, icon: icon, animatedAppearance: true, zIndex: 50),
     );
   }

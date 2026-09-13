@@ -8,6 +8,10 @@ import 'package:mapness/features/friends_on_map/models/friend.dart';
 /// decision this implements. The backing list is mutable so an accepted
 /// friend request (R-22) can actually appear here.
 ///
+/// `lastPositionAt` backs R-53's elapsed-time-on-the-card only — it's the
+/// moment this repository (and so its seed data) was created, not a real
+/// per-position-update server timestamp (see `models/friend.dart`).
+///
 /// Positions are small fixed offsets (~80-150m) from the same landmark
 /// coordinate `shared/providers/map/dgis_controller.dart`'s `_kingdomTower`
 /// constant uses for the map's own default camera position (24.712301,
@@ -15,10 +19,24 @@ import 'package:mapness/features/friends_on_map/models/friend.dart';
 /// friend renders as a visible marker (R-48) on-screen at the app's default
 /// zoom (17) with no panning or extra setup.
 class FakeFriendsRepository implements FriendsRepository {
+  // `lastPositionAt` is set to the moment this repository instance is
+  // created (app start), not const — see the class doc's R-53 note.
   final List<Friend> _friends = [
-    const Friend(id: '1', displayName: 'Sara Al-Otaibi', latitude: 24.7131, longitude: 46.6748),
-    const Friend(id: '2', displayName: 'Mohammed bin Khalid Al-Harbi', latitude: 24.7114, longitude: 46.6735),
-    const Friend(id: '3', displayName: 'Noura', latitude: 24.7127, longitude: 46.6733),
+    Friend(
+      id: '1',
+      displayName: 'Sara Al-Otaibi',
+      latitude: 24.7131,
+      longitude: 46.6748,
+      lastPositionAt: DateTime.now(),
+    ),
+    Friend(
+      id: '2',
+      displayName: 'Mohammed bin Khalid Al-Harbi',
+      latitude: 24.7114,
+      longitude: 46.6735,
+      lastPositionAt: DateTime.now(),
+    ),
+    Friend(id: '3', displayName: 'Noura', latitude: 24.7127, longitude: 46.6733, lastPositionAt: DateTime.now()),
   ];
 
   @override

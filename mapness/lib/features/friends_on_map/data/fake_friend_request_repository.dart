@@ -69,6 +69,7 @@ class FakeFriendRequestRepository implements FriendRequestRepository {
       profilePictureUrl: request.profilePictureUrl,
       latitude: 24.712301 + offset,
       longitude: 46.674175 + offset,
+      lastPositionAt: DateTime.now(),
     );
   }
 
