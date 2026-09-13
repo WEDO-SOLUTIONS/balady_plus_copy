@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:async/async.dart';
 import 'package:dgis_map/library.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/legacy.dart';
 import 'package:mapness/_features/common/providers/network_status.dart';
 import 'package:mapness/_features/common/providers/shared_prefs.dart';
@@ -387,7 +388,35 @@ final currentNavigationDestinationProvider = StateProvider<RouteParamsPoint?>((r
 /// during navigation would stay changed for the rest of the session. A widget's
 /// `dispose` covers every exit there is.
 ///
-/// Both writers are mutually exclusive by construction — Free Roam is only
-/// entered when no navigation is running (see `CarEnableFreeRoam`) — so a
-/// plain bool is enough; if the two ever nest, this needs to become a count.
-final navigationActiveProvider = StateProvider<bool>((ref) => false);
+/// Derived from [navigationOwnersProvider] rather than being a bool anyone can
+/// set: the two writers overlap in TIME even though they never overlap in
+/// intent. A page swap builds the incoming page before disposing the outgoing
+/// one, so `dispose`'s "navigation is over" landed AFTER the new screen's
+/// "navigation has started" and left this false for the whole drive — which is
+/// how the TIFO overlay ended up painted at its full, solid alpha over a live
+/// route. Claims are per-owner, so the order the two pages run in stops
+/// mattering.
+final navigationActiveProvider = Provider<bool>((ref) => ref.watch(navigationOwnersProvider).isNotEmpty);
+
+/// The screens that currently own the driving camera, keyed by the `State` that
+/// claimed it — a page can only ever release its own claim.
+class NavigationOwners extends Notifier<Set<Object>> {
+  @override
+  Set<Object> build() => const {};
+
+  void acquire(Object owner) {
+    if (state.contains(owner)) {
+      return;
+    }
+    state = {...state, owner};
+  }
+
+  void release(Object owner) {
+    if (!state.contains(owner)) {
+      return;
+    }
+    state = {...state}..remove(owner);
+  }
+}
+
+final navigationOwnersProvider = NotifierProvider<NavigationOwners, Set<Object>>(NavigationOwners.new);

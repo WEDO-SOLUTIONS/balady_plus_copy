@@ -119,7 +119,7 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
 
   /// Captured in `initState` so `dispose` doesn't have to touch `ref` while
   /// this element is being unmounted.
-  late final StateController<bool> _navigationActive;
+  late final NavigationOwners _navigationOwners;
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
@@ -153,7 +153,7 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
   @override
   void initState() {
     super.initState();
-    _navigationActive = ref.read(navigationActiveProvider.notifier);
+    _navigationOwners = ref.read(navigationOwnersProvider.notifier);
     // Deferred: Riverpod forbids writing to a provider while the widget tree
     // is building, and `initState` runs inside that phase.
     _setNavigationActive(active: true);
@@ -229,14 +229,20 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
     await ref.read(sharedPrefsProvider).setString(MapnessConstants.navigatorStateTypeKey, widget.navType.name);
   }
 
-  /// Publishes "navigation is / isn't on screen" outside the current build
-  /// phase — see the `initState` call site for why it can't be written
-  /// directly, and `navigationActiveProvider` for what reads it.
+  /// Claims / releases this page's hold on the driving camera, outside the
+  /// current build phase — see the `initState` call site for why a provider
+  /// can't be written directly, and `navigationActiveProvider` for what reads
+  /// it. The claim is keyed on this State, so a page swap releasing the
+  /// outgoing screen after the incoming one has claimed cannot cancel it.
   void _setNavigationActive({required bool active}) {
-    final controller = _navigationActive;
+    final owners = _navigationOwners;
     Future.microtask(() {
       try {
-        controller.state = active;
+        if (active) {
+          owners.acquire(this);
+        } else {
+          owners.release(this);
+        }
       } catch (_) {
         // Provider container already gone (app shutting down).
       }
