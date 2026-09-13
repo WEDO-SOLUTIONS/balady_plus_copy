@@ -4,8 +4,10 @@ import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/_features/common/providers/ui_direction.dart';
+import 'package:mapness/app/auto_route/app_routes.dart';
 import 'package:mapness/features/friends_on_map/models/friend_request.dart';
 import 'package:mapness/features/friends_on_map/providers/friend_requests.dart';
+import 'package:mapness/features/friends_on_map/ui/widgets/friend_confirm_sheet.dart';
 import 'package:mapness/features/friends_on_map/ui/widgets/friend_request_item.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 
@@ -42,6 +44,21 @@ class FriendRequestsPage extends ConsumerWidget {
                     request: request,
                     onAccept: () => ref.read(friendRequestsControllerProvider.notifier).accept(request.id),
                     onDecline: () => ref.read(friendRequestsControllerProvider.notifier).decline(request.id),
+                    onBlock: () => showFriendConfirmSheet(
+                      context,
+                      title: context.l10n.friendRequestBlockConfirmTitle,
+                      body: context.l10n.friendRequestBlockConfirmBody(request.displayName),
+                      confirmLabel: context.l10n.friendRequestBlockCta,
+                      // Reads via a container from the root navigator's
+                      // context rather than this page's own `ref`, in case
+                      // the page is ever navigated away from while the
+                      // confirm sheet is still pending — see the fix note
+                      // in friend_card_sheet.dart for the bug this avoids.
+                      onConfirm: () => ProviderScope.containerOf(
+                        rootNavigatorKey.currentContext!,
+                        listen: false,
+                      ).read(friendRequestsControllerProvider.notifier).blockIncoming(request),
+                    ),
                   ),
                 ),
                 const SizedBox(height: Spacing.$4x),

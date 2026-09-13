@@ -1,4 +1,7 @@
+import 'package:mapness/features/friends_on_map/models/blocked_user.dart';
 import 'package:mapness/features/friends_on_map/models/friend_request.dart';
+import 'package:mapness/features/friends_on_map/providers/blocked_users.dart';
+import 'package:mapness/features/friends_on_map/providers/blocked_users_repository.dart';
 import 'package:mapness/features/friends_on_map/providers/friend_request_repository.dart';
 import 'package:mapness/features/friends_on_map/providers/friends_list.dart';
 import 'package:mapness/features/friends_on_map/providers/friends_repository.dart';
@@ -46,5 +49,23 @@ class FriendRequestsController extends _$FriendRequestsController {
   Future<void> cancel(String id) async {
     await ref.read(friendRequestRepositoryProvider).cancelRequest(id);
     ref.invalidate(outgoingFriendRequestsProvider);
+  }
+
+  /// R-44: block on an incoming request — declines it (so it also leaves
+  /// the incoming list) and records the block. Only genuinely prevents a
+  /// future invite resolution for a request whose id is a real invite token
+  /// (i.e. one that went through scan/link) — the two seeded fixture
+  /// requests in `FakeFriendRequestRepository` have no such token, see
+  /// `features/friends_on_map/AGENTS.md`.
+  Future<void> blockIncoming(FriendRequest request) async {
+    await ref.read(friendRequestRepositoryProvider).declineRequest(request.id);
+    await ref
+        .read(blockedUsersRepositoryProvider)
+        .blockUser(
+          BlockedUser(id: request.id, displayName: request.displayName, profilePictureUrl: request.profilePictureUrl),
+        );
+    ref
+      ..invalidate(incomingFriendRequestsProvider)
+      ..invalidate(blockedUsersProvider);
   }
 }

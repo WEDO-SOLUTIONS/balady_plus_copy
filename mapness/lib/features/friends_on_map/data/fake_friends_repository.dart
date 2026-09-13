@@ -46,4 +46,9 @@ class FakeFriendsRepository implements FriendsRepository {
   Future<void> addFriend(Friend friend) async {
     _friends.add(friend);
   }
+
+  @override
+  Future<void> removeFriend(String id) async {
+    _friends.removeWhere((f) => f.id == id);
+  }
 }

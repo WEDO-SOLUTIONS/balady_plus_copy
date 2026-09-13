@@ -3,8 +3,11 @@ import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mapness/app/auto_route/app_routes.dart';
 import 'package:mapness/features/friends_on_map/models/friend.dart';
+import 'package:mapness/features/friends_on_map/providers/friends_controller.dart';
 import 'package:mapness/features/friends_on_map/ui/widgets/friend_avatar.dart';
+import 'package:mapness/features/friends_on_map/ui/widgets/friend_confirm_sheet.dart';
 import 'package:mapness/features/share_eta/ui/eta_share_control_sheet/eta_share_sheet.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/lib/common_functions.dart';
@@ -12,10 +15,11 @@ import 'package:mapness/shared/providers/location.dart';
 import 'package:mapness/shared/providers/map/camera_position.dart';
 import 'package:mapness/widgets/routing/lib/duration_distance_fmt.dart';
 
-/// S-15 (R-52/R-53/R-54/R-55): opens on a friend marker tap. Reuses
-/// [EtaShareSheet] as a plain presentational shell (drag handle, title,
-/// close button, content rows, optional confirm button) — it carries no
-/// eta-specific logic despite living in `share_eta/`.
+/// S-15 (R-52/R-53/R-54/R-55, plus R-56's remove/block rows): opens on a
+/// friend marker tap. Reuses [EtaShareSheet] as a plain presentational
+/// shell (drag handle, title, close button, content rows, optional confirm
+/// button) — it carries no eta-specific logic despite living in
+/// `share_eta/`.
 bool _isFriendCardSheetOpen = false;
 
 void showFriendCardSheet(BuildContext context, Friend friend) {
@@ -105,7 +109,71 @@ class FriendCardSheet extends ConsumerWidget {
             ),
           ],
         ),
+        ContentRow(
+          onTap: () => _confirmRemove(context),
+          leading: Icon(GeneralIcons.trash, color: context.colors.errorDefault),
+          text: ContentRowTextOptions(
+            title: context.l10n.friendCardRemoveCta,
+            titleOptions: ContentRowTextOption(baseColor: context.colors.errorDefault),
+          ),
+        ),
+        ContentRow(
+          onTap: () => _confirmBlock(context),
+          leading: Icon(GeneralIcons.block, color: context.colors.errorDefault),
+          text: ContentRowTextOptions(
+            title: context.l10n.friendCardBlockCta,
+            titleOptions: ContentRowTextOption(baseColor: context.colors.errorDefault),
+          ),
+        ),
       ],
+    );
+  }
+
+  // l10n strings are read before popping, then the confirm sheet is opened
+  // off the root navigator's context — same reasoning `friend_markers.dart`
+  // uses to open the card itself, avoids relying on a context mid-pop.
+  //
+  // Deliberately does NOT capture this widget's own `WidgetRef` for later
+  // use in `onConfirm` — by the time the user actually taps confirm on the
+  // second sheet, this card has long been popped/unmounted, and Riverpod's
+  // `ref.read` throws `StateError('Using "ref" when a widget is about to or
+  // has been unmounted is unsafe...')` at that point (silently swallowed by
+  // Flutter's gesture-callback error handling — no crash, no visible
+  // effect, which is exactly the bug this was). Reading via
+  // `ProviderScope.containerOf` on the root navigator's context instead,
+  // *inside* the onConfirm closure (evaluated at confirm-tap time, not
+  // capture time), avoids depending on any widget's lifetime at all.
+  void _confirmRemove(BuildContext context) {
+    final title = context.l10n.friendCardRemoveConfirmTitle;
+    final body = context.l10n.friendCardRemoveConfirmBody(friend.displayName);
+    final confirmLabel = context.l10n.friendCardRemoveCta;
+    Navigator.of(context).pop();
+    showFriendConfirmSheet(
+      rootNavigatorKey.currentContext!,
+      title: title,
+      body: body,
+      confirmLabel: confirmLabel,
+      onConfirm: () => ProviderScope.containerOf(
+        rootNavigatorKey.currentContext!,
+        listen: false,
+      ).read(friendsControllerProvider.notifier).removeFriend(friend.id),
+    );
+  }
+
+  void _confirmBlock(BuildContext context) {
+    final title = context.l10n.friendCardBlockConfirmTitle;
+    final body = context.l10n.friendCardBlockConfirmBody(friend.displayName);
+    final confirmLabel = context.l10n.friendCardBlockCta;
+    Navigator.of(context).pop();
+    showFriendConfirmSheet(
+      rootNavigatorKey.currentContext!,
+      title: title,
+      body: body,
+      confirmLabel: confirmLabel,
+      onConfirm: () => ProviderScope.containerOf(
+        rootNavigatorKey.currentContext!,
+        listen: false,
+      ).read(friendsControllerProvider.notifier).blockFriend(friend),
     );
   }
 

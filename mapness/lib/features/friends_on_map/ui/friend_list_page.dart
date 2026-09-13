@@ -66,6 +66,18 @@ class FriendListPage extends ConsumerWidget {
                         ),
                   orElse: () => const SizedBox.shrink(),
                 ),
+                // R-45: always reachable, unlike the requests row above,
+                // since a privacy-adjacent entry point shouldn't depend on
+                // whether anyone is currently blocked.
+                ContentWrapper(
+                  color: context.colors.backgroundSurface1,
+                  children: [
+                    ContentRow(
+                      onTap: () => context.router.push(const BlockedUsersRoute()),
+                      text: ContentRowTextOptions(title: context.l10n.friendListBlockedUsersRow),
+                    ),
+                  ],
+                ),
                 Expanded(
                   child: friendsAsync.when(
                     data: (friends) =>

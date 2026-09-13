@@ -14,4 +14,10 @@ abstract class FriendsRepository {
   /// already does that server-side; this only exists so the mocked friend
   /// list can reflect it locally. See `features/friends_on_map/AGENTS.md`.
   Future<void> addFriend(Friend friend);
+
+  /// R-43/R-44: removes a friend, whether from an explicit "remove friend"
+  /// or as the first half of a block. Only ends visibility on this device —
+  /// see `features/friends_on_map/AGENTS.md` for the single-device-mock
+  /// limitation this implies.
+  Future<void> removeFriend(String id);
 }

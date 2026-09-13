@@ -2,6 +2,7 @@ import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/features/friends_on_map/models/invite_resolution.dart';
+import 'package:mapness/features/friends_on_map/providers/blocked_users.dart';
 import 'package:mapness/features/friends_on_map/providers/friend_request_repository.dart';
 import 'package:mapness/features/friends_on_map/providers/friends_on_map_invite_link.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
@@ -17,6 +18,19 @@ import 'package:mapness/shared/lib/deeplink_functions.dart';
 Future<void> resolveInviteAndShowResult(BuildContext context, WidgetRef ref, String rawValue) async {
   final token = _extractInviteToken(rawValue);
   if (token == null) {
+    if (context.mounted) {
+      await _showResultDialog(context, InviteResolution.invalidOrBlocked);
+    }
+    return;
+  }
+
+  // R-44/BR-02 of S-12: a blocked identity's invite must resolve exactly
+  // like an unknown token — checked here (not inside the repository) for
+  // the same reason `ownToken` is fetched externally, per
+  // features/friends_on_map/AGENTS.md's story-boundary note: keeps
+  // FakeFriendRequestRepository dependency-free.
+  final blockedUsers = await ref.read(blockedUsersProvider.future);
+  if (blockedUsers.any((u) => u.id == token)) {
     if (context.mounted) {
       await _showResultDialog(context, InviteResolution.invalidOrBlocked);
     }
