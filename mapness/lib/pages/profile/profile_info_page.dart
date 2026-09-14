@@ -9,6 +9,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/entities/profile/user_profile_data.dart';
 import 'package:mapness/features/sso_auth/data/auth_provider.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
+import 'package:mapness/shared/utils/logger/logger.dart';
 import 'package:mapness/widgets/profile/personal_data.dart';
 import 'package:mapness/widgets/profile/profile_account_service.dart';
 import 'package:provider/provider.dart';
@@ -65,7 +66,7 @@ class _ProfileInfoPageState extends ConsumerState<ProfileInfoPage> {
       // تحديث الـ provider أيضاً
       await ref.read(authProvider.notifier).forceUpdate();
     } catch (e) {
-      print('Error loading user info from API: $e');
+      logger.log('Error loading user info from API: $e', logLevel: MapnessLogLevel.error);
       setState(() {
         _isLoading = false;
       });

@@ -1125,29 +1125,6 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> with Widg
     }
   }
 
-  Future<void> _handleCityEvent(String cityEventName) async {
-    var eventHandled = true;
-    // check here for other city events if they come up in the future
-    switch (cityEventName) {
-      case WRC.deeplinkEventValue:
-        await ref.read(wRCProvider.notifier).moveCameraToEventArea();
-      default:
-        eventHandled = false;
-    }
-
-    final AppRouter router = await ref.read(appRouterProvider);
-    final areStoriesOpen = ref.read(storiesOpenStateProvider);
-    // if we come from stories we must close them for nice user experience
-    if (eventHandled && areStoriesOpen && router.canPop()) {
-      await router.topMostRouter().maybePop();
-      ref.read(activeBottomSheetControllerProvider)?.setState(ThreeStateSheet.hidden);
-    }
-  }
-
-  Future<void> _openRegisterPage() async {
-    await CommonFunctions.onLogin();
-  }
-
   Future<void> _openMediaCatelog() async {
     final AppRouter router = await ref.watch(appRouterProvider);
     await router.push(const MediaCatalogRoute());

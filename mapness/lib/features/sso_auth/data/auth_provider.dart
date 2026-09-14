@@ -35,7 +35,7 @@ class Auth extends _$Auth {
       // Avoid auth<->favourites circular dependency during logout.
       ref.invalidate(favouriteCacheProvider);
     } catch (e) {
-      print(e.toString());
+      logger.log(e.toString(), logLevel: MapnessLogLevel.error);
     }
     await sl<EntryPointCubit>().clearAuth();
     ref.invalidateSelf();

@@ -14,6 +14,7 @@ import 'package:mapness/entities/profile/user_profile_data.dart';
 import 'package:mapness/features/sso_auth/data/auth_provider.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/providers/app_language.dart';
+import 'package:mapness/shared/utils/logger/logger.dart';
 import 'package:mapness/widgets/profile/profile_account_service.dart';
 
 /// Pill radius for fields / buttons (matches existing layout; not all tokens expose radius).
@@ -34,8 +35,6 @@ class PersonalData extends ConsumerStatefulWidget {
 class _PersonalDataState extends ConsumerState<PersonalData> {
   static const int _nameMaxLength = 100;
   static const int _otpResendIntervalSeconds = 60;
-  static const int _otpMaxVerifyAttempts = 3;
-
   late final TextEditingController _firstNameController;
   late final TextEditingController _lastNameController;
   late final TextEditingController _emailController;
@@ -103,7 +102,7 @@ class _PersonalDataState extends ConsumerState<PersonalData> {
     _pendingEmail = null;
     _errorText = null;
 
-    print('📱 Loaded user data - Email: $_activeEmail, isEmailVerified: $_isEmailVerified');
+    logger.log('Loaded user data - Email: $_activeEmail, isEmailVerified: $_isEmailVerified');
   }
 
   /// Seconds left before another OTP can be sent. Based on wall clock so it
@@ -184,8 +183,10 @@ class _PersonalDataState extends ConsumerState<PersonalData> {
 
       final language = ref.read(appLanguageProvider);
 
-      print(
-        '🔄 Fetched fresh user info - Email: ${freshUserInfo.mail}, isEmailVerified: ${freshUserInfo.isEmailVerified}, completeProfile: ${freshUserInfo.completeProfile}',
+      logger.log(
+        'Fetched fresh user info - Email: ${freshUserInfo.mail}, '
+        'isEmailVerified: ${freshUserInfo.isEmailVerified}, '
+        'completeProfile: ${freshUserInfo.completeProfile}',
       );
 
       setState(() {
@@ -214,7 +215,7 @@ class _PersonalDataState extends ConsumerState<PersonalData> {
         await ref.read(authProvider.notifier).updateUserInfo(freshUserInfo);
       }
     } catch (e) {
-      print('❌ Failed to fetch fresh user info: $e');
+      logger.log('Failed to fetch fresh user info: $e', logLevel: MapnessLogLevel.error);
     }
   }
 
@@ -459,7 +460,7 @@ class _PersonalDataState extends ConsumerState<PersonalData> {
       setState(() => _isLoading = false);
     } catch (e) {
       if (kDebugMode) {
-        print('❌ Profile save failed: $e');
+        logger.log('Profile save failed: $e', logLevel: MapnessLogLevel.error);
       }
       if (!mounted) return;
       setState(() {
@@ -742,15 +743,6 @@ class _PersonalDataState extends ConsumerState<PersonalData> {
         _isEmailVerified = widget.userInfo.isEmailVerified;
       }
     });
-  }
-
-  Future<void> _refreshUserInfo() async {
-    try {
-      await ref.read(authProvider.notifier).forceUpdate();
-      _loadUserData();
-    } catch (e) {
-      if (kDebugMode) print('Failed to refresh user info: $e');
-    }
   }
 
   void _handleDioError(DioException e) {

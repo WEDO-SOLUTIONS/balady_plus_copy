@@ -20,7 +20,6 @@ part 'ai_summary_repository_provider.g.dart';
 /// per-environment keys.
 const _aiSummaryAuthKey = '28ed92f1-de4b-4060-b159-2dc19e9b8bf5';
 
-
 /// Dependency-injection seam for the [AiSummaryRepository].
 ///
 /// Builds a dedicated [Dio] pinned to the Momrah staging AI
@@ -31,7 +30,7 @@ Future<AiSummaryRepository> aiSummaryRepository(Ref ref) async {
   const timeout = Duration(seconds: 30);
   final env = await ref.watch(dgisEnvironmentProvider.future);
 
-  print('amr env.url ${env.url}');
+  logger.log('ai_summary base url: ${env.url}');
   final dio = Dio(
     BaseOptions(
       baseUrl: env.url,
@@ -52,4 +51,3 @@ Future<AiSummaryRepository> aiSummaryRepository(Ref ref) async {
   }
   return HttpAiSummaryRepository(dio);
 }
-

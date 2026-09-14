@@ -13,7 +13,6 @@ import 'package:flutter/material.dart';
 class TifoTutorial extends StatefulWidget {
   const TifoTutorial({super.key});
 
-  static const _bg = Color(0xFF0A0A0A);
   static const _sheetBg = Colors.white;
   static const _textPrimary = Color(0xFF101828);
   static const _textSecondary = Color(0xFF6A7282);

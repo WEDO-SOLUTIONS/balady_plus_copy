@@ -1667,31 +1667,6 @@ class PenaltyGame extends FlameGame with TapCallbacks, DragCallbacks {
   final _soccerBallModel = _SoccerBallModel();
   final _strikerModel = _StrikerModel();
   ui.Image? _backgroundImage;
-  final _scoreText = TextPaint(
-    style: const TextStyle(
-      color: Colors.white,
-      fontSize: 18,
-      fontWeight: FontWeight.w800,
-      letterSpacing: 0,
-      shadows: [
-        Shadow(color: Color(0xAA000000), blurRadius: 4, offset: Offset(0, 1)),
-      ],
-    ),
-  );
-  final _titleText = TextPaint(
-    style: const TextStyle(
-      color: Colors.white,
-      fontSize: 24,
-      fontWeight: FontWeight.w900,
-      letterSpacing: 0,
-      decoration: TextDecoration.underline,
-      decorationColor: Color(0xFFFFFFB8),
-      decorationThickness: 1.5,
-      shadows: [
-        Shadow(color: Color(0x99000000), blurRadius: 4, offset: Offset(0, 1)),
-      ],
-    ),
-  );
   static TextPaint _resultTextPaint(PenaltyResultLabels labels) => TextPaint(
     textDirection: labels.textDirection,
     style: TextStyle(

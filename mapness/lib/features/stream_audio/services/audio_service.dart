@@ -70,8 +70,6 @@ class AudioService extends ChangeNotifier {
   bool _isInterrupted = false;
   bool _isDucked = false;
   final bool _isNavigationDucking = false;
-  Timer? _navigationDuckingFailsafeTimer;
-  double? _preNavigationDuckVolume;
 
   // True while navigation voice is active — blocks dismissal detection so the
   // periodic timer doesn't mistake a voice-induced idle state for a user dismissal.
@@ -95,48 +93,6 @@ class AudioService extends ChangeNotifier {
   bool _isStartingPlayback = false; // Track when we're actively starting playback
   static const Duration _startPlaybackTimeout = Duration(seconds: 60); //timeout after one min
   static const Duration _iosUnexpectedStopDebounce = Duration(milliseconds: 1200);
-  static const Duration _iosResumeRetryDelay = Duration(milliseconds: 350);
-
-  Future<void> _ensureStreamPlayingAfterVoice({required String reason}) async {
-    if (!Platform.isIOS) return;
-    if (_player == null) return;
-    if (!_expectsToBePlaying) return;
-    if (_currentStreamUrl == null) return;
-    if (_isStoppingInternally) return;
-
-    // If we are intentionally paused for navigation voice, wait for restore/end.
-    if (_isNavigationDucking) return;
-
-    try {
-      final st = _player!.playerState;
-      final isStopped =
-          !st.playing &&
-          (st.processingState == ProcessingState.idle || st.processingState == ProcessingState.completed);
-
-      if (!isStopped) {
-        // Already playing or buffering/loading.
-        return;
-      }
-
-      debugPrint('AudioService: 🔁 iOS ensure-playing ($reason) - re-preparing stream source');
-      _expectsToBePlaying = true;
-
-      // Re-activate the audio session before re-preparing: after an iOS interruption
-      // the session stays deactivated, and calling play() without setActive(true) is a no-op.
-      try {
-        await _audioSession?.setActive(true);
-        debugPrint('AudioService: ✅ Audio session reactivated ($reason)');
-      } catch (e) {
-        debugPrint('AudioService: ⚠️ Could not reactivate audio session ($reason): $e');
-      }
-
-      // Re-prepare the source; on iOS the player drops to idle after interruptions.
-      await _playLiveStream();
-    } catch (e) {
-      debugPrint('AudioService: ❌ iOS ensure-playing failed ($reason): $e');
-    }
-  }
-
   void _maybeHandleUnexpectedStop(String source) {
     if (_isStoppingInternally || _isStartingPlayback || !_expectsToBePlaying) return;
     if (_isInterrupted || _isNavigationDucking || _isNavigationVoiceActive) return;

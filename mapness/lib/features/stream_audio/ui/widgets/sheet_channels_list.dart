@@ -55,11 +55,6 @@ class MediaCatalogList extends ConsumerWidget {
             if (!isSelected) {
               ref.read(streamAudioProvider).selectChannel(channel);
               needReset?.call();
-            } else {
-              print('Current Program Image:');
-              print(channel.currentPlayedProgram?.image);
-              print('Channel Logo:');
-              print(channel.logo);
             }
           },
           child: MediaCatalogItem(channel: channel, isSelected: isSelected),
