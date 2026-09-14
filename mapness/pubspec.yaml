@@ -182,7 +182,6 @@ dev_dependencies:
   very_good_analysis: ^10.0.0
   cached_build_runner: 0.0.7
   auto_route_generator: ^10.4.0
-  custom_lint: ^0.8.1
 #  todo todo update package
 #  sheetify_lint: ^1.0.1
 
