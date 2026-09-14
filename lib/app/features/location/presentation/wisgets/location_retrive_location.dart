@@ -5,9 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
-import '../../../../core/utils/constants/paths/icon_paths.dart';
-import '../../../_shared_feature_/presentation/widgets/custom_svg_icon_widget.dart';
-
 class LocationRetriveLocation extends StatelessWidget {
   final bool permission;
   const LocationRetriveLocation({super.key, required this.permission});
@@ -24,10 +21,7 @@ class LocationRetriveLocation extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                const CustomSvgIconWidget(
-                  IconPath.location,
-                  iconSize: 82,
-                ),
+                const CustomSvgIconWidget(IconPath.location, iconSize: 82),
                 CustomVerticalSpace(height: 32),
                 /* CustomTextWidget(
                   "location_retrive_location_title".tr(),
@@ -44,7 +38,7 @@ class LocationRetriveLocation extends StatelessWidget {
                   textAlign: TextAlign.center,
                   height: 1.6,
                   maxLines: 10,
-                )
+                ),
               ],
             ),
           ),

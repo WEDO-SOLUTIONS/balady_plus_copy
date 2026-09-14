@@ -1,10 +1,8 @@
-import 'package:balady_plus/app/core/utils/constants/app_colors.dart';
 import 'package:dgis_map/library.dart';
 
 import '../data_sources/point_layers_data.dart';
 
-List<WhiteLands> whiteLandsFromJson(List list) =>
-    List<WhiteLands>.from(list.map((x) => WhiteLands.fromJson(x)));
+List<WhiteLands> whiteLandsFromJson(List list) => List<WhiteLands>.from(list.map((x) => WhiteLands.fromJson(x)));
 
 class WhiteLands extends PointLayersData {
   final int color;
@@ -41,33 +39,27 @@ class WhiteLands extends PointLayersData {
     this.CITYNAME,
     this.PARCELNO,
     this.PARCELLENGTH,
-  }) : super(
-          id: id,
-          name: name,
-          description: description,
-          type: type,
-        );
+  }) : super(id: id, name: name, description: description, type: type);
 
   factory WhiteLands.fromJson(Map<String, dynamic> json) => WhiteLands(
-      id: json['attributes']["OBJECTID"].toString(),
-      name: json['attributes']["PARCELNAME"] ?? '',
-      description: json['attributes']["DESCRIPTION"] ?? '',
-      type: json['attributes']["PLANNO"] ?? '',
-      color: json['attributes']["STATUS"] == "1" ? 0x3342D991 : 0x26000000,
-      strokeColor:
-          json['attributes']["STATUS"] == "1" ? 0xFF0B7E47 : 0xFF000000,
-      AMANANAME: json['attributes']["AMANANAME"] ?? '',
-      MUNNAME: json['attributes']["MUNNAME"] ?? '',
-      PARCELCODE: json['attributes']["PARCELCODE"] ?? '',
-      STREETNAME: json['attributes']["STREETNAME"] ?? '',
-      PARCELAREA: json['attributes']["PARCELAREA"] ?? '',
-      CITYNAME: json['attributes']["CITYNAME"] ?? '',
-      PARCELNO: json['attributes']["PARCELNO"] ?? '',
-      PARCELLENGTH: json['attributes']["PARCELLENGTH"] ?? '',
-      PHASE: json['attributes']['PHASE'],
-      /////////////////////////
-      paths: getList(json['geometry']["rings"])
+    id: json['attributes']["OBJECTID"].toString(),
+    name: json['attributes']["PARCELNAME"] ?? '',
+    description: json['attributes']["DESCRIPTION"] ?? '',
+    type: json['attributes']["PLANNO"] ?? '',
+    color: json['attributes']["STATUS"] == "1" ? 0x3342D991 : 0x26000000,
+    strokeColor: json['attributes']["STATUS"] == "1" ? 0xFF0B7E47 : 0xFF000000,
+    AMANANAME: json['attributes']["AMANANAME"] ?? '',
+    MUNNAME: json['attributes']["MUNNAME"] ?? '',
+    PARCELCODE: json['attributes']["PARCELCODE"] ?? '',
+    STREETNAME: json['attributes']["STREETNAME"] ?? '',
+    PARCELAREA: json['attributes']["PARCELAREA"] ?? '',
+    CITYNAME: json['attributes']["CITYNAME"] ?? '',
+    PARCELNO: json['attributes']["PARCELNO"] ?? '',
+    PARCELLENGTH: json['attributes']["PARCELLENGTH"] ?? '',
+    PHASE: json['attributes']['PHASE'],
+    /////////////////////////
+    paths: getList(json['geometry']["rings"]),
 
-      // not tested yat
-      );
+    // not tested yat
+  );
 }

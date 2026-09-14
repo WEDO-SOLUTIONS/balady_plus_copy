@@ -1,7 +1,6 @@
 import 'package:balady_plus/app/core/utils/extensions/context_conversion.dart';
 import 'package:balady_plus/mini_apps_engine/helper/responsive_extension.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:shimmer/shimmer.dart';
 
 class MiniAppsShimmerLoadingWidget extends StatelessWidget {

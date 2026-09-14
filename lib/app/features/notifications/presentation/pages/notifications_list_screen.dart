@@ -1,6 +1,5 @@
 import 'package:balady_plus/app/core/dependency_injection/injection_container.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/default_appbar_widget.dart';
-import 'package:balady_plus/app/features/delegators/presentation/delegators_cubit/delegators_cubit.dart';
 import 'package:balady_plus/app/features/entry_point/presentation/cubit/auth_cubit.dart';
 import 'package:balady_plus/app/features/notifications/data/model/notifications_list/search_notifications_params.dart';
 import 'package:balady_plus/app/features/notifications/data/repositories/notification_repository_implementation.dart';
@@ -39,12 +38,8 @@ class NotificationsListScreen extends StatelessWidget {
               persoana = {
                 "typeId": "person",
                 "ids": [
-                  {
-                    "typeId": "identity-number",
-                    "value": auth.state.userInfo!.idNo,
-                    "sourceId": "moi",
-                  }
-                ]
+                  {"typeId": "identity-number", "value": auth.state.userInfo!.idNo, "sourceId": "moi"},
+                ],
               };
             }
             return NotificationsListCubit(
@@ -58,11 +53,7 @@ class NotificationsListScreen extends StatelessWidget {
         backgroundColor: Colors.white,
         appBar: DefaultAppBarWidget(
           title: "notifications".tr(),
-          actions: const [
-            ActionShowTypeDateWidget(),
-            SizedBox(width: 10),
-            ActionShowFilterWidget(),
-          ],
+          actions: const [ActionShowTypeDateWidget(), SizedBox(width: 10), ActionShowFilterWidget()],
         ),
         body: const SafeArea(
           child: Padding(

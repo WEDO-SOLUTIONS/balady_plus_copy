@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'package:balady_plus/app/core/utils/common_functions.dart';
 import 'package:dgis_map/library.dart';
 
@@ -8,129 +7,112 @@ import 'package:localize_and_translate/localize_and_translate.dart';
 import 'package:balady_plus/app/events_logs/balady_logs.dart';
 
 class InvestmentDetailsResponse {
-  InvestmentDetailsResponse({
-    this.statusDetails,
-    this.data,
-  });
+  InvestmentDetailsResponse({this.statusDetails, this.data});
 
   List<StatusDetail>? statusDetails;
   Data? data;
 
-  factory InvestmentDetailsResponse.fromJson(Map<String, dynamic> json) =>
-      InvestmentDetailsResponse(
-        statusDetails: json["statusDetails"] == null
-            ? null
-            : List<StatusDetail>.from(
-                json["statusDetails"].map((x) => StatusDetail.fromJson(x))),
-        data: json["data"] == null ? null : Data.fromJson(json["data"]),
-      );
+  factory InvestmentDetailsResponse.fromJson(Map<String, dynamic> json) => InvestmentDetailsResponse(
+    statusDetails: json["statusDetails"] == null
+        ? null
+        : List<StatusDetail>.from(json["statusDetails"].map((x) => StatusDetail.fromJson(x))),
+    data: json["data"] == null ? null : Data.fromJson(json["data"]),
+  );
 }
 
 class RequiredAttachmentCategory {
-  RequiredAttachmentCategory({
-    this.id,
-    this.name,
-  });
+  RequiredAttachmentCategory({this.id, this.name});
 
   String? id;
   String? name;
 
   factory RequiredAttachmentCategory.fromJson(Map<String, dynamic> json) =>
-      RequiredAttachmentCategory(
-        id: json["ID"],
-        name: json["Name"],
-      );
+      RequiredAttachmentCategory(id: json["ID"], name: json["Name"]);
 
-  Map<String, dynamic> toJson() => {
-        "ID": id,
-        "Name": name,
-      };
+  Map<String, dynamic> toJson() => {"ID": id, "Name": name};
 }
 
 class Data {
-  Data({
-    this.responseCode,
-    this.responseMessage,
-    this.result,
-  });
+  Data({this.responseCode, this.responseMessage, this.result});
 
   dynamic responseCode;
   String? responseMessage;
   Result? result;
 
   factory Data.fromJson(Map<String, dynamic> json) => Data(
-        responseCode: json["responseCode"],
-        responseMessage: json["responseMessage"],
-        result: json["result"] == null ? null : Result.fromJson(json["result"]),
-      );
+    responseCode: json["responseCode"],
+    responseMessage: json["responseMessage"],
+    result: json["result"] == null ? null : Result.fromJson(json["result"]),
+  );
 }
 
 class Result {
-  Result(
-      {this.appendixList,
-      this.announcementDate,
-      this.mainActivityId,
-      this.pyExpirationDate,
-      this.mainActivity,
-      this.envelopOpeningDate,
-      this.municipalityId,
-      this.favoriteInd,
-      this.isFavourite,
-      this.specialOpportunity,
-      this.offerType,
-      this.submittingEnvelopesLocation,
-      this.openingEnvelopeTime,
-      this.subMunicipality,
-      this.bidEndDate,
-      required this.id,
-      this.offeringDate,
-      this.offeringTime,
-      this.message,
-      this.opportunityList,
-      // this.offeringPeriod,
-      this.envelopeOpeningLocation,
-      this.subMunicipalityId,
-      this.contractDuration,
-      this.contractDurationMonths,
-      this.biddingEndingTime,
-      this.municipality,
-      this.opportunityDescription,
-      this.termsSpecDocument,
-      this.opportunityNumber,
-      this.documentValue,
-      this.contractTemplate,
-      this.opportunityType,
-      this.requiredAttachmentCategoryList,
-      this.paymentType,
-      this.preparationPeriodPercentage,
-      this.sadadStatus,
-      this.caseStatus,
-      this.caseStatusEN,
-      this.purchaseDocumentStatus,
-      this.sadadNumber,
-      this.cityCode,
-      this.regionCode,
-      this.entityName,
-      this.entityID,
-      this.cities,
-      this.isEntityOpportunity,
-      this.regions,
-      this.applyAnnualRaise,
-      this.yearsForAnnualRaise,
-      this.annualRaisePercentage,
-      this.isBillingApplicableForEntityOpportunity,
-      this.bankWarrantyType,
-      this.deductInitialyWarrantyFirstYear,
-      this.isBiddingNotAllowed,
-      this.initialWarrantyPercentage,
-      this.rfpHasPrice,
-      this.bidEndDateTime,
-      this.queryEndDateTime,
-      this.rFPEndDateTime,
-      this.envelopOpeningDateTime,
-      this.annualContractValue,
-      this.opportunityAvailability,
-      this.totalContractValue});
+  Result({
+    this.appendixList,
+    this.announcementDate,
+    this.mainActivityId,
+    this.pyExpirationDate,
+    this.mainActivity,
+    this.envelopOpeningDate,
+    this.municipalityId,
+    this.favoriteInd,
+    this.isFavourite,
+    this.specialOpportunity,
+    this.offerType,
+    this.submittingEnvelopesLocation,
+    this.openingEnvelopeTime,
+    this.subMunicipality,
+    this.bidEndDate,
+    required this.id,
+    this.offeringDate,
+    this.offeringTime,
+    this.message,
+    this.opportunityList,
+    // this.offeringPeriod,
+    this.envelopeOpeningLocation,
+    this.subMunicipalityId,
+    this.contractDuration,
+    this.contractDurationMonths,
+    this.biddingEndingTime,
+    this.municipality,
+    this.opportunityDescription,
+    this.termsSpecDocument,
+    this.opportunityNumber,
+    this.documentValue,
+    this.contractTemplate,
+    this.opportunityType,
+    this.requiredAttachmentCategoryList,
+    this.paymentType,
+    this.preparationPeriodPercentage,
+    this.sadadStatus,
+    this.caseStatus,
+    this.caseStatusEN,
+    this.purchaseDocumentStatus,
+    this.sadadNumber,
+    this.cityCode,
+    this.regionCode,
+    this.entityName,
+    this.entityID,
+    this.cities,
+    this.isEntityOpportunity,
+    this.regions,
+    this.applyAnnualRaise,
+    this.yearsForAnnualRaise,
+    this.annualRaisePercentage,
+    this.isBillingApplicableForEntityOpportunity,
+    this.bankWarrantyType,
+    this.deductInitialyWarrantyFirstYear,
+    this.isBiddingNotAllowed,
+    this.initialWarrantyPercentage,
+    this.rfpHasPrice,
+    this.bidEndDateTime,
+    this.queryEndDateTime,
+    this.rFPEndDateTime,
+    this.envelopOpeningDateTime,
+    this.annualContractValue,
+    this.opportunityAvailability,
+    this.totalContractValue,
+  });
 
   String? message;
   List<dynamic>? appendixList;
@@ -201,89 +183,84 @@ class Result {
 
   factory Result.fromJson(Map<String, dynamic> json) {
     Result r = Result(
-        appendixList: json["AppendixList"] == null
-            ? null
-            : List<dynamic>.from(json["AppendixList"].map((x) => x)),
-        announcementDate: json["AnnouncementDate"],
-        message: json["message"],
-        mainActivityId: json["MainActivityID"],
-        pyExpirationDate: json["pyExpirationDate"],
-        mainActivity: json["MainActivity"],
-        envelopOpeningDate: json["EnvelopOpeningDate"],
-        municipalityId: json["MunicipalityID"],
-        favoriteInd: json["FavoriteInd"],
-        isFavourite: json["IsFavourite"],
-        specialOpportunity: json["SpecialOpportunity"],
-        offerType: json["OfferType"],
-        submittingEnvelopesLocation: json["SubmittingEnvelopesLocation"],
-        openingEnvelopeTime: json["OpeningEnvelopeTime"],
-        subMunicipality: json["SubMunicipality"],
-        bidEndDate: json["BidEndDate"],
-        id: json["ID"],
-        offeringDate: json["OfferingDate"],
-        offeringTime: json["OfferingTime"],
-        opportunityList: json["OpportunityList"] == null
-            ? null
-            : List<OpportunityList>.from(json["OpportunityList"]
-                .map((x) => OpportunityList.fromJson(x))),
-        //  offeringPeriod: json["OfferingPeriod"],
-        envelopeOpeningLocation: json["EnvelopeOpeningLocation"],
-        subMunicipalityId: json["SubMunicipalityID"],
-        contractDuration: json["ContractDuration"],
-        contractDurationMonths: json["ContractDurationMonths"],
-        biddingEndingTime: json["BiddingEndingTime"],
-        municipality: json["Municipality"],
-        opportunityDescription: json["OpportunityDescription"],
-        termsSpecDocument: json["TermsSpecDocument"] == null
-            ? null
-            : List<ContractTemplate>.from(json["TermsSpecDocument"]
-                .map((x) => ContractTemplate.fromJson(x))),
-        opportunityNumber: json["OpportunityNumber"],
-        documentValue: json["DocumentValue"]?.toDouble(),
-        contractTemplate: json["ContractTemplate"] == null
-            ? null
-            : List<ContractTemplate>.from(json["ContractTemplate"]
-                .map((x) => ContractTemplate.fromJson(x))),
-        opportunityType: json["OpportunityType"],
-        requiredAttachmentCategoryList: json["RequiredAttachmentCategoryList"] == null
-            ? null
-            : List<RequiredAttachmentCategoryList>.from(json["RequiredAttachmentCategoryList"]
-                .map((x) => RequiredAttachmentCategoryList.fromJson(x))),
-        paymentType: json["PaymentType"],
-        preparationPeriodPercentage: json["PreparationPeriodPercentage"]?.toDouble(),
-        sadadStatus: json["SadadStatus"],
-        purchaseDocumentStatus: json["PurchaseDocumentStatus"],
-        caseStatusEN: json["CaseStatusEN"],
-        caseStatus: json["CaseStatus"],
-        sadadNumber: json["SadadNumber"],
-        cityCode: json["CityCode"],
-        regionCode: json["RegionCode"],
-        entityName: json["EntityName"],
-        entityID: json["EntityID"],
-        cities: json["Cities"],
-        isEntityOpportunity: json["IsEntityOpportunity"],
-        regions: json["Regions"],
-        applyAnnualRaise: json["ApplyAnnualRaise"],
-        yearsForAnnualRaise:
-            json["YearsForAnnualRaise"],
-        annualRaisePercentage: json["AnnualRaisePercentage"]?.toDouble(),
-        isBillingApplicableForEntityOpportunity: json["IsBillingApplicableForEntityOpportunity"],
-        bankWarrantyType: json["BankWarrantyType"],
-        deductInitialyWarrantyFirstYear: json["DeductInitialyWarrantyFirstYear"],
-        isBiddingNotAllowed: json["IsBiddingNotAllowed"],
-        initialWarrantyPercentage: json["InitialWarrantyPercentage"]?.toDouble(),
-        rfpHasPrice: json["RFPHasPrice"],
-        bidEndDateTime: json["BidEndDateTime"],
-        queryEndDateTime: json["QueryEndDateTime"],
-        rFPEndDateTime: json["RFPEndDateTime"],
-        envelopOpeningDateTime: json["EnvelopOpeningDateTime"],
-        annualContractValue: json["AnnualContractValue"],
-        opportunityAvailability: json["OpportunityAvailability"],
-        totalContractValue: json["TotalContractValue"]?.toDouble());
+      appendixList: json["AppendixList"] == null ? null : List<dynamic>.from(json["AppendixList"].map((x) => x)),
+      announcementDate: json["AnnouncementDate"],
+      message: json["message"],
+      mainActivityId: json["MainActivityID"],
+      pyExpirationDate: json["pyExpirationDate"],
+      mainActivity: json["MainActivity"],
+      envelopOpeningDate: json["EnvelopOpeningDate"],
+      municipalityId: json["MunicipalityID"],
+      favoriteInd: json["FavoriteInd"],
+      isFavourite: json["IsFavourite"],
+      specialOpportunity: json["SpecialOpportunity"],
+      offerType: json["OfferType"],
+      submittingEnvelopesLocation: json["SubmittingEnvelopesLocation"],
+      openingEnvelopeTime: json["OpeningEnvelopeTime"],
+      subMunicipality: json["SubMunicipality"],
+      bidEndDate: json["BidEndDate"],
+      id: json["ID"],
+      offeringDate: json["OfferingDate"],
+      offeringTime: json["OfferingTime"],
+      opportunityList: json["OpportunityList"] == null
+          ? null
+          : List<OpportunityList>.from(json["OpportunityList"].map((x) => OpportunityList.fromJson(x))),
+      //  offeringPeriod: json["OfferingPeriod"],
+      envelopeOpeningLocation: json["EnvelopeOpeningLocation"],
+      subMunicipalityId: json["SubMunicipalityID"],
+      contractDuration: json["ContractDuration"],
+      contractDurationMonths: json["ContractDurationMonths"],
+      biddingEndingTime: json["BiddingEndingTime"],
+      municipality: json["Municipality"],
+      opportunityDescription: json["OpportunityDescription"],
+      termsSpecDocument: json["TermsSpecDocument"] == null
+          ? null
+          : List<ContractTemplate>.from(json["TermsSpecDocument"].map((x) => ContractTemplate.fromJson(x))),
+      opportunityNumber: json["OpportunityNumber"],
+      documentValue: json["DocumentValue"]?.toDouble(),
+      contractTemplate: json["ContractTemplate"] == null
+          ? null
+          : List<ContractTemplate>.from(json["ContractTemplate"].map((x) => ContractTemplate.fromJson(x))),
+      opportunityType: json["OpportunityType"],
+      requiredAttachmentCategoryList: json["RequiredAttachmentCategoryList"] == null
+          ? null
+          : List<RequiredAttachmentCategoryList>.from(
+              json["RequiredAttachmentCategoryList"].map((x) => RequiredAttachmentCategoryList.fromJson(x)),
+            ),
+      paymentType: json["PaymentType"],
+      preparationPeriodPercentage: json["PreparationPeriodPercentage"]?.toDouble(),
+      sadadStatus: json["SadadStatus"],
+      purchaseDocumentStatus: json["PurchaseDocumentStatus"],
+      caseStatusEN: json["CaseStatusEN"],
+      caseStatus: json["CaseStatus"],
+      sadadNumber: json["SadadNumber"],
+      cityCode: json["CityCode"],
+      regionCode: json["RegionCode"],
+      entityName: json["EntityName"],
+      entityID: json["EntityID"],
+      cities: json["Cities"],
+      isEntityOpportunity: json["IsEntityOpportunity"],
+      regions: json["Regions"],
+      applyAnnualRaise: json["ApplyAnnualRaise"],
+      yearsForAnnualRaise: json["YearsForAnnualRaise"],
+      annualRaisePercentage: json["AnnualRaisePercentage"]?.toDouble(),
+      isBillingApplicableForEntityOpportunity: json["IsBillingApplicableForEntityOpportunity"],
+      bankWarrantyType: json["BankWarrantyType"],
+      deductInitialyWarrantyFirstYear: json["DeductInitialyWarrantyFirstYear"],
+      isBiddingNotAllowed: json["IsBiddingNotAllowed"],
+      initialWarrantyPercentage: json["InitialWarrantyPercentage"]?.toDouble(),
+      rfpHasPrice: json["RFPHasPrice"],
+      bidEndDateTime: json["BidEndDateTime"],
+      queryEndDateTime: json["QueryEndDateTime"],
+      rFPEndDateTime: json["RFPEndDateTime"],
+      envelopOpeningDateTime: json["EnvelopOpeningDateTime"],
+      annualContractValue: json["AnnualContractValue"],
+      opportunityAvailability: json["OpportunityAvailability"],
+      totalContractValue: json["TotalContractValue"]?.toDouble(),
+    );
     r.allLocations = getAllLocations(r.opportunityList ?? []);
 
-    r.contractTemplateAndTerms =
-        getContractTemplate(r.contractTemplate, r.termsSpecDocument);
+    r.contractTemplateAndTerms = getContractTemplate(r.contractTemplate, r.termsSpecDocument);
 
     return r;
   }
@@ -384,18 +361,17 @@ class Result {
     String date = "";
     try {
       if (bidEndDate != null) {
-        date = DateFormat.yMMMd(CommonFunctions.isAppAR ? 'ar_SA' : 'en_US')
-            .format(DateTime.parse(bidEndDate!));
+        date = DateFormat.yMMMd(CommonFunctions.isAppAR ? 'ar_SA' : 'en_US').format(DateTime.parse(bidEndDate!));
       }
     } catch (error, stackTrace) {
-    LogsViewModel().sendEventFromModel(
-      event: ErrorExceptionModel(
-        nameEvent: EventsName.handledException,
-        message: error.toString(),
-        stackTrace: stackTrace.toString(),
-      ),
-    );
-  }
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+    }
     if (CommonFunctions.isAppAR) {
       date = CommonFunctions.replaceArabicNumberWithEnglish(date);
     }
@@ -415,21 +391,18 @@ class Result {
         int? yearsForAnnualRaise = this.yearsForAnnualRaise;
 
         if (applyAnnualRaise == "Yes") {
-          return "${paymentType ?? ""}, ${("var_payment_agreement")
-                  .tr()
-                  .replaceAll("-", annualRaisePercentage.toString())
-                  .replaceAll("ـ", yearsForAnnualRaise.toString())}";
+          return "${paymentType ?? ""}, ${("var_payment_agreement").tr().replaceAll("-", annualRaisePercentage.toString()).replaceAll("ـ", yearsForAnnualRaise.toString())}";
         }
       }
     } catch (error, stackTrace) {
-    LogsViewModel().sendEventFromModel(
-      event: ErrorExceptionModel(
-        nameEvent: EventsName.handledException,
-        message: error.toString(),
-        stackTrace: stackTrace.toString(),
-      ),
-    );
-  }
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+    }
 
     return paymentType ?? "";
   }
@@ -454,15 +427,13 @@ class Result {
     for (OpportunityList location in opportunityList) {
       int maxLength = 0;
       if (location.coOrdinatesList != null) {
-        maxLength = location.coOrdinatesList!.length > 100
-            ? 100
-            : location.coOrdinatesList!.length;
+        maxLength = location.coOrdinatesList!.length > 100 ? 100 : location.coOrdinatesList!.length;
       }
       for (int i = 0; i < maxLength; i++) {
         double? xCoordinate = location.coOrdinatesList![i].xCoordinate;
         double? yCoordinate = location.coOrdinatesList![i].yCoordinate;
         if (xCoordinate != null && yCoordinate != null) {
-          locations.add(LatLng(latitude:yCoordinate, longitude:xCoordinate));
+          locations.add(LatLng(latitude: yCoordinate, longitude: xCoordinate));
         }
       }
     }
@@ -483,14 +454,10 @@ class Result {
 
   String getContractDurationYearsAndMonth() {
     String contract = "";
-    if (contractDuration != null &&
-        contractDuration!.isNotEmpty &&
-        contractDuration != "0") {
+    if (contractDuration != null && contractDuration!.isNotEmpty && contractDuration != "0") {
       contract += "$contractDuration ${("years").tr()}";
     }
-    if (contractDurationMonths != null &&
-        contractDurationMonths!.isNotEmpty &&
-        contractDurationMonths != "0") {
+    if (contractDurationMonths != null && contractDurationMonths!.isNotEmpty && contractDurationMonths != "0") {
       if (contract.isNotEmpty) contract += " ";
       contract += "$contractDurationMonths ${("months").tr()}";
     }
@@ -499,16 +466,15 @@ class Result {
   }
 
   static List<ContractTemplate> getContractTemplate(
-      List<ContractTemplate>? contractTemplate,
-      List<ContractTemplate>? termsSpecDocument) {
+    List<ContractTemplate>? contractTemplate,
+    List<ContractTemplate>? termsSpecDocument,
+  ) {
     List<ContractTemplate> contractTemplateAndTerms = [];
 
     List<ContractTemplate> list1 = contractTemplate != null
         ? contractTemplate
-            .where((element) =>
-                element.pxLinkedRefTo != null &&
-                element.pxLinkedRefTo!.isNotEmpty)
-            .toList()
+              .where((element) => element.pxLinkedRefTo != null && element.pxLinkedRefTo!.isNotEmpty)
+              .toList()
         : [];
     for (int i = 0; i < list1.length; i++) {
       ContractTemplate item = list1[i];
@@ -522,10 +488,8 @@ class Result {
 
     List<ContractTemplate> list2 = termsSpecDocument != null
         ? termsSpecDocument
-            .where((element) =>
-                element.pxLinkedRefTo != null &&
-                element.pxLinkedRefTo!.isNotEmpty)
-            .toList()
+              .where((element) => element.pxLinkedRefTo != null && element.pxLinkedRefTo!.isNotEmpty)
+              .toList()
         : [];
 
     for (int i = 0; i < list2.length; i++) {
@@ -574,9 +538,7 @@ class Result {
   }
 
   String getAdminMuncipalityOrCity() {
-    return getEntityOpportunity()
-        ? (getCitiesOrRegions().firstOrNull ?? "")
-        : (subMunicipality ?? "");
+    return getEntityOpportunity() ? (getCitiesOrRegions().firstOrNull ?? "") : (subMunicipality ?? "");
     //return cities?.split(",").first ?? ;
     //   return getEntityOpportunity() ? (city ?? "") : (municipality ?? "");
   }
@@ -584,7 +546,8 @@ class Result {
   String getEntityImage() {
     return getEntityOpportunity()
         ? getEntityImagePath(entityID)
-        : ("" "momra.png"); //MM
+        : (""
+              "momra.png"); //MM
   }
 
   String? getOfferType() {
@@ -611,45 +574,31 @@ class Result {
 }
 
 class ContractTemplate {
-  ContractTemplate({
-    this.pyCategory,
-    this.pxLinkedRefTo,
-    this.pxLinkedRefFrom,
-    this.pyMemo,
-  });
+  ContractTemplate({this.pyCategory, this.pxLinkedRefTo, this.pxLinkedRefFrom, this.pyMemo});
 
   String? pyCategory;
   String? pxLinkedRefTo;
   String? pxLinkedRefFrom;
   String? pyMemo;
 
-  factory ContractTemplate.fromJson(Map<String, dynamic> json) =>
-      ContractTemplate(
-        pyCategory: json["pyCategory"],
-        pxLinkedRefTo: json["pxLinkedRefTo"],
-        pxLinkedRefFrom: json["pxLinkedRefFrom"],
-        pyMemo: json["pyMemo"],
-      );
+  factory ContractTemplate.fromJson(Map<String, dynamic> json) => ContractTemplate(
+    pyCategory: json["pyCategory"],
+    pxLinkedRefTo: json["pxLinkedRefTo"],
+    pxLinkedRefFrom: json["pxLinkedRefFrom"],
+    pyMemo: json["pyMemo"],
+  );
 }
 
 class StatusDetail {
-  StatusDetail({
-    this.code,
-    this.message,
-  });
+  StatusDetail({this.code, this.message});
 
   int? code;
   String? message;
 
-  factory StatusDetail.fromJson(Map<String, dynamic> json) => StatusDetail(
-        code: json["code"],
-        message: json["message"],
-      );
+  factory StatusDetail.fromJson(Map<String, dynamic> json) =>
+      StatusDetail(code: json["code"], message: json["message"]);
 
-  Map<String, dynamic> toJson() => {
-        "code": code,
-        "message": message,
-      };
+  Map<String, dynamic> toJson() => {"code": code, "message": message};
 }
 
 class RequiredAttachmentCategoryList {
@@ -660,8 +609,7 @@ class RequiredAttachmentCategoryList {
   bool? isMandatory;
 
   factory RequiredAttachmentCategoryList.fromJson(Map<String, dynamic> json) =>
-      RequiredAttachmentCategoryList(
-          id: json["ID"], name: json["Name"], isMandatory: json["IsMandatory"]);
+      RequiredAttachmentCategoryList(id: json["ID"], name: json["Name"], isMandatory: json["IsMandatory"]);
 }
 
 class OpportunityList {
@@ -689,37 +637,33 @@ class OpportunityList {
   String? landNumber;
   String? orgSketchNumber;
 
-  factory OpportunityList.fromJson(Map<String, dynamic> json) =>
-      OpportunityList(
-        sourceCaseKey: json["SourceCaseKey"],
-        sourceCaseId: json["SourceCaseID"],
-        siteAddress: json["SiteAddress"],
-        siteArea: json["SiteArea"] ?? "0",
-        street: json["Street"],
-        siteNumber: json["SiteNumber"],
-        coOrdinatesList: json["CoOrdinatesList"] == null
-            ? null
-            : List<CoOrdinatesList>.from(json["CoOrdinatesList"]
-                .map((x) => CoOrdinatesList.fromJson(x))),
-        district: json["District"],
-        landNumber: json["LandNumber"],
-        orgSketchNumber: json["OrgSketchNumber"],
-      );
+  factory OpportunityList.fromJson(Map<String, dynamic> json) => OpportunityList(
+    sourceCaseKey: json["SourceCaseKey"],
+    sourceCaseId: json["SourceCaseID"],
+    siteAddress: json["SiteAddress"],
+    siteArea: json["SiteArea"] ?? "0",
+    street: json["Street"],
+    siteNumber: json["SiteNumber"],
+    coOrdinatesList: json["CoOrdinatesList"] == null
+        ? null
+        : List<CoOrdinatesList>.from(json["CoOrdinatesList"].map((x) => CoOrdinatesList.fromJson(x))),
+    district: json["District"],
+    landNumber: json["LandNumber"],
+    orgSketchNumber: json["OrgSketchNumber"],
+  );
 
   Map<String, dynamic> toJson() => {
-        "SourceCaseKey": sourceCaseKey,
-        "SourceCaseID": sourceCaseId,
-        "SiteAddress": siteAddress,
-        "SiteArea": siteArea,
-        "Street": street,
-        "SiteNumber": siteNumber,
-        "CoOrdinatesList": coOrdinatesList == null
-            ? null
-            : List<dynamic>.from(coOrdinatesList!.map((x) => x.toJson())),
-        "District": district,
-        "LandNumber": landNumber,
-        "OrgSketchNumber": orgSketchNumber,
-      };
+    "SourceCaseKey": sourceCaseKey,
+    "SourceCaseID": sourceCaseId,
+    "SiteAddress": siteAddress,
+    "SiteArea": siteArea,
+    "Street": street,
+    "SiteNumber": siteNumber,
+    "CoOrdinatesList": coOrdinatesList == null ? null : List<dynamic>.from(coOrdinatesList!.map((x) => x.toJson())),
+    "District": district,
+    "LandNumber": landNumber,
+    "OrgSketchNumber": orgSketchNumber,
+  };
 
   String getArea() {
     if (siteArea != null) {
@@ -730,34 +674,22 @@ class OpportunityList {
 }
 
 class CoOrdinatesList {
-  CoOrdinatesList({
-    this.xCoordinate,
-    this.pzInsKey,
-    this.yCoordinate,
-  });
+  CoOrdinatesList({this.xCoordinate, this.pzInsKey, this.yCoordinate});
 
   double? xCoordinate;
   String? pzInsKey;
   double? yCoordinate;
 
-  factory CoOrdinatesList.fromJson(Map<String, dynamic> json) =>
-      CoOrdinatesList(
-        xCoordinate:
-            json["XCoordinate"]?.toDouble(),
-        pzInsKey: json["pzInsKey"],
-        yCoordinate: json["YCoordinate"] != null
-            ? json["YCoordinate"].toDouble()
-            : json["YCoordinate"],
-      );
+  factory CoOrdinatesList.fromJson(Map<String, dynamic> json) => CoOrdinatesList(
+    xCoordinate: json["XCoordinate"]?.toDouble(),
+    pzInsKey: json["pzInsKey"],
+    yCoordinate: json["YCoordinate"] != null ? json["YCoordinate"].toDouble() : json["YCoordinate"],
+  );
 
-  Map<String, dynamic> toJson() => {
-        "XCoordinate": xCoordinate,
-        "pzInsKey": pzInsKey,
-        "YCoordinate": yCoordinate,
-      };
+  Map<String, dynamic> toJson() => {"XCoordinate": xCoordinate, "pzInsKey": pzInsKey, "YCoordinate": yCoordinate};
   LatLng? getLocation() {
     if (xCoordinate != null && yCoordinate != null) {
-      return LatLng(latitude:yCoordinate!, longitude:xCoordinate!);
+      return LatLng(latitude: yCoordinate!, longitude: xCoordinate!);
     }
 
     return null;
@@ -779,18 +711,11 @@ String getFormattedDateAndTimeV2(String dateStr) {
       dateAndTime = DateTime.parse(dateWithT).toLocal();
     }
 
-    String date = DateFormat.yMMMMd(CommonFunctions.isAppAR ? 'ar_SA' : 'en_US')
-        .format(dateAndTime!)
-        .toString();
+    String date = DateFormat.yMMMMd(CommonFunctions.isAppAR ? 'ar_SA' : 'en_US').format(dateAndTime!).toString();
 
-    String time =
-        DateFormat("h:mm a", CommonFunctions.isAppAR ? 'ar_SA' : 'en_US')
-            .format(dateAndTime)
-            .toString();
+    String time = DateFormat("h:mm a", CommonFunctions.isAppAR ? 'ar_SA' : 'en_US').format(dateAndTime).toString();
     if (CommonFunctions.isAppAR) {
-      time = time
-          .replaceAll("ص", ("am_full").tr())
-          .replaceAll("م", ("pm_full").tr());
+      time = time.replaceAll("ص", ("am_full").tr()).replaceAll("م", ("pm_full").tr());
     }
     formmatedDateAndTime = "$date  |  $time";
   } catch (error, stackTrace) {
@@ -803,8 +728,7 @@ String getFormattedDateAndTimeV2(String dateStr) {
     );
   }
   if (CommonFunctions.isAppAR) {
-    formmatedDateAndTime =
-        CommonFunctions.replaceArabicNumberWithEnglish(formmatedDateAndTime);
+    formmatedDateAndTime = CommonFunctions.replaceArabicNumberWithEnglish(formmatedDateAndTime);
   }
   return formmatedDateAndTime;
 }

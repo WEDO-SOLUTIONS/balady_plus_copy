@@ -9,7 +9,6 @@ import '../widgets/check_boxes/custom_checkbox.dart';
 import '../widgets/custom_spaces_widgets.dart';
 import '../widgets/search_text_field_widget.dart';
 import 'dialog_header.dart';
-import 'package:balady_plus/app/events_logs/balady_logs.dart';
 
 class MultiSelectionWithSearchDialog extends StatefulWidget {
   final Function(List<DropDownItem> items) onSelect;
@@ -18,13 +17,14 @@ class MultiSelectionWithSearchDialog extends StatefulWidget {
   final String? title;
   final String? searchHint;
 
-  const MultiSelectionWithSearchDialog(
-      {super.key,
-      required this.onSelect,
-      this.selectedItem,
-      required this.items,
-      this.title,
-      this.searchHint});
+  const MultiSelectionWithSearchDialog({
+    super.key,
+    required this.onSelect,
+    this.selectedItem,
+    required this.items,
+    this.title,
+    this.searchHint,
+  });
 
   @override
   State<StatefulWidget> createState() {
@@ -32,8 +32,7 @@ class MultiSelectionWithSearchDialog extends StatefulWidget {
   }
 }
 
-class _MultiSelectionWithSearchDialog
-    extends State<MultiSelectionWithSearchDialog> {
+class _MultiSelectionWithSearchDialog extends State<MultiSelectionWithSearchDialog> {
   List<DropDownItem> items = [];
   List<DropDownItem> currentSelectedItems = [];
 
@@ -57,21 +56,15 @@ class _MultiSelectionWithSearchDialog
       child: Column(
         children: [
           // header
-          DialogHeader(
-            title: widget.title ?? "",
-          ),
+          DialogHeader(title: widget.title ?? ""),
           const CustomVerticalSpace(height: 20),
           // search
           SearchTextFieldWidget(
             containerHeight: 52,
             hintText: widget.searchHint ?? ('searchFor').tr(),
-            onTextChanged: /* () {},*/
-                (value) {
+            onTextChanged: /* () {},*/ (value) {
               setState(() {
-                items = widget.items
-                    .where((element) =>
-                        element.name.contains(value) ?? element.name == value)
-                    .toList();
+                items = widget.items.where((element) => element.name.contains(value) ?? element.name == value).toList();
               });
             },
             onSubmitSearch: (String val) {},
@@ -80,37 +73,37 @@ class _MultiSelectionWithSearchDialog
           // incident type list
           Expanded(
             child: ListView.builder(
-                //   itemCount: items != null ? items.length : 0,
-                itemCount: items.length,
-                shrinkWrap: true,
-                controller: _scrollController,
-                itemBuilder: (ctx, index) {
-                  return CustomCheckbox(
-                    key: ValueKey(items[index].id),
-                    title: items[index].name ?? "",
-                    isSelected: currentSelectedItems.contains(items[index]),
-                    onSelect: (v) {
-                      if (v) {
-                        currentSelectedItems.add(items[index]);
-                      } else {
-                        currentSelectedItems.remove(items[index]);
-                      }
-                      isButtonDisabled = false;
-                      /*if (currentSelectedItems.isEmpty) {
+              //   itemCount: items != null ? items.length : 0,
+              itemCount: items.length,
+              shrinkWrap: true,
+              controller: _scrollController,
+              itemBuilder: (ctx, index) {
+                return CustomCheckbox(
+                  key: ValueKey(items[index].id),
+                  title: items[index].name ?? "",
+                  isSelected: currentSelectedItems.contains(items[index]),
+                  onSelect: (v) {
+                    if (v) {
+                      currentSelectedItems.add(items[index]);
+                    } else {
+                      currentSelectedItems.remove(items[index]);
+                    }
+                    isButtonDisabled = false;
+                    /*if (currentSelectedItems.isEmpty) {
                         isButtonDisabled = true;
                       } else {
                         isButtonDisabled = false;
                       }*/
-                      setState(() {});
-                    },
-                  );
-                }),
+                    setState(() {});
+                  },
+                );
+              },
+            ),
           ),
           const CustomVerticalSpace(height: 5),
           // button
           EnhancedCustomElevatedButtonWidget(
-            btnColor:
-                isButtonDisabled ? AppColor.black200 : AppColor.primary900Light,
+            btnColor: isButtonDisabled ? AppColor.black200 : AppColor.primary900Light,
             btnTextColor: isButtonDisabled ? AppColor.black400 : AppColor.white,
             btnPressed: isButtonDisabled
                 ? null
@@ -123,7 +116,7 @@ class _MultiSelectionWithSearchDialog
             btnTextSize: 16,
             btnTextWeight: AppFontWeight.regular,
             btnHeight: 56,
-          )
+          ),
         ],
       ),
     );
@@ -147,6 +140,6 @@ class _MultiSelectionWithSearchDialog
     //     stackTrace: stackTrace.toString(),
     //   ),
     // );
-  // }
+    // }
   }
 }

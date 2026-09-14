@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'package:balady_plus/app/core/utils/common_functions.dart';
 import 'package:bloc/bloc.dart';
 import 'package:camera/camera.dart';
 import 'package:equatable/equatable.dart';
@@ -23,11 +22,32 @@ class CameraBloc extends Bloc<CameraEvent, CameraState> {
   bool initializingCamera = false;
 
   CameraBloc() : super(CameraState()) {
-    on<InitCameraEvent>(
-      (event, emit) async {
-        emit(state.copyWith(status: BlocStatus.loading));
+    on<InitCameraEvent>((event, emit) async {
+      emit(state.copyWith(status: BlocStatus.loading));
+      try {
+        cameras = await availableCameras();
+      } catch (error, stackTrace) {
+        LogsViewModel().sendEventFromModel(
+          event: ErrorExceptionModel(
+            nameEvent: EventsName.handledException,
+            message: error.toString(),
+            stackTrace: stackTrace.toString(),
+          ),
+        );
+        error.toString();
+      }
+      if (cameras?.isNotEmpty ?? false) {
         try {
-          cameras = await availableCameras();
+          CameraDescription backCamera = cameras!.firstWhere(
+            (camera) => camera.lensDirection == CameraLensDirection.back,
+            orElse: () => cameras![0],
+          );
+
+          cameraController = CameraController(backCamera, ResolutionPreset.medium, enableAudio: false);
+          initializingCamera = true;
+          await cameraController?.initialize();
+          initializingCamera = false;
+          cameraController?.setFlashMode(FlashMode.off);
         } catch (error, stackTrace) {
           LogsViewModel().sendEventFromModel(
             event: ErrorExceptionModel(
@@ -36,43 +56,16 @@ class CameraBloc extends Bloc<CameraEvent, CameraState> {
               stackTrace: stackTrace.toString(),
             ),
           );
-          error.toString();
         }
-        if (cameras?.isNotEmpty ?? false) {
-          try {
-            CameraDescription backCamera = cameras!.firstWhere(
-              (camera) => camera.lensDirection == CameraLensDirection.back,
-              orElse: () => cameras![0],
-            );
-
-            cameraController = CameraController(
-              backCamera,
-              ResolutionPreset.medium,
-              enableAudio: false,
-            );
-            initializingCamera = true;
-            await cameraController?.initialize();
-            initializingCamera = false;
-            cameraController?.setFlashMode(FlashMode.off);
-          } catch (error, stackTrace) {
-            LogsViewModel().sendEventFromModel(
-              event: ErrorExceptionModel(
-                nameEvent: EventsName.handledException,
-                message: error.toString(),
-                stackTrace: stackTrace.toString(),
-              ),
-            );
-          }
-        }
-        emit(
-          state.copyWith(
-            isFlashOn: false,
-            status: BlocStatus.success,
-            isCameraInitialized: cameraController?.value.isInitialized,
-          ),
-        );
-      },
-    );
+      }
+      emit(
+        state.copyWith(
+          isFlashOn: false,
+          status: BlocStatus.success,
+          isCameraInitialized: cameraController?.value.isInitialized,
+        ),
+      );
+    });
     on<TakePhoto>(_takePhotoHandler);
     on<ShowLoading>(_showLoadingHandler);
     on<OnNewCameraSelected>(_onNewCameraSelectedHandler);
@@ -98,24 +91,13 @@ class CameraBloc extends Bloc<CameraEvent, CameraState> {
         //   dateTime ?? DateTime.now(),
         // );
         // Define the black color
-        myImage.drawString(
-          decodeImg!,
-          "",
-          font: myImage.arial14,
-          x: 100,
-          y: 25,
-          color: decodeImg.getColor(0, 0, 0),
-        );
+        myImage.drawString(decodeImg!, "", font: myImage.arial14, x: 100, y: 25, color: decodeImg.getColor(0, 0, 0));
         var encodeImage = myImage.encodeJpg(decodeImg, quality: 100);
         String base64Image = base64.encode(encodeImage);
         // String? miniType =
         //     CommonFunctions().guessMimeTypeFromBase64(base64Image);
         ///////////////////////////////////////////////////////////
-        AttachmentItem item = AttachmentItem(
-          base64: base64Image,
-          encodeImage: encodeImage,
-          filePath: file!.path,
-        );
+        AttachmentItem item = AttachmentItem(base64: base64Image, encodeImage: encodeImage, filePath: file!.path);
         emitter(state.copyWith(status: BlocStatus.loading));
         bool showCamera = !(state.multi ?? false) ? false : true;
         emitter(
@@ -139,12 +121,7 @@ class CameraBloc extends Bloc<CameraEvent, CameraState> {
           stackTrace: stackTrace.toString(),
         ),
       );
-      emitter(
-        state.copyWith(
-          status: BlocStatus.failure,
-          errorMessage: error.toString(),
-        ),
-      );
+      emitter(state.copyWith(status: BlocStatus.failure, errorMessage: error.toString()));
     }
   }
 
@@ -156,8 +133,7 @@ class CameraBloc extends Bloc<CameraEvent, CameraState> {
 
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
-        final dateTimeString =
-            data['datetime']; // Example: "2023-12-30T18:45:32.123456+03:00"
+        final dateTimeString = data['datetime']; // Example: "2023-12-30T18:45:32.123456+03:00"
         return DateTime.parse(dateTimeString);
       } else {
         print('Failed to fetch time: ${response.statusCode}');
@@ -169,14 +145,8 @@ class CameraBloc extends Bloc<CameraEvent, CameraState> {
     }
   }
 
-  Future<void> _onNewCameraSelectedHandler(
-      OnNewCameraSelected e, Emitter emitter) async {
-    emitter(
-      state.copyWith(
-        status: BlocStatus.loading,
-        isCameraInitialized: cameraController?.value.isInitialized,
-      ),
-    );
+  Future<void> _onNewCameraSelectedHandler(OnNewCameraSelected e, Emitter emitter) async {
+    emitter(state.copyWith(status: BlocStatus.loading, isCameraInitialized: cameraController?.value.isInitialized));
     try {
       if (cameraController != null) {
         await cameraController?.dispose();
@@ -202,20 +172,14 @@ class CameraBloc extends Bloc<CameraEvent, CameraState> {
         ),
       );
     }
-    emitter(
-      state.copyWith(
-        status: BlocStatus.success,
-        isCameraInitialized: cameraController?.value.isInitialized,
-      ),
-    );
+    emitter(state.copyWith(status: BlocStatus.success, isCameraInitialized: cameraController?.value.isInitialized));
   }
 
   Future<void> _onSetZoomHandler(SetZoomLevelEvent e, Emitter emitter) async {
     emitter(state.copyWith(zoom: e.zoom));
   }
 
-  Future<void> _onUpdateScaleLevelHandler(
-      UpdateScaleLevelEvent e, Emitter emitter) async {
+  Future<void> _onUpdateScaleLevelHandler(UpdateScaleLevelEvent e, Emitter emitter) async {
     double scale = state.zoom * e.scale;
     if (scale >= 1 && scale <= 7) {
       cameraController?.setZoomLevel(scale);
@@ -223,8 +187,7 @@ class CameraBloc extends Bloc<CameraEvent, CameraState> {
     }
   }
 
-  Future<void> _onToggleCameraFlashHandler(
-      ToggleCameraFlashEvent e, Emitter emitter) async {
+  Future<void> _onToggleCameraFlashHandler(ToggleCameraFlashEvent e, Emitter emitter) async {
     try {
       if (state.isCameraInitialized == true) {
         if (state.isFlashOn) {
@@ -248,11 +211,8 @@ class CameraBloc extends Bloc<CameraEvent, CameraState> {
     }
   }
 
-  Future<void> _onReTakePhotoHandler(
-      ReTakePhotoEvent e, Emitter emitter) async {
-    emitter(
-      state.copyWith(showCamera: true, isCameraInitialized: false),
-    );
+  Future<void> _onReTakePhotoHandler(ReTakePhotoEvent e, Emitter emitter) async {
+    emitter(state.copyWith(showCamera: true, isCameraInitialized: false));
   }
 
   Future<void> _showLoadingHandler(ShowLoading e, Emitter emitter) async {

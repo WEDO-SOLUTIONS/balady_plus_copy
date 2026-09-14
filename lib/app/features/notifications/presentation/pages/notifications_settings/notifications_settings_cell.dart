@@ -4,7 +4,6 @@ import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/r
 import 'package:balady_plus/app/features/notifications/presentation/bloc/notifications_settings/notifications_list_settings_cubit.dart';
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
-import 'package:balady_uikit/core/typography/text_theme_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../../core/utils/constants/app_style.dart';
@@ -17,121 +16,102 @@ class NotificationsSettingsCell extends StatefulWidget {
   const NotificationsSettingsCell({super.key, required this.category});
 
   @override
-  State<NotificationsSettingsCell> createState() =>
-      _NotificationsSettingsCellState();
+  State<NotificationsSettingsCell> createState() => _NotificationsSettingsCellState();
 }
 
 class _NotificationsSettingsCellState extends State<NotificationsSettingsCell> {
   @override
   Widget build(BuildContext context) {
     return ExpansionTile(
-      trailing: Icon(
-        Icons.keyboard_arrow_down,
-        color: context.colors.accentActive,
-      ),
+      trailing: Icon(Icons.keyboard_arrow_down, color: context.colors.accentActive),
       shape: const Border(),
       title: Padding(
         padding: const EdgeInsets.all(8.0),
         child: Text(
           widget.category.name!,
-          style: AppStyle.cardTitleTextStle.copyWith(
-            color: Theme.of(context).colorScheme.onSurface,
-          ),
+          style: AppStyle.cardTitleTextStle.copyWith(color: Theme.of(context).colorScheme.onSurface),
         ),
       ),
       children: List.generate(
         widget.category.products!.length,
         (index) => BlocProvider(
           create: (context) {
-            NotificationRepositoryImplementation
-            notificationRepositoryImplementation = sl();
+            NotificationRepositoryImplementation notificationRepositoryImplementation = sl();
             return NotificationsListSettingsCubit(
-              notificationsSettingsListRepository:
-                  notificationRepositoryImplementation,
+              notificationsSettingsListRepository: notificationRepositoryImplementation,
               isChecked: widget.category.products![index].enabled!,
             );
           },
-          child:
-              BlocBuilder<
-                NotificationsListSettingsCubit,
-                NotificationsListSettingsState
-              >(
-                builder: (blocContext, state) {
-                  NotificationsListSettingsCubit cubit = blocContext
-                      .watch<NotificationsListSettingsCubit>();
-                  if (state is LoadingEventsSettingsState) {
-                    return const Center(child: CircularProgressIndicator());
-                  }
-                  if (state is FailureNotificationsSettingsState) {
-                    return ReloadWidget(
-                      onTab: () {
-                        cubit.setNotificationsProfileProducts(
-                          SetNotificationsProfileProductsParams(
-                            enabled: !cubit.isChecked,
-                            channelId: 'mobile',
-                            productId: widget.category.products![index].id,
-                            applicationId: 'super-app',
-                          ),
-                        );
-                      },
+          child: BlocBuilder<NotificationsListSettingsCubit, NotificationsListSettingsState>(
+            builder: (blocContext, state) {
+              NotificationsListSettingsCubit cubit = blocContext.watch<NotificationsListSettingsCubit>();
+              if (state is LoadingEventsSettingsState) {
+                return const Center(child: CircularProgressIndicator());
+              }
+              if (state is FailureNotificationsSettingsState) {
+                return ReloadWidget(
+                  onTab: () {
+                    cubit.setNotificationsProfileProducts(
+                      SetNotificationsProfileProductsParams(
+                        enabled: !cubit.isChecked,
+                        channelId: 'mobile',
+                        productId: widget.category.products![index].id,
+                        applicationId: 'super-app',
+                      ),
                     );
-                  }
+                  },
+                );
+              }
 
-                  return Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Material(
-                      borderRadius: BorderRadius.circular(8),
+              return Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Material(
+                  borderRadius: BorderRadius.circular(8),
 
-                      child: InkWell(
-                        onTap: () {
-                          cubit.setNotificationsProfileProducts(
-                            SetNotificationsProfileProductsParams(
-                              enabled: !cubit.isChecked,
-                              channelId: 'mobile',
-                              productId: widget.category.products![index].id,
-                              applicationId: 'super-app',
-                            ),
-                          );
-                        },
-                        borderRadius: BorderRadius.circular(8),
-                        child: Container(
-                          color: Theme.of(context).cardColor,
-                          height: 48,
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 16.0,
-                            ),
-                            child: Row(
-                              children: [
-                                const SizedBox(width: 12),
-                                Padding(
-                                  padding: const EdgeInsets.only(bottom: 2.0),
-                                  child: Text(
-                                    widget.category.products![index].name!,
-                                    style: TextStyle(
-                                      color: Theme.of(
-                                        context,
-                                      ).colorScheme.onSurface,
-                                      fontFamily: GeneralKey.appFontType,
-                                    ),
-                                    // style: Theme.of(
-                                    //   context,
-                                    // ).extension<ThemeTextStyles>()!.text,
-                                  ),
+                  child: InkWell(
+                    onTap: () {
+                      cubit.setNotificationsProfileProducts(
+                        SetNotificationsProfileProductsParams(
+                          enabled: !cubit.isChecked,
+                          channelId: 'mobile',
+                          productId: widget.category.products![index].id,
+                          applicationId: 'super-app',
+                        ),
+                      );
+                    },
+                    borderRadius: BorderRadius.circular(8),
+                    child: Container(
+                      color: Theme.of(context).cardColor,
+                      height: 48,
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                        child: Row(
+                          children: [
+                            const SizedBox(width: 12),
+                            Padding(
+                              padding: const EdgeInsets.only(bottom: 2.0),
+                              child: Text(
+                                widget.category.products![index].name!,
+                                style: TextStyle(
+                                  color: Theme.of(context).colorScheme.onSurface,
+                                  fontFamily: GeneralKey.appFontType,
                                 ),
-                                const Spacer(),
-                                IgnorePointer(
-                                  child: Toggle(value: cubit.isChecked),
-                                ),
-                              ],
+                                // style: Theme.of(
+                                //   context,
+                                // ).extension<ThemeTextStyles>()!.text,
+                              ),
                             ),
-                          ),
+                            const Spacer(),
+                            IgnorePointer(child: Toggle(value: cubit.isChecked)),
+                          ],
                         ),
                       ),
                     ),
-                  );
-                },
-              ),
+                  ),
+                ),
+              );
+            },
+          ),
         ),
       ),
     );

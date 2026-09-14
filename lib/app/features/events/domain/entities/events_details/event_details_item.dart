@@ -24,24 +24,25 @@ class EventDetailsResponse {
   final List<Picture>? pictures;
   final double? fees;
 
-  EventDetailsResponse(
-      {this.id,
-      this.name,
-      this.description,
-      this.category,
-      this.city,
-      this.startDate,
-      this.endDate,
-      this.startTime,
-      this.endTime,
-      this.logoUrl,
-      this.feesType,
-      this.season,
-      this.audience,
-      this.location,
-      this.ticketUrl,
-      this.pictures,
-      this.fees});
+  EventDetailsResponse({
+    this.id,
+    this.name,
+    this.description,
+    this.category,
+    this.city,
+    this.startDate,
+    this.endDate,
+    this.startTime,
+    this.endTime,
+    this.logoUrl,
+    this.feesType,
+    this.season,
+    this.audience,
+    this.location,
+    this.ticketUrl,
+    this.pictures,
+    this.fees,
+  });
 
   String getStartDay() {
     if (startDate != null) {
@@ -97,15 +98,17 @@ class EventDetailsResponse {
   DateTime? getStartDateFull() {
     if (startDate != null && startTime != null) {
       return (setTimeInDateTime(startDate!, startTime!));
-    return null;
+      return null;
     }
+    return null;
   }
 
   DateTime? getEndDateFull() {
     if (endDate != null && endTime != null) {
       return (setTimeInDateTime(endDate!, endTime!));
-    return null;
+      return null;
     }
+    return null;
   }
 
   String getFess() {
@@ -120,7 +123,7 @@ class EventDetailsResponse {
     double? lon = double.tryParse(location?.y ?? "");
     double? lat = double.tryParse(location?.x ?? "");
 
-    if (lat != null && lon != null) return LatLng(latitude:lat, longitude:lon);
+    if (lat != null && lon != null) return LatLng(latitude: lat, longitude: lon);
     return null;
   }
 
@@ -133,8 +136,7 @@ class EventDetailsResponse {
     final match = regex.firstMatch(timeString);
 
     if (match == null) {
-      throw ArgumentError(
-          'Invalid time format. Should be in HH:mm AM/PM format');
+      throw ArgumentError('Invalid time format. Should be in HH:mm AM/PM format');
     }
 
     var hour = int.parse(match.group(1)!);
@@ -153,8 +155,7 @@ class EventDetailsResponse {
     }
 
     // Create a new DateTime object with the provided time and the date from the input DateTime
-    final newDateTime =
-        DateTime(dateTime.year, dateTime.month, dateTime.day, hour, minute);
+    final newDateTime = DateTime(dateTime.year, dateTime.month, dateTime.day, hour, minute);
 
     return newDateTime;
   }

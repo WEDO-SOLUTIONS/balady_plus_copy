@@ -15,24 +15,22 @@ class LabelIconSubtitleComponent extends StatelessWidget {
   final Function? onPress;
   EdgeInsetsDirectional? padding;
 
-  LabelIconSubtitleComponent(
-      {required this.text,
-      this.subtitle,
-      this.subWidget,
-      this.icon,
-      this.onPress,
-      this.iconSize,
-      this.padding,
-      super.key});
+  LabelIconSubtitleComponent({
+    required this.text,
+    this.subtitle,
+    this.subWidget,
+    this.icon,
+    this.onPress,
+    this.iconSize,
+    this.padding,
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {
     return Container(
       padding: padding ?? const EdgeInsets.all(10),
-      decoration: BoxDecoration(
-          boxShadow: [],
-          borderRadius: BorderRadius.circular(16),
-          color: AppColor.white),
+      decoration: BoxDecoration(boxShadow: [], borderRadius: BorderRadius.circular(16), color: AppColor.white),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -43,10 +41,7 @@ class LabelIconSubtitleComponent extends StatelessWidget {
               if (icon != null)
                 Padding(
                   padding: const EdgeInsetsDirectional.only(end: 6.0),
-                  child: CustomSvgIconWidget(
-                    icon!,
-                    iconSize: iconSize,
-                  ),
+                  child: CustomSvgIconWidget(icon!, iconSize: iconSize),
                 ),
               Expanded(
                 child: Column(
@@ -84,7 +79,7 @@ class LabelIconSubtitleComponent extends StatelessWidget {
               ),
             ],
           ),
-          if (subWidget != null) subWidget!
+          ?subWidget,
         ],
       ),
     );

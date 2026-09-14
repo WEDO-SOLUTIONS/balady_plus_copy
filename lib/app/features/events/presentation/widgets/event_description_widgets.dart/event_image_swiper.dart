@@ -1,5 +1,3 @@
-import 'package:balady_plus/app/core/utils/utils_exports.dart';
-import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -19,41 +17,40 @@ class _EventImageSwiperState extends State<EventImageSwiper> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<EventsBloc, EventsState>(builder: (context, state) {
-      return SizedBox(
-        height: 112,
-        child: ListView.builder(
-          scrollDirection: Axis.horizontal,
-          itemCount: state.eventDetails.pictures?.length ?? 0,
-          itemBuilder: (c, index) {
-            return Padding(
-              padding: EdgeInsets.all(8.0),
-              child: GestureDetector(
-                onTap: () {
-                  setState(() {
-                    _currentIndex = index;
-                  });
-                  widget.onChange(state.eventDetails.pictures![index].url!);
-                },
-                child: Container(
-                  width: index == _currentIndex ? 122 : 90,
-                  height: 100,
-                  decoration: ShapeDecoration(
-                    image: DecorationImage(
-                      image: NetworkImage(
-                        state.eventDetails.pictures?[index].url ?? "",
+    return BlocBuilder<EventsBloc, EventsState>(
+      builder: (context, state) {
+        return SizedBox(
+          height: 112,
+          child: ListView.builder(
+            scrollDirection: Axis.horizontal,
+            itemCount: state.eventDetails.pictures?.length ?? 0,
+            itemBuilder: (c, index) {
+              return Padding(
+                padding: EdgeInsets.all(8.0),
+                child: GestureDetector(
+                  onTap: () {
+                    setState(() {
+                      _currentIndex = index;
+                    });
+                    widget.onChange(state.eventDetails.pictures![index].url!);
+                  },
+                  child: Container(
+                    width: index == _currentIndex ? 122 : 90,
+                    height: 100,
+                    decoration: ShapeDecoration(
+                      image: DecorationImage(
+                        image: NetworkImage(state.eventDetails.pictures?[index].url ?? ""),
+                        fit: BoxFit.fill,
                       ),
-                      fit: BoxFit.fill,
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
                     ),
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8)),
                   ),
                 ),
-              ),
-            );
-          },
-        ),
-      );
-    });
+              );
+            },
+          ),
+        );
+      },
+    );
   }
 }

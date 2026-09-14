@@ -1,18 +1,11 @@
 import 'package:balady_plus/app/core/utils/constants/keys/general_keys.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart'
-    show FilteringTextInputFormatter, TextInputFormatter;
-import 'package:localize_and_translate/localize_and_translate.dart';
+import 'package:flutter/services.dart' show FilteringTextInputFormatter, TextInputFormatter;
 
 import '../../../../../core/utils/enums/enums.dart';
-import '../../../../../core/utils/utils_exports.dart'
-    show AppColor, AppStyle, BorderConversion, BorderType;
+import '../../../../../core/utils/utils_exports.dart' show AppColor, AppStyle, BorderConversion, BorderType;
 import '../../../shared_feature_exports.dart'
-    show
-        CustomHorizontalSpace,
-        CustomVerticalSpace,
-        LabelTextWithOptional,
-        WidgetLabel;
+    show CustomHorizontalSpace, CustomVerticalSpace, LabelTextWithOptional, WidgetLabel;
 import '../custom_tooltip_widget.dart';
 
 class CustomTextFieldWidget extends StatelessWidget {
@@ -78,68 +71,69 @@ class CustomTextFieldWidget extends StatelessWidget {
   final bool showToolTip;
   final String? toolTipMessage;
 
-  const CustomTextFieldWidget(
-      {super.key,
-      this.enabled = true,
-      this.showOptional = false,
-      this.label,
-      this.labelStyle,
-      this.isRequired = false,
-      this.controller,
-      this.focusNode,
-      this.autocorrect = false,
-      this.autofillHints,
-      this.bottomMargin,
-      this.autovalidateMode,
-      this.cursorColor,
-      this.cursorHeight,
-      this.cursorWidth = 2.0,
-      this.showCursor,
-      this.initialValue,
-      this.isDigitsOnly = false,
-      this.inputFormatters,
-      this.allowedInputPattern,
-      this.deniedInputPattern,
-      this.keyboardType,
-      this.maxLength,
-      this.maxLines = 1,
-      this.obsecureText = false,
-      this.readOnly = false,
-      this.disabledColor,
-      this.textAlign,
-      this.textInputAction,
-      this.textFieldStyle,
-      this.textFieldWidth,
-      this.textFieldHeight,
-      // this.textFieldHeight = 90.0,
-      this.hintText,
-      this.hintStyle,
-      this.filled = true,
-      this.fillColor,
-      // this.textFieldVerticalPadding = 24.0,
-      this.textFieldVerticalPadding = 20.0,
-      this.startPadding = 16.0,
-      this.endPadding = 6.0,
-      this.prefixIcon,
-      this.prefixSize = 18.0,
-      this.spaceBeforePrefix = 20.0,
-      this.spaceAfterPrefix = 8.0,
-      this.suffixIcon,
-      this.suffixSize = 18.0,
-      this.spaceBeforeSuffix = 6.0,
-      this.spaceAfterSuffix = 16.0,
-      this.borderType,
-      this.borderColor,
-      this.borderRadius = 8.0,
-      this.errorText,
-      this.onChanged,
-      this.onSubmitted,
-      this.onTap,
-      this.onValidate,
-      this.spacerSize,
-      this.onTapOutside,
-      this.showToolTip = false,
-      this.toolTipMessage});
+  const CustomTextFieldWidget({
+    super.key,
+    this.enabled = true,
+    this.showOptional = false,
+    this.label,
+    this.labelStyle,
+    this.isRequired = false,
+    this.controller,
+    this.focusNode,
+    this.autocorrect = false,
+    this.autofillHints,
+    this.bottomMargin,
+    this.autovalidateMode,
+    this.cursorColor,
+    this.cursorHeight,
+    this.cursorWidth = 2.0,
+    this.showCursor,
+    this.initialValue,
+    this.isDigitsOnly = false,
+    this.inputFormatters,
+    this.allowedInputPattern,
+    this.deniedInputPattern,
+    this.keyboardType,
+    this.maxLength,
+    this.maxLines = 1,
+    this.obsecureText = false,
+    this.readOnly = false,
+    this.disabledColor,
+    this.textAlign,
+    this.textInputAction,
+    this.textFieldStyle,
+    this.textFieldWidth,
+    this.textFieldHeight,
+    // this.textFieldHeight = 90.0,
+    this.hintText,
+    this.hintStyle,
+    this.filled = true,
+    this.fillColor,
+    // this.textFieldVerticalPadding = 24.0,
+    this.textFieldVerticalPadding = 20.0,
+    this.startPadding = 16.0,
+    this.endPadding = 6.0,
+    this.prefixIcon,
+    this.prefixSize = 18.0,
+    this.spaceBeforePrefix = 20.0,
+    this.spaceAfterPrefix = 8.0,
+    this.suffixIcon,
+    this.suffixSize = 18.0,
+    this.spaceBeforeSuffix = 6.0,
+    this.spaceAfterSuffix = 16.0,
+    this.borderType,
+    this.borderColor,
+    this.borderRadius = 8.0,
+    this.errorText,
+    this.onChanged,
+    this.onSubmitted,
+    this.onTap,
+    this.onValidate,
+    this.spacerSize,
+    this.onTapOutside,
+    this.showToolTip = false,
+    this.toolTipMessage,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -158,10 +152,7 @@ class CustomTextFieldWidget extends StatelessWidget {
               ),
             ),
             if (showToolTip) ...[
-              CustomTooltipWidget(
-                message: toolTipMessage ?? "",
-                child: const Icon(Icons.info_outline),
-              ),
+              CustomTooltipWidget(message: toolTipMessage ?? "", child: const Icon(Icons.info_outline)),
             ],
           ],
         ),
@@ -172,8 +163,7 @@ class CustomTextFieldWidget extends StatelessWidget {
           focusNode: focusNode,
           autocorrect: autocorrect,
           autofillHints: autofillHints,
-          autovalidateMode:
-              autovalidateMode ?? AutovalidateMode.onUserInteraction,
+          autovalidateMode: autovalidateMode ?? AutovalidateMode.onUserInteraction,
           cursorColor: cursorColor ?? AppColor.blue,
           cursorHeight: cursorHeight,
           showCursor: showCursor,
@@ -183,16 +173,12 @@ class CustomTextFieldWidget extends StatelessWidget {
             // (13.0 * 4.0) => (fontSize * 4.0)
             bottom: MediaQuery.of(context).viewInsets.bottom + (13.0 * 4.0),
           ),
-          inputFormatters: inputFormatters ??
+          inputFormatters:
+              inputFormatters ??
               [
-                if (isDigitsOnly) ...[
-                  _arabicToLatinDigits,
-                  FilteringTextInputFormatter.digitsOnly,
-                ],
-                if (allowedInputPattern != null)
-                  FilteringTextInputFormatter.allow(allowedInputPattern!),
-                if (deniedInputPattern != null)
-                  FilteringTextInputFormatter.deny(deniedInputPattern!),
+                if (isDigitsOnly) ...[_arabicToLatinDigits, FilteringTextInputFormatter.digitsOnly],
+                if (allowedInputPattern != null) FilteringTextInputFormatter.allow(allowedInputPattern!),
+                if (deniedInputPattern != null) FilteringTextInputFormatter.deny(deniedInputPattern!),
               ],
           keyboardType: keyboardType,
           maxLength: maxLength,
@@ -201,23 +187,17 @@ class CustomTextFieldWidget extends StatelessWidget {
           readOnly: readOnly,
           textAlign: textAlign ?? TextAlign.start,
           textInputAction: textInputAction,
-          style: textFieldStyle ??
-              AppStyle.mainTextThirdStyle.copyWith(
-                fontSize: 13.0,
-                color: AppColor.black,
-              ),
+          style: textFieldStyle ?? AppStyle.mainTextThirdStyle.copyWith(fontSize: 13.0, color: AppColor.black),
           decoration: InputDecoration(
-              constraints: BoxConstraints(
-                maxWidth: textFieldWidth ?? double.infinity,
-                maxHeight: textFieldHeight ?? double.infinity,
-              ),
-              hintText: hintText,
-              hintStyle: hintStyle,
-              filled: filled,
-              fillColor: readOnly
-                  ? disabledColor ?? AppColor.gray
-                  : fillColor ?? AppColor.white,
-              /*
+            constraints: BoxConstraints(
+              maxWidth: textFieldWidth ?? double.infinity,
+              maxHeight: textFieldHeight ?? double.infinity,
+            ),
+            hintText: hintText,
+            hintStyle: hintStyle,
+            filled: filled,
+            fillColor: readOnly ? disabledColor ?? AppColor.gray : fillColor ?? AppColor.white,
+            /*
             **First scenario:
             contentPadding: add padding before prefix-icon and after suffix-icon
             imagine: S T P (S: Suffix, T: Text, P: Prefix)
@@ -237,17 +217,17 @@ class CustomTextFieldWidget extends StatelessWidget {
             contentPadding: add padding vertically only,
                             and remove any padding about suffix and prefix
             */
-              // contentPadding: EdgeInsets.symmetric(
-              //   vertical: textFieldVerticalPadding,
-              // ),
-              contentPadding: EdgeInsetsDirectional.fromSTEB(
-                prefixIcon == null ? startPadding : 0.0,
-                textFieldVerticalPadding,
-                suffixIcon == null ? endPadding : 0.0,
-                textFieldVerticalPadding,
-              ),
+            // contentPadding: EdgeInsets.symmetric(
+            //   vertical: textFieldVerticalPadding,
+            // ),
+            contentPadding: EdgeInsetsDirectional.fromSTEB(
+              prefixIcon == null ? startPadding : 0.0,
+              textFieldVerticalPadding,
+              suffixIcon == null ? endPadding : 0.0,
+              textFieldVerticalPadding,
+            ),
 
-              /*
+            /*
             **First scenario: if we follow the first scenario of contentPadding
             we before added padding between prefix and start-of-textfield
             so padding added here to add space between prefix and text
@@ -261,21 +241,15 @@ class CustomTextFieldWidget extends StatelessWidget {
             if app LTR Imagine: b P a (b: before-prefix, P: Prefix, a: after-prefix)
             it will be the same thing cause we specify start and end properties
             */
-              prefixIcon: prefixIcon != null
-                  ? Padding(
-                      // color: Colors.red,
-                      padding: EdgeInsetsDirectional.only(
-                        start: spaceBeforePrefix,
-                        end: spaceAfterPrefix,
-                      ),
-                      child: prefixIcon,
-                    )
-                  : null,
-              prefixIconConstraints: BoxConstraints(
-                minHeight: prefixSize,
-                minWidth: prefixSize,
-              ),
-              /* 
+            prefixIcon: prefixIcon != null
+                ? Padding(
+                    // color: Colors.red,
+                    padding: EdgeInsetsDirectional.only(start: spaceBeforePrefix, end: spaceAfterPrefix),
+                    child: prefixIcon,
+                  )
+                : null,
+            prefixIconConstraints: BoxConstraints(minHeight: prefixSize, minWidth: prefixSize),
+            /* 
             **First scenario:
             we before added padding between suffix and text
             so padding added here to add space between suffix and end-of-textfield
@@ -289,39 +263,22 @@ class CustomTextFieldWidget extends StatelessWidget {
             if app LTR Imagine: b S a (b: before-suffix, S: Suffix, a: after-suffix)
             it will be the same thing cause we specify start and end properties
             */
-              suffixIcon: suffixIcon != null
-                  ? Padding(
-                      // color: Colors.red,
-                      padding: EdgeInsetsDirectional.only(
-                        start: spaceBeforeSuffix,
-                        end: spaceAfterSuffix,
-                      ),
-                      child: suffixIcon,
-                    )
-                  : null,
-              suffixIconConstraints: BoxConstraints(
-                minHeight: suffixSize,
-                minWidth: suffixSize,
-              ),
-              border: fieldBorderType.inputBorder(
-                color: fieldBorderColor,
-                radius: borderRadius,
-              ),
-              enabledBorder: fieldBorderType.inputBorder(
-                color: fieldBorderColor,
-                radius: borderRadius,
-              ),
-              focusedBorder: fieldBorderType.inputBorder(
-                color: fieldBorderFocusedColor,
-                radius: borderRadius,
-              ),
-              errorBorder: fieldBorderType.inputBorder(
-                color: AppColor.error,
-                radius: borderRadius,
-              ),
-              errorStyle: const TextStyle(color: AppColor.error),
-              errorText: errorText,
-              errorMaxLines: 5),
+            suffixIcon: suffixIcon != null
+                ? Padding(
+                    // color: Colors.red,
+                    padding: EdgeInsetsDirectional.only(start: spaceBeforeSuffix, end: spaceAfterSuffix),
+                    child: suffixIcon,
+                  )
+                : null,
+            suffixIconConstraints: BoxConstraints(minHeight: suffixSize, minWidth: suffixSize),
+            border: fieldBorderType.inputBorder(color: fieldBorderColor, radius: borderRadius),
+            enabledBorder: fieldBorderType.inputBorder(color: fieldBorderColor, radius: borderRadius),
+            focusedBorder: fieldBorderType.inputBorder(color: fieldBorderFocusedColor, radius: borderRadius),
+            errorBorder: fieldBorderType.inputBorder(color: AppColor.error, radius: borderRadius),
+            errorStyle: const TextStyle(color: AppColor.error),
+            errorText: errorText,
+            errorMaxLines: 5,
+          ),
           onTap: onTap,
           onChanged: onChanged,
           onFieldSubmitted: onSubmitted,
@@ -386,51 +343,52 @@ class CustomTextFieldWidgetWithOptinal extends StatelessWidget {
   final TextDirection? textDirection;
   final bool? showOptional;
 
-  const CustomTextFieldWidgetWithOptinal(
-      {super.key,
-      required this.label,
-      this.labelColor = AppColor.baladyDarkGreen2,
-      this.labelSize = 13.0,
-      this.labelTextAlign = TextAlign.start,
-      this.isDigitsOnly = false,
-      this.filled = false,
-      this.textDirection,
-      this.fillColor = Colors.transparent,
-      this.borderWidth = 1.0,
-      this.borderRadius = 2.0,
-      this.borderColor = AppColor.black200,
-      this.borderType = BORDER_TYPE.underline,
-      this.controller,
-      this.focusNode,
-      this.autoCorrect = true,
-      this.readOnly = false,
-      this.cursorColor = AppColor.baladyDarkGreen2,
-      this.textFieldAlign = TextAlign.start,
-      this.keyboardType,
-      this.maxLength,
-      this.maxLines,
-      this.minLines,
-      this.textAlignVertical = TextAlignVertical.center,
-      this.textInputAction = TextInputAction.done,
-      this.obsecureText = false,
-      this.textFieldStyle,
-      this.contentHorizontalPadding = 10,
-      this.contentVerticalPadding = GeneralKey.semiSmallPadding,
-      this.hintText = '',
-      this.hintStyle,
-      this.prefixIcon,
-      this.suffixIcon,
-      this.prefixSize = 25.0,
-      this.suffixSize,
-      this.errorMaxLines = 2,
-      this.spacerSize = 30.0,
-      this.onFieldSubmitted,
-      this.onChanged,
-      this.onSaved,
-      this.validator,
-      this.onTap,
-      this.inputFormatter,
-      this.showOptional});
+  const CustomTextFieldWidgetWithOptinal({
+    super.key,
+    required this.label,
+    this.labelColor = AppColor.baladyDarkGreen2,
+    this.labelSize = 13.0,
+    this.labelTextAlign = TextAlign.start,
+    this.isDigitsOnly = false,
+    this.filled = false,
+    this.textDirection,
+    this.fillColor = Colors.transparent,
+    this.borderWidth = 1.0,
+    this.borderRadius = 2.0,
+    this.borderColor = AppColor.black200,
+    this.borderType = BORDER_TYPE.underline,
+    this.controller,
+    this.focusNode,
+    this.autoCorrect = true,
+    this.readOnly = false,
+    this.cursorColor = AppColor.baladyDarkGreen2,
+    this.textFieldAlign = TextAlign.start,
+    this.keyboardType,
+    this.maxLength,
+    this.maxLines,
+    this.minLines,
+    this.textAlignVertical = TextAlignVertical.center,
+    this.textInputAction = TextInputAction.done,
+    this.obsecureText = false,
+    this.textFieldStyle,
+    this.contentHorizontalPadding = 10,
+    this.contentVerticalPadding = GeneralKey.semiSmallPadding,
+    this.hintText = '',
+    this.hintStyle,
+    this.prefixIcon,
+    this.suffixIcon,
+    this.prefixSize = 25.0,
+    this.suffixSize,
+    this.errorMaxLines = 2,
+    this.spacerSize = 30.0,
+    this.onFieldSubmitted,
+    this.onChanged,
+    this.onSaved,
+    this.validator,
+    this.onTap,
+    this.inputFormatter,
+    this.showOptional,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -480,19 +438,19 @@ class CustomTextFieldWidgetWithOptinal extends StatelessWidget {
                     obscureText: obsecureText,
                     textAlignVertical: textAlignVertical,
                     textInputAction: textInputAction,
-                    inputFormatters: inputFormatter ??
+                    inputFormatters:
+                        inputFormatter ??
                         [
-                          if (isDigitsOnly) ...[
-                            _arabicToLatinDigits,
-                            FilteringTextInputFormatter.digitsOnly,
-                          ],
+                          if (isDigitsOnly) ...[_arabicToLatinDigits, FilteringTextInputFormatter.digitsOnly],
                         ],
-                    style: textFieldStyle ??
+                    style:
+                        textFieldStyle ??
                         const TextStyle(
-                            fontSize: 16.0,
-                            fontFamily: GeneralKey.appFontType,
-                            color: AppColor.black,
-                            fontWeight: FontWeight.w500),
+                          fontSize: 16.0,
+                          fontFamily: GeneralKey.appFontType,
+                          color: AppColor.black,
+                          fontWeight: FontWeight.w500,
+                        ),
                     decoration: InputDecoration(
                       isDense: true,
                       contentPadding: EdgeInsets.symmetric(
@@ -502,12 +460,14 @@ class CustomTextFieldWidgetWithOptinal extends StatelessWidget {
                       // counter: const SizedBox(),
                       hintText: hintText,
 
-                      hintStyle: hintStyle ??
+                      hintStyle:
+                          hintStyle ??
                           const TextStyle(
-                              fontSize: 16.0,
-                              fontFamily: GeneralKey.appFontType,
-                              color: AppColor.black300,
-                              fontWeight: FontWeight.w500),
+                            fontSize: 16.0,
+                            fontFamily: GeneralKey.appFontType,
+                            color: AppColor.black300,
+                            fontWeight: FontWeight.w500,
+                          ),
                       filled: filled,
                       fillColor: readOnly ? AppColor.black400 : fillColor,
                       enabledBorder: _getBorder(borderColor),
@@ -519,8 +479,7 @@ class CustomTextFieldWidgetWithOptinal extends StatelessWidget {
                       errorStyle: const TextStyle(color: AppColor.redBrown),
                       suffixIcon: suffixIcon,
                       suffixIconConstraints: suffixSize != null
-                          ? BoxConstraints(
-                              minHeight: suffixSize!, minWidth: suffixSize!)
+                          ? BoxConstraints(minHeight: suffixSize!, minWidth: suffixSize!)
                           : null,
                     ),
                     onChanged: onChanged,
@@ -617,70 +576,69 @@ class CustomTextFieldWithValueWidget extends StatefulWidget {
   final void Function()? onTap;
   final String? Function(String?)? onValidate;
 
-  const CustomTextFieldWithValueWidget(
-      {super.key,
-      this.enabled = true,
-      this.label,
-      this.labelStyle,
-      this.isRequired = false,
-      this.focusNode,
-      this.autocorrect = false,
-      this.autofillHints,
-      this.autovalidateMode,
-      this.cursorColor,
-      this.cursorHeight,
-      this.cursorWidth = 2.0,
-      this.showCursor,
-      this.initialValue,
-      this.isDigitsOnly = false,
-      this.inputFormatters,
-      this.allowedInputPattern,
-      this.deniedInputPattern,
-      this.keyboardType,
-      this.maxLength,
-      this.maxLines = 1,
-      this.obsecureText = false,
-      this.readOnly = false,
-      this.disabledColor,
-      this.textAlign,
-      this.textInputAction,
-      this.textFieldStyle,
-      this.textFieldWidth,
-      this.textFieldHeight,
-      // this.textFieldHeight = 90.0,
-      this.hintText,
-      this.hintStyle,
-      this.filled = true,
-      this.fillColor,
-      // this.textFieldVerticalPadding = 24.0,
-      this.textFieldVerticalPadding = 20.0,
-      this.startPadding = 16.0,
-      this.endPadding = 6.0,
-      this.prefixIcon,
-      this.prefixSize = 18.0,
-      this.spaceBeforePrefix = 20.0,
-      this.spaceAfterPrefix = 8.0,
-      this.suffixIcon,
-      this.suffixSize = 18.0,
-      this.spaceBeforeSuffix = 6.0,
-      this.spaceAfterSuffix = 16.0,
-      this.borderType,
-      this.borderColor,
-      this.borderRadius = 8.0,
-      this.errorText,
-      this.onChanged,
-      this.onSubmitted,
-      this.onTap,
-      this.onValidate,
-      this.value});
+  const CustomTextFieldWithValueWidget({
+    super.key,
+    this.enabled = true,
+    this.label,
+    this.labelStyle,
+    this.isRequired = false,
+    this.focusNode,
+    this.autocorrect = false,
+    this.autofillHints,
+    this.autovalidateMode,
+    this.cursorColor,
+    this.cursorHeight,
+    this.cursorWidth = 2.0,
+    this.showCursor,
+    this.initialValue,
+    this.isDigitsOnly = false,
+    this.inputFormatters,
+    this.allowedInputPattern,
+    this.deniedInputPattern,
+    this.keyboardType,
+    this.maxLength,
+    this.maxLines = 1,
+    this.obsecureText = false,
+    this.readOnly = false,
+    this.disabledColor,
+    this.textAlign,
+    this.textInputAction,
+    this.textFieldStyle,
+    this.textFieldWidth,
+    this.textFieldHeight,
+    // this.textFieldHeight = 90.0,
+    this.hintText,
+    this.hintStyle,
+    this.filled = true,
+    this.fillColor,
+    // this.textFieldVerticalPadding = 24.0,
+    this.textFieldVerticalPadding = 20.0,
+    this.startPadding = 16.0,
+    this.endPadding = 6.0,
+    this.prefixIcon,
+    this.prefixSize = 18.0,
+    this.spaceBeforePrefix = 20.0,
+    this.spaceAfterPrefix = 8.0,
+    this.suffixIcon,
+    this.suffixSize = 18.0,
+    this.spaceBeforeSuffix = 6.0,
+    this.spaceAfterSuffix = 16.0,
+    this.borderType,
+    this.borderColor,
+    this.borderRadius = 8.0,
+    this.errorText,
+    this.onChanged,
+    this.onSubmitted,
+    this.onTap,
+    this.onValidate,
+    this.value,
+  });
 
   @override
-  State<CustomTextFieldWithValueWidget> createState() =>
-      _CustomTextFieldWithValueWidgetState();
+  State<CustomTextFieldWithValueWidget> createState() => _CustomTextFieldWithValueWidgetState();
 }
 
-class _CustomTextFieldWithValueWidgetState
-    extends State<CustomTextFieldWithValueWidget> {
+class _CustomTextFieldWithValueWidgetState extends State<CustomTextFieldWithValueWidget> {
   TextEditingController controller = TextEditingController();
 
   @override
@@ -702,11 +660,7 @@ class _CustomTextFieldWithValueWidgetState
       children: [
         // Label
         // if field is required, then show label beside asterisk e.g. *Username
-        WidgetLabel(
-          isRequired: widget.isRequired,
-          label: widget.label,
-          labelStyle: widget.labelStyle,
-        ),
+        WidgetLabel(isRequired: widget.isRequired, label: widget.label, labelStyle: widget.labelStyle),
         // Field
         TextFormField(
           enabled: widget.enabled,
@@ -714,8 +668,7 @@ class _CustomTextFieldWithValueWidgetState
           focusNode: widget.focusNode,
           autocorrect: widget.autocorrect,
           autofillHints: widget.autofillHints,
-          autovalidateMode:
-              widget.autovalidateMode ?? AutovalidateMode.onUserInteraction,
+          autovalidateMode: widget.autovalidateMode ?? AutovalidateMode.onUserInteraction,
           cursorColor: widget.cursorColor ?? AppColor.blue,
           cursorHeight: widget.cursorHeight,
           showCursor: widget.showCursor,
@@ -725,17 +678,12 @@ class _CustomTextFieldWithValueWidgetState
             // (13.0 * 4.0) => (fontSize * 4.0)
             bottom: MediaQuery.of(context).viewInsets.bottom + (13.0 * 4.0),
           ),
-          inputFormatters: widget.inputFormatters ??
+          inputFormatters:
+              widget.inputFormatters ??
               [
-                if (widget.isDigitsOnly) ...[
-                  _arabicToLatinDigits,
-                  FilteringTextInputFormatter.digitsOnly,
-                ],
-                if (widget.allowedInputPattern != null)
-                  FilteringTextInputFormatter.allow(
-                      widget.allowedInputPattern!),
-                if (widget.deniedInputPattern != null)
-                  FilteringTextInputFormatter.deny(widget.deniedInputPattern!),
+                if (widget.isDigitsOnly) ...[_arabicToLatinDigits, FilteringTextInputFormatter.digitsOnly],
+                if (widget.allowedInputPattern != null) FilteringTextInputFormatter.allow(widget.allowedInputPattern!),
+                if (widget.deniedInputPattern != null) FilteringTextInputFormatter.deny(widget.deniedInputPattern!),
               ],
           keyboardType: widget.keyboardType,
           maxLength: widget.maxLength,
@@ -744,11 +692,7 @@ class _CustomTextFieldWithValueWidgetState
           readOnly: widget.readOnly,
           textAlign: widget.textAlign ?? TextAlign.start,
           textInputAction: widget.textInputAction,
-          style: widget.textFieldStyle ??
-              AppStyle.mainTextThirdStyle.copyWith(
-                fontSize: 13.0,
-                color: AppColor.black,
-              ),
+          style: widget.textFieldStyle ?? AppStyle.mainTextThirdStyle.copyWith(fontSize: 13.0, color: AppColor.black),
           decoration: InputDecoration(
             constraints: BoxConstraints(
               maxWidth: widget.textFieldWidth ?? double.infinity,
@@ -757,9 +701,7 @@ class _CustomTextFieldWithValueWidgetState
             hintText: widget.hintText,
             hintStyle: widget.hintStyle,
             filled: widget.filled,
-            fillColor: widget.readOnly
-                ? widget.disabledColor ?? AppColor.gray
-                : widget.fillColor ?? Colors.transparent,
+            fillColor: widget.readOnly ? widget.disabledColor ?? AppColor.gray : widget.fillColor ?? Colors.transparent,
             /*
             **First scenario:
             contentPadding: add padding before prefix-icon and after suffix-icon
@@ -807,17 +749,11 @@ class _CustomTextFieldWithValueWidgetState
             prefixIcon: widget.prefixIcon != null
                 ? Padding(
                     // color: Colors.red,
-                    padding: EdgeInsetsDirectional.only(
-                      start: widget.spaceBeforePrefix,
-                      end: widget.spaceAfterPrefix,
-                    ),
+                    padding: EdgeInsetsDirectional.only(start: widget.spaceBeforePrefix, end: widget.spaceAfterPrefix),
                     child: widget.prefixIcon,
                   )
                 : null,
-            prefixIconConstraints: BoxConstraints(
-              minHeight: widget.prefixSize,
-              minWidth: widget.prefixSize,
-            ),
+            prefixIconConstraints: BoxConstraints(minHeight: widget.prefixSize, minWidth: widget.prefixSize),
             /* 
             **First scenario:
             we before added padding between suffix and text
@@ -835,33 +771,15 @@ class _CustomTextFieldWithValueWidgetState
             suffixIcon: widget.suffixIcon != null
                 ? Padding(
                     // color: Colors.red,
-                    padding: EdgeInsetsDirectional.only(
-                      start: widget.spaceBeforeSuffix,
-                      end: widget.spaceAfterSuffix,
-                    ),
+                    padding: EdgeInsetsDirectional.only(start: widget.spaceBeforeSuffix, end: widget.spaceAfterSuffix),
                     child: widget.suffixIcon,
                   )
                 : null,
-            suffixIconConstraints: BoxConstraints(
-              minHeight: widget.suffixSize,
-              minWidth: widget.suffixSize,
-            ),
-            border: fieldBorderType.inputBorder(
-              color: fieldBorderColor,
-              radius: widget.borderRadius,
-            ),
-            enabledBorder: fieldBorderType.inputBorder(
-              color: fieldBorderColor,
-              radius: widget.borderRadius,
-            ),
-            focusedBorder: fieldBorderType.inputBorder(
-              color: fieldBorderFocusedColor,
-              radius: widget.borderRadius,
-            ),
-            errorBorder: fieldBorderType.inputBorder(
-              color: AppColor.error,
-              radius: widget.borderRadius,
-            ),
+            suffixIconConstraints: BoxConstraints(minHeight: widget.suffixSize, minWidth: widget.suffixSize),
+            border: fieldBorderType.inputBorder(color: fieldBorderColor, radius: widget.borderRadius),
+            enabledBorder: fieldBorderType.inputBorder(color: fieldBorderColor, radius: widget.borderRadius),
+            focusedBorder: fieldBorderType.inputBorder(color: fieldBorderFocusedColor, radius: widget.borderRadius),
+            errorBorder: fieldBorderType.inputBorder(color: AppColor.error, radius: widget.borderRadius),
             errorStyle: const TextStyle(color: AppColor.error),
             errorText: widget.errorText,
           ),
@@ -876,11 +794,9 @@ class _CustomTextFieldWithValueWidgetState
 
   BorderType get fieldBorderType => widget.borderType ?? BorderType.outline;
 
-  Color get fieldBorderColor =>
-      widget.borderColor ?? AppColor.blackModern300Light;
+  Color get fieldBorderColor => widget.borderColor ?? AppColor.blackModern300Light;
 
-  Color get fieldBorderFocusedColor =>
-      widget.borderColor ?? AppColor.primary900Light;
+  Color get fieldBorderFocusedColor => widget.borderColor ?? AppColor.primary900Light;
 }
 
 final _arabicToLatinDigits = TextInputFormatter.withFunction((oldValue, newValue) {

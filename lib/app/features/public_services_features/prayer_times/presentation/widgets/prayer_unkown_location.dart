@@ -3,9 +3,6 @@ import 'package:balady_plus/app/features/_shared_feature_/shared_feature_exports
 import 'package:flutter/material.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
-import '../../../../../core/dependency_injection/injection_container.dart';
-import '../cubit/prayer_times_cubit.dart';
-
 class UnKownPrayerLocation extends StatelessWidget {
   final Function onTap;
   const UnKownPrayerLocation({super.key, required this.onTap});
@@ -67,13 +64,11 @@ class UnKownPrayerLocation extends StatelessWidget {
                 children: [
                   Container(
                     height: 36,
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 14, vertical: 9),
+                    padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 9),
                     clipBehavior: Clip.antiAlias,
                     decoration: ShapeDecoration(
                       color: AppColor.primary900Light,
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8)),
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
                     ),
                     child: Row(
                       mainAxisSize: MainAxisSize.min,

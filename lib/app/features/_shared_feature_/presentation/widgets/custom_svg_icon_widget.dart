@@ -55,7 +55,7 @@ class CustomNetworkImageWidget extends StatefulWidget {
 
   const CustomNetworkImageWidget(
     this.imagePath, {
-    Key? key,
+    super.key,
     this.imageWidth,
     this.imageHeight,
     this.imageColor,
@@ -65,11 +65,10 @@ class CustomNetworkImageWidget extends StatefulWidget {
     this.isVerifyingKey = false,
     this.sso = false,
     this.addHeader = false,
-  }) : super(key: key);
+  });
 
   @override
-  State<CustomNetworkImageWidget> createState() =>
-      _CustomNetworkImageWidgetState();
+  State<CustomNetworkImageWidget> createState() => _CustomNetworkImageWidgetState();
 }
 
 class _CustomNetworkImageWidgetState extends State<CustomNetworkImageWidget> {
@@ -83,20 +82,14 @@ class _CustomNetworkImageWidgetState extends State<CustomNetworkImageWidget> {
         : widget.isVerifyingKey
         ? //null
           {
-            "verifyingKEY": CommonFunctions.hashRequest(
-              widget.imagePath,
-              "GET",
-            ),
+            "verifyingKEY": CommonFunctions.hashRequest(widget.imagePath, "GET"),
 
             //  "Authorization":
             //      "Bearer ${locator<AuthService>().accessToken}"
           }
         : !widget
               .isVerifyingKey //MM
-        ? {
-            'Authorization':
-                'Bearer ${sl<EntryPointCubit>().state.apigeeToken?.accessToken}',
-          }
+        ? {'Authorization': 'Bearer ${sl<EntryPointCubit>().state.apigeeToken?.accessToken}'}
         : null;
 
     if (widget.addHeader == true && header != null) {
@@ -166,7 +159,7 @@ class CustomCachedNetworkImage extends StatefulWidget {
 
   const CustomCachedNetworkImage(
     this.imagePath, {
-    Key? key,
+    super.key,
     this.imageWidth,
     this.imageHeight,
     this.imageColor,
@@ -174,7 +167,7 @@ class CustomCachedNetworkImage extends StatefulWidget {
     this.imageFit = BoxFit.cover,
     this.placeHolderWidget,
     this.ssoAuth = false,
-  }) : super(key: key);
+  });
 
   @override
   State<CustomCachedNetworkImage> createState() => _CustomCachedNetworkImage();
@@ -187,12 +180,7 @@ class _CustomCachedNetworkImage extends State<CustomCachedNetworkImage> {
     return isUrl
         ? CachedNetworkImage(
             imageUrl: widget.imagePath,
-            httpHeaders: {
-              "verifyingKEY": CommonFunctions.hashRequest(
-                widget.imagePath,
-                "GET",
-              ),
-            },
+            httpHeaders: {"verifyingKEY": CommonFunctions.hashRequest(widget.imagePath, "GET")},
             width: widget.imageWidth,
             height: widget.imageHeight,
             fit: widget.imageFit,
@@ -250,10 +238,7 @@ class _DefaultImageSkeleton extends StatelessWidget {
           height: height,
           decoration: BoxDecoration(
             color: base,
-            border: Border.all(
-              color: (isDark ? Colors.white : Colors.black).withOpacity(0.06),
-              width: 1,
-            ),
+            border: Border.all(color: (isDark ? Colors.white : Colors.black).withOpacity(0.06), width: 1),
           ),
         ),
       ),
@@ -266,11 +251,7 @@ class _DefaultImageError extends StatelessWidget {
   final double? height;
   final BorderRadius borderRadius;
 
-  const _DefaultImageError({
-    this.width,
-    this.height,
-    this.borderRadius = const BorderRadius.all(Radius.circular(12)),
-  });
+  const _DefaultImageError({this.width, this.height, this.borderRadius = const BorderRadius.all(Radius.circular(12))});
 
   @override
   Widget build(BuildContext context) {

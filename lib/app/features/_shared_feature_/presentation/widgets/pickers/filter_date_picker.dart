@@ -9,8 +9,7 @@ import '../../../../../core/utils/utils_exports.dart'
     show AppColor, AppStyle, CommonFunctions, DateForm, DateTimeExtension;
 import '../../../../_shared_feature_/presentation/enhanced_widgets/pickers/hijri_picker/hijri_picker.dart'
     as hijri_picker;
-import '../../../shared_feature_exports.dart'
-    show CustomTextWidget, DropDownWithTitle;
+import '../../../shared_feature_exports.dart' show CustomTextWidget, DropDownWithTitle;
 
 class FilterDatePicker extends StatefulWidget {
   final String title;
@@ -51,16 +50,14 @@ class _FilterDatePickerState extends State<FilterDatePicker> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         const SizedBox(height: 8),
-        CustomTextWidget(
-          "date_form".tr(),
-          textStyle: AppStyle.dropDownTitleTextStyle,
-        ),
+        CustomTextWidget("date_form".tr(), textStyle: AppStyle.dropDownTitleTextStyle),
         DateFromSelector(
           initialDateForm: _dateForm,
           onChange: (dateForm) {
             setState(() => _dateForm = dateForm);
-            if (_selectedDate != null)
+            if (_selectedDate != null) {
               widget.onChange(_selectedDate!, _dateForm);
+            }
           },
         ),
         DropDownWithTitle(
@@ -86,32 +83,25 @@ class _FilterDatePickerState extends State<FilterDatePicker> {
           ? HijriCalendar.fromDate((DateTime(1937, 3, 14)))
           : HijriCalendar.fromDate(widget.startDate!);
     } catch (error, stackTrace) {
-    LogsViewModel().sendEventFromModel(
-      event: ErrorExceptionModel(
-        nameEvent: EventsName.handledException,
-        message: error.toString(),
-        stackTrace: stackTrace.toString(),
-      ),
-    );
-  }
-    final maxValue =
-        widget.endDate == null ? null : HijriCalendar.fromDate(widget.endDate!);
-    final date =
-        currentDate == null ? null : HijriCalendar.fromDate(currentDate);
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+    }
+    final maxValue = widget.endDate == null ? null : HijriCalendar.fromDate(widget.endDate!);
+    final date = currentDate == null ? null : HijriCalendar.fromDate(currentDate);
 
     hijri_picker.Picker(
       isAr: CommonFunctions.isAppAR,
-      confirmTextStyle: AppStyle.textButtonStyle.copyWith(
-        color: AppColor.primary900Light,
-      ),
+      confirmTextStyle: AppStyle.textButtonStyle.copyWith(color: AppColor.primary900Light),
       headercolor: AppColor.paleGrey,
       cancel: Container(),
       height: 270,
       confirmText: 'choose'.tr(),
-      title: CustomTextWidget(
-        widget.title,
-        textStyle: AppStyle.dropDownTitleTextStyle,
-      ),
+      title: CustomTextWidget(widget.title, textStyle: AppStyle.dropDownTitleTextStyle),
       hideHeader: false,
       adapter: hijri_picker.DateTimePickerAdapter(
         minValue: minValue,
@@ -121,15 +111,10 @@ class _FilterDatePickerState extends State<FilterDatePicker> {
       ),
       selectedTextStyle: const TextStyle(color: AppColor.primary900Light),
       onConfirm: (picker, value) {
-        final date =
-            (picker.adapter as hijri_picker.DateTimePickerAdapter).value;
+        final date = (picker.adapter as hijri_picker.DateTimePickerAdapter).value;
 
         setState(() {
-          _selectedDate = date?.hijriToGregorian(
-            date.hYear,
-            date.hMonth,
-            date.hDay,
-          );
+          _selectedDate = date?.hijriToGregorian(date.hYear, date.hMonth, date.hDay);
         });
         if (_selectedDate == null) return;
         widget.onChange(_selectedDate!, _dateForm);
@@ -139,17 +124,12 @@ class _FilterDatePickerState extends State<FilterDatePicker> {
 
   void showPickerDate(DateTime? currentDate, BuildContext context) {
     Picker(
-      confirmTextStyle: AppStyle.textButtonStyle.copyWith(
-        color: AppColor.primary900Light,
-      ),
+      confirmTextStyle: AppStyle.textButtonStyle.copyWith(color: AppColor.primary900Light),
       headerColor: AppColor.paleGrey,
       cancel: Container(),
       height: 270,
       confirmText: 'choose'.tr(),
-      title: CustomTextWidget(
-        widget.title,
-        textStyle: AppStyle.dropDownTitleTextStyle,
-      ),
+      title: CustomTextWidget(widget.title, textStyle: AppStyle.dropDownTitleTextStyle),
       hideHeader: false,
       adapter: DateTimePickerAdapter(
         minValue: widget.startDate,

@@ -4,12 +4,10 @@ import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/colorsV2/themes.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:provider/provider.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
-import 'package:provider/provider.dart';
 import 'package:provider/provider.dart' as p;
 
 class TextSizePreviewPage extends ConsumerStatefulWidget {
@@ -25,14 +23,14 @@ class _TextSizePreviewPageState extends ConsumerState<TextSizePreviewPage> {
   @override
   void initState() {
     super.initState();
-    final controller =  p.Provider.of<AccessibilityController>(context, listen: false);
+    final controller = p.Provider.of<AccessibilityController>(context, listen: false);
 
     _fontSize = 16 * controller.textScale;
   }
 
   @override
   Widget build(BuildContext context) {
-    final controller =  p.Provider.of<AccessibilityController>(context);
+    final controller = p.Provider.of<AccessibilityController>(context);
     final dgisController = ref.watch(dgisControllerProvider);
     final colors = context.colors;
     final isDark = Theme.of(context).brightness == Brightness.dark;
@@ -72,15 +70,12 @@ class _TextSizePreviewPageState extends ConsumerState<TextSizePreviewPage> {
             Container(
               width: double.infinity,
               padding: const EdgeInsets.symmetric(vertical: 40, horizontal: 24),
-              decoration: BoxDecoration(
-                color: colors.backgroundSurface1,
-                borderRadius: BorderRadius.circular(24),
-              ),
+              decoration: BoxDecoration(color: colors.backgroundSurface1, borderRadius: BorderRadius.circular(24)),
               child: Text(
                 'Main text will look like this.\n'
                 '1234567890!@#%&*()_+-=',
                 textAlign: TextAlign.center,
-                style: TextStyle(fontSize: _fontSize, height: 1.4, color:bodyTextColor),
+                style: TextStyle(fontSize: _fontSize, height: 1.4, color: bodyTextColor),
               ),
             ),
             const SizedBox(height: 32),
@@ -107,7 +102,7 @@ class _TextSizePreviewPageState extends ConsumerState<TextSizePreviewPage> {
                       divisions: 12,
                       onChanged: (value) {
                         setState(() => _fontSize = value);
-                        controller.setTextScale(_fontSize / 16,dgisController.value);
+                        controller.setTextScale(_fontSize / 16, dgisController.value);
                       },
                     ),
                   ),
@@ -121,18 +116,8 @@ class _TextSizePreviewPageState extends ConsumerState<TextSizePreviewPage> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text(
-                    '12px',
-                    style: TextStyle(
-                      color: isDark ? accent : Colors.grey,
-                    ),
-                  ),
-                  Text(
-                    '24px',
-                    style: TextStyle(
-                      color: isDark ? accent : Colors.grey,
-                    ),
-                  ),
+                  Text('12px', style: TextStyle(color: isDark ? accent : Colors.grey)),
+                  Text('24px', style: TextStyle(color: isDark ? accent : Colors.grey)),
                 ],
               ),
             ),

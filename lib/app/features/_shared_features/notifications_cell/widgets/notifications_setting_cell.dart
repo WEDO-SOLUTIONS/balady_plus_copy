@@ -6,7 +6,6 @@ import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/r
 import 'package:balady_plus/app/features/notifications/presentation/pages/notifications_settings/notifications_settings.dart';
 import 'package:balady_uikit/balady_uikit.dart' hide IconPath;
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
-import 'package:balady_uikit/core/typography/text_theme_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -21,8 +20,7 @@ class NotificationsSettingCell extends StatefulWidget {
   const NotificationsSettingCell({super.key});
 
   @override
-  State<NotificationsSettingCell> createState() =>
-      _NotificationsSettingCellState();
+  State<NotificationsSettingCell> createState() => _NotificationsSettingCellState();
 }
 
 class _NotificationsSettingCellState extends State<NotificationsSettingCell> {
@@ -33,20 +31,16 @@ class _NotificationsSettingCellState extends State<NotificationsSettingCell> {
     return CommonProperties.isLoggedInMunicipality
         ? BlocProvider(
             create: (context) {
-              NotificationRepositoryImplementation
-              notificationRepositoryImplementation = sl();
+              NotificationRepositoryImplementation notificationRepositoryImplementation = sl();
               return NotificationsSettingCubit(
-                notificationsSettingsListRepository:
-                    notificationRepositoryImplementation,
+                notificationsSettingsListRepository: notificationRepositoryImplementation,
                 notificationId: 'mobile',
               );
             },
             child: BlocBuilder<NotificationsSettingCubit, NotificationsSettingState>(
               builder: (contextCubit, state) {
-                NotificationsSettingCubit cubit = contextCubit
-                    .watch<NotificationsSettingCubit>();
-                if (state is InitialNotificationsSettingsState ||
-                    state is LoadingEventsSettingsState) {
+                NotificationsSettingCubit cubit = contextCubit.watch<NotificationsSettingCubit>();
+                if (state is InitialNotificationsSettingsState || state is LoadingEventsSettingsState) {
                   return const SizedBox(
                     // We set this height because of glich effect. In normal state it takes 112px
                     // So the wrapper will not rebuild its height
@@ -67,10 +61,8 @@ class _NotificationsSettingCellState extends State<NotificationsSettingCell> {
                     WidgetsBinding.instance.addPostFrameCallback((_) {
                       NavigationService.navigatorKey.currentState!.push(
                         MaterialPageRoute(
-                          builder: (_) => NotificationsSettings(
-                            notificationsList:
-                                cubit.notificationsSettingsList.categories!,
-                          ),
+                          builder: (_) =>
+                              NotificationsSettings(notificationsList: cubit.notificationsSettingsList.categories!),
                         ),
                       );
                     });
@@ -93,19 +85,14 @@ class _NotificationsSettingCellState extends State<NotificationsSettingCell> {
                         child: SizedBox(
                           height: 48,
                           child: Padding(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 16.0,
-                            ),
+                            padding: const EdgeInsets.symmetric(horizontal: 16.0),
                             child: Row(
                               children: [
                                 SvgPicture.asset(
                                   IconPath.notificationIc2,
                                   height: 24,
                                   width: 24,
-                                  colorFilter: const ColorFilter.mode(
-                                    AppColor.primary900Light,
-                                    BlendMode.srcIn,
-                                  ),
+                                  colorFilter: const ColorFilter.mode(AppColor.primary900Light, BlendMode.srcIn),
                                 ),
                                 const SizedBox(width: 12),
                                 Expanded(
@@ -113,21 +100,14 @@ class _NotificationsSettingCellState extends State<NotificationsSettingCell> {
                                     padding: const EdgeInsets.only(bottom: 2.0),
                                     child: Text(
                                       'notifications'.tr(),
-                                      style: Theme.of(context)
-                                          .extension<ThemeTextStyles>()!
-                                          .text
-                                          .copyWith(
-                                            color: context
-                                                .colors
-                                                .foregroundDefault,
-                                          ),
+                                      style: Theme.of(context).extension<ThemeTextStyles>()!.text.copyWith(
+                                        color: context.colors.foregroundDefault,
+                                      ),
                                     ),
                                   ),
                                 ),
 
-                                IgnorePointer(
-                                  child: Toggle(value: state.isChecked),
-                                ),
+                                IgnorePointer(child: Toggle(value: state.isChecked)),
                               ],
                             ),
                           ),
@@ -141,13 +121,9 @@ class _NotificationsSettingCellState extends State<NotificationsSettingCell> {
                           children: [
                             Text(
                               'enable_disable_notifications'.tr(),
-                              style: Theme.of(context)
-                                  .extension<ThemeTextStyles>()!
-                                  .caption
-                                  .copyWith(
-                                    color: context.colors.foregroundDefault
-                                        .withOpacity(0.36),
-                                  ),
+                              style: Theme.of(context).extension<ThemeTextStyles>()!.caption.copyWith(
+                                color: context.colors.foregroundDefault.withOpacity(0.36),
+                              ),
                             ),
                           ],
                         ),
@@ -157,9 +133,7 @@ class _NotificationsSettingCellState extends State<NotificationsSettingCell> {
                           ? GestureDetector(
                               onTap: () {
                                 manageNotificationClicked = true;
-                                cubit.getNotificationSetting(
-                                  cubit.notificationId,
-                                );
+                                cubit.getNotificationSetting(cubit.notificationId);
                                 /* Navigator.of(context).push(MaterialPageRoute(
                                     builder: (context) => NotificationsSettings(
                                         notificationsList: cubit
@@ -167,9 +141,7 @@ class _NotificationsSettingCellState extends State<NotificationsSettingCell> {
                                             .categories!)));*/
                               },
                               child: Padding(
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 16.0,
-                                ),
+                                padding: const EdgeInsets.symmetric(horizontal: 16.0),
                                 child: Row(
                                   crossAxisAlignment: CrossAxisAlignment.center,
                                   children: [
@@ -177,18 +149,14 @@ class _NotificationsSettingCellState extends State<NotificationsSettingCell> {
                                       "assets/icons/svg/profile/settings.svg",
                                       height: 24,
                                       width: 24,
-                                      colorFilter: const ColorFilter.mode(
-                                        Colors.red,
-                                        BlendMode.srcIn,
-                                      ),
+                                      colorFilter: const ColorFilter.mode(Colors.red, BlendMode.srcIn),
                                     ),
                                     const SizedBox(width: 4),
                                     Text(
                                       'manage_notification'.tr(),
-                                      style: Theme.of(context)
-                                          .extension<ThemeTextStyles>()!
-                                          .text
-                                          .copyWith(color: Colors.red),
+                                      style: Theme.of(
+                                        context,
+                                      ).extension<ThemeTextStyles>()!.text.copyWith(color: Colors.red),
                                     ),
                                   ],
                                 ),

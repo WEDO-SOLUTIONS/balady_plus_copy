@@ -2,12 +2,9 @@ import 'package:balady_plus/app/core/utils/enums/app_font_weights.dart';
 import 'package:flutter/material.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
-import '../../../../core/utils/utils_exports.dart'
-    show AppColor, AppStyle, ImagePath;
 import '../../shared_feature_exports.dart' show CustomTextWidget;
 
-class DefaultAppBarWidget extends StatelessWidget
-    implements PreferredSizeWidget {
+class DefaultAppBarWidget extends StatelessWidget implements PreferredSizeWidget {
   final String? title;
   final PreferredSizeWidget? bottom;
   final List<Widget>? actions;
@@ -17,23 +14,24 @@ class DefaultAppBarWidget extends StatelessWidget
   final bool showBack;
   Widget? titleWidget;
 
-  DefaultAppBarWidget(
-      {super.key,
-      this.title,
-      this.bottom,
-      this.actions,
-      this.showBack = true,
-      this.x = false,
-      this.onBack,
-      this.flexibleSpace,
-      this.titleWidget});
+  DefaultAppBarWidget({
+    super.key,
+    this.title,
+    this.bottom,
+    this.actions,
+    this.showBack = true,
+    this.x = false,
+    this.onBack,
+    this.flexibleSpace,
+    this.titleWidget,
+  });
 
   @override
   Widget build(BuildContext context) {
     return AppBar(
-      backgroundColor:  Theme.of(context).scaffoldBackgroundColor ,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       elevation: 0,
-    //  shadowColor: Theme.of(context).shadowColor,
+      //  shadowColor: Theme.of(context).shadowColor,
       leadingWidth: showBack == true ? null : 8,
       leading: Navigator.canPop(context) && showBack
           ? IconButton(
@@ -48,7 +46,8 @@ class DefaultAppBarWidget extends StatelessWidget
           : null,
       titleSpacing: Navigator.canPop(context) ? 0 : 16,
       centerTitle: false,
-      title: titleWidget ??
+      title:
+          titleWidget ??
           CustomTextWidget(
             title ?? "",
             fontSize: 20,
@@ -59,15 +58,14 @@ class DefaultAppBarWidget extends StatelessWidget
           ),
       bottom: bottom,
       actions: actions,
-      flexibleSpace: flexibleSpace ??SizedBox()
-          // Image.asset(
-          //   ImagePath.appbarBg,
-          //   fit: BoxFit.fill,
-          // ),
+      flexibleSpace: flexibleSpace ?? SizedBox(),
+      // Image.asset(
+      //   ImagePath.appbarBg,
+      //   fit: BoxFit.fill,
+      // ),
     );
   }
 
   @override
-  Size get preferredSize =>
-      Size.fromHeight(kToolbarHeight + (bottom?.preferredSize.height ?? 0));
+  Size get preferredSize => Size.fromHeight(kToolbarHeight + (bottom?.preferredSize.height ?? 0));
 }

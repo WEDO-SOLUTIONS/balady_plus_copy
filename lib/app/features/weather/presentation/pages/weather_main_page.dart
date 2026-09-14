@@ -1,18 +1,11 @@
 import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/custom_shimmer_list_widget.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/reload_widget.dart';
-import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/texts/custom_text_widget.dart';
 import 'package:balady_plus/app/features/weather/presentation/bloc/weather_bloc.dart';
 import 'package:balady_plus/app/features/weather/weather_exports.dart'
-    show
-        AlertsModalSheetContent,
-        CurrentWeatherContent,
-        DayCardShimmer,
-        SunriseOrSunsetTime,
-        WeatherDayCard;
+    show AlertsModalSheetContent, CurrentWeatherContent, DayCardShimmer, SunriseOrSunsetTime, WeatherDayCard;
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 
 import '../../../../core/dependency_injection/injection_container.dart';
 import '../../../../core/utils/app_analytics_events.dart';
@@ -64,58 +57,45 @@ class _WeatherMainPageState extends State<WeatherMainPage> {
           } else {
             return Scaffold(
               extendBodyBehindAppBar: true,
-              appBar: PreferredSize(
-                preferredSize: const Size.fromHeight(56),
-                child: const WeatherAppbar(),
-              ),
-              body: Column(children: [
-                Stack(
-                  children: [
-                    Container(
-                      decoration: const BoxDecoration(
-                        image: DecorationImage(
-                            image: AssetImage(ImagePath.weatherBackground3x),
-                            fit: BoxFit.cover),
+              appBar: PreferredSize(preferredSize: const Size.fromHeight(56), child: const WeatherAppbar()),
+              body: Column(
+                children: [
+                  Stack(
+                    children: [
+                      Container(
+                        decoration: const BoxDecoration(
+                          image: DecorationImage(image: AssetImage(ImagePath.weatherBackground3x), fit: BoxFit.cover),
+                        ),
+                        height: (state.showLocationError ?? false) ? screenHeight * 0.5 : screenHeight * 0.4,
+                        width: double.infinity,
                       ),
-                      height: (state.showLocationError ?? false)
-                          ? screenHeight * 0.5
-                          : screenHeight * 0.4,
-                      width: double.infinity,
-                    ),
-                    const CurrentWeatherContent()
-                  ],
-                ),
-                Expanded(
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16),
-                    child: state.allWeatherInfoStatus == BlocStatus.success
-                        ? ListView.builder(
-                            shrinkWrap: true,
-                            padding: EdgeInsets.only(bottom: 24),
-                            itemCount: state.allWeatherInfo?.forecast
-                                    ?.forecastday?.length ??
-                                0,
-                            itemBuilder: (context, index) {
-                              var forecastDay = state.allWeatherInfo?.forecast
-                                  ?.forecastday?[index];
-                              return WeatherDayCard(
-                                forecastDay: forecastDay,
-                                isExpanded: state.selectedTile == index,
-                                onExpansionChanged: (bool expanded) {
-                                  context.read<WeatherBloc>().add(
-                                      ChangeIndexEvent(
-                                          index: expanded ? index : -1));
-                                },
-                              );
-                            },
-                          )
-                        : CustomShimmerListWidget(
-                            height: 50,
-                            itemCount: 7,
-                          ),
+                      const CurrentWeatherContent(),
+                    ],
                   ),
-                ),
-              ]),
+                  Expanded(
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      child: state.allWeatherInfoStatus == BlocStatus.success
+                          ? ListView.builder(
+                              shrinkWrap: true,
+                              padding: EdgeInsets.only(bottom: 24),
+                              itemCount: state.allWeatherInfo?.forecast?.forecastday?.length ?? 0,
+                              itemBuilder: (context, index) {
+                                var forecastDay = state.allWeatherInfo?.forecast?.forecastday?[index];
+                                return WeatherDayCard(
+                                  forecastDay: forecastDay,
+                                  isExpanded: state.selectedTile == index,
+                                  onExpansionChanged: (bool expanded) {
+                                    context.read<WeatherBloc>().add(ChangeIndexEvent(index: expanded ? index : -1));
+                                  },
+                                );
+                              },
+                            )
+                          : CustomShimmerListWidget(height: 50, itemCount: 7),
+                    ),
+                  ),
+                ],
+              ),
             );
           }
         },

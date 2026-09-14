@@ -1,14 +1,7 @@
-import 'package:balady_plus/app/features/home_page/home_exports.dart';
 import 'package:flutter/material.dart';
-import 'package:localize_and_translate/localize_and_translate.dart';
-
-import '../../../../../core/utils/utils_exports.dart'
-    show AppColor, AppStyle, CommonProperties, IconPath, WeathherConditions;
 
 class HomeAppBar extends StatelessWidget {
-  const HomeAppBar({
-    super.key,
-  });
+  const HomeAppBar({super.key});
 
   @override
   Widget build(BuildContext context) {
