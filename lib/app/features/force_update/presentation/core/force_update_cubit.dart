@@ -33,10 +33,7 @@ class ForceUpdateCubit extends Cubit<ForceUpdateState> {
       Response respons;
       respons = await webService.dio.get(
         ApiConstants.forceUpdate,
-        queryParameters: {
-          'appID': "balady_mobile",
-          'type': type,
-        },
+        queryParameters: {'appID': "balady_mobile", 'type': type},
       );
       debugPrint('FORCE_UPDATE DEBUG: Network request completed successfully');
 
@@ -50,19 +47,16 @@ class ForceUpdateCubit extends Cubit<ForceUpdateState> {
       debugPrint('FORCE_UPDATE DEBUG: Network request failed: $error');
       emit(const NotHaveForceUpdateState());
       // Log the error if needed
-      print("Error fetching version info: $error");
-      print("Stack trace: $stackTrace");
+      debugPrint("Error fetching version info: $error");
+      debugPrint("Stack trace: $stackTrace");
     }
     return false;
   }
 
-  bool compareVersion(
-    String? currentVersionNo,
-    String? latestVersionNo,
-    bool? forceUpdate,
-  ) {
+  bool compareVersion(String? currentVersionNo, String? latestVersionNo, bool? forceUpdate) {
     debugPrint(
-        'FORCE_UPDATE DEBUG: Comparing versions - Current: $currentVersionNo, Latest: $latestVersionNo, ForceUpdate: $forceUpdate');
+      'FORCE_UPDATE DEBUG: Comparing versions - Current: $currentVersionNo, Latest: $latestVersionNo, ForceUpdate: $forceUpdate',
+    );
 
     if (currentVersionNo != null && latestVersionNo != null && forceUpdate != null) {
       if (forceUpdate) {

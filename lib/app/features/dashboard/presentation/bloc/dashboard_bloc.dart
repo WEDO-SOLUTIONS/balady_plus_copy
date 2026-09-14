@@ -15,6 +15,7 @@ import 'package:balady_plus/app/features/dashboard/domain/use_cases/get_voluntee
 import 'package:balady_plus/app/features/delegators/presentation/delegators_cubit/delegators_cubit.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter/foundation.dart';
 
 part 'dashboard_event.dart';
 part 'dashboard_state.dart';
@@ -157,11 +158,15 @@ class DashboardBloc extends Bloc<DashboardEvent, DashboardState> {
     final unifiedNationalNumber = delegatorsCubit?.state.selectedDelegate?.unifiedNationalNumber;
     final identityNumber = delegatorsCubit?.state.selectedDelegate?.crNumber;
 
-    print(
-      "DEBUG: Dashboard statistics - Selected delegator: ${delegatorsCubit?.state.selectedDelegate?.entityName}, Agent: ${delegatorsCubit?.state.selectedAgent?.grantorName}",
+    debugPrint(
+      (
+        "DEBUG: Dashboard statistics - Selected delegator: ${delegatorsCubit?.state.selectedDelegate?.entityName}, Agent: ${delegatorsCubit?.state.selectedAgent?.grantorName}",
+      ).toString(),
     );
-    print(
-      "DEBUG: Dashboard statistics - Using unifiedNationalNumber: $unifiedNationalNumber, identityNumber: $identityNumber",
+    debugPrint(
+      (
+        "DEBUG: Dashboard statistics - Using unifiedNationalNumber: $unifiedNationalNumber, identityNumber: $identityNumber",
+      ).toString(),
     );
     final failureOrSuccess = await getDashboardStatistics(
       DashboardStatisticsParams(

@@ -11,6 +11,7 @@ import 'package:balady_plus/app/features/location/domain/entities/gis/gis_params
 import 'package:balady_plus/app/features/location/domain/entities/gis/gis_response.dart';
 import 'package:balady_plus/app/features/location/domain/use_cases/get_gis_data.dart';
 import 'package:equatable/equatable.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart' show WidgetsBinding;
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
@@ -112,7 +113,7 @@ class EntryPointCubit extends Cubit<EntryPointState> {
       sl<ActionLoginCubit>().openLoginScreen(state: sl<AuthenticationBloc>().state, isMunicipality: isMunicipality);
       this.mainPage = mainPage;
     } catch (e) {
-      print("object");
+      debugPrint("object");
     }
     return false;
   }
@@ -224,7 +225,7 @@ class EntryPointCubit extends Cubit<EntryPointState> {
           );
         } catch (e) {
           EasyLoading.dismiss();
-          print("object");
+          debugPrint("object");
         }
       },
     );
@@ -338,7 +339,7 @@ class EntryPointCubit extends Cubit<EntryPointState> {
       }
       EasyLoading.dismiss();
     } catch (e) {
-      print("object");
+      debugPrint("object");
       EasyLoading.dismiss();
     }
   }
@@ -351,7 +352,7 @@ class EntryPointCubit extends Cubit<EntryPointState> {
       emit(const EntryPointState(status: AuthStatus.notAuthenticated));
       sl<AuthenticationBloc>().add(LogoutAuthentication());
     } catch (e) {
-      print("object");
+      debugPrint("object");
       EasyLoading.dismiss();
     }
     if (sl<AuthenticationBloc>().state is AuthenticatedMunicipalityState) {
@@ -505,14 +506,14 @@ class EntryPointCubit extends Cubit<EntryPointState> {
     required bool isFromEtmam,
     required AuthenticatedMunicipalityState authState,
   }) async {
-    print(" ");
-    print(" ");
-    print(" ");
-    print(" ");
+    debugPrint(" ");
+    debugPrint(" ");
+    debugPrint(" ");
+    debugPrint(" ");
     final failureOrSuccess = await _saveAuth(token);
     failureOrSuccess.fold(
       (failure) {
-        print("object");
+        debugPrint("object");
       },
       (success) async {
         emit(state.copyWith(status: AuthStatus.loading, token: token, errorMessage: ""));
@@ -524,7 +525,7 @@ class EntryPointCubit extends Cubit<EntryPointState> {
         // phone/OTP path). Remove once confirmed on a real SSO login.
         // ignore: avoid_print
         assert(() {
-          print('[AUTH][SSO] jwt has sub=${decodedToken.containsKey('sub')} value=${decodedToken['sub']}');
+          debugPrint('[AUTH][SSO] jwt has sub=${decodedToken.containsKey('sub')} value=${decodedToken['sub']}');
           return true;
         }());
         final failureOrSuccess = await _saveSSOProfile(SsoUserInfoModel.fromJson(decodedToken));

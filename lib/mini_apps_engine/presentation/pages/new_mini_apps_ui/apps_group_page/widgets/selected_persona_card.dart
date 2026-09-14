@@ -149,14 +149,14 @@ class SelectedPersonaCard extends StatelessWidget {
         newAgent: newAgent,
         cubit: cubit,
         onNavigateToGroup: (targetGroupId) {
-          print("DEBUG: Cross-group navigation triggered to group: $targetGroupId");
+          debugPrint("DEBUG: Cross-group navigation triggered to group: $targetGroupId");
           // Close the delegator list bottom sheet
           Navigator.of(context).pop();
 
           // Navigate to target group after a short delay
           Future.delayed(const Duration(milliseconds: 300), () {
             if (context.mounted) {
-              print("DEBUG: Executing cross-group navigation to: $targetGroupId");
+              debugPrint("DEBUG: Executing cross-group navigation to: $targetGroupId");
               // Close current group and navigate to target group
               // Navigator.of(context).pop(); // Close current AppsGroupPage
 
@@ -169,7 +169,7 @@ class SelectedPersonaCard extends StatelessWidget {
                 ),
               );
             } else {
-              print("DEBUG: Context not mounted, skipping navigation");
+              debugPrint("DEBUG: Context not mounted, skipping navigation");
             }
           });
         },

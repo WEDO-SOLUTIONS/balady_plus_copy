@@ -49,15 +49,17 @@ class _PersonaBannerSectionState extends State<PersonaBannerSection> {
                     final selectionChanged = previousSelection != currentSelection;
 
                     if (selectionChanged) {
-                      print("DEBUG: Selection actually changed from '$previousSelection' to '$currentSelection'");
+                      debugPrint("DEBUG: Selection actually changed from '$previousSelection' to '$currentSelection'");
                     }
 
                     return selectionChanged;
                   },
                   listener: (context, state) {
                     // Refresh dashboard when delegator/agent selection changes
-                    print(
-                      "DEBUG: Delegator selection changed - Delegator: ${state.selectedDelegate?.entityName}, Agent: ${state.selectedAgent?.grantorName}",
+                    debugPrint(
+                      (
+                        "DEBUG: Delegator selection changed - Delegator: ${state.selectedDelegate?.entityName}, Agent: ${state.selectedAgent?.grantorName}",
+                      ).toString(),
                     );
                     final dashboardBloc = context.read<DashboardBloc>();
                     dashboardBloc.add(DashboardEventInitial(delegatorsCubit: delegatorsCubit));
@@ -141,7 +143,7 @@ class _PersonaBannerSectionState extends State<PersonaBannerSection> {
                                   WidgetsBinding.instance.addPostFrameCallback((_) {
                                     final dashboardBloc = context.read<DashboardBloc>();
                                     if (dashboardBloc.state.status == BlocRequestStatus.initial) {
-                                      print("DEBUG: Initializing dashboard with selected account");
+                                      debugPrint("DEBUG: Initializing dashboard with selected account");
                                       dashboardBloc.add(DashboardEventInitial(delegatorsCubit: delegatorsCubit));
                                     }
                                   });

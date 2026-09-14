@@ -8,9 +8,7 @@ import '../../../../core/utils/utils_exports.dart' show Log;
 import '../../shared_feature_exports.dart' show DefaultAppBarWidget;
 
 class QiblahWebViewPage extends StatefulWidget {
-  const QiblahWebViewPage({
-    super.key,
-  });
+  const QiblahWebViewPage({super.key});
 
   @override
   State<QiblahWebViewPage> createState() => _QiblahWebViewPageState();
@@ -32,10 +30,7 @@ class _QiblahWebViewPageState extends State<QiblahWebViewPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: DefaultAppBarWidget(
-        title: "qiblahCompass".tr(),
-        x: true,
-      ),
+      appBar: DefaultAppBarWidget(title: "qiblahCompass".tr(), x: true),
       body: StreamBuilder<double?>(
         stream: _progessStream.stream,
         builder: (context, snapshot) {
@@ -47,9 +42,7 @@ class _QiblahWebViewPageState extends State<QiblahWebViewPage> {
                 },
                 initialUrlRequest: URLRequest(
                   // url: Uri.parse('https://flutter.dev/'),
-                  url: WebUri(
-                    "https://qiblafinder.withgoogle.com/intl/ar/finder/ar",
-                  ),
+                  url: WebUri("https://qiblafinder.withgoogle.com/intl/ar/finder/ar"),
                 ),
                 androidOnGeolocationPermissionsShowPrompt: (controller, origin) async {
                   return GeolocationPermissionShowPromptResponse(origin: origin, allow: true, retain: true);
@@ -70,46 +63,48 @@ class _QiblahWebViewPageState extends State<QiblahWebViewPage> {
                 ),
                 onLoadStart: (controller, Uri? url) async {},
                 onLoadStop: (controller, Uri? url) async {
-                  print(url);
+                  debugPrint(url.toString());
                   if (mounted) {
                     Timer(const Duration(seconds: 1), () async {
                       await _controller?.evaluateJavascript(
-                          source: "document.getElementsByClassName('mat-raised-button')[0].click()");
+                        source: "document.getElementsByClassName('mat-raised-button')[0].click()",
+                      );
                       await _controller?.evaluateJavascript(
-                          source: "document.getElementsByClassName('mat-raised-button')[0].click()");
+                        source: "document.getElementsByClassName('mat-raised-button')[0].click()",
+                      );
 
                       await _controller?.evaluateJavascript(
-                          source:
-                              "document.getElementsByClassName('mat-focus-indicator mat-icon-button mat-button-base')[0].style.display='none'; document.getElementsByClassName('mat-focus-indicator mat-icon-button mat-button-base')[0].style.display='none'; document.getElementsByClassName('mat-fab mat-button-base')[0].style.display='none'; document.getElementsByClassName('expanded')[0].style.display='none'");
+                        source:
+                            "document.getElementsByClassName('mat-focus-indicator mat-icon-button mat-button-base')[0].style.display='none'; document.getElementsByClassName('mat-focus-indicator mat-icon-button mat-button-base')[0].style.display='none'; document.getElementsByClassName('mat-fab mat-button-base')[0].style.display='none'; document.getElementsByClassName('expanded')[0].style.display='none'",
+                      );
 
                       Timer(const Duration(seconds: 3), () async {
                         setState(() {
                           isLoading = false;
                         });
                         await _controller?.evaluateJavascript(
-                            source: "document.getElementsByClassName('mat-raised-button')[0].click()");
+                          source: "document.getElementsByClassName('mat-raised-button')[0].click()",
+                        );
 
                         await _controller?.evaluateJavascript(
-                            source:
-                                "document.getElementsByClassName('mat-focus-indicator mat-icon-button mat-button-base')[0].style.display='none'; document.getElementsByClassName('mat-focus-indicator mat-icon-button mat-button-base')[0].style.display='none'; document.getElementsByClassName('mat-fab mat-button-base')[0].style.display='none'; document.getElementsByClassName('expanded')[0].style.display='none'");
+                          source:
+                              "document.getElementsByClassName('mat-focus-indicator mat-icon-button mat-button-base')[0].style.display='none'; document.getElementsByClassName('mat-focus-indicator mat-icon-button mat-button-base')[0].style.display='none'; document.getElementsByClassName('mat-fab mat-button-base')[0].style.display='none'; document.getElementsByClassName('expanded')[0].style.display='none'",
+                        );
                       });
                     });
                   }
                 },
-                onLoadError: (controller, url, code, message) => print(message),
+                onLoadError: (controller, url, code, message) => debugPrint(message.toString()),
                 onProgressChanged: (controller, int progress) {
                   final percent = progress / 100;
-                  print(percent);
+                  debugPrint(percent.toString());
                 },
                 onConsoleMessage: (controller, ConsoleMessage consoleMessage) {
                   "$consoleMessage".warningLog();
                   "Message coming from Dart side: ${consoleMessage.message}".warningLog();
                 },
               ),
-              if (isLoading)
-                const Center(
-                  child: CustomCircularLoadingWidget(),
-                ),
+              if (isLoading) const Center(child: CustomCircularLoadingWidget()),
               /*  Align(
                 alignment: Alignment.center,
                 child: ElevatedButtonWidget.add(

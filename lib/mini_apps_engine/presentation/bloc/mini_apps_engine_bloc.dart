@@ -15,6 +15,7 @@ import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:bloc/bloc.dart';
 import 'package:dio/dio.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:flutter/foundation.dart';
 
 //! CustomInAppLocalhostServer? localhostServer;
 int portNumber = 8080;
@@ -111,12 +112,12 @@ class MiniAppsEngineBloc extends Bloc<MiniAppsEngineEvent, MiniAppsEngineState> 
     try {
       // Start a dummy server on the same port to simulate port conflict
       dummyServer = await ServerSocket.bind('127.0.0.1', portToUse);
-      print('🔴 TESTING: Dummy server occupying port $portToUse');
+      debugPrint('🔴 TESTING: Dummy server occupying port $portToUse');
 
       // Keep it running for a moment to ensure conflict
       await Future.delayed(const Duration(milliseconds: 500));
     } catch (e) {
-      print('⚠️ Could not start dummy server: $e');
+      debugPrint('⚠️ Could not start dummy server: $e');
     }
   }
 
@@ -164,7 +165,7 @@ class MiniAppsEngineBloc extends Bloc<MiniAppsEngineEvent, MiniAppsEngineState> 
       emit(MiniAppsEngineLoadedState(servicePath: servicePath, path: event.miniApp.path ?? ""));
     } catch (e) {
       // print(e.toString());
-      print('Error in _openLocalHostServer: ${e.toString()}');
+      debugPrint('Error in _openLocalHostServer: ${e.toString()}');
       add(
         OpenServerEngineEvent(
           miniApp: event.miniApp.copyWith(
@@ -212,7 +213,7 @@ class MiniAppsEngineBloc extends Bloc<MiniAppsEngineEvent, MiniAppsEngineState> 
       } else {
         emit(const FailedDownloadState());
       }
-      print(error);
+      debugPrint(error.toString());
     }
     return null;
   }
@@ -231,7 +232,7 @@ class MiniAppsEngineBloc extends Bloc<MiniAppsEngineEvent, MiniAppsEngineState> 
         }
       }
     } catch (e) {
-      print("Test");
+      debugPrint("Test");
     }
   }
 

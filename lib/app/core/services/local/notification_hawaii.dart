@@ -8,6 +8,7 @@ import 'package:timezone/timezone.dart' as tz;
 import 'package:flutter_timezone/flutter_timezone.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:huawei_push/huawei_push.dart';
+import 'package:flutter/foundation.dart';
 
 String navigationActionId = 'id_3';
 
@@ -129,7 +130,7 @@ class HawaiiNotificationService {
       Push.getTokenStream.listen(_onTokenEvent, onError: _onTokenError);
       Push.onNotificationOpenedApp.listen((eee) {
         _onNotificationOpenedApp(eee);
-        print("object");
+        debugPrint("object");
       });
 
       final dynamic initialNotification = await Push.getInitialNotification();

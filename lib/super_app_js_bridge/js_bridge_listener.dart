@@ -586,7 +586,7 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
 
   @pragma('vm:entry-point')
   void openFilePicker(dynamic msg, CompletionHandler handler) async {
-    print('raw msg : $msg');
+    debugPrint('raw msg : $msg');
 
     // Ensure msg is always a Map<String, dynamic>
     late final Map<String, dynamic> data;
@@ -594,13 +594,13 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
       try {
         data = jsonDecode(msg) as Map<String, dynamic>;
       } catch (e) {
-        print("❌ Failed to decode msg as JSON: $e");
+        debugPrint("❌ Failed to decode msg as JSON: $e");
         data = {};
       }
     } else if (msg is Map) {
       data = Map<String, dynamic>.from(msg);
     } else {
-      print("❌ Unsupported msg type: ${msg.runtimeType}");
+      debugPrint("❌ Unsupported msg type: ${msg.runtimeType}");
       data = {};
     }
 
@@ -839,7 +839,7 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
           );
         } else {}
       } catch (e) {
-        print(e);
+        debugPrint(e.toString());
       }
     }
     handler.complete(response.jsonEncodeModel());
@@ -1227,7 +1227,7 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
           selectedDelegate = cubit.state.delegators.firstWhere((d) => d.id == savedDelegatorId);
         } catch (e) {
           // Delegator not found in current list
-          print('Selected delegator $savedDelegatorId not found in delegators list');
+          debugPrint('Selected delegator $savedDelegatorId not found in delegators list');
         }
       }
 
@@ -1292,7 +1292,7 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
           selectedAgent = cubit.state.agents.firstWhere((a) => a.agencyNumber == savedAgentId);
         } catch (e) {
           // Agent not found in current list
-          print('Selected agent $savedAgentId not found in agents list');
+          debugPrint('Selected agent $savedAgentId not found in agents list');
         }
       }
 

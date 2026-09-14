@@ -447,7 +447,7 @@ class CommonFunctions {
 
   static String getFormattedTimeEkram(String? timeStr, {Duration? subtractedDuration}) {
     String formattedTime = "";
-    print(timeStr);
+    debugPrint(timeStr.toString());
     try {
       String biddingEndingTime = timeStr ?? "";
       DateTime tempTime = DateFormat("yyyy/M/dd hh:mm").parse(biddingEndingTime);
@@ -461,7 +461,7 @@ class CommonFunctions {
           stackTrace: stackTrace.toString(),
         ),
       );
-      print(error);
+      debugPrint(error.toString());
     }
     return replaceArabicNumberWithEnglish(formattedTime);
   }
@@ -481,7 +481,7 @@ class CommonFunctions {
           stackTrace: stackTrace.toString(),
         ),
       );
-      print(error);
+      debugPrint(error.toString());
     }
     return replaceArabicNumberWithEnglish(formattedTime);
   }
@@ -501,7 +501,7 @@ class CommonFunctions {
           stackTrace: stackTrace.toString(),
         ),
       );
-      print(error);
+      debugPrint(error.toString());
     }
     return replaceArabicNumberWithEnglish(formattedTime);
   }
@@ -1289,7 +1289,7 @@ class CommonFunctions {
           stackTrace: stackTrace.toString(),
         ),
       );
-      print(error);
+      debugPrint(error.toString());
     }
   }
 
@@ -1334,7 +1334,7 @@ class CommonFunctions {
   }
 
   static void showApigeeFile(String fileUrl, String fileName, {int? serviceId}) async {
-    print(fileName);
+    debugPrint(fileName.toString());
     try {
       if (fileName.toLowerCase().contains(".png") ||
           fileName.toLowerCase().contains(".jpeg") ||
@@ -1373,7 +1373,7 @@ class CommonFunctions {
           );
           EasyLoading.dismiss();
 
-          print(error);
+          debugPrint(error.toString());
         }
       }
     } catch (error, stackTrace) {
@@ -1400,7 +1400,7 @@ class CommonFunctions {
     dio.addSentry();
     dio.options.responseType = ResponseType.bytes;
     dio.interceptors.add(AppInterceptors());
-    print("SERVCE $serviceId");
+    debugPrint("SERVCE $serviceId");
 
     Response r = await WebService(
       dio: dio,
@@ -1616,11 +1616,11 @@ class CommonFunctions {
         final dateTimeString = data['datetime']; // Example: "2023-12-30T18:45:32.123456+03:00"
         return DateTime.parse(dateTimeString);
       } else {
-        print('Failed to fetch time: ${response.statusCode}');
+        debugPrint('Failed to fetch time: ${response.statusCode}');
         return null;
       }
     } catch (e) {
-      print('Error fetching KSA date and time: $e');
+      debugPrint('Error fetching KSA date and time: $e');
       return null;
     }
   }

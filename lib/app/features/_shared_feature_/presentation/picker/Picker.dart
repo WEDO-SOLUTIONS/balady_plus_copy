@@ -482,7 +482,7 @@ class PickerWidgetState<T> extends State<_PickerWidget> {
   final Map<int, int> lastData = {};
 
   List<Widget> _buildViews() {
-    if (__printDebug) print("_buildViews");
+    if (__printDebug) debugPrint("_buildViews");
     theme ??= Theme.of(context);
 
     List<Widget> items = [];
@@ -516,7 +516,7 @@ class PickerWidgetState<T> extends State<_PickerWidget> {
                         diameterRatio: picker.diameterRatio!,
                         squeeze: picker.squeeze!,
                         onSelectedItemChanged: (int _index) {
-                          if (__printDebug) print("onSelectedItemChanged");
+                          if (__printDebug) debugPrint("onSelectedItemChanged");
                           var index = _index % _length;
                           picker.selecteds![i] = index;
                           updateScrollController(i);
@@ -553,7 +553,7 @@ class PickerWidgetState<T> extends State<_PickerWidget> {
 
                       if (!picker.changeToFirst && picker.selecteds![i] >= _length) {
                         Timer(Duration(milliseconds: 100), () {
-                          if (__printDebug) print("timer last");
+                          if (__printDebug) debugPrint("timer last");
                           adapter.setColumn(i - 1);
                           var _len = adapter.length;
                           var _index = (_len < _length ? _len : _length) - 1;
@@ -798,7 +798,7 @@ class PickerDataAdapter<T> extends PickerAdapter<T> {
         }
       }
     }
-    if (__printDebug) print("data.length: ${data.length}");
+    if (__printDebug) debugPrint("data.length: ${data.length}");
   }
 
   void _parsePickerDataItem(List pickerData, List<PickerItem> data) {
@@ -835,7 +835,7 @@ class PickerDataAdapter<T> extends PickerAdapter<T> {
     if (_col == index + 1) return;
     _col = index + 1;
     if (isArray) {
-      if (__printDebug) print("index: $index");
+      if (__printDebug) debugPrint("index: $index");
       if (_col < data!.length) {
         _datas = data![_col].children;
       } else {

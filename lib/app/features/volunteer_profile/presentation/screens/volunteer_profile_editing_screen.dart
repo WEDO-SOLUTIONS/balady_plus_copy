@@ -9,18 +9,13 @@ import '../widgets/volunteer_presentation_mode.dart';
 class VolunteerProfileEditingScreen extends StatefulWidget {
   final VolunteerProfileBloc volunteerProfileBloc;
 
-  const VolunteerProfileEditingScreen({
-    required this.volunteerProfileBloc,
-    super.key,
-  });
+  const VolunteerProfileEditingScreen({required this.volunteerProfileBloc, super.key});
 
   @override
-  State<VolunteerProfileEditingScreen> createState() =>
-      _VolunteerProfileEditingScreenState();
+  State<VolunteerProfileEditingScreen> createState() => _VolunteerProfileEditingScreenState();
 }
 
-class _VolunteerProfileEditingScreenState
-    extends State<VolunteerProfileEditingScreen> {
+class _VolunteerProfileEditingScreenState extends State<VolunteerProfileEditingScreen> {
   Map<String, dynamic>? originalValues;
   @override
   void initState() {
@@ -47,12 +42,8 @@ class _VolunteerProfileEditingScreenState
       'language': currentState.language,
       'languageId': currentState.languageId,
       'workExperience': currentState.workExperience,
-      'skills': currentState.skills.isNotEmpty
-          ? currentState.skills.join(', ')
-          : null,
-      'skillsIds': currentState.skillsIds.isNotEmpty
-          ? currentState.skillsIds.first
-          : null,
+      'skills': currentState.skills.isNotEmpty ? currentState.skills.join(', ') : null,
+      'skillsIds': currentState.skillsIds.isNotEmpty ? currentState.skillsIds.first : null,
       'volunteeringLevel': currentState.volunteeringLevel,
       'volunteeringLevelId': currentState.volunteeringLevelId,
       'volunteeringWorkField': currentState.volunteeringWorkField,
@@ -71,13 +62,9 @@ class _VolunteerProfileEditingScreenState
     return WillPopScope(
       onWillPop: () async {
         // This will be called when back button is pressed
-        print('WillPopScope triggered in edit mode');
+        debugPrint('WillPopScope triggered in edit mode');
         // Restore original values
-        VolunteerPresentationMode.cancelEditMode(
-          context,
-          widget.volunteerProfileBloc,
-          originalValues!,
-        );
+        VolunteerPresentationMode.cancelEditMode(context, widget.volunteerProfileBloc, originalValues!);
         return true; // Allow pop
       },
       child: Theme(
@@ -89,16 +76,9 @@ class _VolunteerProfileEditingScreenState
             elevation: 0,
             leading: IconButton(
               tooltip: 'a11yBack'.tr(),
-              icon: Icon(
-                Icons.arrow_back_ios,
-                color: Theme.of(context).colorScheme.onSurface,
-              ),
+              icon: Icon(Icons.arrow_back_ios, color: Theme.of(context).colorScheme.onSurface),
               onPressed: () {
-                VolunteerPresentationMode.cancelEditMode(
-                  context,
-                  widget.volunteerProfileBloc,
-                  originalValues!,
-                );
+                VolunteerPresentationMode.cancelEditMode(context, widget.volunteerProfileBloc, originalValues!);
                 Navigator.of(context).pop();
               },
             ),

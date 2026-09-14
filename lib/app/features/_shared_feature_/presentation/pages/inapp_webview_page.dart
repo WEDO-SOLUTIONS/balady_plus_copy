@@ -69,17 +69,9 @@ class _InAppWebViewPageState extends State<InAppWebViewPage> {
 
   @override
   Widget build(BuildContext context) {
-    final ({
-      String requestNum,
-      String url,
-      bool? isObjections,
-      List<String>? callbackUrls,
-    }) args = ModalRoute.of(context)!.settings.arguments as ({
-      String requestNum,
-      String url,
-      bool? isObjections,
-      List<String>? callbackUrls,
-    });
+    final ({String requestNum, String url, bool? isObjections, List<String>? callbackUrls}) args =
+        ModalRoute.of(context)!.settings.arguments
+            as ({String requestNum, String url, bool? isObjections, List<String>? callbackUrls});
 
     String url = args.url.replaceAll("\n", "");
 
@@ -179,7 +171,7 @@ class _InAppWebViewPageState extends State<InAppWebViewPage> {
                         (url?.path.contains("dashboardclient/requests/details") ?? false) ||
                         (url?.path.contains("dashboardclient/licenses/details") ?? false))) {
                   try {
-                    print("HIDEEE");
+                    debugPrint("HIDEEE");
                     _controller?.evaluateJavascript(
                       source: "document.getElementsByClassName('btn-text-danger')[0].style.display='none'",
                     );
@@ -198,7 +190,7 @@ class _InAppWebViewPageState extends State<InAppWebViewPage> {
 
                   Timer.periodic(interval, (Timer timer) {
                     try {
-                      print("HIDEEE");
+                      debugPrint("HIDEEE");
                       _controller?.evaluateJavascript(
                         source: "document.getElementsByClassName('btn-text-danger')[0].style.display='none'",
                       );
@@ -213,7 +205,7 @@ class _InAppWebViewPageState extends State<InAppWebViewPage> {
                     }
                     if (timer.tick >= timeout.inSeconds) {
                       timer.cancel();
-                      print('Timer stopped after 2 minutes.');
+                      debugPrint('Timer stopped after 2 minutes.');
                     }
                   });
                 }
@@ -221,7 +213,7 @@ class _InAppWebViewPageState extends State<InAppWebViewPage> {
                   isLoading = false;
                 });
               },
-              onLoadError: (controller, url, code, message) => print(message),
+              onLoadError: (controller, url, code, message) => debugPrint(message.toString()),
               onProgressChanged: (controller, int progress) {
                 final percent = progress / 100;
               },

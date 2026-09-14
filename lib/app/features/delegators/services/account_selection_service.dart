@@ -3,6 +3,7 @@ import 'package:balady_plus/app/features/delegators/domain/entities/agent_entity
 import 'package:balady_plus/app/features/delegators/domain/entities/delegator_entity.dart';
 import 'package:balady_plus/app/features/delegators/presentation/delegators_cubit/delegators_cubit.dart';
 import 'package:get_it/get_it.dart';
+import 'package:flutter/foundation.dart';
 
 enum GroupType {
   personal, // 124a4dd1-7a7b-47f1-09eb-08de2cce6088
@@ -35,33 +36,35 @@ class AccountSelectionService {
 
   /// Determines and applies the appropriate account selection for the given group
   static Future<void> applyAccountSelectionForGroup(String groupId) async {
-    print("DEBUG: applyAccountSelectionForGroup called for groupId: $groupId");
+    debugPrint("DEBUG: applyAccountSelectionForGroup called for groupId: $groupId");
     final groupType = getGroupType(groupId);
-    print("DEBUG: Group type determined as: $groupType");
+    debugPrint("DEBUG: Group type determined as: $groupType");
     DelegatorsCubit cubit = GetIt.instance<DelegatorsCubit>();
     switch (groupType) {
       case GroupType.personal:
-        print("DEBUG: Applying personal account selection");
+        debugPrint("DEBUG: Applying personal account selection");
         await _selectPersonalAccount(cubit);
         break;
       case GroupType.business:
-        print("DEBUG: Applying business account selection");
+        debugPrint("DEBUG: Applying business account selection");
         await _selectBusinessAccount(cubit);
         break;
       case GroupType.other:
-        print("DEBUG: Other group type, no selection change");
+        debugPrint("DEBUG: Other group type, no selection change");
         // For other groups, don't change selection
         break;
     }
 
-    print(
-      "DEBUG: Final selection - Delegator: ${cubit.state.selectedDelegate?.entityName}, Agent: ${cubit.state.selectedAgent?.grantorName}",
+    debugPrint(
+      (
+        "DEBUG: Final selection - Delegator: ${cubit.state.selectedDelegate?.entityName}, Agent: ${cubit.state.selectedAgent?.grantorName}",
+      ).toString(),
     );
   }
 
   /// Selects personal account (clears delegator/agent selection)
   static Future<void> _selectPersonalAccount(DelegatorsCubit cubit) async {
-    print("DEBUG: Selecting personal account - clearing delegator/agent selection");
+    debugPrint("DEBUG: Selecting personal account - clearing delegator/agent selection");
 
     // Clear any selected delegator or agent
     cubit.selectDelegator(null);
@@ -70,32 +73,31 @@ class AccountSelectionService {
     // Clear from shared preferences
     await sharedPrefs.clearSelectedAccounts();
 
-    print("DEBUG: Personal account selected, delegator/agent cleared");
+    debugPrint("DEBUG: Personal account selected, delegator/agent cleared");
   }
 
   /// Selects appropriate business account (delegator or agent)
   static Future<void> _selectBusinessAccount(DelegatorsCubit cubit) async {
-    print("DEBUG: Starting business account selection");
+    debugPrint("DEBUG: Starting business account selection");
 
     // First, try to apply selection from saved preferences immediately if we have data
     final hasExistingData = cubit.state.delegators.isNotEmpty || cubit.state.agents.isNotEmpty;
     if (hasExistingData) {
-      print("DEBUG: Attempting immediate selection from existing data");
+      debugPrint("DEBUG: Attempting immediate selection from existing data");
       await _applySelectionFromPreferences(cubit);
 
       // If selection was successful, return early
       if (cubit.state.selectedDelegate != null || cubit.state.selectedAgent != null) {
-        print("DEBUG: Immediate selection successful from existing data");
+        debugPrint("DEBUG: Immediate selection successful from existing data");
         return;
       }
     }
 
     // Check if we need to fetch fresh data
-    final isDataStale =
-        cubit.state.accountStatus == DelegatorsAccountStatus.initial;
+    final isDataStale = cubit.state.accountStatus == DelegatorsAccountStatus.initial;
 
     if (!hasExistingData || isDataStale) {
-      print("DEBUG: Fetching fresh delegator/agent data");
+      debugPrint("DEBUG: Fetching fresh delegator/agent data");
       cubit.loadData();
 
       // Wait for both API calls to complete
@@ -104,27 +106,30 @@ class AccountSelectionService {
         await Future.delayed(const Duration(milliseconds: 300));
         attempts++;
 
-        final isDone = cubit.state.accountStatus != DelegatorsAccountStatus.loading &&
+        final isDone =
+            cubit.state.accountStatus != DelegatorsAccountStatus.loading &&
             cubit.state.accountStatus != DelegatorsAccountStatus.initial;
 
-        print(
-          "DEBUG: Attempt $attempts - accountStatus: ${cubit.state.accountStatus}, delegators: ${cubit.state.delegators.length}, agents: ${cubit.state.agents.length}",
+        debugPrint(
+          (
+            "DEBUG: Attempt $attempts - accountStatus: ${cubit.state.accountStatus}, delegators: ${cubit.state.delegators.length}, agents: ${cubit.state.agents.length}",
+          ).toString(),
         );
 
         if (isDone) {
-          print("DEBUG: Both API calls completed");
+          debugPrint("DEBUG: Both API calls completed");
           break;
         }
       }
     } else {
-      print("DEBUG: Using existing delegator/agent data");
+      debugPrint("DEBUG: Using existing delegator/agent data");
     }
 
-    print("DEBUG: Final data - ${cubit.state.delegators.length} delegators, ${cubit.state.agents.length} agents");
+    debugPrint("DEBUG: Final data - ${cubit.state.delegators.length} delegators, ${cubit.state.agents.length} agents");
 
     // If still no data after waiting, return without selection
     if (cubit.state.delegators.isEmpty && cubit.state.agents.isEmpty) {
-      print("DEBUG: No delegators or agents available");
+      debugPrint("DEBUG: No delegators or agents available");
       return;
     }
 
@@ -163,9 +168,11 @@ class AccountSelectionService {
     required Function(String) onNavigateToGroup,
   }) async {
     final currentGroupType = getGroupType(currentGroupId);
-    print("DEBUG: handleAccountSwitch - Current group: $currentGroupId ($currentGroupType)");
-    print(
-      "DEBUG: handleAccountSwitch - New delegator: ${newDelegator?.entityName}, New agent: ${newAgent?.grantorName}",
+    debugPrint("DEBUG: handleAccountSwitch - Current group: $currentGroupId ($currentGroupType)");
+    debugPrint(
+      (
+        "DEBUG: handleAccountSwitch - New delegator: ${newDelegator?.entityName}, New agent: ${newAgent?.grantorName}",
+      ).toString(),
     );
 
     // Determine target group based on selection
@@ -175,7 +182,7 @@ class AccountSelectionService {
     } else {
       targetGroupType = GroupType.personal;
     }
-    print("DEBUG: handleAccountSwitch - Target group type: $targetGroupType");
+    debugPrint("DEBUG: handleAccountSwitch - Target group type: $targetGroupType");
 
     // Apply the selection
     if (newDelegator != null) {
@@ -191,16 +198,16 @@ class AccountSelectionService {
     await saveCurrentSelection(cubit);
 
     // Navigate to appropriate group if needed
-    print("DEBUG: handleAccountSwitch - Current: $currentGroupType, Target: $targetGroupType");
+    debugPrint("DEBUG: handleAccountSwitch - Current: $currentGroupType, Target: $targetGroupType");
     if (currentGroupType != targetGroupType) {
-      print("DEBUG: handleAccountSwitch - Navigation needed!");
+      debugPrint("DEBUG: handleAccountSwitch - Navigation needed!");
       switch (targetGroupType) {
         case GroupType.personal:
-          print("DEBUG: handleAccountSwitch - Navigating to personal group: $personalGroupId");
+          debugPrint("DEBUG: handleAccountSwitch - Navigating to personal group: $personalGroupId");
           onNavigateToGroup(personalGroupId);
           break;
         case GroupType.business:
-          print("DEBUG: handleAccountSwitch - Navigating to business group: $businessGroupId");
+          debugPrint("DEBUG: handleAccountSwitch - Navigating to business group: $businessGroupId");
           onNavigateToGroup(businessGroupId);
           break;
         case GroupType.other:
@@ -208,7 +215,7 @@ class AccountSelectionService {
           break;
       }
     } else {
-      print("DEBUG: handleAccountSwitch - No navigation needed, staying in same group");
+      debugPrint("DEBUG: handleAccountSwitch - No navigation needed, staying in same group");
     }
   }
 
@@ -218,17 +225,17 @@ class AccountSelectionService {
     final lastSelectedDelegatorId = sharedPrefs.getSelectedDelegatorId();
     final lastSelectedAgentId = sharedPrefs.getSelectedAgentId();
 
-    print("DEBUG: Last selected delegator: $lastSelectedDelegatorId, agent: $lastSelectedAgentId");
+    debugPrint("DEBUG: Last selected delegator: $lastSelectedDelegatorId, agent: $lastSelectedAgentId");
 
     // Try to restore last selected delegator
     if (lastSelectedDelegatorId != null && cubit.state.delegators.isNotEmpty) {
       try {
         final delegator = cubit.state.delegators.firstWhere((d) => d.id == lastSelectedDelegatorId);
-        print("DEBUG: Selecting saved delegator: ${delegator.entityName}");
+        debugPrint("DEBUG: Selecting saved delegator: ${delegator.entityName}");
         cubit.selectDelegator(delegator);
         return;
       } catch (e) {
-        print("DEBUG: Saved delegator not found: $e");
+        debugPrint("DEBUG: Saved delegator not found: $e");
       }
     }
 
@@ -236,20 +243,20 @@ class AccountSelectionService {
     if (lastSelectedAgentId != null && cubit.state.agents.isNotEmpty) {
       try {
         final agent = cubit.state.agents.firstWhere((a) => a.agencyNumber == lastSelectedAgentId);
-        print("DEBUG: Selecting saved agent: ${agent.grantorName}");
+        debugPrint("DEBUG: Selecting saved agent: ${agent.grantorName}");
         cubit.selectAgent(agent);
         return;
       } catch (e) {
-        print("DEBUG: Saved agent not found: $e");
+        debugPrint("DEBUG: Saved agent not found: $e");
       }
     }
 
     // If no last selection or it's no longer valid, select first available
     if (cubit.state.delegators.isNotEmpty) {
-      print("DEBUG: Selecting first delegator: ${cubit.state.delegators.first.entityName}");
+      debugPrint("DEBUG: Selecting first delegator: ${cubit.state.delegators.first.entityName}");
       cubit.selectDelegator(cubit.state.delegators.first);
     } else if (cubit.state.agents.isNotEmpty) {
-      print("DEBUG: Selecting first agent: ${cubit.state.agents.first.grantorName}");
+      debugPrint("DEBUG: Selecting first agent: ${cubit.state.agents.first.grantorName}");
       cubit.selectAgent(cubit.state.agents.first);
     }
   }
@@ -268,5 +275,4 @@ class AccountSelectionService {
   static String? getSavedAgentId() {
     return sharedPrefs.getSelectedAgentId();
   }
-
 }

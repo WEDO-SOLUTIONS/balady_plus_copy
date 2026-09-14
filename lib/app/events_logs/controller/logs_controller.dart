@@ -4,6 +4,7 @@ import 'package:sentry_flutter/sentry_flutter.dart';
 import '../models/event_model.dart';
 import '../models/event_super_properties.dart';
 import '../models/people_profile_properties.dart';
+import 'package:flutter/foundation.dart';
 
 class LogsViewModel {
   static late final Mixpanel mixpanel;
@@ -39,9 +40,9 @@ class LogsViewModel {
     try {
       Sentry.captureException(SentryException(type: event.nameEvent, value: event.message, unknown: event.toJson()));
     } catch (e) {
-      print("Error From INSIDE FRAME_WORK");
-      print("--------------------------------");
-      print("Error :  $e");
+      debugPrint("Error From INSIDE FRAME_WORK");
+      debugPrint("--------------------------------");
+      debugPrint("Error :  $e");
     }
   }
 

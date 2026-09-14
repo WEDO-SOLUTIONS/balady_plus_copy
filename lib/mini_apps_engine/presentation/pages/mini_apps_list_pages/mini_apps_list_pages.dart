@@ -7,8 +7,7 @@ import 'package:balady_plus/mini_apps_engine/presentation/pages/new_mini_apps_ui
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-final GlobalKey<NavigatorState> servicesNavigatorKey =
-GlobalKey<NavigatorState>();
+final GlobalKey<NavigatorState> servicesNavigatorKey = GlobalKey<NavigatorState>();
 
 class HomeMiniAppsListPages extends StatefulWidget {
   final String? groupId;
@@ -25,11 +24,7 @@ class _HomeMiniAppsListPagesState extends State<HomeMiniAppsListPages> {
   @override
   Widget build(BuildContext context) {
     return MultiBlocProvider(
-      providers: [
-        BlocProvider<NewMiniAppLogicCubit>.value(
-          value: _miniAppsCubit,
-        ),
-      ],
+      providers: [BlocProvider<NewMiniAppLogicCubit>.value(value: _miniAppsCubit)],
       child: Theme(
         data: Theme.of(NavigationService.navigatorKey.currentState!.context),
         child: Navigator(
@@ -38,30 +33,22 @@ class _HomeMiniAppsListPagesState extends State<HomeMiniAppsListPages> {
           onGenerateRoute: (settings) {
             switch (settings.name) {
               case '/':
-                print("initialRoute //////");
-                return MaterialPageRoute(
-                  builder: (_) => const MiniAppsHomeScreen(),
-                );
+                debugPrint("initialRoute //////");
+                return MaterialPageRoute(builder: (_) => const MiniAppsHomeScreen());
 
               case '/search':
-                return MaterialPageRoute(
-                  builder: (_) => const MiniAppsSearchPage(),
-                  fullscreenDialog: true,
-                );
+                return MaterialPageRoute(builder: (_) => const MiniAppsSearchPage(), fullscreenDialog: true);
 
               case '/group':
                 final args = settings.arguments as Map<String, dynamic>;
                 return PageRouteBuilder(
                   opaque: false,
                   barrierColor: Colors.transparent,
-                  pageBuilder: (_, __, ___) =>
-                      AppsGroupPage(groupId: args['groupId'] as String),
+                  pageBuilder: (_, __, ___) => AppsGroupPage(groupId: args['groupId'] as String),
                 );
 
               default:
-                return MaterialPageRoute(
-                  builder: (_) => const HomeMiniAppsListPages(),
-                );
+                return MaterialPageRoute(builder: (_) => const HomeMiniAppsListPages());
             }
           },
         ),

@@ -11,6 +11,7 @@ import 'package:image/image.dart' as myImage;
 import 'package:http/http.dart' as http;
 
 import '../entities/camera/attachment_item.dart';
+import 'package:flutter/foundation.dart';
 
 part 'camera_event.dart';
 
@@ -136,11 +137,11 @@ class CameraBloc extends Bloc<CameraEvent, CameraState> {
         final dateTimeString = data['datetime']; // Example: "2023-12-30T18:45:32.123456+03:00"
         return DateTime.parse(dateTimeString);
       } else {
-        print('Failed to fetch time: ${response.statusCode}');
+        debugPrint('Failed to fetch time: ${response.statusCode}');
         return null;
       }
     } catch (e) {
-      print('Error fetching KSA date and time: $e');
+      debugPrint('Error fetching KSA date and time: $e');
       return null;
     }
   }

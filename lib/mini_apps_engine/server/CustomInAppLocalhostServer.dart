@@ -1,6 +1,5 @@
 import 'dart:io';
 import 'dart:async';
-import 'dart:typed_data';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart' show rootBundle;
@@ -18,13 +17,10 @@ class CustomInAppLocalhostServer {
   String _directoryIndex = 'index.html';
   String _documentRoot = './';
 
-  CustomInAppLocalhostServer(
-      PlatformInAppLocalhostServerCreationParams params) {
+  CustomInAppLocalhostServer(PlatformInAppLocalhostServerCreationParams params) {
     _port = params.port;
     _directoryIndex = params.directoryIndex;
-    _documentRoot = (params.documentRoot.endsWith('/'))
-        ? params.documentRoot
-        : '${params.documentRoot}/';
+    _documentRoot = (params.documentRoot.endsWith('/')) ? params.documentRoot : '${params.documentRoot}/';
     _shared = params.shared;
   }
 
@@ -75,23 +71,17 @@ class CustomInAppLocalhostServer {
                 final file = File(Uri.decodeFull(path));
                 body = await file.readAsBytes();
               } else {
-                body = (await rootBundle.load(Uri.decodeFull(path)))
-                    .buffer
-                    .asUint8List();
+                body = (await rootBundle.load(Uri.decodeFull(path))).buffer.asUint8List();
               }
             } catch (e) {
-              return Response.badRequest(
-                body: 'can not load url',
-              );
+              return Response.badRequest(body: 'can not load url');
             }
 
             // var contentType = ContentType('text', 'html', charset: 'utf-8');
 
             String content = "text/html";
-            if (!request.requestedUri.path.endsWith('/') &&
-                request.requestedUri.pathSegments.isNotEmpty) {
-              final mimeType =
-                  MimeTypeResolver.lookup(request.requestedUri.path);
+            if (!request.requestedUri.path.endsWith('/') && request.requestedUri.pathSegments.isNotEmpty) {
+              final mimeType = MimeTypeResolver.lookup(request.requestedUri.path);
               if (mimeType != null) {
                 // contentType = _getContentTypeFromMimeType(mimeType);
                 content = _getContentTypeFromMimeType(mimeType);
@@ -124,29 +114,23 @@ class CustomInAppLocalhostServer {
       });
 
       try {
-        final server = await io.serve(
-          handler,
-          '127.0.0.1',
-          _port,
-          shared: _shared,
-        );
+        final server = await io.serve(handler, '127.0.0.1', _port, shared: _shared);
 
         _started = true;
         _server = server;
-        print('✅ Server successfully started on http://localhost:$_port');
-
+        debugPrint('✅ Server successfully started on http://localhost:$_port');
       } on SocketException catch (e) {
         // Port is already in use
         _started = false;
-        print('❌ Port $_port is already in use!');
-        print('Error details: ${e.message}');
+        debugPrint('❌ Port $_port is already in use!');
+        debugPrint('Error details: ${e.message}');
 
         // Rethrow so calling code can handle it
         throw Exception('Failed to start server: Port $_port is already in use. ${e.message}');
       }
     } catch (e) {
       _started = false;
-      print('❌ Failed to start server: ${e.toString()}');
+      debugPrint('❌ Failed to start server: ${e.toString()}');
       rethrow; // Rethrow to let calling code handle it
     }
   }
@@ -158,7 +142,7 @@ class CustomInAppLocalhostServer {
       return;
     }
     await _server!.close(force: true);
-    print('Server running on http://localhost:$_port closed');
+    debugPrint('Server running on http://localhost:$_port closed');
     _started = false;
     _server = null;
   }

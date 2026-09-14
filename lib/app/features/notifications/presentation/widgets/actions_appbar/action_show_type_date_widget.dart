@@ -20,39 +20,33 @@ class ActionShowTypeDateWidget extends StatelessWidget {
           value: 1,
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              SvgPicture.asset(IconPath.check),
-              const SizedBox(width: 12),
-              Text('make_all_read'.tr()),
-            ],
+            children: [SvgPicture.asset(IconPath.check), const SizedBox(width: 12), Text('make_all_read'.tr())],
           ),
         ),
         PopupMenuItem(
           value: 2,
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              SvgPicture.asset(IconPath.trash01),
-              const SizedBox(width: 12),
-              Text('delete_all'.tr()),
-            ],
+            children: [SvgPicture.asset(IconPath.trash01), const SizedBox(width: 12), Text('delete_all'.tr())],
           ),
         ),
       ],
       initialValue: 0,
       onSelected: (int value) async {
-        print(value);
+        debugPrint(value.toString());
         switch (value) {
           case 1:
             cubit.markReadNotificationsMessages();
             break;
           case 2:
             await CustomPopUpsWidgets.showConfirmAppMessageDialog(
-                context, ("delete_all_notifications_confirmation").tr(),
-                primaryBtn: () {
-              cubit.deletedNotificationsMessages();
-              Navigator.of(context).pop(true);
-            });
+              context,
+              ("delete_all_notifications_confirmation").tr(),
+              primaryBtn: () {
+                cubit.deletedNotificationsMessages();
+                Navigator.of(context).pop(true);
+              },
+            );
             break;
         }
       },
@@ -61,9 +55,7 @@ class ActionShowTypeDateWidget extends StatelessWidget {
       elevation: 12,
       icon: SvgPicture.asset(IconPath.dotsVertical),
       offset: const Offset(0, 65),
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(16),
-      ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
       color: Colors.white,
     );
   }

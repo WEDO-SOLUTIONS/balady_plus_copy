@@ -11,6 +11,7 @@ import 'package:geolocator/geolocator.dart';
 import '../../../../core/dependency_injection/injection_container.dart';
 import '../../../../core/errors/errors_exports.dart';
 import '../../../../core/services/local/navigation_services.dart';
+import 'package:flutter/foundation.dart';
 
 part 'weather_event.dart';
 part 'weather_state.dart';
@@ -33,7 +34,7 @@ class WeatherBloc extends Bloc<WeatherEvent, WeatherState> {
     //     state.showLocationError == false) return;
 
     CommonFunctions.checkLocationSettings(NavigationService.navigatorKey.currentContext!);
-    print("_getAllWeatherInfo");
+    debugPrint("_getAllWeatherInfo");
 
     emitter(state.copyWith(allWeatherInfoStatus: BlocStatus.loading));
 
@@ -69,7 +70,7 @@ class WeatherBloc extends Bloc<WeatherEvent, WeatherState> {
         final failureOrSuccess = await _getWeatherInfo(params);
         failureOrSuccess.fold(
           (failure) {
-            print("failure: weather $failure");
+            debugPrint("failure: weather $failure");
             emitter(
               state.copyWith(
                 allWeatherInfoStatus: BlocStatus.failure,
@@ -78,7 +79,7 @@ class WeatherBloc extends Bloc<WeatherEvent, WeatherState> {
             );
           },
           (success) {
-            print("weather entity: $success");
+            debugPrint("weather entity: $success");
             emitter(
               state.copyWith(
                 allWeatherInfoStatus: BlocStatus.success,
@@ -117,11 +118,11 @@ class WeatherBloc extends Bloc<WeatherEvent, WeatherState> {
     final failureOrSuccess = await _getWeatherInfo(params);
     failureOrSuccess.fold(
       (failure) {
-        print("failure: weather $failure");
+        debugPrint("failure: weather $failure");
         emitter(state.copyWith());
       },
       (success) {
-        print("weather entity: $success");
+        debugPrint("weather entity: $success");
         emitter(state.copyWith(allWeatherInfoStatus: BlocStatus.success, allWeatherInfo: success, errorMessage: ""));
       },
     );
