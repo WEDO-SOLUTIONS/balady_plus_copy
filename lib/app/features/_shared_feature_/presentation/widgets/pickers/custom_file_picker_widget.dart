@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/services.dart' show PlatformException;
-import 'package:localize_and_translate/localize_and_translate.dart'
-    show Translation;
+import 'package:localize_and_translate/localize_and_translate.dart' show Translation;
 
-import '../../../../../core/services/services_exports.dart'
-    show NavigationService;
+import '../../../../../core/services/services_exports.dart' show NavigationService;
 import '../../../../../core/utils/utils_exports.dart'
     show AppColor, AppStyle, CommonFunctions, FileSelectorStatus, UIHelper;
 import '../../../shared_feature_exports.dart'
@@ -96,11 +94,7 @@ class CustomFilePickerWidget extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         // Label word
-        WidgetLabel(
-          isRequired: isRequired,
-          label: label,
-          labelStyle: labelStyle,
-        ),
+        WidgetLabel(isRequired: isRequired, label: label, labelStyle: labelStyle),
         // Button
         LayoutBuilder(
           builder: (_, constraints) {
@@ -117,16 +111,11 @@ class CustomFilePickerWidget extends StatelessWidget {
                   btnBorderColor: btnBorderColor,
                   btnBorderWidth: borderWidth,
                   btnRadius: borderRadius,
-                  text: _FileNameWidget(
-                    status: fileStatus,
-                    fileName: fileName ?? noChosenFile,
-                  ),
+                  text: _FileNameWidget(status: fileStatus, fileName: fileName ?? noChosenFile),
                   textStyle: btnTextStyle,
                   icon: const Icon(Icons.upload_rounded, size: 22.0),
                   iconAlignment: AlignmentDirectional.centerEnd,
-                  onPressed: readOnly
-                      ? onDisabledTapped
-                      : () async => await _onPickFile(context),
+                  onPressed: readOnly ? onDisabledTapped : () async => await _onPickFile(context),
                 ),
                 //! Actions
                 if (!uploaded && onRemoveAttachment != null)
@@ -136,11 +125,7 @@ class CustomFilePickerWidget extends StatelessWidget {
                     onPressed: onRemoveAttachment!,
                   ),
                 if (uploaded && onDownloadAttachment != null)
-                  _FileIconButton(
-                    startPadding: 12.0,
-                    icon: Icons.download_rounded,
-                    onPressed: onDownloadAttachment!,
-                  ),
+                  _FileIconButton(startPadding: 12.0, icon: Icons.download_rounded, onPressed: onDownloadAttachment!),
                 if (uploaded && onDeleteAttachment != null)
                   _FileIconButton(
                     startPadding: 8.0,
@@ -158,34 +143,27 @@ class CustomFilePickerWidget extends StatelessWidget {
     );
   }
 
-  FileSelectorStatus get fileStatus => fileName == null
-      ? FileSelectorStatus.unselected
-      : FileSelectorStatus.selected;
+  FileSelectorStatus get fileStatus => fileName == null ? FileSelectorStatus.unselected : FileSelectorStatus.selected;
 
   String get noChosenFile => noFileChosenWord ?? "attachFileButton".tr();
 
   TextStyle get btnTextStyle => fileNameStyle ?? AppStyle.textButtonStyle;
 
-  Color get btnColor => filledColor ?? AppColor.gray.withOpacity(0.65);
+  Color get btnColor => filledColor ?? AppColor.gray.withValues(alpha: 0.65);
   Color get btnBorderColor => borderColor ?? AppColor.gray;
-  EdgeInsetsGeometry get _btnPadding =>
-      btnPadding ??
-      const EdgeInsets.symmetric(horizontal: UIHelper.middlePadding);
+  EdgeInsetsGeometry get _btnPadding => btnPadding ?? const EdgeInsets.symmetric(horizontal: UIHelper.middlePadding);
 
-  double get btnCalculatedWidth =>
-      uploaded && onDeleteAttachment != null && onDownloadAttachment != null
-          // 12.0: space between button and first icon
-          // 22.0 * 2: size of two icons (Download&Delete Attachment)
-          // 8.0 * 1: space between icon and other icon
-          ? 12.0 + (22.0 * 2) + (8.0 * 1)
-          : !uploaded && onRemoveAttachment != null
-              ? 12.0 + 22.0
-              : 0.0;
+  double get btnCalculatedWidth => uploaded && onDeleteAttachment != null && onDownloadAttachment != null
+      // 12.0: space between button and first icon
+      // 22.0 * 2: size of two icons (Download&Delete Attachment)
+      // 8.0 * 1: space between icon and other icon
+      ? 12.0 + (22.0 * 2) + (8.0 * 1)
+      : !uploaded && onRemoveAttachment != null
+      ? 12.0 + 22.0
+      : 0.0;
 
   Future<void> _onPickFile(BuildContext context) async {
-    final type = (fileType == FileType.custom && allowedExtensions.isEmpty)
-        ? FileType.any
-        : fileType;
+    final type = (fileType == FileType.custom && allowedExtensions.isEmpty) ? FileType.any : fileType;
 
     if (type == FileType.image) {
       await BottomSheetDialog.showSheet<dynamic>(
@@ -196,21 +174,12 @@ class CustomFilePickerWidget extends StatelessWidget {
         ),
       );
     } else {
-      FilePickerResult? result = await FilePicker.platform.pickFiles(
-        type: type,
-        allowedExtensions: allowedExtensions,
-      );
-      await _checkResult(
-        result,
-        onSelectedAttachment: onUploadAttachment,
-      );
+      FilePickerResult? result = await FilePicker.platform.pickFiles(type: type, allowedExtensions: allowedExtensions);
+      await _checkResult(result, onSelectedAttachment: onUploadAttachment);
     }
   }
 
-  Future<void> _checkResult(
-    FilePickerResult? result, {
-    required void Function(FileInfo) onSelectedAttachment,
-  }) async {
+  Future<void> _checkResult(FilePickerResult? result, {required void Function(FileInfo) onSelectedAttachment}) async {
     try {
       if (result != null && result.files.isNotEmpty) {
         PlatformFile file = result.files.first;
@@ -234,16 +203,15 @@ class CustomFilePickerWidget extends StatelessWidget {
           message: error.toString(),
           stackTrace: stackTrace.toString(),
         ),
-      );}
+      );
+    }
   }
 
   bool _checkFileSize(int size) => size <= allowedLimit;
 
   void _showExceedsMsg() async {
     final context = NavigationService.navigatorKey.currentContext!;
-    final msg = "popUpUploadFileLimitExceedsMessage"
-        .tr()
-        .replaceAll("{}", allowedLimit.toString());
+    final msg = "popUpUploadFileLimitExceedsMessage".tr().replaceAll("{}", allowedLimit.toString());
     await MessageDialog.showWarning(context, msg);
   }
 }
@@ -251,10 +219,7 @@ class CustomFilePickerWidget extends StatelessWidget {
 class _FileNameWidget extends StatelessWidget {
   final FileSelectorStatus status;
   final String fileName;
-  const _FileNameWidget({
-    required this.status,
-    required this.fileName,
-  });
+  const _FileNameWidget({required this.status, required this.fileName});
 
   @override
   Widget build(BuildContext context) {
@@ -262,10 +227,7 @@ class _FileNameWidget extends StatelessWidget {
       case FileSelectorStatus.unselected:
         return CustomTextWidget(
           fileName,
-          textStyle: AppStyle.mainTextThirdStyle.copyWith(
-            fontSize: 14.0,
-            color: AppColor.black,
-          ),
+          textStyle: AppStyle.mainTextThirdStyle.copyWith(fontSize: 14.0, color: AppColor.black),
         );
       case FileSelectorStatus.selected:
         return Container(
@@ -278,10 +240,7 @@ class _FileNameWidget extends StatelessWidget {
           ),
           child: CustomTextWidget(
             fileName,
-            textStyle: AppStyle.mainTextThirdStyle.copyWith(
-              fontSize: 11.0,
-              color: AppColor.black,
-            ),
+            textStyle: AppStyle.mainTextThirdStyle.copyWith(fontSize: 11.0, color: AppColor.black),
             maxLines: 1,
             textOverflow: TextOverflow.ellipsis,
           ),
@@ -294,11 +253,7 @@ class _FileIconButton extends StatelessWidget {
   final double startPadding;
   final IconData icon;
   final VoidCallback onPressed;
-  const _FileIconButton({
-    required this.startPadding,
-    required this.icon,
-    required this.onPressed,
-  });
+  const _FileIconButton({required this.startPadding, required this.icon, required this.onPressed});
 
   @override
   Widget build(BuildContext context) {

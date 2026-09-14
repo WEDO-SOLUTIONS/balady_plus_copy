@@ -1,16 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart'
-    show BlocBuilder, BlocProvider, Cubit;
+import 'package:flutter_bloc/flutter_bloc.dart' show BlocBuilder, BlocProvider, Cubit;
 import '../../../../core/utils/utils_exports.dart'
-    show
-        AppColor,
-        AppStyle,
-        ContextConversion,
-        DIRECTION,
-        DirectionConversion,
-        UIHelper;
-import '../../shared_feature_exports.dart'
-    show CustomAutoSizeTextWidget, DrawIconBasedTypeWidget;
+    show AppColor, AppStyle, ContextConversion, DIRECTION, DirectionConversion, UIHelper;
+import '../../shared_feature_exports.dart' show CustomAutoSizeTextWidget, DrawIconBasedTypeWidget;
 
 class _ExpansionPanelCubit extends Cubit<bool> {
   final bool initialState;
@@ -76,8 +68,7 @@ class CustomEnhancedExpansionPanelWidget extends StatelessWidget {
                 builder: (_, constraints) => SizedBox(
                   width: constraints.maxWidth,
                   child: Theme(
-                    data:
-                        ThemeData().copyWith(dividerColor: Colors.transparent),
+                    data: ThemeData().copyWith(dividerColor: Colors.transparent),
                     child: ListTileTheme(
                       contentPadding: EdgeInsets.zero,
                       dense: true,
@@ -93,21 +84,12 @@ class CustomEnhancedExpansionPanelWidget extends StatelessWidget {
                         collapsedBackgroundColor: Colors.transparent,
                         maintainState: keepState,
                         initiallyExpanded: expansionState,
-                        leading: _ExpansionLeadingWidget(
-                          expanded: expansionState,
-                          leading: leading,
-                        ),
-                        title: _ExpansionTitleWidget(
-                          expanded: expansionState,
-                          title: title,
-                        ),
-                        trailing: _ExpansionPanelArrowWidget(
-                          expanded: expansionState,
-                        ),
+                        leading: _ExpansionLeadingWidget(expanded: expansionState, leading: leading),
+                        title: _ExpansionTitleWidget(expanded: expansionState, title: title),
+                        trailing: _ExpansionPanelArrowWidget(expanded: expansionState),
                         expandedCrossAxisAlignment: CrossAxisAlignment.start,
                         onExpansionChanged: (state) {
-                          BlocProvider.of<_ExpansionPanelCubit>(context)
-                              .onChangeState(state);
+                          BlocProvider.of<_ExpansionPanelCubit>(context).onChangeState(state);
                           if (onExpansionChanged != null) {
                             onExpansionChanged!(expansionState);
                           }
@@ -126,47 +108,33 @@ class CustomEnhancedExpansionPanelWidget extends StatelessWidget {
   }
 
   BorderSide border(bool state) => underline
-      ? BorderSide(
-          width: state ? 1.5 : 1.0,
-          color: state ? AppColor.gray : AppColor.gray.withOpacity(0.36),
-        )
+      ? BorderSide(width: state ? 1.5 : 1.0, color: state ? AppColor.gray : AppColor.gray.withValues(alpha: 0.36))
       : BorderSide.none;
 
   // get horizontal padding from expandedPadding but divide it by 2
   // to get the half for right and second half for left
   // and get vetical padding and divide it by 2 for only top
   EdgeInsetsGeometry get tilePadding => EdgeInsets.fromLTRB(
-        expandedPadding?.horizontal == null
-            ? UIHelper.middlePadding
-            : expandedPadding!.horizontal / 2.0,
-        expandedPadding?.vertical == null ? 4 : expandedPadding!.vertical / 2.0,
-        expandedPadding?.horizontal == null
-            ? UIHelper.middlePadding
-            : expandedPadding!.horizontal / 2.0,
-        0.0,
-      );
+    expandedPadding?.horizontal == null ? UIHelper.middlePadding : expandedPadding!.horizontal / 2.0,
+    expandedPadding?.vertical == null ? 4 : expandedPadding!.vertical / 2.0,
+    expandedPadding?.horizontal == null ? UIHelper.middlePadding : expandedPadding!.horizontal / 2.0,
+    0.0,
+  );
 
   // get horizontal padding from expandedPadding but divide it by 2
   // to get the half for right and second half for left
   EdgeInsetsGeometry get childrenPadding => EdgeInsets.fromLTRB(
-        expandedPadding?.horizontal == null
-            ? UIHelper.middlePadding
-            : expandedPadding!.horizontal / 2.0,
-        8.0,
-        expandedPadding?.horizontal == null
-            ? UIHelper.middlePadding
-            : expandedPadding!.horizontal / 2.0,
-        UIHelper.mediumPadding,
-      );
+    expandedPadding?.horizontal == null ? UIHelper.middlePadding : expandedPadding!.horizontal / 2.0,
+    8.0,
+    expandedPadding?.horizontal == null ? UIHelper.middlePadding : expandedPadding!.horizontal / 2.0,
+    UIHelper.mediumPadding,
+  );
 }
 
 class _ExpansionLeadingWidget extends StatelessWidget {
   final bool expanded;
   final dynamic leading;
-  const _ExpansionLeadingWidget({
-    required this.expanded,
-    required this.leading,
-  });
+  const _ExpansionLeadingWidget({required this.expanded, required this.leading});
 
   @override
   Widget build(BuildContext context) {
@@ -175,17 +143,10 @@ class _ExpansionLeadingWidget extends StatelessWidget {
             width: 25.0,
             height: 25.0,
             alignment: Alignment.center,
-            decoration: BoxDecoration(
-              color: AppColor.white,
-              borderRadius: BorderRadius.circular(8.0),
-            ),
+            decoration: BoxDecoration(color: AppColor.white, borderRadius: BorderRadius.circular(8.0)),
             child: leading is Widget
                 ? leading
-                : DrawIconBasedTypeWidget(
-                    icon: leading,
-                    iconSize: 16.0,
-                    iconColor: leadingColor,
-                  ),
+                : DrawIconBasedTypeWidget(icon: leading, iconSize: 16.0, iconColor: leadingColor),
           )
         : const SizedBox();
   }
@@ -198,10 +159,7 @@ class _ExpansionTitleWidget extends StatelessWidget {
   final String? title;
   final bool expanded;
 
-  const _ExpansionTitleWidget({
-    required this.title,
-    required this.expanded,
-  });
+  const _ExpansionTitleWidget({required this.title, required this.expanded});
 
   @override
   Widget build(BuildContext context) {
@@ -220,9 +178,10 @@ class _ExpansionTitleWidget extends StatelessWidget {
   //     ? width - (25.0 + 10.0)
   //     : width - (25.0 + 10.0 + 10.0 + 25.0);
   TextStyle get textStyle => AppStyle.mainTextThirdStyle.copyWith(
-      fontSize: 15.0,
-      color: AppColor.blackModern600Light,
-      fontWeight: FontWeight.bold);
+    fontSize: 15.0,
+    color: AppColor.blackModern600Light,
+    fontWeight: FontWeight.bold,
+  );
 }
 
 class _ExpansionPanelArrowWidget extends StatelessWidget {
@@ -236,10 +195,7 @@ class _ExpansionPanelArrowWidget extends StatelessWidget {
     return Container(
       width: 20,
       height: 20,
-      decoration: BoxDecoration(
-        color: arrowBg ?? AppColor.primary900Light,
-        shape: BoxShape.circle,
-      ),
+      decoration: BoxDecoration(color: arrowBg ?? AppColor.primary900Light, shape: BoxShape.circle),
       child: Transform.rotate(
         angle: angle,
         child: Icon(Icons.arrow_back_ios_new, size: 12, color: iconColor),
@@ -249,7 +205,6 @@ class _ExpansionPanelArrowWidget extends StatelessWidget {
 
   // because original arrow looks at the left,
   // so, if expanded we need to rotate it by 90', otherwise rotate by 270'
-  double get angle =>
-      expanded ? DIRECTION.downward.rotate : DIRECTION.upward.rotate;
+  double get angle => expanded ? DIRECTION.downward.rotate : DIRECTION.upward.rotate;
   Color get iconColor => expanded ? AppColor.white : AppColor.white;
 }

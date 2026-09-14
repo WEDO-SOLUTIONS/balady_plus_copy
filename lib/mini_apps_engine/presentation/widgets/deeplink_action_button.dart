@@ -17,10 +17,7 @@ class DeepLinkDialogService {
       builder: (BuildContext context) {
         return StatefulBuilder(
           builder: (context, setState) {
-            return _DeepLinkDialogContent(
-              controllers: controllers,
-              onLaunchPressed: onLaunchPressed,
-            );
+            return _DeepLinkDialogContent(controllers: controllers, onLaunchPressed: onLaunchPressed);
           },
         );
       },
@@ -30,8 +27,7 @@ class DeepLinkDialogService {
 
 class _DialogControllers {
   final TextEditingController deeplinkController = TextEditingController();
-  final TextEditingController androidPackageController =
-      TextEditingController();
+  final TextEditingController androidPackageController = TextEditingController();
   final TextEditingController iosUrlSchemeController = TextEditingController();
   final TextEditingController appStoreIdController = TextEditingController();
   final TextEditingController playStoreIdController = TextEditingController();
@@ -49,18 +45,14 @@ class _DeepLinkDialogContent extends StatefulWidget {
   final _DialogControllers controllers;
   final Function(AppInfo, String?) onLaunchPressed;
 
-  const _DeepLinkDialogContent({
-    required this.controllers,
-    required this.onLaunchPressed,
-  });
+  const _DeepLinkDialogContent({required this.controllers, required this.onLaunchPressed});
 
   @override
   State<_DeepLinkDialogContent> createState() => _DeepLinkDialogContentState();
 }
 
 class _DeepLinkDialogContentState extends State<_DeepLinkDialogContent> {
-  final PlatformType _selectedPlatform =
-      (Platform.isAndroid ? PlatformType.android : PlatformType.ios);
+  final PlatformType _selectedPlatform = (Platform.isAndroid ? PlatformType.android : PlatformType.ios);
 
   @override
   Widget build(BuildContext context) {
@@ -70,10 +62,7 @@ class _DeepLinkDialogContentState extends State<_DeepLinkDialogContent> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Text(
-              'app_info_settings'.tr(),
-              style: Theme.of(context).textTheme.titleSmall,
-            ),
+            Text('app_info_settings'.tr(), style: Theme.of(context).textTheme.titleSmall),
             const SizedBox(height: 16),
             if (_selectedPlatform == PlatformType.android) ...[
               TextField(
@@ -141,22 +130,18 @@ class _DeepLinkDialogContentState extends State<_DeepLinkDialogContent> {
             // If deeplink is provided, we can launch with minimal app info
             if (hasDeeplink) {
               final appInfo = AppInfo(
-                androidPackageName:
-                    widget.controllers.androidPackageController.text.isNotEmpty
-                        ? widget.controllers.androidPackageController.text
-                        : "unknown.package",
-                iosUrlScheme:
-                    widget.controllers.iosUrlSchemeController.text.isNotEmpty
-                        ? widget.controllers.iosUrlSchemeController.text
-                        : null,
-                appStoreId:
-                    widget.controllers.appStoreIdController.text.isNotEmpty
-                        ? widget.controllers.appStoreIdController.text
-                        : null,
-                playStoreId:
-                    widget.controllers.playStoreIdController.text.isNotEmpty
-                        ? widget.controllers.playStoreIdController.text
-                        : null,
+                androidPackageName: widget.controllers.androidPackageController.text.isNotEmpty
+                    ? widget.controllers.androidPackageController.text
+                    : "unknown.package",
+                iosUrlScheme: widget.controllers.iosUrlSchemeController.text.isNotEmpty
+                    ? widget.controllers.iosUrlSchemeController.text
+                    : null,
+                appStoreId: widget.controllers.appStoreIdController.text.isNotEmpty
+                    ? widget.controllers.appStoreIdController.text
+                    : null,
+                playStoreId: widget.controllers.playStoreIdController.text.isNotEmpty
+                    ? widget.controllers.playStoreIdController.text
+                    : null,
               );
 
               Navigator.of(context).pop();
@@ -166,26 +151,19 @@ class _DeepLinkDialogContentState extends State<_DeepLinkDialogContent> {
 
             // Original validation for app info when no deeplink
             final appInfo = AppInfo(
-              androidPackageName:
-                  widget.controllers.androidPackageController.text,
+              androidPackageName: widget.controllers.androidPackageController.text,
               iosUrlScheme: widget.controllers.iosUrlSchemeController.text,
               appStoreId: widget.controllers.appStoreIdController.text,
               playStoreId: widget.controllers.playStoreIdController.text,
             );
 
-            if (_selectedPlatform == PlatformType.android &&
-                widget.controllers.androidPackageController.text.isEmpty) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text('android_package_required'.tr())),
-              );
+            if (_selectedPlatform == PlatformType.android && widget.controllers.androidPackageController.text.isEmpty) {
+              ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('android_package_required'.tr())));
               return;
             }
 
-            if (_selectedPlatform == PlatformType.ios &&
-                widget.controllers.iosUrlSchemeController.text.isEmpty) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text('ios_url_scheme_required'.tr())),
-              );
+            if (_selectedPlatform == PlatformType.ios && widget.controllers.iosUrlSchemeController.text.isEmpty) {
+              ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('ios_url_scheme_required'.tr())));
               return;
             }
 
@@ -217,52 +195,37 @@ class DeepLinkActionButton extends StatelessWidget {
     return Card(
       elevation: 2,
       margin: const EdgeInsets.symmetric(vertical: 8),
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12),
-      ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       child: InkWell(
         borderRadius: BorderRadius.circular(12),
-        onTap: () => DeepLinkDialogService.showLaunchAppDialog(
-          context: context,
-          onLaunchPressed: onLaunchApp,
-        ),
+        onTap: () => DeepLinkDialogService.showLaunchAppDialog(context: context, onLaunchPressed: onLaunchApp),
         child: Padding(
           padding: const EdgeInsets.all(16),
           child: Column(
             children: [
               Row(
                 children: [
-                  const Icon(Icons.open_in_new,
-                      size: 24, color: AppColor.primary700Light),
+                  const Icon(Icons.open_in_new, size: 24, color: AppColor.primary700Light),
                   const SizedBox(width: 12),
                   Expanded(
                     child: Text(
                       "launch_external_app".tr(),
-                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                            fontWeight: FontWeight.bold,
-                          ),
+                      style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
                     ),
                   ),
                   if (currentOperation == "launch_external_app" && isLoading)
                     const Padding(
                       padding: EdgeInsets.only(left: 8),
-                      child: SizedBox(
-                        width: 20,
-                        height: 20,
-                        child: CircularProgressIndicator(strokeWidth: 2),
-                      ),
+                      child: SizedBox(width: 20, height: 20, child: CircularProgressIndicator(strokeWidth: 2)),
                     ),
                 ],
               ),
               const SizedBox(height: 8),
               Text(
                 "launch_external_app_description".tr(),
-                style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                      color: Theme.of(context)
-                          .colorScheme
-                          .onSurface
-                          .withOpacity(0.6),
-                    ),
+                style: Theme.of(
+                  context,
+                ).textTheme.bodySmall?.copyWith(color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6)),
               ),
             ],
           ),
@@ -303,11 +266,5 @@ class AppInfo {
   final String? playStoreId;
   final String? fallbackUrl;
 
-  AppInfo({
-    required this.androidPackageName,
-    this.iosUrlScheme,
-    this.appStoreId,
-    this.playStoreId,
-    this.fallbackUrl,
-  });
+  AppInfo({required this.androidPackageName, this.iosUrlScheme, this.appStoreId, this.playStoreId, this.fallbackUrl});
 }

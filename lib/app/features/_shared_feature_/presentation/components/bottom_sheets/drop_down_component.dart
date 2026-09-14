@@ -2,11 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../../../../core/utils/utils_exports.dart' show AppColor, AppStyle;
 import '../../../shared_feature_exports.dart'
-    show
-        ClickableWidget,
-        CustomHorizontalSpace,
-        CustomTextWidget,
-        DrawIconBasedTypeWidget;
+    show ClickableWidget, CustomHorizontalSpace, CustomTextWidget, DrawIconBasedTypeWidget;
 
 class DropDownComponent extends StatelessWidget {
   final EdgeInsetsGeometry? margin;
@@ -41,29 +37,22 @@ class DropDownComponent extends StatelessWidget {
             //
             if (dropDownIcon != null) ...[
               DrawIconBasedTypeWidget(icon: dropDownIcon ?? ""),
-              const CustomHorizontalSpace(width: 10.0)
+              const CustomHorizontalSpace(width: 10.0),
             ],
             //
             Expanded(
               child: CustomTextWidget(
                 dropDownText,
                 textAlign: TextAlign.start,
-                textStyle: AppStyle.mainTextThirdStyle.copyWith(
-                  color: AppColor.gray,
-                  fontSize: 14.0,
-                  height: 1.5,
-                ),
+                textStyle: AppStyle.mainTextThirdStyle.copyWith(color: AppColor.gray, fontSize: 14.0, height: 1.5),
               ),
-            )
+            ),
           ],
         ),
       ),
     );
   }
 
-  Color get borderColor => isSelected
-      ? AppColor.gray.withOpacity(0.5)
-      : AppColor.gray.withOpacity(0.2);
-  Color get color =>
-      isSelected ? AppColor.gray.withOpacity(0.1) : AppColor.white;
+  Color get borderColor => isSelected ? AppColor.gray.withValues(alpha: 0.5) : AppColor.gray.withValues(alpha: 0.2);
+  Color get color => isSelected ? AppColor.gray.withValues(alpha: 0.1) : AppColor.white;
 }

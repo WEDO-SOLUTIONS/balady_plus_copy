@@ -20,7 +20,10 @@ class OverlayBlurCircle extends StatelessWidget {
             gradient: LinearGradient(
               begin: const Alignment(0.50, -0.00),
               end: const Alignment(0.50, 1.00),
-              colors: [const Color(0XFF36C3B5).withOpacity(0.04), const Color(0XFF36C3B5).withOpacity(0.08)],
+              colors: [
+                const Color(0XFF36C3B5).withValues(alpha: 0.04),
+                const Color(0XFF36C3B5).withValues(alpha: 0.08),
+              ],
             ),
             shape: const OvalBorder(),
           ),

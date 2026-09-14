@@ -1,20 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:localize_and_translate/localize_and_translate.dart'
-    show Translation;
+import 'package:localize_and_translate/localize_and_translate.dart' show Translation;
 
 import '../../../../../core/dependency_injection/dependency_injection_exports.dart';
 import '../../../../../core/services/services_exports.dart';
-import '../../../../../core/utils/utils_exports.dart'
-    show AppColor, CommonFunctions, ContextConversion;
+import '../../../../../core/utils/utils_exports.dart' show AppColor, CommonFunctions, ContextConversion;
 import '../../../shared_feature_exports.dart'
-    show
-        CustomTextWidget,
-        CustomVerticalSpace,
-        DrawLineWidget,
-        DropDownComponent,
-        FileInfo,
-        IconButtonWidget;
+    show CustomTextWidget, CustomVerticalSpace, DrawLineWidget, DropDownComponent, FileInfo, IconButtonWidget;
 
 class PickImageComponent extends StatelessWidget {
   final int allowedLimit;
@@ -43,23 +35,16 @@ class PickImageComponent extends StatelessWidget {
             children: [
               CustomTextWidget("uploadImage".tr()),
               const CustomVerticalSpace(height: 12.0),
-              DrawLineWidget(lineColor: AppColor.black.withOpacity(0.3)),
+              DrawLineWidget(lineColor: AppColor.black.withValues(alpha: 0.3)),
               const CustomVerticalSpace(height: 12.0),
               //
               for (int index = 0; index < length; index++)
-                DropDownComponent(
-                  dropDownText: texts[index].tr(),
-                  onPressed: callbacks[index],
-                ),
+                DropDownComponent(dropDownText: texts[index].tr(), onPressed: callbacks[index]),
             ],
           ),
         ),
         //
-        PositionedDirectional(
-          end: 12.0,
-          top: 4.0,
-          child: IconButtonWidget.close(onPressed: context.popDialog),
-        ),
+        PositionedDirectional(end: 12.0, top: 4.0, child: IconButtonWidget.close(onPressed: context.popDialog)),
       ],
     );
   }
@@ -68,10 +53,7 @@ class PickImageComponent extends StatelessWidget {
 
   int get length => texts.length;
   List<String> get texts => ["camera", "gallery"];
-  List<VoidCallback> get callbacks => [
-        () async => onPick(ImageSource.camera),
-        () async => onPick(ImageSource.gallery),
-      ];
+  List<VoidCallback> get callbacks => [() async => onPick(ImageSource.camera), () async => onPick(ImageSource.gallery)];
 
   Future<void> onPick(ImageSource source, [bool mounted = true]) async {
     final ImagePicker picker = ImagePicker();
@@ -84,8 +66,7 @@ class PickImageComponent extends StatelessWidget {
         String path = image.path;
         final fileName = image.name;
 
-        final base64File =
-            await CommonFunctions.fileToBase64(path, mimeType: image.mimeType);
+        final base64File = await CommonFunctions.fileToBase64(path, mimeType: image.mimeType);
         // final fileBytes = await File(path).readAsBytes();
         // String base64File = base64Encode(fileBytes);
         final file = sl<FileInfo>().copyWith(

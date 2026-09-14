@@ -15,7 +15,6 @@ import '../shared/circle_icon.dart';
 
 import 'package:balady_plus/app/events_logs/balady_logs.dart';
 
-
 class OpportunityMapCard extends StatelessWidget {
   final String type;
   final String? documentValue;
@@ -33,22 +32,23 @@ class OpportunityMapCard extends StatelessWidget {
 
   final Function onClose;
 
-  const OpportunityMapCard(
-      {super.key,
-      this.description,
-      this.area,
-      required this.type,
-      this.subMunicipality,
-      this.mainActivity,
-      this.documentValue,
-      this.dailyCost,
-      this.isSeasonal = false,
-      this.bidEndDate,
-      this.location,
-      this.opportunityNumber,
-      this.isFree = false,
-      this.id,
-      required this.onClose});
+  const OpportunityMapCard({
+    super.key,
+    this.description,
+    this.area,
+    required this.type,
+    this.subMunicipality,
+    this.mainActivity,
+    this.documentValue,
+    this.dailyCost,
+    this.isSeasonal = false,
+    this.bidEndDate,
+    this.location,
+    this.opportunityNumber,
+    this.isFree = false,
+    this.id,
+    required this.onClose,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -73,9 +73,10 @@ class OpportunityMapCard extends StatelessWidget {
         padding: const EdgeInsets.only(left: 10, right: 10, bottom: 10),
         margin: const EdgeInsets.symmetric(horizontal: 2),
         decoration: const BoxDecoration(
-            borderRadius: BorderRadius.all(Radius.circular(8)),
-            boxShadow: [BoxShadow(color: Color(0x14000000), offset: Offset(0, 2), blurRadius: 24, spreadRadius: 0)],
-            color: AppColor.white),
+          borderRadius: BorderRadius.all(Radius.circular(8)),
+          boxShadow: [BoxShadow(color: Color(0x14000000), offset: Offset(0, 2), blurRadius: 24, spreadRadius: 0)],
+          color: AppColor.white,
+        ),
         child: Container(
           margin: const EdgeInsets.only(top: 10, right: 10, left: 10),
           child: Column(
@@ -93,9 +94,7 @@ class OpportunityMapCard extends StatelessWidget {
                     height: 58,
                     width: 58,
                   ),
-                  const SizedBox(
-                    width: 8,
-                  ),
+                  const SizedBox(width: 8),
                   Expanded(
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.start,
@@ -106,15 +105,16 @@ class OpportunityMapCard extends StatelessWidget {
                             Expanded(
                               child: Text(
                                 description ?? "",
-                                style: AppStyle.cardTitleTextStle
-                                    .copyWith(fontSize: 14, color: AppColor.black, height: 1.3),
+                                style: AppStyle.cardTitleTextStle.copyWith(
+                                  fontSize: 14,
+                                  color: AppColor.black,
+                                  height: 1.3,
+                                ),
                                 maxLines: 2,
                                 overflow: TextOverflow.ellipsis,
                               ),
                             ),
-                            const SizedBox(
-                              width: 8,
-                            ),
+                            const SizedBox(width: 8),
                             GestureDetector(
                               onTap: () {
                                 onClose();
@@ -123,7 +123,7 @@ class OpportunityMapCard extends StatelessWidget {
                                 icon: Icons.close,
                                 circleSize: 24,
                                 iconColor: AppColor.primary600Light,
-                                backgroundColor: AppColor.geyser.withOpacity(0.4),
+                                backgroundColor: AppColor.geyser.withValues(alpha: 0.4),
                                 iconSize: 12,
                               ),
                             ),
@@ -148,9 +148,7 @@ class OpportunityMapCard extends StatelessWidget {
                             maxLines: 2,
                             overflow: TextOverflow.ellipsis,
                           ),
-                        const SizedBox(
-                          height: 10,
-                        ),
+                        const SizedBox(height: 10),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
@@ -158,14 +156,8 @@ class OpportunityMapCard extends StatelessWidget {
                               flex: 1,
                               child: Row(
                                 children: [
-                                  Image.asset(
-                                    'assets/images/map_area_icon.png',
-                                    height: 12,
-                                    width: 12,
-                                  ),
-                                  const SizedBox(
-                                    width: 6,
-                                  ),
+                                  Image.asset('assets/images/map_area_icon.png', height: 12, width: 12),
+                                  const SizedBox(width: 6),
                                   Text(
                                     area != null ? ("${area!} م٢ ") : "",
                                     overflow: TextOverflow.ellipsis,
@@ -193,24 +185,15 @@ class OpportunityMapCard extends StatelessWidget {
                   ),
                 ],
               ),
-              if (type == "Investment")
-                const SizedBox(
-                  height: 11,
-                ),
+              if (type == "Investment") const SizedBox(height: 11),
               if (type == "Investment")
                 Expanded(
                   child: Row(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Image.asset(
-                        'assets/images/distance@3x.png',
-                        height: 12,
-                        width: 12,
-                      ),
-                      const SizedBox(
-                        width: 6,
-                      ),
+                      Image.asset('assets/images/distance@3x.png', height: 12, width: 12),
+                      const SizedBox(width: 6),
                       Text(
                         "${"bid_end_date".tr()} ${getBidEndDate(bidEndDate ?? "")}",
                         overflow: TextOverflow.ellipsis,
@@ -318,7 +301,9 @@ class RentOrInvestWidget extends StatelessWidget {
       child: Text(
         type == "Investment" || type == "Dirct Rental" ? ('investment').tr() : ('rent').tr(),
         style: AppStyle.cardTitleTextStle.copyWith(
-            fontSize: 14, color: type == "Investment" ? AppColor.secondary900Light : AppColor.secondary900Light),
+          fontSize: 14,
+          color: type == "Investment" ? AppColor.secondary900Light : AppColor.secondary900Light,
+        ),
       ),
     );
   }
@@ -334,40 +319,45 @@ class PriceWidget extends StatelessWidget {
   final double priceFontSize;
   final bool isFree;
 
-  const PriceWidget(
-      {super.key,
-      required this.price,
-      required this.isInvestment,
-      required this.isDirectRental,
-      this.fontSize = 16,
-      this.priceFontSize = 15,
-      this.isSeasonal = false,
-      this.isOrder = false,
-      this.isFree = false});
+  const PriceWidget({
+    super.key,
+    required this.price,
+    required this.isInvestment,
+    required this.isDirectRental,
+    this.fontSize = 16,
+    this.priceFontSize = 15,
+    this.isSeasonal = false,
+    this.isOrder = false,
+    this.isFree = false,
+  });
 
   @override
   Widget build(BuildContext context) {
     return AutoSizeText.rich(
-      TextSpan(children: [
-        if (!isInvestment && !isOrder && !isSeasonal && !isDirectRental)
+      TextSpan(
+        children: [
+          if (!isInvestment && !isOrder && !isSeasonal && !isDirectRental)
+            TextSpan(
+              text: "${("start_from").tr()}  ",
+              style: AppStyle.cardTitleTextStle.copyWith(color: AppColor.primary900Light, fontSize: 16),
+            ),
           TextSpan(
-            text: "${("start_from").tr()}  ",
-            style: AppStyle.cardTitleTextStle.copyWith(color: AppColor.primary900Light, fontSize: 16),
-          ),
-        TextSpan(
             text: isFree && !isDirectRental ? ("free").tr() : "$price  ",
-            style: AppStyle.cardTitleTextStle..copyWith(color: AppColor.primary900Light, fontSize: fontSize)),
-        if (!isFree)
-          TextSpan(
+            style: AppStyle.cardTitleTextStle..copyWith(color: AppColor.primary900Light, fontSize: fontSize),
+          ),
+          if (!isFree)
+            TextSpan(
               text: isDirectRental
                   ? ("sar_year").tr()
                   : isInvestment
-                      ? ("sr_booklet").tr()
-                      : isOrder
-                          ? ("price_per_period").tr()
-                          : ("sar_per_meter").tr(),
-              style: AppStyle.cardTitleTextStle..copyWith(color: AppColor.primary900Light, fontSize: fontSize)),
-      ]),
+                  ? ("sr_booklet").tr()
+                  : isOrder
+                  ? ("price_per_period").tr()
+                  : ("sar_per_meter").tr(),
+              style: AppStyle.cardTitleTextStle..copyWith(color: AppColor.primary900Light, fontSize: fontSize),
+            ),
+        ],
+      ),
       maxLines: 1,
       maxFontSize: fontSize,
       minFontSize: fontSize - 5,

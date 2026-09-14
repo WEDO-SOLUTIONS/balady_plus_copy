@@ -15,23 +15,15 @@ class SubmitRatingSheet extends StatelessWidget {
   final RatingRequest ratingRequest;
   final String? title;
 
-  const SubmitRatingSheet({
-    super.key,
-    required this.ratingRequest,
-    this.title,
-  });
+  const SubmitRatingSheet({super.key, required this.ratingRequest, this.title});
 
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
-      create: (BuildContext context) => SubmitRatingViewModel(
-        webService: sl(),  
-        ratingRequest: ratingRequest,
-      ),
+      create: (BuildContext context) => SubmitRatingViewModel(webService: sl(), ratingRequest: ratingRequest),
       child: Builder(
         builder: (BuildContext contextViewModel) {
-          SubmitRatingViewModel provider =
-              contextViewModel.watch<SubmitRatingViewModel>();
+          SubmitRatingViewModel provider = contextViewModel.watch<SubmitRatingViewModel>();
           return Padding(
             padding: const EdgeInsets.all(16.0),
             child: Column(
@@ -53,7 +45,7 @@ class SubmitRatingSheet extends StatelessWidget {
                       child: CircleIcon(
                         icon: Icons.close,
                         iconColor: AppColor.primary600Light,
-                        backgroundColor: AppColor.geyser.withOpacity(0.4),
+                        backgroundColor: AppColor.geyser.withValues(alpha: 0.4),
                         iconSize: 18,
                       ),
                     ),
@@ -61,16 +53,12 @@ class SubmitRatingSheet extends StatelessWidget {
                 ),
                 CustomAutoSizeTextWidget(
                   title ?? 'service_evaluation'.tr(),
-                  textStyle: AppStyle.profileNameTextStyle.copyWith(
-                    color: AppColor.blackModern600Light,
-                  ),
+                  textStyle: AppStyle.profileNameTextStyle.copyWith(color: AppColor.blackModern600Light),
                 ),
                 const SizedBox(height: 16),
                 CustomAutoSizeTextWidget(
                   'lbl_choose_star_to_evaluate'.tr(),
-                  textStyle: AppStyle.profileNameTextStyle.copyWith(
-                    color: AppColor.blackModern600Light,
-                  ),
+                  textStyle: AppStyle.profileNameTextStyle.copyWith(color: AppColor.blackModern600Light),
                 ),
                 const SizedBox(height: 16),
                 RatingBar(
@@ -96,37 +84,27 @@ class SubmitRatingSheet extends StatelessWidget {
                   children: [
                     CustomAutoSizeTextWidget(
                       'optional_comment'.tr(),
-                      textStyle: AppStyle.profileNameTextStyle.copyWith(
-                        color: AppColor.blackModern600Light,
-                      ),
+                      textStyle: AppStyle.profileNameTextStyle.copyWith(color: AppColor.blackModern600Light),
                     ),
                   ],
                 ),
                 const SizedBox(height: 6),
-                CustomTextFieldWidget(
-                  onChanged: (text) => provider.ratingRequest.remarks = text,
-                  maxLines: 4,
-                ),
+                CustomTextFieldWidget(onChanged: (text) => provider.ratingRequest.remarks = text, maxLines: 4),
                 const SizedBox(height: 16),
                 Selector<SubmitRatingViewModel, bool>(
                   selector: (_, provider) => provider.isLoading,
                   builder: (contextViewModel, isLoading, child) {
                     return isLoading
-                        ? const ShimmerEffectWidget(
-                            height: 50,
-                            borderRadius: 6,
-                          )
+                        ? const ShimmerEffectWidget(height: 50, borderRadius: 6)
                         : ElevatedButtonWidget.primaryCustom(
                             text: 'send_evaluation'.tr(),
                             onPressed: () async {
                               if ((provider.ratingRequest.value ?? 0) > 0) {
-                                NavigatorState navigator =
-                                    Navigator.of(context);
+                                NavigatorState navigator = Navigator.of(context);
                                 int? id = await provider.submitRating();
                                 if (id != null) {
                                   navigator.pop(true);
-                                  CommonFunctions.showSuccess(
-                                      "done_send_rating".tr());
+                                  CommonFunctions.showSuccess("done_send_rating".tr());
                                 }
                               } else {
                                 CommonFunctions.showError('select_rating'.tr());

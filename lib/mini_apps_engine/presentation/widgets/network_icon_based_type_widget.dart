@@ -120,7 +120,7 @@ class ImageIconBasedTypeWidget extends StatelessWidget {
       width: iconSize,
       height: iconSize,
       decoration: BoxDecoration(
-        color: iconColor?.withOpacity(0.1) ?? AppColor.primary900Light.withOpacity(0.1),
+        color: iconColor?.withValues(alpha: 0.1) ?? AppColor.primary900Light.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(8),
       ),
       child: Icon(Icons.apps, size: iconSize * 0.6, color: iconColor ?? AppColor.primary900Light),

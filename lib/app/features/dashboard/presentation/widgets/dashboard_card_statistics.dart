@@ -15,10 +15,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 class DashboardCardStatistics extends StatelessWidget {
   final DashboardCardEntity card;
 
-  const DashboardCardStatistics({
-    super.key,
-    required this.card,
-  });
+  const DashboardCardStatistics({super.key, required this.card});
 
   @override
   Widget build(BuildContext context) {
@@ -49,24 +46,20 @@ class DashboardCardStatistics extends StatelessWidget {
                 return const ShimmerEffectWidget();
               }
               return Container(
-                padding:  EdgeInsets.all(16),
+                padding: EdgeInsets.all(16),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(16),
                   color: Theme.of(context).scaffoldBackgroundColor,
-
                 ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     CustomTextWidget(
                       statistic.count.toString(),
-                      textStyle: Theme.of(context).textTheme.titleMedium?.copyWith(color: countColor(index,context)),
+                      textStyle: Theme.of(context).textTheme.titleMedium?.copyWith(color: countColor(index, context)),
                     ),
                     const SizedBox(height: 8),
-                    CustomTextWidget(
-                      statistic.keyName,
-                      textStyle: Theme.of(context).textTheme.labelLarge,
-                    ),
+                    CustomTextWidget(statistic.keyName, textStyle: Theme.of(context).textTheme.labelLarge),
                   ],
                 ),
               );
@@ -77,16 +70,16 @@ class DashboardCardStatistics extends StatelessWidget {
     );
   }
 
-  Color countColor(int index,context) {
+  Color countColor(int index, context) {
     switch (index) {
       case 0:
         return Theme.of(context).primaryColor;
       case 1:
-        return Theme.of(context).primaryColor.withOpacity(0.8);
+        return Theme.of(context).primaryColor.withValues(alpha: 0.8);
       case 2:
-        return Theme.of(context).primaryColor.withOpacity(0.6);
+        return Theme.of(context).primaryColor.withValues(alpha: 0.6);
       case 3:
-        return Theme.of(context).primaryColor.withOpacity(0.4);
+        return Theme.of(context).primaryColor.withValues(alpha: 0.4);
       default:
         return Theme.of(context).primaryColor;
     }

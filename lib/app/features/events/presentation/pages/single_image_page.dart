@@ -104,7 +104,7 @@ class _SingleEventDescriptionPageState extends State<SingleEventDescriptionPage>
                                         iconSize: 24,
                                         circleSize: 36,
                                         icon: Icons.close,
-                                        backgroundColor: Colors.white.withOpacity(0.7),
+                                        backgroundColor: Colors.white.withValues(alpha: 0.7),
                                       ),
                                       onTap: () {
                                         Navigator.of(context).pop();

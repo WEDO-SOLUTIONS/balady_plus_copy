@@ -1,12 +1,9 @@
-import 'package:flutter/material.dart'
-    show Color, EdgeInsets, FontWeight, TextStyle;
+import 'package:flutter/material.dart' show Color, EdgeInsets, FontWeight, TextStyle;
 
-import '../utils_exports.dart'
-    show AppColor, AppConfig, AppFontWeight, UIHelper;
+import '../utils_exports.dart' show AppColor, AppConfig, AppFontWeight, UIHelper;
 
 class AppStyle {
-  static String? get fontFamily =>
-      AppConfig.appFontType.isNotEmpty ? AppConfig.appFontType : null;
+  static String? get fontFamily => AppConfig.appFontType.isNotEmpty ? AppConfig.appFontType : null;
 
   /// Text Styles
   static final mainTextStyle = TextStyle(
@@ -116,7 +113,7 @@ class AppStyle {
   static final serviceDescriptionStyle = TextStyle(
     fontSize: 14.0,
     fontWeight: AppFontWeight.semiBold.fontWeight,
-    color: AppColor.blackModern900Light.withOpacity(0.6),
+    color: AppColor.blackModern900Light.withValues(alpha: 0.6),
     fontFamily: fontFamily,
     height: 1.0,
   );
@@ -195,7 +192,7 @@ class AppStyle {
   static final profileTypeTextStyle = TextStyle(
     fontSize: 14.0,
     fontWeight: AppFontWeight.semiBold.fontWeight,
-    color: AppColor.blackModern50Light.withOpacity(0.6),
+    color: AppColor.blackModern50Light.withValues(alpha: 0.6),
     fontFamily: fontFamily,
     height: 1.0,
   );
@@ -368,10 +365,11 @@ class AppStyle {
   );
   // Athkar Styles
   static final resetAthkarTextStyle = TextStyle(
-      fontSize: 16,
-      fontWeight: AppFontWeight.semiBold.fontWeight,
-      fontFamily: fontFamily,
-      color: AppColor.grey1000);
+    fontSize: 16,
+    fontWeight: AppFontWeight.semiBold.fontWeight,
+    fontFamily: fontFamily,
+    color: AppColor.grey1000,
+  );
 
   static final countAthkarStyle = TextStyle(
     fontSize: 16,
@@ -398,10 +396,11 @@ class AppStyle {
     fontFamily: fontFamily,
   );
   static final boardingAppBarTitleStyle = TextStyle(
-      fontFamily: fontFamily,
-      fontSize: 16,
-      fontWeight: AppFontWeight.medium.fontWeight,
-      color: AppColor.white);
+    fontFamily: fontFamily,
+    fontSize: 16,
+    fontWeight: AppFontWeight.medium.fontWeight,
+    color: AppColor.white,
+  );
   static final desscriptionAthkarStyle = TextStyle(
     fontSize: 14,
     fontWeight: AppFontWeight.bold.fontWeight,

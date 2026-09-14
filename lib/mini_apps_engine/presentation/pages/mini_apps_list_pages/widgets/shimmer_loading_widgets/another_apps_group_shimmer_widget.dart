@@ -20,12 +20,12 @@ class AnotherAppsGroupShimmerWidget extends StatelessWidget {
     final placeholder = isDark ? const Color(0xFF1D2430) : Colors.white;
 
     // Inner "sub-card" shade (slightly different)
-    final subSurface = isDark ? const Color(0xFF202838) : Colors.white.withOpacity(0.55);
+    final subSurface = isDark ? const Color(0xFF202838) : Colors.white.withValues(alpha: 0.55);
 
     // Subtle borders & shadow for premium feel
-    final borderColor = isDark ? Colors.white.withOpacity(0.06) : Colors.black.withOpacity(0.04);
+    final borderColor = isDark ? Colors.white.withValues(alpha: 0.06) : Colors.black.withValues(alpha: 0.04);
 
-    final shadowColor = isDark ? Colors.black.withOpacity(0.35) : Colors.black.withOpacity(0.06);
+    final shadowColor = isDark ? Colors.black.withValues(alpha: 0.35) : Colors.black.withValues(alpha: 0.06);
 
     // CustomLargMoreApps default dimensions:
     final double cardOuterWidth = context.w(168);
@@ -145,7 +145,10 @@ class _AnotherAppsSubCardBox extends StatelessWidget {
       decoration: BoxDecoration(
         color: color,
         borderRadius: BorderRadius.circular(radius),
-        border: Border.all(color: isDark ? Colors.white.withOpacity(0.06) : Colors.black.withOpacity(0.04), width: 1),
+        border: Border.all(
+          color: isDark ? Colors.white.withValues(alpha: 0.06) : Colors.black.withValues(alpha: 0.04),
+          width: 1,
+        ),
       ),
     );
   }

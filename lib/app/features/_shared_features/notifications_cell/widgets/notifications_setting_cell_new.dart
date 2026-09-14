@@ -16,8 +16,7 @@ class NotificationsSettingCell extends StatefulWidget {
   const NotificationsSettingCell({super.key});
 
   @override
-  State<NotificationsSettingCell> createState() =>
-      _NotificationsSettingCellState();
+  State<NotificationsSettingCell> createState() => _NotificationsSettingCellState();
 }
 
 class _NotificationsSettingCellState extends State<NotificationsSettingCell> {
@@ -29,20 +28,16 @@ class _NotificationsSettingCellState extends State<NotificationsSettingCell> {
         ? const SizedBox.shrink()
         : BlocProvider(
             create: (context) {
-              NotificationRepositoryImplementation
-              notificationRepositoryImplementation = sl();
+              NotificationRepositoryImplementation notificationRepositoryImplementation = sl();
               return NotificationsSettingCubit(
-                notificationsSettingsListRepository:
-                    notificationRepositoryImplementation,
+                notificationsSettingsListRepository: notificationRepositoryImplementation,
                 notificationId: 'mobile',
               );
             },
             child: BlocBuilder<NotificationsSettingCubit, NotificationsSettingState>(
               builder: (contextCubit, state) {
-                NotificationsSettingCubit cubit = contextCubit
-                    .watch<NotificationsSettingCubit>();
-                if (state is InitialNotificationsSettingsState ||
-                    state is LoadingEventsSettingsState) {
+                NotificationsSettingCubit cubit = contextCubit.watch<NotificationsSettingCubit>();
+                if (state is InitialNotificationsSettingsState || state is LoadingEventsSettingsState) {
                   return const Center(child: CircularProgressIndicator());
                 }
                 if (state is FailureNotificationsSettingsState) {
@@ -58,10 +53,8 @@ class _NotificationsSettingCellState extends State<NotificationsSettingCell> {
                     WidgetsBinding.instance.addPostFrameCallback((_) {
                       NavigationService.navigatorKey.currentState!.push(
                         MaterialPageRoute(
-                          builder: (_) => NotificationsSettings(
-                            notificationsList:
-                                cubit.notificationsSettingsList.categories!,
-                          ),
+                          builder: (_) =>
+                              NotificationsSettings(notificationsList: cubit.notificationsSettingsList.categories!),
                         ),
                       );
 
@@ -110,7 +103,7 @@ class _NotificationsSettingCellState extends State<NotificationsSettingCell> {
                       Text(
                         'enable_disable_notifications'.tr(),
                         style: context.textStyle.caption.copyWith(
-                          color: const Color(0xFF1E2A36).withOpacity(0.36),
+                          color: const Color(0xFF1E2A36).withValues(alpha: 0.36),
                         ),
                       ),
                       const SizedBox(height: Spacing.$2x),
@@ -118,9 +111,7 @@ class _NotificationsSettingCellState extends State<NotificationsSettingCell> {
                           ? GestureDetector(
                               onTap: () {
                                 manageNotificationClicked = true;
-                                cubit.getNotificationSetting(
-                                  cubit.notificationId,
-                                );
+                                cubit.getNotificationSetting(cubit.notificationId);
                                 /* Navigator.of(context).push(MaterialPageRoute(
                                     builder: (context) => NotificationsSettings(
                                         notificationsList: cubit
@@ -128,9 +119,7 @@ class _NotificationsSettingCellState extends State<NotificationsSettingCell> {
                                             .categories!)));*/
                               },
                               child: Padding(
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 16.0,
-                                ),
+                                padding: const EdgeInsets.symmetric(horizontal: 16.0),
                                 child: Row(
                                   children: [
                                     SvgPicture.asset(
@@ -141,10 +130,9 @@ class _NotificationsSettingCellState extends State<NotificationsSettingCell> {
                                     ),
                                     Text(
                                       'manage_notification'.tr(),
-                                      style: Theme.of(context)
-                                          .extension<ThemeTextStyles>()!
-                                          .text
-                                          .copyWith(color: Colors.red),
+                                      style: Theme.of(
+                                        context,
+                                      ).extension<ThemeTextStyles>()!.text.copyWith(color: Colors.red),
                                     ),
                                   ],
                                 ),

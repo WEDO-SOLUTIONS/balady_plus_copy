@@ -29,20 +29,16 @@ class CircleIcon extends StatelessWidget {
         color: backgroundColor,
         boxShadow: showShadow == true
             ? [
-          BoxShadow(
-            color: Theme.of(context).dividerColor.withOpacity(0.1),
-            blurRadius: 8,
-            offset: const Offset(0, 4),
-          ),
-        ]
+                BoxShadow(
+                  color: Theme.of(context).dividerColor.withValues(alpha: 0.1),
+                  blurRadius: 8,
+                  offset: const Offset(0, 4),
+                ),
+              ]
             : [],
       ),
       child: Center(
-        child: DrawIconBasedTypeWidget(
-          icon: icon,
-          iconColor: iconColor,
-          iconSize: iconSize,
-        ),
+        child: DrawIconBasedTypeWidget(icon: icon, iconColor: iconColor, iconSize: iconSize),
       ),
     );
   }

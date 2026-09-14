@@ -122,7 +122,7 @@ class _NotificationsSettingCellState extends State<NotificationsSettingCell> {
                             Text(
                               'enable_disable_notifications'.tr(),
                               style: Theme.of(context).extension<ThemeTextStyles>()!.caption.copyWith(
-                                color: context.colors.foregroundDefault.withOpacity(0.36),
+                                color: context.colors.foregroundDefault.withValues(alpha: 0.36),
                               ),
                             ),
                           ],

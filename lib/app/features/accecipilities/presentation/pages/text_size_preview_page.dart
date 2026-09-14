@@ -90,10 +90,10 @@ class _TextSizePreviewPageState extends ConsumerState<TextSizePreviewPage> {
                       activeTrackColor: accent,
                       inactiveTrackColor: context.colors.backgroundSurface1,
                       thumbColor: accent,
-                      overlayColor: accent.withOpacity(0.15),
+                      overlayColor: accent.withValues(alpha: 0.15),
                       tickMarkShape: const RoundSliderTickMarkShape(tickMarkRadius: 2),
                       activeTickMarkColor: Colors.transparent,
-                      inactiveTickMarkColor: accent.withOpacity(0.4),
+                      inactiveTickMarkColor: accent.withValues(alpha: 0.4),
                     ),
                     child: Slider(
                       value: _fontSize,

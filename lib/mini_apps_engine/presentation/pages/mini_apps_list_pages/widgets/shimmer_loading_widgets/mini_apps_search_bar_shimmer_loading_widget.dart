@@ -23,10 +23,10 @@ class MiniAppsSearchTextFieldShimmer extends StatelessWidget {
     final placeholder = isDark ? const Color(0xFF1D2430) : Colors.white;
 
     // Subtle border for premium feel
-    final borderColor = isDark ? Colors.white.withOpacity(0.08) : Colors.black.withOpacity(0.06);
+    final borderColor = isDark ? Colors.white.withValues(alpha: 0.08) : Colors.black.withValues(alpha: 0.06);
 
     // Optional shadow (very subtle)
-    final shadowColor = isDark ? Colors.black.withOpacity(0.35) : Colors.black.withOpacity(0.05);
+    final shadowColor = isDark ? Colors.black.withValues(alpha: 0.35) : Colors.black.withValues(alpha: 0.05);
 
     return SizedBox(
       width: width ?? context.screenWidth,
@@ -77,7 +77,7 @@ class MiniAppsSearchTextFieldShimmer extends StatelessWidget {
                       color: placeholder,
                       borderRadius: BorderRadius.circular(8),
                       border: Border.all(
-                        color: isDark ? Colors.white.withOpacity(0.06) : Colors.black.withOpacity(0.04),
+                        color: isDark ? Colors.white.withValues(alpha: 0.06) : Colors.black.withValues(alpha: 0.04),
                         width: 1,
                       ),
                     ),

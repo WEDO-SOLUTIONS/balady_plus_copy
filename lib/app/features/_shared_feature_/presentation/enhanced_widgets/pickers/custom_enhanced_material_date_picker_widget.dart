@@ -1,15 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart'
-    show BlocConsumer, BlocProvider, ReadContext;
+import 'package:flutter_bloc/flutter_bloc.dart' show BlocConsumer, BlocProvider, ReadContext;
 
 import '../../../../../core/utils/utils_exports.dart' show AppColor, AppStyle;
 import '../../../shared_feature_exports.dart'
-    show
-        CustomElevatedIconButtonWidget,
-        DatePickerCubit,
-        DatePickerState,
-        ErrorUnderWidget,
-        WidgetLabel;
+    show CustomElevatedIconButtonWidget, DatePickerCubit, DatePickerState, ErrorUnderWidget, WidgetLabel;
 
 class CustomEnhancedMaterialDatePickerWidget extends StatelessWidget {
   final bool ignoreHolidays;
@@ -60,11 +54,7 @@ class CustomEnhancedMaterialDatePickerWidget extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           // Label widget
-          WidgetLabel(
-            isRequired: isRequired,
-            label: label,
-            labelStyle: labelStyle,
-          ),
+          WidgetLabel(isRequired: isRequired, label: label, labelStyle: labelStyle),
           // Date Picker
           Builder(
             builder: (context) {
@@ -84,10 +74,7 @@ class CustomEnhancedMaterialDatePickerWidget extends StatelessWidget {
                     iconAlignment: AlignmentDirectional.centerEnd,
                     onPressed: readOnly
                         ? onDisabledTapped
-                        : () async => await onSelectedDate(
-                              context,
-                              selectedDate: state.selectedDate,
-                            ),
+                        : () async => await onSelectedDate(context, selectedDate: state.selectedDate),
                   );
                 },
               );
@@ -100,28 +87,21 @@ class CustomEnhancedMaterialDatePickerWidget extends StatelessWidget {
     );
   }
 
-  Color get _fillColor =>
-      readOnly ? AppColor.gray : fillColor ?? AppColor.gray.withOpacity(0.3);
-  Color get _borderColor => borderColor ?? AppColor.gray.withOpacity(0.60);
+  Color get _fillColor => readOnly ? AppColor.gray : fillColor ?? AppColor.gray.withValues(alpha: 0.3);
+  Color get _borderColor => borderColor ?? AppColor.gray.withValues(alpha: 0.60);
 
   TextStyle get hintStyle => dateStyle ?? AppStyle.pickerStyle;
 
   DateTime get firstDate => startDate ?? DateTime(1996, 1, 1);
-  DateTime get lastDate =>
-      endDate ?? DateTime(DateTime.now().year + 4, DateTime.now().month + 1, 0);
+  DateTime get lastDate => endDate ?? DateTime(DateTime.now().year + 4, DateTime.now().month + 1, 0);
 
-  Future<void> onSelectedDate(
-    BuildContext context, {
-    required DateTime selectedDate,
-    bool mounted = true,
-  }) async {
+  Future<void> onSelectedDate(BuildContext context, {required DateTime selectedDate, bool mounted = true}) async {
     final DateTime? picked = await showDatePicker(
       context: context,
       initialDate: selectedDate,
       firstDate: firstDate,
       lastDate: lastDate,
-      selectableDayPredicate: (date) =>
-          ignoreHolidays ? date.weekday != 5 && date.weekday != 6 : true,
+      selectableDayPredicate: (date) => ignoreHolidays ? date.weekday != 5 && date.weekday != 6 : true,
     );
 
     if (picked != null && picked != selectedDate) {

@@ -20,13 +20,13 @@ class MiniAppsMostUsedSectionShimmerWidget extends StatelessWidget {
     final titleBg = isDark ? const Color(0xFF141821) : Colors.white;
 
     // Placeholders
-    final iconBg = isDark ? const Color(0xFF1D2430) : Colors.white.withOpacity(0.55);
+    final iconBg = isDark ? const Color(0xFF1D2430) : Colors.white.withValues(alpha: 0.55);
     final textBg = isDark ? const Color(0xFF1D2430) : Colors.white;
 
     // Subtle borders for premium feel
-    final borderColor = isDark ? Colors.white.withOpacity(0.06) : Colors.black.withOpacity(0.04);
+    final borderColor = isDark ? Colors.white.withValues(alpha: 0.06) : Colors.black.withValues(alpha: 0.04);
 
-    final shadowColor = isDark ? Colors.black.withOpacity(0.35) : Colors.black.withOpacity(0.06);
+    final shadowColor = isDark ? Colors.black.withValues(alpha: 0.35) : Colors.black.withValues(alpha: 0.06);
 
     // Dimensions extracted from CustomMiniAppsCard in the parent widget:
     final double cardWidth = context.w(104);
@@ -61,7 +61,7 @@ class MiniAppsMostUsedSectionShimmerWidget extends StatelessWidget {
                     color: iconBg,
                     shape: BoxShape.circle,
                     border: Border.all(
-                      color: isDark ? Colors.white.withOpacity(0.06) : Colors.black.withOpacity(0.03),
+                      color: isDark ? Colors.white.withValues(alpha: 0.06) : Colors.black.withValues(alpha: 0.03),
                       width: 1,
                     ),
                   ),

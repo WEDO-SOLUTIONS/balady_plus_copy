@@ -667,7 +667,7 @@ class _VolunteerPresentationModeState extends State<VolunteerPresentationMode> {
       borderRadius: BorderRadius.circular(12),
       boxShadow: [
         BoxShadow(
-          color: Theme.of(context).colorScheme.onSurface.withAlpha(100).withOpacity(0.1),
+          color: Theme.of(context).colorScheme.onSurface.withAlpha(100).withValues(alpha: 0.1),
           spreadRadius: 1,
           blurRadius: 4,
           offset: const Offset(0, 2),
@@ -683,7 +683,7 @@ class _VolunteerPresentationModeState extends State<VolunteerPresentationMode> {
           child: Container(
             padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
-              color: const Color(0xFF00796B).withOpacity(0.05),
+              color: const Color(0xFF00796B).withValues(alpha: 0.05),
               borderRadius: BorderRadius.vertical(
                 top: const Radius.circular(12),
                 bottom: isExpanded ? Radius.zero : const Radius.circular(12),
@@ -694,7 +694,7 @@ class _VolunteerPresentationModeState extends State<VolunteerPresentationMode> {
                 Container(
                   padding: const EdgeInsets.all(8),
                   decoration: BoxDecoration(
-                    color: const Color(0xFF00796B).withOpacity(0.1),
+                    color: const Color(0xFF00796B).withValues(alpha: 0.1),
                     borderRadius: BorderRadius.circular(8),
                   ),
                   child: Icon(_getSectionIcon(title), color: const Color(0xFF00796B), size: 20),
@@ -1275,9 +1275,9 @@ class _VolunteerPresentationModeState extends State<VolunteerPresentationMode> {
                       Container(
                         padding: const EdgeInsets.all(12),
                         decoration: BoxDecoration(
-                          color: Colors.green.withOpacity(0.1),
+                          color: Colors.green.withValues(alpha: 0.1),
                           borderRadius: BorderRadius.circular(8),
-                          border: Border.all(color: Colors.green.withOpacity(0.3)),
+                          border: Border.all(color: Colors.green.withValues(alpha: 0.3)),
                         ),
                         child: Row(
                           children: [

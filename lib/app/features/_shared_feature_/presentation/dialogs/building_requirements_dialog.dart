@@ -133,7 +133,7 @@ class BuildingReqCard extends StatelessWidget {
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
         borderRadius: const BorderRadius.all(Radius.circular(8)),
-        color: const Color(0xFFE6EFEF).withOpacity(0.5),
+        color: const Color(0xFFE6EFEF).withValues(alpha: 0.5),
       ),
       child: Column(
         children: [

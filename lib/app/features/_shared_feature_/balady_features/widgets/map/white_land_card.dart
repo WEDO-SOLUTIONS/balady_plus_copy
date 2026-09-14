@@ -15,13 +15,14 @@ class WhiteLandMapCard extends StatelessWidget {
 
   final Function onClose;
 
-  const WhiteLandMapCard(
-      {super.key,
-      this.municipality,
-      this.streetName,
-      this.parcelNo,
-      this.stageNo,
-      required this.onClose});
+  const WhiteLandMapCard({
+    super.key,
+    this.municipality,
+    this.streetName,
+    this.parcelNo,
+    this.stageNo,
+    required this.onClose,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -32,17 +33,8 @@ class WhiteLandMapCard extends StatelessWidget {
           padding: const EdgeInsets.all(16),
           decoration: ShapeDecoration(
             color: Colors.white,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(16),
-            ),
-            shadows: const [
-              BoxShadow(
-                color: Color(0x1C77758D),
-                blurRadius: 22,
-                offset: Offset(0, 4),
-                spreadRadius: 0,
-              )
-            ],
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+            shadows: const [BoxShadow(color: Color(0x1C77758D), blurRadius: 22, offset: Offset(0, 4), spreadRadius: 0)],
           ),
           child: Stack(
             children: [
@@ -96,7 +88,7 @@ class WhiteLandMapCard extends StatelessWidget {
                     icon: Icons.close,
                     circleSize: 24,
                     iconColor: AppColor.primary600Light,
-                    backgroundColor: AppColor.geyser.withOpacity(0.4),
+                    backgroundColor: AppColor.geyser.withValues(alpha: 0.4),
                     iconSize: 12,
                   ),
                 ),

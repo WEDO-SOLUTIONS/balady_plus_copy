@@ -14,13 +14,14 @@ class ComplainceMapCard extends StatelessWidget {
 
   final Function onClose;
 
-  const ComplainceMapCard(
-      {super.key,
-      this.amana,
-      this.stageNo,
-      this.targetBuildingType,
-      this.streetName,
-      required this.onClose});
+  const ComplainceMapCard({
+    super.key,
+    this.amana,
+    this.stageNo,
+    this.targetBuildingType,
+    this.streetName,
+    required this.onClose,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -30,17 +31,8 @@ class ComplainceMapCard extends StatelessWidget {
       padding: const EdgeInsets.all(16),
       decoration: ShapeDecoration(
         color: Colors.white,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(16),
-        ),
-        shadows: const [
-          BoxShadow(
-            color: Color(0x1C77758D),
-            blurRadius: 22,
-            offset: Offset(0, 4),
-            spreadRadius: 0,
-          )
-        ],
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        shadows: const [BoxShadow(color: Color(0x1C77758D), blurRadius: 22, offset: Offset(0, 4), spreadRadius: 0)],
       ),
       child: Stack(
         children: [
@@ -100,15 +92,16 @@ class ComplainceMapCard extends StatelessWidget {
                 children: [
                   Expanded(
                     child: ElevatedButtonWidget.primaryCustom(
-                        text: "issue_complaince_certificate".tr(),
-                        fontSize: 13,
-                        maxLines: 2,
-                        height: 40,
-                        onPressed: () {
-                          CommonFunctions.openCreateCompliance();
-                          // Navigator.pushNamed(
-                          //     context, RouteName.createCompliancePage);
-                        }),
+                      text: "issue_complaince_certificate".tr(),
+                      fontSize: 13,
+                      maxLines: 2,
+                      height: 40,
+                      onPressed: () {
+                        CommonFunctions.openCreateCompliance();
+                        // Navigator.pushNamed(
+                        //     context, RouteName.createCompliancePage);
+                      },
+                    ),
                   ),
                   const CustomHorizontalSpace(width: 4),
                   Expanded(
@@ -141,7 +134,7 @@ class ComplainceMapCard extends StatelessWidget {
                 icon: Icons.close,
                 circleSize: 24,
                 iconColor: AppColor.primary600Light,
-                backgroundColor: AppColor.geyser.withOpacity(0.4),
+                backgroundColor: AppColor.geyser.withValues(alpha: 0.4),
                 iconSize: 12,
               ),
             ),

@@ -20,9 +20,9 @@ class MiniAppsFavSectionShimmerWidget extends StatelessWidget {
     final placeholder = isDark ? const Color(0xFF1D2430) : Colors.white;
 
     // Subtle borders & shadow for “premium”
-    final borderColor = isDark ? Colors.white.withOpacity(0.06) : Colors.black.withOpacity(0.04);
+    final borderColor = isDark ? Colors.white.withValues(alpha: 0.06) : Colors.black.withValues(alpha: 0.04);
 
-    final shadowColor = isDark ? Colors.black.withOpacity(0.35) : Colors.black.withOpacity(0.06);
+    final shadowColor = isDark ? Colors.black.withValues(alpha: 0.35) : Colors.black.withValues(alpha: 0.06);
 
     // Dimensions
     final double iconWidth = context.screenWidth * 0.14;
@@ -47,7 +47,7 @@ class MiniAppsFavSectionShimmerWidget extends StatelessWidget {
                   borderRadius: BorderRadius.circular(8),
                   border: Border.all(
                     color: isDashedAdd
-                        ? (isDark ? Colors.white.withOpacity(0.14) : Colors.black.withOpacity(0.08))
+                        ? (isDark ? Colors.white.withValues(alpha: 0.14) : Colors.black.withValues(alpha: 0.08))
                         : borderColor,
                     width: isDashedAdd ? 1.5 : 1,
                   ),
@@ -62,7 +62,9 @@ class MiniAppsFavSectionShimmerWidget extends StatelessWidget {
                             color: placeholder,
                             borderRadius: BorderRadius.circular(8),
                             border: Border.all(
-                              color: isDark ? Colors.white.withOpacity(0.06) : Colors.black.withOpacity(0.04),
+                              color: isDark
+                                  ? Colors.white.withValues(alpha: 0.06)
+                                  : Colors.black.withValues(alpha: 0.04),
                               width: 1,
                             ),
                           ),

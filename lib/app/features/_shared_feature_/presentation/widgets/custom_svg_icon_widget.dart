@@ -238,7 +238,7 @@ class _DefaultImageSkeleton extends StatelessWidget {
           height: height,
           decoration: BoxDecoration(
             color: base,
-            border: Border.all(color: (isDark ? Colors.white : Colors.black).withOpacity(0.06), width: 1),
+            border: Border.all(color: (isDark ? Colors.white : Colors.black).withValues(alpha: 0.06), width: 1),
           ),
         ),
       ),

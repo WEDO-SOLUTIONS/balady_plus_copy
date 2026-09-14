@@ -43,12 +43,12 @@ class _ShimmerCard extends StatelessWidget {
 
     // Card + placeholders (use soft surfaces)
     final cardBg = isDark ? const Color(0xFF141821) : Colors.white;
-    final cardBorder = isDark ? Colors.white.withOpacity(0.06) : Colors.black.withOpacity(0.04);
+    final cardBorder = isDark ? Colors.white.withValues(alpha: 0.06) : Colors.black.withValues(alpha: 0.04);
 
     final placeholder = isDark ? const Color(0xFF1D2430) : Colors.white;
     final placeholderSoft = isDark ? const Color(0xFF202838) : Colors.white;
 
-    final shadowColor = isDark ? Colors.black.withOpacity(0.35) : Colors.black.withOpacity(0.06);
+    final shadowColor = isDark ? Colors.black.withValues(alpha: 0.35) : Colors.black.withValues(alpha: 0.06);
 
     return Shimmer.fromColors(
       baseColor: baseColor,

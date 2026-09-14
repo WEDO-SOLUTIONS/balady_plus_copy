@@ -80,7 +80,7 @@ class _MiniAppsSearchPageState extends State<MiniAppsSearchPage> {
                     boxShadow: [
                       BoxShadow(
                         blurRadius: 30,
-                        color: Colors.black.withOpacity(0.1),
+                        color: Colors.black.withValues(alpha: 0.1),
                         spreadRadius: 0,
                         offset: const Offset(0, 4),
                       ),

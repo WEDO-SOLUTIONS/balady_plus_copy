@@ -15,8 +15,8 @@ import 'bottom_sheet_dialogs.dart';
 import 'package:balady_plus/app/events_logs/balady_logs.dart';
 
 class NotAuthorizedIndivisualDialog extends StatelessWidget {
-   String? routName;
-    NotAuthorizedIndivisualDialog({super.key,this.routName});
+  String? routName;
+  NotAuthorizedIndivisualDialog({super.key, this.routName});
 
   @override
   Widget build(BuildContext context) {
@@ -26,30 +26,16 @@ class NotAuthorizedIndivisualDialog extends StatelessWidget {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          const SizedBox(
-            height: 12,
-          ),
-          const DrawLineWidget(
-            lineWidth: 70.0,
-            lineHeight: 6.0,
-            lineColor: AppColor.blackModern200Light,
-            radius: 46.0,
-          ),
-          const SizedBox(
-            height: 16,
-          ),
+          const SizedBox(height: 12),
+          const DrawLineWidget(lineWidth: 70.0, lineHeight: 6.0, lineColor: AppColor.blackModern200Light, radius: 46.0),
+          const SizedBox(height: 16),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Row(
                 children: [
-                  CustomSvgIconWidget(
-                    "assets/icons/svg/alert-user.svg",
-                    iconSize: 22,
-                  ),
-                  const SizedBox(
-                    width: 8,
-                  ),
+                  CustomSvgIconWidget("assets/icons/svg/alert-user.svg", iconSize: 22),
+                  const SizedBox(width: 8),
                   CustomTextWidget(
                     "serivce_no_available_for_indivisual".tr(),
                     fontSize: 15,
@@ -63,15 +49,13 @@ class NotAuthorizedIndivisualDialog extends StatelessWidget {
                 child: CircleIcon(
                   icon: Icons.close,
                   iconColor: AppColor.primary600Light,
-                  backgroundColor: AppColor.geyser.withOpacity(0.4),
+                  backgroundColor: AppColor.geyser.withValues(alpha: 0.4),
                   iconSize: 18,
                 ),
               ),
             ],
           ),
-          const SizedBox(
-            height: 24,
-          ),
+          const SizedBox(height: 24),
           CustomTextWidget(
             "you_must_switch_to_entity_profile".tr(),
             fontSize: 12,
@@ -80,9 +64,7 @@ class NotAuthorizedIndivisualDialog extends StatelessWidget {
             fontWeight: AppFontWeight.bold,
             fontColor: AppColor.blackModern500Light,
           ),
-          const SizedBox(
-            height: 64,
-          ),
+          const SizedBox(height: 64),
           /* ElevatedButtonWidget.primaryCustom(
               onPressed: () => Navigator.pop(context),
               text: "contino_as_indiviusal".tr()),
@@ -90,32 +72,28 @@ class NotAuthorizedIndivisualDialog extends StatelessWidget {
             height: 16,
           ),*/
           ElevatedButtonWidget.primaryCustom(
-              onPressed: () async {
-                try {
-                  await BottomSheetDialog.showDraggableSheet(
-                    context,
-                    dialogKeyName: DialogName.delegatorsDialog,
-                    currentRouteName: routName??RouteName.commercialLicenseServicePage,
-                    child: DelegatorList(
-                      fromService: true,
-                      delegatorsCubit: sl<DelegatorsCubit>(),
-                    ),
-                  );
-                  Navigator.of(context).pop();
-                } catch (error, stackTrace) {
-    LogsViewModel().sendEventFromModel(
-      event: ErrorExceptionModel(
-        nameEvent: EventsName.handledException,
-        message: error.toString(),
-        stackTrace: stackTrace.toString(),
-      ),
-    );
-  }
-              },
-              text: "switch_to_entity".tr()),
-          SizedBox(
-            height: 32,
-          )
+            onPressed: () async {
+              try {
+                await BottomSheetDialog.showDraggableSheet(
+                  context,
+                  dialogKeyName: DialogName.delegatorsDialog,
+                  currentRouteName: routName ?? RouteName.commercialLicenseServicePage,
+                  child: DelegatorList(fromService: true, delegatorsCubit: sl<DelegatorsCubit>()),
+                );
+                Navigator.of(context).pop();
+              } catch (error, stackTrace) {
+                LogsViewModel().sendEventFromModel(
+                  event: ErrorExceptionModel(
+                    nameEvent: EventsName.handledException,
+                    message: error.toString(),
+                    stackTrace: stackTrace.toString(),
+                  ),
+                );
+              }
+            },
+            text: "switch_to_entity".tr(),
+          ),
+          SizedBox(height: 32),
         ],
       ),
     );

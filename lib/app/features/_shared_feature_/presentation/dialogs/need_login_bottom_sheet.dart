@@ -10,29 +10,16 @@ class NeedLoginBottomSheet extends StatelessWidget {
   final String? mainPage;
   final Function(bool isSuccess)? onSuccessLogin;
 
-  const NeedLoginBottomSheet({
-    super.key,
-    this.desc,
-    this.title,
-    this.mainPage,
-    this.onSuccessLogin,
-  });
+  const NeedLoginBottomSheet({super.key, this.desc, this.title, this.mainPage, this.onSuccessLogin});
 
   List<Widget> textActions(BuildContext context) => [
     const SizedBox(height: 10),
     TextButton(
-      onPressed: () =>
-          CommonFunctions.onLogin(isMunicipality: true, mainPage: mainPage),
-      child: Text(
-        "signInButton".tr(),
-        style: const TextStyle(fontWeight: FontWeight.bold),
-      ),
+      onPressed: () => CommonFunctions.onLogin(isMunicipality: true, mainPage: mainPage),
+      child: Text("signInButton".tr(), style: const TextStyle(fontWeight: FontWeight.bold)),
     ),
     const SizedBox(height: 10),
-    TextButton(
-      onPressed: () => Navigator.of(context).pop(),
-      child: Text("notNow".tr()),
-    ),
+    TextButton(onPressed: () => Navigator.of(context).pop(), child: Text("notNow".tr())),
     const SizedBox(height: 10),
   ];
 
@@ -54,15 +41,11 @@ class NeedLoginBottomSheet extends StatelessWidget {
                 decoration: BoxDecoration(
                   color: Color(0x1F898989),
                   border: Border.all(color: Colors.grey, width: 1.0),
-                  borderRadius: BorderRadius.circular(
-                    12,
-                  ), // Applies rounded corners
+                  borderRadius: BorderRadius.circular(12), // Applies rounded corners
                 ),
                 width: 40,
                 height: 40,
-                child: CloseButton(
-                  color: Theme.of(context).colorScheme.onPrimary,
-                ),
+                child: CloseButton(color: Theme.of(context).colorScheme.onPrimary),
               ),
             ],
           ),
@@ -74,12 +57,7 @@ class NeedLoginBottomSheet extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisSize: MainAxisSize.min,
               children: [
-                Image.asset(
-                  "assets/icons/png/lockv.png",
-                  width: 73,
-                  height: 88,
-                  fit: BoxFit.cover,
-                ),
+                Image.asset("assets/icons/png/lockv.png", width: 73, height: 88, fit: BoxFit.cover),
                 const SizedBox(height: 40),
                 CustomTextWidget(
                   ("not_registered").tr(),
@@ -105,13 +83,12 @@ class NeedLoginBottomSheet extends StatelessWidget {
                   btnTextWeight: AppFontWeight.bold,
                   btnTextColor: Color(0xFF606060),
                   btnHeight: 56,
-                  btnColor: Color(0x1F898989).withOpacity(0.1),
+                  btnColor: Color(0x1F898989).withValues(alpha: 0.1),
                   btnRadius: 8,
                 ),
                 const SizedBox(height: 12),
                 EnhancedCustomElevatedButtonWidget(
-                  btnPressed: () =>
-                      CommonFunctions.onLogin(isMunicipality: true),
+                  btnPressed: () => CommonFunctions.onLogin(isMunicipality: true),
                   btnText: ("signInButton").tr(),
                   btnTextSize: 18,
                   btnTextWeight: AppFontWeight.bold,

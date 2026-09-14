@@ -19,7 +19,7 @@ class PageBarShimmerLoadingWidget extends StatelessWidget {
     final boxColor = isDark ? const Color(0xFF1D2430) : Colors.white;
 
     // Optional subtle border for a premium feel
-    final borderColor = isDark ? Colors.white.withOpacity(0.06) : Colors.black.withOpacity(0.04);
+    final borderColor = isDark ? Colors.white.withValues(alpha: 0.06) : Colors.black.withValues(alpha: 0.04);
 
     return Shimmer.fromColors(
       baseColor: baseColor,

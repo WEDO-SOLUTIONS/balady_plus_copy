@@ -6,12 +6,9 @@ import '../../../../core/utils/constants/app_colors.dart';
 import 'custom_alert_dialog_widget.dart';
 
 class CustomPopUpsWidgets {
-  static Future<bool> showLoadingDialog(
-    BuildContext context, {
-    Color loadingColor = AppColor.primary900Light,
-  }) async =>
+  static Future<bool> showLoadingDialog(BuildContext context, {Color loadingColor = AppColor.primary900Light}) async =>
       (await showGeneralDialog<bool>(
-        barrierColor: Colors.black.withOpacity(0.6),
+        barrierColor: Colors.black.withValues(alpha: 0.6),
         transitionBuilder: (_, a1, a2, widget) {
           return WillPopScope(
             onWillPop: () async => false,
@@ -23,11 +20,7 @@ class CustomPopUpsWidgets {
                   height: 50,
                   alignment: Alignment.center,
                   color: Colors.transparent,
-                  child: CircularProgressIndicator(
-                    valueColor: AlwaysStoppedAnimation<Color>(
-                      loadingColor,
-                    ),
-                  ),
+                  child: CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(loadingColor)),
                 ),
               ),
             ),
@@ -49,7 +42,7 @@ class CustomPopUpsWidgets {
     VoidCallback? secondaryBtn,
   }) async =>
       (await showGeneralDialog<bool>(
-        barrierColor: Colors.black.withOpacity(0.6),
+        barrierColor: Colors.black.withValues(alpha: 0.6),
         transitionBuilder: (_, a1, a2, widget) {
           return WillPopScope(
             onWillPop: () async => false,
@@ -59,11 +52,9 @@ class CustomPopUpsWidgets {
                 opacity: a1.value,
                 child: CustomAlertDialogWidget(
                   contentText: ("popUpCloseAppMessageWord").tr(),
-                  primaryBtnPressed:
-                      primaryBtn ?? () => Navigator.of(context).pop(true),
+                  primaryBtnPressed: primaryBtn ?? () => Navigator.of(context).pop(true),
                   primaryBtnText: ("popUpCloseAppConfirmButtonWord").tr(),
-                  secondaryBtnPressed:
-                      secondaryBtn ?? () => Navigator.of(context).pop(false),
+                  secondaryBtnPressed: secondaryBtn ?? () => Navigator.of(context).pop(false),
                   secondaryBtnText: ("popUpCloseAppDeclineButtonWord").tr(),
                 ),
               ),
@@ -87,7 +78,7 @@ class CustomPopUpsWidgets {
     VoidCallback? secondaryBtn,
   }) async =>
       (await showGeneralDialog<bool>(
-        barrierColor: Colors.black.withOpacity(0.6),
+        barrierColor: Colors.black.withValues(alpha: 0.6),
         transitionBuilder: (_, a1, a2, widget) {
           return WillPopScope(
             onWillPop: () async => false,
@@ -98,11 +89,9 @@ class CustomPopUpsWidgets {
                 child: CustomAlertDialogWidget(
                   titleMessageType: MessageType.confirm,
                   contentText: text,
-                  primaryBtnPressed:
-                      primaryBtn ?? () => Navigator.of(context).pop(true),
+                  primaryBtnPressed: primaryBtn ?? () => Navigator.of(context).pop(true),
                   primaryBtnText: ("yes").tr(),
-                  secondaryBtnPressed:
-                      secondaryBtn ?? () => Navigator.of(context).pop(false),
+                  secondaryBtnPressed: secondaryBtn ?? () => Navigator.of(context).pop(false),
                   secondaryBtnText: ("no").tr(),
                 ),
               ),
@@ -126,7 +115,7 @@ class CustomPopUpsWidgets {
     VoidCallback? secondaryBtn,
   }) async =>
       (await showGeneralDialog<bool>(
-        barrierColor: Colors.black.withOpacity(0.6),
+        barrierColor: Colors.black.withValues(alpha: 0.6),
         transitionBuilder: (_, a1, a2, widget) {
           return WillPopScope(
             onWillPop: () async => false,
@@ -137,11 +126,9 @@ class CustomPopUpsWidgets {
                 child: CustomAlertDialogWidget(
                   titleMessageType: MessageType.none,
                   contentText: text,
-                  primaryBtnPressed:
-                      primaryBtn ?? () => Navigator.of(context).pop(true),
+                  primaryBtnPressed: primaryBtn ?? () => Navigator.of(context).pop(true),
                   primaryBtnText: ("confirm").tr(),
-                  secondaryBtnPressed:
-                      secondaryBtn ?? () => Navigator.of(context).pop(false),
+                  secondaryBtnPressed: secondaryBtn ?? () => Navigator.of(context).pop(false),
                   secondaryBtnText: ("cancel").tr(),
                 ),
               ),
@@ -158,12 +145,9 @@ class CustomPopUpsWidgets {
       )) ??
       false;
 
-  static Future<bool> showSuccessMessageDialog(
-    BuildContext context,
-    String successText,
-  ) async =>
+  static Future<bool> showSuccessMessageDialog(BuildContext context, String successText) async =>
       (await showGeneralDialog<bool>(
-        barrierColor: Colors.black.withOpacity(0.6),
+        barrierColor: Colors.black.withValues(alpha: 0.6),
         transitionBuilder: (_, a1, a2, widget) {
           return WillPopScope(
             onWillPop: () async => false,
@@ -171,10 +155,7 @@ class CustomPopUpsWidgets {
               scale: a1.value,
               child: Opacity(
                 opacity: a1.value,
-                child: CustomAlertDialogWidget(
-                  titleMessageType: MessageType.success,
-                  contentText: successText,
-                ),
+                child: CustomAlertDialogWidget(titleMessageType: MessageType.success, contentText: successText),
               ),
             ),
           );
@@ -189,12 +170,9 @@ class CustomPopUpsWidgets {
       )) ??
       false;
 
-  static Future<bool> showWarningMessageDialog(
-    BuildContext context,
-    String warningText,
-  ) async =>
+  static Future<bool> showWarningMessageDialog(BuildContext context, String warningText) async =>
       (await showGeneralDialog<bool>(
-        barrierColor: Colors.black.withOpacity(0.6),
+        barrierColor: Colors.black.withValues(alpha: 0.6),
         transitionBuilder: (_, a1, a2, widget) {
           return WillPopScope(
             onWillPop: () async => false,
@@ -202,10 +180,7 @@ class CustomPopUpsWidgets {
               scale: a1.value,
               child: Opacity(
                 opacity: a1.value,
-                child: CustomAlertDialogWidget(
-                  titleMessageType: MessageType.warning,
-                  contentText: warningText,
-                ),
+                child: CustomAlertDialogWidget(titleMessageType: MessageType.warning, contentText: warningText),
               ),
             ),
           );
@@ -220,12 +195,9 @@ class CustomPopUpsWidgets {
       )) ??
       false;
 
-  static Future<bool> showErrorMessageDialog(
-    BuildContext context,
-    String errorText,
-  ) async =>
+  static Future<bool> showErrorMessageDialog(BuildContext context, String errorText) async =>
       (await showGeneralDialog<bool>(
-        barrierColor: Colors.black.withOpacity(0.6),
+        barrierColor: Colors.black.withValues(alpha: 0.6),
         transitionBuilder: (_, a1, a2, widget) {
           return WillPopScope(
             onWillPop: () async => false,
@@ -233,10 +205,7 @@ class CustomPopUpsWidgets {
               scale: a1.value,
               child: Opacity(
                 opacity: a1.value,
-                child: CustomAlertDialogWidget(
-                  titleMessageType: MessageType.error,
-                  contentText: errorText,
-                ),
+                child: CustomAlertDialogWidget(titleMessageType: MessageType.error, contentText: errorText),
               ),
             ),
           );
@@ -251,13 +220,9 @@ class CustomPopUpsWidgets {
       )) ??
       false;
 
-  static Future<bool> showHTMLErrorMessageDialog(
-    BuildContext context,
-    String errorText,
-      bool isHtml,
-  ) async =>
+  static Future<bool> showHTMLErrorMessageDialog(BuildContext context, String errorText, bool isHtml) async =>
       (await showGeneralDialog<bool>(
-        barrierColor: Colors.black.withOpacity(0.6),
+        barrierColor: Colors.black.withValues(alpha: 0.6),
         transitionBuilder: (_, a1, a2, widget) {
           return Transform.scale(
             scale: a1.value,
@@ -266,7 +231,7 @@ class CustomPopUpsWidgets {
               child: CustomHTMLAlertDialogWidget(
                 titleMessageType: MessageType.error,
                 contentText: errorText,
-                  isHtml:isHtml
+                isHtml: isHtml,
               ),
             ),
           );
@@ -309,11 +274,13 @@ class CustomPopUpsWidgets {
   //       false;
   // }
 
-  static Future<dynamic> showBottomSheet(BuildContext context,
-      {required Widget child,
-      bool isFullHeight = true,
-      double? height,
-      double? radius}) async {
+  static Future<dynamic> showBottomSheet(
+    BuildContext context, {
+    required Widget child,
+    bool isFullHeight = true,
+    double? height,
+    double? radius,
+  }) async {
     final screenHeight = MediaQuery.of(context).size.height;
     final screenStatusBarHeight = MediaQuery.of(context).padding.top + 5;
     return (showModalBottomSheet(
@@ -321,15 +288,10 @@ class CustomPopUpsWidgets {
           isDismissible: true,
           isScrollControlled: true,
           enableDrag: false,
-          shape: RoundedRectangleBorder(
-            borderRadius:
-                BorderRadius.vertical(top: Radius.circular(radius ?? 10)),
-          ),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(radius ?? 10))),
           builder: (context) => SizedBox(
             // height: height ?? screenHeight * 0.90, // 90% from screenHeight
-            height: isFullHeight
-                ? height ?? screenHeight - screenStatusBarHeight
-                : null,
+            height: isFullHeight ? height ?? screenHeight - screenStatusBarHeight : null,
             child: child,
           ),
         )) ??

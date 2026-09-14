@@ -268,7 +268,7 @@ class _VolunteerProfileScreenState extends State<VolunteerProfileScreen> {
                         color: Theme.of(context).cardColor, // Background color for the curved container
                         boxShadow: [
                           BoxShadow(
-                            color: Theme.of(context).colorScheme.onSurface.withOpacity(0.1),
+                            color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.1),
                             blurRadius: 10,
                             spreadRadius: 1,
                           ),

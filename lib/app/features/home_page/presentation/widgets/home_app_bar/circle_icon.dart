@@ -1,18 +1,18 @@
 import 'package:flutter/material.dart';
 
 import '../../../../../core/utils/utils_exports.dart' show AppColor;
-import '../../../../_shared_feature_/shared_feature_exports.dart'
-    show DrawIconBasedTypeWidget;
+import '../../../../_shared_feature_/shared_feature_exports.dart' show DrawIconBasedTypeWidget;
 
 class CircleIcon extends StatelessWidget {
-  const CircleIcon(
-      {super.key,
-      required this.icon,
-      this.circleSize = 48,
-      this.backgroundColor,
-      this.iconColor,
-      this.iconSize = 18,
-      this.showShadow = true});
+  const CircleIcon({
+    super.key,
+    required this.icon,
+    this.circleSize = 48,
+    this.backgroundColor,
+    this.iconColor,
+    this.iconSize = 18,
+    this.showShadow = true,
+  });
 
   final Object icon;
   final double circleSize;
@@ -32,7 +32,7 @@ class CircleIcon extends StatelessWidget {
         boxShadow: showShadow == true
             ? [
                 BoxShadow(
-                  color: AppColor.blackModern900Light.withOpacity(0.1),
+                  color: AppColor.blackModern900Light.withValues(alpha: 0.1),
                   blurRadius: 8,
                   offset: const Offset(0, 4),
                 ),
@@ -40,11 +40,7 @@ class CircleIcon extends StatelessWidget {
             : [],
       ),
       child: Center(
-        child: DrawIconBasedTypeWidget(
-          icon: icon,
-          iconColor: iconColor,
-          iconSize: iconSize,
-        ),
+        child: DrawIconBasedTypeWidget(icon: icon, iconColor: iconColor, iconSize: iconSize),
       ),
     );
   }

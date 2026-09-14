@@ -38,7 +38,7 @@ class DialogHeader extends StatelessWidget {
                 child: CircleIcon(
                   icon: Icons.close,
                   iconColor: AppColor.primary600Light,
-                  backgroundColor: AppColor.geyser.withOpacity(0.4),
+                  backgroundColor: AppColor.geyser.withValues(alpha: 0.4),
                   iconSize: 18,
                 ),
               ),
