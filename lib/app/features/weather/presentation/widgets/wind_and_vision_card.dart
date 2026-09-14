@@ -16,10 +16,7 @@ class WindAndWeatherCard extends StatelessWidget {
         return Container(
           width: double.infinity,
           height: 45,
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(9),
-            color: AppColor.divider,
-          ),
+          decoration: BoxDecoration(borderRadius: BorderRadius.circular(9), color: AppColor.divider),
           child: Center(
             child: Padding(
               padding: const EdgeInsets.all(12.0),
@@ -34,11 +31,9 @@ class WindAndWeatherCard extends StatelessWidget {
                           IconPath.wind_speed,
                           width: 21,
                           height: 21,
-                          color: AppColor.primary200Light,
+                          colorFilter: ColorFilter.mode(AppColor.primary200Light, BlendMode.srcIn),
                         ),
-                        const SizedBox(
-                          width: 4,
-                        ),
+                        const SizedBox(width: 4),
                         CustomTextWidget(
                           '${state.allWeatherInfo?.current?.windKph.toString() ?? ''} k/h',
                           fontWeight: AppFontWeight.bold,
@@ -60,17 +55,13 @@ class WindAndWeatherCard extends StatelessWidget {
                           IconPath.humedity,
                           width: 15,
                           height: 15,
-                          color: AppColor.primary200Light,
+                          colorFilter: ColorFilter.mode(AppColor.primary200Light, BlendMode.srcIn),
                         ),
-                        const SizedBox(
-                          width: 4,
-                        ),
+                        const SizedBox(width: 4),
                         Padding(
                           padding: const EdgeInsets.only(top: 4),
                           child: CustomTextWidget(
-                            state.allWeatherInfo?.current?.humidity
-                                    .toString() ??
-                                "",
+                            state.allWeatherInfo?.current?.humidity.toString() ?? "",
                             fontWeight: AppFontWeight.bold,
                             fontSize: 14,
                             fontColor: AppColor.primary200Light,
@@ -84,11 +75,9 @@ class WindAndWeatherCard extends StatelessWidget {
                           IconPath.eye,
                           width: 21,
                           height: 21,
-                          color: AppColor.primary200Light,
+                          colorFilter: ColorFilter.mode(AppColor.primary200Light, BlendMode.srcIn),
                         ),
-                        const SizedBox(
-                          width: 4,
-                        ),
+                        const SizedBox(width: 4),
                         CustomTextWidget(
                           '${state.allWeatherInfo?.current?.visKm.toString() ?? ''} km',
                           fontWeight: AppFontWeight.bold,

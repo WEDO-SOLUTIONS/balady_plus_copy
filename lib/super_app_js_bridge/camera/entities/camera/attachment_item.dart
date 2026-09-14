@@ -2,7 +2,7 @@ import 'package:balady_plus/super_app_js_bridge/model/base_response.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
 
-class AttachmentItem extends BaseData with EquatableMixin {
+class AttachmentItem extends BaseData with Equatable {
   final int? index;
   final String? base64;
   final Uint8List? encodeImage;

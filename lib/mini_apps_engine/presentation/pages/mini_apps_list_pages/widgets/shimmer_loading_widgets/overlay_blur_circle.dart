@@ -12,7 +12,7 @@ class OverlayBlurCircle extends StatelessWidget {
       children: [
         Container(
           transform: Matrix4.identity()
-            ..translate(0.0, 0.0)
+            ..translateByDouble(0.0, 0.0, 0.0, 1.0)
             ..rotateZ(-0.08),
           width: 442.09,
           height: 212.29,
@@ -30,7 +30,7 @@ class OverlayBlurCircle extends StatelessWidget {
         ),
         Container(
           transform: Matrix4.identity()
-            ..translate(0.0, 0.0)
+            ..translateByDouble(0.0, 0.0, 0.0, 1.0)
             ..rotateZ(-0.08),
           width: 442.09,
           height: 212.29 + 100,

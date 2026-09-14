@@ -35,7 +35,12 @@ class NotificationsItemWidget extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  SvgPicture.asset(IconPath.bookIcon, color: state.message.status.id != "read" ? null : Colors.grey),
+                  SvgPicture.asset(
+                    IconPath.bookIcon,
+                    colorFilter: state.message.status.id != "read"
+                        ? null
+                        : const ColorFilter.mode(Colors.grey, BlendMode.srcIn),
+                  ),
                   const SizedBox(width: 2),
                   Expanded(
                     child: Column(

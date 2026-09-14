@@ -1749,20 +1749,20 @@ Future<void> safeShareText(String text, {required BuildContext context}) async {
         final rect = Rect.fromLTWH(position.dx, position.dy, size.width, size.height);
         // Only use position origin if it's valid (non-zero size)
         if (rect.width > 0 && rect.height > 0) {
-          await Share.share(text, sharePositionOrigin: rect);
+          await SharePlus.instance.share(ShareParams(text: text, sharePositionOrigin: rect));
           return;
         }
       }
     }
     // Fallback: share without position origin
     // This works on Android and iOS contexts where position cannot be determined
-    await Share.share(text);
+    await SharePlus.instance.share(ShareParams(text: text));
   } catch (e) {
     // If sharing with position origin fails, retry without it
     // This handles cases where position origin is invalid
     if (e.toString().contains('sharePositionOrigin')) {
       try {
-        await Share.share(text);
+        await SharePlus.instance.share(ShareParams(text: text));
       } catch (_) {
         rethrow;
       }

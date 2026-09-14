@@ -37,7 +37,10 @@ class AlertsModalSheetContent extends StatelessWidget {
                   CustomVerticalSpace(height: 24),
                   Row(
                     children: [
-                      SvgPicture.asset(IconPath.danger, color: AppColor.primary900Light),
+                      SvgPicture.asset(
+                        IconPath.danger,
+                        colorFilter: ColorFilter.mode(AppColor.primary900Light, BlendMode.srcIn),
+                      ),
                       CustomHorizontalSpace(width: 8),
                       CustomTextWidget(
                         'warning'.tr(),

@@ -1,4 +1,3 @@
-
 import 'package:balady_plus/super_app_js_bridge/model/base_response.dart';
 import 'package:flutter/material.dart';
 
@@ -18,10 +17,8 @@ class AppThemeConfig implements BaseData {
     required this.deviceType,
     required this.colorSchemeLight,
     required this.colorSchemeDark,
-    required this.accessibilityModel
+    required this.accessibilityModel,
   });
-
-
 
   @override
   Map<String, dynamic> toJson() {
@@ -41,11 +38,7 @@ class ColorSchemeModel {
   final Color cardColor;
   final Color scaffoldBackgroundColor;
 
-  ColorSchemeModel({
-    required this.colorScheme,
-    required this.cardColor,
-    required this.scaffoldBackgroundColor,
-  });
+  ColorSchemeModel({required this.colorScheme, required this.cardColor, required this.scaffoldBackgroundColor});
 
   factory ColorSchemeModel.fromJson(Map<String, dynamic> json) {
     return ColorSchemeModel(
@@ -58,8 +51,7 @@ class ColorSchemeModel {
         onError: Color(json['onError']),
         surface: Color(json['surface']),
         onSurface: Color(json['onSurface']),
-        brightness:
-            json['brightness'] == "dark" ? Brightness.dark : Brightness.light,
+        brightness: json['brightness'] == "dark" ? Brightness.dark : Brightness.light,
       ),
       cardColor: Color(json['cardColor']),
       scaffoldBackgroundColor: Color(json['scaffoldBackgroundColor']),
@@ -68,17 +60,17 @@ class ColorSchemeModel {
 
   Map<String, dynamic> toJson() {
     return {
-      'primary': colorScheme.primary.value,
-      'onPrimary': colorScheme.onPrimary.value,
-      'secondary': colorScheme.secondary.value,
-      'onSecondary': colorScheme.onSecondary.value,
-      'error': colorScheme.error.value,
-      'onError': colorScheme.onError.value,
-      'surface': colorScheme.surface.value,
-      'onSurface': colorScheme.onSurface.value,
+      'primary': colorScheme.primary.toARGB32(),
+      'onPrimary': colorScheme.onPrimary.toARGB32(),
+      'secondary': colorScheme.secondary.toARGB32(),
+      'onSecondary': colorScheme.onSecondary.toARGB32(),
+      'error': colorScheme.error.toARGB32(),
+      'onError': colorScheme.onError.toARGB32(),
+      'surface': colorScheme.surface.toARGB32(),
+      'onSurface': colorScheme.onSurface.toARGB32(),
       'brightness': colorScheme.brightness.name,
-      'cardColor': cardColor.value,
-      'scaffoldBackgroundColor': scaffoldBackgroundColor.value,
+      'cardColor': cardColor.toARGB32(),
+      'scaffoldBackgroundColor': scaffoldBackgroundColor.toARGB32(),
     };
   }
 }

@@ -32,7 +32,7 @@ class CustomSvgIconWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return SvgPicture.asset(
       iconPath,
-      color: iconColor,
+      colorFilter: iconColor == null ? null : ColorFilter.mode(iconColor!, BlendMode.srcIn),
       width: iconWidth ?? iconSize,
       height: iconHeight ?? iconSize,
       alignment: iconAlignment ?? Alignment.center,
@@ -314,7 +314,7 @@ class CustomSvgIconWithBackgroundWidget extends StatelessWidget {
       ),
       child: SvgPicture.asset(
         iconPath,
-        color: iconColor,
+        colorFilter: iconColor == null ? null : ColorFilter.mode(iconColor!, BlendMode.srcIn),
         width: iconWidth,
         height: iconHeight,
         alignment: iconAlignment,

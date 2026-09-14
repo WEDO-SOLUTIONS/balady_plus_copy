@@ -275,7 +275,7 @@ class _PickerWidget<T> extends StatefulWidget {
   final Picker? picker;
   final ThemeData? themeData;
   final bool? isModal;
-  const _PickerWidget({super.key, @required this.picker, @required this.themeData, this.isModal});
+  const _PickerWidget({super.key, required this.picker, required this.themeData, this.isModal});
 
   @override
   PickerWidgetState createState() => PickerWidgetState<T>(picker: picker!, themeData: themeData);
@@ -284,7 +284,7 @@ class _PickerWidget<T> extends StatefulWidget {
 class PickerWidgetState<T> extends State<_PickerWidget> {
   final Picker? picker;
   final ThemeData? themeData;
-  PickerWidgetState({Key? key, @required this.picker, @required this.themeData});
+  PickerWidgetState({Key? key, required this.picker, required this.themeData});
 
   ThemeData? theme;
   final List<FixedExtentScrollController> scrollController = [];
@@ -469,7 +469,9 @@ class PickerWidgetState<T> extends State<_PickerWidget> {
     adapter.setColumn(-1);
 
     if (adapter.length > 0) {
-      var _decoration = BoxDecoration(color: picker!.containerColor ?? theme!.dialogBackgroundColor);
+      var _decoration = BoxDecoration(
+        color: picker!.containerColor ?? theme!.dialogTheme.backgroundColor ?? theme!.colorScheme.surface,
+      );
 
       for (int i = 0; i < picker!._maxLevel; i++) {
         Widget view = Expanded(

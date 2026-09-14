@@ -494,7 +494,9 @@ class PickerWidgetState<T> extends State<_PickerWidget> {
     if (adapter != null) adapter.setColumn(-1);
 
     if (adapter != null && adapter.length > 0) {
-      var _decoration = BoxDecoration(color: picker.containerColor ?? theme!.dialogBackgroundColor);
+      var _decoration = BoxDecoration(
+        color: picker.containerColor ?? theme!.dialogTheme.backgroundColor ?? theme!.colorScheme.surface,
+      );
 
       for (int i = 0; i < picker._maxLevel; i++) {
         Widget view = Expanded(
