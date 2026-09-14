@@ -10,6 +10,7 @@ import 'package:mapness/app/auto_route/app_routes.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/entities/city_contain/dto/location_point.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
+import 'package:mapness/shared/utils/detach.dart';
 import 'package:mapness/shared/utils/logger/logger.dart';
 import 'package:permission_handler/permission_handler.dart' as perm;
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -39,72 +40,79 @@ class _Location extends _$Location {
     // listener and other async callsites read the controller from the plain
     // top-level [activeDgisController] cache (populated by
     // DgisController.onMapCreated) — invisible to Riverpod's graph analysis.
-    checkLocationPermission(showGiveAccessSheet: false).then((permitted) async {
-      if (!ref.mounted || !permitted) {
-        return;
-      }
-      final isGmsAvailable = await CommonFunctions.isGmsAvailable();
-      final isHMS = await CommonFunctions.isHuaweiDevice();
-      if (!ref.mounted) {
-        return;
-      }
-
-      // gms is not available on iOS so we use the standard library in the case
-      if (isGmsAvailable || Platform.isIOS) {
-        try {
-          const locationSettings = LocationSettings();
-
-          final locationSubscription = Geolocator.getPositionStream(locationSettings: locationSettings)
-              .handleError((e) {
-                if (e is TimeoutException) {
-                  logger.log('Geolocator stream timeout');
-                } else {
-                  logger.log('Geolocator stream error: $e');
-                }
-              })
-              .listen((event) async {
-                final location = await _getLocation(event);
-                if (!ref.mounted) {
-                  return;
-                }
-                state = location;
-              });
-          ref.onDispose(locationSubscription.cancel);
-
-          return null;
-        } catch (ex) {
-          logger.log('Error listening to Geolocator stream: ${ex.toString()}');
+    // Detached on purpose: `build` is synchronous and must return the initial
+    // state now, while permission handling and stream setup continue in the
+    // background. Previously the future was simply dropped, so anything that
+    // threw in here - including the `.then` body - escaped to the Zone.
+    detach(
+      checkLocationPermission(showGiveAccessSheet: false).then((permitted) async {
+        if (!ref.mounted || !permitted) {
+          return;
         }
-      } else if (isHMS) {
-        try {
-          final locationSubscription = CommonFunctions.listenToHMSStream()?.listen((event) async {
-            final location = await _getLocation(
-              Position(
-                longitude: event.longitude!,
-                latitude: event.latitude!,
-                timestamp: DateTime.now(),
-                accuracy: event.horizontalAccuracyMeters ?? 0,
-                altitude: event.altitude ?? 0,
-                altitudeAccuracy: event.verticalAccuracyMeters ?? 0,
-                heading: event.bearing ?? 0,
-                headingAccuracy: event.bearingAccuracyDegrees ?? 0,
-                speed: event.speed ?? 0,
-                speedAccuracy: event.speedAccuracyMetersPerSecond ?? 0,
-              ),
-            );
-            if (!ref.mounted) {
-              return;
-            }
-            state = location;
-          });
-          if (locationSubscription != null) {
+        final isGmsAvailable = await CommonFunctions.isGmsAvailable();
+        final isHMS = await CommonFunctions.isHuaweiDevice();
+        if (!ref.mounted) {
+          return;
+        }
+
+        // gms is not available on iOS so we use the standard library in the case
+        if (isGmsAvailable || Platform.isIOS) {
+          try {
+            const locationSettings = LocationSettings();
+
+            final locationSubscription = Geolocator.getPositionStream(locationSettings: locationSettings)
+                .handleError((e) {
+                  if (e is TimeoutException) {
+                    logger.log('Geolocator stream timeout');
+                  } else {
+                    logger.log('Geolocator stream error: $e');
+                  }
+                })
+                .listen((event) async {
+                  final location = await _getLocation(event);
+                  if (!ref.mounted) {
+                    return;
+                  }
+                  state = location;
+                });
             ref.onDispose(locationSubscription.cancel);
+
+            return;
+          } catch (ex) {
+            logger.log('Error listening to Geolocator stream: ${ex.toString()}');
           }
-        } catch (ex) {
-          logger.log('Error listening to HMS stream: ${ex.toString()}');
+        } else if (isHMS) {
+          try {
+            final locationSubscription = CommonFunctions.listenToHMSStream()?.listen((event) async {
+              final location = await _getLocation(
+                Position(
+                  longitude: event.longitude!,
+                  latitude: event.latitude!,
+                  timestamp: DateTime.now(),
+                  accuracy: event.horizontalAccuracyMeters ?? 0,
+                  altitude: event.altitude ?? 0,
+                  altitudeAccuracy: event.verticalAccuracyMeters ?? 0,
+                  heading: event.bearing ?? 0,
+                  headingAccuracy: event.bearingAccuracyDegrees ?? 0,
+                  speed: event.speed ?? 0,
+                  speedAccuracy: event.speedAccuracyMetersPerSecond ?? 0,
+                ),
+              );
+              if (!ref.mounted) {
+                return;
+              }
+              state = location;
+            });
+            if (locationSubscription != null) {
+              ref.onDispose(locationSubscription.cancel);
+            }
+          } catch (ex) {
+            logger.log('Error listening to HMS stream: ${ex.toString()}');
+          }
         }
-      }
-    });
+      }),
+      tag: 'location.build.permissionAndStreams',
+    );
 
     return null;
   }
@@ -155,7 +163,10 @@ class _Location extends _$Location {
           return false;
         }
         if (status == perm.PermissionStatus.granted) {
-          unawaited(_startInsiderGeofenceIfNeeded());
+          // Several platform round trips (permission check, Insider geofence
+          // setup). Awaiting would hold up the permission answer the caller is
+          // waiting on, so it stays detached - but no longer silently.
+          detach(_startInsiderGeofenceIfNeeded(), tag: 'location.insiderGeofence');
           if (state == null) {
             final isGmsAvailable = await CommonFunctions.isGmsAvailable();
             final isHuawei = await CommonFunctions.isHuaweiDevice();
@@ -199,24 +210,12 @@ class _Location extends _$Location {
           if (router.isPathActive(routeLocation)) {
             return false;
           }
-          CommonFunctions.locationDialogShowed = true;
-
-          unawaited(
-            router
-                .push(LocationErrorSheetRoute(routeOnClose: routeOnClose))
-                .then((value) => CommonFunctions.locationDialogShowed = false),
-          );
+          _showLocationErrorSheet(router, routeOnClose);
           return false;
         }
       } else {
         if (showGiveAccessSheet) {
-          CommonFunctions.locationDialogShowed = true;
-
-          unawaited(
-            router
-                .push(LocationErrorSheetRoute(routeOnClose: routeOnClose))
-                .then((value) => CommonFunctions.locationDialogShowed = false),
-          );
+          _showLocationErrorSheet(router, routeOnClose);
         }
       }
     } catch (ex) {
@@ -224,6 +223,27 @@ class _Location extends _$Location {
     }
 
     return false;
+  }
+
+  /// Shows the "location unavailable" sheet and clears the re-entry guard when
+  /// it closes.
+  ///
+  /// Not awaited on purpose: the caller's answer is already decided, and
+  /// blocking it on a modal sheet would change what every caller of
+  /// [checkLocationPermission] sees.
+  ///
+  /// The reset used to hang off `.then`, which only runs on success - a failed
+  /// push left `locationDialogShowed` true for the rest of the session, and the
+  /// guard at the top of [checkLocationPermission] then suppressed every later
+  /// location prompt. `whenComplete` runs either way.
+  void _showLocationErrorSheet(AppRouter router, String? routeOnClose) {
+    CommonFunctions.locationDialogShowed = true;
+    detach(
+      router
+          .push(LocationErrorSheetRoute(routeOnClose: routeOnClose))
+          .whenComplete(() => CommonFunctions.locationDialogShowed = false),
+      tag: 'location.errorSheet',
+    );
   }
 
   Future<bool> checkOnLocationPermissionGranted() async {
@@ -240,7 +260,10 @@ class _Location extends _$Location {
       if (!ref.mounted) {
         return false;
       }
-      unawaited(dgisController.onLocationPermissionGranted(desiredAccuracy: DesiredAccuracyMessage.high));
+      await dgisController.onLocationPermissionGranted(desiredAccuracy: DesiredAccuracyMessage.high);
+      if (!ref.mounted) {
+        return false;
+      }
 
       CommonFunctions.locationDialogShowed = false;
       ref.invalidateSelf();

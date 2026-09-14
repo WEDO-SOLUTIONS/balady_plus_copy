@@ -58,6 +58,7 @@ import 'package:mapness/shared/providers/map/selected_marker.dart';
 import 'package:mapness/shared/providers/map/sound_settings.dart';
 import 'package:mapness/shared/providers/urbi_analytics.dart';
 import 'package:mapness/shared/ui/toast/toast_overlay.dart';
+import 'package:mapness/shared/utils/detach.dart';
 import 'package:mapness/shared/utils/logger/logger.dart';
 import 'package:mapness/widgets/landing/indoor_control.dart';
 import 'package:mapness/widgets/path_nav/ui/map_controls/path_nav_map_controls.dart';
@@ -137,9 +138,9 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
     }
 
     if (state == AppLifecycleState.paused) {
-      unawaited(soundSettingsNotifier.muteNavigationSound());
+      detach(soundSettingsNotifier.muteNavigationSound(), tag: 'pathNav.muteSound');
     } else if (state == AppLifecycleState.resumed) {
-      unawaited(soundSettingsNotifier.restoreNavigationSound());
+      detach(soundSettingsNotifier.restoreNavigationSound(), tag: 'pathNav.restoreSound');
     }
   }
 
@@ -303,8 +304,9 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
     _naviEventsListener = dgisController.navigationEvents.listen(_naviEvent);
 
     if (widget.initAction == PathNavPageInitAction.startNavigation) {
-      unawaited(isNavigationUser());
-      unawaited(_trackNavigationStarted());
+      // Analytics only - these must not delay `startNavigation` below.
+      detach(isNavigationUser(), tag: 'pathNav.isNavigationUser');
+      detach(_trackNavigationStarted(), tag: 'pathNav.trackStarted');
       await dgisController.startNavigation(NavigationConstants.navigationSpeedRangeZooms);
       if (!mounted) {
         return;
@@ -329,7 +331,7 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
     }
 
     if (widget.navType == RouteSearchOptionsMessage.car) {
-      unawaited(_prefetchIndoorInfo());
+      detach(_prefetchIndoorInfo(), tag: 'pathNav.prefetchIndoor');
     }
   }
 
@@ -448,7 +450,7 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
             widget.navType != RouteSearchOptionsMessage.car &&
             _navigationState.value != PathNavState.finished;
         if (shouldEndTrip) {
-          unawaited(_endTripAndShowHome());
+          detach(_endTripAndShowHome(), tag: 'pathNav.endTripOnCarConnect');
         }
       })
       ..listen(pathNavEtaProvider, (previous, next) {
@@ -473,10 +475,19 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
               distance <= 5;
           if (shouldFinishByEta) {
             _finishedByEta = true;
-            _finishNavigation();
-            if (mounted) {
-              unawaited(_endTripAndShowHome());
-            }
+            // These two used to run in parallel: the dropped `_finishNavigation()`
+            // was still clearing the native navigation state and the route while
+            // `_endTripAndShowHome` was already popping home. Chained now, the
+            // way the `NavigationEvent.finished` branch below already does it.
+            detach(
+              _finishNavigation().then((_) {
+                if (!mounted) {
+                  return Future<void>.value();
+                }
+                return _endTripAndShowHome();
+              }),
+              tag: 'pathNav.finishByEta',
+            );
           }
         }
       })
@@ -635,7 +646,7 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
       spentTime: pathInfo?.spentTime,
     );
 
-    unawaited(_sendNavigationCompletedAnalytics(route));
+    detach(_sendNavigationCompletedAnalytics(route), tag: 'pathNav.completedAnalytics');
 
     await Future.wait([
       ref.read(dgisControllerProvider).value?.hideRoutes() ?? Future.value(),
@@ -872,19 +883,19 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
           return;
         }
         if (context.mounted && _navigationState.value != PathNavState.finished) {
-          unawaited(_endTripAndShowHome());
+          await _endTripAndShowHome();
         }
         break;
       case NavigationEvent.finished:
         if (widget.navType == RouteSearchOptionsMessage.car) {
           _isSwitchingToPedestrian = true;
-          _checkAndSwitchToPedestrian();
+          await _checkAndSwitchToPedestrian();
           return;
         }
         // If pedestrian navigation finished, ensure trip ends and navigate home
         await _finishNavigation();
         if (mounted) {
-          unawaited(_endTripAndShowHome());
+          await _endTripAndShowHome();
         }
         break;
     }
@@ -905,23 +916,29 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
     // validates and rewards; a signed-out user or a failed call is a no-op.
     // Read the route's distance now, before `clearRoute()` below wipes it.
     final tripDistanceKm = (ref.read(currentRouteProvider)?.route.distance ?? 0) / 1000;
-    unawaited(reportTifoTripCompleted(ref, distanceKm: tripDistanceKm));
+    detach(reportTifoTripCompleted(ref, distanceKm: tripDistanceKm), tag: 'pathNav.tifoTripCompleted');
     _navigationState.value = PathNavState.finished;
     await Future.delayed(const Duration(milliseconds: 500));
     if (!mounted) {
       return;
     }
-    ref.read(layersControlsProvider.notifier).hideParking();
+    await ref.read(layersControlsProvider.notifier).hideParking();
     ref.read(parkingAutoenabledSheetProvider.notifier).showParkingAutoEnableSheet(value: false);
     ref.read(currentRouteProvider.notifier).clearRoute();
     sheetController.close();
-    unawaited(clearNavigationState());
-    unawaited(_stopActiveSharing());
+    // Awaited: callers treat `_finishNavigation` completing as "navigation is
+    // fully torn down", and partially cleared native navigation state is what
+    // leaves the next trip restoring a stale session.
+    await clearNavigationState();
+    await _stopActiveSharing();
+    if (!mounted) {
+      return;
+    }
 
     // Restore in-app stream audio when navigation finishes normally.
     // We delay because the DGis arrival prompt is played around this time on iOS.
     if (streamAudioWasPlayingBeforeFinish) {
-      unawaited(
+      detach(
         Future<void>.delayed(const Duration(seconds: 4), () async {
           if (!mounted) {
             return;
@@ -931,6 +948,7 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
             await ref.read(streamAudioProvider).togglePlayPause();
           }
         }),
+        tag: 'pathNav.restoreStreamAudio',
       );
     }
   }

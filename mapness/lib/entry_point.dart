@@ -104,6 +104,7 @@ import 'package:mapness/shared/ui/loading/loading_overlay.dart';
 import 'package:mapness/shared/ui/toast/app_locale.dart';
 import 'package:mapness/shared/ui/toast/toast_overlay.dart';
 import 'package:mapness/shared/utils/app_config_loader.dart';
+import 'package:mapness/shared/utils/detach.dart';
 import 'package:mapness/shared/utils/logger/logger.dart';
 import 'package:mapness/widgets/scopes/global_scopes.dart';
 import 'package:mixpanel_flutter/mixpanel_flutter.dart';
@@ -252,7 +253,9 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> with Widg
       }
       await ref.read(appIconQuickActionsManagerProvider.future);
       await ref.read(appIconQuickActionHandlerProvider.notifier).deliverColdStartShortcut();
-      unawaited(checkNavigationState());
+      // Three platform round trips (map controller, native nav state, car
+      // connection). Kept off the startup path, but no longer silent.
+      detach(checkNavigationState(), tag: 'entryPoint.checkNavigationState');
       final track = ref.read(urbiAnalyticsProvider).track;
       await AdvancedMetrics.instance.stopMeasureStartup(track: track);
       await AdvancedMetrics.instance.sendPreviousSessionBatteryUsage(
@@ -277,7 +280,7 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> with Widg
       final mapStyle = ref.read(activeCityEventProvider)?.stylePath;
 
       if (mapStyle != null) {
-        _updateMapStyle(mapStyle);
+        await _updateMapStyle(mapStyle);
       }
 
       await _updateGlobalMarkerLeap(ref);
@@ -289,7 +292,7 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> with Widg
       // so the outer Apps/Profile shells follow the same toggle as Mapness.
       final initialDark = (await ref.read(darkModeProvider.future)).isDark;
       if (mounted) {
-        _themeChanged(isDark: initialDark);
+        await _themeChanged(isDark: initialDark);
       }
     });
 
@@ -332,10 +335,16 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> with Widg
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.resumed) {
       // Warm-start shortcuts are stored natively; the plugin callback may not fire.
-      unawaited(deliverNativeShortcutIfPresent());
-      unawaited(ref.read(appIconQuickActionsManagerProvider.notifier).syncPublishedShortcuts());
+      detach(deliverNativeShortcutIfPresent(), tag: 'quickActions.deliverNative');
+      detach(
+        ref.read(appIconQuickActionsManagerProvider.notifier).syncPublishedShortcuts(),
+        tag: 'quickActions.syncOnResume',
+      );
       if (ref.read(pendingAppIconQuickActionProvider.notifier).hasPending) {
-        unawaited(ref.read(appIconQuickActionHandlerProvider.notifier).deliverColdStartShortcut());
+        detach(
+          ref.read(appIconQuickActionHandlerProvider.notifier).deliverColdStartShortcut(),
+          tag: 'quickActions.deliverPending',
+        );
       }
     }
   }
@@ -343,7 +352,10 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> with Widg
   @override
   void didChangeLocales(List<Locale>? locales) {
     // Home-screen shortcuts must follow the device locale, not in-app language.
-    unawaited(ref.read(appIconQuickActionsManagerProvider.notifier).syncPublishedShortcuts());
+    detach(
+      ref.read(appIconQuickActionsManagerProvider.notifier).syncPublishedShortcuts(),
+      tag: 'quickActions.syncOnLocaleChange',
+    );
   }
 
   Future<void> _initBssService() async {
@@ -398,13 +410,20 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> with Widg
     final controller = await ref.read(dgisControllerProvider.future);
     final navStateMessage = await controller.getCurrentNavigationState();
     final isCarConnected = await ref.read(carConnectionProvider.future);
+    // Three awaits on platform round trips; this widget can be gone by now, and
+    // both branches below reach for `ref`.
+    if (!mounted) {
+      return;
+    }
 
     if (navStateMessage.state == NavigationState.navigation &&
         navStateMessage.routeSearchOptions != null &&
         isCarConnected) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
-        final location = ref.read(locationProvider);
-        if (location != null) {
+        if (!mounted) {
+          return;
+        }
+        void restoreNavigation() => detach(
           ref
               .read(appRouterProvider)
               .push(
@@ -412,23 +431,23 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> with Widg
                   navType: navStateMessage.routeSearchOptions ?? RouteSearchOptionsMessage.car,
                   initAction: null,
                 ),
-              );
+              ),
+          tag: 'router.restoreNavigation',
+        );
+
+        final location = ref.read(locationProvider);
+        if (location != null) {
+          restoreNavigation();
         } else {
           _locationListener = ref.listenManual<Position?>(locationProvider, (
             _,
             next,
           ) {
-            if (next != null) {
-              _locationListener?.close();
-              ref
-                  .read(appRouterProvider)
-                  .push(
-                    PathNavRoute(
-                      navType: navStateMessage.routeSearchOptions ?? RouteSearchOptionsMessage.car,
-                      initAction: null,
-                    ),
-                  );
+            if (next == null || !mounted) {
+              return;
             }
+            _locationListener?.close();
+            restoreNavigation();
           });
         }
       });
@@ -453,7 +472,7 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> with Widg
   Future<void> _updateMapStyle(String mapStyle) async {
     final dgisController = ref.read(dgisControllerProvider);
     final dgisControllerValue = dgisController.value;
-    dgisControllerValue?.loadStyles(mapStyle);
+    await dgisControllerValue?.loadStyles(mapStyle);
   }
 
   Future<void> _updateGlobalMarkerFoundingDay(WidgetRef ref) async {
@@ -544,11 +563,11 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> with Widg
       if (mapMode == DarkMapStateEnum.asInASystem) {
         baladyTheme.resetTheme();
       } else if (mapMode == DarkMapStateEnum.alwaysEnabled) {
-        baladyTheme.updateThemeMode(ThemeMode.dark);
+        await baladyTheme.updateThemeMode(ThemeMode.dark);
       } else if (mapMode == DarkMapStateEnum.off) {
-        baladyTheme.updateThemeMode(ThemeMode.light);
+        await baladyTheme.updateThemeMode(ThemeMode.light);
       } else {
-        baladyTheme.updateThemeMode(isDark ? ThemeMode.dark : ThemeMode.light);
+        await baladyTheme.updateThemeMode(isDark ? ThemeMode.dark : ThemeMode.light);
       }
     }
   }
@@ -557,7 +576,7 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> with Widg
   Widget build(BuildContext context) {
     ref.listen(darkModeProvider, (prev, next) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
-        _themeChanged(isDark: next.value?.isDark == true);
+        detach(_themeChanged(isDark: next.value?.isDark == true), tag: 'theme.darkModeChanged');
       });
     });
 
@@ -580,7 +599,7 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> with Widg
         }
 
         final isDark = ref.read(darkModeProvider).value?.isDark ?? false;
-        _themeChanged(isDark: isDark);
+        detach(_themeChanged(isDark: isDark), tag: 'theme.specialModeChanged');
       })
       ..listen<CameraPositionMessage?>(cameraPositionProvider, (prev, next) {
         if (next == null || prev?.zoom == next.zoom) {
@@ -890,7 +909,7 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> with Widg
             final lat = payload.lat;
             final lon = payload.lon;
             final latLon = lat != null && lon != null ? LatLng(latitude: lat, longitude: lon) : null;
-            _poiDeeplinkById(poiId, latLon);
+            await _poiDeeplinkById(poiId, latLon);
           }
 
         case ShortLinkResponsePoint(:final payload):
@@ -904,25 +923,34 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> with Widg
             label: 'B',
             value: RouteParamsPoint(latitude: payload.lat, longitude: payload.lon),
           );
-          ref
-              .read(appRouterProvider)
-              .replaceOrPush(
-                route: RoutingRoutesRoute(points: [startPoint, finishPoint]),
-                shouldPopAndPush: true,
-                toCompareRoutes: [RoutingRoutesRoute.page, PoiCardWidgetRoute.page],
-              );
+          // Not awaited: `replaceOrPush` completes when the route is popped, so
+          // awaiting would keep the deeplink handler open for as long as the
+          // user stays on the page.
+          detach(
+            ref
+                .read(appRouterProvider)
+                .replaceOrPush(
+                  route: RoutingRoutesRoute(points: [startPoint, finishPoint]),
+                  shouldPopAndPush: true,
+                  toCompareRoutes: [RoutingRoutesRoute.page, PoiCardWidgetRoute.page],
+                ),
+            tag: 'router.deeplinkRoute',
+          );
 
         case ShortLinkResponseTrip(:final payload):
-          ref
-              .read(appRouterProvider)
-              .replaceOrPush(
-                route: RoutingRoutesRoute(
-                  points: payload.route.toRouteParamsPointWithLabels(),
-                  navType: payload.route.type.toMessage(),
+          detach(
+            ref
+                .read(appRouterProvider)
+                .replaceOrPush(
+                  route: RoutingRoutesRoute(
+                    points: payload.route.toRouteParamsPointWithLabels(),
+                    navType: payload.route.type.toMessage(),
+                  ),
+                  shouldPopAndPush: true,
+                  toCompareRoutes: [RoutingRoutesRoute.page, PoiCardWidgetRoute.page],
                 ),
-                shouldPopAndPush: true,
-                toCompareRoutes: [RoutingRoutesRoute.page, PoiCardWidgetRoute.page],
-              );
+            tag: 'router.deeplinkTrip',
+          );
       }
       return true;
     } catch (e) {
@@ -1090,7 +1118,7 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> with Widg
       } else if (url.path == '/parking') {
         _openParking();
       } else if (url.path == '/media') {
-        _openMediaCatelog();
+        await _openMediaCatelog();
       } else {
         await router.pushPath(url.toString());
       }
@@ -1271,8 +1299,9 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> with Widg
     if (quickFilter == null && naviFilter == null) return;
 
     final String filterName = quickFilter?.name ?? naviFilter!.name;
-    unawaited(
+    detach(
       ref.read(urbiAnalyticsProvider).track('quickFilterSearch', properties: {'filter': filterName}),
+      tag: 'analytics.quickFilterSearch',
     );
     ref.read(appAnalyticsProvider).categorySelected(filterName);
     ref.read(advertMetricsProvider.notifier).sendEvent(AdvertMetricsKeys.exploreSearch);
@@ -1281,7 +1310,7 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> with Widg
 
     final String? query = quickFilter?.query[language] ?? naviFilter?.query[language];
     if (query != null) {
-      unawaited(
+      detach(
         BssService.instance.sendEvent(
           BssRequest(
             eventType: BSSEventType.action,
@@ -1293,9 +1322,12 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> with Widg
             payload: BssPayload(searchRequest: BssSearchRequest(text: query)),
           ),
         ),
+        tag: 'bss.quickFilterSearch',
       );
     }
-    unawaited(router.push(SearchRoute(requestFocus: false)));
+    // Deliberately not awaited: `push` completes when the route is popped, so
+    // awaiting would postpone the search below until the user leaves the page.
+    detach(router.push(SearchRoute(requestFocus: false)), tag: 'router.searchFromQuickFilter');
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final searchNotifier = ref.read(searchProvider(SearchScopeEnum.map.value).notifier);
 
