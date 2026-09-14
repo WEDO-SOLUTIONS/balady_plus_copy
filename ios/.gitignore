@@ -32,3 +32,8 @@ Runner/GeneratedPluginRegistrant.*
 !default.mode2v3
 !default.pbxuser
 !default.perspectivev3
+
+# Unity export (generated from tifo-penalty-unity, not committed) — see that repo's README
+unityLibrary/
+unityLibrary_BurstDebugInformation_DoNotShip/
+unityLibrary_BackUpThisFolder_ButDontShipItWithYourGame/
