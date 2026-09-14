@@ -13,7 +13,7 @@ import 'package:mapness/features/stream_audio/ui/widgets/audio_wave_icon.dart';
 class DraggableFloatingPlayerControls extends StatefulWidget {
   const DraggableFloatingPlayerControls({required this.onTap, required this.onChange, super.key});
 
-  final Function onTap;
+  final VoidCallback onTap;
   final Function({required bool isHolding, required bool mustRemove}) onChange;
 
   @override

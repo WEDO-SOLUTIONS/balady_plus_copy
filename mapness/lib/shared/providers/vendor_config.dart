@@ -12,8 +12,8 @@ class VendorConfig extends _$VendorConfig {
   Future<Map<String, dynamic>> build() async {
     final box = await ref.watch(hiveProvider(MapnessConstants.envConfigBoxKey).future);
     final vendorConfigString = box.get(MapnessConstants.vendorConfigKey);
-    final vendorData = json.decode(vendorConfigString);
-    final vendorOverrides = vendorData[0]['overrides'] as Map<String, dynamic>;
+    final vendorData = json.decode(vendorConfigString) as List<dynamic>;
+    final vendorOverrides = (vendorData.first as Map<String, dynamic>)['overrides'] as Map<String, dynamic>;
     return vendorOverrides;
   }
 }

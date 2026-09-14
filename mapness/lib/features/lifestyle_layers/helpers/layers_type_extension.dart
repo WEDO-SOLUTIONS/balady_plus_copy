@@ -1,7 +1,6 @@
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:flutter/widgets.dart';
-import 'package:flutter_riverpod/src/core.dart';
 import 'package:mapness/_generated/assets/assets.gen.dart';
 import 'package:mapness/entities/common/image_asset_type.dart';
 import 'package:mapness/features/lifestyle_layers/models/map_enums.dart';

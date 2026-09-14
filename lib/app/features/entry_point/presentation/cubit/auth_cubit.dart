@@ -4,7 +4,7 @@ import 'dart:async';
 
 import 'package:balady_authorization/src/authentication/bloc/action_login_cubit/action_login_cubit.dart';
 import 'package:balady_authorization/src/authentication/bloc/authentication_bloc.dart';
-import 'package:balady_authorization/src/authentication/models/login_data_model.dart';
+import 'package:balady_authorization/auth_package.dart';
 import 'package:balady_plus/app/events_logs/balady_logs.dart';
 import 'package:balady_plus/app/features/entry_point/domain/use_cases/get_test_data.dart';
 import 'package:balady_plus/app/features/location/domain/entities/gis/gis_params.dart';

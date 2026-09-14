@@ -75,9 +75,9 @@ class ChannelDTO {
     mobileNumberUae = json['mobile_number_uae'];
     if (json['social_media'] != null) {
       socialMedia = <SocialMedia>[];
-      json['social_media'].forEach((v) {
+      for (final v in json['social_media'] as List) {
         socialMedia!.add(SocialMedia.fromJson(v));
-      });
+      }
     }
     email = json['email'];
     type = json['type'];
@@ -92,19 +92,19 @@ class ChannelDTO {
     defaultChannel = json['default_channel'];
     landingPage = json['landing_page'];
     placeholder = json['placeholder'];
-    channelBanners = json['channel_banners'].cast<String>();
+    channelBanners = (json['channel_banners'] as List).cast<String>();
     channelOrder = json['channelOrder'];
     if (json['programs'] != null) {
       programs = <Program>[];
-      json['programs'].forEach((v) {
+      for (final v in json['programs'] as List) {
         programs!.add(Program.fromJson(v));
-      });
+      }
     }
     if (json['podcasts'] != null) {
       podcasts = <Podcasts>[];
-      json['podcasts'].forEach((v) {
+      for (final v in json['podcasts'] as List) {
         podcasts!.add(Podcasts.fromJson(v));
-      });
+      }
     }
   }
 
@@ -211,9 +211,9 @@ class Program {
     date = json['date'];
     if (json['social_media'] != null) {
       socialMedia = <SocialMedia>[];
-      json['social_media'].forEach((v) {
+      for (final v in json['social_media'] as List) {
         socialMedia!.add(SocialMedia.fromJson(v));
-      });
+      }
     }
   }
 
@@ -271,9 +271,9 @@ class Podcasts {
     description = json['description'];
     if (json['episodes'] != null) {
       episodes = <Episodes>[];
-      json['episodes'].forEach((v) {
+      for (final v in json['episodes'] as List) {
         episodes!.add(Episodes.fromJson(v));
-      });
+      }
     }
   }
 
