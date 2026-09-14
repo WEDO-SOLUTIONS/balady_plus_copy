@@ -252,6 +252,18 @@
                 <data android:host="apps.balady.gov.sa" />
             </intent-filter>
 
+            <intent-filter android:autoVerify="true">
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data android:scheme="http" />
+                <data android:scheme="https" />
+                <data android:host="baladyplus.sa" />
+                <data android:host="www.baladyplus.sa" />
+            </intent-filter>
+
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
 
@@ -266,6 +278,15 @@
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
                 <data android:scheme="insiderbaladyapp" />
+            </intent-filter>
+
+            <!-- Public app scheme shared with partners (e.g. WhatsApp location sharing):
+                 baladyplus://?q=<lat>,<lon> -->
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="baladyplus" />
             </intent-filter>
 
         </activity>
