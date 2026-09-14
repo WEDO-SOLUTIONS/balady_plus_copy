@@ -5,6 +5,7 @@ import 'package:mapness/features/thermal_monitor/data/thermal_config.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:mapness/shared/providers/urbi_analytics.dart';
 import 'package:mapness/shared/utils/app_config_loader.dart';
+import 'package:mapness/shared/utils/detach.dart';
 import 'package:mapness/shared/utils/logger/logger.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:rxdart/rxdart.dart';
@@ -55,10 +56,13 @@ class ThermalMonitor extends _$ThermalMonitor {
           fps = config.criticalTemperature;
       }
 
-      unawaited(
-        ref.read(urbiAnalyticsProvider.notifier).trackWithPrint(
+      detach(
+        ref
+            .read(urbiAnalyticsProvider.notifier)
+            .trackWithPrint(
               'Received thermal status - $thermalStatus, selected fps - $fps',
             ),
+        tag: 'thermalMonitor.trackWithPrint',
       );
       await controller.setMaxFps(fps);
     });

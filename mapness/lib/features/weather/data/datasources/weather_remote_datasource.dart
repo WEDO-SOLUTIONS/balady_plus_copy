@@ -4,17 +4,17 @@ import 'package:balady_plus/app/core/utils/constants/apis/api_headers.dart';
 import 'package:dio/dio.dart';
 import 'package:mapness/entities/weather/weather_params.dart';
 import 'package:mapness/entry_point.dart';
+import 'package:mapness/shared/utils/detach.dart';
 import 'package:mapness/shared/utils/logger/logger.dart';
 
 abstract class WeatherRemoteDataSource {
   factory WeatherRemoteDataSource({
     required Dio dio,
     required String baseUrl,
-  }) =>
-      _WeatherRemoteDataSource(
-        dio: dio,
-        baseUrl: baseUrl,
-      );
+  }) => _WeatherRemoteDataSource(
+    dio: dio,
+    baseUrl: baseUrl,
+  );
 
   Future<Map<String, dynamic>?>? getCurrentWeatherData({
     required WeatherParams params,
@@ -51,7 +51,7 @@ class _WeatherRemoteDataSource implements WeatherRemoteDataSource {
           receiveTimeout: const Duration(seconds: 60),
         ),
       );
-      unawaited(mixpanel?.track('WebServiceWeather: getCurrentWeatherData'));
+      detach(mixpanel?.track('WebServiceWeather: getCurrentWeatherData'), tag: 'weatherRemoteDatasource.track');
       return response.data as Map<String, dynamic>;
     } on DioException catch (e) {
       logger.log('WEATHER API DioException $e', logLevel: MapnessLogLevel.critical);
@@ -83,14 +83,14 @@ class _WeatherRemoteDataSource implements WeatherRemoteDataSource {
         ),
         cancelToken: cancelToken,
       );
-      unawaited(mixpanel?.track('WebServiceWeather: getForecastData'));
+      detach(mixpanel?.track('WebServiceWeather: getForecastData'), tag: 'weatherRemoteDatasource.track');
       return response.data as Map<String, dynamic>;
     } on DioException catch (e) {
       logger.log('WEATHER API DioException $e', logLevel: MapnessLogLevel.critical);
     } catch (e) {
       logger.log('WEATHER API EXCEPTION $e', logLevel: MapnessLogLevel.critical);
     }
-    unawaited(mixpanel?.track('WebServiceWeather: getForecastData'));
+    detach(mixpanel?.track('WebServiceWeather: getForecastData'), tag: 'weatherRemoteDatasource.track');
     return null;
   }
 }

@@ -5,6 +5,7 @@ import 'dart:math' as math;
 import 'package:collection/collection.dart';
 import 'package:dgis_map/library.dart';
 import 'package:mapness/features/balady_analytics/balady_analytics.dart';
+import 'package:mapness/shared/utils/detach.dart';
 
 /// Free roam entry points, reported as the `source` property of
 /// `free_roam_started` (docs/analytics-tracking-plan.md, Phase 1 / Navigator).
@@ -115,30 +116,28 @@ class BaladyNavigationEvents {
     int? destinationObjectId,
     double? distanceM,
   }) {
-    unawaited(
-      () async {
-        String? originCity;
-        String? destinationCity;
-        try {
-          originCity = await _cityFor(originLat, originLng, resolveCityName);
-          destinationCity = await _cityFor(destinationLat, destinationLng, resolveCityName);
-        } catch (_) {
-          // City resolution must never block or fail the event.
-        }
-        BaladyAnalytics.instance.track(
-          _routeBuiltName,
-          properties: {
-            'transport_mode': transportMode(navType),
-            'origin_city': originCity,
-            'destination_city': destinationCity,
-            'district': destinationObjectId == null ? null : _districtByObjectId[destinationObjectId],
-            if (distanceM != null) 'distance_m': distanceM.round(),
-            if (distanceM != null) 'distance_bucket': distanceBucket(distanceM),
-            'alternatives_count': alternativesCount,
-          },
-        );
-      }(),
-    );
+    detach(() async {
+      String? originCity;
+      String? destinationCity;
+      try {
+        originCity = await _cityFor(originLat, originLng, resolveCityName);
+        destinationCity = await _cityFor(destinationLat, destinationLng, resolveCityName);
+      } catch (_) {
+        // City resolution must never block or fail the event.
+      }
+      BaladyAnalytics.instance.track(
+        _routeBuiltName,
+        properties: {
+          'transport_mode': transportMode(navType),
+          'origin_city': originCity,
+          'destination_city': destinationCity,
+          'district': destinationObjectId == null ? null : _districtByObjectId[destinationObjectId],
+          if (distanceM != null) 'distance_m': distanceM.round(),
+          if (distanceM != null) 'distance_bucket': distanceBucket(distanceM),
+          'alternatives_count': alternativesCount,
+        },
+      );
+    }(), tag: 'navigationEvents.round');
   }
 
   /// Route calculation failed. [error] is reduced to a short reason string —

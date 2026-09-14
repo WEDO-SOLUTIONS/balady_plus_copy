@@ -12,6 +12,7 @@ import 'package:mapness/features/sso_auth/data/auth_provider.dart';
 import 'package:mapness/features/tifo/providers/tifo_session_provider.dart';
 import 'package:mapness/features/weather/provider/forecast_weather_provider.dart';
 import 'package:mapness/shared/providers/navigator_voice.dart';
+import 'package:mapness/shared/utils/detach.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'app_language.g.dart';
@@ -119,11 +120,11 @@ class AppLanguage extends _$AppLanguage {
     // ✅ 3) Keep your updates (still inside update)
     ref.read(navigatorVoiceProvider.notifier).update(value.navigatorVoice);
     // Update the SSO profile to get the information in the new language
-    unawaited(ref.read(authProvider.notifier).forceUpdate());
+    detach(ref.read(authProvider.notifier).forceUpdate(), tag: 'appLanguage.forceUpdate');
     // Update cached text for the favourites items
-    unawaited(ref.read(favouriteCacheProvider.notifier).forceRefresh());
+    detach(ref.read(favouriteCacheProvider.notifier).forceRefresh(), tag: 'appLanguage.forceRefresh');
     // Re-fetch the TIFO roster so club names come back in the new locale
-    unawaited(ref.read(tifoSessionProvider.notifier).forceRefresh());
+    detach(ref.read(tifoSessionProvider.notifier).forceRefresh(), tag: 'appLanguage.forceRefresh');
 
     state = value;
 
@@ -132,7 +133,10 @@ class AppLanguage extends _$AppLanguage {
     // Using the container directly so the invalidation is not tracked as a
     // dependency of AppLanguage.
     final container = ref.container;
-    Future.microtask(() => container.invalidate(forecastWeatherProvider));
+    detach(
+      Future.microtask(() => container.invalidate(forecastWeatherProvider)),
+      tag: 'appLanguage.invalidateForecast',
+    );
   }
 
   /*

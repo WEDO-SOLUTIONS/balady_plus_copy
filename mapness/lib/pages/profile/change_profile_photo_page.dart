@@ -15,6 +15,7 @@ import 'package:mapness/_generated/assets/assets.gen.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/features/profile/profile_image_provider.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
+import 'package:mapness/shared/utils/detach.dart';
 import 'package:mapness/shared/utils/logger/logger.dart';
 import 'package:permission_handler/permission_handler.dart';
 
@@ -105,7 +106,10 @@ class ChangeProfilePhotoPage extends ConsumerWidget {
     }
     final Uint8List? croppedBytes = await context.pushRoute(ImageEditorRoute(image: bytes));
     if (croppedBytes != null) {
-      unawaited(ref.read(profileImageProvider.notifier).changeUserProfileImageByBytes(croppedBytes));
+      detach(
+        ref.read(profileImageProvider.notifier).changeUserProfileImageByBytes(croppedBytes),
+        tag: 'changeProfilePhotoPage.changeUserProfileImageByBytes',
+      );
     }
   }
 }

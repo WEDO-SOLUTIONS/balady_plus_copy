@@ -21,6 +21,7 @@ import 'package:mapness/shared/providers/map/camera_position.dart';
 import 'package:mapness/shared/providers/map/object_manager.dart';
 import 'package:mapness/shared/providers/map/point_of_interest.dart';
 import 'package:mapness/shared/providers/media_query.dart';
+import 'package:mapness/shared/utils/detach.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'wrc.g.dart';
@@ -133,7 +134,7 @@ class WRC extends _$WRC {
       return;
     }
     for (final point in wrcEventPoints) {
-      unawaited(_showPointMarker(point));
+      detach(_showPointMarker(point), tag: 'wrc.showPointMarker');
     }
   }
 
@@ -168,7 +169,10 @@ class WRC extends _$WRC {
 
   Future<void> hideAllMarkers() async {
     for (final point in wrcEventPoints) {
-      unawaited(mapManager?.setMarkerOptions(point.globalMarkerId, sdk.ChangeMarkerOptionsMessage(isVisible: false)));
+      detach(
+        mapManager?.setMarkerOptions(point.globalMarkerId, sdk.ChangeMarkerOptionsMessage(isVisible: false)),
+        tag: 'wrc.ChangeMarkerOptionsMessage',
+      );
     }
   }
 

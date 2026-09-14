@@ -5,6 +5,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:just_audio_background/just_audio_background.dart';
+import 'package:mapness/shared/utils/detach.dart';
 
 class AudioService extends ChangeNotifier {
   static final AudioService _instance = AudioService._internal();
@@ -749,7 +750,7 @@ class AudioService extends ChangeNotifier {
         // "MBC stops after ~1 min on Android" bug.
         // Fire-and-forget the play call; rely on `playerStateStream` for
         // the actual playing/loading state.
-        unawaited(_player!.play());
+        detach(_player!.play(), tag: 'audioService.play');
 
         // Wait until the player reports playing (or buffering/loading turns
         // into playing) instead of the 500 ms fixed sleep — this prevents

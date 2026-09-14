@@ -10,6 +10,7 @@ import 'package:mapness/shared/lib/common_functions.dart';
 import 'package:mapness/shared/providers/app_language.dart';
 import 'package:mapness/shared/providers/dgis_network.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
+import 'package:mapness/shared/utils/detach.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'interesting_places.g.dart';
@@ -32,7 +33,7 @@ class InterestingPlaces extends _$InterestingPlaces {
     }
 
     final subscription = ref.read(dgisControllerProvider.notifier).visibleRectSubject.listen((event) {
-      unawaited(_update(dio, event?.visibleRect));
+      detach(_update(dio, event?.visibleRect), tag: 'interestingPlaces.update');
     });
 
     ref.onDispose(subscription.cancel);

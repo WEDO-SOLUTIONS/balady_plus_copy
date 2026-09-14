@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:dgis_map/library.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
+import 'package:mapness/shared/utils/detach.dart';
 import 'package:mapness/shared/utils/logger/logger.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -27,7 +28,7 @@ class TrafficState extends _$TrafficState {
         (previous, next) {
           final controller = next.value;
           if (controller != null && !identical(controller, _dgisController)) {
-            unawaited(_bind(controller));
+            detach(_bind(controller), tag: 'trafficState.bind');
           }
         },
         fireImmediately: true,

@@ -16,6 +16,7 @@ import 'package:mapness/features/app_feedback/collect_feedback.dart';
 import 'package:mapness/l10n/generated/app_localizations.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/ui/buttons/app_close_button.dart';
+import 'package:mapness/shared/utils/detach.dart';
 import 'package:mapness/widgets/app_feedback/v2/rating_bar.dart';
 import 'package:mapness/widgets/app_feedback/v2/tag_cloud.dart';
 
@@ -192,7 +193,7 @@ class AppFeedbackMain extends HookConsumerWidget {
                             text: text.isEmpty ? null : feedbackTextController.text,
                           );
                           // Unawaited for not freezed HMS
-                          unawaited(openInAppReviewRating(ratingValue));
+                          detach(openInAppReviewRating(ratingValue), tag: 'appFeedbackMain.openInAppReviewRating');
                         },
                   primaryLabel: context.l10n.appFeedbackSubmitButton,
                 ),

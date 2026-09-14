@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:dgis_map/library.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
+import 'package:mapness/shared/utils/detach.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'active_public_transport_route.g.dart';
@@ -10,7 +11,7 @@ part 'active_public_transport_route.g.dart';
 class ActivePublicTransportRoute extends _$ActivePublicTransportRoute {
   @override
   BriefPublicTransportModel? build() {
-    unawaited(_subscribe());
+    detach(_subscribe(), tag: 'activePublicTransportRoute.subscribe');
     return null;
   }
 

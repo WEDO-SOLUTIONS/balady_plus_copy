@@ -19,6 +19,7 @@ import 'package:mapness/features/share_eta/ui/eta_share_expired.dart';
 import 'package:mapness/shared/providers/location.dart';
 import 'package:mapness/shared/providers/map/camera_position.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
+import 'package:mapness/shared/utils/detach.dart';
 import 'package:mapness/shared/utils/logger/logger.dart';
 
 class EtaUtils {
@@ -68,8 +69,14 @@ class EtaUtils {
     return mask48x48;
   }
 
-  static Future<bool> processShareLink(WidgetRef ref,
-      {required String tokenId, required String streamId, String? type, double? latitude, double? longitude}) async {
+  static Future<bool> processShareLink(
+    WidgetRef ref, {
+    required String tokenId,
+    required String streamId,
+    String? type,
+    double? latitude,
+    double? longitude,
+  }) async {
     final Completer<Position?> completer = Completer();
     ProviderSubscription? _locationListener;
 
@@ -104,7 +111,9 @@ class EtaUtils {
     if (type == 'eta') {
       try {
         if (latitude != null && longitude != null) {
-          await ref.read(cameraPositionProvider.notifier).animateTo(
+          await ref
+              .read(cameraPositionProvider.notifier)
+              .animateTo(
                 CameraPositionMessage(
                   point: GeoPointMessage(latitude: latitude, longitude: longitude),
                   zoom: 17,
@@ -121,7 +130,10 @@ class EtaUtils {
         await ref.read(shareEtaProvider.notifier).stopSharing();
 
         await ref.read(etaGeoSubscriberProvider.notifier).startStreaming(streamId, tokenId);
-        unawaited(ref.read(appRouterProvider).push(EtaRouteRoute(latitude: latitude, longitude: longitude)));
+        detach(
+          ref.read(appRouterProvider).push(EtaRouteRoute(latitude: latitude, longitude: longitude)),
+          tag: 'utils.push',
+        );
       } catch (e) {
         logger.log(e.toString(), logLevel: MapnessLogLevel.critical);
         WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -140,9 +152,9 @@ class EtaUtils {
           if (appRouter.isRouteActive(PathNavRoute.name)) {
             ref.read(pathNavMessageProvider.notifier).stopNavigation();
             await ref.read(dgisControllerProvider).value?.setMapAttributeBool('navigatorOn', value: false);
-            unawaited(ref.read(dgisControllerProvider).value?.stopNavigation());
+            detach(ref.read(dgisControllerProvider).value?.stopNavigation(), tag: 'utils.stopNavigation');
             ref.read(currentRouteProvider.notifier).clearRoute();
-            unawaited(ref.read(dgisControllerProvider).value?.hideRoutes());
+            detach(ref.read(dgisControllerProvider).value?.hideRoutes(), tag: 'utils.hideRoutes');
           }
 
           await appRouter.navigate(const LandingRoute());
@@ -156,7 +168,9 @@ class EtaUtils {
         await ref.read(shareEtaProvider.notifier).stopSharing();
 
         if (latitude != null && longitude != null) {
-          await ref.read(cameraPositionProvider.notifier).animateTo(
+          await ref
+              .read(cameraPositionProvider.notifier)
+              .animateTo(
                 CameraPositionMessage(
                   point: GeoPointMessage(latitude: latitude, longitude: longitude),
                   zoom: 17,

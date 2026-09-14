@@ -10,6 +10,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:mapness/l10n/generated/app_localizations.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/ui/toast/app_locale.dart';
+import 'package:mapness/shared/utils/detach.dart';
 
 part 'toast_transition.dart';
 part 'toast_widget.dart';

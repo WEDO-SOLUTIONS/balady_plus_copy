@@ -5,6 +5,7 @@ import 'package:balady_plus/app/core/utils/common_functions.dart';
 import 'package:balady_plus/app/features/entry_point/presentation/cubit/auth_cubit.dart';
 import 'package:flutter/widgets.dart';
 import 'package:mapness/features/sso_auth/data/auth_provider.dart';
+import 'package:mapness/shared/utils/detach.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'auth_methods.g.dart';
@@ -104,7 +105,7 @@ class AuthMethods extends _$AuthMethods {
 
       _authSubscription = CommonProperties.userStateStream.listen((event) {
         if (event.userInfo != null) {
-          unawaited(runCallback());
+          detach(runCallback(), tag: 'authMethods.runCallback');
         }
       });
       _initializeLoginScreenPoppedSubscription(

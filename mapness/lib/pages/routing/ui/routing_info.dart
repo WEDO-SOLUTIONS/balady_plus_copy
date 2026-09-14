@@ -38,6 +38,7 @@ import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:mapness/shared/providers/map/object_manager.dart';
 import 'package:mapness/shared/providers/media_query.dart';
 import 'package:mapness/shared/providers/urbi_analytics.dart';
+import 'package:mapness/shared/utils/detach.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 const _defaultNavType = RouteSearchOptionsMessage.car;
@@ -103,7 +104,7 @@ class _RoutingInfoState extends ConsumerState<RoutingInfo> {
 
   Future<void> _initializeNavType() async {
     if (widget.points.firstOrNull != null && widget.points.lastOrNull != null) {
-      unawaited(_calculateNavigationType(null));
+      detach(_calculateNavigationType(null), tag: 'routingInfo.calculateNavigationType');
       return;
     }
 
@@ -116,7 +117,7 @@ class _RoutingInfoState extends ConsumerState<RoutingInfo> {
       }
       location = await Geolocator.getCurrentPosition();
     }
-    unawaited(_calculateNavigationType(location));
+    detach(_calculateNavigationType(location), tag: 'routingInfo.calculateNavigationType');
   }
 
   void setCameraPadding() {
@@ -463,12 +464,13 @@ class _RoutingInfoState extends ConsumerState<RoutingInfo> {
           .read(advertMetricsProvider.notifier)
           .sendEvent(AdvertMetricsKeys.journeyStartedUnique, isUniquePerSession: true);
 
-      unawaited(_sendNavigationStartedAnalytics(route, navigatingType));
+      detach(_sendNavigationStartedAnalytics(route, navigatingType), tag: 'routingInfo.sendNavigationStartedAnalytics');
 
-      unawaited(
+      detach(
         ref
             .read(urbiAnalyticsProvider)
             .track('startNavigation', properties: {'duration': route.duration, 'distance': route.distance}),
+        tag: 'routingInfo.track',
       );
 
       await ref

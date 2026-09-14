@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:mapness/_features/common/providers/shared_prefs.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
+import 'package:mapness/shared/utils/detach.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'path_nav_sound_provider.g.dart';
@@ -15,7 +16,7 @@ class _PathNavSoundProvider extends _$PathNavSoundProvider {
     final sharedPrefs = ref.read(sharedPrefsProvider);
     final value = sharedPrefs.getBool(_prefsKey) ?? true;
 
-    unawaited(updateNavigator(newState: value));
+    detach(updateNavigator(newState: value), tag: 'pathNavSoundProvider.updateNavigator');
 
     return value;
   }

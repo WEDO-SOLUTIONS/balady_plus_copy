@@ -49,7 +49,7 @@ class __ToastTransitionState extends State<_ToastTransition> with SingleTickerPr
     ).animate(_controller);
     _controller.forward();
     _actions = widget.actions?.map((e) => e.copyWith(onTap: () => _onActionTap(e))).nonNulls.toList() ?? [];
-    _hideTimer = Timer(widget.displayDuration, () => unawaited(_hide()));
+    _hideTimer = Timer(widget.displayDuration, () => detach(_hide(), tag: 'toastTransition.hide'));
   }
 
   Future<void> _hide() async {
@@ -67,7 +67,7 @@ class __ToastTransitionState extends State<_ToastTransition> with SingleTickerPr
   }
 
   void _onActionTap(ToastAction action) {
-    unawaited(_hide());
+    detach(_hide(), tag: 'toastTransition.hide');
     action.onTap?.call();
   }
 

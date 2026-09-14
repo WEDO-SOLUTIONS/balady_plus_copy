@@ -7,6 +7,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/features/tifo/data/tifo_api.dart';
 import 'package:mapness/features/tifo/data/tifo_models.dart';
+import 'package:mapness/shared/utils/detach.dart';
 import 'package:mapness/shared/utils/logger/logger.dart';
 
 /// The next gate the player must pass before they can play. BRD V2
@@ -195,7 +196,7 @@ class TifoSessionController extends Notifier<TifoSessionState> {
         error: error ?? (e is TifoApiException ? e.message : e.toString()),
       );
     }
-    unawaited(_claimDailyAllowanceIfDue());
+    detach(_claimDailyAllowanceIfDue(), tag: 'tifoSessionProvider.claimDailyAllowanceIfDue');
   }
 
   /// US-15: the daily allowance is an idempotent grant the CLIENT has to ask

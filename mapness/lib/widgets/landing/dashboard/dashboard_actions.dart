@@ -13,6 +13,7 @@ import 'package:mapness/features/balady_analytics/events/service_events.dart';
 import 'package:mapness/features/lifestyle_layers/providers/layers_controls.dart';
 import 'package:mapness/features/poi_card/domain/model/poi_camera_config.dart';
 import 'package:mapness/shared/providers/location.dart';
+import 'package:mapness/shared/utils/detach.dart';
 import 'package:sheetify/sheetify.dart';
 
 /// Encapsulates all dashboard quick action callbacks and navigation logic.
@@ -47,7 +48,7 @@ class DashboardActions {
   }
 
   Future<void> openNearby(BuildContext context) async {
-    context.router.push(const NearbyRoute());
+    await context.router.push(const NearbyRoute());
   }
 
   /// Opens the Quran mini-app.
@@ -86,7 +87,7 @@ class DashboardActions {
     if (userLocation == null) return;
 
     if (!context.mounted) return;
-    unawaited(
+    detach(
       context.router.push(
         ShareMyLocationRoute(
           cameraConfig: const PoiCameraConfig(zoom: 17, bearing: 0, tilt: 0),
@@ -96,6 +97,7 @@ class DashboardActions {
           ),
         ),
       ),
+      tag: 'dashboardActions.push',
     );
   }
 

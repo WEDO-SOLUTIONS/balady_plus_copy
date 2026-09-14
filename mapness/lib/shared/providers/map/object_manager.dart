@@ -4,6 +4,7 @@ import 'package:collection/collection.dart';
 import 'package:dgis_map/library.dart';
 import 'package:mapness/shared/constants/constants.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
+import 'package:mapness/shared/utils/detach.dart';
 import 'package:mapness/shared/utils/logger/logger.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -164,7 +165,10 @@ class MapObjectManager extends _$MapObjectManager {
     _markers.removeWhere((element) => element.id == markerId);
     final manager = await future;
     try {
-      unawaited(ref.read(dgisControllerProvider).value?.removeMarker(markerId, fromManager: manager));
+      detach(
+        ref.read(dgisControllerProvider).value?.removeMarker(markerId, fromManager: manager),
+        tag: 'objectManager.removeMarker',
+      );
     } catch (ex, _) {
       logger.log('Error removing marker: ${ex.toString()}');
     }
@@ -202,7 +206,10 @@ class MapObjectManager extends _$MapObjectManager {
     _models.removeWhere((element) => element.id == modelId);
     final manager = await future;
     try {
-      unawaited(ref.read(dgisControllerProvider).value?.removeModel(modelId, fromManager: manager));
+      detach(
+        ref.read(dgisControllerProvider).value?.removeModel(modelId, fromManager: manager),
+        tag: 'objectManager.removeModel',
+      );
     } catch (ex, _) {
       logger.log('Error removing model: ${ex.toString()}');
     }

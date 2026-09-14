@@ -9,6 +9,7 @@ import 'package:mapness/features/tifo/tutorial/tifo_tutorial_demos.dart';
 import 'package:mapness/features/tifo/ui/tifo_message_card.dart';
 import 'package:mapness/features/tifo/ui/tifo_theme.dart';
 import 'package:mapness/l10n/generated/app_localizations.dart';
+import 'package:mapness/shared/utils/detach.dart';
 
 /// The four-screen guided TIFO tutorial (Figma 848:9497, 848:9982, 848:10725,
 /// 879:10224). Two overlay styles over demo content:
@@ -124,7 +125,7 @@ class _TifoGuidedTutorialState extends ConsumerState<TifoGuidedTutorial> {
 
   void _next() {
     if (_isLast) {
-      unawaited(_finish(completed: true));
+      detach(_finish(completed: true), tag: 'tifoGuidedTutorial.finish');
     } else {
       setState(() => _index++);
     }

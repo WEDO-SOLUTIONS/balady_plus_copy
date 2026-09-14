@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:mapness/features/balady_analytics/balady_analytics_sink.dart';
+import 'package:mapness/shared/utils/detach.dart';
 import 'package:urbi_analytics/analytics.dart' show Analytics;
 
 /// Adapter that lets the facade fan events out to the legacy Urbi Analytics
@@ -15,7 +16,10 @@ class UrbiBaladyAnalyticsSink implements BaladyAnalyticsSink {
   void track(BaladyAnalyticsEvent event) {
     // Screen views are NOT routed here: RoutesObserver still calls the Urbi
     // client's screen() directly, doubling them would corrupt the stream.
-    unawaited(_client.track(event.name, properties: event.properties.isEmpty ? null : event.properties));
+    detach(
+      _client.track(event.name, properties: event.properties.isEmpty ? null : event.properties),
+      tag: 'urbiBaladyAnalyticsSink.track',
+    );
   }
 
   @override

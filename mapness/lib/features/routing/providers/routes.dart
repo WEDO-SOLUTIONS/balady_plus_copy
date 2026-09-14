@@ -14,6 +14,7 @@ import 'package:mapness/shared/providers/location.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:mapness/shared/providers/map/navigator_route_settings.dart';
 import 'package:mapness/shared/providers/urbi_analytics.dart';
+import 'package:mapness/shared/utils/detach.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'routes.g.dart';
@@ -109,7 +110,7 @@ class Routes extends _$Routes {
 
     final intermediatePoints = this.intermediatePoints?.points.map((e) => e.value?.pointMessage).nonNulls.toList();
 
-    unawaited(dgisController.value?.hideRoutes());
+    detach(dgisController.value?.hideRoutes(), tag: 'routes.hideRoutes');
     final params = RouteEditorRouteParamsMessage(
       startPoint: startPoint?.pointMessage,
       finishPoint: finishPoint?.pointMessage,

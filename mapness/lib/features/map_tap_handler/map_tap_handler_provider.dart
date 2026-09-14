@@ -14,6 +14,7 @@ import 'package:mapness/features/search/ui/search_scope.dart';
 import 'package:mapness/shared/providers/location.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:mapness/shared/providers/map/selected_marker.dart';
+import 'package:mapness/shared/utils/detach.dart';
 import 'package:riverpod/riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -53,7 +54,7 @@ class RoadEvents extends _$RoadEvents {
 
     // BSA-2431: We don't need description here, we don't use it according to the design
     // If we will need it, we can add it in the future
-    unawaited(
+    detach(
       router.push(
         RoadClosedRoute(
           id: nextState.id,
@@ -62,6 +63,7 @@ class RoadEvents extends _$RoadEvents {
           finishTime: nextState.finishTime,
         ),
       ),
+      tag: 'mapTapHandlerProvider.push',
     );
   }
 
@@ -102,7 +104,7 @@ class MapTapHandler extends _$MapTapHandler with GuardTapEventMixin {
     _baseStreamSubscription = dgisController.objectTapEvents.listen(_onNewEvent);
     _poiPageClosingSubscription = ref.listen<RoadEventSheetState?>(roadEventsProvider, (previous, next) {
       if (previous != null && next == null) {
-        unawaited(ref.read(selectedMarkerProvider.notifier).clear());
+        detach(ref.read(selectedMarkerProvider.notifier).clear(), tag: 'mapTapHandlerProvider.clear');
       }
     });
 

@@ -25,6 +25,7 @@ import 'package:mapness/shared/providers/dark_mode.dart';
 import 'package:mapness/shared/providers/map/find_brief_route_info.dart';
 import 'package:mapness/features/special_themes/modes/mekkah_base/makkah_poi_constants.dart';
 import 'package:mapness/shared/lib/common_functions.dart';
+import 'package:mapness/shared/utils/detach.dart';
 
 /// Width of place preview card in Makkah dashboard
 const kPlaceCardSizeMakkah = MakkahPoiConstants.placeCardWidth;
@@ -140,7 +141,7 @@ class _PlacePreviewMakkahState extends ConsumerState<PlacePreviewMakkah> with Au
 
                 // Fly to marker location
                 if (item.lat != null && item.lon != null) {
-                  unawaited(
+                  detach(
                     ref
                         .read(cameraPositionProvider.notifier)
                         .animateTo(
@@ -154,6 +155,7 @@ class _PlacePreviewMakkahState extends ConsumerState<PlacePreviewMakkah> with Au
                             bearing: 0,
                           ),
                         ),
+                    tag: 'placePreviewMakkah.animateTo',
                   );
                 }
 

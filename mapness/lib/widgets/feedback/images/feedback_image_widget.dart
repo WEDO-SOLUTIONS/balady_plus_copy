@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/features/feedback/feedback_upload_image.dart';
 import 'package:mapness/shared/lib/file_upload.dart';
+import 'package:mapness/shared/utils/detach.dart';
 import 'package:mapness/widgets/feedback/images/feedback_image_action_button.dart';
 import 'package:mapness/widgets/feedback/images/feedback_image_item.dart';
 import 'package:mapness/widgets/feedback/images/feedback_image_wrapper.dart';
@@ -43,20 +44,20 @@ class FeedbackImageWidget extends ConsumerWidget {
       imageSize: imageSize,
       isLoading: isLoading,
       onRemove: () {
-        unawaited(ref.read(uploadProvider.notifier).cancelUpload());
+        detach(ref.read(uploadProvider.notifier).cancelUpload(), tag: 'feedbackImageWidget.cancelUpload');
         onRemove();
       },
       child: switch (upload) {
         FileUploadSuccess() => FeedbackImageItem(
-            imagePath: imagePath,
-            imageSize: imageSize,
-          ),
+          imagePath: imagePath,
+          imageSize: imageSize,
+        ),
         FileUploadInit() || FileUploadProgress() => Loading.small(),
         _ => _FeedbackErrorImageItem(
-            imagePath: imagePath,
-            imageSize: imageSize,
-            onRefresh: () => ref.invalidate(uploadProvider),
-          )
+          imagePath: imagePath,
+          imageSize: imageSize,
+          onRefresh: () => ref.invalidate(uploadProvider),
+        ),
       },
     );
   }

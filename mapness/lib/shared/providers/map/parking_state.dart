@@ -7,6 +7,7 @@ import 'package:mapness/features/lifestyle_layers/providers/layers_state.dart';
 import 'package:mapness/features/lifestyle_layers/providers/parking_details.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:mapness/shared/providers/map/navigator_auto_enable_parking.dart';
+import 'package:mapness/shared/utils/detach.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'parking_state.g.dart';
@@ -25,8 +26,9 @@ class ParkingState extends _$ParkingState {
 
     ref.onDispose(
       () {
-        unawaited(
+        detach(
           controllerFuture.then((controller) => controller.setMapAttributeBool(attributeParkingOn, value: false)),
+          tag: 'parkingState.setMapAttributeBool',
         );
       },
     );

@@ -11,6 +11,7 @@ import 'package:mapness/entities/profile/user_profile_data.dart';
 import 'package:mapness/entry_point.dart';
 import 'package:mapness/shared/providers/base_dio.dart';
 import 'package:mapness/shared/providers/dgis_network.dart';
+import 'package:mapness/shared/utils/detach.dart';
 import 'package:mapness/shared/utils/logger/logger.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -32,9 +33,12 @@ class ProfileImage extends _$ProfileImage {
 
   @override
   Future<UserProfileData> build() async {
-    Permission.photos.status.then((val) {
-      status = val;
-    });
+    detach(
+      Permission.photos.status.then((val) {
+        status = val;
+      }),
+      tag: 'profileImageProvider.photosPermission',
+    );
     if (CommonProperties.isLoggedIn && !_isUpdated) {
       _updateImageFromBackend().ignore();
     }

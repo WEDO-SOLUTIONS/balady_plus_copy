@@ -11,6 +11,7 @@ import 'package:mapness/shared/providers/app_language.dart';
 import 'package:mapness/features/stream_audio/ui/providers/stream_audio_prov.dart';
 import 'package:mapness/shared/ui/toast/toast_overlay.dart';
 import 'package:mapness/app/auto_route/app_routes.dart';
+import 'package:mapness/shared/utils/detach.dart';
 
 class StreamAudioProvider extends ChangeNotifier {
   final AudioService _audioService = AudioService();
@@ -186,7 +187,7 @@ class StreamAudioProvider extends ChangeNotifier {
 
     // If playback fails due to network/timeout, pause the player so the UI
     // doesn't look like it's still playing while audio is broken.
-    unawaited(_audioService.pause());
+    detach(_audioService.pause(), tag: 'streamAudioProv.pause');
 
     // Dedupe repeated identical messages (e.g., auto retry / repeated listener triggers).
     final now = DateTime.now();
@@ -203,9 +204,9 @@ class StreamAudioProvider extends ChangeNotifier {
         // Retry the currently selected channel if any; otherwise just reload channels.
         final channel = _selectedChannel;
         if (channel != null) {
-          unawaited(selectChannel(channel));
+          detach(selectChannel(channel), tag: 'streamAudioProv.selectChannel');
         } else {
-          unawaited(getChannels(forceRefresh: true));
+          detach(getChannels(forceRefresh: true), tag: 'streamAudioProv.getChannels');
         }
       },
     );
@@ -311,7 +312,8 @@ class StreamAudioProvider extends ChangeNotifier {
 
   void setFloatingPlayerVisibility(bool isVisible) {
     debugPrint(
-        'StreamAudioProvider: setFloatingPlayerVisibility called - old: $_isFloatingPlayerVisible, new: $isVisible');
+      'StreamAudioProvider: setFloatingPlayerVisibility called - old: $_isFloatingPlayerVisible, new: $isVisible',
+    );
     if (isInWeb && isVisible) {
       _isFloatingPlayerVisible = false;
     } else {
@@ -503,14 +505,18 @@ class StreamAudioProvider extends ChangeNotifier {
       _isExited = false;
       setFloatingPlayerVisibility(true); // Show floating player when selecting a channel
 
-      final playlistArgs = filteredChannels.map((c) => {
-        'url': c.streamUrl ?? '',
-        'id': c.id?.toString() ?? '',
-        'title': c.name,
-        'programName': c.currentPlayedProgram?.name,
-        'artUri': c.logo,
-      }).toList();
-      
+      final playlistArgs = filteredChannels
+          .map(
+            (c) => {
+              'url': c.streamUrl ?? '',
+              'id': c.id?.toString() ?? '',
+              'title': c.name,
+              'programName': c.currentPlayedProgram?.name,
+              'artUri': c.logo,
+            },
+          )
+          .toList();
+
       final initialIndex = filteredChannels.indexWhere((c) => c.id == channel.id);
 
       await _audioService.playStream(
@@ -592,14 +598,18 @@ class StreamAudioProvider extends ChangeNotifier {
     setFloatingPlayerVisibility(true); // Show floating player when playing
 
     try {
-      final playlistArgs = filteredChannels.map((c) => {
-        'url': c.streamUrl ?? '',
-        'id': c.id?.toString() ?? '',
-        'title': c.name,
-        'programName': c.currentPlayedProgram?.name,
-        'artUri': c.logo,
-      }).toList();
-      
+      final playlistArgs = filteredChannels
+          .map(
+            (c) => {
+              'url': c.streamUrl ?? '',
+              'id': c.id?.toString() ?? '',
+              'title': c.name,
+              'programName': c.currentPlayedProgram?.name,
+              'artUri': c.logo,
+            },
+          )
+          .toList();
+
       final initialIndex = filteredChannels.indexWhere((c) => c.id == _selectedChannel!.id);
 
       await _audioService.playStream(
@@ -637,7 +647,8 @@ class StreamAudioProvider extends ChangeNotifier {
 
   Future<void> togglePlayPause() async {
     debugPrint(
-        'StreamAudioProvider: togglePlayPause called - selectedChannel: ${_selectedChannel?.name}, isPlaying: ${_audioService.isPlaying}, isLoading: ${_audioService.isLoading}');
+      'StreamAudioProvider: togglePlayPause called - selectedChannel: ${_selectedChannel?.name}, isPlaying: ${_audioService.isPlaying}, isLoading: ${_audioService.isLoading}',
+    );
 
     // If no channel is selected, select the first available channel and start playing
     if (_selectedChannel == null) {
@@ -904,8 +915,7 @@ class StreamAudioProvider extends ChangeNotifier {
 // Provider definition
 final streamAudioProvider = ChangeNotifierProvider<StreamAudioProvider>(
   (ref) {
-    final provider = StreamAudioProvider()
-    ..setRef(ref);
+    final provider = StreamAudioProvider()..setRef(ref);
     return provider;
   },
 );

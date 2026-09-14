@@ -8,6 +8,7 @@ import 'package:mapness/features/metro/metro_layer_visible_provider.dart';
 import 'package:mapness/shared/providers/dark_mode.dart';
 import 'package:mapness/shared/providers/map/camera_position.dart';
 import 'package:mapness/shared/providers/map/object_manager.dart';
+import 'package:mapness/shared/utils/detach.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'metro_layer_provider.g.dart';
@@ -18,29 +19,31 @@ class MetroLayer extends _$MetroLayer {
 
   // Performances improvements, we don't need to update the map on every zoom change
   int _zoomSegment(int? zoom) => switch (zoom) {
-        null => 0,
-        >= 18 => 1,
-        >= 17 => 2,
-        >= 16 => 3,
-        >= 14 => 4,
-        >= 5 => 5,
-        _ => 6,
-      };
+    null => 0,
+    >= 18 => 1,
+    >= 17 => 2,
+    >= 16 => 3,
+    >= 14 => 4,
+    >= 5 => 5,
+    _ => 6,
+  };
 
   @override
   Future<List<MetroLineModel>> build() async {
     final metroLayerJsonDatasource = await ref.watch(metroLayerRepositoryProvider.future);
     ref
       ..watch(darkModeProvider)
-      ..watch(mapObjectManagerProvider(
-        named: mapOptions.name,
-        layerId: mapOptions.layerId,
-      ));
+      ..watch(
+        mapObjectManagerProvider(
+          named: mapOptions.name,
+          layerId: mapOptions.layerId,
+        ),
+      );
 
     final isMetroShown = ref.read(metroLayerVisibleProvider);
 
     if (isMetroShown) {
-      unawaited(showMetro());
+      detach(showMetro(), tag: 'metroLayerProvider.showMetro');
     }
 
     ref.listen(cameraPositionProvider, (prev, positon) {
@@ -53,7 +56,7 @@ class MetroLayer extends _$MetroLayer {
       final isMetroShown = ref.read(metroLayerVisibleProvider);
 
       if (isMetroShown) {
-        unawaited(showMetro());
+        detach(showMetro(), tag: 'metroLayerProvider.showMetro');
       }
     });
 
@@ -69,10 +72,12 @@ class MetroLayer extends _$MetroLayer {
 
     final metroLines = state.value!;
 
-    final mapManager = ref.read(mapObjectManagerProvider(
-      named: mapOptions.name,
-      layerId: mapOptions.layerId,
-    ).notifier);
+    final mapManager = ref.read(
+      mapObjectManagerProvider(
+        named: mapOptions.name,
+        layerId: mapOptions.layerId,
+      ).notifier,
+    );
     final darkMode = await ref.read(darkModeProvider.future);
     final isDarkMode = darkMode.isDark;
 
@@ -143,10 +148,12 @@ class MetroLayer extends _$MetroLayer {
   }
 
   Future<void> hideMetro() async {
-    final mapManager = ref.read(mapObjectManagerProvider(
-      named: mapOptions.name,
-      layerId: mapOptions.layerId,
-    ).notifier);
+    final mapManager = ref.read(
+      mapObjectManagerProvider(
+        named: mapOptions.name,
+        layerId: mapOptions.layerId,
+      ).notifier,
+    );
     await mapManager.removeAllPolyLines();
 
     ref.read(metroLayerRepositoryProvider.notifier).hideMetro();

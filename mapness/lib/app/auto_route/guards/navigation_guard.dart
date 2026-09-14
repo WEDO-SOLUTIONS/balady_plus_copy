@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:mapness/shared/providers/top_route_name_notifier.dart';
+import 'package:mapness/shared/utils/detach.dart';
 
 const _explicitNaviRoutes = _RouteConfig(
   currentRoutes: {PathNavRoute.name},
@@ -33,18 +34,23 @@ final class NavigationGuard extends AutoRouteGuard {
   Future<void> onNavigation(NavigationResolver resolver, StackRouter router) async {
     if (_explicitNaviRoutes.routeMatches(resolver, router)) {
       // stop navigation after user confirmation
-      router.push(
-        ExitNavigationRoute(
-          onConfirm: () async {
-            await ref.read(dgisControllerProvider).value?.stopNavigation();
-            // wait for navigation to really stop. The page won't open otherwise
-            await _waitForRoute(router, BottomMenuRoute.name);
-            resolver.next();
-          },
-          onCancel: () {
-            resolver.next(false);
-          },
+      // Not awaited: `push` completes when the sheet is popped, and the guard
+      // must return its decision now.
+      detach(
+        router.push(
+          ExitNavigationRoute(
+            onConfirm: () async {
+              await ref.read(dgisControllerProvider).value?.stopNavigation();
+              // wait for navigation to really stop. The page won't open otherwise
+              await _waitForRoute(router, BottomMenuRoute.name);
+              resolver.next();
+            },
+            onCancel: () {
+              resolver.next(false);
+            },
+          ),
         ),
+        tag: 'navigationGuard.exitNavigation',
       );
     } else if (_implicitNaviRoutes.routeMatches(resolver, router)) {
       // hide routes silently

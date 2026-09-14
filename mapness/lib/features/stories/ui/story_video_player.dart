@@ -11,6 +11,7 @@ import 'package:mapness/features/stories/providers/story_service.dart';
 import 'package:mapness/features/stories/ui/fullscreen_strory_error.dart';
 import 'package:mapness/features/stories/ui/story_args_provider.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
+import 'package:mapness/shared/utils/detach.dart';
 import 'package:video_player/video_player.dart';
 
 part 'models/video_story_state.dart';
@@ -79,7 +80,10 @@ class _StoryVideoPlayerState extends ConsumerState<StoryVideoPlayer> {
     final videoData = widget.videos[_currentIndex];
 
     try {
-      unawaited(ref.read(storyServiceProvider.notifier).markStoryAsRead(widget.storyId, _currentIndex));
+      detach(
+        ref.read(storyServiceProvider.notifier).markStoryAsRead(widget.storyId, _currentIndex),
+        tag: 'storyVideoPlayer.markStoryAsRead',
+      );
 
       if (_controller != null) {
         await _controller!.dispose();

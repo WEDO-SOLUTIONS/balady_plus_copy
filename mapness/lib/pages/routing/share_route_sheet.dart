@@ -14,6 +14,7 @@ import 'package:mapness/shared/hooks/toggle_sheet_controller_hook.dart';
 import 'package:mapness/shared/lib/share_util.dart';
 import 'package:mapness/shared/providers/location.dart';
 import 'package:mapness/shared/providers/short_link_repository.dart';
+import 'package:mapness/shared/utils/detach.dart';
 import 'package:sheetify/sheetify.dart';
 
 @RoutePage()
@@ -90,10 +91,13 @@ class ShareRoutePage extends HookConsumerWidget {
     final lon = lastPoint.value?.longitude;
     final coordinates = lat != null && lon != null ? Coordinates(latitude: lat, longitude: lon) : null;
 
-    ShareUtil.sharePOI(
-      context: context,
-      objectId: destinationObjectId.toString(),
-      markerCoords: coordinates,
+    detach(
+      ShareUtil.sharePOI(
+        context: context,
+        objectId: destinationObjectId.toString(),
+        markerCoords: coordinates,
+      ),
+      tag: 'shareRouteSheet.sharePOI',
     );
   }
 
@@ -147,17 +151,20 @@ class ShareRoutePage extends HookConsumerWidget {
     final intermediatePoints = points.getIntermediatePointsWithLabels();
     final midPoints = intermediatePoints?.points.map(mapPoint).nonNulls.toList();
 
-    ShareUtil.shareTrip(
-      context: context,
-      data: ShortLinkPayloadTrip(
-        route: ShortLinkPayloadTripRoute(
-          startPoint: start,
-          endPoint: end,
-          midPoints: midPoints,
-          type: ShortLinkTransportType.message(navType),
-          routeIndex: activeRouteIndex,
+    detach(
+      ShareUtil.shareTrip(
+        context: context,
+        data: ShortLinkPayloadTrip(
+          route: ShortLinkPayloadTripRoute(
+            startPoint: start,
+            endPoint: end,
+            midPoints: midPoints,
+            type: ShortLinkTransportType.message(navType),
+            routeIndex: activeRouteIndex,
+          ),
         ),
       ),
+      tag: 'shareRouteSheet.shareTrip',
     );
   }
 }

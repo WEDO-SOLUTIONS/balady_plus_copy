@@ -9,6 +9,7 @@ import 'package:mapness/shared/constants/constants.dart';
 import 'package:mapness/shared/providers/app_language.dart';
 import 'package:mapness/shared/providers/dark_mode.dart';
 import 'package:mapness/shared/providers/urbi_analytics.dart';
+import 'package:mapness/shared/utils/detach.dart';
 import 'package:mapness/shared/utils/location_setup_helper.dart';
 import 'package:mapness/shared/utils/logger/logger.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -231,6 +232,6 @@ class DgisController extends _$DgisController {
     }
 
     _indoorFloorPlansEnabled = enabled;
-    unawaited(controller.setIndoorFloorPlansEnabled(enabled: enabled));
+    detach(controller.setIndoorFloorPlansEnabled(enabled: enabled), tag: 'dgisController.setIndoorFloorPlansEnabled');
   }
 }

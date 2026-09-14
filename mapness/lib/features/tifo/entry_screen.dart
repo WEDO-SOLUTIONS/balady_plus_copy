@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:mapness/features/tifo/ui/tifo_theme.dart';
 import 'package:mapness/l10n/generated/app_localizations.dart';
+import 'package:mapness/shared/utils/detach.dart';
 
 /// TIFO entry-popup — Figma `onboarding` (file H4DvESBi2qwgfXZ8daWWFG,
 /// node 286:20818). The first-touch, stories-style intro shown when a player
@@ -109,7 +110,10 @@ class _TifoEntryScreenState extends State<TifoEntryScreen> {
                 const Spacer(),
                 Padding(
                   padding: const EdgeInsets.fromLTRB(16, 16, 16, 16),
-                  child: _EnterButton(onPressed: () => unawaited(_enter()), busy: _busy),
+                  child: _EnterButton(
+                    onPressed: () => detach(_enter(), tag: 'entryScreen.enter'),
+                    busy: _busy,
+                  ),
                 ),
               ],
             ),

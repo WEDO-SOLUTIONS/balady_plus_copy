@@ -23,6 +23,7 @@ import 'package:mapness/shared/providers/dark_mode.dart';
 import 'package:mapness/shared/providers/location.dart';
 import 'package:mapness/shared/providers/urbi_analytics.dart';
 import 'package:mapness/shared/ui/bottom_sheet/dgis_bottom_sheet.dart';
+import 'package:mapness/shared/utils/detach.dart';
 import 'package:mapness/widgets/landing/dashboard_contents/dashboard_theme_config.dart';
 import 'package:mapness/widgets/landing/map_quick_filters.dart';
 import 'package:mapness/widgets/quick_filters/models/filter_item.dart';
@@ -184,7 +185,10 @@ class DashboardHeaderState extends ConsumerState<DashboardHeader> {
         // Push the route first so the transition starts on the next frame.
         // Analytics/method-channel work happens after, in a microtask, so it
         // doesn't extend the frame that handles the tap.
-        unawaited(context.router.push(SearchRoute(expansion: Expansion.expanded, initialState: text)));
+        detach(
+          context.router.push(SearchRoute(expansion: Expansion.expanded, initialState: text)),
+          tag: 'dashboardHeader.push',
+        );
 
         scheduleMicrotask(() {
           BssService.instance.sendEvent(

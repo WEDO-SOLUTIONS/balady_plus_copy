@@ -20,6 +20,7 @@ import 'package:mapness/shared/providers/hive.dart';
 import 'package:mapness/shared/providers/map/camera_position.dart';
 import 'package:mapness/shared/providers/map/point_of_interest.dart';
 import 'package:mapness/shared/providers/vendor_config.dart';
+import 'package:mapness/shared/utils/detach.dart';
 import 'package:mapness/shared/utils/logger/logger.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -107,20 +108,23 @@ class PoiCardProvider extends _$PoiCardProvider {
     final poiBox = await ref.read(hiveProvider(MapnessConstants.poiDataBoxName).future);
     final cachedData = await loadCacheData(poiBox, poiCardStateKey);
     if (cachedData != null) {
-      ref
-          .read(
-            pointOfInterestProvider(
-              DgisObjectId(objectId: objectId, entranceId: 0),
-              closestPoint,
-              theme,
-              showHighlight: showHighlight,
-            ).future,
-          )
-          .then((poi) {
-            if (poi != null) {
-              _animateCameraToPoi(poi.markerPosition, closestPoint, cameraConfig);
-            }
-          });
+      detach(
+        ref
+            .read(
+              pointOfInterestProvider(
+                DgisObjectId(objectId: objectId, entranceId: 0),
+                closestPoint,
+                theme,
+                showHighlight: showHighlight,
+              ).future,
+            )
+            .then((poi) {
+              if (poi != null) {
+                _animateCameraToPoi(poi.markerPosition, closestPoint, cameraConfig);
+              }
+            }),
+        tag: 'poiCardProvider.animateCameraToPoi',
+      );
 
       return cachedData;
     } else {
@@ -158,7 +162,7 @@ class PoiCardProvider extends _$PoiCardProvider {
         }
       }
 
-      unawaited(_loadOffers(poi, organizations));
+      detach(_loadOffers(poi, organizations), tag: 'poiCardProvider.loadOffers');
 
       final poiCardState = PoiCardState(
         organizations: organizations,
@@ -230,7 +234,7 @@ class PoiCardProvider extends _$PoiCardProvider {
     final currentZoom = ref.read(cameraPositionProvider)?.zoom;
     final zoom = cameraConfig?.zoom ?? currentZoom ?? 16.0;
 
-    unawaited(
+    detach(
       ref
           .read(cameraPositionProvider.notifier)
           .animateTo(
@@ -241,6 +245,7 @@ class PoiCardProvider extends _$PoiCardProvider {
               bearing: cameraConfig?.bearing ?? 0,
             ),
           ),
+      tag: 'poiCardProvider.animateTo',
     );
   }
 

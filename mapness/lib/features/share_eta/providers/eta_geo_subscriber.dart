@@ -30,6 +30,7 @@ import 'package:mapness/shared/providers/map/camera_position.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:mapness/shared/providers/map/object_manager.dart';
 import 'package:mapness/shared/ui/markers/markers.dart';
+import 'package:mapness/shared/utils/detach.dart';
 import 'package:mapness/shared/utils/logger/logger.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -93,7 +94,7 @@ class EtaGeoSubscriber extends _$EtaGeoSubscriber {
       if (etaInfo.type == EtaType.geolocation) {
         await _processDrawUserMarker();
 
-        unawaited(_processMoveCameraToUser());
+        detach(_processMoveCameraToUser(), tag: 'etaGeoSubscriber.processMoveCameraToUser');
 
         _lastActiveMessageTime = DateTime.now().toUtc();
       } else if (etaInfo.type == EtaType.streamMetadata) {
@@ -131,10 +132,10 @@ class EtaGeoSubscriber extends _$EtaGeoSubscriber {
       final mapObjectManager = ref.read(
         mapObjectManagerProvider(named: settings.name, layerId: settings.layerId).notifier,
       );
-      unawaited(mapObjectManager.removeAllMarkers());
+      detach(mapObjectManager.removeAllMarkers(), tag: 'etaGeoSubscriber.removeAllMarkers');
       // hide routes
       final dgisController = ref.read(dgisControllerProvider);
-      unawaited(dgisController.value?.hideRoutes());
+      detach(dgisController.value?.hideRoutes(), tag: 'etaGeoSubscriber.hideRoutes');
 
       _removeFinishPin();
     }

@@ -6,6 +6,7 @@ import 'package:mapness/shared/providers/map/camera_padding.dart';
 import 'package:mapness/shared/providers/map/camera_position.dart';
 import 'package:mapness/shared/providers/map/camera_state.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
+import 'package:mapness/shared/utils/detach.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'nearest_object.g.dart';
@@ -36,7 +37,7 @@ class _NearestObject extends _$NearestObject {
     ref
       ..onDispose(() {
         _loadOperation?.cancel();
-        unawaited(Future<void>.microtask(cameraPadding.resetPadding));
+        detach(Future<void>.microtask(cameraPadding.resetPadding), tag: 'nearestObject.microtask');
       })
       ..listen(cameraStateProvider, (prev, next) {
         if (next == CameraState.free) {

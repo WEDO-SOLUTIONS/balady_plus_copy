@@ -6,6 +6,7 @@ import 'package:mapness/app/auto_route/app_routes.dart';
 import 'package:mapness/features/tifo/tifo_flow_provider.dart';
 import 'package:mapness/features/tifo/tifo_tutorial.dart';
 import 'package:mapness/shared/providers/map/debug_3d_model.dart';
+import 'package:mapness/shared/utils/detach.dart';
 
 /// Floating circular green button with the ⚽ emoji.
 ///
@@ -29,7 +30,7 @@ class TifoBallButton extends ConsumerWidget {
       final navigator = rootNavigatorKey.currentState;
       if (navigator == null) return;
       ref.read(tifoFlowProvider.notifier).markTutorialSeen();
-      unawaited(
+      detach(
         navigator.push<void>(
           PageRouteBuilder<void>(
             opaque: false,
@@ -37,22 +38,27 @@ class TifoBallButton extends ConsumerWidget {
             barrierDismissible: true,
             pageBuilder: (_, __, ___) => const TifoTutorial(),
             transitionsBuilder: (_, anim, __, child) => SlideTransition(
-              position: Tween<Offset>(
-                begin: const Offset(0, 1),
-                end: Offset.zero,
-              ).animate(CurvedAnimation(
-                parent: anim,
-                curve: Curves.easeOutCubic,
-              )),
+              position:
+                  Tween<Offset>(
+                    begin: const Offset(0, 1),
+                    end: Offset.zero,
+                  ).animate(
+                    CurvedAnimation(
+                      parent: anim,
+                      curve: Curves.easeOutCubic,
+                    ),
+                  ),
               child: child,
             ),
           ),
         ),
+        tag: 'tifoBallButton.animate',
       );
       return;
     }
-    unawaited(
+    detach(
       ref.read(debug3dModelProvider.notifier).focusDistrictPolygons(),
+      tag: 'tifoBallButton.focusDistrictPolygons',
     );
   }
 
@@ -92,4 +98,3 @@ class TifoBallButton extends ConsumerWidget {
     );
   }
 }
-

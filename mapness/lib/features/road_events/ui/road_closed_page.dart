@@ -15,6 +15,7 @@ import 'package:mapness/shared/hooks/toggle_sheet_controller_hook.dart';
 import 'package:mapness/shared/providers/app_language.dart';
 import 'package:mapness/shared/providers/map/highlight.dart';
 import 'package:mapness/shared/ui/buttons/app_close_button.dart';
+import 'package:mapness/shared/utils/detach.dart';
 import 'package:mapness/shared/utils/language_detector.dart';
 import 'package:sheetify/sheetify.dart';
 
@@ -55,7 +56,7 @@ class _RoadClosedPageState extends ConsumerState<RoadClosedPage> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      unawaited(selectEvent(_currentRoadEventState.id));
+      detach(selectEvent(_currentRoadEventState.id), tag: 'roadClosedPage.selectEvent');
     });
   }
 
@@ -78,15 +79,15 @@ class _RoadClosedPageState extends ConsumerState<RoadClosedPage> {
         return;
       }
 
-      unawaited(() async {
+      detach(() async {
         await removeSelection(previous.id);
         await selectEvent(next.id);
-      }());
+      }(), tag: 'roadClosedPage.call');
     });
 
     final scrollController = useToggleSheetController(
       onClose: (controller) {
-        unawaited(_onClose());
+        detach(_onClose(), tag: 'roadClosedPage.onClose');
       },
       heightModel: ToggleSheetHeightModel.fixed(120),
     );
@@ -169,8 +170,7 @@ class _RoadClosedPageState extends ConsumerState<RoadClosedPage> {
   /// BALADY-21: SDK reports inclusive seconds (HH:59:59) for bounds the data
   /// actually stores as exclusive (HH+1):00:00. Round up so the displayed
   /// minute matches the source data (5:00 PM, not 4:59 PM).
-  DateTime _normalizeBoundary(DateTime dt) =>
-      dt.second >= 59 ? dt.add(const Duration(seconds: 1)) : dt;
+  DateTime _normalizeBoundary(DateTime dt) => dt.second >= 59 ? dt.add(const Duration(seconds: 1)) : dt;
 
   /// Date formats:
   /// 00:00 1 April 2025 — 23:59 10 June 2026 (if different years)

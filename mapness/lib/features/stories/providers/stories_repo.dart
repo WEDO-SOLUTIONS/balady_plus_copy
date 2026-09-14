@@ -7,6 +7,7 @@ import 'package:mapness/entry_point.dart';
 import 'package:mapness/shared/lib/common_functions.dart';
 import 'package:mapness/shared/providers/dgis_network.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
+import 'package:mapness/shared/utils/detach.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:rxdart/rxdart.dart';
 
@@ -34,13 +35,13 @@ class StoriesRepo extends _$StoriesRepo {
         .whereNotNull()
         .debounceTime(const Duration(seconds: 1))
         .listen((event) async {
-      if (_isUpdatePaused) {
-        return;
-      }
-      final polygon = CommonFunctions.getPolygonFromRect(event.visibleRect);
+          if (_isUpdatePaused) {
+            return;
+          }
+          final polygon = CommonFunctions.getPolygonFromRect(event.visibleRect);
 
-      state = AsyncValue.data(await _fetch(dio, polygon));
-    });
+          state = AsyncValue.data(await _fetch(dio, polygon));
+        });
 
     ref.onDispose(subscription.cancel);
 
@@ -53,7 +54,7 @@ class StoriesRepo extends _$StoriesRepo {
 
     final rawResponse = await dio.get(url, options: defaultCacheOptions);
     final storiesResponse = StoriesResponse.fromBuffer(rawResponse.data as List<int>);
-    unawaited(mixpanel?.track('StoriesRepo: _fetch'));
+    detach(mixpanel?.track('StoriesRepo: _fetch'), tag: 'storiesRepo.track');
     return storiesResponse;
   }
 }

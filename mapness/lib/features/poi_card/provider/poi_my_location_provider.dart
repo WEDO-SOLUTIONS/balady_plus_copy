@@ -15,6 +15,7 @@ import 'package:mapness/shared/providers/map/highlight.dart';
 import 'package:mapness/shared/providers/map/object_manager.dart';
 import 'package:mapness/shared/providers/map/selected_marker.dart';
 import 'package:mapness/shared/ui/markers/markers.dart';
+import 'package:mapness/shared/utils/detach.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'poi_my_location_provider.g.dart';
@@ -53,7 +54,7 @@ class PoiMyLocation extends _$PoiMyLocation {
 
     final coordinatesAddress = '${closestPoint.latitude}, ${closestPoint.longitude}';
 
-    unawaited(_cameraAnimation(closestPoint));
+    detach(_cameraAnimation(closestPoint), tag: 'poiMyLocationProvider.cameraAnimation');
 
     String address = coordinatesAddress;
     final searchData = await dgisController.search(

@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/shared/providers/hive.dart';
+import 'package:mapness/shared/utils/detach.dart';
 import 'package:mapness/shared/utils/logger/logger.dart';
 
 /// Debug-only identity override: play as an arbitrary TIFO user instead of the
@@ -54,7 +55,7 @@ class TifoDebugIdentityController extends Notifier<TifoDebugIdentity> {
     // identity as soon as the box opens. A request fired in that window uses
     // the host session — acceptable for a debug tool, and the panel always
     // shows the restored state.
-    unawaited(_restore());
+    detach(_restore(), tag: 'tifoDebugIdentity.restore');
     return const TifoDebugIdentity();
   }
 

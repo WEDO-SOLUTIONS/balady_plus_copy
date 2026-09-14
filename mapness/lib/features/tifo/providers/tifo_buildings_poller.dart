@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/features/tifo/providers/tifo_buildings_provider.dart';
+import 'package:mapness/shared/utils/detach.dart';
 
 /// Long-poll service for building state. While running it periodically asks the
 /// buildings provider to refresh ownership/status of the visible set
@@ -27,7 +28,7 @@ class TifoBuildingsPoller extends Notifier<bool> {
     }
     state = true;
     _timer = Timer.periodic(_interval, (_) {
-      unawaited(ref.read(tifoBuildingsProvider.notifier).refreshVisible());
+      detach(ref.read(tifoBuildingsProvider.notifier).refreshVisible(), tag: 'tifoBuildingsPoller.refreshVisible');
     });
   }
 

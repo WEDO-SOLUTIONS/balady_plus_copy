@@ -1,8 +1,9 @@
 import 'dart:async';
 
+import 'package:mapness/shared/utils/detach.dart';
 import 'package:mapness/shared/utils/logger/logger.dart';
 
-/// Starts [future] without awaiting it, but - unlike a bare `unawaited(...)` -
+/// Starts [future] without awaiting it, but - unlike a bare `detach(..., tag: 'detach.call')` -
 /// never lets its error disappear.
 ///
 /// A dropped `Future` whose error is never observed escapes to the enclosing
@@ -15,15 +16,21 @@ import 'package:mapness/shared/utils/logger/logger.dart';
 /// such as `ref.listen`, `onTap`, `onDispose` or `Timer` handlers. Inside an
 /// `async` body, prefer a plain `await`.
 ///
+/// A null [future] is a no-op, matching `dart:async`'s `unawaited`, so
+/// `detach(sub?.cancel(), tag: ...)` needs no narrowing at the call site.
+///
 /// ```dart
 /// ref.listen(busLayerVisibleProvider, (_, isShown) {
 ///   detach(isShown ? show() : hide(), tag: 'jeddahBus.toggle');
 /// });
 /// ```
 void detach(
-  Future<void> future, {
+  Future<void>? future, {
   required String tag,
 }) {
+  if (future == null) {
+    return;
+  }
   // This helper *is* the sanctioned drop point; the error is handled below.
   // ignore: discarded_futures
   future.catchError(
@@ -41,9 +48,12 @@ void detach(
 /// Mirrors [detach]; kept separate so the common `Future<void>` case is not
 /// forced to spell out a type argument.
 void detachValue<T>(
-  Future<T> future, {
+  Future<T>? future, {
   required String tag,
 }) {
+  if (future == null) {
+    return;
+  }
   // ignore: discarded_futures
   future.then<void>(
     (_) {},

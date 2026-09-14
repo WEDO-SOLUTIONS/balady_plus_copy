@@ -10,6 +10,7 @@ import 'package:mapness/features/share_eta/models/eta_route_info.dart';
 import 'package:mapness/features/share_eta/providers/eta_route_info_provider.dart';
 import 'package:mapness/shared/providers/location.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
+import 'package:mapness/shared/utils/detach.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'path_nav_eta.g.dart';
@@ -18,7 +19,7 @@ part 'path_nav_eta.g.dart';
 class _PathNavEta extends _$PathNavEta {
   @override
   PathNavEta? build() {
-    unawaited(_subscribe());
+    detach(_subscribe(), tag: 'pathNavEta.subscribe');
 
     return null;
   }
@@ -57,7 +58,9 @@ class _PathNavEta extends _$PathNavEta {
         final originCity = await location.getCityByLatLng(lat: route.startPoint?.lat, lng: route.startPoint?.lon);
         final destinationCity = await location.getCityByLatLng(lat: route.endPoint?.lat, lng: route.endPoint?.lon);
 
-        ref.read(appAnalyticsProvider).navigationHalfWay(
+        ref
+            .read(appAnalyticsProvider)
+            .navigationHalfWay(
               originCity: originCity.name,
               destinationCity: destinationCity.name,
               origin: switch (route.startPoint) {

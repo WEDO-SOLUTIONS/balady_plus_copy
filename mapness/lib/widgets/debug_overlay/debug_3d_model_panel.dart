@@ -10,6 +10,7 @@ import 'package:mapness/features/tifo/data/tifo_debug_goalkeeper_difficulty.dart
 import 'package:mapness/features/tifo/penalty/penalty_game.dart';
 import 'package:mapness/shared/providers/app_language.dart';
 import 'package:mapness/shared/providers/map/debug_3d_model.dart';
+import 'package:mapness/shared/utils/detach.dart';
 import 'package:mapness/widgets/debug_overlay/debug_theme.dart';
 
 class Debug3DModelPanel extends ConsumerWidget {
@@ -71,7 +72,9 @@ class Debug3DModelPanel extends ConsumerWidget {
                   icon: Icons.delete_outline_rounded,
                   color: DebugTheme.error,
                   isCompact: true,
-                  onPressed: state.isBusy ? () {} : () => unawaited(notifier.removeModel()),
+                  onPressed: state.isBusy
+                      ? () {}
+                      : () => detach(notifier.removeModel(), tag: 'debug3dModelPanel.removeModel'),
                 )
               else
                 DebugButton(
@@ -79,14 +82,18 @@ class Debug3DModelPanel extends ConsumerWidget {
                   icon: Icons.add_location_alt_rounded,
                   gradient: DebugTheme.gradientTeal,
                   isCompact: true,
-                  onPressed: state.isBusy ? () {} : () => unawaited(notifier.addModel()),
+                  onPressed: state.isBusy
+                      ? () {}
+                      : () => detach(notifier.addModel(), tag: 'debug3dModelPanel.addModel'),
                 ),
               DebugOutlinedButton(
                 label: state.isBusy ? 'Focusing...' : 'Focus',
                 icon: Icons.my_location_rounded,
                 color: DebugTheme.info,
                 isCompact: true,
-                onPressed: state.isBusy ? () {} : () => unawaited(notifier.focusModel()),
+                onPressed: state.isBusy
+                    ? () {}
+                    : () => detach(notifier.focusModel(), tag: 'debug3dModelPanel.focusModel'),
               ),
             ],
           ),
@@ -121,7 +128,8 @@ class Debug3DModelPanel extends ConsumerWidget {
                   mode: mode,
                   isSelected: state.polygonColorMode == mode,
                   isBusy: state.isBusy,
-                  onPressed: () => unawaited(notifier.setPolygonColorMode(mode: mode)),
+                  onPressed: () =>
+                      detach(notifier.setPolygonColorMode(mode: mode), tag: 'debug3dModelPanel.setPolygonColorMode'),
                 ),
             ],
           ),
@@ -129,14 +137,18 @@ class Debug3DModelPanel extends ConsumerWidget {
             title: 'Show Polygons',
             subtitle: 'GeoJSON overlay from pasted text',
             value: state.arePolygonsVisible,
-            onChanged: (value) => unawaited(notifier.setPolygonsVisible(value: value)),
+            onChanged: (value) =>
+                detach(notifier.setPolygonsVisible(value: value), tag: 'debug3dModelPanel.setPolygonsVisible'),
             gradient: DebugTheme.gradientTeal,
           ),
           DebugToggleRow(
             title: 'Centroid 3D Models',
             subtitle: 'One model in each polygon centroid',
             value: state.areCentroidModelsVisible,
-            onChanged: (value) => unawaited(notifier.setCentroidModelsVisible(value: value)),
+            onChanged: (value) => detach(
+              notifier.setCentroidModelsVisible(value: value),
+              tag: 'debug3dModelPanel.setCentroidModelsVisible',
+            ),
             gradient: DebugTheme.gradientTeal,
           ),
           Wrap(
@@ -148,7 +160,9 @@ class Debug3DModelPanel extends ConsumerWidget {
                 icon: Icons.center_focus_strong_rounded,
                 color: DebugTheme.info,
                 isCompact: true,
-                onPressed: state.isBusy ? () {} : () => unawaited(notifier.focusDistrictPolygons()),
+                onPressed: state.isBusy
+                    ? () {}
+                    : () => detach(notifier.focusDistrictPolygons(), tag: 'debug3dModelPanel.focusDistrictPolygons'),
               ),
               if (state.hasDistrictLayerObjects)
                 DebugOutlinedButton(
@@ -156,7 +170,12 @@ class Debug3DModelPanel extends ConsumerWidget {
                   icon: Icons.layers_clear_rounded,
                   color: DebugTheme.error,
                   isCompact: true,
-                  onPressed: state.isBusy ? () {} : () => unawaited(notifier.removeDistrictLayerObjects()),
+                  onPressed: state.isBusy
+                      ? () {}
+                      : () => detach(
+                          notifier.removeDistrictLayerObjects(),
+                          tag: 'debug3dModelPanel.removeDistrictLayerObjects',
+                        ),
                 ),
             ],
           ),
@@ -172,7 +191,8 @@ class Debug3DModelPanel extends ConsumerWidget {
             title: 'Activate TIFO',
             subtitle: 'Show the ⚽ FAB + gray polygons on the map',
             value: state.isGameModeActive,
-            onChanged: (value) => unawaited(notifier.setGameModeActive(value: value)),
+            onChanged: (value) =>
+                detach(notifier.setGameModeActive(value: value), tag: 'debug3dModelPanel.setGameModeActive'),
             gradient: DebugTheme.gradientTeal,
           ),
           const SizedBox(height: 8),
@@ -211,7 +231,7 @@ class Debug3DModelPanel extends ConsumerWidget {
     final keeperColor = colorOverride.enabled ? colorOverride.keeperColor : null;
     final showColliderDebug = ref.read(tifoDebugColliderOverlayProvider);
     final goalkeeperDifficulty = ref.read(tifoDebugGoalkeeperDifficultyProvider);
-    unawaited(
+    detach(
       navigator.push<void>(
         MaterialPageRoute<void>(
           fullscreenDialog: true,
@@ -229,6 +249,7 @@ class Debug3DModelPanel extends ConsumerWidget {
           ),
         ),
       ),
+      tag: 'debug3dModelPanel.pop',
     );
   }
 }

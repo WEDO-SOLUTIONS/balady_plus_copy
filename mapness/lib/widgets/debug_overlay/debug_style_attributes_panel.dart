@@ -4,6 +4,7 @@ import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/shared/providers/map/debug_style_attributes.dart';
+import 'package:mapness/shared/utils/detach.dart';
 import 'package:mapness/widgets/debug_overlay/debug_theme.dart';
 
 class DebugStyleAttributesPanel extends ConsumerWidget {
@@ -38,7 +39,10 @@ class DebugStyleAttributesPanel extends ConsumerWidget {
             title: 'Custom Vehicle Markers',
             subtitle: 'global customVehicleMarkersOn',
             value: state.customVehicleMarkersOn,
-            onChanged: (value) => unawaited(notifier.setCustomVehicleMarkersOn(value: value)),
+            onChanged: (value) => detach(
+              notifier.setCustomVehicleMarkersOn(value: value),
+              tag: 'debugStyleAttributesPanel.setCustomVehicleMarkersOn',
+            ),
             gradient: DebugTheme.gradientBlue,
           ),
           const DebugDivider(),
@@ -57,7 +61,10 @@ class DebugStyleAttributesPanel extends ConsumerWidget {
                 _MarkerTypeButton(
                   control: control,
                   isActive: state.vehicleMarkerType == control.value,
-                  onPressed: () => unawaited(notifier.setVehicleMarkerType(control.value)),
+                  onPressed: () => detach(
+                    notifier.setVehicleMarkerType(control.value),
+                    tag: 'debugStyleAttributesPanel.setVehicleMarkerType',
+                  ),
                 ),
             ],
           ),
@@ -70,7 +77,7 @@ class DebugStyleAttributesPanel extends ConsumerWidget {
                 icon: Icons.restart_alt_rounded,
                 color: DebugTheme.info,
                 isCompact: true,
-                onPressed: () => unawaited(notifier.resetAll()),
+                onPressed: () => detach(notifier.resetAll(), tag: 'debugStyleAttributesPanel.resetAll'),
               ),
             ),
           ],

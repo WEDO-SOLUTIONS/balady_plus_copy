@@ -27,6 +27,7 @@ import 'package:mapness/shared/hooks/toggle_sheet_controller_hook.dart';
 import 'package:mapness/shared/providers/location.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:mapness/shared/providers/map/object_manager.dart';
+import 'package:mapness/shared/utils/detach.dart';
 import 'package:provider/provider.dart' as provider;
 import 'package:sheetify/sheetify.dart';
 import 'package:urbi_utils/urbi_utils.dart';
@@ -217,12 +218,15 @@ class _RoutingRoutesPageState extends ConsumerState<RoutingRoutesPage> {
       return;
     }
 
-    context.router.push(
-      ShareRouteRoute(
-        points: points,
-        navType: navType,
-        activeRouteIndex: activeRouteIndex,
+    detach(
+      context.router.push(
+        ShareRouteRoute(
+          points: points,
+          navType: navType,
+          activeRouteIndex: activeRouteIndex,
+        ),
       ),
+      tag: 'routingRoutes.shareRoute',
     );
   }
 

@@ -14,6 +14,7 @@ import 'package:mapness/features/tifo/data/tifo_debug_identity.dart';
 import 'package:mapness/features/tifo/penalty/penalty_game.dart';
 import 'package:mapness/features/tifo/providers/tifo_session_provider.dart';
 import 'package:mapness/features/tifo/tifo_buildings_map_layer.dart';
+import 'package:mapness/shared/utils/detach.dart';
 import 'package:mapness/widgets/debug_overlay/debug_theme.dart';
 
 /// Debug console for the TIFO staging backend: preset requests for the main
@@ -158,7 +159,7 @@ class _TifoBackendDebugPanelState extends ConsumerState<TifoBackendDebugPanel> {
                   ref.read(tifoDebugConfigProvider.notifier).setBaseUrl(_baseUrlController.text);
                 }
                 final layer = ref.read(tifoBuildingsMapLayerProvider.notifier);
-                unawaited(value ? layer.enable() : layer.disable());
+                detach(value ? layer.enable() : layer.disable(), tag: 'tifoBackendDebugPanel.disable');
               },
             );
           },
@@ -236,13 +237,14 @@ class _TifoBackendDebugPanelState extends ConsumerState<TifoBackendDebugPanel> {
           isCompact: true,
           onPressed: _isBusy
               ? () {}
-              : () => unawaited(
+              : () => detach(
                   _send(
                     label: '$_method ${_pathController.text.trim()}',
                     method: _method,
                     path: _pathController.text.trim(),
                     body: _bodyController.text.trim(),
                   ),
+                  tag: 'tifoBackendDebugPanel.send',
                 ),
         ),
         if (_lastResponseBody != null) ...[
@@ -262,7 +264,10 @@ class _TifoBackendDebugPanelState extends ConsumerState<TifoBackendDebugPanel> {
                 icon: Icons.copy_rounded,
                 color: DebugTheme.info,
                 isCompact: true,
-                onPressed: () => unawaited(Clipboard.setData(ClipboardData(text: _lastResponseBody!))),
+                onPressed: () => detach(
+                  Clipboard.setData(ClipboardData(text: _lastResponseBody!)),
+                  tag: 'tifoBackendDebugPanel.setData',
+                ),
               ),
             ],
           ),
@@ -296,7 +301,12 @@ class _TifoBackendDebugPanelState extends ConsumerState<TifoBackendDebugPanel> {
     icon: method == 'GET' ? Icons.download_rounded : Icons.upload_rounded,
     color: DebugTheme.info,
     isCompact: true,
-    onPressed: _isBusy ? () {} : () => unawaited(_send(label: '$method $path', method: method, path: path)),
+    onPressed: _isBusy
+        ? () {}
+        : () => detach(
+            _send(label: '$method $path', method: method, path: path),
+            tag: 'tifoBackendDebugPanel.send',
+          ),
   );
 
   Future<void> _send({
@@ -427,7 +437,8 @@ class _IdentitySwitcherState extends ConsumerState<_IdentitySwitcher> {
               : 'Off = host SSO account. On = the user id below is sent as the bearer.',
           value: identity.enabled,
           gradient: DebugTheme.gradientTeal,
-          onChanged: (value) => unawaited(_apply(() => controller.setEnabled(enabled: value))),
+          onChanged: (value) =>
+              detach(_apply(() => controller.setEnabled(enabled: value)), tag: 'tifoBackendDebugPanel.apply'),
         ),
         const SizedBox(height: 8),
         Row(
@@ -437,7 +448,7 @@ class _IdentitySwitcherState extends ConsumerState<_IdentitySwitcher> {
               child: DebugTextField(
                 controller: _controller,
                 hint: 'user id, e.g. tester-01',
-                onSubmitted: (value) => unawaited(_useTyped(controller, value)),
+                onSubmitted: (value) => detach(_useTyped(controller, value), tag: 'tifoBackendDebugPanel.useTyped'),
               ),
             ),
             const SizedBox(width: 8),
@@ -446,7 +457,7 @@ class _IdentitySwitcherState extends ConsumerState<_IdentitySwitcher> {
               icon: Icons.person_pin_circle_rounded,
               gradient: DebugTheme.gradientTeal,
               isCompact: true,
-              onPressed: () => unawaited(_useTyped(controller, _controller.text)),
+              onPressed: () => detach(_useTyped(controller, _controller.text), tag: 'tifoBackendDebugPanel.useTyped'),
             ),
           ],
         ),
@@ -461,8 +472,8 @@ class _IdentitySwitcherState extends ConsumerState<_IdentitySwitcher> {
             _SavedIdRow(
               id: id,
               isActive: identity.isActive && identity.userId == id,
-              onUse: () => unawaited(_apply(() => controller.use(id))),
-              onDelete: () => unawaited(_apply(() => controller.forget(id))),
+              onUse: () => detach(_apply(() => controller.use(id)), tag: 'tifoBackendDebugPanel.apply'),
+              onDelete: () => detach(_apply(() => controller.forget(id)), tag: 'tifoBackendDebugPanel.apply'),
             ),
         ],
       ],

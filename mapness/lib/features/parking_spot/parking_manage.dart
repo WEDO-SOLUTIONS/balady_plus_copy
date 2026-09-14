@@ -21,6 +21,7 @@ import 'package:mapness/shared/providers/map/object_manager.dart';
 import 'package:mapness/shared/providers/map/point_of_interest.dart';
 import 'package:mapness/shared/providers/map/selected_marker.dart';
 import 'package:mapness/shared/ui/markers/markers.dart';
+import 'package:mapness/shared/utils/detach.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'parking_manage.g.dart';
@@ -109,7 +110,7 @@ class _ParkingManage extends _$ParkingManage {
 
   Future<void> clearStore() async {
     final hive = await ref.read(hiveProvider(_boxName).future);
-    unawaited(_mapObjectManager.removeMarkerById(parkingId));
+    detach(_mapObjectManager.removeMarkerById(parkingId), tag: 'parkingManage.removeMarkerById');
 
     await hive.delete(_keyCache);
     state = const AsyncValue.data(null);

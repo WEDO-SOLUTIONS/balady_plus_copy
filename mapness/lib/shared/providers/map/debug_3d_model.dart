@@ -9,6 +9,7 @@ import 'package:mapness/features/tifo/onboarding_screen.dart';
 import 'package:mapness/features/tifo/penalty/penalty_entry_screen.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:mapness/shared/providers/map/object_manager.dart';
+import 'package:mapness/shared/utils/detach.dart';
 import 'package:mapness/shared/utils/logger/logger.dart';
 
 const debug3dModelId = 'debug-3d-model';
@@ -369,7 +370,7 @@ class Debug3DModelController extends Notifier<Debug3DModelState> {
     _isDisposed = false;
     ref.onDispose(() {
       _isDisposed = true;
-      unawaited(_disposeManager());
+      detach(_disposeManager(), tag: 'debug3dModel.disposeManager');
     });
 
     return const Debug3DModelState(
@@ -657,13 +658,14 @@ class Debug3DModelController extends Notifier<Debug3DModelState> {
     if (navigator == null) {
       return;
     }
-    unawaited(
+    detach(
       navigator.push<void>(
         MaterialPageRoute<void>(
           fullscreenDialog: true,
           builder: (_) => PenaltyEntryScreen(polygonId: polygonId),
         ),
       ),
+      tag: 'debug3dModel.call',
     );
   }
 
@@ -689,7 +691,7 @@ class Debug3DModelController extends Notifier<Debug3DModelState> {
     if (value) {
       final navigator = rootNavigatorKey.currentState;
       if (navigator != null) {
-        unawaited(
+        detach(
           navigator
               .push<void>(
                 MaterialPageRoute<void>(
@@ -707,15 +709,17 @@ class Debug3DModelController extends Notifier<Debug3DModelState> {
                 if (nav == null) {
                   return;
                 }
-                unawaited(
+                detach(
                   nav.push<void>(
                     MaterialPageRoute<void>(
                       fullscreenDialog: true,
                       builder: (_) => const TifoOnboardingScreen(),
                     ),
                   ),
+                  tag: 'debug3dModel.call',
                 );
               }),
+          tag: 'debug3dModel.then',
         );
       }
       await setCentroidModelsVisible(value: true);

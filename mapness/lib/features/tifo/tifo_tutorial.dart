@@ -77,7 +77,7 @@ class _TifoTutorialState extends State<TifoTutorial> {
 
   Future<void> _next() async {
     if (_isLast) {
-      Navigator.of(context).maybePop();
+      await Navigator.of(context).maybePop();
       return;
     }
     await _controller.animateToPage(

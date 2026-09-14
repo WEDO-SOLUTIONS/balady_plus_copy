@@ -16,6 +16,7 @@ import 'package:mapness/features/tifo/tutorial/tifo_guided_tutorial.dart';
 import 'package:mapness/features/tifo/ui/tifo_theme.dart';
 import 'package:mapness/l10n/generated/app_localizations.dart';
 import 'package:mapness/shared/ui/buttons/map_button.dart';
+import 'package:mapness/shared/utils/detach.dart';
 import 'package:mapness/shared/utils/logger/logger.dart';
 
 /// On-map control (⚽) that toggles the TIFO overlay — the production entry
@@ -46,10 +47,11 @@ class TifoControl extends ConsumerWidget {
   /// Fire-and-forget with explicit logging — a silent async throw here reads
   /// as "the button does nothing" on device.
   void _guardedTap(BuildContext context, WidgetRef ref, {required bool enabled}) {
-    unawaited(
+    detach(
       _onTap(context, ref, enabled: enabled).catchError((Object e, StackTrace st) {
         logger.log('[tifo] ⚽ tap failed: $e\n$st');
       }),
+      tag: 'tifoControl.onTap',
     );
   }
 
@@ -152,7 +154,7 @@ class TifoLeaderboardControl extends StatelessWidget {
       if (ctx == null) {
         return;
       }
-      unawaited(showTifoLeaderboardSheet(ctx));
+      detach(showTifoLeaderboardSheet(ctx), tag: 'tifoControl.showTifoLeaderboardSheet');
     },
     child: Icon(Icons.emoji_events_rounded, size: 24, color: context.colors.accentDefault),
   );
@@ -167,7 +169,10 @@ class TifoHelpControl extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => MapButton(
-    onTap: () => unawaited(showTifoGuidedTutorial(context, initialStep: TifoGuidedTutorial.lastStep)),
+    onTap: () => detach(
+      showTifoGuidedTutorial(context, initialStep: TifoGuidedTutorial.lastStep),
+      tag: 'tifoControl.showTifoGuidedTutorial',
+    ),
     child: Assets.imagesSvg.tifoHelp.svg(
       width: 24,
       height: 24,
@@ -210,7 +215,7 @@ class TifoJoinPill extends ConsumerWidget {
             if (gateCtx == null) {
               return;
             }
-            unawaited(TifoJourney(ref).ensurePlayReady(gateCtx));
+            detach(TifoJourney(ref).ensurePlayReady(gateCtx), tag: 'tifoControl.TifoJourney');
           },
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 14),

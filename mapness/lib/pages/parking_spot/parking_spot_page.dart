@@ -23,6 +23,7 @@ import 'package:mapness/shared/lib/share_util.dart';
 import 'package:mapness/shared/providers/dark_mode.dart';
 import 'package:mapness/shared/ui/toast/toast_overlay.dart';
 import 'package:mapness/shared/ui/urbi_map.dart';
+import 'package:mapness/shared/utils/detach.dart';
 import 'package:mapness/widgets/parking_spot/selected_images.dart';
 import 'package:provider/provider.dart';
 
@@ -323,7 +324,14 @@ class ParkingSpotPage extends HookConsumerWidget {
             final coordinates = markerCoords == null
                 ? null
                 : Coordinates(latitude: markerCoords.latitude, longitude: markerCoords.longitude);
-            ShareUtil.sharePOI(context: context, objectId: parkingObjectId.toString(), markerCoords: coordinates);
+            detach(
+              ShareUtil.sharePOI(
+                context: context,
+                objectId: parkingObjectId.toString(),
+                markerCoords: coordinates,
+              ),
+              tag: 'parkingSpotPage.sharePOI',
+            );
           },
         ),
       ],

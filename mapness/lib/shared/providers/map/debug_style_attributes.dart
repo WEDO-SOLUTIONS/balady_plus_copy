@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:dgis_map/library.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
+import 'package:mapness/shared/utils/detach.dart';
 
 const debugStyleAttributeCustomVehicleMarkersOn = 'customVehicleMarkersOn';
 const debugStyleAttributeVehicleMarkerType = 'vehicleMarkerType';
@@ -98,7 +99,7 @@ class DebugStyleAttributes extends Notifier<DebugStyleAttributesState> {
         return;
       }
 
-      unawaited(_applyAttributes(controller, state));
+      detach(_applyAttributes(controller, state), tag: 'debugStyleAttributes.applyAttributes');
     });
 
     return _defaultState();

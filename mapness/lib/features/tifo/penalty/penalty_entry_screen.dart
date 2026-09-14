@@ -8,6 +8,7 @@ import 'package:mapness/features/tifo/penalty/penalty_game.dart';
 import 'package:mapness/l10n/generated/app_localizations.dart';
 import 'package:mapness/shared/providers/app_language.dart';
 import 'package:mapness/shared/providers/map/debug_3d_model.dart';
+import 'package:mapness/shared/utils/detach.dart';
 
 /// Penalty Challenge entry screen — Figma node 2:2541.
 ///
@@ -111,8 +112,9 @@ class PenaltyEntryScreen extends ConsumerWidget {
               // by the time this future fires.
               rootNavigatorKey.currentState?.popUntil((route) => route.isFirst);
               if (goals >= _goalsToCapture) {
-                unawaited(
+                detach(
                   ref.read(debug3dModelProvider.notifier).capturePolygon(polygonId: polygonId),
+                  tag: 'penaltyEntryScreen.capturePolygon',
                 );
               }
             });

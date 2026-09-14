@@ -18,6 +18,7 @@ import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/lib/auth/auth_methods.dart';
 import 'package:mapness/shared/ui/sheets/error_sheet.dart';
 import 'package:mapness/shared/ui/sheets/loading_sheet.dart';
+import 'package:mapness/shared/utils/detach.dart';
 import 'package:sheetify/sheetify.dart';
 
 @RoutePage()
@@ -39,7 +40,7 @@ class _PoiFavoriteDialogPageState extends ConsumerState<PoiFavoriteDialogPage> {
   late final scrollController = ToggleSheetController(onClose: (_) => context.router.pop());
 
   void _withPop(Future<void> future) {
-    unawaited(future);
+    detach(future, tag: 'poiFavoriteDialog.call');
     context.router.pop();
   }
 

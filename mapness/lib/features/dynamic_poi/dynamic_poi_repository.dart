@@ -8,6 +8,7 @@ import 'package:mapness/features/dynamic_poi/dynamic_poi_models.dart';
 import 'package:mapness/shared/providers/app_language.dart';
 import 'package:mapness/shared/providers/dgis_environment.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
+import 'package:mapness/shared/utils/detach.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:rxdart/rxdart.dart';
 
@@ -47,11 +48,11 @@ class DynamicPoiRepository extends _$DynamicPoiRepository {
       if (token != null && !token.isCancelled) {
         token.cancel('DynamicPoiRepository disposed');
       }
-      _subscription?.cancel();
+      detach(_subscription?.cancel(), tag: 'dynamicPoiRepository.cancelSubscription');
     });
 
     // Re-subscribe whenever locale/env changes (the outer `build` runs again).
-    _subscription?.cancel();
+    detach(_subscription?.cancel(), tag: 'dynamicPoiRepository.cancelOnResubscribe');
     _subscription = controller.visibleRectSubject
         .whereNotNull()
         .where((event) => event.visibleRect.zoom >= _minFetchZoom)

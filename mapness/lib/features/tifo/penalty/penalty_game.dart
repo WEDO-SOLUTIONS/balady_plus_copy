@@ -20,6 +20,7 @@ import 'package:mapness/features/tifo/data/tifo_models.dart';
 import 'package:mapness/features/tifo/ui/tifo_message_card.dart';
 import 'package:mapness/features/tifo/ui/tifo_theme.dart';
 import 'package:mapness/l10n/generated/app_localizations.dart';
+import 'package:mapness/shared/utils/detach.dart';
 import 'package:mapness/shared/utils/logger/logger.dart';
 
 class PenaltyApp extends StatelessWidget {
@@ -305,7 +306,7 @@ class _PenaltyGamePageState extends State<PenaltyGamePage> {
     final idleSeconds = DateTime.now().difference(lastActivityAt).inSeconds;
     final warnAfter = math.max(widget.sessionTimeoutSeconds - _idleWarningBufferSeconds, _idleWarningFloorSeconds);
     if (idleSeconds >= warnAfter) {
-      unawaited(_showStillPlayingPrompt());
+      detach(_showStillPlayingPrompt(), tag: 'penaltyGame.showStillPlayingPrompt');
     }
   }
 
@@ -350,7 +351,7 @@ class _PenaltyGamePageState extends State<PenaltyGamePage> {
   @override
   void initState() {
     super.initState();
-    unawaited(_startAmbience());
+    detach(_startAmbience(), tag: 'penaltyGame.startAmbience');
     _perspectiveGame.armedNotifier.addListener(_onArmedChanged);
     _perspectiveGame.goalsNotifier.addListener(_onActivity);
     _perspectiveGame.missesNotifier.addListener(_onActivity);
@@ -408,10 +409,10 @@ class _PenaltyGamePageState extends State<PenaltyGamePage> {
 
   @override
   void dispose() {
-    unawaited(_ambiencePlayer?.dispose());
+    detach(_ambiencePlayer?.dispose(), tag: 'penaltyGame.dispose');
     _idleCheckTimer?.cancel();
     _offlineTimer?.cancel();
-    unawaited(_connectivitySub?.cancel());
+    detach(_connectivitySub?.cancel(), tag: 'penaltyGame.cancel');
     _perspectiveGame.armedNotifier.removeListener(_onArmedChanged);
     _perspectiveGame.goalsNotifier.removeListener(_onActivity);
     _perspectiveGame.missesNotifier.removeListener(_onActivity);
@@ -1952,7 +1953,7 @@ class PenaltyGame extends FlameGame with TapCallbacks, DragCallbacks {
   static double _flightTimeFor(double power) => 0.90 - power * 0.35;
 
   void _shootAtTarget(_Vec3 target, double power) {
-    unawaited(_playRandomSfx(_kickSounds));
+    detach(_playRandomSfx(_kickSounds), tag: 'penaltyGame.playRandomSfx');
     _aimTarget = target;
     _state = _ShotState.flying;
     _shotTime = 0;
@@ -4900,7 +4901,7 @@ Future<void> _playQueuedSfx(List<String> tracks) async {
     // Not awaited further — the player keeps playing after this Future
     // resolves regardless, and there's no dispose-right-after step that
     // would need us to wait for it to finish first.
-    unawaited(player.play());
+    detach(player.play(), tag: 'penaltyGame.play');
     debugPrint('[tifo-audio] sfx played: $track');
   } catch (e, st) {
     // Ignored at runtime — see doc comment above. Still log it: this is the

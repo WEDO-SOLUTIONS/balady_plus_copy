@@ -13,6 +13,7 @@ import 'package:mapness/shared/providers/location.dart';
 import 'package:mapness/shared/providers/map/point_of_interest.dart';
 import 'package:mapness/shared/providers/map/selected_marker.dart';
 import 'package:mapness/shared/ui/sheets/error_sheet_v2.dart';
+import 'package:mapness/shared/utils/detach.dart';
 import 'package:permission_handler/permission_handler.dart' as perm;
 import 'package:provider/provider.dart';
 
@@ -55,7 +56,7 @@ class _LocationErrorSheetState extends ConsumerState<LocationErrorSheetPage> wit
       if (context.router.stack.length != 1) {
         context.router.pop(result);
       } else {
-        unawaited(context.router.navigate(const BottomMenuRoute()));
+        detach(context.router.navigate(const BottomMenuRoute()), tag: 'locationErrorSheet.navigate');
         CommonFunctions.locationDialogShowed = false;
       }
     }

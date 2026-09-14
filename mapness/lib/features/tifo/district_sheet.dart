@@ -11,6 +11,7 @@ import 'package:mapness/features/tifo/tifo_journey.dart';
 import 'package:mapness/features/tifo/ui/tifo_theme.dart';
 import 'package:mapness/l10n/generated/app_localizations.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
+import 'package:mapness/shared/utils/detach.dart';
 
 /// District details bottom sheet — Figma "district details" (node 696:119272,
 /// BRD US-06). Opened by tapping a district polygon in the low-zoom TIFO
@@ -297,7 +298,7 @@ class _DistrictSheetState extends ConsumerState<_DistrictSheet> {
               TifoPrimaryButton(
                 label: AppLocalizations.of(context).tifoTakeOverTheDistrict,
                 trailingArrow: true,
-                onPressed: () => unawaited(_takeOver()),
+                onPressed: () => detach(_takeOver(), tag: 'districtSheet.takeOver'),
               ),
             ],
           ),

@@ -19,6 +19,7 @@ import 'package:mapness/shared/providers/location.dart';
 import 'package:mapness/shared/providers/urbi_analytics.dart';
 import 'package:mapness/shared/ui/loading/loading_overlay.dart';
 import 'package:mapness/shared/ui/toast/toast_overlay.dart';
+import 'package:mapness/shared/utils/detach.dart';
 import 'package:mapness/shared/utils/logger/logger.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -323,7 +324,7 @@ class AppIconQuickActionHandler extends _$AppIconQuickActionHandler {
           outcome: outcome,
           reason: reason,
         );
-    unawaited(
+    detach(
       ref
           .read(urbiAnalyticsProvider)
           .track(
@@ -334,6 +335,7 @@ class AppIconQuickActionHandler extends _$AppIconQuickActionHandler {
               if (reason != null) 'reason': reason,
             },
           ),
+      tag: 'appIconQuickActionHandler.track',
     );
   }
 }

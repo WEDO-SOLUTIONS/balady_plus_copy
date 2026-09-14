@@ -4,6 +4,7 @@ import 'package:dio/dio.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:mapness/features/feedback/feedback_dio.dart';
 import 'package:mapness/shared/lib/file_upload.dart';
+import 'package:mapness/shared/utils/detach.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'feedback_upload_image.g.dart';
@@ -28,7 +29,7 @@ class FeedbackUploadImage extends _$FeedbackUploadImage {
     ref.onDispose(() => cancelToken.cancel());
 
     /// start upload
-    unawaited(_dioExceptionHandler(() => _sendFile(file, cancelToken)));
+    detach(_dioExceptionHandler(() => _sendFile(file, cancelToken)), tag: 'feedbackUploadImage.dioExceptionHandler');
 
     return FileUploadInit(srcPath: filePath);
   }
@@ -100,7 +101,7 @@ class FeedbackUploadImage extends _$FeedbackUploadImage {
         DioExceptionType.sendTimeout => NetworkErrorReason.sendTimeout,
         DioExceptionType.receiveTimeout => NetworkErrorReason.receiveTimeout,
         DioExceptionType.connectionError => NetworkErrorReason.connectionError,
-        _ => null
+        _ => null,
       };
 
       if (networkError != null) {

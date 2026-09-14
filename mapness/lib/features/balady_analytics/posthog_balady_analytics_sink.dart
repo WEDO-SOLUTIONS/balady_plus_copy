@@ -3,6 +3,7 @@ import 'dart:developer';
 
 import 'package:flutter/foundation.dart';
 import 'package:mapness/features/balady_analytics/balady_analytics_sink.dart';
+import 'package:mapness/shared/utils/detach.dart';
 import 'package:posthog_flutter/posthog_flutter.dart';
 
 /// Real transport for the `ours` pipeline: PostHog Cloud EU.
@@ -103,7 +104,7 @@ class PosthogBaladyAnalyticsSink implements BaladyAnalyticsSink {
   @override
   void track(BaladyAnalyticsEvent event) {
     try {
-      unawaited(
+      detach(
         _ready
             .then((ok) {
               if (!ok) {
@@ -127,6 +128,7 @@ class PosthogBaladyAnalyticsSink implements BaladyAnalyticsSink {
               return Posthog().capture(eventName: event.name, properties: _sanitize(event.properties));
             })
             .catchError(_swallow),
+        tag: 'posthogBaladyAnalyticsSink.capture',
       );
     } catch (e) {
       log(e.toString());
@@ -141,7 +143,7 @@ class PosthogBaladyAnalyticsSink implements BaladyAnalyticsSink {
 
   @override
   void identify(String? userId, Map<String, dynamic> traits) {
-    unawaited(
+    detach(
       _ready
           .then((ok) {
             if (!ok) {
@@ -153,6 +155,7 @@ class PosthogBaladyAnalyticsSink implements BaladyAnalyticsSink {
             return Posthog().identify(userId: userId, userProperties: _sanitize(traits));
           })
           .catchError(_swallow),
+      tag: 'posthogBaladyAnalyticsSink.identify',
     );
   }
 

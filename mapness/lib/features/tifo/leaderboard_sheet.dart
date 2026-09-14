@@ -14,6 +14,7 @@ import 'package:mapness/features/tifo/tifo_login.dart';
 import 'package:mapness/features/tifo/ui/tifo_message_card.dart';
 import 'package:mapness/features/tifo/ui/tifo_theme.dart';
 import 'package:mapness/l10n/generated/app_localizations.dart';
+import 'package:mapness/shared/utils/detach.dart';
 
 /// Club standings, fetched fresh each time the sheet opens.
 final tifoLeaderboardProvider = FutureProvider.autoDispose<List<TifoLeaderRow>>(
@@ -118,7 +119,10 @@ class _LeaderboardSheetState extends ConsumerState<_LeaderboardSheet> {
                 // opened. Refresh it on every switch to Profile so a signed-in
                 // player sees the current countdown, not a stale one.
                 if (t == 1 && !ref.read(tifoSessionProvider).isGuest) {
-                  unawaited(ref.read(tifoSessionProvider.notifier).refreshProfile());
+                  detach(
+                    ref.read(tifoSessionProvider.notifier).refreshProfile(),
+                    tag: 'leaderboardSheet.refreshProfile',
+                  );
                 }
               },
             ),
@@ -172,7 +176,7 @@ class _LeaderboardSheetState extends ConsumerState<_LeaderboardSheet> {
               return;
             }
             final l10n = AppLocalizations.of(ctx);
-            unawaited(
+            detach(
               showTifoMessageDialog<void>(
                 ctx,
                 card: TifoMessageCard(
@@ -186,12 +190,13 @@ class _LeaderboardSheetState extends ConsumerState<_LeaderboardSheet> {
                     // fresh fetch rather than reusing the failed one.
                     onPressed: () {
                       Navigator.of(ctx).pop();
-                      unawaited(showTifoLeaderboardSheet(ctx));
+                      detach(showTifoLeaderboardSheet(ctx), tag: 'leaderboardSheet.showTifoLeaderboardSheet');
                     },
                   ),
                   onClose: () => Navigator.of(ctx).pop(),
                 ),
               ),
+              tag: 'leaderboardSheet.pop',
             );
           });
         }

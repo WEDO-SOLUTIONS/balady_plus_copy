@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:mapness/features/app_icon_quick_actions/services/app_icon_quick_action_handler.dart';
 import 'package:mapness/features/app_icon_quick_actions/services/app_icon_quick_actions_platform.dart';
+import 'package:mapness/shared/utils/detach.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'app_icon_quick_actions_initializer.g.dart';
@@ -14,7 +15,10 @@ void appIconQuickActionsInitializer(Ref ref) {
       if (!ref.mounted) {
         return;
       }
-      unawaited(ref.read(appIconQuickActionHandlerProvider.notifier).handleFromPlatform(shortcutKey));
+      detach(
+        ref.read(appIconQuickActionHandlerProvider.notifier).handleFromPlatform(shortcutKey),
+        tag: 'appIconQuickActionsInitializer.handleFromPlatform',
+      );
     });
   });
 }

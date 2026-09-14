@@ -47,6 +47,7 @@ import 'package:mapness/shared/providers/map/object_manager.dart';
 import 'package:mapness/shared/providers/map/parking_state.dart';
 import 'package:mapness/shared/providers/map/selected_marker.dart';
 import 'package:mapness/shared/providers/map/traffic_state.dart';
+import 'package:mapness/shared/utils/detach.dart';
 import 'package:mapness/shared/utils/logger/logger.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:rxdart/rxdart.dart';
@@ -348,7 +349,7 @@ class LayersControls extends _$LayersControls {
     final currentState = state.selectedType;
     final isVisible = ref.read(metroLayerVisibleProvider);
     if (isVisible) {
-      ref.read(metroLayerProvider.notifier).hideMetro();
+      await ref.read(metroLayerProvider.notifier).hideMetro();
       if (currentState == LayerType.metro) {
         setSelection();
       }
@@ -356,7 +357,7 @@ class LayersControls extends _$LayersControls {
       if (currentState != null && currentState != LayerType.metro) {
         await _hidePreviousLayers(currentState);
       }
-      ref.read(metroLayerProvider.notifier).showMetro();
+      await ref.read(metroLayerProvider.notifier).showMetro();
       setSelection(selectedType: LayerType.metro);
     }
   }
@@ -365,7 +366,7 @@ class LayersControls extends _$LayersControls {
     final currentState = state.selectedType;
     final isVisible = ref.read(makkahBusLayerVisibleProvider);
     if (isVisible) {
-      ref.read(makkahBusLayerProvider.notifier).hide();
+      await ref.read(makkahBusLayerProvider.notifier).hide();
       if (currentState == LayerType.makkahBus) {
         setSelection();
       }
@@ -373,7 +374,7 @@ class LayersControls extends _$LayersControls {
       if (currentState != null && currentState != LayerType.makkahBus) {
         await _hidePreviousLayers(currentState);
       }
-      ref.read(makkahBusLayerProvider.notifier).show();
+      await ref.read(makkahBusLayerProvider.notifier).show();
       setSelection(selectedType: LayerType.makkahBus);
     }
   }
@@ -382,7 +383,7 @@ class LayersControls extends _$LayersControls {
     final currentState = state.selectedType;
     final isVisible = ref.read(shuttleBusLayerVisibleProvider);
     if (isVisible) {
-      ref.read(shuttleBusLayerProvider.notifier).hide();
+      await ref.read(shuttleBusLayerProvider.notifier).hide();
       if (currentState == LayerType.shuttleBus) {
         setSelection();
       }
@@ -390,7 +391,7 @@ class LayersControls extends _$LayersControls {
       if (currentState != null && currentState != LayerType.shuttleBus) {
         await _hidePreviousLayers(currentState);
       }
-      ref.read(shuttleBusLayerProvider.notifier).show();
+      await ref.read(shuttleBusLayerProvider.notifier).show();
       setSelection(selectedType: LayerType.shuttleBus);
     }
   }
@@ -399,7 +400,7 @@ class LayersControls extends _$LayersControls {
     final currentState = state.selectedType;
     final isVisible = ref.read(jeddahBusLayerVisibleProvider);
     if (isVisible) {
-      ref.read(jeddahBusLayerProvider.notifier).hide();
+      await ref.read(jeddahBusLayerProvider.notifier).hide();
       if (currentState == LayerType.jeddahBus) {
         setSelection();
       }
@@ -407,7 +408,7 @@ class LayersControls extends _$LayersControls {
       if (currentState != null && currentState != LayerType.jeddahBus) {
         await _hidePreviousLayers(currentState);
       }
-      ref.read(jeddahBusLayerProvider.notifier).show();
+      await ref.read(jeddahBusLayerProvider.notifier).show();
       setSelection(selectedType: LayerType.jeddahBus);
     }
   }
@@ -559,7 +560,7 @@ class LayersControls extends _$LayersControls {
     }
 
     await _viewPortSubscription?.cancel();
-    unawaited(_removeMapObjects());
+    detach(_removeMapObjects(), tag: 'layersControls.removeMapObjects');
     final currentState = state.selectedType;
     // TEMP(BALADY-3615): trace — remove after QA confirms.
     logger.log(

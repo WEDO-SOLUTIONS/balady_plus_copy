@@ -9,6 +9,7 @@ import 'package:mapness/shared/lib/share_util.dart';
 import 'package:mapness/shared/providers/map/camera_position.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:mapness/shared/providers/map/highlight.dart';
+import 'package:mapness/shared/utils/detach.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -41,7 +42,10 @@ class PoiCardActions extends _$PoiCardActions {
     final coordinates = markerCoords == null
         ? null
         : Coordinates(latitude: markerCoords.latitude, longitude: markerCoords.longitude);
-    ShareUtil.sharePOI(context: context, objectId: objectId.toString(), markerCoords: coordinates);
+    detach(
+      ShareUtil.sharePOI(context: context, objectId: objectId.toString(), markerCoords: coordinates),
+      tag: 'poiCardActionsProvider.sharePOI',
+    );
   }
 
   void shareMyLocation(LatLng? location) {
