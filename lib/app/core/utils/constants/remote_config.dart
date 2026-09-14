@@ -448,14 +448,6 @@ class _RemoteConfig {
     urbiPreVal: "5EBC1331132E4C55B9726AFFA5D6B6F4",
   );
 
-  static final ewaaUrl = _initValues<String>(
-    devVal: "https://stgfees.momra.gov.sa/ewaa",
-    stgVal: "https://stgfees.momra.gov.sa/ewaa",
-    preVal: "https://stgfees.momra.gov.sa/ewaa",
-    prodVal: "https://fees.balady.gov.sa/ewaa",
-    urbiPreVal: "https://fees.balady.gov.sa/ewaa",
-  );
-
   static final movingVeichleCategoryKey = _initValues<String>(
     devVal: "CG-53",
     stgVal: "CG-53",

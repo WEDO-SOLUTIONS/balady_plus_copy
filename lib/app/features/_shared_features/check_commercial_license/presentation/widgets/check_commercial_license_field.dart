@@ -9,16 +9,11 @@ class CheckCommercialLicenseField extends StatefulWidget {
   const CheckCommercialLicenseField({super.key, required this.dataSource});
 
   @override
-  _CheckCommercialLicenseFieldState createState() =>
-      _CheckCommercialLicenseFieldState();
+  _CheckCommercialLicenseFieldState createState() => _CheckCommercialLicenseFieldState();
 }
 
-class _CheckCommercialLicenseFieldState
-    extends State<CheckCommercialLicenseField> {
+class _CheckCommercialLicenseFieldState extends State<CheckCommercialLicenseField> {
   final TextEditingController _controller = TextEditingController();
-  final String _statusMessage = '';
-  final bool _isLoading = false;
-
   Future<void> _checkCommercialLicense(String licenseId) async {
     bool isValid = await widget.dataSource.checkCommercialLicense(licenseId);
     if (!isValid) {
@@ -34,10 +29,7 @@ class _CheckCommercialLicenseFieldState
         TextField(
           controller: _controller,
           keyboardType: TextInputType.number,
-          decoration: InputDecoration(
-            labelText: "enter_license_id".tr(),
-            border: const OutlineInputBorder(),
-          ),
+          decoration: InputDecoration(labelText: "enter_license_id".tr(), border: const OutlineInputBorder()),
           onSubmitted: (id) async {
             await _checkCommercialLicense(id);
           },

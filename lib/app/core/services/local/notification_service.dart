@@ -7,7 +7,6 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:timezone/data/latest_all.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
 import 'package:flutter_timezone/flutter_timezone.dart';
-import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter_insider/flutter_insider.dart';
 import 'navigation_services.dart';
 import 'package:flutter/foundation.dart';
@@ -136,15 +135,6 @@ class NotificationService {
         }
       });
     });
-
-    Future<void> launchURL(String strUrl) async {
-      final Uri url = Uri.parse(strUrl);
-      if (await canLaunchUrl(url)) {
-        await launchUrl(url);
-      } else {
-        throw 'Could not launch $url';
-      }
-    }
 
     void handleMessage(RemoteMessage message) {
       if (message.data.containsKey('url')) {
