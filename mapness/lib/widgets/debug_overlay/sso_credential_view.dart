@@ -29,16 +29,16 @@ class SsoCredentialView extends ConsumerWidget {
           const SizedBox(height: 12),
           _CredentialItem(
             label: 'Username',
-            value: credential.username ?? '',
+            value: credential.username,
           ),
           _CredentialItem(
             label: 'Password',
-            value: credential.password ?? '',
+            value: credential.password,
             isSecret: true,
           ),
           _CredentialItem(
             label: 'OTP',
-            value: credential.otp ?? '',
+            value: credential.otp,
           ),
         ],
       ),

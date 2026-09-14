@@ -135,6 +135,6 @@ class SatelliteMapController extends _$SatelliteMapController {
     if (!ref.mounted) {
       return;
     }
-    state = result ?? enabled;
+    state = result;
   }
 }

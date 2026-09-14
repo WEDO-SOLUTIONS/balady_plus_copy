@@ -61,6 +61,11 @@ analyzer:
     dead_code: error
     avoid_catches_without_on_clauses: ignore
     deprecated_member_use: ignore
+    # freezed forwards `@JsonKey` from a factory parameter onto the generated
+    # field, so the annotation is correct there even though the analyzer sees a
+    # parameter. This is what the freezed docs prescribe, and urbi_map already
+    # sets it the same way.
+    invalid_annotation_target: ignore
   exclude:
     - "build/**"
     - "bin/cache/**"

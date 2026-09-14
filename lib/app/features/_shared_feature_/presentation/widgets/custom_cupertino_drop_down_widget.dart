@@ -160,8 +160,6 @@ class _CustomHeaderAndDescOnTapWidget extends State<CustomHeaderAndDescOnTapWidg
         return Border(
           bottom: BorderSide(width: widget.borderWidth, color: widget.borderColor),
         );
-      default:
-        return null;
     }
   }
 
@@ -172,8 +170,6 @@ class _CustomHeaderAndDescOnTapWidget extends State<CustomHeaderAndDescOnTapWidg
       case BORDER_TYPE.outline:
         return BorderRadius.circular(widget.borderRadius);
       case BORDER_TYPE.underline:
-        return null;
-      default:
         return null;
     }
   }

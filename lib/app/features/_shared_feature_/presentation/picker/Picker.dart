@@ -415,7 +415,7 @@ class PickerWidgetState<T> extends State<_PickerWidget> {
       );
     } else {
       String _cancelText = picker.cancelText ?? PickerLocalizations.of(context).cancelText;
-      if (_cancelText != null || _cancelText != "") {
+      if (_cancelText != "") {
         items.add(
           TextButton(
             onPressed: () {
@@ -462,7 +462,7 @@ class PickerWidgetState<T> extends State<_PickerWidget> {
       );
     } else {
       String _confirmText = picker.confirmText ?? PickerLocalizations.of(context).confirmText;
-      if (_confirmText != null || _confirmText != "") {
+      if (_confirmText != "") {
         items.add(
           TextButton(
             onPressed: () {
