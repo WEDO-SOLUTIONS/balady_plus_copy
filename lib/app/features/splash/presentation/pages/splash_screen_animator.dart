@@ -61,17 +61,18 @@ class _SplashScreenAnimatorState extends State<SplashScreenAnimator> with Single
                   autostart: Autostart.once,
                   onFetchCompleted: () async {
                     // wating for 1.3 seconds to hide the splash screen to make shower is splash screen is completed
-                    Future.delayed(Duration(seconds: state.splashDuration)).then(
-                      (e) {
-                        if (context.read<ForceUpdateCubit>().state is NotHaveForceUpdateState) {
-                          takeActionChickLogin();
-                        } else if (context.read<ForceUpdateCubit>().state is HaveForceUpdateState) {
-                          NavigationService.pushAndReplaceForceUpdate();
-                        } else {
-                          context.read<SplashCubit>().emitCompletedSplashState();
-                        }
-                      },
-                    );
+                    Future.delayed(Duration(seconds: state.splashDuration)).then((e) {
+                      if (!context.mounted) {
+                        return;
+                      }
+                      if (context.read<ForceUpdateCubit>().state is NotHaveForceUpdateState) {
+                        takeActionChickLogin();
+                      } else if (context.read<ForceUpdateCubit>().state is HaveForceUpdateState) {
+                        NavigationService.pushAndReplaceForceUpdate();
+                      } else {
+                        context.read<SplashCubit>().emitCompletedSplashState();
+                      }
+                    });
                   },
                 );
               }

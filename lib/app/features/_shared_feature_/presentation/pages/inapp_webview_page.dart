@@ -105,7 +105,7 @@ class _InAppWebViewPageState extends State<InAppWebViewPage> {
                     await controller.stopLoading();
                   } catch (_) {}
 
-                  if (mounted) {
+                  if (context.mounted) {
                     Navigator.of(context).pop({
                       "hitUrl": uri.toString(),
                       "matchedCallback": matched,

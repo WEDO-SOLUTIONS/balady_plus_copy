@@ -76,7 +76,9 @@ class PickImageComponent extends StatelessWidget {
           sizeInMB: sizeInMB,
         );
         // close bottom sheet
-        if (mounted) context.popDialog();
+        if (context.mounted) {
+          context.popDialog();
+        }
         onPickedImage(file);
       } else {
         onLimitExceeded();

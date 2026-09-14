@@ -127,6 +127,9 @@ class Helpers {
 
   static Future<bool> checkPhotosSettings(BuildContext context) async {
     var status = await Permission.photos.request();
+    if (!context.mounted) {
+      return false;
+    }
 
     if (status == PermissionStatus.permanentlyDenied) {
       showDialog(context: context, builder: (ctx) => const PhotoPermissionDialog());

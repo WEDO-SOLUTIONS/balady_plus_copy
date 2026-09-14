@@ -80,6 +80,9 @@ class NotAuthorizedIndivisualDialog extends StatelessWidget {
                   currentRouteName: routName ?? RouteName.commercialLicenseServicePage,
                   child: DelegatorList(fromService: true, delegatorsCubit: sl<DelegatorsCubit>()),
                 );
+                if (!context.mounted) {
+                  return;
+                }
                 Navigator.of(context).pop();
               } catch (error, stackTrace) {
                 LogsViewModel().sendEventFromModel(

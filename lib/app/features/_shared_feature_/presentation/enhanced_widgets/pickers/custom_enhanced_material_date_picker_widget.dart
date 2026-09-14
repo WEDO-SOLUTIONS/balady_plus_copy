@@ -105,7 +105,9 @@ class CustomEnhancedMaterialDatePickerWidget extends StatelessWidget {
     );
 
     if (picked != null && picked != selectedDate) {
-      if (!mounted) return;
+      if (!context.mounted) {
+        return;
+      }
       context.read<DatePickerCubit>().onUpdatedDate(picked);
     }
   }

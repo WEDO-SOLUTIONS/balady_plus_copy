@@ -1000,6 +1000,9 @@ class CommonFunctions {
 
     if (serviceStatus != ServiceStatus.disabled) {
       var status = await Permission.location.request();
+      if (!context.mounted) {
+        return false;
+      }
 
       if (status == PermissionStatus.permanentlyDenied) {
         if (!locationDialogShowed) {
@@ -1017,6 +1020,9 @@ class CommonFunctions {
         return true;
       }
     } else {
+      if (!context.mounted) {
+        return false;
+      }
       if (!locationDialogShowed) {
         showDialog(
           context: context,
@@ -1030,6 +1036,9 @@ class CommonFunctions {
 
   static Future<bool> checkCameraSettings(BuildContext context) async {
     var status = await Permission.camera.request();
+    if (!context.mounted) {
+      return false;
+    }
     if (status == PermissionStatus.permanentlyDenied) {
       showDialog(context: context, builder: (ctx) => const CameraPermissionDialog());
       return false;

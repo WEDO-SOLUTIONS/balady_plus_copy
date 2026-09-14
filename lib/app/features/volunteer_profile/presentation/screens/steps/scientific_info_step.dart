@@ -10,22 +10,14 @@ class ScientificInfoStep extends StatelessWidget {
   const ScientificInfoStep({super.key});
 
   @override
-  Widget build(
-    BuildContext context,
-  ) => BlocBuilder<VolunteerProfileBloc, VolunteerProfileState>(
+  Widget build(BuildContext context) => BlocBuilder<VolunteerProfileBloc, VolunteerProfileState>(
     builder: (context, state) => SingleChildScrollView(
       padding: const EdgeInsets.all(20.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            'scientific_data'.tr(),
-            style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
-          ),
-          Text(
-            'lbl_fill_required_fields'.tr(),
-            style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
-          ),
+          Text('scientific_data'.tr(), style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold)),
+          Text('lbl_fill_required_fields'.tr(), style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold)),
           const SizedBox(height: 20),
           Text(
             'educational_qualification_required'.tr(),
@@ -41,21 +33,14 @@ class ScientificInfoStep extends StatelessWidget {
                 border: Border.all(color: Colors.grey),
                 borderRadius: BorderRadius.circular(8.0),
               ),
-              child: Text(
-                'no_qualifications_available'.tr(),
-                style: const TextStyle(color: Colors.grey),
-              ),
+              child: Text('no_qualifications_available'.tr(), style: const TextStyle(color: Colors.grey)),
             )
           else
             DropdownButtonFormField<String>(
-              initialValue: state.educationalQualificationId?.isEmpty == true
-                  ? null
-                  : state.educationalQualificationId,
+              initialValue: state.educationalQualificationId?.isEmpty == true ? null : state.educationalQualificationId,
               decoration: InputDecoration(
                 hint: Text('choose'.tr()),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(8.0),
-                ),
+                border: OutlineInputBorder(borderRadius: BorderRadius.circular(8.0)),
                 contentPadding: const EdgeInsets.symmetric(horizontal: 12.0),
               ),
               items: state.qualificationsList
@@ -65,11 +50,7 @@ class ScientificInfoStep extends StatelessWidget {
                       child: Center(
                         child: Text(
                           qualification.name,
-                          style: const TextStyle(
-                            fontSize: 14,
-                            color: Colors.black,
-                            fontWeight: FontWeight.w500,
-                          ),
+                          style: const TextStyle(fontSize: 14, color: Colors.black, fontWeight: FontWeight.w500),
                         ),
                       ),
                     ),
@@ -77,11 +58,9 @@ class ScientificInfoStep extends StatelessWidget {
                   .toList(),
               onChanged: (value) {
                 if (value != null) {
-                  final selectedQualification = state.qualificationsList
-                      .firstWhere(
-                        (qualification) =>
-                            qualification.tid.toString() == value,
-                      );
+                  final selectedQualification = state.qualificationsList.firstWhere(
+                    (qualification) => qualification.tid.toString() == value,
+                  );
                   context.read<VolunteerProfileBloc>().add(
                     UpdateScientificInfo(
                       educationalQualification: selectedQualification.name,
@@ -92,8 +71,7 @@ class ScientificInfoStep extends StatelessWidget {
                       workExperience: state.workExperience,
                       language: state.language,
                       languageId: state.languageId,
-                      scientificExperienceSummary:
-                          state.scientificExperienceSummary,
+                      scientificExperienceSummary: state.scientificExperienceSummary,
                     ),
                   );
                 }
@@ -106,10 +84,7 @@ class ScientificInfoStep extends StatelessWidget {
               },
             ),
           const SizedBox(height: 16),
-          Text(
-            'specialization_required'.tr(),
-            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
-          ),
+          Text('specialization_required'.tr(), style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
           const SizedBox(height: 8),
           if (state.isLoadingSpecializations)
             const Center(child: CircularProgressIndicator())
@@ -120,21 +95,14 @@ class ScientificInfoStep extends StatelessWidget {
                 border: Border.all(color: Colors.grey),
                 borderRadius: BorderRadius.circular(8.0),
               ),
-              child: Text(
-                'no_specializations_available'.tr(),
-                style: const TextStyle(color: Colors.grey),
-              ),
+              child: Text('no_specializations_available'.tr(), style: const TextStyle(color: Colors.grey)),
             )
           else
             DropdownButtonFormField<String>(
-              initialValue: state.specializationId?.isEmpty == true
-                  ? null
-                  : state.specializationId,
+              initialValue: state.specializationId?.isEmpty == true ? null : state.specializationId,
               decoration: InputDecoration(
                 hint: Text('choose'.tr()),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(8.0),
-                ),
+                border: OutlineInputBorder(borderRadius: BorderRadius.circular(8.0)),
                 contentPadding: const EdgeInsets.symmetric(horizontal: 12.0),
               ),
               items: state.specializationsList
@@ -144,11 +112,7 @@ class ScientificInfoStep extends StatelessWidget {
                       child: Center(
                         child: Text(
                           specialization.name,
-                          style: const TextStyle(
-                            fontSize: 14,
-                            color: Colors.black,
-                            fontWeight: FontWeight.w500,
-                          ),
+                          style: const TextStyle(fontSize: 14, color: Colors.black, fontWeight: FontWeight.w500),
                         ),
                       ),
                     ),
@@ -156,24 +120,20 @@ class ScientificInfoStep extends StatelessWidget {
                   .toList(),
               onChanged: (value) {
                 if (value != null) {
-                  final selectedSpecialization = state.specializationsList
-                      .firstWhere(
-                        (specialization) =>
-                            specialization.tid.toString() == value,
-                      );
+                  final selectedSpecialization = state.specializationsList.firstWhere(
+                    (specialization) => specialization.tid.toString() == value,
+                  );
                   context.read<VolunteerProfileBloc>().add(
                     UpdateScientificInfo(
                       educationalQualification: state.educationalQualification,
-                      educationalQualificationId:
-                          state.educationalQualificationId,
+                      educationalQualificationId: state.educationalQualificationId,
                       specialization: selectedSpecialization.name,
                       specializationId: value,
                       profession: state.profession,
                       workExperience: state.workExperience,
                       language: state.language,
                       languageId: state.languageId,
-                      scientificExperienceSummary:
-                          state.scientificExperienceSummary,
+                      scientificExperienceSummary: state.scientificExperienceSummary,
                     ),
                   );
                 }
@@ -186,22 +146,14 @@ class ScientificInfoStep extends StatelessWidget {
               },
             ),
           const SizedBox(height: 16),
-          Text(
-            'profession'.tr(),
-            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
-          ),
+          Text('profession'.tr(), style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
           const SizedBox(height: 8),
           TextFormField(
             initialValue: state.profession == 'null' ? '' : state.profession,
             decoration: InputDecoration(
               hintText: 'enter_profession'.tr(),
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(8.0),
-              ),
-              contentPadding: const EdgeInsets.symmetric(
-                horizontal: 12.0,
-                vertical: 15.0,
-              ),
+              border: OutlineInputBorder(borderRadius: BorderRadius.circular(8.0)),
+              contentPadding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 15.0),
             ),
             onChanged: (value) {
               context.read<VolunteerProfileBloc>().add(
@@ -214,30 +166,22 @@ class ScientificInfoStep extends StatelessWidget {
                   workExperience: state.workExperience,
                   language: state.language,
                   languageId: state.languageId,
-                  scientificExperienceSummary:
-                      state.scientificExperienceSummary,
+                  scientificExperienceSummary: state.scientificExperienceSummary,
                 ),
               );
             },
             // No validator - profession is optional
           ),
           const SizedBox(height: 16),
-          Text(
-            'work_experience'.tr(),
-            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
-          ),
+          Text('work_experience'.tr(), style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
           const SizedBox(height: 8),
           DropdownButtonFormField<String>(
-            initialValue:
-                state.workExperience?.isEmpty == true ||
-                    state.workExperience == 'null'
+            initialValue: state.workExperience?.isEmpty == true || state.workExperience == 'null'
                 ? null
                 : state.workExperience,
             decoration: InputDecoration(
               hintText: 'choose_years_of_experience'.tr(),
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(8.0),
-              ),
+              border: OutlineInputBorder(borderRadius: BorderRadius.circular(8.0)),
               contentPadding: const EdgeInsets.symmetric(horizontal: 12.0),
             ),
             items: List.generate(51, (index) => index)
@@ -251,11 +195,7 @@ class ScientificInfoStep extends StatelessWidget {
                             : year == 1
                             ? 'one_year'.tr()
                             : 'years'.tr()}',
-                        style: const TextStyle(
-                          fontSize: 14,
-                          color: Colors.black,
-                          fontWeight: FontWeight.w500,
-                        ),
+                        style: const TextStyle(fontSize: 14, color: Colors.black, fontWeight: FontWeight.w500),
                       ),
                     ),
                   ),
@@ -272,18 +212,14 @@ class ScientificInfoStep extends StatelessWidget {
                   workExperience: value,
                   language: state.language,
                   languageId: state.languageId,
-                  scientificExperienceSummary:
-                      state.scientificExperienceSummary,
+                  scientificExperienceSummary: state.scientificExperienceSummary,
                 ),
               );
             },
             // No validator - work experience is optional
           ),
           const SizedBox(height: 16),
-          Text(
-            'language_required'.tr(),
-            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
-          ),
+          Text('language_required'.tr(), style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
           const SizedBox(height: 8),
           if (state.isLoadingLanguages)
             const Center(child: CircularProgressIndicator())
@@ -294,21 +230,14 @@ class ScientificInfoStep extends StatelessWidget {
                 border: Border.all(color: Colors.grey),
                 borderRadius: BorderRadius.circular(8.0),
               ),
-              child: Text(
-                'no_languages_available'.tr(),
-                style: const TextStyle(color: Colors.grey),
-              ),
+              child: Text('no_languages_available'.tr(), style: const TextStyle(color: Colors.grey)),
             )
           else
             DropdownButtonFormField<String>(
-              initialValue: state.languageId?.isEmpty == true
-                  ? null
-                  : state.languageId,
+              initialValue: state.languageId?.isEmpty == true ? null : state.languageId,
               decoration: InputDecoration(
                 hint: Text('choose'.tr()),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(8.0),
-                ),
+                border: OutlineInputBorder(borderRadius: BorderRadius.circular(8.0)),
                 contentPadding: const EdgeInsets.symmetric(horizontal: 12.0),
               ),
               items: state.languagesList
@@ -318,11 +247,7 @@ class ScientificInfoStep extends StatelessWidget {
                       child: Center(
                         child: Text(
                           language.name,
-                          style: const TextStyle(
-                            fontSize: 14,
-                            color: Colors.black,
-                            fontWeight: FontWeight.w500,
-                          ),
+                          style: const TextStyle(fontSize: 14, color: Colors.black, fontWeight: FontWeight.w500),
                         ),
                       ),
                     ),
@@ -336,16 +261,14 @@ class ScientificInfoStep extends StatelessWidget {
                   context.read<VolunteerProfileBloc>().add(
                     UpdateScientificInfo(
                       educationalQualification: state.educationalQualification,
-                      educationalQualificationId:
-                          state.educationalQualificationId,
+                      educationalQualificationId: state.educationalQualificationId,
                       specialization: state.specialization,
                       specializationId: state.specializationId,
                       profession: state.profession,
                       workExperience: state.workExperience,
                       language: selectedLanguage.name,
                       languageId: value,
-                      scientificExperienceSummary:
-                          state.scientificExperienceSummary,
+                      scientificExperienceSummary: state.scientificExperienceSummary,
                     ),
                   );
                 }
@@ -364,18 +287,11 @@ class ScientificInfoStep extends StatelessWidget {
           ),
           const SizedBox(height: 8),
           TextFormField(
-            initialValue: state.scientificExperienceSummary == 'null'
-                ? ''
-                : state.scientificExperienceSummary,
+            initialValue: state.scientificExperienceSummary == 'null' ? '' : state.scientificExperienceSummary,
             decoration: InputDecoration(
               hintText: 'write_scientific_experience_summary'.tr(),
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(8.0),
-              ),
-              contentPadding: const EdgeInsets.symmetric(
-                horizontal: 12.0,
-                vertical: 15.0,
-              ),
+              border: OutlineInputBorder(borderRadius: BorderRadius.circular(8.0)),
+              contentPadding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 15.0),
             ),
             maxLines: 4,
             validator: (value) {
@@ -401,18 +317,13 @@ class ScientificInfoStep extends StatelessWidget {
             },
           ),
           const SizedBox(height: 16),
-          Text(
-            'resume_cv'.tr(),
-            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
-          ),
+          Text('resume_cv'.tr(), style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
           const SizedBox(height: 8),
           ElevatedButton(
             onPressed: () => _pickAndUploadFile(context),
             style: ElevatedButton.styleFrom(
               padding: const EdgeInsets.symmetric(vertical: 15.0),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(8.0),
-              ),
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.0)),
               backgroundColor: Colors.teal,
             ),
             child: Row(
@@ -420,10 +331,7 @@ class ScientificInfoStep extends StatelessWidget {
               children: [
                 const Icon(Icons.add, color: Colors.white),
                 const SizedBox(width: 8),
-                Text(
-                  'attach'.tr(),
-                  style: const TextStyle(fontSize: 16, color: Colors.white),
-                ),
+                Text('attach'.tr(), style: const TextStyle(fontSize: 16, color: Colors.white)),
               ],
             ),
           ),
@@ -434,16 +342,9 @@ class ScientificInfoStep extends StatelessWidget {
               padding: const EdgeInsets.only(top: 8.0),
               child: Row(
                 children: [
-                  const SizedBox(
-                    width: 16,
-                    height: 16,
-                    child: CircularProgressIndicator(strokeWidth: 2),
-                  ),
+                  const SizedBox(width: 16, height: 16, child: CircularProgressIndicator(strokeWidth: 2)),
                   const SizedBox(width: 8),
-                  Text(
-                    'uploading_cv'.tr(),
-                    style: const TextStyle(color: Colors.orange),
-                  ),
+                  Text('uploading_cv'.tr(), style: const TextStyle(color: Colors.orange)),
                 ],
               ),
             ),
@@ -463,9 +364,7 @@ class ScientificInfoStep extends StatelessWidget {
                 ],
               ),
             ),
-          if (state.cvUploadMessage != null &&
-              state.cvUploadMessage!.contains('Failed') &&
-              !state.isUploadingCV)
+          if (state.cvUploadMessage != null && state.cvUploadMessage!.contains('Failed') && !state.isUploadingCV)
             Padding(
               padding: const EdgeInsets.only(top: 8.0),
               child: Row(
@@ -473,10 +372,7 @@ class ScientificInfoStep extends StatelessWidget {
                   const Icon(Icons.error, color: Colors.red, size: 16),
                   const SizedBox(width: 8),
                   Expanded(
-                    child: Text(
-                      state.cvUploadMessage!,
-                      style: const TextStyle(color: Colors.red),
-                    ),
+                    child: Text(state.cvUploadMessage!, style: const TextStyle(color: Colors.red)),
                   ),
                 ],
               ),
@@ -495,6 +391,10 @@ Future<void> _pickAndUploadFile(BuildContext context) async {
       allowedExtensions: ['pdf', 'doc', 'docx'],
     );
 
+    if (!context.mounted) {
+      return;
+    }
+
     if (result != null && result.files.isNotEmpty) {
       final file = result.files.first;
       if (file.path != null) {
@@ -502,9 +402,7 @@ Future<void> _pickAndUploadFile(BuildContext context) async {
         if (file.size > 10 * 1024 * 1024) {
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
-              content: Text(
-                'File size too large. Please select a file under 10MB.',
-              ),
+              content: Text('File size too large. Please select a file under 10MB.'),
               backgroundColor: Colors.red,
             ),
           );
@@ -512,17 +410,15 @@ Future<void> _pickAndUploadFile(BuildContext context) async {
         }
 
         // Trigger upload
-        context.read<VolunteerProfileBloc>().add(
-          UploadCVFile(filePath: file.path!, fileName: file.name),
-        );
+        context.read<VolunteerProfileBloc>().add(UploadCVFile(filePath: file.path!, fileName: file.name));
       }
     }
   } catch (e) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text('Failed to select file: $e'),
-        backgroundColor: Colors.red,
-      ),
-    );
+    if (!context.mounted) {
+      return;
+    }
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(SnackBar(content: Text('Failed to select file: $e'), backgroundColor: Colors.red));
   }
 }

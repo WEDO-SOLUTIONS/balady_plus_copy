@@ -21,7 +21,7 @@ class ActionShowFilterWidget extends StatelessWidget {
     return IconButton(
       onPressed: () {
         if (CommonProperties.isLoggedInMunicipality) {
-          showDialogParsona( cubit, context);
+          showDialogParsona(cubit, context);
         } else {
           showDialog(
             context: context,
@@ -29,7 +29,7 @@ class ActionShowFilterWidget extends StatelessWidget {
               onSuccessLogin: (bool? isSuccess) {
                 if (isSuccess ?? false) {
                   context.read<DelegatorsCubit>().loadData();
-                  showDialogParsona( cubit, context);
+                  showDialogParsona(cubit, context);
                 }
               },
             ),
@@ -40,18 +40,16 @@ class ActionShowFilterWidget extends StatelessWidget {
     );
   }
 
-  void showDialogParsona(
-    NotificationsListCubit cubit,
-    BuildContext context,
-  ) async {
+  void showDialogParsona(NotificationsListCubit cubit, BuildContext context) async {
     await BottomSheetDialog.showDraggableSheet(
       context,
       dialogKeyName: DialogName.delegatorsDialog,
       currentRouteName: "ServicesPage",
-      child: DelegatorList(
-        delegatorsCubit: context.read<DelegatorsCubit>(),
-      ),
+      child: DelegatorList(delegatorsCubit: context.read<DelegatorsCubit>()),
     );
+    if (!context.mounted) {
+      return;
+    }
     EntryPointCubit auth = context.read<EntryPointCubit>();
     // final selectedAgent = auth.state.selectedAgent;
     // final selectedDelegator = auth.state.selectedDelegator;

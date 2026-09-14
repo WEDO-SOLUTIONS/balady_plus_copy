@@ -93,6 +93,9 @@ class ProfileCard extends StatelessWidget {
                 currentRouteName: "MorePage",
                 child: DelegatorList(delegatorsCubit: context.read<DelegatorsCubit>(), groupId: groupId),
               );
+              if (!context.mounted) {
+                return;
+              }
 
               try {
                 final delegatorsCubit = context.read<DelegatorsCubit>();
@@ -453,6 +456,10 @@ class ProfileCard extends StatelessWidget {
     // Close the bottom sheet if still open
     if (context.mounted) {
       Navigator.of(context).pop();
+    }
+
+    if (!context.mounted) {
+      return;
     }
 
     // Refresh dashboard after selection change

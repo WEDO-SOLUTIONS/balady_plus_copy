@@ -295,6 +295,10 @@ class _VolunteerPresentationModeState extends State<VolunteerPresentationMode> {
         allowedExtensions: ['pdf', 'doc', 'docx'],
       );
 
+      if (!context.mounted) {
+        return;
+      }
+
       if (result != null && result.files.isNotEmpty) {
         final file = result.files.first;
         if (file.path != null) {
@@ -311,6 +315,9 @@ class _VolunteerPresentationModeState extends State<VolunteerPresentationMode> {
         }
       }
     } catch (e) {
+      if (!context.mounted) {
+        return;
+      }
       ScaffoldMessenger.of(
         context,
       ).showSnackBar(SnackBar(content: Text('${'failed_to_select_file'.tr()}: $e'), backgroundColor: Colors.red));
