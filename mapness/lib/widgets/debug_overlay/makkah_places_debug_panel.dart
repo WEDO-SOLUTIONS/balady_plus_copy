@@ -40,7 +40,7 @@ class MakkahPlacesDebugPanel extends ConsumerWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          DebugSectionHeader(
+          const DebugSectionHeader(
             icon: Icons.place_rounded,
             title: 'Makkah Places Debug',
             gradient: DebugTheme.gradientAmber,
@@ -54,7 +54,7 @@ class MakkahPlacesDebugPanel extends ConsumerWidget {
           ),
           const SizedBox(height: 12),
           if (location == null)
-            _InfoBox(
+            const _InfoBox(
               icon: Icons.location_off_rounded,
               message: 'Location not available',
               color: DebugTheme.warning,
@@ -89,28 +89,28 @@ class _LocationInfo extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Container(
-        padding: const EdgeInsets.all(10),
-        decoration: BoxDecoration(
-          color: DebugTheme.surfaceLight,
-          borderRadius: BorderRadius.circular(8),
-        ),
-        child: Row(
-          children: [
-            const Icon(Icons.my_location_rounded, size: 14, color: DebugTheme.success),
-            const SizedBox(width: 8),
-            Expanded(
-              child: Text(
-                '${location.latitude.toStringAsFixed(5)}, ${location.longitude.toStringAsFixed(5)}',
-                style: context.textStyles.captionSmallMedium.copyWith(
-                  color: DebugTheme.textSecondary,
-                  fontFamily: 'monospace',
-                  fontSize: 11,
-                ),
-              ),
+    padding: const EdgeInsets.all(10),
+    decoration: BoxDecoration(
+      color: DebugTheme.surfaceLight,
+      borderRadius: BorderRadius.circular(8),
+    ),
+    child: Row(
+      children: [
+        const Icon(Icons.my_location_rounded, size: 14, color: DebugTheme.success),
+        const SizedBox(width: 8),
+        Expanded(
+          child: Text(
+            '${location.latitude.toStringAsFixed(5)}, ${location.longitude.toStringAsFixed(5)}',
+            style: context.textStyles.captionSmallMedium.copyWith(
+              color: DebugTheme.textSecondary,
+              fontFamily: 'monospace',
+              fontSize: 11,
             ),
-          ],
+          ),
         ),
-      );
+      ],
+    ),
+  );
 }
 
 class _PlacesList extends StatelessWidget {
@@ -152,10 +152,12 @@ class _PlacesList extends StatelessWidget {
           ),
         ),
         const SizedBox(height: 8),
-        ...sortedPlaces.map((place) => _PlaceItem(
-              place: place,
-              userLocation: userLocation,
-            )),
+        ...sortedPlaces.map(
+          (place) => _PlaceItem(
+            place: place,
+            userLocation: userLocation,
+          ),
+        ),
       ],
     );
   }
@@ -209,7 +211,6 @@ class _PlaceItem extends ConsumerWidget {
     final pedestrianInfo = finishPoint != null
         ? ref.watch(
             briefRouteInfoProvider(
-              startPoint: null,
               finishPoint: finishPoint,
               navType: RouteSearchOptionsMessage.pedestrian,
             ),
@@ -219,7 +220,6 @@ class _PlaceItem extends ConsumerWidget {
     final carInfo = finishPoint != null
         ? ref.watch(
             briefRouteInfoProvider(
-              startPoint: null,
               finishPoint: finishPoint,
               navType: RouteSearchOptionsMessage.car,
             ),
@@ -369,7 +369,7 @@ class _PlaceItem extends ConsumerWidget {
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Icon(Icons.warning_amber_rounded, size: 12, color: DebugTheme.error),
+                  const Icon(Icons.warning_amber_rounded, size: 12, color: DebugTheme.error),
                   const SizedBox(width: 4),
                   Text(
                     'SDK data suspicious!',
@@ -441,7 +441,7 @@ class _PlaceItem extends ConsumerWidget {
             ),
           ],
           if (pedestrianInfo == null && carInfo == null)
-            _MetricChip(
+            const _MetricChip(
               icon: Icons.hourglass_empty_rounded,
               label: 'Loading...',
               color: DebugTheme.textMuted,
@@ -503,32 +503,30 @@ class _MetricChip extends StatelessWidget {
   final Color color;
 
   @override
-  Widget build(BuildContext context) {
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Icon(icon, size: 12, color: color),
-        const SizedBox(width: 4),
+  Widget build(BuildContext context) => Row(
+    mainAxisSize: MainAxisSize.min,
+    children: [
+      Icon(icon, size: 12, color: color),
+      const SizedBox(width: 4),
+      Text(
+        label,
+        style: context.textStyles.captionSmallMedium.copyWith(
+          color: color,
+          fontSize: 10,
+        ),
+      ),
+      if (sublabel != null) ...[
+        const SizedBox(width: 2),
         Text(
-          label,
-          style: context.textStyles.captionSmallMedium.copyWith(
-            color: color,
-            fontSize: 10,
+          sublabel!,
+          style: context.textStyles.captionSmallRegular.copyWith(
+            color: DebugTheme.textMuted,
+            fontSize: 9,
           ),
         ),
-        if (sublabel != null) ...[
-          const SizedBox(width: 2),
-          Text(
-            sublabel!,
-            style: context.textStyles.captionSmallRegular.copyWith(
-              color: DebugTheme.textMuted,
-              fontSize: 9,
-            ),
-          ),
-        ],
       ],
-    );
-  }
+    ],
+  );
 }
 
 class _EnvironmentInfo extends StatelessWidget {
@@ -661,28 +659,26 @@ class _InfoBox extends StatelessWidget {
   final Color color;
 
   @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(
-        color: color.withOpacity(0.1),
-        borderRadius: BorderRadius.circular(8),
-        border: Border.all(color: color.withOpacity(0.3)),
-      ),
-      child: Row(
-        children: [
-          Icon(icon, size: 16, color: color),
-          const SizedBox(width: 8),
-          Expanded(
-            child: Text(
-              message,
-              style: context.textStyles.captionSmallRegular.copyWith(
-                color: color,
-              ),
+  Widget build(BuildContext context) => Container(
+    padding: const EdgeInsets.all(12),
+    decoration: BoxDecoration(
+      color: color.withOpacity(0.1),
+      borderRadius: BorderRadius.circular(8),
+      border: Border.all(color: color.withOpacity(0.3)),
+    ),
+    child: Row(
+      children: [
+        Icon(icon, size: 16, color: color),
+        const SizedBox(width: 8),
+        Expanded(
+          child: Text(
+            message,
+            style: context.textStyles.captionSmallRegular.copyWith(
+              color: color,
             ),
           ),
-        ],
-      ),
-    );
-  }
+        ),
+      ],
+    ),
+  );
 }

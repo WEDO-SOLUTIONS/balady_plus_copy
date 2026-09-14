@@ -25,10 +25,9 @@ int maxPublishedShortcutsForPlatform(AppIconQuickActionPlatform platform) => swi
 List<AppIconQuickActionItem> activeShortcutsForPlatform(
   AppIconQuickActionsConfig config,
   AppIconQuickActionPlatform platform,
-) {
-  return config.shortcuts.where((item) => item.status.isActive && item.supportsPlatform(platform)).toList()
-    ..sort((a, b) => a.order.compareTo(b.order));
-}
+) =>
+    config.shortcuts.where((item) => item.status.isActive && item.supportsPlatform(platform)).toList()
+      ..sort((a, b) => a.order.compareTo(b.order));
 
 String resolveNativeQuickActionIcon(String iconReference) {
   if (iconReference.isEmpty) {

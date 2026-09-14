@@ -2,7 +2,7 @@ enum AppIconQuickActionStatus {
   active,
   inactive;
 
-  static AppIconQuickActionStatus fromJson(dynamic value) {
+  static AppIconQuickActionStatus fromJson(Object? value) {
     final normalized = value?.toString().toLowerCase();
     return switch (normalized) {
       'active' => AppIconQuickActionStatus.active,
@@ -18,7 +18,7 @@ enum AppIconQuickActionPlatform {
   ios,
   huawei;
 
-  static AppIconQuickActionPlatform? fromJson(dynamic value) => switch (value?.toString().toLowerCase()) {
+  static AppIconQuickActionPlatform? fromJson(Object? value) => switch (value?.toString().toLowerCase()) {
     'android' => AppIconQuickActionPlatform.android,
     'ios' => AppIconQuickActionPlatform.ios,
     'huawei' => AppIconQuickActionPlatform.huawei,
@@ -30,7 +30,7 @@ enum AppIconQuickActionPermission {
   location,
   camera;
 
-  static AppIconQuickActionPermission? fromJson(dynamic value) => switch (value?.toString().toLowerCase()) {
+  static AppIconQuickActionPermission? fromJson(Object? value) => switch (value?.toString().toLowerCase()) {
     'location' => AppIconQuickActionPermission.location,
     'camera' => AppIconQuickActionPermission.camera,
     _ => null,
@@ -113,7 +113,7 @@ class AppIconQuickActionItem {
     return '';
   }
 
-  static bool _readBool(dynamic value) {
+  static bool _readBool(value) {
     if (value is bool) {
       return value;
     }
@@ -121,7 +121,7 @@ class AppIconQuickActionItem {
     return normalized == 'yes' || normalized == 'true' || normalized == '1';
   }
 
-  static List<AppIconQuickActionPlatform> _readPlatforms(dynamic raw) {
+  static List<AppIconQuickActionPlatform> _readPlatforms(raw) {
     if (raw is! List) {
       return AppIconQuickActionPlatform.values;
     }
@@ -129,7 +129,7 @@ class AppIconQuickActionItem {
     return parsed.isEmpty ? AppIconQuickActionPlatform.values : parsed;
   }
 
-  static List<AppIconQuickActionPermission> _readPermissions(dynamic raw) {
+  static List<AppIconQuickActionPermission> _readPermissions(raw) {
     if (raw == null) {
       return const [];
     }

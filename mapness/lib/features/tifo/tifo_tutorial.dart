@@ -133,9 +133,7 @@ class _TifoTutorialState extends State<TifoTutorial> {
                         controller: _controller,
                         onPageChanged: (i) => setState(() => _page = i),
                         itemCount: TifoTutorial._steps.length,
-                        itemBuilder: (context, i) {
-                          return _StepBody(step: TifoTutorial._steps[i]);
-                        },
+                        itemBuilder: (context, i) => _StepBody(step: TifoTutorial._steps[i]),
                       ),
                     ),
                     _BottomBar(
@@ -160,21 +158,19 @@ class _TifoTutorialState extends State<TifoTutorial> {
 
 class _Dragger extends StatelessWidget {
   @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(top: 12, bottom: 8),
-      child: Center(
-        child: Container(
-          width: 40,
-          height: 4,
-          decoration: BoxDecoration(
-            color: TifoTutorial._divider,
-            borderRadius: BorderRadius.circular(4),
-          ),
+  Widget build(BuildContext context) => Padding(
+    padding: const EdgeInsets.only(top: 12, bottom: 8),
+    child: Center(
+      child: Container(
+        width: 40,
+        height: 4,
+        decoration: BoxDecoration(
+          color: TifoTutorial._divider,
+          borderRadius: BorderRadius.circular(4),
         ),
       ),
-    );
-  }
+    ),
+  );
 }
 
 class _Header extends StatelessWidget {
@@ -183,47 +179,45 @@ class _Header extends StatelessWidget {
   final VoidCallback onClose;
 
   @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsetsDirectional.fromSTEB(20, 8, 8, 16),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: const [
-                Text(
-                  'كيف تلعب · How to Play',
-                  style: TextStyle(
-                    fontSize: 11,
-                    height: 15 / 11,
-                    color: TifoTutorial._textSecondary,
-                  ),
+  Widget build(BuildContext context) => Padding(
+    padding: const EdgeInsetsDirectional.fromSTEB(20, 8, 8, 16),
+    child: Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'كيف تلعب · How to Play',
+                style: TextStyle(
+                  fontSize: 11,
+                  height: 15 / 11,
+                  color: TifoTutorial._textSecondary,
                 ),
-                SizedBox(height: 2),
-                Text(
-                  'TIFO TUTORIAL',
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 20,
-                    height: 28 / 20,
-                    letterSpacing: 0.4,
-                    color: TifoTutorial._textPrimary,
-                  ),
+              ),
+              SizedBox(height: 2),
+              Text(
+                'TIFO TUTORIAL',
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 20,
+                  height: 28 / 20,
+                  letterSpacing: 0.4,
+                  color: TifoTutorial._textPrimary,
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
-          IconButton(
-            icon: const Icon(Icons.close, color: TifoTutorial._textSecondary),
-            visualDensity: VisualDensity.compact,
-            onPressed: onClose,
-          ),
-        ],
-      ),
-    );
-  }
+        ),
+        IconButton(
+          icon: const Icon(Icons.close, color: TifoTutorial._textSecondary),
+          visualDensity: VisualDensity.compact,
+          onPressed: onClose,
+        ),
+      ],
+    ),
+  );
 }
 
 class _ProgressDots extends StatelessWidget {
@@ -233,27 +227,25 @@ class _ProgressDots extends StatelessWidget {
   final int active;
 
   @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 8),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          for (var i = 0; i < total; i++)
-            AnimatedContainer(
-              duration: const Duration(milliseconds: 240),
-              margin: const EdgeInsets.symmetric(horizontal: 3),
-              width: i == active ? 24 : 6,
-              height: 6,
-              decoration: BoxDecoration(
-                color: i == active ? TifoTutorial._accent : TifoTutorial._divider,
-                borderRadius: BorderRadius.circular(3),
-              ),
+  Widget build(BuildContext context) => Padding(
+    padding: const EdgeInsets.only(bottom: 8),
+    child: Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        for (var i = 0; i < total; i++)
+          AnimatedContainer(
+            duration: const Duration(milliseconds: 240),
+            margin: const EdgeInsets.symmetric(horizontal: 3),
+            width: i == active ? 24 : 6,
+            height: 6,
+            decoration: BoxDecoration(
+              color: i == active ? TifoTutorial._accent : TifoTutorial._divider,
+              borderRadius: BorderRadius.circular(3),
             ),
-        ],
-      ),
-    );
-  }
+          ),
+      ],
+    ),
+  );
 }
 
 class _StepBody extends StatelessWidget {
@@ -262,98 +254,96 @@ class _StepBody extends StatelessWidget {
   final _StepData step;
 
   @override
-  Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // Preview card.
-          Container(
-            height: 130,
-            decoration: BoxDecoration(
-              color: TifoTutorial._previewBg,
-              borderRadius: BorderRadius.circular(16),
-            ),
-            alignment: Alignment.center,
-            child: Text(
-              step.emoji,
-              style: const TextStyle(fontSize: 64, height: 1.0),
-            ),
+  Widget build(BuildContext context) => SingleChildScrollView(
+    padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        // Preview card.
+        Container(
+          height: 130,
+          decoration: BoxDecoration(
+            color: TifoTutorial._previewBg,
+            borderRadius: BorderRadius.circular(16),
           ),
-          const SizedBox(height: 20),
-          // Topic row (icon + En topic + Ar topic).
-          Row(
-            children: [
-              Container(
-                width: 40,
-                height: 40,
-                decoration: BoxDecoration(
-                  color: TifoTutorial._previewBg,
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                alignment: Alignment.center,
-                child: Icon(
-                  step.icon,
-                  size: 18,
-                  color: TifoTutorial._textPrimary,
-                ),
-              ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      step.topicEn,
-                      style: const TextStyle(
-                        fontWeight: FontWeight.w500,
-                        fontSize: 12,
-                        height: 16 / 12,
-                        color: TifoTutorial._textSecondary,
-                      ),
-                    ),
-                    Text(
-                      step.topicAr,
-                      style: const TextStyle(
-                        fontWeight: FontWeight.w600,
-                        fontSize: 17,
-                        height: 23 / 17,
-                        color: TifoTutorial._textPrimary,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ],
+          alignment: Alignment.center,
+          child: Text(
+            step.emoji,
+            style: const TextStyle(fontSize: 64, height: 1.0),
           ),
-          const SizedBox(height: 16),
-          // Arabic description.
-          Directionality(
-            textDirection: TextDirection.rtl,
-            child: Text(
-              step.descAr,
-              style: const TextStyle(
-                fontSize: 14,
-                height: 22 / 14,
+        ),
+        const SizedBox(height: 20),
+        // Topic row (icon + En topic + Ar topic).
+        Row(
+          children: [
+            Container(
+              width: 40,
+              height: 40,
+              decoration: BoxDecoration(
+                color: TifoTutorial._previewBg,
+                borderRadius: BorderRadius.circular(10),
+              ),
+              alignment: Alignment.center,
+              child: Icon(
+                step.icon,
+                size: 18,
                 color: TifoTutorial._textPrimary,
               ),
             ),
-          ),
-          const SizedBox(height: 8),
-          // English description.
-          Text(
-            step.descEn,
+            const SizedBox(width: 12),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    step.topicEn,
+                    style: const TextStyle(
+                      fontWeight: FontWeight.w500,
+                      fontSize: 12,
+                      height: 16 / 12,
+                      color: TifoTutorial._textSecondary,
+                    ),
+                  ),
+                  Text(
+                    step.topicAr,
+                    style: const TextStyle(
+                      fontWeight: FontWeight.w600,
+                      fontSize: 17,
+                      height: 23 / 17,
+                      color: TifoTutorial._textPrimary,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 16),
+        // Arabic description.
+        Directionality(
+          textDirection: TextDirection.rtl,
+          child: Text(
+            step.descAr,
             style: const TextStyle(
-              fontSize: 13,
-              height: 20 / 13,
-              color: TifoTutorial._textSecondary,
+              fontSize: 14,
+              height: 22 / 14,
+              color: TifoTutorial._textPrimary,
             ),
           ),
-        ],
-      ),
-    );
-  }
+        ),
+        const SizedBox(height: 8),
+        // English description.
+        Text(
+          step.descEn,
+          style: const TextStyle(
+            fontSize: 13,
+            height: 20 / 13,
+            color: TifoTutorial._textSecondary,
+          ),
+        ),
+      ],
+    ),
+  );
 }
 
 class _BottomBar extends StatelessWidget {
@@ -372,87 +362,85 @@ class _BottomBar extends StatelessWidget {
   final VoidCallback onSkip;
 
   @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(20, 4, 20, 16),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Row(
-            children: [
-              _CircleArrow(
-                icon: Icons.arrow_back,
-                enabled: !isFirst,
-                onTap: onPrev,
-              ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: GestureDetector(
-                  behavior: HitTestBehavior.opaque,
-                  onTap: onNext,
-                  child: Container(
-                    height: 44,
-                    alignment: Alignment.center,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(14),
-                      gradient: const LinearGradient(
-                        begin: Alignment.topCenter,
-                        end: Alignment.bottomCenter,
-                        colors: [
-                          TifoTutorial._accent,
-                          TifoTutorial._accentLight,
-                        ],
-                      ),
-                      boxShadow: [
-                        BoxShadow(
-                          color: TifoTutorial._accent.withOpacity(0.3),
-                          offset: const Offset(0, 4),
-                          blurRadius: 10,
-                        ),
+  Widget build(BuildContext context) => Padding(
+    padding: const EdgeInsets.fromLTRB(20, 4, 20, 16),
+    child: Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Row(
+          children: [
+            _CircleArrow(
+              icon: Icons.arrow_back,
+              enabled: !isFirst,
+              onTap: onPrev,
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: GestureDetector(
+                behavior: HitTestBehavior.opaque,
+                onTap: onNext,
+                child: Container(
+                  height: 44,
+                  alignment: Alignment.center,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(14),
+                    gradient: const LinearGradient(
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                      colors: [
+                        TifoTutorial._accent,
+                        TifoTutorial._accentLight,
                       ],
                     ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(
-                          isLast ? 'Start Playing' : 'التالي · Next',
-                          style: const TextStyle(
-                            fontWeight: FontWeight.w600,
-                            fontSize: 15,
-                            height: 22 / 15,
-                            color: Colors.white,
-                          ),
-                        ),
-                        const SizedBox(width: 8),
-                        Icon(
-                          isLast ? Icons.play_arrow : Icons.arrow_forward,
-                          size: 16,
+                    boxShadow: [
+                      BoxShadow(
+                        color: TifoTutorial._accent.withOpacity(0.3),
+                        offset: const Offset(0, 4),
+                        blurRadius: 10,
+                      ),
+                    ],
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        isLast ? 'Start Playing' : 'التالي · Next',
+                        style: const TextStyle(
+                          fontWeight: FontWeight.w600,
+                          fontSize: 15,
+                          height: 22 / 15,
                           color: Colors.white,
                         ),
-                      ],
-                    ),
+                      ),
+                      const SizedBox(width: 8),
+                      Icon(
+                        isLast ? Icons.play_arrow : Icons.arrow_forward,
+                        size: 16,
+                        color: Colors.white,
+                      ),
+                    ],
                   ),
                 ),
               ),
-            ],
-          ),
-          const SizedBox(height: 8),
-          TextButton(
-            onPressed: onSkip,
-            child: const Text(
-              'تخطي الشرح · Skip Tutorial',
-              style: TextStyle(
-                fontWeight: FontWeight.w500,
-                fontSize: 13,
-                height: 18 / 13,
-                color: TifoTutorial._textMuted,
-              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 8),
+        TextButton(
+          onPressed: onSkip,
+          child: const Text(
+            'تخطي الشرح · Skip Tutorial',
+            style: TextStyle(
+              fontWeight: FontWeight.w500,
+              fontSize: 13,
+              height: 18 / 13,
+              color: TifoTutorial._textMuted,
             ),
           ),
-        ],
-      ),
-    );
-  }
+        ),
+      ],
+    ),
+  );
 }
 
 class _CircleArrow extends StatelessWidget {
@@ -467,27 +455,25 @@ class _CircleArrow extends StatelessWidget {
   final VoidCallback onTap;
 
   @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      behavior: HitTestBehavior.opaque,
-      onTap: enabled ? onTap : null,
-      child: Container(
-        width: 44,
-        height: 44,
-        decoration: BoxDecoration(
-          color: enabled ? TifoTutorial._previewBg : const Color(0xFFF9FAFB),
-          border: Border.all(color: TifoTutorial._divider),
-          shape: BoxShape.circle,
-        ),
-        alignment: Alignment.center,
-        child: Icon(
-          icon,
-          size: 18,
-          color: enabled ? TifoTutorial._textPrimary : TifoTutorial._textMuted,
-        ),
+  Widget build(BuildContext context) => GestureDetector(
+    behavior: HitTestBehavior.opaque,
+    onTap: enabled ? onTap : null,
+    child: Container(
+      width: 44,
+      height: 44,
+      decoration: BoxDecoration(
+        color: enabled ? TifoTutorial._previewBg : const Color(0xFFF9FAFB),
+        border: Border.all(color: TifoTutorial._divider),
+        shape: BoxShape.circle,
       ),
-    );
-  }
+      alignment: Alignment.center,
+      child: Icon(
+        icon,
+        size: 18,
+        color: enabled ? TifoTutorial._textPrimary : TifoTutorial._textMuted,
+      ),
+    ),
+  );
 }
 
 // ─── Data ────────────────────────────────────────────────────────────────────

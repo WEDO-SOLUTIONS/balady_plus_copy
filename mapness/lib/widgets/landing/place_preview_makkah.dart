@@ -328,7 +328,6 @@ class _TravelTimeChip extends ConsumerWidget {
     // The provider watches locationProvider for realtime updates
     final pedestrianInfo = ref.watch(
       briefRouteInfoProvider(
-        startPoint: null,
         finishPoint: finishPoint,
         navType: RouteSearchOptionsMessage.pedestrian,
       ),
@@ -336,7 +335,6 @@ class _TravelTimeChip extends ConsumerWidget {
 
     final carInfo = ref.watch(
       briefRouteInfoProvider(
-        startPoint: null,
         finishPoint: finishPoint,
         navType: RouteSearchOptionsMessage.car,
       ),
@@ -467,7 +465,7 @@ class _TravelTimeChip extends ConsumerWidget {
                   ),
                   const SizedBox(width: 4),
                   Text(
-                    durationText!,
+                    durationText,
                     style: context.textStyles.bodySmallRegular.copyWith(
                       color: chipFg,
                       fontSize: 11,
@@ -492,7 +490,7 @@ class _TravelTimeChip extends ConsumerWidget {
                 vertical: Spacing.$1x,
               ),
               child: Text(
-                generalTag!,
+                generalTag,
                 style: context.textStyles.bodySmallRegular.copyWith(
                   color: chipFg,
                   fontSize: 11,

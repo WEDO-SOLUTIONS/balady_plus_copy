@@ -54,13 +54,11 @@ class SpecialThemeHeader extends ConsumerWidget {
     final BoxDecoration bannerDecoration;
     if (mode == SpecialThemeMode.mekkahBase) {
       if (isDark) {
-        bannerDecoration = BoxDecoration(
-          borderRadius: const BorderRadius.vertical(
+        bannerDecoration = const BoxDecoration(
+          borderRadius: BorderRadius.vertical(
             top: Radius.circular(RadiusBorder.xl),
           ),
-          gradient: const LinearGradient(
-            begin: Alignment.centerLeft,
-            end: Alignment.centerRight,
+          gradient: LinearGradient(
             colors: [
               MakkahPoiConstants.darkAccentTeal,
               Color(0xFF007B73),
@@ -68,21 +66,18 @@ class SpecialThemeHeader extends ConsumerWidget {
             ],
             stops: [0.0, 0.53, 1.0],
           ),
-          image: const DecorationImage(
+          image: DecorationImage(
             image: AssetImage('assets/images/themes/makkah/ribbon_pattern_dark.png'),
             fit: BoxFit.cover,
-            alignment: Alignment.center,
             opacity: 0.2,
           ),
         );
       } else {
-        bannerDecoration = BoxDecoration(
-          borderRadius: const BorderRadius.vertical(
+        bannerDecoration = const BoxDecoration(
+          borderRadius: BorderRadius.vertical(
             top: Radius.circular(RadiusBorder.xl),
           ),
-          gradient: const LinearGradient(
-            begin: Alignment.centerLeft,
-            end: Alignment.centerRight,
+          gradient: LinearGradient(
             colors: [
               Color(0xFFD19D3F),
               Color(0xFF9D6808),
@@ -92,22 +87,19 @@ class SpecialThemeHeader extends ConsumerWidget {
             ],
             stops: [0.03, 0.19, 0.33, 0.46, 1.0],
           ),
-          image: const DecorationImage(
+          image: DecorationImage(
             image: AssetImage('assets/images/themes/makkah/qiblah_header.png'),
             fit: BoxFit.cover,
-            alignment: Alignment.center,
             opacity: 0.5,
           ),
         );
       }
     } else if (mode == SpecialThemeMode.ramadan) {
-      bannerDecoration = BoxDecoration(
-        borderRadius: const BorderRadius.vertical(
+      bannerDecoration = const BoxDecoration(
+        borderRadius: BorderRadius.vertical(
           top: Radius.circular(RadiusBorder.xl),
         ),
-        gradient: const LinearGradient(
-          begin: Alignment.centerLeft,
-          end: Alignment.centerRight,
+        gradient: LinearGradient(
           colors: [
             Color(0xFF32454C),
             Color(0xFF98C5C8),
@@ -119,10 +111,9 @@ class SpecialThemeHeader extends ConsumerWidget {
           ],
           stops: [0.03, 0.21, 0.42, 0.54, 0.69, 0.91, 1.0],
         ),
-        image: const DecorationImage(
+        image: DecorationImage(
           image: AssetImage('assets/images/themes/ramadan/ramadan_header.png'),
           fit: BoxFit.cover,
-          alignment: Alignment.center,
           opacity: 0.5,
         ),
       );

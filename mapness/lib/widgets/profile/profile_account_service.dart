@@ -25,11 +25,11 @@ class ProfileAccountService {
     required String method,
     Map<String, dynamic>? body,
   }) => hashRequest(
-      url: url,
-      method: method,
-      body: body?.entries.map((e) => '${e.key}=${e.value}').join('&') ?? '',
-      bearer: _token,
-    );
+    url: url,
+    method: method,
+    body: body?.entries.map((e) => '${e.key}=${e.value}').join('&') ?? '',
+    bearer: _token,
+  );
 
   static String hashRequest({
     required String url,
@@ -86,7 +86,7 @@ class ProfileAccountService {
   }
 
   /// SSO may return the session id as a string, nested object, or top-level field.
-  String _parseSessionId(dynamic raw, Headers headers) {
+  String _parseSessionId(raw, Headers headers) {
     if (raw is String && raw.trim().isNotEmpty) {
       return raw.trim();
     }

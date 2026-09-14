@@ -69,7 +69,6 @@ class _MakkahWorkingHoursTile extends StatelessWidget {
           bottom: Spacing.$2x,
         ),
         child: Row(
-          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             SizedBox(
               width: iconSlotSize,

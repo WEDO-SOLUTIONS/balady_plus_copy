@@ -114,18 +114,16 @@ WorkingHours? _workingHoursFromMakkahJson(Map<String, dynamic>? json) {
     );
   }
 
-  int? dayToWeekday(String day) {
-    return switch (day) {
-      'Mon' => DateTime.monday,
-      'Tue' => DateTime.tuesday,
-      'Wed' => DateTime.wednesday,
-      'Thu' => DateTime.thursday,
-      'Fri' => DateTime.friday,
-      'Sat' => DateTime.saturday,
-      'Sun' => DateTime.sunday,
-      _ => null,
-    };
-  }
+  int? dayToWeekday(String day) => switch (day) {
+    'Mon' => DateTime.monday,
+    'Tue' => DateTime.tuesday,
+    'Wed' => DateTime.wednesday,
+    'Thu' => DateTime.thursday,
+    'Fri' => DateTime.friday,
+    'Sat' => DateTime.saturday,
+    'Sun' => DateTime.sunday,
+    _ => null,
+  };
 
   Duration? parseTime(int weekday, String? hhmm) {
     if (hhmm == null || hhmm.isEmpty) return null;

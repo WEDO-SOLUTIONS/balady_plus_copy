@@ -5,7 +5,6 @@ import 'package:mapness/features/stories/models/story_thumbnail_data.dart';
 final List<StoryData> mockStories = [
   const StoryData(
     storyId: 'mbc-001',
-    isWatched: false,
     thumbnail: StoryThumbnailData(
       // Use a network thumb for the circle avatar
       imageUrl: 'https://picsum.photos/seed/mbc1/200/200',

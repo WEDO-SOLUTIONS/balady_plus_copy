@@ -548,21 +548,22 @@ class _ColorOverrideSwitcher extends ConsumerWidget {
     spacing: 8,
     runSpacing: 8,
     children: [
-      selected == null
-          ? DebugButton(
-              label: 'Auto',
-              icon: Icons.check_rounded,
-              gradient: DebugTheme.gradientTeal,
-              isCompact: true,
-              onPressed: () {},
-            )
-          : DebugOutlinedButton(
-              label: 'Auto',
-              icon: Icons.circle_outlined,
-              color: DebugTheme.info,
-              isCompact: true,
-              onPressed: () => onSelect(null),
-            ),
+      if (selected == null)
+        DebugButton(
+          label: 'Auto',
+          icon: Icons.check_rounded,
+          gradient: DebugTheme.gradientTeal,
+          isCompact: true,
+          onPressed: () {},
+        )
+      else
+        DebugOutlinedButton(
+          label: 'Auto',
+          icon: Icons.circle_outlined,
+          color: DebugTheme.info,
+          isCompact: true,
+          onPressed: () => onSelect(null),
+        ),
       for (final color in options)
         color == selected
             ? DebugButton(

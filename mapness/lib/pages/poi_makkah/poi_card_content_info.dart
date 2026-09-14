@@ -17,9 +17,9 @@ class _MakkahNearbySection extends StatelessWidget {
         // grayscale source ships in-bundle as `ribbon_pattern_dark.png` (md5
         // matches `image-12-dark-pattern.png` from the Figma export). Approximate
         // soft-light by laying the asset at low opacity over a `darkSheet` fill.
-        ? BoxDecoration(
+        ? const BoxDecoration(
             color: MakkahPoiConstants.darkSheet,
-            image: const DecorationImage(
+            image: DecorationImage(
               image: AssetImage('assets/images/themes/makkah/ribbon_pattern_dark.png'),
               matchTextDirection: true,
               fit: BoxFit.fitWidth,
@@ -334,18 +334,16 @@ class _MakkahContentCard extends StatelessWidget {
   const _MakkahContentCard({required this.colors, required this.child});
 
   @override
-  Widget build(BuildContext context) {
-    return DecoratedBox(
-      decoration: BoxDecoration(
-        color: colors.contentCardBackground,
-        borderRadius: BorderRadius.circular(RadiusBorder.xl),
-        boxShadow: [
-          BoxShadow(blurRadius: 12, offset: const Offset(0, 4), color: context.colors.foregroundSoft.withOpacity(0.06)),
-        ],
-      ),
-      child: Padding(padding: const EdgeInsets.all(Spacing.$4x), child: child),
-    );
-  }
+  Widget build(BuildContext context) => DecoratedBox(
+    decoration: BoxDecoration(
+      color: colors.contentCardBackground,
+      borderRadius: BorderRadius.circular(RadiusBorder.xl),
+      boxShadow: [
+        BoxShadow(blurRadius: 12, offset: const Offset(0, 4), color: context.colors.foregroundSoft.withOpacity(0.06)),
+      ],
+    ),
+    child: Padding(padding: const EdgeInsets.all(Spacing.$4x), child: child),
+  );
 }
 
 class _MakkahAddressCard extends StatelessWidget {
@@ -356,45 +354,43 @@ class _MakkahAddressCard extends StatelessWidget {
   const _MakkahAddressCard({required this.colors, required this.title, required this.address});
 
   @override
-  Widget build(BuildContext context) {
-    return SizedBox(
-      width: double.infinity,
-      child: DecoratedBox(
-        decoration: BoxDecoration(
-          color: colors.contentCardBackground,
-          borderRadius: BorderRadius.circular(RadiusBorder.xl),
-        ),
+  Widget build(BuildContext context) => SizedBox(
+    width: double.infinity,
+    child: DecoratedBox(
+      decoration: BoxDecoration(
+        color: colors.contentCardBackground,
+        borderRadius: BorderRadius.circular(RadiusBorder.xl),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x, vertical: Spacing.$1x),
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x, vertical: Spacing.$1x),
-          child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: Spacing.$3x),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  title,
-                  style: context.textStyles.bodyLargeSemiBold.copyWith(
-                    color: colors.titleColor,
-                    fontSize: 16,
-                    fontWeight: FontWeight.w600,
-                  ),
+          padding: const EdgeInsets.symmetric(vertical: Spacing.$3x),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                title,
+                style: context.textStyles.bodyLargeSemiBold.copyWith(
+                  color: colors.titleColor,
+                  fontSize: 16,
+                  fontWeight: FontWeight.w600,
                 ),
-                const SizedBox(height: Spacing.$1x),
-                Text(
-                  address,
-                  style: context.textStyles.bodySmallRegular.copyWith(
-                    color: colors.secondaryTextColor,
-                    fontSize: 14,
-                    fontWeight: FontWeight.w400,
-                  ),
+              ),
+              const SizedBox(height: Spacing.$1x),
+              Text(
+                address,
+                style: context.textStyles.bodySmallRegular.copyWith(
+                  color: colors.secondaryTextColor,
+                  fontSize: 14,
+                  fontWeight: FontWeight.w400,
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
       ),
-    );
-  }
+    ),
+  );
 }
 
 class _MakkahFeatureTile extends StatelessWidget {
@@ -429,7 +425,6 @@ class _MakkahFeatureTile extends StatelessWidget {
       ),
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
       child: Row(
-        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           icon,
           const SizedBox(width: 10),
@@ -493,7 +488,6 @@ class _MakkahFeatureTileIcon extends StatelessWidget {
           iconUrl,
           width: size,
           height: size,
-          fit: BoxFit.contain,
           placeholderBuilder: (_) => SvgPicture.asset(
             svgAsset,
             width: size,

@@ -65,20 +65,18 @@ class DebugCard extends StatelessWidget {
   final EdgeInsets padding;
 
   @override
-  Widget build(BuildContext context) {
-    return Container(
-      margin: const EdgeInsets.only(bottom: 12),
-      decoration: BoxDecoration(
-        color: DebugTheme.surface,
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: DebugTheme.border),
-      ),
-      child: Padding(
-        padding: padding,
-        child: child,
-      ),
-    );
-  }
+  Widget build(BuildContext context) => Container(
+    margin: const EdgeInsets.only(bottom: 12),
+    decoration: BoxDecoration(
+      color: DebugTheme.surface,
+      borderRadius: BorderRadius.circular(12),
+      border: Border.all(color: DebugTheme.border),
+    ),
+    child: Padding(
+      padding: padding,
+      child: child,
+    ),
+  );
 }
 
 /// Section header with icon and title
@@ -99,49 +97,47 @@ class DebugSectionHeader extends StatelessWidget {
   final Widget? trailing;
 
   @override
-  Widget build(BuildContext context) {
-    return Row(
-      children: [
-        Container(
-          padding: const EdgeInsets.all(8),
-          decoration: BoxDecoration(
-            gradient: gradient,
-            borderRadius: BorderRadius.circular(8),
-            boxShadow: [
-              BoxShadow(
-                color: gradient.colors.first.withOpacity(0.3),
-                blurRadius: 8,
-                offset: const Offset(0, 2),
-              ),
-            ],
-          ),
-          child: Icon(icon, color: Colors.white, size: 16),
+  Widget build(BuildContext context) => Row(
+    children: [
+      Container(
+        padding: const EdgeInsets.all(8),
+        decoration: BoxDecoration(
+          gradient: gradient,
+          borderRadius: BorderRadius.circular(8),
+          boxShadow: [
+            BoxShadow(
+              color: gradient.colors.first.withOpacity(0.3),
+              blurRadius: 8,
+              offset: const Offset(0, 2),
+            ),
+          ],
         ),
-        const SizedBox(width: 12),
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
+        child: Icon(icon, color: Colors.white, size: 16),
+      ),
+      const SizedBox(width: 12),
+      Expanded(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              title,
+              style: context.textStyles.bodySmallSemiBold.copyWith(
+                color: DebugTheme.textPrimary,
+              ),
+            ),
+            if (subtitle != null)
               Text(
-                title,
-                style: context.textStyles.bodySmallSemiBold.copyWith(
-                  color: DebugTheme.textPrimary,
+                subtitle!,
+                style: context.textStyles.captionSmallRegular.copyWith(
+                  color: DebugTheme.textMuted,
                 ),
               ),
-              if (subtitle != null)
-                Text(
-                  subtitle!,
-                  style: context.textStyles.captionSmallRegular.copyWith(
-                    color: DebugTheme.textMuted,
-                  ),
-                ),
-            ],
-          ),
+          ],
         ),
-        if (trailing != null) trailing!,
-      ],
-    );
-  }
+      ),
+      if (trailing != null) trailing!,
+    ],
+  );
 }
 
 /// A fancy toggle switch
@@ -158,44 +154,42 @@ class DebugSwitch extends StatelessWidget {
   final Gradient gradient;
 
   @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () => onChanged(!value),
-      child: AnimatedContainer(
-        duration: const Duration(milliseconds: 200),
-        width: 44,
-        height: 24,
-        decoration: BoxDecoration(
-          gradient: value ? gradient : null,
-          color: value ? null : DebugTheme.surfaceLight,
-          borderRadius: BorderRadius.circular(12),
-          border: Border.all(
-            color: value ? Colors.transparent : DebugTheme.border,
-          ),
+  Widget build(BuildContext context) => GestureDetector(
+    onTap: () => onChanged(!value),
+    child: AnimatedContainer(
+      duration: const Duration(milliseconds: 200),
+      width: 44,
+      height: 24,
+      decoration: BoxDecoration(
+        gradient: value ? gradient : null,
+        color: value ? null : DebugTheme.surfaceLight,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(
+          color: value ? Colors.transparent : DebugTheme.border,
         ),
-        child: AnimatedAlign(
-          duration: const Duration(milliseconds: 200),
-          alignment: value ? Alignment.centerRight : Alignment.centerLeft,
-          child: Container(
-            margin: const EdgeInsets.all(2),
-            width: 20,
-            height: 20,
-            decoration: BoxDecoration(
-              color: Colors.white,
-              shape: BoxShape.circle,
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withOpacity(0.2),
-                  blurRadius: 4,
-                  offset: const Offset(0, 2),
-                ),
-              ],
-            ),
+      ),
+      child: AnimatedAlign(
+        duration: const Duration(milliseconds: 200),
+        alignment: value ? Alignment.centerRight : Alignment.centerLeft,
+        child: Container(
+          margin: const EdgeInsets.all(2),
+          width: 20,
+          height: 20,
+          decoration: BoxDecoration(
+            color: Colors.white,
+            shape: BoxShape.circle,
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.2),
+                blurRadius: 4,
+                offset: const Offset(0, 2),
+              ),
+            ],
           ),
         ),
       ),
-    );
-  }
+    ),
+  );
 }
 
 /// A toggle row with label and switch
@@ -216,50 +210,48 @@ class DebugToggleRow extends StatelessWidget {
   final Gradient gradient;
 
   @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8),
-      child: Row(
-        children: [
-          Container(
-            width: 3,
-            height: 32,
-            decoration: BoxDecoration(
-              gradient: value ? gradient : null,
-              color: value ? null : DebugTheme.border,
-              borderRadius: BorderRadius.circular(2),
-            ),
+  Widget build(BuildContext context) => Padding(
+    padding: const EdgeInsets.symmetric(vertical: 8),
+    child: Row(
+      children: [
+        Container(
+          width: 3,
+          height: 32,
+          decoration: BoxDecoration(
+            gradient: value ? gradient : null,
+            color: value ? null : DebugTheme.border,
+            borderRadius: BorderRadius.circular(2),
           ),
-          const SizedBox(width: 12),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
+        ),
+        const SizedBox(width: 12),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                title,
+                style: context.textStyles.bodySmallMedium.copyWith(
+                  color: value ? DebugTheme.textPrimary : DebugTheme.textSecondary,
+                ),
+              ),
+              if (subtitle != null)
                 Text(
-                  title,
-                  style: context.textStyles.bodySmallMedium.copyWith(
-                    color: value ? DebugTheme.textPrimary : DebugTheme.textSecondary,
+                  subtitle!,
+                  style: context.textStyles.captionSmallRegular.copyWith(
+                    color: DebugTheme.textMuted,
                   ),
                 ),
-                if (subtitle != null)
-                  Text(
-                    subtitle!,
-                    style: context.textStyles.captionSmallRegular.copyWith(
-                      color: DebugTheme.textMuted,
-                    ),
-                  ),
-              ],
-            ),
+            ],
           ),
-          DebugSwitch(
-            value: value,
-            onChanged: onChanged,
-            gradient: gradient,
-          ),
-        ],
-      ),
-    );
-  }
+        ),
+        DebugSwitch(
+          value: value,
+          onChanged: onChanged,
+          gradient: gradient,
+        ),
+      ],
+    ),
+  );
 }
 
 /// A gradient button
@@ -280,45 +272,43 @@ class DebugButton extends StatelessWidget {
   final bool isCompact;
 
   @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onPressed,
-      child: Container(
-        padding: EdgeInsets.symmetric(
-          horizontal: isCompact ? 12 : 16,
-          vertical: isCompact ? 8 : 12,
-        ),
-        decoration: BoxDecoration(
-          gradient: gradient,
-          borderRadius: BorderRadius.circular(8),
-          boxShadow: [
-            BoxShadow(
-              color: gradient.colors.first.withOpacity(0.3),
-              blurRadius: 8,
-              offset: const Offset(0, 4),
-            ),
-          ],
-        ),
-        child: Row(
-          mainAxisSize: isCompact ? MainAxisSize.min : MainAxisSize.max,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            if (icon != null) ...[
-              Icon(icon, color: Colors.white, size: isCompact ? 14 : 18),
-              const SizedBox(width: 8),
-            ],
-            Text(
-              label,
-              style: context.textStyles.bodySmallSemiBold.copyWith(
-                color: Colors.white,
-                fontSize: isCompact ? 12 : 14,
-              ),
-            ),
-          ],
-        ),
+  Widget build(BuildContext context) => GestureDetector(
+    onTap: onPressed,
+    child: Container(
+      padding: EdgeInsets.symmetric(
+        horizontal: isCompact ? 12 : 16,
+        vertical: isCompact ? 8 : 12,
       ),
-    );
-  }
+      decoration: BoxDecoration(
+        gradient: gradient,
+        borderRadius: BorderRadius.circular(8),
+        boxShadow: [
+          BoxShadow(
+            color: gradient.colors.first.withOpacity(0.3),
+            blurRadius: 8,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
+      child: Row(
+        mainAxisSize: isCompact ? MainAxisSize.min : MainAxisSize.max,
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          if (icon != null) ...[
+            Icon(icon, color: Colors.white, size: isCompact ? 14 : 18),
+            const SizedBox(width: 8),
+          ],
+          Text(
+            label,
+            style: context.textStyles.bodySmallSemiBold.copyWith(
+              color: Colors.white,
+              fontSize: isCompact ? 12 : 14,
+            ),
+          ),
+        ],
+      ),
+    ),
+  );
 }
 
 /// An outlined button
@@ -339,39 +329,37 @@ class DebugOutlinedButton extends StatelessWidget {
   final bool isCompact;
 
   @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onPressed,
-      child: Container(
-        padding: EdgeInsets.symmetric(
-          horizontal: isCompact ? 10 : 14,
-          vertical: isCompact ? 6 : 10,
-        ),
-        decoration: BoxDecoration(
-          color: DebugTheme.surfaceLight,
-          borderRadius: BorderRadius.circular(8),
-          border: Border.all(color: DebugTheme.border),
-        ),
-        child: Row(
-          mainAxisSize: isCompact ? MainAxisSize.min : MainAxisSize.max,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            if (icon != null) ...[
-              Icon(icon, color: color, size: isCompact ? 12 : 16),
-              const SizedBox(width: 6),
-            ],
-            Text(
-              label,
-              style: context.textStyles.captionSmallMedium.copyWith(
-                color: color,
-                fontSize: isCompact ? 11 : 13,
-              ),
-            ),
-          ],
-        ),
+  Widget build(BuildContext context) => GestureDetector(
+    onTap: onPressed,
+    child: Container(
+      padding: EdgeInsets.symmetric(
+        horizontal: isCompact ? 10 : 14,
+        vertical: isCompact ? 6 : 10,
       ),
-    );
-  }
+      decoration: BoxDecoration(
+        color: DebugTheme.surfaceLight,
+        borderRadius: BorderRadius.circular(8),
+        border: Border.all(color: DebugTheme.border),
+      ),
+      child: Row(
+        mainAxisSize: isCompact ? MainAxisSize.min : MainAxisSize.max,
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          if (icon != null) ...[
+            Icon(icon, color: color, size: isCompact ? 12 : 16),
+            const SizedBox(width: 6),
+          ],
+          Text(
+            label,
+            style: context.textStyles.captionSmallMedium.copyWith(
+              color: color,
+              fontSize: isCompact ? 11 : 13,
+            ),
+          ),
+        ],
+      ),
+    ),
+  );
 }
 
 /// Info row with label and value
@@ -390,48 +378,46 @@ class DebugInfoRow extends StatelessWidget {
   final VoidCallback? onCopy;
 
   @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 4),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          SizedBox(
-            width: 100,
-            child: Text(
-              label,
-              style: context.textStyles.captionSmallRegular.copyWith(
+  Widget build(BuildContext context) => Padding(
+    padding: const EdgeInsets.symmetric(vertical: 4),
+    child: Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        SizedBox(
+          width: 100,
+          child: Text(
+            label,
+            style: context.textStyles.captionSmallRegular.copyWith(
+              color: DebugTheme.textMuted,
+            ),
+          ),
+        ),
+        Expanded(
+          child: Text(
+            value,
+            style: context.textStyles.captionSmallMedium.copyWith(
+              color: valueColor ?? DebugTheme.textPrimary,
+            ),
+          ),
+        ),
+        if (onCopy != null)
+          GestureDetector(
+            onTap: () {
+              Clipboard.setData(ClipboardData(text: value));
+              onCopy?.call();
+            },
+            child: Container(
+              padding: const EdgeInsets.all(4),
+              child: const Icon(
+                Icons.copy_rounded,
+                size: 14,
                 color: DebugTheme.textMuted,
               ),
             ),
           ),
-          Expanded(
-            child: Text(
-              value,
-              style: context.textStyles.captionSmallMedium.copyWith(
-                color: valueColor ?? DebugTheme.textPrimary,
-              ),
-            ),
-          ),
-          if (onCopy != null)
-            GestureDetector(
-              onTap: () {
-                Clipboard.setData(ClipboardData(text: value));
-                onCopy?.call();
-              },
-              child: Container(
-                padding: const EdgeInsets.all(4),
-                child: const Icon(
-                  Icons.copy_rounded,
-                  size: 14,
-                  color: DebugTheme.textMuted,
-                ),
-              ),
-            ),
-        ],
-      ),
-    );
-  }
+      ],
+    ),
+  );
 }
 
 /// Badge/Chip component
@@ -511,13 +497,11 @@ class DebugDivider extends StatelessWidget {
   const DebugDivider({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return Container(
-      height: 1,
-      margin: const EdgeInsets.symmetric(vertical: 12),
-      color: DebugTheme.border,
-    );
-  }
+  Widget build(BuildContext context) => Container(
+    height: 1,
+    margin: const EdgeInsets.symmetric(vertical: 12),
+    color: DebugTheme.border,
+  );
 }
 
 /// Text field
@@ -534,34 +518,32 @@ class DebugTextField extends StatelessWidget {
   final ValueChanged<String>? onSubmitted;
 
   @override
-  Widget build(BuildContext context) {
-    return TextField(
-      controller: controller,
-      style: context.textStyles.bodySmallRegular.copyWith(
-        color: DebugTheme.textPrimary,
+  Widget build(BuildContext context) => TextField(
+    controller: controller,
+    style: context.textStyles.bodySmallRegular.copyWith(
+      color: DebugTheme.textPrimary,
+    ),
+    onSubmitted: onSubmitted,
+    decoration: InputDecoration(
+      hintText: hint,
+      hintStyle: context.textStyles.bodySmallRegular.copyWith(
+        color: DebugTheme.textMuted,
       ),
-      onSubmitted: onSubmitted,
-      decoration: InputDecoration(
-        hintText: hint,
-        hintStyle: context.textStyles.bodySmallRegular.copyWith(
-          color: DebugTheme.textMuted,
-        ),
-        filled: true,
-        fillColor: DebugTheme.surfaceLight,
-        contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(8),
-          borderSide: const BorderSide(color: DebugTheme.border),
-        ),
-        enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(8),
-          borderSide: const BorderSide(color: DebugTheme.border),
-        ),
-        focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(8),
-          borderSide: const BorderSide(color: DebugTheme.accent),
-        ),
+      filled: true,
+      fillColor: DebugTheme.surfaceLight,
+      contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+      border: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(8),
+        borderSide: const BorderSide(color: DebugTheme.border),
       ),
-    );
-  }
+      enabledBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(8),
+        borderSide: const BorderSide(color: DebugTheme.border),
+      ),
+      focusedBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(8),
+        borderSide: const BorderSide(color: DebugTheme.accent),
+      ),
+    ),
+  );
 }

@@ -53,54 +53,52 @@ class _SourceRow extends StatelessWidget {
   final VoidCallback onTap;
 
   @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      behavior: HitTestBehavior.opaque,
-      onTap: onTap,
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-        decoration: BoxDecoration(
-          gradient: isActive ? DebugTheme.gradientTeal : null,
-          color: isActive ? null : Colors.white.withOpacity(0.04),
-          borderRadius: BorderRadius.circular(8),
-          border: Border.all(
-            color: isActive ? Colors.transparent : Colors.white.withOpacity(0.12),
-          ),
-        ),
-        child: Row(
-          children: [
-            Icon(
-              isActive ? Icons.radio_button_checked_rounded : Icons.radio_button_unchecked_rounded,
-              color: isActive ? Colors.white : Colors.white.withOpacity(0.5),
-              size: 18,
-            ),
-            const SizedBox(width: 10),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    label,
-                    style: TextStyle(
-                      color: isActive ? Colors.white : Colors.white.withOpacity(0.85),
-                      fontWeight: FontWeight.w600,
-                      fontSize: 13,
-                    ),
-                  ),
-                  const SizedBox(height: 2),
-                  Text(
-                    subtitle,
-                    style: TextStyle(
-                      color: isActive ? Colors.white.withOpacity(0.85) : Colors.white.withOpacity(0.45),
-                      fontSize: 11,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ],
+  Widget build(BuildContext context) => GestureDetector(
+    behavior: HitTestBehavior.opaque,
+    onTap: onTap,
+    child: Container(
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+      decoration: BoxDecoration(
+        gradient: isActive ? DebugTheme.gradientTeal : null,
+        color: isActive ? null : Colors.white.withOpacity(0.04),
+        borderRadius: BorderRadius.circular(8),
+        border: Border.all(
+          color: isActive ? Colors.transparent : Colors.white.withOpacity(0.12),
         ),
       ),
-    );
-  }
+      child: Row(
+        children: [
+          Icon(
+            isActive ? Icons.radio_button_checked_rounded : Icons.radio_button_unchecked_rounded,
+            color: isActive ? Colors.white : Colors.white.withOpacity(0.5),
+            size: 18,
+          ),
+          const SizedBox(width: 10),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  label,
+                  style: TextStyle(
+                    color: isActive ? Colors.white : Colors.white.withOpacity(0.85),
+                    fontWeight: FontWeight.w600,
+                    fontSize: 13,
+                  ),
+                ),
+                const SizedBox(height: 2),
+                Text(
+                  subtitle,
+                  style: TextStyle(
+                    color: isActive ? Colors.white.withOpacity(0.85) : Colors.white.withOpacity(0.45),
+                    fontSize: 11,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    ),
+  );
 }

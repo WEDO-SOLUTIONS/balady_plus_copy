@@ -82,7 +82,7 @@ class PoiLoadingOrErrorSheet extends HookConsumerWidget {
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
-                        Flexible(child: FittedBox(child: const ErrorImageWidget())),
+                        const Flexible(child: FittedBox(child: ErrorImageWidget())),
                         const SizedBox(height: Spacing.$4x),
                         Text(
                           errorTitle,

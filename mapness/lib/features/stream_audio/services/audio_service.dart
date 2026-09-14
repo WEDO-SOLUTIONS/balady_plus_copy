@@ -69,7 +69,7 @@ class AudioService extends ChangeNotifier {
   bool _wasPlayingBeforeInterruption = false;
   bool _isInterrupted = false;
   bool _isDucked = false;
-  bool _isNavigationDucking = false;
+  final bool _isNavigationDucking = false;
   Timer? _navigationDuckingFailsafeTimer;
   double? _preNavigationDuckVolume;
 
@@ -229,8 +229,6 @@ class AudioService extends ChangeNotifier {
         androidNotificationChannelDescription: 'Live radio streaming controls',
         androidNotificationOngoing: true,
         androidShowNotificationBadge: true,
-        androidNotificationClickStartsActivity: true,
-        androidNotificationIcon: 'mipmap/ic_launcher',
         preloadArtwork: true,
         artDownscaleWidth: 300,
         artDownscaleHeight: 300,
@@ -291,8 +289,6 @@ class AudioService extends ChangeNotifier {
             androidNotificationChannelDescription: 'Live radio streaming controls',
             androidNotificationOngoing: true,
             androidShowNotificationBadge: true,
-            androidNotificationClickStartsActivity: true,
-            androidNotificationIcon: 'mipmap/ic_launcher',
             preloadArtwork: true,
             artDownscaleWidth: 300,
             artDownscaleHeight: 300,
@@ -388,10 +384,8 @@ class AudioService extends ChangeNotifier {
           avAudioSessionSetActiveOptions: AVAudioSessionSetActiveOptions.none,
           androidAudioAttributes: AndroidAudioAttributes(
             contentType: AndroidAudioContentType.music,
-            flags: AndroidAudioFlags.none,
             usage: AndroidAudioUsage.media,
           ),
-          androidAudioFocusGainType: AndroidAudioFocusGainType.gain,
           androidWillPauseWhenDucked: false,
         ),
       );
@@ -489,7 +483,7 @@ class AudioService extends ChangeNotifier {
           _currentArtUri = mediaItem.artUri?.toString();
 
           if (state.currentSource is UriAudioSource) {
-            _currentStreamUrl = (state.currentSource as UriAudioSource).uri.toString();
+            _currentStreamUrl = (state.currentSource! as UriAudioSource).uri.toString();
           }
 
           syncState();
@@ -709,20 +703,21 @@ class AudioService extends ChangeNotifier {
 
       await Future<void>(() async {
         if (playlist != null && playlist.isNotEmpty) {
-          final children = playlist.map((item) {
-            return AudioSource.uri(
-              Uri.parse(item['url'] as String),
-              tag: MediaItem(
-                id: item['id'] as String,
-                title: item['title'] as String? ?? 'Live Radio',
-                artist: item['programName'] as String? ?? 'Live Stream',
-                artUri: item['artUri'] != null ? Uri.parse(item['artUri'] as String) : null,
-              ),
-            );
-          }).toList();
+          final children = playlist
+              .map(
+                (item) => AudioSource.uri(
+                  Uri.parse(item['url'] as String),
+                  tag: MediaItem(
+                    id: item['id'] as String,
+                    title: item['title'] as String? ?? 'Live Radio',
+                    artist: item['programName'] as String? ?? 'Live Stream',
+                    artUri: item['artUri'] != null ? Uri.parse(item['artUri'] as String) : null,
+                  ),
+                ),
+              )
+              .toList();
 
           final source = ConcatenatingAudioSource(
-            useLazyPreparation: true,
             children: children,
           );
 
@@ -1368,7 +1363,7 @@ class AudioService extends ChangeNotifier {
   }
 
   /// Handle audio route change from iOS
-  void _handleAudioRouteChanged(dynamic arguments) {
+  void _handleAudioRouteChanged(arguments) {
     debugPrint('AudioService: 🔊 iOS audio route changed: $arguments');
     // Handle route changes if needed (e.g., headphones connected/disconnected)
   }

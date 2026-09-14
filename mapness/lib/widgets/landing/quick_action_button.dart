@@ -63,16 +63,17 @@ class QuickActionButton extends ConsumerWidget {
             child ??
             Icon(
               icon,
-              size: Spacing.$6x ,
+              size: Spacing.$6x,
               color: colors.accentDefault,
             ),
       );
     }
 
-
     final tileColor = isMekkahTheme && isDark
         ? MakkahPoiConstants.darkSheet
-        : isDGADark ?colors.accentSecondarySoft :colors.backgroundSurface1;
+        : isDGADark
+        ? colors.accentSecondarySoft
+        : colors.backgroundSurface1;
 
     return Semantics(
       button: true,
@@ -91,10 +92,9 @@ class QuickActionButton extends ConsumerWidget {
                     borderRadius: BorderRadius.circular(RadiusBorder.xl),
                     color: tileColor,
                     boxShadow: isMekkahTheme && isDark ? const [] : Shadows.s,
-                border: Border.all(
-                  color:colors.borderSoft,
-                  width: 1,
-                ),
+                    border: Border.all(
+                      color: colors.borderSoft,
+                    ),
                   ),
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(RadiusBorder.xl),

@@ -4,7 +4,6 @@ import 'package:balady_plus/app/features/entry_point/entry_point_exports.dart';
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:dio/dio.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -48,11 +47,14 @@ class _PersonalDataState extends ConsumerState<PersonalData> {
   String? _errorText;
   bool _isEmailVerified = false;
   int _resendAttemptsLeft = 3;
+
   /// Wall-clock time when the next OTP send/resend is allowed. Survives sheet
   /// dismiss/reopen so the cooldown cannot be bypassed by leaving the screen.
   DateTime? _otpResendAvailableAt;
+
   /// Failed verify attempts for the current OTP session. Survives sheet reopen.
   int _otpVerifyFailureCount = 0;
+
   /// Ticks while a cooldown is active so the profile UI can show the remaining time.
   Timer? _otpCooldownTicker;
   String? _firstNameError;
@@ -992,9 +994,7 @@ class _PersonalDataState extends ConsumerState<PersonalData> {
                 // there's no change to persist).
                 // Also show while a cooldown is still running after cancel, so
                 // the remaining wait time stays visible.
-                if ((!_isEmailVerified &&
-                        _activeEmail.isNotEmpty &&
-                        _emailController.text.trim() == _activeEmail) ||
+                if ((!_isEmailVerified && _activeEmail.isNotEmpty && _emailController.text.trim() == _activeEmail) ||
                     _otpResendSecondsRemaining > 0) ...[
                   const SizedBox(height: 10),
                   SizedBox(
@@ -1006,9 +1006,7 @@ class _PersonalDataState extends ConsumerState<PersonalData> {
                         foregroundColor: colors.accentDefault,
                         disabledForegroundColor: colors.foregroundDefault,
                         side: BorderSide(
-                          color: _otpResendSecondsRemaining > 0
-                              ? colors.borderSoft
-                              : colors.accentDefault,
+                          color: _otpResendSecondsRemaining > 0 ? colors.borderSoft : colors.accentDefault,
                         ),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(_kFieldRadius),
@@ -1019,9 +1017,7 @@ class _PersonalDataState extends ConsumerState<PersonalData> {
                             ? 'account_resend_code_in'.tr().replaceFirst('%s', _formattedOtpCountdown)
                             : 'account_verify_email_button'.tr(),
                         style: textStyles.buttonM.copyWith(
-                          color: _otpResendSecondsRemaining > 0
-                              ? colors.foregroundDefault
-                              : colors.accentDefault,
+                          color: _otpResendSecondsRemaining > 0 ? colors.foregroundDefault : colors.accentDefault,
                         ),
                       ),
                     ),

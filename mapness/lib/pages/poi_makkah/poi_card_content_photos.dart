@@ -16,7 +16,7 @@ class _MakkahPoiPhotosHeaderDummy extends SheetAnimatedWidget<PoiCardBottomSheet
     double interpolation,
   ) {
     final photosEmpty = photoUrls.isEmpty;
-    final photosAreLoading = false;
+    const photosAreLoading = false;
 
     final photosSizeTransform = _transformPhotoSize(
       state,

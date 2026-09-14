@@ -22,7 +22,7 @@ class _SliderSpeedState extends ConsumerState<SliderSpeed> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          DebugSectionHeader(
+          const DebugSectionHeader(
             icon: Icons.speed_rounded,
             title: 'Simulation Speed',
             subtitle: 'Adjust navigation simulation speed',

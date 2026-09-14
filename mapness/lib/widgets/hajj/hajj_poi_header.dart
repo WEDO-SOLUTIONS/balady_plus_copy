@@ -22,31 +22,30 @@ class HajjPoiHeader extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) => ColoredBox(
-        color: context.colors.backgroundSurface2,
-        child: Padding(
-          padding: const EdgeInsets.only(
-            left: Spacing.$4x,
-            right: Spacing.$4x,
-          ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              CardHeader(
-                title: CardHeaderWidget(child: TitleComponent(title: poiMarkerRcmc.title)),
-                onTapClose: onTapClose,
-                subTitle: CardHeaderWidget(
-                  child: SubtitleComponent(
-                    subtitle: poiMarkerRcmc.categoryName,
-                    subtitleIcon: null,
-                  ),
-                ),
+    color: context.colors.backgroundSurface2,
+    child: Padding(
+      padding: const EdgeInsets.only(
+        left: Spacing.$4x,
+        right: Spacing.$4x,
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          CardHeader(
+            title: CardHeaderWidget(child: TitleComponent(title: poiMarkerRcmc.title)),
+            onTapClose: onTapClose,
+            subTitle: CardHeaderWidget(
+              child: SubtitleComponent(
+                subtitle: poiMarkerRcmc.categoryName,
               ),
-              _HeaderInfoWidget(poiMarkerRcmc: poiMarkerRcmc)
-            ],
+            ),
           ),
-        ),
-      );
+          _HeaderInfoWidget(poiMarkerRcmc: poiMarkerRcmc),
+        ],
+      ),
+    ),
+  );
 }
 
 class _HeaderInfoWidget extends SheetAnimatedWidget<PoiCardBottomSheetState> {
@@ -55,8 +54,8 @@ class _HeaderInfoWidget extends SheetAnimatedWidget<PoiCardBottomSheetState> {
   const _HeaderInfoWidget({
     required this.poiMarkerRcmc,
   }) : super(
-          defaultState: PoiCardBottomSheetState.halfOpen,
-        );
+         defaultState: PoiCardBottomSheetState.halfOpen,
+       );
 
   @override
   Widget build(BuildContext context, PoiCardBottomSheetState state, double interpolation) {

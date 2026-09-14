@@ -3,7 +3,7 @@ import 'dart:math';
 import 'package:auto_route/auto_route.dart';
 import 'package:balady_plus/app/core/utils/extensions/str_conversion.dart';
 import 'package:balady_uikit/balady_uikit.dart'
-    show AppButton, ButtonColorScheme, ButtonSize, ButtonType, RadiusBorder, SliverFillAfter, Spacing;
+    show AppButton, ButtonColorScheme, ButtonType, RadiusBorder, SliverFillAfter, Spacing;
 import 'package:balady_uikit/core/colorsV2/themes.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -117,15 +117,13 @@ Widget _makkahFooterSvgIcon(
   String assetName, {
   Color? color,
   bool matchTextDirection = true,
-}) {
-  return SvgPicture.asset(
-    assetName,
-    width: 24,
-    height: 24,
-    colorFilter: ColorFilter.mode(color ?? context.colors.foregroundDefault, BlendMode.srcIn),
-    matchTextDirection: matchTextDirection,
-  );
-}
+}) => SvgPicture.asset(
+  assetName,
+  width: 24,
+  height: 24,
+  colorFilter: ColorFilter.mode(color ?? context.colors.foregroundDefault, BlendMode.srcIn),
+  matchTextDirection: matchTextDirection,
+);
 
 @RoutePage()
 class PoiMakkahWidgetPage extends StatelessWidget {

@@ -68,7 +68,7 @@ class _MakkahPoiFooterPlaceholder extends ConsumerWidget {
     launchUrl(uri, mode: LaunchMode.externalApplication);
   }
 
-  void _onInstagramTap(String? website) async {
+  Future<void> _onInstagramTap(String? website) async {
     if (website == null || website.isEmpty) return;
 
     try {
@@ -269,8 +269,6 @@ class _MakkahPoiFooterPlaceholder extends ConsumerWidget {
               textDirection: TextDirection.rtl,
               child: AppButton(
                 buttonColorScheme: ButtonColorScheme.accentSecondary,
-                buttonType: ButtonType.primary,
-                size: ButtonSize.medium,
                 onTap: () => _onMakkahDirectionsTap(
                   context,
                   ref,

@@ -1,5 +1,4 @@
 import 'dart:math';
-import 'dart:typed_data';
 
 import 'package:auto_route/auto_route.dart';
 import 'package:balady_uikit/balady_uikit.dart';
@@ -69,10 +68,6 @@ class _ImageEditorPageState extends ConsumerState<ImageEditorPage> {
                 child: CustomImageCrop(
                   cropController: _controller,
                   image: MemoryImage(widget.image),
-                  shape: CustomCropShape.Circle,
-                  canRotate: true,
-                  canMove: true,
-                  canScale: true,
                   backgroundColor: colors.backgroundSurface4,
                   overlayColor: colors.backgroundSurface4.withValues(alpha: 0.92),
                   outlineColor: accent,

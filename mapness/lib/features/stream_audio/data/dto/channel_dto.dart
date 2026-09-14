@@ -29,36 +29,37 @@ class ChannelDTO {
   List<Program>? programs;
   List<Podcasts>? podcasts;
 
-  ChannelDTO(
-      {this.id,
-      this.name,
-      this.logo,
-      this.webLogo,
-      this.maximizedLogo,
-      this.minimizedLogo,
-      this.circledLogo,
-      this.streamUrl,
-      this.mobileNumber,
-      this.mobileNumberKsa,
-      this.mobileNumberUae,
-      this.socialMedia,
-      this.email,
-      this.type,
-      this.favorite,
-      this.metaData,
-      this.hasVoiceNote,
-      this.hasMessaging,
-      this.hasHosts,
-      this.hasSchedule,
-      this.hasCall,
-      this.hasNews,
-      this.defaultChannel,
-      this.landingPage,
-      this.placeholder,
-      this.channelBanners,
-      this.channelOrder,
-      this.programs,
-      this.podcasts});
+  ChannelDTO({
+    this.id,
+    this.name,
+    this.logo,
+    this.webLogo,
+    this.maximizedLogo,
+    this.minimizedLogo,
+    this.circledLogo,
+    this.streamUrl,
+    this.mobileNumber,
+    this.mobileNumberKsa,
+    this.mobileNumberUae,
+    this.socialMedia,
+    this.email,
+    this.type,
+    this.favorite,
+    this.metaData,
+    this.hasVoiceNote,
+    this.hasMessaging,
+    this.hasHosts,
+    this.hasSchedule,
+    this.hasCall,
+    this.hasNews,
+    this.defaultChannel,
+    this.landingPage,
+    this.placeholder,
+    this.channelBanners,
+    this.channelOrder,
+    this.programs,
+    this.podcasts,
+  });
 
   ChannelDTO.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -75,7 +76,7 @@ class ChannelDTO {
     if (json['social_media'] != null) {
       socialMedia = <SocialMedia>[];
       json['social_media'].forEach((v) {
-        socialMedia!.add(new SocialMedia.fromJson(v));
+        socialMedia!.add(SocialMedia.fromJson(v));
       });
     }
     email = json['email'];
@@ -96,53 +97,53 @@ class ChannelDTO {
     if (json['programs'] != null) {
       programs = <Program>[];
       json['programs'].forEach((v) {
-        programs!.add(new Program.fromJson(v));
+        programs!.add(Program.fromJson(v));
       });
     }
     if (json['podcasts'] != null) {
       podcasts = <Podcasts>[];
       json['podcasts'].forEach((v) {
-        podcasts!.add(new Podcasts.fromJson(v));
+        podcasts!.add(Podcasts.fromJson(v));
       });
     }
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['id'] = this.id;
-    data['name'] = this.name;
-    data['logo'] = this.logo;
-    data['web_logo'] = this.webLogo;
-    data['maximizedLogo'] = this.maximizedLogo;
-    data['minimizedLogo'] = this.minimizedLogo;
-    data['circledLogo'] = this.circledLogo;
-    data['stream_url'] = this.streamUrl;
-    data['mobile_number'] = this.mobileNumber;
-    data['mobile_number_ksa'] = this.mobileNumberKsa;
-    data['mobile_number_uae'] = this.mobileNumberUae;
-    if (this.socialMedia != null) {
-      data['social_media'] = this.socialMedia!.map((v) => v.toJson()).toList();
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['id'] = id;
+    data['name'] = name;
+    data['logo'] = logo;
+    data['web_logo'] = webLogo;
+    data['maximizedLogo'] = maximizedLogo;
+    data['minimizedLogo'] = minimizedLogo;
+    data['circledLogo'] = circledLogo;
+    data['stream_url'] = streamUrl;
+    data['mobile_number'] = mobileNumber;
+    data['mobile_number_ksa'] = mobileNumberKsa;
+    data['mobile_number_uae'] = mobileNumberUae;
+    if (socialMedia != null) {
+      data['social_media'] = socialMedia!.map((v) => v.toJson()).toList();
     }
-    data['email'] = this.email;
-    data['type'] = this.type;
-    data['favorite'] = this.favorite;
-    data['meta_data'] = this.metaData;
-    data['has_voice_note'] = this.hasVoiceNote;
-    data['has_messaging'] = this.hasMessaging;
-    data['has_hosts'] = this.hasHosts;
-    data['has_schedule'] = this.hasSchedule;
-    data['has_call'] = this.hasCall;
-    data['has_news'] = this.hasNews;
-    data['default_channel'] = this.defaultChannel;
-    data['landing_page'] = this.landingPage;
-    data['placeholder'] = this.placeholder;
-    data['channel_banners'] = this.channelBanners;
-    data['channelOrder'] = this.channelOrder;
-    if (this.programs != null) {
-      data['programs'] = this.programs!.map((v) => v.toJson()).toList();
+    data['email'] = email;
+    data['type'] = type;
+    data['favorite'] = favorite;
+    data['meta_data'] = metaData;
+    data['has_voice_note'] = hasVoiceNote;
+    data['has_messaging'] = hasMessaging;
+    data['has_hosts'] = hasHosts;
+    data['has_schedule'] = hasSchedule;
+    data['has_call'] = hasCall;
+    data['has_news'] = hasNews;
+    data['default_channel'] = defaultChannel;
+    data['landing_page'] = landingPage;
+    data['placeholder'] = placeholder;
+    data['channel_banners'] = channelBanners;
+    data['channelOrder'] = channelOrder;
+    if (programs != null) {
+      data['programs'] = programs!.map((v) => v.toJson()).toList();
     }
-    if (this.podcasts != null) {
-      data['podcasts'] = this.podcasts!.map((v) => v.toJson()).toList();
+    if (podcasts != null) {
+      data['podcasts'] = podcasts!.map((v) => v.toJson()).toList();
     }
     return data;
   }
@@ -160,9 +161,9 @@ class SocialMedia {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['url'] = this.url;
-    data['type'] = this.type;
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['url'] = url;
+    data['type'] = type;
     return data;
   }
 }
@@ -181,19 +182,20 @@ class Program {
   String? endTime;
   List<SocialMedia>? socialMedia;
 
-  Program(
-      {this.id,
-      this.channelId,
-      this.name,
-      this.text,
-      this.image,
-      this.thumbnail,
-      this.category,
-      this.censorship,
-      this.date,
-      this.startTime,
-      this.endTime,
-      this.socialMedia});
+  Program({
+    this.id,
+    this.channelId,
+    this.name,
+    this.text,
+    this.image,
+    this.thumbnail,
+    this.category,
+    this.censorship,
+    this.date,
+    this.startTime,
+    this.endTime,
+    this.socialMedia,
+  });
 
   Program.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -210,26 +212,26 @@ class Program {
     if (json['social_media'] != null) {
       socialMedia = <SocialMedia>[];
       json['social_media'].forEach((v) {
-        socialMedia!.add(new SocialMedia.fromJson(v));
+        socialMedia!.add(SocialMedia.fromJson(v));
       });
     }
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['id'] = this.id;
-    data['channel_id'] = this.channelId;
-    data['name'] = this.name;
-    data['text'] = this.text;
-    data['image'] = this.image;
-    data['thumbnail'] = this.thumbnail;
-    data['category'] = this.category;
-    data['censorship'] = this.censorship;
-    data['start_time'] = this.startTime;
-    data['end_time'] = this.endTime;
-    data['date'] = this.date;
-    if (this.socialMedia != null) {
-      data['social_media'] = this.socialMedia!.map((v) => v.toJson()).toList();
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['id'] = id;
+    data['channel_id'] = channelId;
+    data['name'] = name;
+    data['text'] = text;
+    data['image'] = image;
+    data['thumbnail'] = thumbnail;
+    data['category'] = category;
+    data['censorship'] = censorship;
+    data['start_time'] = startTime;
+    data['end_time'] = endTime;
+    data['date'] = date;
+    if (socialMedia != null) {
+      data['social_media'] = socialMedia!.map((v) => v.toJson()).toList();
     }
     return data;
   }
@@ -246,16 +248,17 @@ class Podcasts {
   String? description;
   List<Episodes>? episodes;
 
-  Podcasts(
-      {this.id,
-      this.channelId,
-      this.thumbnail,
-      this.image,
-      this.hashtag,
-      this.title,
-      this.name,
-      this.description,
-      this.episodes});
+  Podcasts({
+    this.id,
+    this.channelId,
+    this.thumbnail,
+    this.image,
+    this.hashtag,
+    this.title,
+    this.name,
+    this.description,
+    this.episodes,
+  });
 
   Podcasts.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -269,23 +272,23 @@ class Podcasts {
     if (json['episodes'] != null) {
       episodes = <Episodes>[];
       json['episodes'].forEach((v) {
-        episodes!.add(new Episodes.fromJson(v));
+        episodes!.add(Episodes.fromJson(v));
       });
     }
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['id'] = this.id;
-    data['channel_id'] = this.channelId;
-    data['thumbnail'] = this.thumbnail;
-    data['image'] = this.image;
-    data['hashtag'] = this.hashtag;
-    data['title'] = this.title;
-    data['name'] = this.name;
-    data['description'] = this.description;
-    if (this.episodes != null) {
-      data['episodes'] = this.episodes!.map((v) => v.toJson()).toList();
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['id'] = id;
+    data['channel_id'] = channelId;
+    data['thumbnail'] = thumbnail;
+    data['image'] = image;
+    data['hashtag'] = hashtag;
+    data['title'] = title;
+    data['name'] = name;
+    data['description'] = description;
+    if (episodes != null) {
+      data['episodes'] = episodes!.map((v) => v.toJson()).toList();
     }
     return data;
   }
@@ -302,16 +305,17 @@ class Episodes {
   int? isVideo;
   int? podcastId;
 
-  Episodes(
-      {this.id,
-      this.title,
-      this.description,
-      this.date,
-      this.episode,
-      this.link,
-      this.externalLink,
-      this.isVideo,
-      this.podcastId});
+  Episodes({
+    this.id,
+    this.title,
+    this.description,
+    this.date,
+    this.episode,
+    this.link,
+    this.externalLink,
+    this.isVideo,
+    this.podcastId,
+  });
 
   Episodes.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -326,16 +330,16 @@ class Episodes {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['id'] = this.id;
-    data['title'] = this.title;
-    data['description'] = this.description;
-    data['date'] = this.date;
-    data['episode'] = this.episode;
-    data['link'] = this.link;
-    data['external_link'] = this.externalLink;
-    data['is_video'] = this.isVideo;
-    data['podcast_id'] = this.podcastId;
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['id'] = id;
+    data['title'] = title;
+    data['description'] = description;
+    data['date'] = date;
+    data['episode'] = episode;
+    data['link'] = link;
+    data['external_link'] = externalLink;
+    data['is_video'] = isVideo;
+    data['podcast_id'] = podcastId;
     return data;
   }
 }

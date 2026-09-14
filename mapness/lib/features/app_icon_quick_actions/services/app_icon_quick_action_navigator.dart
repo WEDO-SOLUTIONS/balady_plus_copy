@@ -35,7 +35,7 @@ class AppIconQuickActionNavigator {
         // Tab route — permissions are handled in [AppIconQuickActionHandler].
         await router.navigate(const BottomMenuRoute(children: [RoutingPointsRoute()]));
       case '/search':
-        await router.push(SearchRoute(requestFocus: true));
+        await router.push(SearchRoute());
       case '/shareMyLocation':
         await router.push(ShareMyLocationRoute());
       case '/shareLiveLocation':

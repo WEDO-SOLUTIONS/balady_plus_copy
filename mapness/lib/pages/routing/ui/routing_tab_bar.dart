@@ -39,7 +39,7 @@ TabsV2IconBuilder _routeModeTabIcon(
   required bool isPedestrianBlocked,
   required bool isOffline,
 }) => TabsV2WidgetBuilder(
-  ({required bool isSelected}) {
+  ({required isSelected}) {
     final colors = context.colors;
     return Semantics(
       button: true,

@@ -15,7 +15,7 @@ class UuidProvider extends _$UuidProvider {
     return prefs.getString('uuid')!;
   }
 
-  randomize() {
+  void randomize() {
     final uuid = const Uuid().v4();
 
     ref.read(sharedPrefsProvider).setString('uuid', uuid);

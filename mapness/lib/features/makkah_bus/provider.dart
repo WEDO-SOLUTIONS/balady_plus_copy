@@ -40,7 +40,7 @@ class MakkahBusLayer extends _$MakkahBusLayer {
     // leave the layer half-drawn. The sync serialises them and collapses
     // bursts into the last requested state.
     final visibility = MapLayerVisibilitySync(
-      apply: ({required bool visible}) => visible ? show(data: list) : hide(),
+      apply: ({required visible}) => visible ? show(data: list) : hide(),
       isDisposed: () => _isDisposed,
       tag: 'makkahBus.layer',
     );

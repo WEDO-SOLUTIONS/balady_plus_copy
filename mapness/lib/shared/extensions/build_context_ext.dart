@@ -1,6 +1,5 @@
 import 'package:balady_uikit/core/colorsV2/themes.dart';
 import 'package:balady_plus/app/features/accecipilities/balady_theme_controller.dart';
-import 'package:balady_uikit/core/colorsV2/themes.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -37,8 +36,6 @@ extension BuildContextExt on BuildContext {
   /// Field fill inside [profileCardColor] cards (gray on light cards, dark on dark cards).
   Color get profileFieldFillColor {
     final palette = read<ThemeController>().colors;
-    return profileCardColor.computeLuminance() > 0.5
-        ? palette.backgroundSurface4
-        : palette.backgroundSurface1;
+    return profileCardColor.computeLuminance() > 0.5 ? palette.backgroundSurface4 : palette.backgroundSurface1;
   }
 }

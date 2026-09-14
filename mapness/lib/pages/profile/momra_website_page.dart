@@ -71,7 +71,6 @@ class _MomraWebsitePageState extends ConsumerState<MomraWebsitePage> {
         ),
         body: SafeArea(
           top: false,
-          bottom: true,
           child: _isLoading
               ? const Center(child: Loading())
               : Column(

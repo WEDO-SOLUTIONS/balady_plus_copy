@@ -56,7 +56,6 @@ class ThemeSplashMigration {
       if (prefs.containsKey(newKey)) {
         logger.log(
           'ThemeSplashMigration: Already migrated (key exists: $newKey)',
-          logLevel: MapnessLogLevel.debug,
         );
         return false;
       }
@@ -97,9 +96,8 @@ class ThemeSplashMigration {
   }
 
   /// Formats a DateTime to ISO 8601 date string (YYYY-MM-DD).
-  static String _formatDate(DateTime date) {
-    return '${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}';
-  }
+  static String _formatDate(DateTime date) =>
+      '${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}';
 
   /// Cleans up old SharedPreferences keys after successful migration.
   ///

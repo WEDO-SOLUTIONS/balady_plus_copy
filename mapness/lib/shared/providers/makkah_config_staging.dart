@@ -24,9 +24,7 @@ class MakkahConfigUrls {
 
   /// Check if environment should use staging URLs.
   /// Only momrahProd uses production URLs, all others use staging.
-  static bool isStagingEnv(DgisEnv env) {
-    return env != DgisEnv.momrahProd;
-  }
+  static bool isStagingEnv(DgisEnv env) => env != DgisEnv.momrahProd;
 
   /// Get places URL based on environment
   static String getPlacesUrl(DgisEnv env) => isStagingEnv(env) ? placesUrlStaging : placesUrlProd;

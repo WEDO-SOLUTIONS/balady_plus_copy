@@ -38,7 +38,5 @@ class _AudioLifecycleObserverState extends ConsumerState<AudioLifecycleObserver>
   }
 
   @override
-  Widget build(BuildContext context) {
-    return widget.child;
-  }
+  Widget build(BuildContext context) => widget.child;
 }

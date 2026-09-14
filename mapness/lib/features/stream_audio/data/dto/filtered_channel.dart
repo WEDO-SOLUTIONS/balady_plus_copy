@@ -16,18 +16,18 @@ class FilteredChannel extends ChannelDTO {
   });
 
   factory FilteredChannel.fromDTO(ChannelDTO dto) => FilteredChannel(
-        id: dto.id,
-        name: dto.name,
-        logo: dto.logo,
-        webLogo: dto.webLogo,
-        maximizedLogo: dto.maximizedLogo,
-        minimizedLogo: dto.minimizedLogo,
-        circledLogo: dto.circledLogo,
-        channelBanners: dto.channelBanners,
-        channelOrder: dto.channelOrder,
-        programs: dto.programs,
-        streamUrl: dto.streamUrl,
-      );
+    id: dto.id,
+    name: dto.name,
+    logo: dto.logo,
+    webLogo: dto.webLogo,
+    maximizedLogo: dto.maximizedLogo,
+    minimizedLogo: dto.minimizedLogo,
+    circledLogo: dto.circledLogo,
+    channelBanners: dto.channelBanners,
+    channelOrder: dto.channelOrder,
+    programs: dto.programs,
+    streamUrl: dto.streamUrl,
+  );
 
   Program? get currentPlayedProgram {
     final now = DateTime.now();
@@ -75,9 +75,9 @@ class FilteredChannel extends ChannelDTO {
     // Handle cases where there's no space between time and AM/PM
     // Convert "6:00AM" to "6:00 AM" and "6:00PM" to "6:00 PM"
     if (normalizedTime.toUpperCase().endsWith('AM') && !normalizedTime.toUpperCase().endsWith(' AM')) {
-      normalizedTime = normalizedTime.substring(0, normalizedTime.length - 2) + ' AM';
+      normalizedTime = '${normalizedTime.substring(0, normalizedTime.length - 2)} AM';
     } else if (normalizedTime.toUpperCase().endsWith('PM') && !normalizedTime.toUpperCase().endsWith(' PM')) {
-      normalizedTime = normalizedTime.substring(0, normalizedTime.length - 2) + ' PM';
+      normalizedTime = '${normalizedTime.substring(0, normalizedTime.length - 2)} PM';
     }
 
     final isPM = normalizedTime.toUpperCase().endsWith('PM');

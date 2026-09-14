@@ -15,7 +15,7 @@ class DebugNavigationControll extends ConsumerWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          DebugSectionHeader(
+          const DebugSectionHeader(
             icon: Icons.navigation_rounded,
             title: 'Navigation Simulation',
             subtitle: 'Start simulated navigation',

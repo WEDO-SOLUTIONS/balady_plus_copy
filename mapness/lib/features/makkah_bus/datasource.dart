@@ -6,7 +6,7 @@ import 'package:mapness/entities/makkah_buses/model.dart';
 import 'package:mapness/_generated/assets/assets.gen.dart';
 import 'package:proj4dart/proj4dart.dart';
 
-double _toDouble(dynamic val) {
+double _toDouble(val) {
   if (val is num) return val.toDouble();
   if (val is String) return double.tryParse(val) ?? 0.0;
   return 0.0;
@@ -58,7 +58,7 @@ bool _isUtmCoordinates(List<dynamic> rawCoords, String? geomType) {
 }
 
 /// Convert a raw coordinate point, applying UTM→WGS84 if needed.
-List<double> _convertPoint(dynamic point, bool isUtm) {
+List<double> _convertPoint(point, bool isUtm) {
   if (point is! List<dynamic> || point.length < 2) return [];
   final x = _toDouble(point[0]);
   final y = _toDouble(point[1]);
@@ -91,7 +91,8 @@ List<MakkahBusModel> _parse(String jsonInput) {
       final nameArabic = _prop(attributes, 'Name_Arabic');
       final nameEnglish = _prop(attributes, 'Name_English');
       final colorCode = _prop(attributes, 'Color_Code') ?? _prop(attributes, 'Color Code');
-      final colorName = _prop(attributes, 'Color') ?? _prop(attributes, 'Color_Name') ?? _prop(attributes, 'Color Name');
+      final colorName =
+          _prop(attributes, 'Color') ?? _prop(attributes, 'Color_Name') ?? _prop(attributes, 'Color Name');
       final geomType = geometry['type'] as String?;
       final rawCoords = geometry['coordinates'] as List<dynamic>? ?? [];
 
@@ -109,14 +110,16 @@ List<MakkahBusModel> _parse(String jsonInput) {
             }
           }
           if (lineCoordinates.isNotEmpty) {
-            result.add(MakkahBusModel(
-              id: id != null ? '${id}_$lineIndex' : null,
-              nameArabic: nameArabic,
-              nameEnglish: nameEnglish,
-              colorName: colorName,
-              colorCode: colorCode,
-              coordinates: lineCoordinates,
-            ));
+            result.add(
+              MakkahBusModel(
+                id: id != null ? '${id}_$lineIndex' : null,
+                nameArabic: nameArabic,
+                nameEnglish: nameEnglish,
+                colorName: colorName,
+                colorCode: colorCode,
+                coordinates: lineCoordinates,
+              ),
+            );
             lineIndex++;
           }
         }
@@ -129,14 +132,16 @@ List<MakkahBusModel> _parse(String jsonInput) {
           }
         }
         if (coordinates.isNotEmpty) {
-          result.add(MakkahBusModel(
-            id: id,
-            nameArabic: nameArabic,
-            nameEnglish: nameEnglish,
-            colorName: colorName,
-            colorCode: colorCode,
-            coordinates: coordinates,
-          ));
+          result.add(
+            MakkahBusModel(
+              id: id,
+              nameArabic: nameArabic,
+              nameEnglish: nameEnglish,
+              colorName: colorName,
+              colorCode: colorCode,
+              coordinates: coordinates,
+            ),
+          );
         }
       }
     }
@@ -149,7 +154,7 @@ List<MakkahBusModel> _parse(String jsonInput) {
 
 class MakkahBusJsonDatasource {
   Future<List<MakkahBusModel>> getInfo() async {
-    try{
+    try {
       final jsonOutput = await rootBundle.loadString(Assets.maps.buses.makkahBus);
       final result = await compute(_parse, jsonOutput);
       return result;
@@ -158,4 +163,3 @@ class MakkahBusJsonDatasource {
     }
   }
 }
-

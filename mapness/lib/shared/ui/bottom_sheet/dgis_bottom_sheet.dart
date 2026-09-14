@@ -797,7 +797,10 @@ class _DgisBottomSheetState extends State<DgisBottomSheet>
 
   bool isFirstOpen = false;
 
-  Future<void> onPopInvokedWithResult(didPop, Object? result) async {
+  // The positional bool is Flutter's own `PopInvokedWithResultCallback`
+  // signature, so it cannot be named here.
+  // ignore: avoid_positional_boolean_parameters
+  Future<void> onPopInvokedWithResult(bool didPop, Object? result) async {
     final lowestAvailableExpansion = _lowestAvailableExpansion();
     if (_expansion == lowestAvailableExpansion) {
       if (result != null) {

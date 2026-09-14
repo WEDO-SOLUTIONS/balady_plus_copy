@@ -6,7 +6,6 @@ import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/colorsV2/themes.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
@@ -34,7 +33,7 @@ class PrivacyAndTermsOfUsePage extends StatelessWidget {
           backgroundColor: Colors.transparent,
           elevation: 0,
           title: Text(
-            "privacyAndTermsTitle".tr(),
+            'privacyAndTermsTitle'.tr(),
             style: const TextStyle(
               fontWeight: FontWeight.bold,
               fontFamily: fontFamily,
@@ -55,7 +54,7 @@ class PrivacyAndTermsOfUsePage extends StatelessWidget {
               crossAxisAlignment: context.isRTL ? CrossAxisAlignment.start : CrossAxisAlignment.end,
               children: [
                 Text(
-                  "privacyIntroText".tr(),
+                  'privacyIntroText'.tr(),
                   textAlign: context.isRTL ? TextAlign.right : TextAlign.left,
                   style: bodyStyle,
                 ),
@@ -63,30 +62,30 @@ class PrivacyAndTermsOfUsePage extends StatelessWidget {
                 _buildBullet(
                   context: context,
                   iconPath: 'assets/icons/svg/question-circle.svg',
-                  text: "privacyBulletServices".tr(),
+                  text: 'privacyBulletServices'.tr(),
                   fontFamily: fontFamily,
                 ),
                 _buildBullet(
                   context: context,
                   iconPath: 'assets/icons/svg/shield-user.svg',
-                  text: "privacyBulletIdentity".tr(),
+                  text: 'privacyBulletIdentity'.tr(),
                   fontFamily: fontFamily,
                 ),
                 _buildBullet(
                   context: context,
                   iconPath: 'assets/icons/svg/triangle-exclamation.svg',
-                  text: "privacyBulletRequests".tr(),
+                  text: 'privacyBulletRequests'.tr(),
                   fontFamily: fontFamily,
                 ),
                 const SizedBox(height: 20),
                 Text(
-                  "privacySaudiRegulationsText".tr(),
+                  'privacySaudiRegulationsText'.tr(),
                   textAlign: context.isRTL ? TextAlign.right : TextAlign.left,
                   style: bodyStyle,
                 ),
                 const SizedBox(height: 20),
                 Text(
-                  "privacyUserResponsibilityText".tr(),
+                  'privacyUserResponsibilityText'.tr(),
                   textAlign: context.isRTL ? TextAlign.right : TextAlign.left,
                   style: bodyStyle,
                 ),
@@ -96,7 +95,7 @@ class PrivacyAndTermsOfUsePage extends StatelessWidget {
                   child: Wrap(
                     children: [
                       Text(
-                        "privacyMoreDetailsText".tr(),
+                        'privacyMoreDetailsText'.tr(),
                         style: bodyStyle,
                       ),
                       const SizedBox(width: 10),
@@ -106,7 +105,7 @@ class PrivacyAndTermsOfUsePage extends StatelessWidget {
                           launchUrl(url, mode: LaunchMode.externalApplication);
                         },
                         child: Text(
-                          "privacyBaladyPlatformText".tr(),
+                          'privacyBaladyPlatformText'.tr(),
                           style: bodyStyle.copyWith(
                             color: theme.primaryColor,
                             fontWeight: FontWeight.bold,

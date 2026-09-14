@@ -52,9 +52,7 @@ class MakkahBasedDashboardContent extends ConsumerWidget {
 
   /// Checks if the Kaaba virtual journey card should be shown.
   /// All conditions (enabled, location, date) are already handled by showPilgrimFeatureProvider.
-  bool _shouldShowKaabaCard(FeatureConfig? pilgrimFeature) {
-    return pilgrimFeature != null;
-  }
+  bool _shouldShowKaabaCard(FeatureConfig? pilgrimFeature) => pilgrimFeature != null;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {

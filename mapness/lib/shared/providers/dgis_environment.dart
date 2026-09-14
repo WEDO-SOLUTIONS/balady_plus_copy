@@ -1,6 +1,5 @@
 import 'dart:convert';
 
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/shared/config/environment_config.dart';
 import 'package:mapness/shared/constants/constants.dart';
 import 'package:mapness/shared/providers/hive.dart';
@@ -35,7 +34,7 @@ class DgisEnvironment extends _$DgisEnvironment {
     try {
       // ignore: avoid_dynamic_calls
       return EnvironmentConfig.fromJson(jsonDecode(envConfig)[envTypeJsonKey]);
-    } catch (_, __) {
+    } catch (_) {
       logger.log('Error parsing environment config', logLevel: MapnessLogLevel.critical);
       return EnvironmentConfig.fromEnvType(envTypeJsonKey ?? envType ?? 'momrahProd');
     }

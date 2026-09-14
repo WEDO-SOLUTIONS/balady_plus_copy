@@ -40,33 +40,33 @@ class MediaCatalogList extends ConsumerWidget {
   }
 
   Widget _buildPortraitList(List<FilteredChannel> channels, StreamAudioProvider provider, WidgetRef ref) => Container(
-        height: 180,
-        padding: const EdgeInsets.symmetric(vertical: 8),
-        child: ListView.builder(
-          scrollDirection: Axis.horizontal,
-          padding: const EdgeInsets.symmetric(horizontal: 16),
-          itemCount: channels.length,
-          itemBuilder: (context, index) {
-            final channel = channels[index];
-            final isSelected = provider.selectedChannel?.id == channel.id;
+    height: 180,
+    padding: const EdgeInsets.symmetric(vertical: 8),
+    child: ListView.builder(
+      scrollDirection: Axis.horizontal,
+      padding: const EdgeInsets.symmetric(horizontal: 16),
+      itemCount: channels.length,
+      itemBuilder: (context, index) {
+        final channel = channels[index];
+        final isSelected = provider.selectedChannel?.id == channel.id;
 
-            return GestureDetector(
-              onTap: () {
-                if (!isSelected) {
-                  ref.read(streamAudioProvider).selectChannel(channel);
-                  needReset?.call();
-                } else {
-                  print("Current Program Image:");
-                  print(channel.currentPlayedProgram?.image);
-                  print("Channel Logo:");
-                  print(channel.logo);
-                }
-              },
-              child: MediaCatalogItem(channel: channel, isSelected: isSelected),
-            );
+        return GestureDetector(
+          onTap: () {
+            if (!isSelected) {
+              ref.read(streamAudioProvider).selectChannel(channel);
+              needReset?.call();
+            } else {
+              print('Current Program Image:');
+              print(channel.currentPlayedProgram?.image);
+              print('Channel Logo:');
+              print(channel.logo);
+            }
           },
-        ),
-      );
+          child: MediaCatalogItem(channel: channel, isSelected: isSelected),
+        );
+      },
+    ),
+  );
 
   Widget _buildLandscapeList(List<FilteredChannel> channels, StreamAudioProvider provider, WidgetRef ref) =>
       ListView.builder(

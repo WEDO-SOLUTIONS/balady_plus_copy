@@ -283,64 +283,62 @@ class _MakkahWorkTimeRow extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsetsDirectional.only(start: 50),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: Spacing.$2x),
-            child: Table(
-              columnWidths: const {
-                0: FlexColumnWidth(6),
-                1: FlexColumnWidth(8),
-              },
-              children: [
+  Widget build(BuildContext context) => Padding(
+    padding: const EdgeInsetsDirectional.only(start: 50),
+    child: Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Padding(
+          padding: const EdgeInsets.symmetric(vertical: Spacing.$2x),
+          child: Table(
+            columnWidths: const {
+              0: FlexColumnWidth(6),
+              1: FlexColumnWidth(8),
+            },
+            children: [
+              TableRow(
+                children: [
+                  Text(
+                    dayTitle,
+                    style: context.textStyles.bodySmallRegular.copyWith(
+                      color: colors.titleColor,
+                      fontSize: 14,
+                    ),
+                  ),
+                  Text(
+                    workHours,
+                    style: context.textStyles.bodySmallRegular.copyWith(
+                      color: colors.titleColor,
+                      fontSize: 14,
+                    ),
+                  ),
+                ],
+              ),
+              if (breakHours != null)
                 TableRow(
                   children: [
+                    const SizedBox(),
                     Text(
-                      dayTitle,
+                      breakHours!,
                       style: context.textStyles.bodySmallRegular.copyWith(
-                        color: colors.titleColor,
-                        fontSize: 14,
-                      ),
-                    ),
-                    Text(
-                      workHours,
-                      style: context.textStyles.bodySmallRegular.copyWith(
-                        color: colors.titleColor,
+                        color: colors.secondaryTextColor,
                         fontSize: 14,
                       ),
                     ),
                   ],
                 ),
-                if (breakHours != null)
-                  TableRow(
-                    children: [
-                      const SizedBox(),
-                      Text(
-                        breakHours!,
-                        style: context.textStyles.bodySmallRegular.copyWith(
-                          color: colors.secondaryTextColor,
-                          fontSize: 14,
-                        ),
-                      ),
-                    ],
-                  ),
-              ],
-            ),
+            ],
           ),
-          if (showDivider)
-            Divider(
-              color: colors.secondaryTextColor.withOpacity(0.2),
-              height: 1,
-              thickness: 1,
-            ),
-        ],
-      ),
-    );
-  }
+        ),
+        if (showDivider)
+          Divider(
+            color: colors.secondaryTextColor.withOpacity(0.2),
+            height: 1,
+            thickness: 1,
+          ),
+      ],
+    ),
+  );
 }
 
 class _MakkahWorkHoursHintTile extends StatelessWidget {

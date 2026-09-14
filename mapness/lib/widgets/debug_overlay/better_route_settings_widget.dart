@@ -18,7 +18,7 @@ class BetterRouteSettingsWidget extends ConsumerWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          DebugSectionHeader(
+          const DebugSectionHeader(
             icon: Icons.route_rounded,
             title: 'Better Route Settings',
             subtitle: 'Configure route optimization',
@@ -90,39 +90,37 @@ class _SettingsButton extends StatelessWidget {
   final VoidCallback onPressed;
 
   @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onPressed,
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-        decoration: BoxDecoration(
-          gradient: isActive ? DebugTheme.gradientGreen : null,
-          color: isActive ? null : DebugTheme.surfaceLight,
-          borderRadius: BorderRadius.circular(8),
-          border: Border.all(
-            color: isActive ? Colors.transparent : DebugTheme.border,
-          ),
-          boxShadow: isActive
-              ? [
-                  BoxShadow(
-                    color: DebugTheme.success.withOpacity(0.3),
-                    blurRadius: 8,
-                    offset: const Offset(0, 2),
-                  ),
-                ]
-              : null,
+  Widget build(BuildContext context) => GestureDetector(
+    onTap: onPressed,
+    child: Container(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+      decoration: BoxDecoration(
+        gradient: isActive ? DebugTheme.gradientGreen : null,
+        color: isActive ? null : DebugTheme.surfaceLight,
+        borderRadius: BorderRadius.circular(8),
+        border: Border.all(
+          color: isActive ? Colors.transparent : DebugTheme.border,
         ),
-        child: Center(
-          child: Text(
-            label,
-            style: context.textStyles.bodySmallSemiBold.copyWith(
-              color: isActive ? Colors.white : DebugTheme.textSecondary,
-            ),
+        boxShadow: isActive
+            ? [
+                BoxShadow(
+                  color: DebugTheme.success.withOpacity(0.3),
+                  blurRadius: 8,
+                  offset: const Offset(0, 2),
+                ),
+              ]
+            : null,
+      ),
+      child: Center(
+        child: Text(
+          label,
+          style: context.textStyles.bodySmallSemiBold.copyWith(
+            color: isActive ? Colors.white : DebugTheme.textSecondary,
           ),
         ),
       ),
-    );
-  }
+    ),
+  );
 }
 
 class _SettingRow extends StatelessWidget {
@@ -135,26 +133,24 @@ class _SettingRow extends StatelessWidget {
   final String value;
 
   @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 3),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Text(
-            label,
-            style: context.textStyles.captionSmallRegular.copyWith(
-              color: DebugTheme.textMuted,
-            ),
+  Widget build(BuildContext context) => Padding(
+    padding: const EdgeInsets.symmetric(vertical: 3),
+    child: Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Text(
+          label,
+          style: context.textStyles.captionSmallRegular.copyWith(
+            color: DebugTheme.textMuted,
           ),
-          Text(
-            value,
-            style: context.textStyles.captionSmallMedium.copyWith(
-              color: DebugTheme.textPrimary,
-            ),
+        ),
+        Text(
+          value,
+          style: context.textStyles.captionSmallMedium.copyWith(
+            color: DebugTheme.textPrimary,
           ),
-        ],
-      ),
-    );
-  }
+        ),
+      ],
+    ),
+  );
 }

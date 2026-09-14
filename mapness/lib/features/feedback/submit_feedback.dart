@@ -1,7 +1,6 @@
 import 'dart:convert';
 
 import 'package:dio/dio.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/entities/feedback/dto/feedback_form_payload_dto.dart';
 import 'package:mapness/entities/feedback/feedback_object_type.dart';
 import 'package:mapness/features/advert_metrics/advert_metrics.dart';
@@ -81,8 +80,10 @@ Future<void> submitFeedback(
   } on DioException catch (e) {
     logger
       ..log(e.response?.statusCode?.toString() ?? '')
-      ..log('request failed with status code ${e.response?.statusCode}. ${e.response?.data}',
-          logLevel: MapnessLogLevel.critical)
+      ..log(
+        'request failed with status code ${e.response?.statusCode}. ${e.response?.data}',
+        logLevel: MapnessLogLevel.critical,
+      )
       ..log('request data: ${jsonEncode(e.requestOptions.data)}')
       ..log('response data: ${jsonEncode(e.response?.data)}');
     rethrow;

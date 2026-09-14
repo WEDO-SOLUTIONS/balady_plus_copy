@@ -63,38 +63,36 @@ class TifoBallButton extends ConsumerWidget {
   }
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    return Semantics(
-      button: true,
-      label: 'Focus TIFO districts',
-      child: GestureDetector(
-        behavior: HitTestBehavior.opaque,
-        onTap: () => _handleTap(ref),
-        child: Container(
-          width: size,
-          height: size,
-          decoration: BoxDecoration(
-            color: _bg,
-            shape: BoxShape.circle,
-            boxShadow: [
-              BoxShadow(
-                color: _bg.withOpacity(0.5),
-                blurRadius: 12,
-                offset: const Offset(0, 6),
-              ),
-            ],
-          ),
-          alignment: Alignment.center,
-          child: const Text(
-            '⚽',
-            style: TextStyle(
-              fontSize: 26,
-              height: 1.0,
-              color: _emojiColor,
+  Widget build(BuildContext context, WidgetRef ref) => Semantics(
+    button: true,
+    label: 'Focus TIFO districts',
+    child: GestureDetector(
+      behavior: HitTestBehavior.opaque,
+      onTap: () => _handleTap(ref),
+      child: Container(
+        width: size,
+        height: size,
+        decoration: BoxDecoration(
+          color: _bg,
+          shape: BoxShape.circle,
+          boxShadow: [
+            BoxShadow(
+              color: _bg.withOpacity(0.5),
+              blurRadius: 12,
+              offset: const Offset(0, 6),
             ),
+          ],
+        ),
+        alignment: Alignment.center,
+        child: const Text(
+          '⚽',
+          style: TextStyle(
+            fontSize: 26,
+            height: 1.0,
+            color: _emojiColor,
           ),
         ),
       ),
-    );
-  }
+    ),
+  );
 }

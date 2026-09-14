@@ -39,10 +39,10 @@ class AppIconQuickActionHandler extends _$AppIconQuickActionHandler {
   /// Plugin / home-screen tap entry point (warm vs cold start).
   Future<void> handleFromPlatform(String shortcutKey) async {
     if (_isRouterReady) {
-      await handle(shortcutKey, isFirstRun: false);
+      await handle(shortcutKey);
       return;
     }
-    await queueShortcut(shortcutKey, isFirstRun: true);
+    await queueShortcut(shortcutKey);
   }
 
   /// Queues a shortcut tap and delivers once the router is ready (BR#04).

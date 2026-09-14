@@ -81,21 +81,21 @@ class ThemeSplashState extends _$ThemeSplashState {
 
     switch (config.persistenceStrategy) {
       case SplashPersistenceStrategy.onceEver:
-        return '${_prefsKeyPrefix}${mode.name}_ever';
+        return '$_prefsKeyPrefix${mode.name}_ever';
 
       case SplashPersistenceStrategy.oncePerActivationPeriod:
         final themeConfig = _getThemeConfig(mode);
         final period = _formatActivationPeriod(themeConfig);
-        return '${_prefsKeyPrefix}${mode.name}_$period';
+        return '$_prefsKeyPrefix${mode.name}_$period';
 
       case SplashPersistenceStrategy.oncePerDay:
         final today = DateTime.now();
         final dateKey = '${today.year}_${today.month}_${today.day}';
-        return '${_prefsKeyPrefix}${mode.name}_$dateKey';
+        return '$_prefsKeyPrefix${mode.name}_$dateKey';
 
       case SplashPersistenceStrategy.always:
         // Never persists - using a unique key that resets each time
-        return '${_prefsKeyPrefix}${mode.name}_never';
+        return '$_prefsKeyPrefix${mode.name}_never';
     }
   }
 
@@ -145,7 +145,6 @@ class ThemeSplashState extends _$ThemeSplashState {
   }
 
   /// Formats a DateTime to ISO 8601 date string (YYYY-MM-DD).
-  String _formatDate(DateTime date) {
-    return '${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}';
-  }
+  String _formatDate(DateTime date) =>
+      '${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}';
 }

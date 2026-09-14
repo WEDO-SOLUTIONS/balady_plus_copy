@@ -11,65 +11,59 @@ class ShowOnboardingButton extends ConsumerWidget {
   const ShowOnboardingButton({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    return DebugCard(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          DebugSectionHeader(
-            icon: Icons.start_rounded,
-            title: 'Onboarding',
-            subtitle: 'Show app introduction flow',
-            gradient: DebugTheme.gradientPurple,
-          ),
-          const SizedBox(height: 14),
-          DebugButton(
-            label: 'Show Onboarding',
-            icon: Icons.slideshow_rounded,
-            gradient: DebugTheme.gradientPurple,
-            onPressed: () {
-              rootNavigatorKey.currentContext!.pushRoute(OnboardRoute());
-            },
-          ),
-        ],
-      ),
-    );
-  }
+  Widget build(BuildContext context, WidgetRef ref) => DebugCard(
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const DebugSectionHeader(
+          icon: Icons.start_rounded,
+          title: 'Onboarding',
+          subtitle: 'Show app introduction flow',
+        ),
+        const SizedBox(height: 14),
+        DebugButton(
+          label: 'Show Onboarding',
+          icon: Icons.slideshow_rounded,
+          onPressed: () {
+            rootNavigatorKey.currentContext!.pushRoute(OnboardRoute());
+          },
+        ),
+      ],
+    ),
+  );
 }
 
 class ShowSaudiDayButton extends ConsumerWidget {
   const ShowSaudiDayButton({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    return DebugCard(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          DebugSectionHeader(
-            icon: Icons.celebration_rounded,
-            title: 'Saudi National Day',
-            subtitle: 'Preview celebration splash screen',
-            gradient: DebugTheme.gradientGreen,
-          ),
-          const SizedBox(height: 14),
-          DebugButton(
-            label: 'Show Splash Screen',
-            icon: Icons.preview_rounded,
-            gradient: DebugTheme.gradientGreen,
-            onPressed: () {
-              Navigator.of(rootNavigatorKey.currentContext!).push(
-                MaterialPageRoute<void>(
-                  builder: (_) => const ThemeSplashPage(
-                    theme: SpecialThemeMode.nationalDay,
-                  ),
-                  fullscreenDialog: true,
+  Widget build(BuildContext context, WidgetRef ref) => DebugCard(
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const DebugSectionHeader(
+          icon: Icons.celebration_rounded,
+          title: 'Saudi National Day',
+          subtitle: 'Preview celebration splash screen',
+          gradient: DebugTheme.gradientGreen,
+        ),
+        const SizedBox(height: 14),
+        DebugButton(
+          label: 'Show Splash Screen',
+          icon: Icons.preview_rounded,
+          gradient: DebugTheme.gradientGreen,
+          onPressed: () {
+            Navigator.of(rootNavigatorKey.currentContext!).push(
+              MaterialPageRoute<void>(
+                builder: (_) => const ThemeSplashPage(
+                  theme: SpecialThemeMode.nationalDay,
                 ),
-              );
-            },
-          ),
-        ],
-      ),
-    );
-  }
+                fullscreenDialog: true,
+              ),
+            );
+          },
+        ),
+      ],
+    ),
+  );
 }

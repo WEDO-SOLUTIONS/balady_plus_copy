@@ -23,7 +23,7 @@ final workingHoursSoonThresholdProvider = FutureProvider<Duration>((ref) async {
   return kDefaultWorkingHoursSoonThreshold;
 });
 
-int? _parseThresholdMinutes(dynamic value) {
+int? _parseThresholdMinutes(value) {
   if (value is int && value > 0) {
     return value;
   }

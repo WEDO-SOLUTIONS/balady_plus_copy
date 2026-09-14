@@ -20,7 +20,7 @@ class SsoCredentialView extends ConsumerWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          DebugSectionHeader(
+          const DebugSectionHeader(
             icon: Icons.key_rounded,
             title: 'SSO Credentials',
             subtitle: 'Authentication information',

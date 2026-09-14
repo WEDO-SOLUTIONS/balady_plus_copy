@@ -1,5 +1,4 @@
 import 'package:dio/dio.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/entities/search/models/search_region.dart';
 import 'package:mapness/shared/lib/deeplink_functions.dart';
 import 'package:mapness/shared/providers/base_dio.dart';

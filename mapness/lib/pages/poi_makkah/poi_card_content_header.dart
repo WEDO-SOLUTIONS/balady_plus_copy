@@ -14,59 +14,57 @@ class _MakkahPoiHeader extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
-    return ColoredBox(
-      color: colors.headerBackground,
-      child: Padding(
-        padding: const EdgeInsets.only(left: Spacing.$4x, right: Spacing.$4x),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const SheetDragger(),
-            Padding(
-              padding: const EdgeInsets.only(bottom: Spacing.$2x),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Expanded(
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          title,
-                          style: context.textStyles.h3SemiBold.copyWith(
-                            color: colors.titleColor,
-                          ),
-                          textAlign: TextAlign.start,
+  Widget build(BuildContext context) => ColoredBox(
+    color: colors.headerBackground,
+    child: Padding(
+      padding: const EdgeInsets.only(left: Spacing.$4x, right: Spacing.$4x),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const SheetDragger(),
+          Padding(
+            padding: const EdgeInsets.only(bottom: Spacing.$2x),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Expanded(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        title,
+                        style: context.textStyles.h3SemiBold.copyWith(
+                          color: colors.titleColor,
                         ),
-                        const SizedBox(height: Spacing.$2x),
-                        subTitleWidget,
-                      ],
-                    ),
+                        textAlign: TextAlign.start,
+                      ),
+                      const SizedBox(height: Spacing.$2x),
+                      subTitleWidget,
+                    ],
                   ),
-                  const SizedBox(width: Spacing.$3x),
-                  AppButton(
-                    buttonColorScheme: ButtonColorScheme.neutral,
-                    buttonType: ButtonType.secondary,
-                    onTap: onTapClose,
-                    primaryIcon: Icons.close,
-                    color: colors.closeButtonBackground,
-                    iconColor: colors.closeButtonIcon,
-                    padding: EdgeInsets.zero,
-                    innerPadding: const EdgeInsets.symmetric(
-                      horizontal: Spacing.$2x,
-                    ),
+                ),
+                const SizedBox(width: Spacing.$3x),
+                AppButton(
+                  buttonColorScheme: ButtonColorScheme.neutral,
+                  buttonType: ButtonType.secondary,
+                  onTap: onTapClose,
+                  primaryIcon: Icons.close,
+                  color: colors.closeButtonBackground,
+                  iconColor: colors.closeButtonIcon,
+                  padding: EdgeInsets.zero,
+                  innerPadding: const EdgeInsets.symmetric(
+                    horizontal: Spacing.$2x,
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
-          ],
-        ),
+          ),
+        ],
       ),
-    );
-  }
+    ),
+  );
 }
 
 class _MakkahPoiSubtitle extends ConsumerWidget {
@@ -175,7 +173,7 @@ class _MakkahPoiSubtitle extends ConsumerWidget {
             matchTextDirection: true,
           ),
           const SizedBox(width: 4),
-          Text(durationText!, style: textStyle),
+          Text(durationText, style: textStyle),
         ],
       ],
     );

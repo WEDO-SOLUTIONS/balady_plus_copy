@@ -28,7 +28,7 @@ class DebugServerUrl extends ConsumerWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          DebugSectionHeader(
+          const DebugSectionHeader(
             icon: Icons.dns_rounded,
             title: 'Server Environment',
             subtitle: 'Switch API endpoints',
@@ -107,36 +107,34 @@ class _EnvButton extends StatelessWidget {
   final VoidCallback onPressed;
 
   @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onPressed,
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-        decoration: BoxDecoration(
-          gradient: isActive ? DebugTheme.gradientBlue : null,
-          color: isActive ? null : DebugTheme.surfaceLight,
-          borderRadius: BorderRadius.circular(8),
-          border: Border.all(
-            color: isActive ? Colors.transparent : DebugTheme.border,
-          ),
-          boxShadow: isActive
-              ? [
-                  BoxShadow(
-                    color: DebugTheme.info.withOpacity(0.3),
-                    blurRadius: 8,
-                    offset: const Offset(0, 2),
-                  ),
-                ]
-              : null,
+  Widget build(BuildContext context) => GestureDetector(
+    onTap: onPressed,
+    child: Container(
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+      decoration: BoxDecoration(
+        gradient: isActive ? DebugTheme.gradientBlue : null,
+        color: isActive ? null : DebugTheme.surfaceLight,
+        borderRadius: BorderRadius.circular(8),
+        border: Border.all(
+          color: isActive ? Colors.transparent : DebugTheme.border,
         ),
-        child: Text(
-          label,
-          style: context.textStyles.captionSmallMedium.copyWith(
-            color: isActive ? Colors.white : DebugTheme.textSecondary,
-            fontWeight: isActive ? FontWeight.w600 : FontWeight.w500,
-          ),
+        boxShadow: isActive
+            ? [
+                BoxShadow(
+                  color: DebugTheme.info.withOpacity(0.3),
+                  blurRadius: 8,
+                  offset: const Offset(0, 2),
+                ),
+              ]
+            : null,
+      ),
+      child: Text(
+        label,
+        style: context.textStyles.captionSmallMedium.copyWith(
+          color: isActive ? Colors.white : DebugTheme.textSecondary,
+          fontWeight: isActive ? FontWeight.w600 : FontWeight.w500,
         ),
       ),
-    );
-  }
+    ),
+  );
 }

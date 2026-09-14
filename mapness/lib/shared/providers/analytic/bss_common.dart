@@ -1,4 +1,3 @@
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/entities/app_feedback/app_feedback_payload.dart';
 import 'package:mapness/features/app_feedback/device_info_provider.dart';
 import 'package:mapness/shared/providers/analytic/models/bss_common.dart';

@@ -1,11 +1,9 @@
-import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:mapness/features/founding_day/founding_day.dart';
 import 'package:mapness/features/founding_day/founding_day_debug.dart';
 import 'package:mapness/features/special_themes/core/places_activation_config.dart';
 import 'package:mapness/features/special_themes/modes/foundation_day/foundation_day.dart';
 import 'package:mapness/features/special_themes/modes/mekkah_base/mekkah_base_theme.dart';
 import 'package:mapness/features/special_themes/modes/saudi_national_day/saudi_national_day.dart';
-import 'package:riverpod/riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'special_theme_mode.g.dart';

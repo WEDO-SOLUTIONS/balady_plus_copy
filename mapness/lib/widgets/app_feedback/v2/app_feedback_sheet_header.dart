@@ -14,22 +14,22 @@ class AppFeedbackSheetHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => BaladyTopBar(
-        onLeadingPressed: onBackTap,
-        leading: Semantics(
-          label: context.l10n.a11yBack,
-          button: true,
-          child: ExcludeSemantics(
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                SizedBox(width: Spacing.$4x),
-                Icon(SystemIcons.arrowCornerLeftLarge),
-                SizedBox(width: Spacing.$4x),
-              ],
-            ),
-          ),
+    onLeadingPressed: onBackTap,
+    leading: Semantics(
+      label: context.l10n.a11yBack,
+      button: true,
+      child: const ExcludeSemantics(
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            SizedBox(width: Spacing.$4x),
+            Icon(SystemIcons.arrowCornerLeftLarge),
+            SizedBox(width: Spacing.$4x),
+          ],
         ),
-        title: title,
-        useSafeArea: false,
-      );
+      ),
+    ),
+    title: title,
+    useSafeArea: false,
+  );
 }

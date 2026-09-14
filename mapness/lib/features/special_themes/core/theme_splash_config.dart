@@ -76,7 +76,6 @@ extension SpecialThemeModeSplashExtension on SpecialThemeMode {
         return const ThemeSplashConfig(
           enabled: true,
           storyType: StoryTypes.saudiDay,
-          persistenceStrategy: SplashPersistenceStrategy.oncePerActivationPeriod,
         );
 
       case SpecialThemeMode.mekkahBase:
@@ -84,7 +83,6 @@ extension SpecialThemeModeSplashExtension on SpecialThemeMode {
         return const ThemeSplashConfig(
           enabled: true,
           storyType: StoryTypes.mekkahBase,
-          persistenceStrategy: SplashPersistenceStrategy.oncePerActivationPeriod,
         );
 
       // Foundation Day, Ramadan - disabled for now (can be easily enabled in future)
