@@ -21,6 +21,7 @@ import 'package:mapness/features/tifo/ui/tifo_message_card.dart';
 import 'package:mapness/features/tifo/ui/tifo_theme.dart';
 import 'package:mapness/l10n/generated/app_localizations.dart';
 import 'package:mapness/shared/providers/app_language.dart';
+import 'package:mapness/shared/utils/detach.dart';
 import 'package:mapness/shared/utils/logger/logger.dart';
 
 /// Opens the capture sheet for [building] on the root navigator, so it floats
@@ -364,7 +365,7 @@ class _TifoBuildingSheetState extends ConsumerState<_TifoBuildingSheet> {
     if ((session.profile?.balance ?? 0) < session.config.challengeCost) {
       setState(() => _isBusy = false);
       final l10n = AppLocalizations.of(context);
-      unawaited(
+      detach(
         showTifoMessageDialog<void>(
           context,
           card: TifoMessageCard(
@@ -374,6 +375,7 @@ class _TifoBuildingSheetState extends ConsumerState<_TifoBuildingSheet> {
             onClose: () => Navigator.of(context).pop(),
           ),
         ),
+        tag: 'tifoSheet.messageDialog',
       );
       return;
     }
@@ -424,7 +426,7 @@ class _TifoBuildingSheetState extends ConsumerState<_TifoBuildingSheet> {
     // up so its bridge calls don't compete with Flame's per-frame rendering.
     container.read(tifoBuildingsPollerProvider.notifier).stop();
     var handled = false;
-    unawaited(
+    detach(
       navigator.push<void>(
         MaterialPageRoute<void>(
           fullscreenDialog: true,
@@ -437,7 +439,7 @@ class _TifoBuildingSheetState extends ConsumerState<_TifoBuildingSheet> {
             goalkeeperDifficulty: container.read(tifoDebugGoalkeeperDifficultyProvider),
             sessionTimeoutSeconds: session.config.liveLockTimeoutSeconds,
             locale: container.read(appLanguageProvider).locale,
-            onReady: (arm) => unawaited(
+            onReady: (arm) => detach(
               _openSession(container).then((session) {
                 if (session == null) {
                   return; // start failed — the game route is already gone
@@ -445,6 +447,7 @@ class _TifoBuildingSheetState extends ConsumerState<_TifoBuildingSheet> {
                 playSession = session;
                 arm();
               }),
+              tag: 'tifoSheet.openSession',
             ),
             // TFS 86075: the session is void the moment the device goes
             // offline (the backend keeps the token for a session that outlives
@@ -476,12 +479,16 @@ class _TifoBuildingSheetState extends ConsumerState<_TifoBuildingSheet> {
               // submit — kept tight because the clock is still running.
               Future<void>.delayed(const Duration(seconds: 2), () {
                 rootNavigatorKey.currentState?.pop();
-                unawaited(_submit(playSession: session, outcome: outcome));
+                detach(
+                  _submit(playSession: session, outcome: outcome),
+                  tag: 'tifoSheet.submit',
+                );
               });
             },
           ),
         ),
       ),
+      tag: 'tifoSheet.openPenaltyGame',
     );
   }
 
@@ -492,7 +499,7 @@ class _TifoBuildingSheetState extends ConsumerState<_TifoBuildingSheet> {
     try {
       final session = await container.read(tifoApiProvider).startPlay(_building.id);
       // Token was just spent; refresh the balance shown elsewhere.
-      unawaited(container.read(tifoSessionProvider.notifier).refreshProfile());
+      detach(container.read(tifoSessionProvider.notifier).refreshProfile(), tag: 'tifoSheet.refreshProfile');
       return session;
     } catch (e) {
       rootNavigatorKey.currentState?.pop();
@@ -530,7 +537,7 @@ class _TifoBuildingSheetState extends ConsumerState<_TifoBuildingSheet> {
       if (result.outcome == TifoOutcome.claimed ||
           result.outcome == TifoOutcome.taken ||
           result.outcome == TifoOutcome.failed) {
-        unawaited(
+        detach(
           container
               .read(tifoActivityLogProvider.notifier)
               .add(
@@ -539,6 +546,7 @@ class _TifoBuildingSheetState extends ConsumerState<_TifoBuildingSheet> {
                   timestamp: DateTime.now(),
                 ),
               ),
+          tag: 'tifoSheet.activityLog',
         );
       }
       // Reflect capture immediately using the player's own club; the next
@@ -555,11 +563,11 @@ class _TifoBuildingSheetState extends ConsumerState<_TifoBuildingSheet> {
               );
         }
       }
-      unawaited(container.read(tifoSessionProvider.notifier).refreshProfile());
+      detach(container.read(tifoSessionProvider.notifier).refreshProfile(), tag: 'tifoSheet.refreshProfile');
       // Fullscreen Win/Loss/voided hero (US-14); errors keep the small dialog.
       final ctx = rootNavigatorKey.currentContext;
       if (ctx != null) {
-        unawaited(
+        detach(
           showTifoPenaltyResult(
             ctx,
             result,
@@ -577,8 +585,9 @@ class _TifoBuildingSheetState extends ConsumerState<_TifoBuildingSheet> {
             // DISMISSAL is what makes the Profile tiles right when the player
             // actually looks at them. `container` (not `ref`) on purpose: this
             // fires after the sheet may be gone.
-            unawaited(container.read(tifoSessionProvider.notifier).refreshProfile());
+            detach(container.read(tifoSessionProvider.notifier).refreshProfile(), tag: 'tifoSheet.refreshProfile');
           }),
+          tag: 'tifoSheet.penaltyResult',
         );
       }
     } catch (e) {
@@ -629,12 +638,13 @@ class _TifoBuildingSheetState extends ConsumerState<_TifoBuildingSheet> {
 
     final resultCtx = rootNavigatorKey.currentContext;
     if (resultCtx != null) {
-      unawaited(
+      detach(
         precacheTifoResultImages(
           resultCtx,
           winnerColorKey: tifoResultColorKeyFor(ref.read(tifoSessionProvider).myClub?.id),
           buildingOwnerColorKey: tifoResultColorKeyFor(_building.ownerClubSlug),
         ),
+        tag: 'tifoSheet.precacheResultImages',
       );
     }
     final api = ref.read(tifoApiProvider);
@@ -680,7 +690,7 @@ class _TifoBuildingSheetState extends ConsumerState<_TifoBuildingSheet> {
     }
     logger.log('[tifo] showing failure dialog${connectionLost ? ' (connection lost)' : ''}: $detail');
     final l10n = AppLocalizations.of(ctx);
-    unawaited(
+    detach(
       showTifoMessageDialog<void>(
         ctx,
         card: TifoMessageCard(
@@ -697,6 +707,7 @@ class _TifoBuildingSheetState extends ConsumerState<_TifoBuildingSheet> {
           onClose: () => Navigator.of(ctx).pop(),
         ),
       ),
+      tag: 'tifoSheet.messageDialog',
     );
   }
 }

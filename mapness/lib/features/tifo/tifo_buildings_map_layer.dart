@@ -17,6 +17,7 @@ import 'package:mapness/shared/providers/dgis_environment.dart';
 import 'package:mapness/shared/providers/hive.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:mapness/shared/providers/map/object_manager.dart';
+import 'package:mapness/shared/utils/detach.dart';
 import 'package:mapness/shared/utils/logger/logger.dart';
 
 /// Whether TIFO itself is allowed to run right now. TIFO is NOT a city event
@@ -267,7 +268,7 @@ class TifoBuildingsMapLayer extends Notifier<bool> {
     ref
       ..listen<TifoBuildingsState>(tifoBuildingsProvider, (_, next) {
         if (state && _buildingsMode) {
-          unawaited(_syncBuildings(next));
+          detach(_syncBuildings(next), tag: 'tifoMap.syncBuildings');
         }
       })
       ..listen<TifoDistrictsState>(tifoDistrictsProvider, (_, next) {
@@ -277,9 +278,9 @@ class TifoBuildingsMapLayer extends Notifier<bool> {
         // Standings only tint the region at the cluster tier; the polygon
         // itself is already on screen from bundled geometry.
         if (_lod == _TifoLod.cluster) {
-          unawaited(_redrawRegion(next));
+          detach(_redrawRegion(next), tag: 'tifoMap.redrawRegion');
         } else {
-          unawaited(_redrawDistricts(next));
+          detach(_redrawDistricts(next), tag: 'tifoMap.redrawDistricts');
         }
       })
       // Fill colors are resolved from `session.clubById` at draw time (see
@@ -296,11 +297,11 @@ class TifoBuildingsMapLayer extends Notifier<bool> {
           return;
         }
         if (_buildingsMode) {
-          unawaited(_syncBuildings(ref.read(tifoBuildingsProvider)));
+          detach(_syncBuildings(ref.read(tifoBuildingsProvider)), tag: 'tifoMap.syncBuildings');
         } else if (_lod == _TifoLod.cluster) {
-          unawaited(_redrawRegion(ref.read(tifoDistrictsProvider)));
+          detach(_redrawRegion(ref.read(tifoDistrictsProvider)), tag: 'tifoMap.redrawRegion');
         } else {
-          unawaited(_redrawDistricts(ref.read(tifoDistrictsProvider)));
+          detach(_redrawDistricts(ref.read(tifoDistrictsProvider)), tag: 'tifoMap.redrawDistricts');
         }
       })
       // The Remote Config schedule can close mid-session (an admin ends the
@@ -309,14 +310,14 @@ class TifoBuildingsMapLayer extends Notifier<bool> {
       ..listen<bool>(tifoAvailableProvider, (_, available) {
         if (!available && state) {
           logger.log('[tifo-map] disabling: tifoDateRange no longer visible');
-          unawaited(disable());
+          detach(disable(), tag: 'tifoMap.disableOnUnavailable');
         }
       })
       ..onDispose(_teardown);
     // Fire-and-forget: restore the persisted toggle once the Hive box opens
     // and the native map is ready — `enable()` awaits `dgisControllerProvider`
     // itself, so this doesn't race the map's own startup.
-    unawaited(_restorePersistedState());
+    detach(_restorePersistedState(), tag: 'tifoMap.restorePersistedState');
     return false; // disabled until the restore above (if any) flips it on
   }
 
@@ -360,7 +361,7 @@ class TifoBuildingsMapLayer extends Notifier<bool> {
       return;
     }
     state = true;
-    unawaited(_persistEnabled(true));
+    detach(_persistEnabled(true), tag: 'tifoMap.persistEnabled');
     // Polygon colors are resolved from the clubs roster (`session.clubById`
     // in `_syncBuildings`, `_seasonLeaderColor` for the cluster tint), and
     // turning the layer on is not itself a play-intent — so nothing else in
@@ -373,7 +374,7 @@ class TifoBuildingsMapLayer extends Notifier<bool> {
     // Fire-and-forget: the `tifoSessionProvider` listener in `build` repaints
     // whatever is already drawn once the roster lands.
     if (ref.read(tifoSessionProvider).clubs.isEmpty) {
-      unawaited(ref.read(tifoSessionProvider.notifier).load());
+      detach(ref.read(tifoSessionProvider.notifier).load(), tag: 'tifoMap.loadSession');
     }
     try {
       final controller = await ref.read(dgisControllerProvider.future);
@@ -384,7 +385,10 @@ class TifoBuildingsMapLayer extends Notifier<bool> {
         final rect = event.visibleRect;
         final delay = _lodFor(rect.zoom) == _lod ? _panDebounce : _tierChangeDebounce;
         _debounce?.cancel();
-        _debounce = Timer(delay, () => unawaited(_onViewport(rect)));
+        // Neither `_onViewport` nor `_applyForViewport` under it has a catch,
+        // and the chain reaches network calls (`fetchForBbox`). Dropped here,
+        // a failure escaped to the Zone on every settled camera gesture.
+        _debounce = Timer(delay, () => detach(_onViewport(rect), tag: 'tifoMap.onViewport'));
       });
 
       // Seed zoom + first render from the current camera.
@@ -425,7 +429,7 @@ class TifoBuildingsMapLayer extends Notifier<bool> {
       // `tifoDistrictsProvider` listener in `build` skips the repaint entirely
       // while the player is at building zoom.
       if (state) {
-        unawaited(ref.read(tifoDistrictsProvider.notifier).prefetch());
+        detach(ref.read(tifoDistrictsProvider.notifier).prefetch(), tag: 'tifoMap.prefetchDistricts');
       }
     } catch (error, stackTrace) {
       logger.log('TIFO layer enable failed: $error\n$stackTrace');
@@ -437,7 +441,7 @@ class TifoBuildingsMapLayer extends Notifier<bool> {
       return;
     }
     state = false;
-    unawaited(_persistEnabled(false));
+    detach(_persistEnabled(false), tag: 'tifoMap.persistEnabled');
     _debounce?.cancel();
     await _visibleSub?.cancel();
     _visibleSub = null;
@@ -489,7 +493,7 @@ class TifoBuildingsMapLayer extends Notifier<bool> {
     // trip plus a 0.25 s camera animation whenever the player actually
     // tilted, and the polygons must not wait on that. Nothing in the redraw
     // path depends on the tilt.
-    unawaited(_reassertTopDown());
+    detach(_reassertTopDown(), tag: 'tifoMap.reassertTopDown');
   }
 
   Future<void> _reassertTopDown() async {
@@ -565,7 +569,7 @@ class TifoBuildingsMapLayer extends Notifier<bool> {
         // under the buildings while they paint, so the player never sees an
         // empty map. Separate object managers, so it cannot touch the polygons
         // just added.
-        unawaited(_clearDistricts());
+        detach(_clearDistricts(), tag: 'tifoMap.clearDistricts');
       }
       if (bbox != null && bbox != _lastBbox) {
         _lastBbox = bbox;
@@ -598,11 +602,11 @@ class TifoBuildingsMapLayer extends Notifier<bool> {
         _drawnDistrictRings.clear();
         _drawnDistrictExp.clear();
         await _redrawRegion(ref.read(tifoDistrictsProvider));
-        unawaited(_removeDistrictPolygons(staleDistricts));
+        detach(_removeDistrictPolygons(staleDistricts), tag: 'tifoMap.removeDistrictPolygons');
         if (hadBuildings) {
-          unawaited(_clearBuildings());
+          detach(_clearBuildings(), tag: 'tifoMap.clearBuildings');
         }
-        unawaited(ref.read(tifoDistrictsProvider.notifier).refreshSummaries());
+        detach(ref.read(tifoDistrictsProvider.notifier).refreshSummaries(), tag: 'tifoMap.refreshSummaries');
         return;
       }
       // Entering the mosaic: the region silhouette is what has to go, and the
@@ -619,7 +623,7 @@ class TifoBuildingsMapLayer extends Notifier<bool> {
       // answers. Only on tier ENTRY: panning within the tier must not fire a
       // request per camera move.
       if (tierChanged) {
-        unawaited(districts.refreshSummaries());
+        detach(districts.refreshSummaries(), tag: 'tifoMap.refreshSummaries');
       }
       if (!ref.read(tifoDistrictsProvider).hasGeometry) {
         // Cold cache — only reachable if the player pinches out within the few
@@ -645,10 +649,13 @@ class TifoBuildingsMapLayer extends Notifier<bool> {
       );
       await _redrawDistricts(st);
       if (regionWasDrawn) {
-        unawaited(_removeDistrictPolygons([for (var i = 0; i < _regionGeometry().length; i++) _regionPolygonId(i)]));
+        detach(
+          _removeDistrictPolygons([for (var i = 0; i < _regionGeometry().length; i++) _regionPolygonId(i)]),
+          tag: 'tifoMap.removeDistrictPolygons',
+        );
       }
       if (hadBuildings) {
-        unawaited(_clearBuildings());
+        detach(_clearBuildings(), tag: 'tifoMap.clearBuildings');
       }
     }
   }
@@ -938,7 +945,10 @@ class TifoBuildingsMapLayer extends Notifier<bool> {
     // refreshed by the poller never reach it. Resolve the current cache entry
     // instead of the drawn-time snapshot.
     final fresh = ref.read(tifoBuildingsProvider).byId[building.id] ?? building;
-    unawaited(showTifoBuildingSheet(context, fresh).whenComplete(() => _sheetShowing = false));
+    detach(
+      showTifoBuildingSheet(context, fresh).whenComplete(() => _sheetShowing = false),
+      tag: 'tifoMap.buildingSheet',
+    );
   }
 
   // ─── Districts (zoom < 15) ─────────────────────────────────────────────────
@@ -1278,14 +1288,18 @@ class TifoBuildingsMapLayer extends Notifier<bool> {
       return;
     }
     final summary = ref.read(tifoDistrictsProvider).summaries[district.id];
-    unawaited(
+    detach(
       showTifoDistrictSheet(context, district: district, summary: summary).whenComplete(() => _sheetShowing = false),
+      tag: 'tifoMap.districtSheet',
     );
   }
 
   void _teardown() {
     _debounce?.cancel();
-    unawaited(_visibleSub?.cancel());
+    final visibleSub = _visibleSub;
+    if (visibleSub != null) {
+      detach(visibleSub.cancel(), tag: 'tifoMap.cancelVisibleSub');
+    }
   }
 }
 
