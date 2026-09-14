@@ -283,7 +283,10 @@ class CustomPopUpsWidgets {
   }) async {
     final screenHeight = MediaQuery.of(context).size.height;
     final screenStatusBarHeight = MediaQuery.of(context).padding.top + 5;
-    return (showModalBottomSheet(
+    // Awaited: without it the `?? false` below applied to the Future object,
+    // which is never null, so the fallback never ran and the caller got a
+    // Future back instead of the sheet's result.
+    return await showModalBottomSheet(
           context: context,
           isDismissible: true,
           isScrollControlled: true,
@@ -294,7 +297,7 @@ class CustomPopUpsWidgets {
             height: isFullHeight ? height ?? screenHeight - screenStatusBarHeight : null,
             child: child,
           ),
-        )) ??
+        ) ??
         false;
   }
 }

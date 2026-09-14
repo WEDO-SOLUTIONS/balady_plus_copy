@@ -69,7 +69,7 @@ class _IncidentTypeWithSearchDialog extends State<IncidentTypeWithSearchDialog> 
             hintText: widget.searchHint ?? ('searchFor').tr(),
             onTextChanged: /* () {},*/ (value) {
               setState(() {
-                items = widget.items.where((element) => element.name.contains(value) ?? element.name == value).toList();
+                items = widget.items.where((element) => element.name.contains(value)).toList();
               });
             },
             onSubmitSearch: (String val) {},
@@ -86,7 +86,7 @@ class _IncidentTypeWithSearchDialog extends State<IncidentTypeWithSearchDialog> 
                 return CustomRadioButtonEnd<DropDownItem>(
                   // title: items[index].name,
                   // value: items[index].id,
-                  title: items[index].name ?? "",
+                  title: items[index].name,
                   value: items[index],
                   currentSelected: currentSelected,
                   onChange: onItemChanged,

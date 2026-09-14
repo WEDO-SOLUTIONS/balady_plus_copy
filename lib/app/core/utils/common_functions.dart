@@ -1144,7 +1144,7 @@ class CommonFunctions {
 
   static String padHijriDate(String? date) {
     if (date != null && date.isNotEmpty) {
-      String d = mapARNumbersToENNumbers(date ?? "");
+      String d = mapARNumbersToENNumbers(date);
 
       List<String> data = d.split("/");
       return "${data[0]}/${data[1].padLeft(2, "0")}/${data[2].padLeft(2, "0")}";
@@ -1327,7 +1327,7 @@ class CommonFunctions {
         Sentry.captureEvent(
           event,
           withScope: (p0) {
-            p0.addAttachment(SentryAttachment.fromUint8List(dGisFiles[i].readAsBytesSync(), dGisFiles[i].path ?? ""));
+            p0.addAttachment(SentryAttachment.fromUint8List(dGisFiles[i].readAsBytesSync(), dGisFiles[i].path));
           },
         ).then((value) {});
       }

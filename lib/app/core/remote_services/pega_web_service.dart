@@ -284,7 +284,7 @@ class PegaWebService {
           'Cookie': sl<EntryPointCubit>().state.token?.appCookie ?? "",
           "Content-Type": "application/json",
           "verifyingKEY": verifyingKEY,
-          "SSOToken": CommonProperties.token ?? "",
+          "SSOToken": CommonProperties.token,
           "x-channel-id": "MOBILE",
           "lang": translator.activeLanguageCode,
           "Accept-Language": translator.activeLanguageCode,
@@ -436,7 +436,7 @@ class PegaWebService {
         'Cookie': sl<EntryPointCubit>().state.token?.appCookie ?? "",
         "Content-Type": "application/json",
         "verifyingKEY": verifyingKEY,
-        "SSOToken": CommonProperties.token ?? "",
+        "SSOToken": CommonProperties.token,
         "x-channel-id": "MOBILE",
         "lang": translator.activeLanguageCode,
         "Accept-Language": translator.activeLanguageCode,
@@ -589,7 +589,7 @@ class PegaWebService {
       request.headers['loginIdentityId'] = loginIdentityId;
       request.headers['loginIdentityType'] = loginIdentityType;
       request.headers['verifyingKEY'] = verifyingKEY;
-      request.headers['SSOToken'] = CommonProperties.token ?? "";
+      request.headers['SSOToken'] = CommonProperties.token;
       request.headers['x-channel-id'] = "MOBILE";
 
       http.MultipartFile file = http.MultipartFile.fromBytes('file', base64!.toList(), filename: fileName);
@@ -693,7 +693,7 @@ class PegaWebService {
           'Cookie': sl<EntryPointCubit>().state.token?.appCookie ?? "",
           "Content-Type": "application/json",
           "verifyingKEY": verifyingKEY,
-          "SSOToken": CommonProperties.token ?? "",
+          "SSOToken": CommonProperties.token,
           "x-channel-id": "MOBILE",
           "lang": translator.activeLanguageCode,
         },

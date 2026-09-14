@@ -1,28 +1,19 @@
 import 'package:flutter/material.dart';
-import 'package:localize_and_translate/localize_and_translate.dart'
-    show Translation;
+import 'package:localize_and_translate/localize_and_translate.dart' show Translation;
 
 import '../../../../core/utils/constants/app_colors.dart';
-import '../../../../core/utils/utils_exports.dart'
-    show AppStyle, CommonFunctions, UIHelper;
-import '../../shared_feature_exports.dart'
-    show CustomElevatedButtonWidget, CustomTextWidget;
+import '../../../../core/utils/utils_exports.dart' show UIHelper;
+import '../../shared_feature_exports.dart' show CustomElevatedButtonWidget, CustomTextWidget;
 
 class ErrorLoadingComponent extends StatelessWidget {
   final VoidCallback onTryAgain;
   final String? message;
-  const ErrorLoadingComponent({
-    super.key,
-    required this.onTryAgain,
-    this.message,
-  });
+  const ErrorLoadingComponent({super.key, required this.onTryAgain, this.message});
 
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(
-        horizontal: UIHelper.middlePadding,
-      ),
+      padding: const EdgeInsets.symmetric(horizontal: UIHelper.middlePadding),
       child: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,

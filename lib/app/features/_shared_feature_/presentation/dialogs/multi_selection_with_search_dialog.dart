@@ -64,7 +64,7 @@ class _MultiSelectionWithSearchDialog extends State<MultiSelectionWithSearchDial
             hintText: widget.searchHint ?? ('searchFor').tr(),
             onTextChanged: /* () {},*/ (value) {
               setState(() {
-                items = widget.items.where((element) => element.name.contains(value) ?? element.name == value).toList();
+                items = widget.items.where((element) => element.name.contains(value)).toList();
               });
             },
             onSubmitSearch: (String val) {},
@@ -80,7 +80,7 @@ class _MultiSelectionWithSearchDialog extends State<MultiSelectionWithSearchDial
               itemBuilder: (ctx, index) {
                 return CustomCheckbox(
                   key: ValueKey(items[index].id),
-                  title: items[index].name ?? "",
+                  title: items[index].name,
                   isSelected: currentSelectedItems.contains(items[index]),
                   onSelect: (v) {
                     if (v) {

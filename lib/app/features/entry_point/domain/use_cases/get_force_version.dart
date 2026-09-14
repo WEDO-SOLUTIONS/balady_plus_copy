@@ -1,4 +1,4 @@
-import 'package:dartz/dartz.dart' show Either, Left, Right;
+import 'package:dartz/dartz.dart' show Either, Right;
 
 import '../../../../core/errors/errors_exports.dart' show Failure;
 import '../../../../core/services/services_exports.dart' show UseCase, NoParams;
@@ -23,11 +23,8 @@ class GetForceVersion extends UseCase<bool, NoParams> {
     return Right(false);
   }
 
-  bool compareVersion(
-      String? currentVersionNo, String? latestVersionNo, bool? forceUpdate) {
-    if (currentVersionNo != null &&
-        latestVersionNo != null &&
-        forceUpdate != null) {
+  bool compareVersion(String? currentVersionNo, String? latestVersionNo, bool? forceUpdate) {
+    if (currentVersionNo != null && latestVersionNo != null && forceUpdate != null) {
       if (forceUpdate) {
         Version currentVersion = Version.parse(currentVersionNo);
         Version latestVersion = Version.parse(latestVersionNo);

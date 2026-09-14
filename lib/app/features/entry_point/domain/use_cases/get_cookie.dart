@@ -4,7 +4,7 @@ import 'package:dartz/dartz.dart' show Either, Right, Left;
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 
 import '../../../../core/errors/errors_exports.dart' show Failure;
-import '../../../../core/services/services_exports.dart' show UseCase, NoParams;
+import '../../../../core/services/services_exports.dart' show UseCase;
 import '../../../../core/utils/constants/remote_config.dart';
 import '../../entry_point_exports.dart';
 import 'package:balady_plus/app/events_logs/balady_logs.dart';
@@ -17,11 +17,9 @@ class GetCookie extends UseCase<String, bool?> {
   Future<Either<Failure, String>> call(bool? parseCookies) async {
     Either<Failure, String> res = await repository.getCookie();
     return res.fold((l) => Left(l), (r) async {
-      if(parseCookies==false)
-        {
-          return Right(r);
-        }
-      else {
+      if (parseCookies == false) {
+        return Right(r);
+      } else {
         await parseCookieValues(r);
         return Right(r);
       }
@@ -64,11 +62,12 @@ class GetCookie extends UseCase<String, bool?> {
         appCookie = ".ASPXFORMSAUTH=$value";
         try {
           await CookieManager.instance().setCookie(
-              url: WebUri(RemoteConfig.cookieURL),
-              name: ".ASPXFORMSAUTH",
-              value: value,
-              domain: RemoteConfig.momraDomain,
-              expiresDate: cookieExpiration);
+            url: WebUri(RemoteConfig.cookieURL),
+            name: ".ASPXFORMSAUTH",
+            value: value,
+            domain: RemoteConfig.momraDomain,
+            expiresDate: cookieExpiration,
+          );
         } catch (error, stackTrace) {
           LogsViewModel().sendEventFromModel(
             event: ErrorExceptionModel(
@@ -84,11 +83,12 @@ class GetCookie extends UseCase<String, bool?> {
         String value = element.substring(valueStartIndex + 1, valueEndIndex);
         try {
           await CookieManager.instance().setCookie(
-              url: WebUri(RemoteConfig.cookieURL),
-              name: ".idsrv.session",
-              value: value,
-              domain: Platform.isIOS ? RemoteConfig.ssoMomraDomain : RemoteConfig.momraDomain,
-              expiresDate: cookieExpiration);
+            url: WebUri(RemoteConfig.cookieURL),
+            name: ".idsrv.session",
+            value: value,
+            domain: Platform.isIOS ? RemoteConfig.ssoMomraDomain : RemoteConfig.momraDomain,
+            expiresDate: cookieExpiration,
+          );
         } catch (error, stackTrace) {
           LogsViewModel().sendEventFromModel(
             event: ErrorExceptionModel(
@@ -106,11 +106,12 @@ class GetCookie extends UseCase<String, bool?> {
 
         try {
           await CookieManager.instance().setCookie(
-              url: WebUri(RemoteConfig.cookieURL),
-              name: ".${RemoteConfig.webCookieHeader}",
-              value: value,
-              domain: Platform.isIOS ? RemoteConfig.ssoMomraDomain : RemoteConfig.momraDomain,
-              expiresDate: cookieExpiration);
+            url: WebUri(RemoteConfig.cookieURL),
+            name: ".${RemoteConfig.webCookieHeader}",
+            value: value,
+            domain: Platform.isIOS ? RemoteConfig.ssoMomraDomain : RemoteConfig.momraDomain,
+            expiresDate: cookieExpiration,
+          );
         } catch (error, stackTrace) {
           LogsViewModel().sendEventFromModel(
             event: ErrorExceptionModel(

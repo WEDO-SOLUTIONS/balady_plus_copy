@@ -1,7 +1,6 @@
 import '../../../../../core/utils/nullable.dart';
 import '../events_category/events_category_item.dart';
-import '../../../../../core/utils/utils_exports.dart'
-    show AppColor, AppStyle, CommonFunctions, DateForm, DateTimeExtension;
+import '../../../../../core/utils/utils_exports.dart' show DateTimeExtension;
 
 class SearchEventsParams {
   int? page;
@@ -16,53 +15,48 @@ class SearchEventsParams {
   DateTime? dateTo;
   bool? isFree;
   String? sortBy;
-  SearchEventsParams(
-      {this.page,
-      this.size,
-      this.keyword,
-      this.selectedCity,
-      this.selectedSeason,
-      this.selectedAudince,
-      this.selectedCategory,
-      this.dateFrom,
-      this.dateTo,
-      this.isFree,
-      this.sortBy,
-      this.selectedFees});
+  SearchEventsParams({
+    this.page,
+    this.size,
+    this.keyword,
+    this.selectedCity,
+    this.selectedSeason,
+    this.selectedAudince,
+    this.selectedCategory,
+    this.dateFrom,
+    this.dateTo,
+    this.isFree,
+    this.sortBy,
+    this.selectedFees,
+  });
 
-  SearchEventsParams copyWith(
-      {int? page,
-      int? size,
-      Nullable<String?>? keyword,
-      Nullable<EventCategoryItem?>? selectedCity,
-      Nullable<EventCategoryItem?>? selectedSeason,
-      Nullable<EventCategoryItem?>? selectedAudince,
-      Nullable<EventCategoryItem?>? selectedCategory,
-      Nullable<EventCategoryItem?>? selectedFees,
-      Nullable<DateTime?>? dateFrom,
-      Nullable<DateTime?>? dateTo,
-      Nullable<bool?>? isFree,
-      Nullable<String?>? sortBy}) {
+  SearchEventsParams copyWith({
+    int? page,
+    int? size,
+    Nullable<String?>? keyword,
+    Nullable<EventCategoryItem?>? selectedCity,
+    Nullable<EventCategoryItem?>? selectedSeason,
+    Nullable<EventCategoryItem?>? selectedAudince,
+    Nullable<EventCategoryItem?>? selectedCategory,
+    Nullable<EventCategoryItem?>? selectedFees,
+    Nullable<DateTime?>? dateFrom,
+    Nullable<DateTime?>? dateTo,
+    Nullable<bool?>? isFree,
+    Nullable<String?>? sortBy,
+  }) {
     return SearchEventsParams(
       page: page ?? this.page,
       size: size ?? this.size,
       keyword: keyword == null ? this.keyword : keyword.value,
-      selectedCity:
-          selectedCity == null ? this.selectedCity : selectedCity.value,
-      selectedSeason:
-          selectedSeason == null ? this.selectedSeason : selectedSeason.value,
-      selectedAudince: selectedAudince == null
-          ? this.selectedAudince
-          : selectedAudince.value,
-      selectedCategory: selectedCategory == null
-          ? this.selectedCategory
-          : selectedCategory.value,
+      selectedCity: selectedCity == null ? this.selectedCity : selectedCity.value,
+      selectedSeason: selectedSeason == null ? this.selectedSeason : selectedSeason.value,
+      selectedAudince: selectedAudince == null ? this.selectedAudince : selectedAudince.value,
+      selectedCategory: selectedCategory == null ? this.selectedCategory : selectedCategory.value,
       dateFrom: dateFrom == null ? this.dateFrom : dateFrom.value,
       dateTo: dateTo == null ? this.dateTo : dateTo.value,
       isFree: isFree == null ? this.isFree : isFree.value,
       sortBy: sortBy == null ? this.sortBy : sortBy.value,
-      selectedFees:
-          selectedFees == null ? this.selectedFees : selectedFees.value,
+      selectedFees: selectedFees == null ? this.selectedFees : selectedFees.value,
     );
   }
 

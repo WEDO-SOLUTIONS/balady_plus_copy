@@ -553,7 +553,7 @@ class EntryPointCubit extends Cubit<EntryPointState> {
               "sub": user.sub ?? "",
               "name": user.arName ?? "",
               "en_name": user.enName ?? "",
-              "login_type": user.loginType.name ?? "",
+              "login_type": user.loginType.name,
               "sex": user.sex == "1"
                   ? "male"
                   : user.sex == "2"

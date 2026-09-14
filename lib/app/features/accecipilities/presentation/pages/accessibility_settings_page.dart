@@ -101,7 +101,7 @@ class _AccessibilitySettingsPageState extends ConsumerState<AccessibilitySetting
                             actionWidget: ContentRowActionOptions(
                               customToggleBuilder: ({required onToggle, bool? initial}) {
                                 return CupertinoSwitch(
-                                  value: controller.grayscale ?? false,
+                                  value: controller.grayscale,
                                   onChanged: (value) {
                                     controller.toggleGrayscale(value);
                                     onToggle?.call(value);

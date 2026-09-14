@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 
-import '../../../../../core/utils/utils_exports.dart' show AppColor, AppFontWeight, AppStyle, IconPath;
-import '../../../shared_feature_exports.dart'
-    show BottomSheetWithActions, CustomTextFieldWidget, CustomTextWidget, DrawIconBasedTypeWidget, ElevatedButtonWidget;
+import '../../../../../core/utils/utils_exports.dart' show AppColor, AppFontWeight, AppStyle;
+import '../../../shared_feature_exports.dart' show BottomSheetWithActions, CustomTextWidget, ElevatedButtonWidget;
 
 class GenericBottomSheetList<T> extends StatefulWidget {
   final String title;

@@ -36,7 +36,7 @@ class Initializer {
         deviceOs = "ANDROID";
       } else if (Platform.isIOS) {
         final info = await deviceInfoPlugin.iosInfo;
-        deviceName = info.name ?? info.utsname.machine;
+        deviceName = info.name;
         deviceId = info.identifierForVendor ?? "2"; //UUID for iOS
         deviceOs = "iOS";
       }

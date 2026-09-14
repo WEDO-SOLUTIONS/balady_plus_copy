@@ -1,7 +1,6 @@
 import 'package:dio/dio.dart' show DioException, RequestOptions, Response;
 
-import '../utils/utils_exports.dart'
-    show APIResponsesConversion, ApiResponse, CommonFunctions;
+import '../utils/utils_exports.dart' show APIResponsesConversion, ApiResponse;
 
 // Global Exceptions
 class ServerException implements Exception {
@@ -13,13 +12,15 @@ class ServerException implements Exception {
   final dynamic errorCode;
   final Exception? exception;
 
-  ServerException(this.errorMessage,
-      {this.statusCode,
-      this.statusMessage,
-      this.dioError,
-      this.response,
-      this.errorCode,
-      this.exception}) {
+  ServerException(
+    this.errorMessage, {
+    this.statusCode,
+    this.statusMessage,
+    this.dioError,
+    this.response,
+    this.errorCode,
+    this.exception,
+  }) {
     // CommonFunctions.sendEvent(
     //     dioError: dioError,
     //     response: response,
@@ -31,9 +32,7 @@ class ServerException implements Exception {
 class APIException implements Exception {
   final String? errorMessage;
 
-  APIException({
-    this.errorMessage,
-  });
+  APIException({this.errorMessage});
 }
 
 class CacheException implements Exception {}
@@ -48,18 +47,15 @@ class CannotDrawAppBarTitleWidgetException implements Exception {}
 
 /* ------------ Web Services Exceptions ------------ */
 class DeadlineExceededException extends DioException {
-  DeadlineExceededException(RequestOptions requestOptions)
-      : super(requestOptions: requestOptions);
+  DeadlineExceededException(RequestOptions requestOptions) : super(requestOptions: requestOptions);
 
   @override
   String toString() => ApiResponse.deadlineExceeded.getErrorMessage(response);
 }
 
 class BadRequestException extends DioException {
-  BadRequestException(
-    RequestOptions requestOptions,
-    Response? response,
-  ) : super(requestOptions: requestOptions, response: response);
+  BadRequestException(RequestOptions requestOptions, Response? response)
+    : super(requestOptions: requestOptions, response: response);
 
   @override
   // String toString() => ApiResponseI.badRequest.getErrorMessage(response);
@@ -67,95 +63,76 @@ class BadRequestException extends DioException {
 }
 
 class NoDataFoundException extends DioException {
-  NoDataFoundException(
-    RequestOptions requestOptions,
-    Response? response,
-  ) : super(requestOptions: requestOptions, response: response);
+  NoDataFoundException(RequestOptions requestOptions, Response? response)
+    : super(requestOptions: requestOptions, response: response);
   @override
   String toString() => ApiResponse.unAuthorized.getErrorMessage(response);
 }
 
 class UnAuthorizedException extends DioException {
-  UnAuthorizedException(
-    RequestOptions requestOptions,
-    Response? response,
-  ) : super(requestOptions: requestOptions, response: response);
+  UnAuthorizedException(RequestOptions requestOptions, Response? response)
+    : super(requestOptions: requestOptions, response: response);
 
   @override
   String toString() => ApiResponse.unAuthorized.getErrorMessage(response);
 }
 
 class RequestNotFoundException extends DioException {
-  RequestNotFoundException(
-    RequestOptions requestOptions,
-    Response? response,
-  ) : super(requestOptions: requestOptions, response: response);
+  RequestNotFoundException(RequestOptions requestOptions, Response? response)
+    : super(requestOptions: requestOptions, response: response);
 
   @override
   String toString() => ApiResponse.requestNotFound.getErrorMessage(response);
 }
 
 class MethodNotAllowedException extends DioException {
-  MethodNotAllowedException(
-    RequestOptions requestOptions,
-    Response? response,
-  ) : super(requestOptions: requestOptions, response: response);
+  MethodNotAllowedException(RequestOptions requestOptions, Response? response)
+    : super(requestOptions: requestOptions, response: response);
 
   @override
   String toString() => ApiResponse.methodNotAllowed.getErrorMessage(response);
 }
 
 class ConflictException extends DioException {
-  ConflictException(
-    RequestOptions requestOptions,
-    Response? response,
-  ) : super(requestOptions: requestOptions, response: response);
+  ConflictException(RequestOptions requestOptions, Response? response)
+    : super(requestOptions: requestOptions, response: response);
 
   @override
   String toString() => ApiResponse.conflict.getErrorMessage(response);
 }
 
 class InternalServerErrorException extends DioException {
-  InternalServerErrorException(
-    RequestOptions requestOptions,
-    Response? response,
-  ) : super(requestOptions: requestOptions, response: response);
+  InternalServerErrorException(RequestOptions requestOptions, Response? response)
+    : super(requestOptions: requestOptions, response: response);
 
   @override
-  String toString() =>
-      ApiResponse.internalServerError.getErrorMessage(response);
+  String toString() => ApiResponse.internalServerError.getErrorMessage(response);
 }
 
 class NoInternetConnectionException extends DioException {
-  NoInternetConnectionException(RequestOptions requestOptions)
-      : super(requestOptions: requestOptions);
+  NoInternetConnectionException(RequestOptions requestOptions) : super(requestOptions: requestOptions);
 
   @override
-  String toString() =>
-      ApiResponse.noInternetConnection.getErrorMessage(response);
+  String toString() => ApiResponse.noInternetConnection.getErrorMessage(response);
 }
 
 //! Tokens Exceptions
 class TokenNotFoundException extends DioException {
-  TokenNotFoundException(RequestOptions requestOptions)
-      : super(requestOptions: requestOptions);
+  TokenNotFoundException(RequestOptions requestOptions) : super(requestOptions: requestOptions);
 
   @override
   String toString() => ApiResponse.tokenNotFound.getErrorMessage(response);
 }
 
 class FailedToGenerateTokenException extends DioException {
-  FailedToGenerateTokenException(RequestOptions requestOptions)
-      : super(requestOptions: requestOptions);
+  FailedToGenerateTokenException(RequestOptions requestOptions) : super(requestOptions: requestOptions);
 
   @override
-  String toString() =>
-      ApiResponse.failedToGenerateToken.getErrorMessage(response);
+  String toString() => ApiResponse.failedToGenerateToken.getErrorMessage(response);
 }
 
 class TokenHasExpiredException extends DioException {
-  TokenHasExpiredException(RequestOptions requestOptions)
-      : super(requestOptions: requestOptions);
+  TokenHasExpiredException(RequestOptions requestOptions) : super(requestOptions: requestOptions);
 
   @override
   String toString() => ApiResponse.tokenHasExpired.getErrorMessage(response);

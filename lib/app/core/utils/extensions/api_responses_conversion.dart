@@ -1,9 +1,8 @@
 import 'package:dio/dio.dart' show Response;
-import 'package:localize_and_translate/localize_and_translate.dart'
-    show Translation;
+import 'package:localize_and_translate/localize_and_translate.dart' show Translation;
 
 import '../../../features/_shared_feature_/data/models/apigee_response_model.dart';
-import '../utils_exports.dart' show ApiResponse, Log, ResponseDataInMapFormat;
+import '../utils_exports.dart' show ApiResponse, Log;
 
 import 'package:balady_plus/app/events_logs/balady_logs.dart';
 
@@ -45,15 +44,15 @@ extension APIResponsesConversion on ApiResponse {
       try {
         m = ApigeeResponseModel.fromMap(response.data);
       } catch (error, stackTrace) {
-      LogsViewModel().sendEventFromModel(
-        event: ErrorExceptionModel(
-          nameEvent: EventsName.handledException,
-          message: error.toString(),
-          stackTrace: stackTrace.toString(),
-        ),
-      );}
-      message =
-          m?.data?.getRefResponseMessage() ?? ("errors_server_error_1").tr();
+        LogsViewModel().sendEventFromModel(
+          event: ErrorExceptionModel(
+            nameEvent: EventsName.handledException,
+            message: error.toString(),
+            stackTrace: stackTrace.toString(),
+          ),
+        );
+      }
+      message = m?.data?.getRefResponseMessage() ?? ("errors_server_error_1").tr();
     }
     return message;
   }
