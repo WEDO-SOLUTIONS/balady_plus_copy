@@ -43,8 +43,11 @@ class MeasureSize extends SingleChildRenderObjectWidget {
 
   @override
   void updateRenderObject(BuildContext context, covariant MeasureSizeRenderObject renderObject) {
-    renderObject
-      ..onChange = onChange
-      ..markNeedsLayout();
+    // Only the callback is swapped here. This used to call `markNeedsLayout()`
+    // unconditionally, forcing a relayout of this subtree on *every* rebuild of
+    // the parent even when nothing about the size could have changed - and
+    // marking layout dirty from `updateRenderObject` is exactly the kind of
+    // out-of-turn dirtying that breaks under a LayoutBuilder.
+    renderObject.onChange = onChange;
   }
 }

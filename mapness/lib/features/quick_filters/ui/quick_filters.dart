@@ -11,7 +11,6 @@ import 'package:mapness/features/favourites/providers/favourite_cache.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/widgets/quick_filters/models/filter_item.dart';
 import 'package:mapness/widgets/quick_filters/ui/quick_filters.dart' as widgets;
-import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 
 class QuickFilters extends ConsumerWidget {
   final List<FilterItem>? customFilters;
@@ -21,7 +20,7 @@ class QuickFilters extends ConsumerWidget {
   final void Function(FilterItem)? onCustomTap;
   final EdgeInsets padding;
   final double? height;
-  final ItemScrollController? itemScrollController;
+  final ScrollController? scrollController;
 
   const QuickFilters({
     required this.onQuickFilterTap,
@@ -32,7 +31,7 @@ class QuickFilters extends ConsumerWidget {
     this.padding = const EdgeInsets.only(bottom: 16.0),
     this.customFilters,
     this.onCustomTap,
-    this.itemScrollController,
+    this.scrollController,
   });
 
   @override
@@ -99,7 +98,7 @@ class QuickFilters extends ConsumerWidget {
       padding: padding,
       filters: items,
       height: height,
-      itemScrollController: itemScrollController,
+      scrollController: scrollController,
     );
   }
 

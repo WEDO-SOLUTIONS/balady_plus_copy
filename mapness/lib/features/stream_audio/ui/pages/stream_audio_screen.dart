@@ -160,62 +160,68 @@ class _StreamAudioState extends ConsumerState<StreamAudio> with WidgetsBindingOb
   Widget build(BuildContext context) {
     final provider = ref.watch(streamAudioProvider);
 
-    return OrientationBuilder(
-      builder: (context, orientation) {
-        final isLandscape = orientation == Orientation.landscape;
+    // Was an OrientationBuilder, which is a LayoutBuilder underneath. Because
+    // StreamAudio wraps the whole app (app.dart), that gave every widget below
+    // it a BuildScope owned by a LayoutBuilder - so *every* rebuild in the app
+    // was flushed during layout. Any inherited change in that window that woke
+    // a consumer inside a nested LayoutBuilder then marked layout dirty out of
+    // turn (`_debugRelayoutBoundaryAlreadyMarkedNeedsLayout`).
+    //
+    // MediaQuery gives the same orientation for a full-screen wrapper through a
+    // plain InheritedWidget, so rebuilds happen in the normal build phase.
+    final orientation = MediaQuery.orientationOf(context);
+    final isLandscape = orientation == Orientation.landscape;
 
-        // Handle orientation change safely
-        if (_previousOrientation != null && _previousOrientation != orientation) {
-          final wasLandscape = _previousOrientation == Orientation.landscape;
-          _previousOrientation = orientation;
+    // Handle orientation change safely
+    if (_previousOrientation != null && _previousOrientation != orientation) {
+      final wasLandscape = _previousOrientation == Orientation.landscape;
+      _previousOrientation = orientation;
 
-          WidgetsBinding.instance.addPostFrameCallback((_) async {
-            if (!mounted) {
-              return;
+      WidgetsBinding.instance.addPostFrameCallback((_) async {
+        if (!mounted) {
+          return;
+        }
+
+        try {
+          if (isLandscape && !wasLandscape) {
+            // Switching to landscape: if portrait sheet was open, open landscape sheet
+            if (_sheetController.isAttached && _sheetController.size > _minChildSize) {
+              setState(() {
+                _landscapeSheetWidth = _landscapeMaxWidth;
+              });
             }
+          } else if (!isLandscape && wasLandscape) {
+            // Switching to portrait: if landscape sheet was open, open portrait sheet
+            if (_landscapeSheetWidth > 0) {
+              setState(() {
+                _landscapeSheetWidth = 0;
+              });
 
-            try {
-              if (isLandscape && !wasLandscape) {
-                // Switching to landscape: if portrait sheet was open, open landscape sheet
-                if (_sheetController.isAttached && _sheetController.size > _minChildSize) {
-                  setState(() {
-                    _landscapeSheetWidth = _landscapeMaxWidth;
-                  });
-                }
-              } else if (!isLandscape && wasLandscape) {
-                // Switching to portrait: if landscape sheet was open, open portrait sheet
-                if (_landscapeSheetWidth > 0) {
-                  setState(() {
-                    _landscapeSheetWidth = 0;
-                  });
-
-                  // Wait a frame before animating the portrait sheet
-                  await Future.delayed(const Duration(milliseconds: 50));
-                  if (mounted && _sheetController.isAttached) {
-                    await _sheetController.animateTo(
-                      _maxChildSize,
-                      duration: const Duration(milliseconds: 300),
-                      curve: Curves.easeOutCubic,
-                    );
-                  }
-                }
+              // Wait a frame before animating the portrait sheet
+              await Future.delayed(const Duration(milliseconds: 50));
+              if (mounted && _sheetController.isAttached) {
+                await _sheetController.animateTo(
+                  _maxChildSize,
+                  duration: const Duration(milliseconds: 300),
+                  curve: Curves.easeOutCubic,
+                );
               }
-            } catch (e) {
-              debugPrint('StreamAudio orientation change error: $e');
             }
-          });
+          }
+        } catch (e) {
+          debugPrint('StreamAudio orientation change error: $e');
         }
+      });
+    }
 
-        // Update orientation tracking if it's the first build
-        if (_previousOrientation == null) {
-          WidgetsBinding.instance.addPostFrameCallback((_) {
-            _previousOrientation = orientation;
-          });
-        }
+    // Update orientation tracking if it's the first build
+    if (_previousOrientation == null) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        _previousOrientation = orientation;
+      });
+    }
 
-        return _buildUnifiedLayout(provider, isLandscape);
-      },
-    );
+    return _buildUnifiedLayout(provider, isLandscape);
   }
 
   Widget _buildUnifiedLayout(StreamAudioProvider provider, bool isLandscape) => AnimatedBuilder(

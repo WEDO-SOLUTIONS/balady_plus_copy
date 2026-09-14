@@ -18,7 +18,6 @@ import 'package:mapness/widgets/landing/dashboard/city_event_display.dart';
 import 'package:mapness/widgets/landing/dashboard/special_theme_header.dart';
 import 'package:mapness/widgets/landing/map_quick_filters.dart';
 import 'package:mapness/widgets/quick_filters/models/filter_item.dart';
-import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 import 'package:sheetify/sheetify.dart';
 
 import '../../../features/cityscape/cityscape.dart';
@@ -35,18 +34,18 @@ class MapHiddenStateControls extends ConsumerStatefulWidget {
 }
 
 class _MapHiddenStateControlsState extends ConsumerState<MapHiddenStateControls> {
-  late final ItemScrollController quickScrollController;
+  final ScrollController quickScrollController = ScrollController();
 
   @override
   void initState() {
     super.initState();
     widget.controller.addListener(update);
-    quickScrollController = ItemScrollController();
   }
 
   @override
   void dispose() {
     widget.controller.removeListener(update);
+    quickScrollController.dispose();
     super.dispose();
   }
 
@@ -96,7 +95,13 @@ class _MapHiddenStateControlsState extends ConsumerState<MapHiddenStateControls>
       } else if (state.canStart && state.isAutorun) {
         widget.controller.setState(ThreeStateSheet.hidden);
         setState(() {
-          quickScrollController.scrollTo(index: 0, duration: const Duration(milliseconds: 150), alignment: 0.05);
+          if (quickScrollController.hasClients) {
+            quickScrollController.animateTo(
+              0,
+              duration: const Duration(milliseconds: 150),
+              curve: Curves.easeOut,
+            );
+          }
         });
       }
     });
@@ -157,7 +162,7 @@ class QuickSearchBar extends StatelessWidget {
   static const hiddenHeight = 0.0;
 
   final TextDirection direction;
-  final ItemScrollController quickScrollController;
+  final ScrollController quickScrollController;
   final bool showLaunchingFreeRoam;
 
   QuickSearchBar({
@@ -189,7 +194,7 @@ class QuickSearchBar extends StatelessWidget {
           padding: const EdgeInsets.only(bottom: Spacing.$2x),
           child: MapQuickFilters(
             forMap: true,
-            itemScrollController: quickScrollController,
+            scrollController: quickScrollController,
             customFilters: [
               FilterItemBuilder(
                 filterType: FilterType.custom,

@@ -34,89 +34,90 @@ class _GoToNavigatorButtonState extends ConsumerState<GoToNavigatorButton>
   @override
   Widget build(BuildContext context) {
     listerForStart();
-    return LayoutBuilder(
-      builder: (context, constrains) {
-        const height = 56.0;
-        const squareSize = 40.0;
-        const iconSize = 24.0;
+    // No LayoutBuilder here: `constrains.maxWidth` was used only to size the
+    // progress fill, which FractionallySizedBox expresses directly. A
+    // LayoutBuilder owns its own BuildScope and turns every rebuild of this
+    // animated button into a layout invalidation - once per animation frame.
+    const height = 56.0;
+    const squareSize = 40.0;
+    const iconSize = 24.0;
 
-        final colors = context.colors;
-        final alignment = context.isLTR ? Alignment.centerLeft : Alignment.centerRight;
+    final colors = context.colors;
+    final alignment = context.isLTR ? Alignment.centerLeft : Alignment.centerRight;
 
-        return ClipRRect(
-          borderRadius: BorderRadius.circular(RadiusBorder.l),
-          child: InkWell(
-            onTap: () {
-              ref.read(freeRoamStarterProvider.notifier).pauseAnimation();
-              BaladyNavigationEvents.trackFreeRoamStarted(BaladyFreeRoamSource.dashboard);
-              context.router.push(const FreeRoamRoute());
-              ref.read(freeRoamStarterProvider.notifier).setShown();
-            },
-            borderRadius: BorderRadius.circular(RadiusBorder.l),
-            child: SizedBox(
-              height: height,
-              child: Stack(
-                children: [
-                  SizedBox(
-                    width: double.infinity,
-                    height: height,
-                    child: ColoredBox(color: colors.accentSecondarySoft),
-                  ),
-                  SizedBox(
-                    width: constrains.maxWidth * Curves.decelerate.transform(animationProgress),
-                    height: height,
-                    child: ColoredBox(color: colors.accentSecondaryDefault),
-                  ),
-                  Align(
-                    alignment: alignment,
-                    child: Row(
-                      children: [
-                        Padding(
-                          padding: const EdgeInsetsDirectional.only(start: Spacing.$2x),
-                          child: Container(
-                            width: squareSize,
-                            height: squareSize,
-                            padding: const EdgeInsets.all(Spacing.$2x),
-                            decoration: BoxDecoration(
-                              color: colors.accentSecondaryOnAccentSecondary,
-                              borderRadius: BorderRadius.circular(RadiusBorder.s),
-                            ),
-                            child: Icon(
-                              TransportIcons.locationDirectionNavigator,
-                              size: iconSize,
-                              color: context.colors.foregroundSoft,
-                            ),
-                          ),
-                        ),
-                        Spacing.$3x.widthBox,
-                        Text(
-                          context.l10n.goToNavigator,
-                          style: context.textStyles.bodyLargeSemiBold.copyWith(
-                            color: colors.accentOnAccent,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  Align(
-                    alignment: AlignmentDirectional.centerEnd,
-                    child: AppButton(
-                      padding: const EdgeInsetsDirectional.only(end: Spacing.$2x),
-                      color: context.colors.accentSecondarySoft,
-                      onTap: () {
-                        ref.read(freeRoamStarterProvider.notifier).pauseAnimation();
-                        context.router.push(const AutostartSettingsSheetRoute());
-                      },
-                      primaryIcon: SystemIcons.close,
-                      buttonColorScheme: ButtonColorScheme.accent,
-                    ),
-                  ),
-                ],
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(RadiusBorder.l),
+      child: InkWell(
+        onTap: () {
+          ref.read(freeRoamStarterProvider.notifier).pauseAnimation();
+          BaladyNavigationEvents.trackFreeRoamStarted(BaladyFreeRoamSource.dashboard);
+          context.router.push(const FreeRoamRoute());
+          ref.read(freeRoamStarterProvider.notifier).setShown();
+        },
+        borderRadius: BorderRadius.circular(RadiusBorder.l),
+        child: SizedBox(
+          height: height,
+          child: Stack(
+            children: [
+              SizedBox(
+                width: double.infinity,
+                height: height,
+                child: ColoredBox(color: colors.accentSecondarySoft),
               ),
-            ),
+              FractionallySizedBox(
+                widthFactor: Curves.decelerate.transform(animationProgress),
+                heightFactor: 1,
+                alignment: AlignmentDirectional.centerStart,
+                child: ColoredBox(color: colors.accentSecondaryDefault),
+              ),
+              Align(
+                alignment: alignment,
+                child: Row(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsetsDirectional.only(start: Spacing.$2x),
+                      child: Container(
+                        width: squareSize,
+                        height: squareSize,
+                        padding: const EdgeInsets.all(Spacing.$2x),
+                        decoration: BoxDecoration(
+                          color: colors.accentSecondaryOnAccentSecondary,
+                          borderRadius: BorderRadius.circular(RadiusBorder.s),
+                        ),
+                        child: Icon(
+                          TransportIcons.locationDirectionNavigator,
+                          size: iconSize,
+                          color: context.colors.foregroundSoft,
+                        ),
+                      ),
+                    ),
+                    Spacing.$3x.widthBox,
+                    Text(
+                      context.l10n.goToNavigator,
+                      style: context.textStyles.bodyLargeSemiBold.copyWith(
+                        color: colors.accentOnAccent,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Align(
+                alignment: AlignmentDirectional.centerEnd,
+                child: AppButton(
+                  padding: const EdgeInsetsDirectional.only(end: Spacing.$2x),
+                  color: context.colors.accentSecondarySoft,
+                  onTap: () {
+                    ref.read(freeRoamStarterProvider.notifier).pauseAnimation();
+                    context.router.push(const AutostartSettingsSheetRoute());
+                  },
+                  primaryIcon: SystemIcons.close,
+                  buttonColorScheme: ButtonColorScheme.accent,
+                ),
+              ),
+            ],
           ),
-        );
-      },
+        ),
+      ),
     );
   }
 }
