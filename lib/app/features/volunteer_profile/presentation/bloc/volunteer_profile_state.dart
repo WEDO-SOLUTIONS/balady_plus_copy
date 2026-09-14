@@ -426,212 +426,200 @@ class VolunteerProfileState extends Equatable {
     String? cvFileUrl,
     String? cvUploadMessage,
     int? cvFileId,
-  }) =>
-      VolunteerProfileState(
-        currentStep: currentStep ?? this.currentStep,
-        isSubmitting: isSubmitting ?? this.isSubmitting,
-        isSuccess: isSuccess ?? this.isSuccess,
-        errorMessage: errorMessage ?? this.errorMessage,
-        isLoading: isLoading ?? this.isLoading,
-        isPresentationMode: isPresentationMode ?? this.isPresentationMode,
-        profileId: profileId ?? this.profileId,
-        firstName: firstName ?? this.firstName,
-        middleName: middleName ?? this.middleName,
-        lastName: lastName ?? this.lastName,
-        fullName: fullName ?? this.fullName,
-        email: email ?? this.email,
-        phoneNumber: phoneNumber ?? this.phoneNumber,
-        nationalId: nationalId ?? this.nationalId,
-        dateOfBirth: dateOfBirth ?? this.dateOfBirth,
-        nationality: nationality ?? this.nationality,
-        gender: gender ?? this.gender,
-        maritalStatus: maritalStatus ?? this.maritalStatus,
-        nearbyPhoneNumber: nearbyPhoneNumber ?? this.nearbyPhoneNumber,
-        region: region ?? this.region,
-        regionId: regionId ?? this.regionId,
-        city: city ?? this.city,
-        cityId: cityId ?? this.cityId,
-        isGenderFromApi: isGenderFromApi ?? this.isGenderFromApi,
-        isMaritalStatusFromApi:
-            isMaritalStatusFromApi ?? this.isMaritalStatusFromApi,
-        isNationalIdFromApi: isNationalIdFromApi ?? this.isNationalIdFromApi,
-        isRegionFromApi: isRegionFromApi ?? this.isRegionFromApi,
-        isCityFromApi: isCityFromApi ?? this.isCityFromApi,
-        isNearbyPhoneNumberFromApi:
-            isNearbyPhoneNumberFromApi ?? this.isNearbyPhoneNumberFromApi,
-        isDateOfBirthFromApi: isDateOfBirthFromApi ?? this.isDateOfBirthFromApi,
-        district: district ?? this.district,
-        street: street ?? this.street,
-        additionalInfo: additionalInfo ?? this.additionalInfo,
-        skills: skills ?? this.skills,
-        interests: interests ?? this.interests,
-        previousExperience: previousExperience ?? this.previousExperience,
-        hasCar: hasCar ?? this.hasCar,
-        canTravel: canTravel ?? this.canTravel,
-        isLoadingRegions: isLoadingRegions ?? this.isLoadingRegions,
-        isLoadingCities: isLoadingCities ?? this.isLoadingCities,
-        isLoadingQualifications:
-            isLoadingQualifications ?? this.isLoadingQualifications,
-        isLoadingSpecializations:
-            isLoadingSpecializations ?? this.isLoadingSpecializations,
-        isLoadingLanguages: isLoadingLanguages ?? this.isLoadingLanguages,
-        isLoadingSkills: isLoadingSkills ?? this.isLoadingSkills,
-        isLoadingLvls: isLoadingLvls ?? this.isLoadingLvls,
-        isLoadingInterests: isLoadingInterests ?? this.isLoadingInterests,
-        isLoadingVolunteeringFields:
-            isLoadingVolunteeringFields ?? this.isLoadingVolunteeringFields,
-        isLoadingBloodTypes: isLoadingBloodTypes ?? this.isLoadingBloodTypes,
-        isLoadingDiseases: isLoadingDiseases ?? this.isLoadingDiseases,
-        regionsList: regionsList ?? this.regionsList,
-        citiesList: citiesList ?? this.citiesList,
-        qualificationsList: qualificationsList ?? this.qualificationsList,
-        specializationsList: specializationsList ?? this.specializationsList,
-        languagesList: languagesList ?? this.languagesList,
-        skillsList: skillsList ?? this.skillsList,
-        lvlsList: lvlsList ?? this.lvlsList,
-        interestsList: interestsList ?? this.interestsList,
-        volunteeringFieldsList:
-            volunteeringFieldsList ?? this.volunteeringFieldsList,
-        bloodTypesList: bloodTypesList ?? this.bloodTypesList,
-        diseasesList: diseasesList ?? this.diseasesList,
-        educationalQualification:
-            educationalQualification ?? this.educationalQualification,
-        educationalQualificationId:
-            educationalQualificationId ?? this.educationalQualificationId,
-        specialization: specialization ?? this.specialization,
-        specializationId: specializationId ?? this.specializationId,
-        profession: profession ?? this.profession,
-        workExperience: workExperience ?? this.workExperience,
-        language: language ?? this.language,
-        languageId: languageId ?? this.languageId,
-        scientificExperienceSummary:
-            scientificExperienceSummary ?? this.scientificExperienceSummary,
-        volunteeringLevel: volunteeringLevel ?? this.volunteeringLevel,
-        volunteeringLevelId: volunteeringLevelId ?? this.volunteeringLevelId,
-        volunteeringWorkField:
-            volunteeringWorkField ?? this.volunteeringWorkField,
-        volunteeringWorkFieldId:
-            volunteeringWorkFieldId ?? this.volunteeringWorkFieldId,
-        volunteeringType: volunteeringType ?? this.volunteeringType,
-        volunteeringTypeId: volunteeringTypeId ?? this.volunteeringTypeId,
-        isIndividualSelected: isIndividualSelected ?? this.isIndividualSelected,
-        isGroupSelected: isGroupSelected ?? this.isGroupSelected,
-        skillsIds: skillsIds ?? this.skillsIds,
-        bloodType: bloodType ?? this.bloodType,
-        bloodTypeId: bloodTypeId ?? this.bloodTypeId,
-        disease: disease ?? this.disease,
-        diseaseId: diseaseId ?? this.diseaseId,
-        maritalStatusId: maritalStatusId ?? this.maritalStatusId,
-        // Social Media Info fields
-        xAccount: xAccount ?? this.xAccount,
-        instagramAccount: instagramAccount ?? this.instagramAccount,
-        linkedinAccount: linkedinAccount ?? this.linkedinAccount,
-        facebookAccount: facebookAccount ?? this.facebookAccount,
-        // CV Upload
-        isUploadingCV: isUploadingCV ?? this.isUploadingCV,
-        cvFileName: cvFileName ?? this.cvFileName,
-        cvFileUrl: cvFileUrl ?? this.cvFileUrl,
-        cvUploadMessage: cvUploadMessage ?? this.cvUploadMessage,
-        cvFileId: cvFileId ?? this.cvFileId,
-      );
+  }) => VolunteerProfileState(
+    currentStep: currentStep ?? this.currentStep,
+    isSubmitting: isSubmitting ?? this.isSubmitting,
+    isSuccess: isSuccess ?? this.isSuccess,
+    errorMessage: errorMessage ?? this.errorMessage,
+    isLoading: isLoading ?? this.isLoading,
+    isPresentationMode: isPresentationMode ?? this.isPresentationMode,
+    profileId: profileId ?? this.profileId,
+    firstName: firstName ?? this.firstName,
+    middleName: middleName ?? this.middleName,
+    lastName: lastName ?? this.lastName,
+    fullName: fullName ?? this.fullName,
+    email: email ?? this.email,
+    phoneNumber: phoneNumber ?? this.phoneNumber,
+    nationalId: nationalId ?? this.nationalId,
+    dateOfBirth: dateOfBirth ?? this.dateOfBirth,
+    nationality: nationality ?? this.nationality,
+    gender: gender ?? this.gender,
+    maritalStatus: maritalStatus ?? this.maritalStatus,
+    nearbyPhoneNumber: nearbyPhoneNumber ?? this.nearbyPhoneNumber,
+    region: region ?? this.region,
+    regionId: regionId ?? this.regionId,
+    city: city ?? this.city,
+    cityId: cityId ?? this.cityId,
+    isGenderFromApi: isGenderFromApi ?? this.isGenderFromApi,
+    isMaritalStatusFromApi: isMaritalStatusFromApi ?? this.isMaritalStatusFromApi,
+    isNationalIdFromApi: isNationalIdFromApi ?? this.isNationalIdFromApi,
+    isRegionFromApi: isRegionFromApi ?? this.isRegionFromApi,
+    isCityFromApi: isCityFromApi ?? this.isCityFromApi,
+    isNearbyPhoneNumberFromApi: isNearbyPhoneNumberFromApi ?? this.isNearbyPhoneNumberFromApi,
+    isDateOfBirthFromApi: isDateOfBirthFromApi ?? this.isDateOfBirthFromApi,
+    district: district ?? this.district,
+    street: street ?? this.street,
+    additionalInfo: additionalInfo ?? this.additionalInfo,
+    skills: skills ?? this.skills,
+    interests: interests ?? this.interests,
+    previousExperience: previousExperience ?? this.previousExperience,
+    hasCar: hasCar ?? this.hasCar,
+    canTravel: canTravel ?? this.canTravel,
+    isLoadingRegions: isLoadingRegions ?? this.isLoadingRegions,
+    isLoadingCities: isLoadingCities ?? this.isLoadingCities,
+    isLoadingQualifications: isLoadingQualifications ?? this.isLoadingQualifications,
+    isLoadingSpecializations: isLoadingSpecializations ?? this.isLoadingSpecializations,
+    isLoadingLanguages: isLoadingLanguages ?? this.isLoadingLanguages,
+    isLoadingSkills: isLoadingSkills ?? this.isLoadingSkills,
+    isLoadingLvls: isLoadingLvls ?? this.isLoadingLvls,
+    isLoadingInterests: isLoadingInterests ?? this.isLoadingInterests,
+    isLoadingVolunteeringFields: isLoadingVolunteeringFields ?? this.isLoadingVolunteeringFields,
+    isLoadingBloodTypes: isLoadingBloodTypes ?? this.isLoadingBloodTypes,
+    isLoadingDiseases: isLoadingDiseases ?? this.isLoadingDiseases,
+    regionsList: regionsList ?? this.regionsList,
+    citiesList: citiesList ?? this.citiesList,
+    qualificationsList: qualificationsList ?? this.qualificationsList,
+    specializationsList: specializationsList ?? this.specializationsList,
+    languagesList: languagesList ?? this.languagesList,
+    skillsList: skillsList ?? this.skillsList,
+    lvlsList: lvlsList ?? this.lvlsList,
+    interestsList: interestsList ?? this.interestsList,
+    volunteeringFieldsList: volunteeringFieldsList ?? this.volunteeringFieldsList,
+    bloodTypesList: bloodTypesList ?? this.bloodTypesList,
+    diseasesList: diseasesList ?? this.diseasesList,
+    educationalQualification: educationalQualification ?? this.educationalQualification,
+    educationalQualificationId: educationalQualificationId ?? this.educationalQualificationId,
+    specialization: specialization ?? this.specialization,
+    specializationId: specializationId ?? this.specializationId,
+    profession: profession ?? this.profession,
+    workExperience: workExperience ?? this.workExperience,
+    language: language ?? this.language,
+    languageId: languageId ?? this.languageId,
+    scientificExperienceSummary: scientificExperienceSummary ?? this.scientificExperienceSummary,
+    volunteeringLevel: volunteeringLevel ?? this.volunteeringLevel,
+    volunteeringLevelId: volunteeringLevelId ?? this.volunteeringLevelId,
+    volunteeringWorkField: volunteeringWorkField ?? this.volunteeringWorkField,
+    volunteeringWorkFieldId: volunteeringWorkFieldId ?? this.volunteeringWorkFieldId,
+    volunteeringType: volunteeringType ?? this.volunteeringType,
+    volunteeringTypeId: volunteeringTypeId ?? this.volunteeringTypeId,
+    isIndividualSelected: isIndividualSelected ?? this.isIndividualSelected,
+    isGroupSelected: isGroupSelected ?? this.isGroupSelected,
+    skillsIds: skillsIds ?? this.skillsIds,
+    bloodType: bloodType ?? this.bloodType,
+    bloodTypeId: bloodTypeId ?? this.bloodTypeId,
+    disease: disease ?? this.disease,
+    diseaseId: diseaseId ?? this.diseaseId,
+    maritalStatusId: maritalStatusId ?? this.maritalStatusId,
+    // Social Media Info fields
+    xAccount: xAccount ?? this.xAccount,
+    instagramAccount: instagramAccount ?? this.instagramAccount,
+    linkedinAccount: linkedinAccount ?? this.linkedinAccount,
+    facebookAccount: facebookAccount ?? this.facebookAccount,
+    // CV Upload
+    isUploadingCV: isUploadingCV ?? this.isUploadingCV,
+    cvFileName: cvFileName ?? this.cvFileName,
+    cvFileUrl: cvFileUrl ?? this.cvFileUrl,
+    cvUploadMessage: cvUploadMessage ?? this.cvUploadMessage,
+    cvFileId: cvFileId ?? this.cvFileId,
+  );
 
   @override
   List<Object?> get props => [
-        currentStep,
-        isSubmitting,
-        isSuccess,
-        errorMessage,
-        isLoading,
-        isPresentationMode,
-        profileId,
-        firstName,
-        middleName,
-        lastName,
-        fullName,
-        email,
-        phoneNumber,
-        nationalId,
-        dateOfBirth,
-        nationality,
-        gender,
-        maritalStatus,
-        nearbyPhoneNumber,
-        region,
-        regionId,
-        city,
-        cityId,
-        isGenderFromApi,
-        isMaritalStatusFromApi,
-        isNationalIdFromApi,
-        isRegionFromApi,
-        isCityFromApi,
-        isNearbyPhoneNumberFromApi,
-        isDateOfBirthFromApi,
-        district,
-        street,
-        additionalInfo,
-        skills,
-        interests,
-        previousExperience,
-        hasCar,
-        canTravel,
-        isLoadingRegions,
-        isLoadingCities,
-        isLoadingQualifications,
-        isLoadingSpecializations,
-        isLoadingLanguages,
-        isLoadingSkills,
-        isLoadingLvls,
-        isLoadingInterests,
-        isLoadingVolunteeringFields,
-        isLoadingBloodTypes,
-        isLoadingDiseases,
-        regionsList,
-        citiesList,
-        qualificationsList,
-        specializationsList,
-        languagesList,
-        skillsList,
-        lvlsList,
-        interestsList,
-        volunteeringFieldsList,
-        bloodTypesList,
-        diseasesList,
-        educationalQualification,
-        educationalQualificationId,
-        specialization,
-        specializationId,
-        profession,
-        workExperience,
-        language,
-        languageId,
-        scientificExperienceSummary,
-        volunteeringLevel,
-        volunteeringLevelId,
-        volunteeringWorkField,
-        volunteeringWorkFieldId,
-        volunteeringType,
-        volunteeringTypeId,
-        isIndividualSelected,
-        isGroupSelected,
-        skillsIds,
-        bloodType,
-        bloodTypeId,
-        disease,
-        diseaseId,
-        maritalStatusId,
-        // Social Media Info fields
-        xAccount,
-        instagramAccount,
-        linkedinAccount,
-        facebookAccount,
-        // CV Upload
-        isUploadingCV,
-        cvFileName,
-        cvFileUrl,
-        cvUploadMessage,
-        cvFileId,
-      ];
+    currentStep,
+    isSubmitting,
+    isSuccess,
+    errorMessage,
+    isLoading,
+    isPresentationMode,
+    profileId,
+    firstName,
+    middleName,
+    lastName,
+    fullName,
+    email,
+    phoneNumber,
+    nationalId,
+    dateOfBirth,
+    nationality,
+    gender,
+    maritalStatus,
+    nearbyPhoneNumber,
+    region,
+    regionId,
+    city,
+    cityId,
+    isGenderFromApi,
+    isMaritalStatusFromApi,
+    isNationalIdFromApi,
+    isRegionFromApi,
+    isCityFromApi,
+    isNearbyPhoneNumberFromApi,
+    isDateOfBirthFromApi,
+    district,
+    street,
+    additionalInfo,
+    skills,
+    interests,
+    previousExperience,
+    hasCar,
+    canTravel,
+    isLoadingRegions,
+    isLoadingCities,
+    isLoadingQualifications,
+    isLoadingSpecializations,
+    isLoadingLanguages,
+    isLoadingSkills,
+    isLoadingLvls,
+    isLoadingInterests,
+    isLoadingVolunteeringFields,
+    isLoadingBloodTypes,
+    isLoadingDiseases,
+    regionsList,
+    citiesList,
+    qualificationsList,
+    specializationsList,
+    languagesList,
+    skillsList,
+    lvlsList,
+    interestsList,
+    volunteeringFieldsList,
+    bloodTypesList,
+    diseasesList,
+    educationalQualification,
+    educationalQualificationId,
+    specialization,
+    specializationId,
+    profession,
+    workExperience,
+    language,
+    languageId,
+    scientificExperienceSummary,
+    volunteeringLevel,
+    volunteeringLevelId,
+    volunteeringWorkField,
+    volunteeringWorkFieldId,
+    volunteeringType,
+    volunteeringTypeId,
+    isIndividualSelected,
+    isGroupSelected,
+    skillsIds,
+    bloodType,
+    bloodTypeId,
+    disease,
+    diseaseId,
+    maritalStatusId,
+    // Social Media Info fields
+    xAccount,
+    instagramAccount,
+    linkedinAccount,
+    facebookAccount,
+    // CV Upload
+    isUploadingCV,
+    cvFileName,
+    cvFileUrl,
+    cvUploadMessage,
+    cvFileId,
+  ];
 
   bool _isValidField(String? field) => field?.trim().isNotEmpty ?? false;
   bool isEmailValid(String? email) {
@@ -648,18 +636,18 @@ class VolunteerProfileState extends Equatable {
     return Helpers.validateMobile(phone) == null;
   }
 
-    bool get isPersonalInfoValid =>
-        _isValidField(nationalId) &&
-        _isValidField(fullName) &&
-        _isValidField(firstName) &&
-        _isValidField(lastName) &&
-        _isValidField(dateOfBirth) &&
-        _isValidField(gender) &&
-        _isValidField(nationality) &&
-        isEmailValid(email) &&
-        isPhoneValid(phoneNumber) &&
-        _isValidField(regionId) &&
-        _isValidField(cityId);
+  bool get isPersonalInfoValid =>
+      _isValidField(nationalId) &&
+      _isValidField(fullName) &&
+      _isValidField(firstName) &&
+      _isValidField(lastName) &&
+      _isValidField(dateOfBirth) &&
+      _isValidField(gender) &&
+      _isValidField(nationality) &&
+      isEmailValid(email) &&
+      isPhoneValid(phoneNumber) &&
+      _isValidField(regionId) &&
+      _isValidField(cityId);
 
   bool get isUnifiedStepValid =>
       _isValidField(nationalId) &&
@@ -669,7 +657,7 @@ class VolunteerProfileState extends Equatable {
       _isValidField(regionId) &&
       _isValidField(cityId) &&
       _isValidField(educationalQualificationId) &&
-      _isValidField(volunteeringWorkFieldId) ;
+      _isValidField(volunteeringWorkFieldId);
   // Note: nearbyPhoneNumber (relative phone) is optional
 
   bool get isScientificInfoValid =>
@@ -682,8 +670,7 @@ class VolunteerProfileState extends Equatable {
       skills.isNotEmpty &&
       volunteeringLevel?.isNotEmpty == true &&
       volunteeringWorkField?.isNotEmpty == true &&
-      (isIndividualSelected ||
-          isGroupSelected); // At least one type must be selected
+      (isIndividualSelected || isGroupSelected); // At least one type must be selected
 
   bool get isMedicalInfoValid => true; // Medical info fields are optional
 
@@ -733,22 +720,15 @@ class VolunteerProfileError extends VolunteerProfileState {
 }
 
 class VolunteerSkillsUpdated extends VolunteerProfileState {
-  @override
-  final List<String> skills;
-
-  const VolunteerSkillsUpdated(this.skills)
-      : super(skills: skills, isLoading: false, errorMessage: null);
+  const VolunteerSkillsUpdated(List<String> skills) : super(skills: skills, isLoading: false, errorMessage: null);
 
   @override
   List<Object?> get props => [skills, isLoading, errorMessage];
 }
 
 class VolunteerInterestsUpdated extends VolunteerProfileState {
-  @override
-  final List<String> interests;
-
-  const VolunteerInterestsUpdated(this.interests)
-      : super(interests: interests, isLoading: false, errorMessage: null);
+  const VolunteerInterestsUpdated(List<String> interests)
+    : super(interests: interests, isLoading: false, errorMessage: null);
 
   @override
   List<Object?> get props => [interests, isLoading, errorMessage];

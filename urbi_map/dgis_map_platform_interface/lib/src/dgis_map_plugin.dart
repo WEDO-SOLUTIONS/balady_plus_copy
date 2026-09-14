@@ -190,6 +190,8 @@ class DgisMapPlugin extends FlutterMapApi {
     await _naviManeuverEventHandler.dispose();
     await _trafficAndParkingStateEventHandler.dispose();
     await _publicTransportEventHandler.dispose();
+    await _cameraStateEventHandler.dispose();
+    await _packagesHandler.dispose();
   }
 
   /// On zoom action event.

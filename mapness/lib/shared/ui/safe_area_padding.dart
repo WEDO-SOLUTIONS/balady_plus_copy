@@ -65,7 +65,7 @@ class SafeAreaPadding extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    assert(debugCheckHasMediaQuery(context));
+    assert(debugCheckHasMediaQuery(context), 'SafeAreaPadding needs a MediaQuery ancestor');
     EdgeInsets padding = MediaQuery.paddingOf(context);
     // Bottom padding has been consumed - i.e. by the keyboard
     if (maintainBottomViewPadding) {

@@ -26,4 +26,9 @@ class CameraStateEventHandler {
 
     _cameraStateController.sink.add(event);
   }
+
+  /// Closes the camera state stream.
+  Future<void> dispose() async {
+    await _cameraStateController.close();
+  }
 }

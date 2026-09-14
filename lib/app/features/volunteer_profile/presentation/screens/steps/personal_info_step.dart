@@ -10,7 +10,7 @@ class PersonalInfoStep extends StatefulWidget {
   const PersonalInfoStep({super.key});
 
   @override
-  _PersonalInfoStepState createState() => _PersonalInfoStepState();
+  State<PersonalInfoStep> createState() => _PersonalInfoStepState();
 }
 
 class _PersonalInfoStepState extends State<PersonalInfoStep> {
@@ -26,9 +26,7 @@ class _PersonalInfoStepState extends State<PersonalInfoStep> {
     final state = context.read<VolunteerProfileBloc>().state;
     _phoneController = TextEditingController(text: state.phoneNumber ?? '');
     _emailController = TextEditingController(text: state.email ?? '');
-    _relativePhoneController = TextEditingController(
-      text: state.nearbyPhoneNumber ?? '',
-    );
+    _relativePhoneController = TextEditingController(text: state.nearbyPhoneNumber ?? '');
     _selectedRegionId = state.regionId;
     _selectedCityId = state.cityId;
   }
@@ -94,9 +92,7 @@ class _PersonalInfoStepState extends State<PersonalInfoStep> {
 
   void _onRegionChanged(String? value, VolunteerProfileState state) {
     if (value != null) {
-      final selectedRegion = state.regionsList.firstWhere(
-        (region) => region.tid.toString() == value,
-      );
+      final selectedRegion = state.regionsList.firstWhere((region) => region.tid.toString() == value);
       setState(() {
         _selectedRegionId = value;
         _selectedCityId = null;
@@ -121,9 +117,7 @@ class _PersonalInfoStepState extends State<PersonalInfoStep> {
 
   void _onCityChanged(String? value, VolunteerProfileState state) {
     if (value != null) {
-      final selectedCity = state.citiesList.firstWhere(
-        (city) => city.tid.toString() == value,
-      );
+      final selectedCity = state.citiesList.firstWhere((city) => city.tid.toString() == value);
       setState(() {
         _selectedCityId = value;
       });
@@ -145,9 +139,7 @@ class _PersonalInfoStepState extends State<PersonalInfoStep> {
   }
 
   @override
-  Widget build(
-    BuildContext context,
-  ) => BlocBuilder<VolunteerProfileBloc, VolunteerProfileState>(
+  Widget build(BuildContext context) => BlocBuilder<VolunteerProfileBloc, VolunteerProfileState>(
     builder: (context, state) {
       // Keep controllers in sync with state
       if (_phoneController.text != (state.phoneNumber ?? '')) {
@@ -170,20 +162,11 @@ class _PersonalInfoStepState extends State<PersonalInfoStep> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              'lbl_personal_info'.tr(),
-              style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
-            ),
-            Text(
-              'lbl_fill_required_fields'.tr(),
-              style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
-            ),
+            Text('lbl_personal_info'.tr(), style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold)),
+            Text('lbl_fill_required_fields'.tr(), style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold)),
             const SizedBox(height: 20),
             // National ID (read-only)
-            Text(
-              'national_id'.tr(),
-              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
-            ),
+            Text('national_id'.tr(), style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
             const SizedBox(height: 8),
             TextFormField(
               readOnly: true,
@@ -198,23 +181,15 @@ class _PersonalInfoStepState extends State<PersonalInfoStep> {
             const SizedBox(height: 16),
 
             // Full Name (read-only)
-            Text(
-              'full_name'.tr(),
-              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
-            ),
+            Text('full_name'.tr(), style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
             const SizedBox(height: 8),
             TextFormField(
               readOnly: true,
               initialValue: state.fullName ?? '',
               decoration: InputDecoration(
                 hintText: 'full_name'.tr(),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(8.0),
-                ),
-                contentPadding: const EdgeInsets.symmetric(
-                  horizontal: 12.0,
-                  vertical: 15.0,
-                ),
+                border: OutlineInputBorder(borderRadius: BorderRadius.circular(8.0)),
+                contentPadding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 15.0),
                 filled: true,
                 fillColor: Colors.grey[200],
               ),
@@ -222,23 +197,15 @@ class _PersonalInfoStepState extends State<PersonalInfoStep> {
             const SizedBox(height: 16),
 
             // First Name (read-only)
-            Text(
-              'lbl_first_name_hint1'.tr(),
-              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
-            ),
+            Text('lbl_first_name_hint1'.tr(), style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
             const SizedBox(height: 8),
             TextFormField(
               readOnly: true,
               initialValue: state.firstName,
               decoration: InputDecoration(
                 hintText: 'lbl_first_name_hint1'.tr(),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(8.0),
-                ),
-                contentPadding: const EdgeInsets.symmetric(
-                  horizontal: 12.0,
-                  vertical: 15.0,
-                ),
+                border: OutlineInputBorder(borderRadius: BorderRadius.circular(8.0)),
+                contentPadding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 15.0),
                 filled: true,
                 fillColor: Colors.grey[200],
               ),
@@ -246,23 +213,15 @@ class _PersonalInfoStepState extends State<PersonalInfoStep> {
             const SizedBox(height: 16),
 
             // Middle Name (read-only)
-            Text(
-              'ekram_second_name'.tr(),
-              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
-            ),
+            Text('ekram_second_name'.tr(), style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
             const SizedBox(height: 8),
             TextFormField(
               readOnly: true,
               initialValue: state.middleName,
               decoration: InputDecoration(
                 hintText: 'ekram_second_name'.tr(),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(8.0),
-                ),
-                contentPadding: const EdgeInsets.symmetric(
-                  horizontal: 12.0,
-                  vertical: 15.0,
-                ),
+                border: OutlineInputBorder(borderRadius: BorderRadius.circular(8.0)),
+                contentPadding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 15.0),
                 filled: true,
                 fillColor: Colors.grey[200],
               ),
@@ -270,23 +229,15 @@ class _PersonalInfoStepState extends State<PersonalInfoStep> {
             const SizedBox(height: 16),
 
             // Last Name (read-only)
-            Text(
-              'last_name'.tr(),
-              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
-            ),
+            Text('last_name'.tr(), style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
             const SizedBox(height: 8),
             TextFormField(
               readOnly: true,
               initialValue: state.lastName,
               decoration: InputDecoration(
                 hintText: 'last_name'.tr(),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(8.0),
-                ),
-                contentPadding: const EdgeInsets.symmetric(
-                  horizontal: 12.0,
-                  vertical: 15.0,
-                ),
+                border: OutlineInputBorder(borderRadius: BorderRadius.circular(8.0)),
+                contentPadding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 15.0),
                 filled: true,
                 fillColor: Colors.grey[200],
               ),
@@ -294,23 +245,15 @@ class _PersonalInfoStepState extends State<PersonalInfoStep> {
             const SizedBox(height: 16),
 
             // Birth Date (read-only)
-            Text(
-              'lbl_birth_date'.tr(),
-              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
-            ),
+            Text('lbl_birth_date'.tr(), style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
             const SizedBox(height: 8),
             TextFormField(
               readOnly: true,
               initialValue: state.dateOfBirth,
               decoration: InputDecoration(
                 hintText: 'lbl_birth_date'.tr(),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(8.0),
-                ),
-                contentPadding: const EdgeInsets.symmetric(
-                  horizontal: 12.0,
-                  vertical: 15.0,
-                ),
+                border: OutlineInputBorder(borderRadius: BorderRadius.circular(8.0)),
+                contentPadding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 15.0),
                 filled: true,
                 fillColor: Colors.grey[200],
               ),
@@ -318,10 +261,7 @@ class _PersonalInfoStepState extends State<PersonalInfoStep> {
             const SizedBox(height: 16),
 
             // Gender (read-only)
-            Text(
-              'personal_gender'.tr(),
-              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
-            ),
+            Text('personal_gender'.tr(), style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
             const SizedBox(height: 8),
             TextFormField(
               readOnly: true,
@@ -336,23 +276,15 @@ class _PersonalInfoStepState extends State<PersonalInfoStep> {
 
             // Nationality (read-only)
             const SizedBox(height: 16),
-            Text(
-              'nationality'.tr(),
-              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
-            ),
+            Text('nationality'.tr(), style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
             const SizedBox(height: 8),
             TextFormField(
               readOnly: true,
               initialValue: state.nationality,
               decoration: InputDecoration(
                 hintText: 'nationality'.tr(),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(8.0),
-                ),
-                contentPadding: const EdgeInsets.symmetric(
-                  horizontal: 12.0,
-                  vertical: 15.0,
-                ),
+                border: OutlineInputBorder(borderRadius: BorderRadius.circular(8.0)),
+                contentPadding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 15.0),
                 filled: true,
                 fillColor: Colors.grey[200],
               ),
@@ -360,23 +292,15 @@ class _PersonalInfoStepState extends State<PersonalInfoStep> {
 
             const SizedBox(height: 16),
             // Marital Status (read-only)
-            Text(
-              'marital_status'.tr(),
-              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
-            ),
+            Text('marital_status'.tr(), style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
             const SizedBox(height: 8),
             TextFormField(
               readOnly: true,
               initialValue: state.maritalStatus,
               decoration: InputDecoration(
                 hintText: 'marital_status'.tr(),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(8.0),
-                ),
-                contentPadding: const EdgeInsets.symmetric(
-                  horizontal: 12.0,
-                  vertical: 15.0,
-                ),
+                border: OutlineInputBorder(borderRadius: BorderRadius.circular(8.0)),
+                contentPadding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 15.0),
                 filled: true,
                 fillColor: Colors.grey[200],
               ),
@@ -384,22 +308,14 @@ class _PersonalInfoStepState extends State<PersonalInfoStep> {
 
             const SizedBox(height: 16),
             // Phone (editable, required)
-            Text(
-              '${'personal_mobile'.tr()} *',
-              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
-            ),
+            Text('${'personal_mobile'.tr()} *', style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
             const SizedBox(height: 8),
             TextFormField(
               controller: _phoneController,
               decoration: InputDecoration(
                 hintText: '966500000000+',
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(8.0),
-                ),
-                contentPadding: const EdgeInsets.symmetric(
-                  horizontal: 12.0,
-                  vertical: 15.0,
-                ),
+                border: OutlineInputBorder(borderRadius: BorderRadius.circular(8.0)),
+                contentPadding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 15.0),
               ),
               keyboardType: TextInputType.phone,
               validator: (value) => Helpers.validateMobile(value),
@@ -407,44 +323,28 @@ class _PersonalInfoStepState extends State<PersonalInfoStep> {
             ),
             const SizedBox(height: 16),
             // Relative Phone (editable)
-            Text(
-              'relative_phone_number'.tr(),
-              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
-            ),
+            Text('relative_phone_number'.tr(), style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
             const SizedBox(height: 8),
             TextFormField(
               controller: _relativePhoneController,
               decoration: InputDecoration(
                 hintText: '966500000000+',
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(8.0),
-                ),
-                contentPadding: const EdgeInsets.symmetric(
-                  horizontal: 12.0,
-                  vertical: 15.0,
-                ),
+                border: OutlineInputBorder(borderRadius: BorderRadius.circular(8.0)),
+                contentPadding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 15.0),
               ),
               keyboardType: TextInputType.phone,
               onChanged: _onRelativePhoneChanged,
             ),
             const SizedBox(height: 16),
             // Email (editable, required)
-            Text(
-              '${'email'.tr()} *',
-              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
-            ),
+            Text('${'email'.tr()} *', style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
             const SizedBox(height: 8),
             TextFormField(
               controller: _emailController,
               decoration: InputDecoration(
                 hintText: 'example@gmail.com',
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(8.0),
-                ),
-                contentPadding: const EdgeInsets.symmetric(
-                  horizontal: 12.0,
-                  vertical: 15.0,
-                ),
+                border: OutlineInputBorder(borderRadius: BorderRadius.circular(8.0)),
+                contentPadding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 15.0),
               ),
               keyboardType: TextInputType.emailAddress,
               validator: (value) => Helpers.validateEmail(value),
@@ -452,23 +352,16 @@ class _PersonalInfoStepState extends State<PersonalInfoStep> {
             ),
             const SizedBox(height: 16),
             // Region (editable, required)
-            Text(
-              '${'region'.tr()} *',
-              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
-            ),
+            Text('${'region'.tr()} *', style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
             const SizedBox(height: 8),
             if (state.isLoadingRegions)
               const Center(child: CircularProgressIndicator())
             else
               DropdownButtonFormField<String>(
-                initialValue: _selectedRegionId?.isEmpty == true
-                    ? null
-                    : _selectedRegionId,
+                initialValue: _selectedRegionId?.isEmpty == true ? null : _selectedRegionId,
                 decoration: InputDecoration(
                   hint: Text('region'.tr()),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(8.0),
-                  ),
+                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(8.0)),
                   contentPadding: const EdgeInsets.symmetric(horizontal: 12.0),
                 ),
                 items: state.regionsList
@@ -478,11 +371,7 @@ class _PersonalInfoStepState extends State<PersonalInfoStep> {
                         child: Center(
                           child: Text(
                             region.name,
-                            style: const TextStyle(
-                              fontSize: 14,
-                              color: Colors.black,
-                              fontWeight: FontWeight.w500,
-                            ),
+                            style: const TextStyle(fontSize: 14, color: Colors.black, fontWeight: FontWeight.w500),
                           ),
                         ),
                       ),
@@ -498,23 +387,16 @@ class _PersonalInfoStepState extends State<PersonalInfoStep> {
               ),
             const SizedBox(height: 16),
             // City (editable, required)
-            Text(
-              '${'city'.tr()} *',
-              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
-            ),
+            Text('${'city'.tr()} *', style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
             const SizedBox(height: 8),
             if (state.isLoadingCities)
               const Center(child: CircularProgressIndicator())
             else
               DropdownButtonFormField<String>(
-                initialValue: _selectedCityId?.isEmpty == true
-                    ? null
-                    : _selectedCityId,
+                initialValue: _selectedCityId?.isEmpty == true ? null : _selectedCityId,
                 decoration: InputDecoration(
                   hint: Text('city'.tr()),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(8.0),
-                  ),
+                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(8.0)),
                   contentPadding: const EdgeInsets.symmetric(horizontal: 12.0),
                 ),
                 items: state.citiesList
@@ -524,11 +406,7 @@ class _PersonalInfoStepState extends State<PersonalInfoStep> {
                         child: Center(
                           child: Text(
                             city.name,
-                            style: const TextStyle(
-                              fontSize: 14,
-                              color: Colors.black,
-                              fontWeight: FontWeight.w500,
-                            ),
+                            style: const TextStyle(fontSize: 14, color: Colors.black, fontWeight: FontWeight.w500),
                           ),
                         ),
                       ),

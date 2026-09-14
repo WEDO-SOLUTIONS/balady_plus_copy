@@ -12,10 +12,7 @@ class PackageEventHandler {
   final _packageInfoChangedController = StreamController<PackageInfoChangedEvent>.broadcast();
 
   void packageProgressEvent(Map<dynamic, dynamic> map) {
-    final event = PackageProgressEvent(
-      map['packageId'],
-      map['progress'],
-    );
+    final event = PackageProgressEvent(map['packageId'], map['progress']);
 
     _packageProgressController.sink.add(event);
   }
@@ -46,11 +43,12 @@ class PackageEventHandler {
   }
 
   void packageInfoChangedEvent(Map<dynamic, dynamic> map) {
-    _packageInfoChangedController.sink.add(
-      PackageInfoChangedEvent(
-        map["id"],
-        mapInfo(map["info"]),
-      ),
-    );
+    _packageInfoChangedController.sink.add(PackageInfoChangedEvent(map["id"], mapInfo(map["info"])));
+  }
+
+  /// Closes the package progress and info streams.
+  Future<void> dispose() async {
+    await _packageProgressController.close();
+    await _packageInfoChangedController.close();
   }
 }

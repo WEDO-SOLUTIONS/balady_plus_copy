@@ -9,7 +9,7 @@ class CheckCommercialLicenseField extends StatefulWidget {
   const CheckCommercialLicenseField({super.key, required this.dataSource});
 
   @override
-  _CheckCommercialLicenseFieldState createState() => _CheckCommercialLicenseFieldState();
+  State<CheckCommercialLicenseField> createState() => _CheckCommercialLicenseFieldState();
 }
 
 class _CheckCommercialLicenseFieldState extends State<CheckCommercialLicenseField> {

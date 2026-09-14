@@ -10,15 +10,16 @@ class SearchTextFieldWidget extends StatefulWidget {
   final Function onSubmitSearch;
   final double containerHeight;
 
-  const SearchTextFieldWidget(
-      {super.key,
-      required this.hintText,
-      required this.onTextChanged,
-      required this.onSubmitSearch,
-      this.containerHeight = 40});
+  const SearchTextFieldWidget({
+    super.key,
+    required this.hintText,
+    required this.onTextChanged,
+    required this.onSubmitSearch,
+    this.containerHeight = 40,
+  });
 
   @override
-  _SearchTextFieldWidgetState createState() => _SearchTextFieldWidgetState();
+  State<SearchTextFieldWidget> createState() => _SearchTextFieldWidgetState();
 }
 
 class _SearchTextFieldWidgetState extends State<SearchTextFieldWidget> {
@@ -29,13 +30,8 @@ class _SearchTextFieldWidgetState extends State<SearchTextFieldWidget> {
     return Container(
       height: widget.containerHeight,
       decoration: BoxDecoration(
-        borderRadius: const BorderRadius.all(
-          Radius.circular(8),
-        ),
-        border: Border.all(
-          color: const Color(0x29036362),
-          width: 1,
-        ),
+        borderRadius: const BorderRadius.all(Radius.circular(8)),
+        border: Border.all(color: const Color(0x29036362), width: 1),
         color: Colors.transparent,
       ),
       alignment: Alignment.center,
@@ -46,11 +42,7 @@ class _SearchTextFieldWidgetState extends State<SearchTextFieldWidget> {
           child: TextFormField(
             onChanged: (String val) => widget.onTextChanged(val),
             controller: _controller,
-            style: const TextStyle(
-              color: AppColor.black,
-              fontSize: 17,
-              fontWeight: FontWeight.w500,
-            ),
+            style: const TextStyle(color: AppColor.black, fontSize: 17, fontWeight: FontWeight.w500),
             cursorColor: AppColor.black100,
             textInputAction: TextInputAction.search,
             onFieldSubmitted: (String val) => widget.onSubmitSearch(val),
@@ -77,12 +69,8 @@ class _SearchTextFieldWidgetState extends State<SearchTextFieldWidget> {
               enabledBorder: InputBorder.none,
               errorBorder: InputBorder.none,
               disabledBorder: InputBorder.none,
-              contentPadding: const EdgeInsets.only(
-                  top: 10, right: 10, left: 10, bottom: 10),
-              suffixIconConstraints: const BoxConstraints(
-                minHeight: 24,
-                minWidth: 24,
-              ),
+              contentPadding: const EdgeInsets.only(top: 10, right: 10, left: 10, bottom: 10),
+              suffixIconConstraints: const BoxConstraints(minHeight: 24, minWidth: 24),
             ),
           ),
         ),

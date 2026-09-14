@@ -10,14 +10,11 @@ class CustomCheckbox extends StatefulWidget {
   final String title;
   final bool isSelected;
   final Function onSelect;
-  @override
-  final Key? key;
 
-  const CustomCheckbox({required this.title, required this.onSelect, required this.isSelected, this.key})
-    : super(key: key);
+  const CustomCheckbox({super.key, required this.title, required this.onSelect, required this.isSelected});
 
   @override
-  _CustomCheckboxState createState() => _CustomCheckboxState();
+  State<CustomCheckbox> createState() => _CustomCheckboxState();
 }
 
 class _CustomCheckboxState extends State<CustomCheckbox> {

@@ -84,7 +84,7 @@ class _ModalScopeState<T> extends State<_ModalScope<T>> {
   @override
   void didUpdateWidget(_ModalScope<T> oldWidget) {
     super.didUpdateWidget(oldWidget);
-    assert(widget.route == oldWidget.route);
+    assert(widget.route == oldWidget.route, 'A TransculentPage cannot be moved to a different route');
     _updateFocusScopeNode();
   }
 
@@ -140,7 +140,7 @@ class _ModalScopeState<T> extends State<_ModalScope<T>> {
   Widget build(BuildContext context) => AnimatedBuilder(
     animation: widget.route.restorationScopeId,
     builder: (context, child) {
-      assert(child != null);
+      assert(child != null, 'RestorationScope needs the page content to be built');
       return RestorationScope(
         restorationId: widget.route.restorationScopeId.value,
         child: child!,
@@ -306,7 +306,7 @@ abstract class ModalRoute<T> extends TransitionRoute<T> with LocalHistoryRoute<T
   @override
   Future<RoutePopDisposition> willPop() async {
     final scope = _scopeKey.currentState;
-    assert(scope != null);
+    assert(scope != null, 'The focus scope must be mounted before pop callbacks run');
     for (final callback in List<WillPopCallback>.of(_willPopCallbacks)) {
       if (await callback() != true) {
         return RoutePopDisposition.doNotPop;

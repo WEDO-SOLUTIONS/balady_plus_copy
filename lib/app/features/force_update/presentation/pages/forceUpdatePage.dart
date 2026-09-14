@@ -12,7 +12,7 @@ class ForceUpdatePage extends StatefulWidget {
   const ForceUpdatePage({super.key});
 
   @override
-  _ForceUpdatePageState createState() => _ForceUpdatePageState();
+  State<ForceUpdatePage> createState() => _ForceUpdatePageState();
 }
 
 class _ForceUpdatePageState extends State<ForceUpdatePage> {

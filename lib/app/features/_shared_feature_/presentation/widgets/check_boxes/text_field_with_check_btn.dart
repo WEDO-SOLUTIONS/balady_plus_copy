@@ -24,28 +24,29 @@ class TextWithCheckBtn extends StatefulWidget {
   final bool showToolTip;
   final String? toolTipMessage;
 
-  const TextWithCheckBtn(
-      {super.key,
-      required this.title,
-      this.hint,
-      this.controller,
-      this.textHint,
-      this.currentValue,
-      required this.onTextChanged,
-      required this.isValidate,
-      this.bottomViewInsets = 0,
-      required this.verify,
-      this.errorText,
-      this.backgroundColor,
-      this.maxLength,
-      required this.validate,
-      this.enabled = true,
-      this.textInputType,
-      this.topPadding,
-      this.showToolTip = false,
-      this.toolTipMessage});
+  const TextWithCheckBtn({
+    super.key,
+    required this.title,
+    this.hint,
+    this.controller,
+    this.textHint,
+    this.currentValue,
+    required this.onTextChanged,
+    required this.isValidate,
+    this.bottomViewInsets = 0,
+    required this.verify,
+    this.errorText,
+    this.backgroundColor,
+    this.maxLength,
+    required this.validate,
+    this.enabled = true,
+    this.textInputType,
+    this.topPadding,
+    this.showToolTip = false,
+    this.toolTipMessage,
+  });
   @override
-  _TextWithCheckBtnState createState() => _TextWithCheckBtnState();
+  State<TextWithCheckBtn> createState() => _TextWithCheckBtnState();
 }
 
 class _TextWithCheckBtnState extends State<TextWithCheckBtn> {
@@ -64,79 +65,79 @@ class _TextWithCheckBtnState extends State<TextWithCheckBtn> {
       alignment: AlignmentDirectional.centerEnd,
       children: <Widget>[
         CustomTextFieldWidget(
-            label: widget.title,
-            controller: widget.controller,
-            fillColor: widget.backgroundColor,
-            focusNode: _focusNode,
-            hintText: widget.hint ?? "",
-            errorText: widget.errorText,
-            keyboardType: widget.textInputType ??
-                const TextInputType.numberWithOptions(signed: false),
-            maxLength: widget.maxLength,
-            onValidate: (String? t) => widget.validate(t),
-            enabled: widget.enabled,
-            onChanged: (value) => {widget.onTextChanged(value)},
-            showToolTip: widget.showToolTip,
-            toolTipMessage: widget.toolTipMessage),
+          label: widget.title,
+          controller: widget.controller,
+          fillColor: widget.backgroundColor,
+          focusNode: _focusNode,
+          hintText: widget.hint ?? "",
+          errorText: widget.errorText,
+          keyboardType: widget.textInputType ?? const TextInputType.numberWithOptions(signed: false),
+          maxLength: widget.maxLength,
+          onValidate: (String? t) => widget.validate(t),
+          enabled: widget.enabled,
+          onChanged: (value) => {widget.onTextChanged(value)},
+          showToolTip: widget.showToolTip,
+          toolTipMessage: widget.toolTipMessage,
+        ),
         Padding(
-            padding: EdgeInsetsDirectional.only(
-                bottom: 0.0,
-                end: 8,
-                top: widget.maxLength == null
-                    ? widget.topPadding != null
-                        ? widget.topPadding!
-                        : 40
-                    : 0),
-            child: SizedBox(
-              width: 100,
-              child: ElevatedButtonWidget.verify(
-                text: widget.isValidate ? ("done_check").tr() : ("check").tr(),
-                onPressed: () {
-                  if (widget.isValidate == false) {
-                    widget.verify();
-                    FocusScope.of(context).unfocus();
-                  }
-                },
-              ),
-            )
+          padding: EdgeInsetsDirectional.only(
+            bottom: 0.0,
+            end: 8,
+            top: widget.maxLength == null
+                ? widget.topPadding != null
+                      ? widget.topPadding!
+                      : 40
+                : 0,
+          ),
+          child: SizedBox(
+            width: 100,
+            child: ElevatedButtonWidget.verify(
+              text: widget.isValidate ? ("done_check").tr() : ("check").tr(),
+              onPressed: () {
+                if (widget.isValidate == false) {
+                  widget.verify();
+                  FocusScope.of(context).unfocus();
+                }
+              },
+            ),
+          ),
 
-            // InkWell(
-            //   onTap: widget.isValidate
-            //       ? null
-            //       : () {
-            //           widget.verify();
-            //           FocusScope.of(context).unfocus();
-            //         },
-            //   child: SizedBox(
-            //     width: 100,
-            //     height: 50,
-            //     child: Align(
-            //       alignment: AlignmentDirectional.centerEnd,
-            //       child: Row(
-            //         mainAxisAlignment: MainAxisAlignment.end,
-            //         children: [
-            //           if (widget.isValidate)
-            //             Padding(
-            //               padding: const EdgeInsets.symmetric(horizontal: 4),
-            //               child: Image.asset(
-            //                 "assets/images/verified@3x.png",
-            //                 height: 12,
-            //                 width: 12,
-            //               ),
-            //             ),
-            //           CustomTextWidget(
-            //             widget.isValidate ? ("done_check").tr() : ("check").tr(),
-            //             fontColor:
-            //                 widget.isValidate ? Colors.black : const Color(0xff389492),
-            //             fontSize: 14,
-            //           ),
-            //         ],
-            //       ),
-            //     ),
-            //   ),
-            // ),
-
-            )
+          // InkWell(
+          //   onTap: widget.isValidate
+          //       ? null
+          //       : () {
+          //           widget.verify();
+          //           FocusScope.of(context).unfocus();
+          //         },
+          //   child: SizedBox(
+          //     width: 100,
+          //     height: 50,
+          //     child: Align(
+          //       alignment: AlignmentDirectional.centerEnd,
+          //       child: Row(
+          //         mainAxisAlignment: MainAxisAlignment.end,
+          //         children: [
+          //           if (widget.isValidate)
+          //             Padding(
+          //               padding: const EdgeInsets.symmetric(horizontal: 4),
+          //               child: Image.asset(
+          //                 "assets/images/verified@3x.png",
+          //                 height: 12,
+          //                 width: 12,
+          //               ),
+          //             ),
+          //           CustomTextWidget(
+          //             widget.isValidate ? ("done_check").tr() : ("check").tr(),
+          //             fontColor:
+          //                 widget.isValidate ? Colors.black : const Color(0xff389492),
+          //             fontSize: 14,
+          //           ),
+          //         ],
+          //       ),
+          //     ),
+          //   ),
+          // ),
+        ),
       ],
     );
   }

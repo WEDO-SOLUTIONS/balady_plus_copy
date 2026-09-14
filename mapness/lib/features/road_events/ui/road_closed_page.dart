@@ -177,16 +177,12 @@ class _RoadClosedPageState extends ConsumerState<RoadClosedPage> {
   /// 00:00 1 April — 23:59 10 June (if the same year (current))
   /// 00:00 1 April – 23:59 10 April (if the same month and year)
   /// 00:00–23:59 10 June (if one day)
-  String? _formatSchedule(DateTime? from, DateTime? to, String currentLang, AppLocalizations l10n) {
+  String? _formatSchedule(DateTime? rawFrom, DateTime? rawTo, String currentLang, AppLocalizations l10n) {
     final tf = DateFormat('HH:mm', currentLang);
     final dmf = DateFormat('d MMMM', currentLang);
     final yf = DateFormat('yyyy', currentLang);
-    if (from != null) {
-      from = _normalizeBoundary(from);
-    }
-    if (to != null) {
-      to = _normalizeBoundary(to);
-    }
+    final from = rawFrom == null ? null : _normalizeBoundary(rawFrom);
+    final to = rawTo == null ? null : _normalizeBoundary(rawTo);
     if (from != null && to != null) {
       final showYear = from.year != to.year;
       final showMonth = from.month != to.month;
