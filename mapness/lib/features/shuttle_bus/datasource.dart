@@ -79,7 +79,9 @@ List<MakkahBusModel> _parseJson(String jsonInput) {
     final features = json['features'] as List<dynamic>? ?? [];
 
     for (final item in features) {
-      if (item is! Map<String, dynamic>) continue;
+      if (item is! Map<String, dynamic>) {
+        continue;
+      }
 
       final attributes = item['properties'] as Map<String, dynamic>? ?? {};
       final geometry = item['geometry'] as Map<String, dynamic>? ?? {};
@@ -97,7 +99,9 @@ List<MakkahBusModel> _parseJson(String jsonInput) {
       if (geomType == 'MultiLineString') {
         int lineIndex = 0;
         for (final line in rawCoords) {
-          if (line is! List<dynamic>) continue;
+          if (line is! List<dynamic>) {
+            continue;
+          }
           final List<List<double>> lineCoordinates = [];
           for (final point in line) {
             final converted = _convertPoint(point, isUtm);

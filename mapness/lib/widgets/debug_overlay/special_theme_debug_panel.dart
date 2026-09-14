@@ -662,11 +662,12 @@ class _SplashTestCard extends ConsumerWidget {
   }
 
   void _showSplash(WidgetRef ref, SpecialThemeMode mode) {
-    final splashState = ref.read(themeSplashStateProvider.notifier);
-    splashState.resetSplashFor(mode);
+    final splashState = ref.read(themeSplashStateProvider.notifier)..resetSplashFor(mode);
 
     final navigator = rootNavigatorKey.currentState;
-    if (navigator == null) return;
+    if (navigator == null) {
+      return;
+    }
 
     navigator.push(
       MaterialPageRoute<void>(
@@ -988,10 +989,18 @@ class _ConfigMeta extends StatelessWidget {
   }
 
   String _getForceEnabled(PlacesActivationConfig config) {
-    if (config.mekkah.forceEnabled) return 'mekkah';
-    if (config.ramadan.forceEnabled) return 'ramadan';
-    if (config.hajj.forceEnabled) return 'hajj';
-    if (config.foundationDay.forceEnabled) return 'foundation_day';
+    if (config.mekkah.forceEnabled) {
+      return 'mekkah';
+    }
+    if (config.ramadan.forceEnabled) {
+      return 'ramadan';
+    }
+    if (config.hajj.forceEnabled) {
+      return 'hajj';
+    }
+    if (config.foundationDay.forceEnabled) {
+      return 'foundation_day';
+    }
     return '';
   }
 }
@@ -1147,8 +1156,12 @@ class _FeatureItem extends ConsumerWidget {
   /// Returns true if the feature is effectively active (enabled AND past start_date,
   /// plus the Makkah-area gate for scoped pilgrim).
   bool _isEffectivelyActive(WidgetRef ref, bool debugOverride) {
-    if (debugOverride) return true;
-    if (!feature.enabled) return false;
+    if (debugOverride) {
+      return true;
+    }
+    if (!feature.enabled) {
+      return false;
+    }
     if (feature.startDate != null && DateTime.now().isBefore(feature.startDate!)) {
       return false;
     }
@@ -1160,8 +1173,12 @@ class _FeatureItem extends ConsumerWidget {
 
   /// Returns the reason why feature is not active
   String? _getInactiveReason(WidgetRef ref, bool debugOverride) {
-    if (debugOverride) return null;
-    if (!feature.enabled) return null;
+    if (debugOverride) {
+      return null;
+    }
+    if (!feature.enabled) {
+      return null;
+    }
     if (feature.startDate != null && DateTime.now().isBefore(feature.startDate!)) {
       return 'Starts ${_formatDate(feature.startDate!)}';
     }

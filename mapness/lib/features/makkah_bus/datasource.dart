@@ -7,8 +7,12 @@ import 'package:mapness/_generated/assets/assets.gen.dart';
 import 'package:proj4dart/proj4dart.dart';
 
 double _toDouble(val) {
-  if (val is num) return val.toDouble();
-  if (val is String) return double.tryParse(val) ?? 0.0;
+  if (val is num) {
+    return val.toDouble();
+  }
+  if (val is String) {
+    return double.tryParse(val) ?? 0.0;
+  }
   return 0.0;
 }
 
@@ -59,17 +63,23 @@ bool _isUtmCoordinates(List<dynamic> rawCoords, String? geomType) {
 
 /// Convert a raw coordinate point, applying UTM→WGS84 if needed.
 List<double> _convertPoint(point, bool isUtm) {
-  if (point is! List<dynamic> || point.length < 2) return [];
+  if (point is! List<dynamic> || point.length < 2) {
+    return [];
+  }
   final x = _toDouble(point[0]);
   final y = _toDouble(point[1]);
-  if (isUtm) return _utmToWgs84(x, y);
+  if (isUtm) {
+    return _utmToWgs84(x, y);
+  }
   return [x, y];
 }
 
 /// Read property value trying both underscore and space-separated keys.
 String? _prop(Map<String, dynamic> attrs, String underscored) {
   final val = attrs[underscored];
-  if (val != null) return val.toString();
+  if (val != null) {
+    return val.toString();
+  }
   // Try space-separated variant: "Name_Arabic" → "Name Arabic"
   final spaced = underscored.replaceAll('_', ' ');
   return attrs[spaced]?.toString();
@@ -83,7 +93,9 @@ List<MakkahBusModel> _parse(String jsonInput) {
     final features = json['features'] as List<dynamic>? ?? [];
 
     for (final item in features) {
-      if (item is! Map<String, dynamic>) continue;
+      if (item is! Map<String, dynamic>) {
+        continue;
+      }
 
       final attributes = item['properties'] as Map<String, dynamic>? ?? {};
       final geometry = item['geometry'] as Map<String, dynamic>? ?? {};
@@ -101,7 +113,9 @@ List<MakkahBusModel> _parse(String jsonInput) {
       if (geomType == 'MultiLineString') {
         int lineIndex = 0;
         for (final line in rawCoords) {
-          if (line is! List<dynamic>) continue;
+          if (line is! List<dynamic>) {
+            continue;
+          }
           final List<List<double>> lineCoordinates = [];
           for (final point in line) {
             final converted = _convertPoint(point, isUtm);

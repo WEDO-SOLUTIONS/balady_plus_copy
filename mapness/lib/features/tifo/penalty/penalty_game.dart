@@ -1,3 +1,10 @@
+// This file draws the whole penalty mini-game frame by frame, and 116 of the
+// 130 `cascade_invocations` hits here are consecutive `canvas.*` calls. Folding
+// them into a cascade would make the rendering worse to work with: each draw is
+// a step you want to comment, reorder or step over on its own, and a cascade
+// turns the sequence into one statement. Not worth it for a style rule.
+// ignore_for_file: cascade_invocations
+
 import 'dart:async';
 import 'dart:convert';
 import 'dart:math' as math;
@@ -1767,7 +1774,9 @@ class PenaltyGame extends FlameGame with TapCallbacks, DragCallbacks {
 
   @override
   void onTapUp(TapUpEvent event) {
-    if (_completed || !_armed) return;
+    if (_completed || !_armed) {
+      return;
+    }
     if (_state == _ShotState.aiming && _isTouchingBall(event.canvasPosition)) {
       _shootAt(event.canvasPosition, 0.74);
     }
@@ -1776,7 +1785,9 @@ class PenaltyGame extends FlameGame with TapCallbacks, DragCallbacks {
   @override
   void onDragStart(DragStartEvent event) {
     super.onDragStart(event);
-    if (_completed || !_armed) return;
+    if (_completed || !_armed) {
+      return;
+    }
     if (_state != _ShotState.aiming) {
       return;
     }
@@ -1794,7 +1805,9 @@ class PenaltyGame extends FlameGame with TapCallbacks, DragCallbacks {
 
   @override
   void onDragUpdate(DragUpdateEvent event) {
-    if (_completed || !_armed) return;
+    if (_completed || !_armed) {
+      return;
+    }
     if (_state != _ShotState.aiming) {
       return;
     }
@@ -1805,7 +1818,9 @@ class PenaltyGame extends FlameGame with TapCallbacks, DragCallbacks {
   @override
   void onDragEnd(DragEndEvent event) {
     super.onDragEnd(event);
-    if (_completed || !_armed) return;
+    if (_completed || !_armed) {
+      return;
+    }
     if (_state != _ShotState.aiming) {
       return;
     }
@@ -2104,7 +2119,9 @@ class PenaltyGame extends FlameGame with TapCallbacks, DragCallbacks {
   /// `missesAllowed` (real goals are kept as scored) and complete normally,
   /// so the goals already scored still count.
   void forfeit() {
-    if (_completed) return;
+    if (_completed) {
+      return;
+    }
     _completed = true;
     var misses = _shotHistory.where((s) => s != _ShotState.goal).length;
     while (misses < missesAllowed) {
@@ -5988,14 +6005,18 @@ class MiniFootballGame extends FlameGame with DragCallbacks {
   @override
   void onDragStart(DragStartEvent event) {
     super.onDragStart(event);
-    if (_state != _MiniShotState.aiming) return;
+    if (_state != _MiniShotState.aiming) {
+      return;
+    }
     _dragStart = event.canvasPosition.toOffset();
     _dragCurrent = _dragStart;
   }
 
   @override
   void onDragUpdate(DragUpdateEvent event) {
-    if (_state != _MiniShotState.aiming) return;
+    if (_state != _MiniShotState.aiming) {
+      return;
+    }
     _dragCurrent = event.canvasEndPosition.toOffset();
   }
 
@@ -6011,10 +6032,14 @@ class MiniFootballGame extends FlameGame with DragCallbacks {
     final end = _dragCurrent ?? start;
     _dragStart = null;
     _dragCurrent = null;
-    if (start == null || end == null) return;
+    if (start == null || end == null) {
+      return;
+    }
     final delta = end - start;
     // Свайп должен быть направлен вверх и иметь достаточную длину
-    if (delta.dy > -20 || delta.distance < 30) return;
+    if (delta.dy > -20 || delta.distance < 30) {
+      return;
+    }
     _launchShot(delta);
   }
 
@@ -7000,7 +7025,9 @@ class MiniFootballGame extends FlameGame with DragCallbacks {
     void drawFaceted(Offset a, Offset b) {
       final dir = b - a;
       final len = dir.distance;
-      if (len < 1) return;
+      if (len < 1) {
+        return;
+      }
       final nx = -dir.dy / len * frameThickness * 0.5;
       final ny = dir.dx / len * frameThickness * 0.5;
       final p1 = Offset(a.dx + nx, a.dy + ny);
@@ -7241,9 +7268,13 @@ class MiniFootballGame extends FlameGame with DragCallbacks {
       final row = sprite[y];
       for (var x = 0; x < cols; x++) {
         final ch = row[x];
-        if (ch == '.') continue;
+        if (ch == '.') {
+          continue;
+        }
         final color = _pixelPalette[ch];
-        if (color == null) continue;
+        if (color == null) {
+          continue;
+        }
         final paint = paintCache.putIfAbsent(ch, () => Paint()..color = color);
         final drawX = flipX ? cols - 1 - x : x;
         canvas.drawRect(
@@ -7385,7 +7416,9 @@ class MiniFootballGame extends FlameGame with DragCallbacks {
       final row = _pixelBall[y];
       for (var x = 0; x < row.length; x++) {
         final ch = row[x];
-        if (ch == '.') continue;
+        if (ch == '.') {
+          continue;
+        }
         final paint = switch (ch) {
           'X' => outline,
           'W' => whitePaint,
@@ -7451,7 +7484,9 @@ class MiniFootballGame extends FlameGame with DragCallbacks {
   }
 
   void _paintSwipeHint(Canvas canvas, double w, double h) {
-    if (_state != _MiniShotState.aiming || _dragStart != null) return;
+    if (_state != _MiniShotState.aiming || _dragStart != null) {
+      return;
+    }
     final pal = _palette;
     final hint = pal.hintColor;
     final cx = w * 0.5;
@@ -7491,10 +7526,16 @@ class MiniFootballGame extends FlameGame with DragCallbacks {
   void _paintAimPreview(Canvas canvas, double w, double h) {
     final start = _dragStart;
     final end = _dragCurrent;
-    if (start == null || end == null) return;
-    if (_state != _MiniShotState.aiming) return;
+    if (start == null || end == null) {
+      return;
+    }
+    if (_state != _MiniShotState.aiming) {
+      return;
+    }
     final delta = end - start;
-    if (delta.dy > -10) return;
+    if (delta.dy > -10) {
+      return;
+    }
     final swipeNorm = (-delta.dy / h).clamp(0.15, 1.2);
     final aimDx = (delta.dx / (w * 0.5)).clamp(-1.1, 1.1).toDouble();
     final targetX = (0.5 + aimDx * 0.32).clamp(0.18, 0.82).toDouble();

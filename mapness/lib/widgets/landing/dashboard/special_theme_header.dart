@@ -49,7 +49,9 @@ class SpecialThemeHeader extends ConsumerWidget {
   Widget? _buildBanner(BuildContext context, {required bool isDark}) {
     final bool hasBanner =
         mode == SpecialThemeMode.nationalDay || mode == SpecialThemeMode.mekkahBase || mode == SpecialThemeMode.ramadan;
-    if (!hasBanner) return null;
+    if (!hasBanner) {
+      return null;
+    }
 
     final BoxDecoration bannerDecoration;
     if (mode == SpecialThemeMode.mekkahBase) {

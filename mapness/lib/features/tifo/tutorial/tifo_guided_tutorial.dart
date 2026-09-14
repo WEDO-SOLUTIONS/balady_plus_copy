@@ -190,7 +190,9 @@ class _TifoGuidedTutorialState extends ConsumerState<TifoGuidedTutorial> {
         primaryAction: TifoMessageAction(label: l10n.tifoSkip, onPressed: () => Navigator.of(context).pop(true)),
       ),
     );
-    if (!mounted) return;
+    if (!mounted) {
+      return;
+    }
     if (skip ?? false) {
       await _finish(completed: false);
     }

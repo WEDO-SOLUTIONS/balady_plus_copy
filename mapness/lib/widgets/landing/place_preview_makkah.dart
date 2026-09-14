@@ -135,7 +135,9 @@ class _PlacePreviewMakkahState extends ConsumerState<PlacePreviewMakkah> with Au
               contentSize: kPlaceCardSizeMakkah,
               activeDotColor: SaudiNationalDay.isNow() ? context.colors.staticWhite : null,
               onTap: (item) async {
-                if (item == null) return;
+                if (item == null) {
+                  return;
+                }
 
                 final dgisId = int.tryParse(item.dgisId ?? '') ?? 0;
 

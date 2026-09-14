@@ -102,7 +102,9 @@ class PenaltyEntryScreen extends ConsumerWidget {
           showColliderDebug: ref.read(tifoDebugColliderOverlayProvider),
           locale: ref.read(appLanguageProvider).locale,
           onComplete: (outcome) {
-            if (handled) return;
+            if (handled) {
+              return;
+            }
             handled = true;
             final goals = outcome.goals;
             // Brief delay so the user sees the last result message,

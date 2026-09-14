@@ -94,7 +94,9 @@ class Auth extends _$Auth {
       // [CircularDependencyError]. Deferring lets the in-flight build
       // settle before downstream rebuilds are triggered.
       Future(() {
-        if (disposed) return;
+        if (disposed) {
+          return;
+        }
         try {
           ref
             ..invalidate(favouriteCacheProvider)

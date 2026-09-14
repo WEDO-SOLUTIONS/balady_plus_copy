@@ -167,10 +167,18 @@ class PlacesActivationConfig {
 
     // Track which themes are actually in the JSON
     final presentThemes = <String>{};
-    if (themes.containsKey('mekkah')) presentThemes.add('mekkah');
-    if (themes.containsKey('ramadan')) presentThemes.add('ramadan');
-    if (themes.containsKey('foundation_day')) presentThemes.add('foundation_day');
-    if (themes.containsKey('hajj')) presentThemes.add('hajj');
+    if (themes.containsKey('mekkah')) {
+      presentThemes.add('mekkah');
+    }
+    if (themes.containsKey('ramadan')) {
+      presentThemes.add('ramadan');
+    }
+    if (themes.containsKey('foundation_day')) {
+      presentThemes.add('foundation_day');
+    }
+    if (themes.containsKey('hajj')) {
+      presentThemes.add('hajj');
+    }
 
     // Check if any theme is force enabled
     final isMekkahForced = forceEnabledTheme == 'mekkah';
@@ -282,7 +290,9 @@ class PlacesActivationConfigDatasource {
   }
 
   Future<String> _getCacheFilePath() async {
-    if (_cacheFilePath != null) return _cacheFilePath!;
+    if (_cacheFilePath != null) {
+      return _cacheFilePath!;
+    }
     final dir = await getApplicationDocumentsDirectory();
     _cacheFilePath = '${dir.path}/$_cacheFile';
     return _cacheFilePath!;
@@ -413,7 +423,9 @@ class PilgrimFeatureDebug extends _$PilgrimFeatureDebug {
 ///
 /// If the feature has no `start_date`, the gate is open immediately.
 bool _isPastStartDate(FeatureConfig? feature) {
-  if (feature?.startDate == null) return true;
+  if (feature?.startDate == null) {
+    return true;
+  }
   return !DateTime.now().isBefore(feature!.startDate!);
 }
 
@@ -446,11 +458,15 @@ FeatureConfig? showPilgrimFeature(Ref ref) {
     );
   }
 
-  if (feature == null || !feature.enabled) return null;
+  if (feature == null || !feature.enabled) {
+    return null;
+  }
 
   // Scope: start_date present → Makkah-only, gated by area and start date.
   if (feature.startDate != null) {
-    if (!_isPastStartDate(feature)) return null;
+    if (!_isPastStartDate(feature)) {
+      return null;
+    }
     return ref.watch(mekkahBaseThemeProvider) ? feature : null;
   }
 

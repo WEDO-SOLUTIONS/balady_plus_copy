@@ -107,7 +107,9 @@ class AppLanguage extends _$AppLanguage {
 
   Future<void> update(Language value) async {
     // optional guard
-    if (state == value) return;
+    if (state == value) {
+      return;
+    }
 
     // ✅ 1) Update state FIRST (breaks many cycles immediately)
     state = value;

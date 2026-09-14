@@ -33,8 +33,7 @@ class _AudioLifecycleObserverState extends ConsumerState<AudioLifecycleObserver>
     super.didChangeAppLifecycleState(state);
 
     // Notify the audio provider about lifecycle changes
-    final audioProvider = ref.read(streamAudioProvider);
-    audioProvider.handleAppLifecycleChange(state);
+    ref.read(streamAudioProvider).handleAppLifecycleChange(state);
   }
 
   @override

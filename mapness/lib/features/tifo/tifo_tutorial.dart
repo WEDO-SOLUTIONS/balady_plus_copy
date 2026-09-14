@@ -87,7 +87,9 @@ class _TifoTutorialState extends State<TifoTutorial> {
   }
 
   Future<void> _prev() async {
-    if (_isFirst) return;
+    if (_isFirst) {
+      return;
+    }
     await _controller.animateToPage(
       _page - 1,
       duration: const Duration(milliseconds: 320),

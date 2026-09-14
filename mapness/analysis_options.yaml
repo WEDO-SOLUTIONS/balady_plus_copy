@@ -58,6 +58,18 @@ analyzer:
     - "lib/src/http/**"
     - "**/*.g.dart"
     - "**/*.freezed.dart"
+    # Generated output. Linting it only ever produces noise that a regeneration
+    # undoes: protoc's protocol.pb*.dart alone accounted for 222 of the 1379
+    # analyzer issues (157 always_put_control_body_on_new_line, 65
+    # prefer_constructors_over_static_methods), and none of them can be fixed
+    # without editing protocol.proto or the generator.
+    - "lib/_generated/**"
+    - "**/*.pb.dart"
+    - "**/*.pbenum.dart"
+    - "**/*.pbjson.dart"
+    - "**/*.pbserver.dart"
+    - "**/*.gen.dart"
+    - "lib/l10n/generated/**"
 
 linter:
   rules:

@@ -79,10 +79,18 @@ class AppAnalyticsBytePlusImpl implements AppAnalyticsRepository, DataFinderAnal
     RangersApplogFlutterPlugin.setUserUniqueId(userId);
 
     final profile = <String, dynamic>{};
-    if (email != null) profile['email'] = email;
-    if (locale != null) profile['locale'] = locale;
-    if (deviceOs != null) profile['device_os'] = deviceOs;
-    if (appVersion != null) profile['app_version'] = appVersion;
+    if (email != null) {
+      profile['email'] = email;
+    }
+    if (locale != null) {
+      profile['locale'] = locale;
+    }
+    if (deviceOs != null) {
+      profile['device_os'] = deviceOs;
+    }
+    if (appVersion != null) {
+      profile['app_version'] = appVersion;
+    }
 
     if (profile.isNotEmpty) {
       RangersApplogFlutterPlugin.profileSet(profile);

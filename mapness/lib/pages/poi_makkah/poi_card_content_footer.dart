@@ -10,7 +10,9 @@ void _onMakkahDirectionsTap(
   final lat = markerPosition?.latitude ?? closestPoint?.latitude;
   final lon = markerPosition?.longitude ?? closestPoint?.longitude;
 
-  if (lat == null || lon == null) return;
+  if (lat == null || lon == null) {
+    return;
+  }
 
   final objectId = data.id?.objectId ?? 0;
 
@@ -69,7 +71,9 @@ class _MakkahPoiFooterPlaceholder extends ConsumerWidget {
   }
 
   Future<void> _onInstagramTap(String? website) async {
-    if (website == null || website.isEmpty) return;
+    if (website == null || website.isEmpty) {
+      return;
+    }
 
     try {
       final uri = Uri.parse(website);
@@ -83,7 +87,9 @@ class _MakkahPoiFooterPlaceholder extends ConsumerWidget {
 
   void _onBookmarkTap(BuildContext context, WidgetRef ref) {
     final objectId = data.id?.objectId;
-    if (objectId == null || data.markerPosition == null) return;
+    if (objectId == null || data.markerPosition == null) {
+      return;
+    }
 
     final favState = ref.read(favouriteCacheProvider).value;
     final favNotifier = ref.read(favouriteCacheProvider.notifier);
@@ -236,7 +242,9 @@ class _MakkahPoiFooterPlaceholder extends ConsumerWidget {
 
     final spacedButtons = <Widget>[];
     for (var i = 0; i < actionButtons.length; i++) {
-      if (i != 0) spacedButtons.add(const SizedBox(width: Spacing.$2x));
+      if (i != 0) {
+        spacedButtons.add(const SizedBox(width: Spacing.$2x));
+      }
       spacedButtons.add(actionButtons[i]);
     }
     // Add end padding so last button doesn't touch screen edge

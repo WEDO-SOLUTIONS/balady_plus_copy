@@ -178,7 +178,9 @@ class _MakkahPoiInfoSliverPlaceholder extends ConsumerWidget {
 
       for (final feature in normalizedFeaturesList) {
         final title = (isArabic ? feature.textAr : feature.textEn) ?? '';
-        if (title.trim().isEmpty) continue;
+        if (title.trim().isEmpty) {
+          continue;
+        }
 
         widgets.add(
           _MakkahFeatureTile(
@@ -251,10 +253,14 @@ class _MakkahAboutSection extends StatelessWidget {
 }
 
 List<Widget> _withVerticalSpacing(List<Widget> items, {required double spacing}) {
-  if (items.isEmpty) return const [];
+  if (items.isEmpty) {
+    return const [];
+  }
   final spaced = <Widget>[];
   for (var i = 0; i < items.length; i++) {
-    if (i != 0) spaced.add(SizedBox(height: spacing));
+    if (i != 0) {
+      spaced.add(SizedBox(height: spacing));
+    }
     spaced.add(items[i]);
   }
   return spaced;

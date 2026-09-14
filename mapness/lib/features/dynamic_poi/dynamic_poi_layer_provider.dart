@@ -119,9 +119,13 @@ class DynamicPoiLayer extends _$DynamicPoiLayer {
         _rebuildAtZoom(manager, z, isArabic: isArabic, isDark: isDark, selectedId: next);
       })
       ..listen<Marker?>(selectedMarkerProvider, (prev, next) {
-        if (next == null) return;
+        if (next == null) {
+          return;
+        }
         final selectedId = ref.read(selectedDynamicPoiIdProvider);
-        if (selectedId == null) return;
+        if (selectedId == null) {
+          return;
+        }
 
         DynamicPoi? selectedPoi;
         for (final p in _lastPois) {

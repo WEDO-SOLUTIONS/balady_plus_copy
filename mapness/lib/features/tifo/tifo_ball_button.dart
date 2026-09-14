@@ -28,7 +28,9 @@ class TifoBallButton extends ConsumerWidget {
     final flow = ref.read(tifoFlowProvider);
     if (flow.shouldPlayTutorial) {
       final navigator = rootNavigatorKey.currentState;
-      if (navigator == null) return;
+      if (navigator == null) {
+        return;
+      }
       ref.read(tifoFlowProvider.notifier).markTutorialSeen();
       detach(
         navigator.push<void>(

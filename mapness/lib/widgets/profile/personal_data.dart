@@ -109,7 +109,9 @@ class _PersonalDataState extends ConsumerState<PersonalData> {
   /// remains correct after the sheet is dismissed and reopened.
   int get _otpResendSecondsRemaining {
     final until = _otpResendAvailableAt;
-    if (until == null) return 0;
+    if (until == null) {
+      return 0;
+    }
     final remaining = until.difference(DateTime.now()).inSeconds;
     return remaining > 0 ? remaining : 0;
   }
@@ -130,9 +132,13 @@ class _PersonalDataState extends ConsumerState<PersonalData> {
 
   void _startOtpCooldownTicker() {
     _otpCooldownTicker?.cancel();
-    if (_otpResendSecondsRemaining <= 0) return;
+    if (_otpResendSecondsRemaining <= 0) {
+      return;
+    }
     _otpCooldownTicker = Timer.periodic(const Duration(seconds: 1), (_) {
-      if (!mounted) return;
+      if (!mounted) {
+        return;
+      }
       if (_otpResendSecondsRemaining <= 0) {
         _otpCooldownTicker?.cancel();
         _otpCooldownTicker = null;
@@ -241,7 +247,9 @@ class _PersonalDataState extends ConsumerState<PersonalData> {
   bool get _canEditEmail => _isOtpUser && _hasCompleteOtpProfile && widget.userInfo.isEmailEditable;
 
   DateTime? _parseBirthDate(String? dob) {
-    if (dob == null || dob.trim().isEmpty) return null;
+    if (dob == null || dob.trim().isEmpty) {
+      return null;
+    }
 
     final normalized = dob.trim();
     final dashParts = normalized.split('-');
@@ -272,7 +280,9 @@ class _PersonalDataState extends ConsumerState<PersonalData> {
 
   String _formatBirthDateForDisplay(SsoUserInfo userInfo) {
     final hijri = userInfo.getHijriBirthDate();
-    if (hijri.isNotEmpty) return hijri;
+    if (hijri.isNotEmpty) {
+      return hijri;
+    }
     return userInfo.dob?.trim() ?? '';
   }
 
@@ -281,7 +291,9 @@ class _PersonalDataState extends ConsumerState<PersonalData> {
       final date = _selectedBirthDate!;
       final gregorian = '${date.day.toString().padLeft(2, '0')}/${date.month.toString().padLeft(2, '0')}/${date.year}';
       final hijri = widget.userInfo.copyWith(dob: gregorian).getHijriBirthDate();
-      if (hijri.isNotEmpty) return hijri;
+      if (hijri.isNotEmpty) {
+        return hijri;
+      }
       return _formatBirthDateForApi(date);
     }
     return _formatBirthDateForDisplay(widget.userInfo);
@@ -290,7 +302,9 @@ class _PersonalDataState extends ConsumerState<PersonalData> {
   String _formatBirthDateForApi(DateTime date) => DateFormat('yyyy-MM-dd').format(date);
 
   Future<void> _pickBirthDate() async {
-    if (!_canEditProfile) return;
+    if (!_canEditProfile) {
+      return;
+    }
 
     final now = DateTime.now();
     final initial = _selectedBirthDate ?? DateTime(now.year - 25, now.month, now.day);
@@ -353,7 +367,9 @@ class _PersonalDataState extends ConsumerState<PersonalData> {
   }
 
   Future<void> _save() async {
-    if (!_validateForm()) return;
+    if (!_validateForm()) {
+      return;
+    }
 
     final newFirstName = _firstNameController.text.trim();
     final newLastName = _lastNameController.text.trim();
@@ -420,7 +436,9 @@ class _PersonalDataState extends ConsumerState<PersonalData> {
 
       if (emailChanged && newEmail.isNotEmpty && _canEditEmail) {
         if (_otpResendSecondsRemaining > 0) {
-          if (!mounted) return;
+          if (!mounted) {
+            return;
+          }
           setState(() => _isLoading = false);
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(content: Text('account_error_wait_before_resend'.tr())),
@@ -432,7 +450,9 @@ class _PersonalDataState extends ConsumerState<PersonalData> {
           return;
         }
         final sessionId = await _service.sendVerificationEmail(newEmail);
-        if (!mounted) return;
+        if (!mounted) {
+          return;
+        }
         setState(() {
           _sessionId = sessionId;
           _otpPending = true;
@@ -444,7 +464,9 @@ class _PersonalDataState extends ConsumerState<PersonalData> {
           _startOtpResendCooldown();
         });
         WidgetsBinding.instance.addPostFrameCallback((_) {
-          if (!mounted) return;
+          if (!mounted) {
+            return;
+          }
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(content: Text('verification_code_sent'.tr())),
           );
@@ -462,7 +484,9 @@ class _PersonalDataState extends ConsumerState<PersonalData> {
       if (kDebugMode) {
         logger.log('Profile save failed: $e', logLevel: MapnessLogLevel.error);
       }
-      if (!mounted) return;
+      if (!mounted) {
+        return;
+      }
       setState(() {
         _errorText = 'account_error_save_failed'.tr();
         _isLoading = false;
@@ -526,7 +550,9 @@ class _PersonalDataState extends ConsumerState<PersonalData> {
   /// "Save" path (which only triggers OTP on an email change) wouldn't fire.
   Future<void> _verifySavedEmail() async {
     final email = _activeEmail.trim();
-    if (email.isEmpty || !_canEditEmail) return;
+    if (email.isEmpty || !_canEditEmail) {
+      return;
+    }
 
     // Cooldown still active from a previous send — reopen the sheet with the
     // remaining timer instead of issuing a fresh code that would bypass it.
@@ -539,7 +565,9 @@ class _PersonalDataState extends ConsumerState<PersonalData> {
         _showOtpBottomSheet();
         return;
       }
-      if (!mounted) return;
+      if (!mounted) {
+        return;
+      }
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('account_error_wait_before_resend'.tr())),
       );
@@ -553,7 +581,9 @@ class _PersonalDataState extends ConsumerState<PersonalData> {
 
     try {
       final sessionId = await _service.sendVerificationEmail(email);
-      if (!mounted) return;
+      if (!mounted) {
+        return;
+      }
       setState(() {
         _sessionId = sessionId;
         _otpPending = true;
@@ -564,7 +594,9 @@ class _PersonalDataState extends ConsumerState<PersonalData> {
         _startOtpResendCooldown();
       });
       WidgetsBinding.instance.addPostFrameCallback((_) {
-        if (!mounted) return;
+        if (!mounted) {
+          return;
+        }
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('verification_code_sent'.tr())),
         );
@@ -574,7 +606,9 @@ class _PersonalDataState extends ConsumerState<PersonalData> {
       _handleDioError(e);
       setState(() => _isLoading = false);
     } catch (_) {
-      if (!mounted) return;
+      if (!mounted) {
+        return;
+      }
       setState(() {
         _errorText = 'account_error_save_failed'.tr();
         _isLoading = false;
@@ -632,7 +666,9 @@ class _PersonalDataState extends ConsumerState<PersonalData> {
         if (mounted) {
           setState(() => _otpPending = false);
         }
-        if (mounted) Navigator.of(context).pop();
+        if (mounted) {
+          Navigator.of(context).pop();
+        }
         await _updateEmailAfterVerification();
         return true;
       }
@@ -756,19 +792,27 @@ class _PersonalDataState extends ConsumerState<PersonalData> {
   }
 
   bool _shouldShowField({required bool isEditable, String? value}) {
-    if (isEditable) return true;
+    if (isEditable) {
+      return true;
+    }
     return value != null && value.trim().isNotEmpty;
   }
 
   bool _shouldShowGender({required bool isEditable}) {
-    if (isEditable) return true;
+    if (isEditable) {
+      return true;
+    }
     final sex = widget.userInfo.sex;
-    if (sex == null || sex.trim().isEmpty) return false;
+    if (sex == null || sex.trim().isEmpty) {
+      return false;
+    }
     return (int.tryParse(sex) ?? 0) > 0;
   }
 
   bool _shouldShowBirthDate({required bool isEditable, required String display}) {
-    if (isEditable) return true;
+    if (isEditable) {
+      return true;
+    }
     return display.trim().isNotEmpty;
   }
 
@@ -1295,7 +1339,9 @@ class _PersonalDataState extends ConsumerState<PersonalData> {
                 onTap: () {
                   controller.clear();
                   setState(() {});
-                  if (onChanged != null) onChanged('');
+                  if (onChanged != null) {
+                    onChanged('');
+                  }
                 },
                 child: Icon(
                   Icons.close,
@@ -1473,10 +1519,14 @@ class _OtpBottomSheetWidgetState extends State<OtpBottomSheetWidget> {
   }
 
   Future<void> _handleResend() async {
-    if (!_canResend) return;
+    if (!_canResend) {
+      return;
+    }
     setState(() => _isResending = true);
     final ok = await widget.onResend();
-    if (!mounted) return;
+    if (!mounted) {
+      return;
+    }
     setState(() {
       _isResending = false;
       _otpValue = '';
@@ -1491,11 +1541,15 @@ class _OtpBottomSheetWidgetState extends State<OtpBottomSheetWidget> {
   }
 
   Future<void> _submit() async {
-    if (_isVerifying || _otpValue.length != 4 || _attemptsExhausted) return;
+    if (_isVerifying || _otpValue.length != 4 || _attemptsExhausted) {
+      return;
+    }
 
     setState(() => _isVerifying = true);
     final success = await widget.onVerify(_otpValue);
-    if (!mounted) return;
+    if (!mounted) {
+      return;
+    }
 
     if (success) {
       // Parent will pop the sheet on success; nothing else to do.
@@ -1514,7 +1568,9 @@ class _OtpBottomSheetWidgetState extends State<OtpBottomSheetWidget> {
   }
 
   void _appendDigit(String d) {
-    if (_isVerifying || _otpValue.length >= 4 || _attemptsExhausted) return;
+    if (_isVerifying || _otpValue.length >= 4 || _attemptsExhausted) {
+      return;
+    }
     setState(() {
       _otpValue += d;
       // Clear only the red styling once the user starts a fresh entry — keep
@@ -1529,7 +1585,9 @@ class _OtpBottomSheetWidgetState extends State<OtpBottomSheetWidget> {
   }
 
   void _deleteDigit() {
-    if (_isVerifying || _attemptsExhausted) return;
+    if (_isVerifying || _attemptsExhausted) {
+      return;
+    }
     if (_otpValue.isNotEmpty) {
       setState(() => _otpValue = _otpValue.substring(0, _otpValue.length - 1));
     }

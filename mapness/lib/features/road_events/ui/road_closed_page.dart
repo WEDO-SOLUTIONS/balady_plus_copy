@@ -181,8 +181,12 @@ class _RoadClosedPageState extends ConsumerState<RoadClosedPage> {
     final tf = DateFormat('HH:mm', currentLang);
     final dmf = DateFormat('d MMMM', currentLang);
     final yf = DateFormat('yyyy', currentLang);
-    if (from != null) from = _normalizeBoundary(from);
-    if (to != null) to = _normalizeBoundary(to);
+    if (from != null) {
+      from = _normalizeBoundary(from);
+    }
+    if (to != null) {
+      to = _normalizeBoundary(to);
+    }
     if (from != null && to != null) {
       final showYear = from.year != to.year;
       final showMonth = from.month != to.month;

@@ -240,8 +240,7 @@ class AppIconQuickActionHandler extends _$AppIconQuickActionHandler {
     LoadingOverlayState? overlay;
     if (context != null && context.mounted) {
       try {
-        overlay = LoadingOverlay.of(context);
-        overlay.startLoading();
+        overlay = LoadingOverlay.of(context)..startLoading();
       } catch (_) {
         // LoadingOverlay is not mounted yet.
       }

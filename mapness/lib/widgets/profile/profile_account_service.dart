@@ -100,11 +100,15 @@ class ProfileAccountService {
       }
       if (data is Map) {
         final nested = _readSessionIdField(Map<String, dynamic>.from(data));
-        if (nested != null) return nested;
+        if (nested != null) {
+          return nested;
+        }
       }
 
       final topLevel = _readSessionIdField(map);
-      if (topLevel != null) return topLevel;
+      if (topLevel != null) {
+        return topLevel;
+      }
     }
 
     for (final key in const ['sessionid', 'sessionId', 'SessionId', 'x-session-id']) {

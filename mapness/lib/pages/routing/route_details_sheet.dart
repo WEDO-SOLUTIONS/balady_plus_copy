@@ -102,8 +102,9 @@ class _RouteDetailsPageState extends ConsumerState<RouteDetailsPage> {
 
   @override
   void dispose() {
-    _bottomSheetController.removeListener(_notifySheetHeight);
-    _bottomSheetController.dispose();
+    _bottomSheetController
+      ..removeListener(_notifySheetHeight)
+      ..dispose();
     super.dispose();
   }
 

@@ -158,7 +158,9 @@ class _PreviewSectionState extends State<_PreviewSection> {
   }
 
   void _advance() {
-    if (!mounted || !_controller.hasClients) return;
+    if (!mounted || !_controller.hasClients) {
+      return;
+    }
     _controller.animateToPage(
       _page + 1,
       duration: _PreviewSection._slideDuration,

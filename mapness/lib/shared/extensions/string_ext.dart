@@ -56,8 +56,9 @@ extension StringExt on String {
         // Handle words longer than maxCharsPerLine
         if (word.length > maxCharsPerLine) {
           // Break long word with hyphen
-          currentLine.write(word.substring(0, maxCharsPerLine - 1));
-          currentLine.write('-');
+          currentLine
+            ..write(word.substring(0, maxCharsPerLine - 1))
+            ..write('-');
           lines.add(currentLine.toString());
           currentLine = StringBuffer();
           // Add remaining part as next word to process
@@ -69,8 +70,9 @@ extension StringExt on String {
       }
       // Check if adding this word would exceed the limit
       else if (currentLine.length + 1 + word.length <= maxCharsPerLine) {
-        currentLine.write(' ');
-        currentLine.write(word);
+        currentLine
+          ..write(' ')
+          ..write(word);
       }
       // Need to start a new line
       else {
@@ -91,8 +93,9 @@ extension StringExt on String {
 
         // Handle words longer than maxCharsPerLine
         if (word.length > maxCharsPerLine) {
-          currentLine.write(word.substring(0, maxCharsPerLine - 1));
-          currentLine.write('-');
+          currentLine
+            ..write(word.substring(0, maxCharsPerLine - 1))
+            ..write('-');
           lines.add(currentLine.toString());
           currentLine = StringBuffer();
           final remaining = word.substring(maxCharsPerLine - 1);

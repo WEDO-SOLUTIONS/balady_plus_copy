@@ -25,7 +25,9 @@ class MakkahPlacesDebugPanel extends ConsumerWidget {
     // to avoid excessive rebuilds from raw GPS updates.
     ref.watch(
       locationProvider.select((loc) {
-        if (loc == null) return null;
+        if (loc == null) {
+          return null;
+        }
         return (
           (loc.latitude * 1000).round(),
           (loc.longitude * 1000).round(),
@@ -163,7 +165,9 @@ class _PlacesList extends StatelessWidget {
   }
 
   double _calculateDistance(MakkahPlace place, Position location) {
-    if (place.lat == null || place.lon == null) return double.infinity;
+    if (place.lat == null || place.lon == null) {
+      return double.infinity;
+    }
     return CommonFunctions.distance(
       location.latitude,
       location.longitude,

@@ -225,7 +225,9 @@ class Debug3DModelPanel extends ConsumerWidget {
   /// shortcut.
   void _launchPenaltyGame(WidgetRef ref) {
     final navigator = rootNavigatorKey.currentState;
-    if (navigator == null) return;
+    if (navigator == null) {
+      return;
+    }
     final colorOverride = ref.read(tifoDebugColorOverrideProvider);
     final strikerColor = colorOverride.enabled ? colorOverride.strikerColor : null;
     final keeperColor = colorOverride.enabled ? colorOverride.keeperColor : null;

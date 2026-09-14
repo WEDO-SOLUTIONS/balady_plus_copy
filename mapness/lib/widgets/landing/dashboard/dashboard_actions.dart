@@ -81,12 +81,18 @@ class DashboardActions {
 
     final location = ref.read(locationProvider.notifier);
     final allowed = await location.checkLocationPermission();
-    if (!allowed) return;
+    if (!allowed) {
+      return;
+    }
 
     final userLocation = ref.read(locationProvider);
-    if (userLocation == null) return;
+    if (userLocation == null) {
+      return;
+    }
 
-    if (!context.mounted) return;
+    if (!context.mounted) {
+      return;
+    }
     detach(
       context.router.push(
         ShareMyLocationRoute(

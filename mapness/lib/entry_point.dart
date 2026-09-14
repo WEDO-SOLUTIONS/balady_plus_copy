@@ -1273,7 +1273,9 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> with Widg
           )
         : null;
 
-    if (quickFilter == null && naviFilter == null) return;
+    if (quickFilter == null && naviFilter == null) {
+      return;
+    }
 
     final String filterName = quickFilter?.name ?? naviFilter!.name;
     detach(

@@ -70,24 +70,24 @@ class StreamAudioProvider extends ChangeNotifier {
 
   Future<void> _initializeService() async {
     await _audioService.init();
-    _audioService.addListener(_onAudioServiceChanged);
+    _audioService
+      ..addListener(_onAudioServiceChanged)
+      // Set callback for notification dismissal
+      ..setOnNotificationDismissedCallback(() {
+        debugPrint('StreamAudioProvider: Notification dismissed callback received - forcing exit (like mustRemove)');
+        // When notification is dismissed from outside, ALWAYS exit (like mustRemove)
+        // This is a user action that should take precedence over any ongoing operations
+        if (_isSelectingChannel) {
+          debugPrint('StreamAudioProvider: Currently selecting channel, canceling selection and exiting');
+          // Cancel the selection flag immediately so exitPlayer can proceed
+          _isSelectingChannel = false;
+        }
 
-    // Set callback for notification dismissal
-    _audioService.setOnNotificationDismissedCallback(() {
-      debugPrint('StreamAudioProvider: Notification dismissed callback received - forcing exit (like mustRemove)');
-      // When notification is dismissed from outside, ALWAYS exit (like mustRemove)
-      // This is a user action that should take precedence over any ongoing operations
-      if (_isSelectingChannel) {
-        debugPrint('StreamAudioProvider: Currently selecting channel, canceling selection and exiting');
-        // Cancel the selection flag immediately so exitPlayer can proceed
-        _isSelectingChannel = false;
-      }
-
-      // Always exit when notification is dismissed (user action)
-      if (!_isExited) {
-        exitPlayer();
-      }
-    });
+        // Always exit when notification is dismissed (user action)
+        if (!_isExited) {
+          exitPlayer();
+        }
+      });
 
     _isInitialized = true;
     notifyListeners();
@@ -150,26 +150,50 @@ class StreamAudioProvider extends ChangeNotifier {
   }
 
   bool _isNetworkPlaybackError(String? message) {
-    if (message == null || message.isEmpty) return false;
+    if (message == null || message.isEmpty) {
+      return false;
+    }
     final m = message.toLowerCase();
 
     // Common just_audio/ExoPlayer transport errors presented as "Source error".
-    if (m.contains('source error')) return true;
+    if (m.contains('source error')) {
+      return true;
+    }
 
     // iOS/AVFoundation style errors that bubble up through just_audio.
     // Example: "failed to start play back (-1008) resource unavailable"
-    if (m.contains('(-1008)')) return true;
-    if (m.contains('resource unavailable')) return true;
-    if (m.contains('failed to start playback')) return true;
-    if (m.contains('failed to start play back')) return true;
+    if (m.contains('(-1008)')) {
+      return true;
+    }
+    if (m.contains('resource unavailable')) {
+      return true;
+    }
+    if (m.contains('failed to start playback')) {
+      return true;
+    }
+    if (m.contains('failed to start play back')) {
+      return true;
+    }
 
     // Generic network keywords we often see in thrown exceptions.
-    if (m.contains('socketexception')) return true;
-    if (m.contains('timeoutexception')) return true;
-    if (m.contains('connection') && m.contains('failed')) return true;
-    if (m.contains('network')) return true;
-    if (m.contains('no internet')) return true;
-    if (m.contains('handshakeexception')) return true;
+    if (m.contains('socketexception')) {
+      return true;
+    }
+    if (m.contains('timeoutexception')) {
+      return true;
+    }
+    if (m.contains('connection') && m.contains('failed')) {
+      return true;
+    }
+    if (m.contains('network')) {
+      return true;
+    }
+    if (m.contains('no internet')) {
+      return true;
+    }
+    if (m.contains('handshakeexception')) {
+      return true;
+    }
 
     return false;
   }
@@ -181,9 +205,13 @@ class StreamAudioProvider extends ChangeNotifier {
     // Trigger only on edge: false -> true, so we don't spam.
     final becameError = !_prevHasError && hasErrorNow;
     _prevHasError = hasErrorNow;
-    if (!becameError) return;
+    if (!becameError) {
+      return;
+    }
 
-    if (!_isNetworkPlaybackError(message)) return;
+    if (!_isNetworkPlaybackError(message)) {
+      return;
+    }
 
     // If playback fails due to network/timeout, pause the player so the UI
     // doesn't look like it's still playing while audio is broken.
@@ -192,12 +220,16 @@ class StreamAudioProvider extends ChangeNotifier {
     // Dedupe repeated identical messages (e.g., auto retry / repeated listener triggers).
     final now = DateTime.now();
     final recentlyShown = _lastShownErrorAt != null && now.difference(_lastShownErrorAt!) < const Duration(seconds: 4);
-    if (recentlyShown && _lastShownErrorMessage == message) return;
+    if (recentlyShown && _lastShownErrorMessage == message) {
+      return;
+    }
     _lastShownErrorMessage = message;
     _lastShownErrorAt = now;
 
     final ctx = rootNavigatorKey.currentContext;
-    if (ctx == null || !ctx.mounted) return;
+    if (ctx == null || !ctx.mounted) {
+      return;
+    }
 
     ToastOverlay.of(ctx).showNoInternet(
       onRetry: () {
@@ -555,24 +587,24 @@ class StreamAudioProvider extends ChangeNotifier {
     await _audioService.reinitialize();
 
     // Add listener to the reinitialized service
-    _audioService.addListener(_onAudioServiceChanged);
+    _audioService
+      ..addListener(_onAudioServiceChanged)
+      // Re-set callback for notification dismissal
+      ..setOnNotificationDismissedCallback(() {
+        debugPrint('StreamAudioProvider: Notification dismissed callback received - forcing exit (like mustRemove)');
+        // When notification is dismissed from outside, ALWAYS exit (like mustRemove)
+        // This is a user action that should take precedence over any ongoing operations
+        if (_isSelectingChannel) {
+          debugPrint('StreamAudioProvider: Currently selecting channel, canceling selection and exiting');
+          // Cancel the selection flag immediately so exitPlayer can proceed
+          _isSelectingChannel = false;
+        }
 
-    // Re-set callback for notification dismissal
-    _audioService.setOnNotificationDismissedCallback(() {
-      debugPrint('StreamAudioProvider: Notification dismissed callback received - forcing exit (like mustRemove)');
-      // When notification is dismissed from outside, ALWAYS exit (like mustRemove)
-      // This is a user action that should take precedence over any ongoing operations
-      if (_isSelectingChannel) {
-        debugPrint('StreamAudioProvider: Currently selecting channel, canceling selection and exiting');
-        // Cancel the selection flag immediately so exitPlayer can proceed
-        _isSelectingChannel = false;
-      }
-
-      // Always exit when notification is dismissed (user action)
-      if (!_isExited) {
-        exitPlayer();
-      }
-    });
+        // Always exit when notification is dismissed (user action)
+        if (!_isExited) {
+          exitPlayer();
+        }
+      });
 
     _isInitialized = true;
 
@@ -710,7 +742,9 @@ class StreamAudioProvider extends ChangeNotifier {
     final delay = Duration(milliseconds: isLoading ? 10000 : 10);
     Future.delayed(delay).then((_) async {
       // Re-validate state at execution time
-      if (_isExited) return;
+      if (_isExited) {
+        return;
+      }
       final currentIndex = filteredChannels.indexWhere((c) => c.id == selectedId);
       if (currentIndex > 0) {
         await selectChannel(filteredChannels[currentIndex - 1]);
@@ -730,7 +764,9 @@ class StreamAudioProvider extends ChangeNotifier {
     final delay = Duration(milliseconds: isLoading ? 10000 : 10);
     Future.delayed(delay).then((_) async {
       // Re-validate state at execution time
-      if (_isExited) return;
+      if (_isExited) {
+        return;
+      }
       final currentIndex = filteredChannels.indexWhere((c) => c.id == selectedId);
       if (currentIndex >= 0 && currentIndex < filteredChannels.length - 1) {
         await selectChannel(filteredChannels[currentIndex + 1]);

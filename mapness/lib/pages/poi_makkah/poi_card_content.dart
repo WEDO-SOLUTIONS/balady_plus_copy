@@ -113,8 +113,9 @@ class _ContentState extends State<_PoiCardContent> with SingleTickerProviderStat
 
   @override
   void dispose() {
-    _bottomSheetController.removeListener(_bottomSheetListener);
-    _bottomSheetController.dispose();
+    _bottomSheetController
+      ..removeListener(_bottomSheetListener)
+      ..dispose();
     super.dispose();
   }
 

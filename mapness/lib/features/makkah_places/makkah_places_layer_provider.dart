@@ -179,7 +179,9 @@ class MakkahPlacesLayer extends _$MakkahPlacesLayer {
     for (final place in places) {
       final lat = place.lat;
       final lon = place.lon;
-      if (lat == null || lon == null) continue;
+      if (lat == null || lon == null) {
+        continue;
+      }
       points.add(GeoPointMessage(latitude: lat, longitude: lon));
     }
 

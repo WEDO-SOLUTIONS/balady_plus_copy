@@ -18,9 +18,10 @@ class DgisEnvironment extends _$DgisEnvironment {
   Future<void> setEnv(DgisEnv env) async {
     final box = await ref.read(hiveProvider(MapnessConstants.envConfigBoxKey).future);
     await box.put(_debugEnvOverrideKey, env.name);
-    ref.invalidateSelf();
-    // Also invalidate the env type provider so UI updates
-    ref.invalidate(dgisEnvTypeProvider);
+    ref
+      ..invalidateSelf()
+      // Also invalidate the env type provider so UI updates
+      ..invalidate(dgisEnvTypeProvider);
   }
 
   @override

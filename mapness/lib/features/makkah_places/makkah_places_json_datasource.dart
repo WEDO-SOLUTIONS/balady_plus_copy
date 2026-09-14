@@ -25,7 +25,9 @@ class MakkahPlacesIconCache {
   /// Returns empty string if download failed (prevents retries).
   /// Returns null if not cached yet.
   String? iconPathFor(String? placeId) {
-    if (placeId == null || placeId.isEmpty) return null;
+    if (placeId == null || placeId.isEmpty) {
+      return null;
+    }
     return _iconPathsByPlaceId[placeId];
   }
 
@@ -61,7 +63,9 @@ class MakkahPlacesIconCache {
 
     for (final place in places) {
       final previewUrl = place.previewImageUrl;
-      if (previewUrl == null || previewUrl.isEmpty) continue;
+      if (previewUrl == null || previewUrl.isEmpty) {
+        continue;
+      }
 
       futures.add(_preloadImage(previewUrl));
 
@@ -86,10 +90,14 @@ class MakkahPlacesIconCache {
 
       listener = ImageStreamListener(
         (_, __) {
-          if (!completer.isCompleted) completer.complete();
+          if (!completer.isCompleted) {
+            completer.complete();
+          }
         },
         onError: (e, _) {
-          if (!completer.isCompleted) completer.complete();
+          if (!completer.isCompleted) {
+            completer.complete();
+          }
         },
       );
 
@@ -98,7 +106,9 @@ class MakkahPlacesIconCache {
       await completer.future.timeout(
         const Duration(seconds: 30),
         onTimeout: () {
-          if (!completer.isCompleted) completer.complete();
+          if (!completer.isCompleted) {
+            completer.complete();
+          }
         },
       );
     } catch (e) {
@@ -245,7 +255,9 @@ class MakkahPlacesJsonDatasource {
   }
 
   Future<String> _getCacheFilePath() async {
-    if (_cacheFilePath != null) return _cacheFilePath!;
+    if (_cacheFilePath != null) {
+      return _cacheFilePath!;
+    }
     final dir = await getApplicationDocumentsDirectory();
     _cacheFilePath = '${dir.path}/$_cacheFile';
     return _cacheFilePath!;

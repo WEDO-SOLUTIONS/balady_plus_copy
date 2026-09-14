@@ -100,7 +100,9 @@ _MakkahPoiColors _resolveMakkahPoiColors(
 }
 
 WorkingHours? _workingHoursFromMakkahJson(Map<String, dynamic>? json) {
-  if (json == null || json.isEmpty) return null;
+  if (json == null || json.isEmpty) {
+    return null;
+  }
 
   final is24x7 = json['is_24x7'] == true;
   if (is24x7) {
@@ -126,12 +128,18 @@ WorkingHours? _workingHoursFromMakkahJson(Map<String, dynamic>? json) {
   };
 
   Duration? parseTime(int weekday, String? hhmm) {
-    if (hhmm == null || hhmm.isEmpty) return null;
+    if (hhmm == null || hhmm.isEmpty) {
+      return null;
+    }
     final parts = hhmm.split(':');
-    if (parts.length != 2) return null;
+    if (parts.length != 2) {
+      return null;
+    }
     final h = int.tryParse(parts[0]);
     final m = int.tryParse(parts[1]);
-    if (h == null || m == null) return null;
+    if (h == null || m == null) {
+      return null;
+    }
     return Duration(days: weekday, hours: h, minutes: m);
   }
 
@@ -139,25 +147,39 @@ WorkingHours? _workingHoursFromMakkahJson(Map<String, dynamic>? json) {
 
   for (final entry in json.entries) {
     final weekday = dayToWeekday(entry.key);
-    if (weekday == null) continue;
+    if (weekday == null) {
+      continue;
+    }
     final dayObj = entry.value;
-    if (dayObj is! Map) continue;
+    if (dayObj is! Map) {
+      continue;
+    }
     final workingHours = dayObj['working_hours'];
-    if (workingHours is! List) continue;
+    if (workingHours is! List) {
+      continue;
+    }
 
     for (final interval in workingHours) {
-      if (interval is! Map) continue;
+      if (interval is! Map) {
+        continue;
+      }
       final from = parseTime(weekday, interval['from']?.toString());
       final to = parseTime(weekday, interval['to']?.toString());
-      if (from == null || to == null) continue;
+      if (from == null || to == null) {
+        continue;
+      }
 
       final effectiveTo = to < from ? to + const Duration(days: 1) : to;
       final duration = effectiveTo - from;
-      if (duration <= Duration.zero) continue;
+      if (duration <= Duration.zero) {
+        continue;
+      }
       map[from] = duration;
     }
   }
 
-  if (map.isEmpty) return null;
+  if (map.isEmpty) {
+    return null;
+  }
   return WorkingHours(map);
 }

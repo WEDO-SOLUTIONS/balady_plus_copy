@@ -42,8 +42,12 @@ class AudioService extends ChangeNotifier {
   bool _mbcLocksHeld = false;
 
   Future<void> _acquireAndroidMbcLocks() async {
-    if (!Platform.isAndroid) return;
-    if (_mbcLocksHeld) return;
+    if (!Platform.isAndroid) {
+      return;
+    }
+    if (_mbcLocksHeld) {
+      return;
+    }
     try {
       await _mbcLockChannel.invokeMethod<bool>('acquire');
       _mbcLocksHeld = true;
@@ -54,8 +58,12 @@ class AudioService extends ChangeNotifier {
   }
 
   Future<void> _releaseAndroidMbcLocks() async {
-    if (!Platform.isAndroid) return;
-    if (!_mbcLocksHeld) return;
+    if (!Platform.isAndroid) {
+      return;
+    }
+    if (!_mbcLocksHeld) {
+      return;
+    }
     try {
       await _mbcLockChannel.invokeMethod<bool>('release');
     } catch (e) {
@@ -94,8 +102,12 @@ class AudioService extends ChangeNotifier {
   static const Duration _startPlaybackTimeout = Duration(seconds: 60); //timeout after one min
   static const Duration _iosUnexpectedStopDebounce = Duration(milliseconds: 1200);
   void _maybeHandleUnexpectedStop(String source) {
-    if (_isStoppingInternally || _isStartingPlayback || !_expectsToBePlaying) return;
-    if (_isInterrupted || _isNavigationDucking || _isNavigationVoiceActive) return;
+    if (_isStoppingInternally || _isStartingPlayback || !_expectsToBePlaying) {
+      return;
+    }
+    if (_isInterrupted || _isNavigationDucking || _isNavigationVoiceActive) {
+      return;
+    }
 
     // Android: with `androidNotificationOngoing: true` the notification can
     // still be acted on via the system play/pause/stop buttons. Treat an
@@ -420,7 +432,9 @@ class AudioService extends ChangeNotifier {
   }
 
   Future<void> _setupPlayerListeners() async {
-    if (_player == null) return;
+    if (_player == null) {
+      return;
+    }
 
     // Cancel existing subscriptions
     await _playerStateSubscription?.cancel();
@@ -649,7 +663,9 @@ class AudioService extends ChangeNotifier {
   }
 
   Future<void> _playLiveStream({List<Map<String, dynamic>>? playlist, int? initialIndex}) async {
-    if (_player == null || _currentStreamUrl == null) return;
+    if (_player == null || _currentStreamUrl == null) {
+      return;
+    }
 
     try {
       debugPrint('AudioService: 🎵 _playLiveStream - URL: $_currentStreamUrl');
@@ -742,11 +758,21 @@ class AudioService extends ChangeNotifier {
   // "audio stops after 1-2 minutes with the screen off" symptom caused by
   // Doze maintenance windows, Wi-Fi sleep, NAT timeouts, etc.
   void _scheduleAndroidRecovery({required String reason}) {
-    if (!Platform.isAndroid) return;
-    if (!_expectsToBePlaying || _isStoppingInternally) return;
-    if (_currentStreamUrl == null) return;
-    if (_isAndroidRecovering) return;
-    if (_androidRecoveryTimer?.isActive == true) return;
+    if (!Platform.isAndroid) {
+      return;
+    }
+    if (!_expectsToBePlaying || _isStoppingInternally) {
+      return;
+    }
+    if (_currentStreamUrl == null) {
+      return;
+    }
+    if (_isAndroidRecovering) {
+      return;
+    }
+    if (_androidRecoveryTimer?.isActive == true) {
+      return;
+    }
 
     _androidRecoveryAttempt += 1;
     // Exponential backoff: 0s, 1s, 2s, 4s, 8s, 16s, 30s (cap).
@@ -769,12 +795,24 @@ class AudioService extends ChangeNotifier {
   }
 
   Future<void> _attemptAndroidRecovery({required String reason}) async {
-    if (!Platform.isAndroid) return;
-    if (!_expectsToBePlaying || _isStoppingInternally) return;
-    if (_currentStreamUrl == null) return;
-    if (_isStartingPlayback) return;
-    if (_player == null) return;
-    if (_isAndroidRecovering) return;
+    if (!Platform.isAndroid) {
+      return;
+    }
+    if (!_expectsToBePlaying || _isStoppingInternally) {
+      return;
+    }
+    if (_currentStreamUrl == null) {
+      return;
+    }
+    if (_isStartingPlayback) {
+      return;
+    }
+    if (_player == null) {
+      return;
+    }
+    if (_isAndroidRecovering) {
+      return;
+    }
 
     _isAndroidRecovering = true;
     debugPrint('AudioService: 🔁 Android recovery attempt #$_androidRecoveryAttempt ($reason)');
@@ -799,7 +837,9 @@ class AudioService extends ChangeNotifier {
     // If the stream still isn't actually playing after the attempt, schedule
     // another one. The playerStateStream listener clears the counter once
     // playback genuinely resumes.
-    if (!_expectsToBePlaying || _isStoppingInternally) return;
+    if (!_expectsToBePlaying || _isStoppingInternally) {
+      return;
+    }
     final st = _player?.playerState;
     final actuallyPlaying =
         st != null &&
@@ -880,7 +920,9 @@ class AudioService extends ChangeNotifier {
     // On iOS the state is driven by NativeRadioPlayer callbacks — _globalPlayer
     // is always null. Calling syncState() here would reset _isPlaying to false
     // and break the provider's play/pause logic.
-    if (Platform.isIOS) return;
+    if (Platform.isIOS) {
+      return;
+    }
 
     if (_player == null) {
       _isPlaying = false;
@@ -1138,7 +1180,9 @@ class AudioService extends ChangeNotifier {
 
   /// Setup iOS audio coordination channel for navigation ducking
   Future<void> _setupIOSAudioCoordination() async {
-    if (!Platform.isIOS) return;
+    if (!Platform.isIOS) {
+      return;
+    }
 
     try {
       _audioCoordinationChannel = const MethodChannel('com.balady.audio_coordination');
@@ -1188,7 +1232,9 @@ class AudioService extends ChangeNotifier {
 
   /// Receives state updates from NativeRadioPlayer.swift via method channel.
   Future<void> _handleNativeRadioCall(MethodCall call) async {
-    if (call.method != 'onStateChanged') return;
+    if (call.method != 'onStateChanged') {
+      return;
+    }
     final state = ((call.arguments as Map?)?['state'] as String?) ?? 'stopped';
     debugPrint('AudioService: 📡 native radio state → $state');
     switch (state) {
@@ -1222,7 +1268,9 @@ class AudioService extends ChangeNotifier {
 
   /// Send play command to the native iOS player.
   Future<void> _nativePlay() async {
-    if (_nativeRadioChannel == null || _currentStreamUrl == null) return;
+    if (_nativeRadioChannel == null || _currentStreamUrl == null) {
+      return;
+    }
     try {
       await _nativeRadioChannel!.invokeMethod('play', {
         'url': _currentStreamUrl,
@@ -1256,7 +1304,9 @@ class AudioService extends ChangeNotifier {
   /// Navigation voice started — block dismissal detection so the periodic timer
   /// doesn't mistake the iOS-induced idle state for a user notification dismissal.
   void _handleNavigationVoiceStarted() {
-    if (_isNavigationVoiceActive) return;
+    if (_isNavigationVoiceActive) {
+      return;
+    }
     debugPrint('AudioService: 🔔 Navigation voice started — blocking dismissal detection');
     _isNavigationVoiceActive = true;
 
@@ -1273,7 +1323,9 @@ class AudioService extends ChangeNotifier {
 
   /// Navigation voice ended — re-activate audio session and restart the stream.
   Future<void> _handleNavigationVoiceEnded() async {
-    if (!_isNavigationVoiceActive) return;
+    if (!_isNavigationVoiceActive) {
+      return;
+    }
     debugPrint('AudioService: 🔔 Navigation voice ended — recovering radio stream');
 
     _navigationVoiceFailsafeTimer?.cancel();
@@ -1296,7 +1348,9 @@ class AudioService extends ChangeNotifier {
       debugPrint('AudioService: ⏭️ Recovery skipped — already starting ($reason)');
       return;
     }
-    if (!_expectsToBePlaying || _currentStreamUrl == null || _isStoppingInternally) return;
+    if (!_expectsToBePlaying || _currentStreamUrl == null || _isStoppingInternally) {
+      return;
+    }
 
     debugPrint('AudioService: 🔁 Recovering after interruption ($reason)');
     _isStartingPlayback = true;
@@ -1326,7 +1380,9 @@ class AudioService extends ChangeNotifier {
 
   /// Notify iOS that MBC is active
   Future<void> _notifyIOSMBCActive() async {
-    if (!Platform.isIOS || _audioCoordinationChannel == null) return;
+    if (!Platform.isIOS || _audioCoordinationChannel == null) {
+      return;
+    }
 
     try {
       await _audioCoordinationChannel!.invokeMethod('notifyMBCActive');
@@ -1338,7 +1394,9 @@ class AudioService extends ChangeNotifier {
 
   /// Notify iOS that MBC is inactive
   Future<void> _notifyIOSMBCInactive() async {
-    if (!Platform.isIOS || _audioCoordinationChannel == null) return;
+    if (!Platform.isIOS || _audioCoordinationChannel == null) {
+      return;
+    }
 
     try {
       await _audioCoordinationChannel!.invokeMethod('notifyMBCInactive');

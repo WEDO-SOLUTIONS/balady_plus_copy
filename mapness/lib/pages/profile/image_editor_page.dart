@@ -39,14 +39,20 @@ class _ImageEditorPageState extends ConsumerState<ImageEditorPage> {
   }
 
   Future<void> _onSave() async {
-    if (_isSaving) return;
+    if (_isSaving) {
+      return;
+    }
     setState(() => _isSaving = true);
     try {
       final image = await _controller.onCropImage();
-      if (!mounted) return;
+      if (!mounted) {
+        return;
+      }
       context.router.pop(image?.bytes);
     } finally {
-      if (mounted) setState(() => _isSaving = false);
+      if (mounted) {
+        setState(() => _isSaving = false);
+      }
     }
   }
 
