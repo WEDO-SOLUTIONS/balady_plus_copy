@@ -4,16 +4,10 @@ class Channel {
 
   const Channel({this.id, this.name});
 
-  factory Channel.fromJson(Map<String, dynamic> json) => Channel(
-        id: json['id'] as String?,
-        name: json['name'] as String?,
-      );
+  factory Channel.fromJson(Map<String, dynamic> json) =>
+      Channel(id: json['id'] as String?, name: json['name'] as String?);
 
-  Map<String, dynamic> toJson() => {
-        'id': id,
-        'name': name,
-      };
+  Map<String, dynamic> toJson() => {'id': id, 'name': name};
 
-  @override
   List<Object?> get props => [id, name];
 }

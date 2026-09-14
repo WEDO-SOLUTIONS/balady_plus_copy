@@ -296,7 +296,6 @@ class SuccessBody extends StatelessWidget {
       case PAGE_TYPE.ekramCemetry:
       case PAGE_TYPE.updateAppointment:
         return "vd_request_submit".tr();
-        return ('lbl_thank_you').tr();
       default:
         return ('lbl_thank_you').tr();
     }

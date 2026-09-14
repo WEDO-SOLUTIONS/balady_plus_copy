@@ -28,7 +28,6 @@ class CustomInAppLocalhostServer {
 
   String get directoryIndex => _directoryIndex;
 
-  @override
   String get documentRoot => _documentRoot;
 
   bool get shared => _shared;

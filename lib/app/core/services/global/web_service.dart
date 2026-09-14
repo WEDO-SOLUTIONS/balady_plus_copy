@@ -267,8 +267,6 @@ class AppInterceptors extends Interceptor {
         throw BadRequestException(err.requestOptions, err.response);
     }
     throw BadRequestException(err.requestOptions, err.response);
-
-    return handler.next(err);
   }
 
   @override

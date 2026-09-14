@@ -98,7 +98,6 @@ class EventDetailsResponse {
   DateTime? getStartDateFull() {
     if (startDate != null && startTime != null) {
       return (setTimeInDateTime(startDate!, startTime!));
-      return null;
     }
     return null;
   }
@@ -106,7 +105,6 @@ class EventDetailsResponse {
   DateTime? getEndDateFull() {
     if (endDate != null && endTime != null) {
       return (setTimeInDateTime(endDate!, endTime!));
-      return null;
     }
     return null;
   }

@@ -428,7 +428,6 @@ class _RemoteConfig {
       /////////  Not Used   //////////
       "survey_report_inquery": {"id": 11428, "Key_name": "license_query"},
       "inquiry_construction_license": {"id": 11124, "Key_name": "license_query"},
-      "inquiry_construction_license": {"id": 11124, "Key_name": "license_query"},
       "create_complianceLocation": {"id": 11429, "Key_name": "create_complianceLocation"},
     },
   );
