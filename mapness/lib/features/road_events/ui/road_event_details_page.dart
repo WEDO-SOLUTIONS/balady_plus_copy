@@ -219,6 +219,13 @@ class _RoadEventDetailsPageState extends ConsumerState<RoadEventDetailsPage> {
     final type = roadEventState.type ?? RoadEventType.danger;
     final canDisprove = roadEventState.feedback.availableActionTypes.contains(RoadEventActionType.disproof);
     final canConfirm = roadEventState.feedback.availableActionTypes.contains(RoadEventActionType.confirmation);
+    // TODO(claude): raw, unlocalized per-button `reason` code straight from the Road Event
+    // Service (e.g. "not_authenticated" — the only value observed so far, see
+    // RoadEventResponseDto's doc comment). Shown as-is for now; either map known codes to
+    // localized copy once the full set is documented, or drop this if product decides not to
+    // surface it.
+    final disproveReason = roadEventState.feedback.notAnymore.reason;
+    final confirmReason = roadEventState.feedback.stillThere.reason;
 
     return Stack(
       children: [
@@ -310,31 +317,64 @@ class _RoadEventDetailsPageState extends ConsumerState<RoadEventDetailsPage> {
                   const SizedBox(height: Spacing.$3x + Spacing.$1_5x),
                   Row(
                     spacing: Spacing.$2x,
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Expanded(
-                        child: AppButton(
-                          buttonState: canDisprove ? ButtonState.defaultState : ButtonState.disabled,
-                          onTap: (_isSubmitting || !canDisprove)
-                              ? null
-                              : () => _performAction(RoadEventActionType.disproof),
-                          buttonColorScheme: ButtonColorScheme.accentSecondary,
-                          buttonType: ButtonType.secondary,
-                          primaryLabel: context.l10n.roadEventNotAnymore,
-                          color: canDisprove ? context.colors.neutralOnDarkOnContainer : null,
-                          textColor: canDisprove ? context.colors.accentActive : null,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: [
+                            if (disproveReason != null) ...[
+                              Text(
+                                disproveReason,
+                                maxLines: 2,
+                                overflow: TextOverflow.ellipsis,
+                                style: context.textStyles.bodySmallRegular.copyWith(
+                                  color: context.colors.foregroundSoft,
+                                ),
+                              ),
+                              const SizedBox(height: Spacing.$1x),
+                            ],
+                            AppButton(
+                              buttonState: canDisprove ? ButtonState.defaultState : ButtonState.disabled,
+                              onTap: (_isSubmitting || !canDisprove)
+                                  ? null
+                                  : () => _performAction(RoadEventActionType.disproof),
+                              buttonColorScheme: ButtonColorScheme.accentSecondary,
+                              buttonType: ButtonType.secondary,
+                              primaryLabel: context.l10n.roadEventNotAnymore,
+                              color: canDisprove ? context.colors.neutralOnDarkOnContainer : null,
+                              textColor: canDisprove ? context.colors.accentActive : null,
+                            ),
+                          ],
                         ),
                       ),
                       Expanded(
-                        child: AppButton(
-                          buttonState: canConfirm ? ButtonState.defaultState : ButtonState.disabled,
-                          onTap: (_isSubmitting || !canConfirm)
-                              ? null
-                              : () => _performAction(RoadEventActionType.confirmation),
-                          buttonColorScheme: ButtonColorScheme.accentSecondary,
-                          buttonType: ButtonType.secondary,
-                          primaryLabel: context.l10n.roadEventStillThere,
-                          color: canConfirm ? context.colors.neutralOnDarkOnContainer : null,
-                          textColor: canConfirm ? context.colors.accentActive : null,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: [
+                            if (confirmReason != null) ...[
+                              Text(
+                                confirmReason,
+                                maxLines: 2,
+                                overflow: TextOverflow.ellipsis,
+                                style: context.textStyles.bodySmallRegular.copyWith(
+                                  color: context.colors.foregroundSoft,
+                                ),
+                              ),
+                              const SizedBox(height: Spacing.$1x),
+                            ],
+                            AppButton(
+                              buttonState: canConfirm ? ButtonState.defaultState : ButtonState.disabled,
+                              onTap: (_isSubmitting || !canConfirm)
+                                  ? null
+                                  : () => _performAction(RoadEventActionType.confirmation),
+                              buttonColorScheme: ButtonColorScheme.accentSecondary,
+                              buttonType: ButtonType.secondary,
+                              primaryLabel: context.l10n.roadEventStillThere,
+                              color: canConfirm ? context.colors.neutralOnDarkOnContainer : null,
+                              textColor: canConfirm ? context.colors.accentActive : null,
+                            ),
+                          ],
                         ),
                       ),
                     ],
