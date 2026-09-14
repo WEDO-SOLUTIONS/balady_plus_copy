@@ -26,7 +26,7 @@ class NotificationsSettingCell extends StatefulWidget {
 class _NotificationsSettingCellState extends State<NotificationsSettingCell> {
   @override
   Widget build(BuildContext context) {
-    EntryPointCubit auth = context.read<EntryPointCubit>();
+    context.read<EntryPointCubit>();
     bool manageNotificationClicked = false;
     return CommonProperties.isLoggedInMunicipality
         ? BlocProvider(

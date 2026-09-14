@@ -403,7 +403,7 @@ class PegaWebService {
     Map<String, String>? extraHeadersParams,
     dynamic body,
   }) async {
-    bool isSuccess = await sl<EntryPointCubit>().refreshAPIGeeToken();
+    await sl<EntryPointCubit>().refreshAPIGeeToken();
 
     String queryString = "";
     var data = body != null ? json.encode(body) : null;
@@ -556,7 +556,7 @@ class PegaWebService {
     String? mimeType,
     dynamic body,
   }) async {
-    bool isSuccess = await sl<EntryPointCubit>().refreshAPIGeeToken();
+    await sl<EntryPointCubit>().refreshAPIGeeToken();
 
     String queryString = "";
     var data = body != null ? json.encode(body) : null;
@@ -660,7 +660,7 @@ class PegaWebService {
     String? relativePath,
     Map<String, dynamic>? queryParams,
   }) async {
-    bool isSuccess = await sl<EntryPointCubit>().refreshAPIGeeToken();
+    await sl<EntryPointCubit>().refreshAPIGeeToken();
 
     String queryString = "";
     if (relativePath != null) {

@@ -169,7 +169,7 @@ class EntryPointRemoteDataSourceImpl extends EntryPointRemoteDataSource {
             // "post_logout_redirect_uri": RemoteConfig.ssoLogOutUrl
           },
         );
-        EndSessionResponse? response = await _appAuth.endSession(endSessionRequest);
+        await _appAuth.endSession(endSessionRequest);
         await sharedPrefs.setIsNafathLogin(null);
         return true;
       } else {

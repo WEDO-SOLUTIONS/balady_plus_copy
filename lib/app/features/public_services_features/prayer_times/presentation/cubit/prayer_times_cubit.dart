@@ -35,14 +35,13 @@ class PrayerTimesCubit extends Cubit<PrayerTimesState> {
     required GetPrayerTimes getPrayerTimes,
     required GetGISData getGISData,
     required GetPrayerTimesRange getPrayerTimesRange,
-  })  : _getPrayerTimes = getPrayerTimes,
-        _getPrayerTimesRange = getPrayerTimesRange,
-        super(const PrayerTimesState()) {
+  }) : _getPrayerTimes = getPrayerTimes,
+       _getPrayerTimesRange = getPrayerTimesRange,
+       super(const PrayerTimesState()) {
     getPrayerTime();
     getPrayerSettings();
     getPrayerTimeRange();
   }
-
 
   Future<bool> checkExactAlarmPermission() async {
     if ((await Permission.scheduleExactAlarm.request()).isGranted) {
@@ -53,7 +52,6 @@ class PrayerTimesCubit extends Cubit<PrayerTimesState> {
   }
 
   void setNotifications() async {
-
     await checkExactAlarmPermission();
     final isNotificationTurnOff = !state.prayerTimeSettings.contains("1");
     if (isNotificationTurnOff) return NotificationService.cancelAll();
@@ -61,23 +59,38 @@ class PrayerTimesCubit extends Cubit<PrayerTimesState> {
     for (var prayer in state.prayersRange) {
       state.prayerTimeSettings[0] == "1"
           ? NotificationService.showScheduledNotification(
-              id: prayer.fajrId, title: "fajrAzan".tr(), scheduledDate: prayer.fajrDateTime)
+              id: prayer.fajrId,
+              title: "fajrAzan".tr(),
+              scheduledDate: prayer.fajrDateTime,
+            )
           : NotificationService.cancel(prayer.fajrId);
       state.prayerTimeSettings[1] == "1"
           ? NotificationService.showScheduledNotification(
-              id: prayer.zuhrId, title: "zuhrAzan".tr(), scheduledDate: prayer.zuhrDateTime)
+              id: prayer.zuhrId,
+              title: "zuhrAzan".tr(),
+              scheduledDate: prayer.zuhrDateTime,
+            )
           : NotificationService.cancel(prayer.zuhrId);
       state.prayerTimeSettings[2] == "1"
           ? NotificationService.showScheduledNotification(
-              id: prayer.asrId, title: "asrAzan".tr(), scheduledDate: prayer.asrDateTime)
+              id: prayer.asrId,
+              title: "asrAzan".tr(),
+              scheduledDate: prayer.asrDateTime,
+            )
           : NotificationService.cancel(prayer.asrId);
       state.prayerTimeSettings[3] == "1"
           ? NotificationService.showScheduledNotification(
-              id: prayer.magribId, title: "magribAzan".tr(), scheduledDate: prayer.magribDateTime)
+              id: prayer.magribId,
+              title: "magribAzan".tr(),
+              scheduledDate: prayer.magribDateTime,
+            )
           : NotificationService.cancel(prayer.magribId);
       state.prayerTimeSettings[4] == "1"
           ? NotificationService.showScheduledNotification(
-              id: prayer.ishaId, title: "ishaAzan".tr(), scheduledDate: prayer.ishaDateTime)
+              id: prayer.ishaId,
+              title: "ishaAzan".tr(),
+              scheduledDate: prayer.ishaDateTime,
+            )
           : NotificationService.cancel(prayer.ishaId);
     }
   }
@@ -94,8 +107,9 @@ class PrayerTimesCubit extends Cubit<PrayerTimesState> {
   }
 
   void prayerSettingsOnOff() {
-    final newPrayerSettings =
-        List.of(state.prayerTimeSettings).map((e) => state.isNotificationDisable ? "1" : "0").toList();
+    final newPrayerSettings = List.of(
+      state.prayerTimeSettings,
+    ).map((e) => state.isNotificationDisable ? "1" : "0").toList();
 
     emit(state.copyWith(prayerTimeSettings: newPrayerSettings));
     sharedPrefs.setPrayerSettings(newPrayerSettings);
@@ -103,7 +117,7 @@ class PrayerTimesCubit extends Cubit<PrayerTimesState> {
   }
 
   void getPrayerTimeRange() async {
-    LatLng? location = await Helpers.getCurrentLocation();
+    await Helpers.getCurrentLocation();
 
     if (CommonProperties.userLocation == null) return;
     final params = PrayerTimeRangeParams(
@@ -117,14 +131,11 @@ class PrayerTimesCubit extends Cubit<PrayerTimesState> {
 
     final failureOrSuccess = await _getPrayerTimesRange(params);
 
-    failureOrSuccess.fold(
-      (failure) {},
-      (prayersRange) {
-        emit(state.copyWith(prayersRange: prayersRange));
-        setNotifications();
-        // setNotifications();
-      },
-    );
+    failureOrSuccess.fold((failure) {}, (prayersRange) {
+      emit(state.copyWith(prayersRange: prayersRange));
+      setNotifications();
+      // setNotifications();
+    });
   }
 
   void getPrayerTime() async {
@@ -140,9 +151,7 @@ class PrayerTimesCubit extends Cubit<PrayerTimesState> {
     GISParams? userLocation = CommonProperties.userLocation;
 
     if (CommonProperties.userLocation == null) {
-      LatLng? locaton = await Helpers.getCurrentLocation(
-        accuracy: LocationAccuracy.low,
-      );
+      LatLng? locaton = await Helpers.getCurrentLocation(accuracy: LocationAccuracy.low);
 
       userLocation = GISParams(x: locaton?.longitude ?? 39.82589070176908, y: locaton?.latitude ?? 21.424236910931974);
       if (locaton == null) {
@@ -154,23 +163,26 @@ class PrayerTimesCubit extends Cubit<PrayerTimesState> {
       emit(state.copyWith(userLocationUnkown: false));
     }
 
-    final params = PrayerTimesParams(
-      latitude: userLocation!.lat,
-      longitude: userLocation.lon,
-      date: DateTime.now(),
-    );
+    final params = PrayerTimesParams(latitude: userLocation!.lat, longitude: userLocation.lon, date: DateTime.now());
     final failureOrSuccess = await _getPrayerTimes(params);
 
     failureOrSuccess.fold(
       (failure) {
-        emit(state.copyWith(
-          status: BlocRequestStatus.submissionGetFailure,
-          errorMessage: (failure as ServerFailure).errorMessage,
-        ));
+        emit(
+          state.copyWith(
+            status: BlocRequestStatus.submissionGetFailure,
+            errorMessage: (failure as ServerFailure).errorMessage,
+          ),
+        );
       },
       (response) {
-        emit(state.copyWith(
-            status: BlocRequestStatus.submissionGetSuccess, prayerTimes: response, lastUpdatedDate: DateTime.now()));
+        emit(
+          state.copyWith(
+            status: BlocRequestStatus.submissionGetSuccess,
+            prayerTimes: response,
+            lastUpdatedDate: DateTime.now(),
+          ),
+        );
       },
     );
     /*return;

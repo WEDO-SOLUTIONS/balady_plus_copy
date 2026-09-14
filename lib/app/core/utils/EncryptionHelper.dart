@@ -17,7 +17,7 @@ class EncryptionHelper {
   static String hashString(String url) {
     try {
       // Convert the key into MD5 hash
-      final key = getMd5Hash(sykeyString);
+      getMd5Hash(sykeyString);
 
       // Create a 16-byte key (needed for AES)
       final encrypter = Encrypter(AES(Key.fromLength(16))); // AES encryption with 16-byte key

@@ -29,7 +29,7 @@ class EventsDetailsWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    List<String> detailTitle = [
+    [
       'fees'.tr(),
       'event_date'.tr(),
       'event_time'.tr(),
@@ -43,54 +43,23 @@ class EventsDetailsWidget extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        EventsTitleWidget(
-          title: 'events_details'.tr(),
-        ),
+        EventsTitleWidget(title: 'events_details'.tr()),
         Column(
           children: [
-            EventItemWidget(
-                icon: IconPath.wallet, text: 'fees'.tr(), value: feesType),
-            SizedBox(
-              height: 8,
-            ),
-            EventItemWidget(
-                icon: IconPath.calendar, text: 'event_date'.tr(), value: date),
-            SizedBox(
-              height: 8,
-            ),
-            EventItemWidget(
-                icon: IconPath.clock, text: 'event_time'.tr(), value: time),
-            SizedBox(
-              height: 8,
-            ),
-            EventItemWidget(
-                icon: IconPath.profileCircle,
-                text: 'events_filter_city'.tr(),
-                value: city),
-            SizedBox(
-              height: 8,
-            ),
-            EventItemWidget(
-                icon: IconPath.profileCircle,
-                text: 'event_genre'.tr(),
-                value: genre),
-            SizedBox(
-              height: 8,
-            ),
-            SizedBox(
-              height: 8,
-            ),
-            EventItemWidget(
-                icon: IconPath.profileCircle,
-                text: 'events_filter_category'.tr(),
-                value: category),
-            SizedBox(
-              height: 8,
-            ),
-            EventItemWidget(
-                icon: IconPath.profileCircle,
-                text: 'events_filter_season'.tr(),
-                value: season),
+            EventItemWidget(icon: IconPath.wallet, text: 'fees'.tr(), value: feesType),
+            SizedBox(height: 8),
+            EventItemWidget(icon: IconPath.calendar, text: 'event_date'.tr(), value: date),
+            SizedBox(height: 8),
+            EventItemWidget(icon: IconPath.clock, text: 'event_time'.tr(), value: time),
+            SizedBox(height: 8),
+            EventItemWidget(icon: IconPath.profileCircle, text: 'events_filter_city'.tr(), value: city),
+            SizedBox(height: 8),
+            EventItemWidget(icon: IconPath.profileCircle, text: 'event_genre'.tr(), value: genre),
+            SizedBox(height: 8),
+            SizedBox(height: 8),
+            EventItemWidget(icon: IconPath.profileCircle, text: 'events_filter_category'.tr(), value: category),
+            SizedBox(height: 8),
+            EventItemWidget(icon: IconPath.profileCircle, text: 'events_filter_season'.tr(), value: season),
             /*  Container(
               padding: const EdgeInsets.all(12),
               decoration: ShapeDecoration(
@@ -135,48 +104,35 @@ class EventItemWidget extends StatelessWidget {
   final String icon;
   final String text;
   final String value;
-  const EventItemWidget(
-      {super.key, required this.icon, required this.text, required this.value});
+  const EventItemWidget({super.key, required this.icon, required this.text, required this.value});
 
   @override
   Widget build(BuildContext context) {
-    return Column(children: [
-      SizedBox(
-        height: 8,
-      ),
-      Container(
-        padding: const EdgeInsets.all(12),
-        decoration: ShapeDecoration(
-          color: Colors.white,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(16),
+    return Column(
+      children: [
+        SizedBox(height: 8),
+        Container(
+          padding: const EdgeInsets.all(12),
+          decoration: ShapeDecoration(
+            color: Colors.white,
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  SvgPicture.asset(icon),
+                  SizedBox(width: 2),
+                  CustomTextWidget(text, textStyle: AppStyle.eventsDetailsTitleStyle),
+                ],
+              ),
+              SizedBox(height: 4),
+              CustomTextWidget(value, textStyle: AppStyle.eventsDetailsSubtitleStyle),
+            ],
           ),
         ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                SvgPicture.asset(icon),
-                SizedBox(
-                  width: 2,
-                ),
-                CustomTextWidget(
-                  text,
-                  textStyle: AppStyle.eventsDetailsTitleStyle,
-                ),
-              ],
-            ),
-            SizedBox(
-              height: 4,
-            ),
-            CustomTextWidget(
-              value,
-              textStyle: AppStyle.eventsDetailsSubtitleStyle,
-            )
-          ],
-        ),
-      )
-    ]);
+      ],
+    );
   }
 }

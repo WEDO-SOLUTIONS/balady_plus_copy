@@ -215,7 +215,7 @@ class _InAppWebViewPageState extends State<InAppWebViewPage> {
               },
               onLoadError: (controller, url, code, message) => debugPrint(message.toString()),
               onProgressChanged: (controller, int progress) {
-                final percent = progress / 100;
+                progress / 100;
               },
               onConsoleMessage: (controller, ConsoleMessage consoleMessage) {
                 "$consoleMessage".warningLog();

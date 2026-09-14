@@ -137,7 +137,7 @@ class HawaiiNotificationService {
       _onNotificationOpenedApp(initialNotification);
 
       Push.onMessageReceivedStream.listen(_onMessageReceived, onError: _onMessageReceiveError);
-      bool backgroundMessageHandler = await Push.registerBackgroundMessageHandler(backgroundMessageCallback);
+      await Push.registerBackgroundMessageHandler(backgroundMessageCallback);
     } catch (error, stackTrace) {
       LogsViewModel().sendEventFromModel(
         event: ErrorExceptionModel(
