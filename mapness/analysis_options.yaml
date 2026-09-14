@@ -23,9 +23,21 @@ formatter:
 
 analyzer:
 
-  strong-mode:
-    strict-casts: true
-    strict-raw-types: true
+  # NOTE: strict-casts / strict-raw-types are NOT enabled.
+  #
+  # They used to sit under a `strong-mode:` key, where the analyzer does not
+  # look for them - it accepts only declaration-casts, implicit-casts and
+  # implicit-dynamic there - so they have never actually been in force, and the
+  # analyzer reported the misplacement as a warning.
+  #
+  # Moving them to `language:` is the correct spelling and does turn them on:
+  #     language:
+  #       strict-casts: true
+  #       strict-raw-types: true
+  # Measured on this branch, that surfaces 214 errors - 145
+  # argument_type_not_assignable and 66 invalid_assignment - all of them real
+  # implicit downcasts from `dynamic`. Worth doing, but as its own piece of
+  # work rather than silently as part of a lint sweep.
   errors:
     todo: info # чтобы отображать тудушки
     unused_import: ignore # Лишние импорты в проекте не нужны

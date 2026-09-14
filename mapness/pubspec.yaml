@@ -235,7 +235,6 @@ flutter:
     - assets/tifo/models/
     - assets/tifo/preview/
     - assets/tifo/sprites/
-    - assets/tifo/sprites/goalkeeper_motion/
     - assets/tifo/sprites/goalkeeper_v2/
     - assets/tifo/sprites/striker_v2/
     - packages/map_styles/src/styles.2gis
