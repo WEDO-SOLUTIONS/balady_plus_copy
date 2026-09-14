@@ -15,6 +15,7 @@ import ru.dgis.sdk.platform.VendorConfigFromAsset
 import ru.dgis.sdk.platform.VendorConfigFromString
 import ru.dgis.sdk.positioning.LocationSource
 import ru.dgis.sdk.positioning.registerPlatformLocationSource
+import ru.dgis.sdk.positioning.MagneticHeadingProvider
 import ru.dgis.sdk.positioning.registerPlatformMagneticSource
 import ru.dgis.sdk.routing.RouteDistance
 
@@ -67,7 +68,9 @@ object DgisMapInitializer {
         if (locationSource == null) {
             locationSource = FusedLocationSource(appContext)
             registerPlatformLocationSource(sdkContext!!, locationSource)
-            registerPlatformMagneticSource(sdkContext!!, null)
+            // BALADY-3956: null here disabled the SDK's default compass, leaving
+            // BearingSource.AUTO with the GNSS course only (unreliable at low speed).
+            registerPlatformMagneticSource(sdkContext!!, MagneticHeadingProvider(appContext))
         }
     }
 
