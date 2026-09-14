@@ -41,4 +41,3 @@ class CarPlaySoundChannel {
     _channel.setMethodCallHandler(null);
   }
 }
-

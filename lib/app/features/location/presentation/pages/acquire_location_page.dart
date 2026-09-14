@@ -73,7 +73,7 @@ class _AcquireLocationPageState extends State<AcquireLocationPage> with WidgetsB
                   return LocationRetriveData();
                 }
                 if (state.locationStatus == BlocStatus.failure) {
-                  return Container(child: Center(child: Text("Getting Location")));
+                  return Center(child: Text("Getting Location"));
                 }
 
                 if (state.locationPermissionStatus == BlocStatus.locationPermissionSuceess &&
@@ -88,7 +88,7 @@ class _AcquireLocationPageState extends State<AcquireLocationPage> with WidgetsB
                   return LocationRetriveLocation(permission: true);
                 }
 
-                return Container(child: Center(child: Text("")));
+                return Center(child: Text(""));
               },
             ),
           ),

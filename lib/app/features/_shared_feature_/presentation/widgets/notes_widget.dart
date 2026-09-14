@@ -6,7 +6,15 @@ import '../../../../core/utils/utils_exports.dart';
 import 'package:flutter_html/flutter_html.dart';
 
 class NotesWidget extends StatelessWidget {
-  const NotesWidget({super.key, required this.notes, this.showText,this.marginBottom,this.padding,this.separatorHeight,this.BgColor});
+  const NotesWidget({
+    super.key,
+    required this.notes,
+    this.showText,
+    this.marginBottom,
+    this.padding,
+    this.separatorHeight,
+    this.BgColor,
+  });
 
   final List<String> notes;
   final bool? showText;
@@ -19,13 +27,13 @@ class NotesWidget extends StatelessWidget {
     return Column(
       children: [
         Container(
-          padding:  EdgeInsets.symmetric(vertical:padding?? 12, horizontal:padding?? 10),
-          decoration:  BoxDecoration(
+          padding: EdgeInsets.symmetric(vertical: padding ?? 12, horizontal: padding ?? 10),
+          decoration: BoxDecoration(
             borderRadius: BorderRadius.all(Radius.circular(8)),
-            color: BgColor??AppColor.primary50Light,
+            color: BgColor ?? AppColor.primary50Light,
           ),
           child: ListView.separated(
-            separatorBuilder: (_, __) =>  SizedBox(height:separatorHeight?? 8),
+            separatorBuilder: (_, _) => SizedBox(height: separatorHeight ?? 8),
             itemCount: notes.length,
             padding: EdgeInsets.zero,
             physics: const NeverScrollableScrollPhysics(),
@@ -34,28 +42,26 @@ class NotesWidget extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
-
                 const Padding(
                   padding: EdgeInsets.only(top: 6),
-                  child: Icon(Icons.circle,
-                      size: 5, color: AppColor.primary500Light),
+                  child: Icon(Icons.circle, size: 5, color: AppColor.primary500Light),
                 ),
                 const SizedBox(width: 6),
                 if (showText == true)
-
                   Flexible(
                     child: Linkify(
-                        onOpen: (link) =>
-                            CommonFunctions.openBaladyWebView(link.url),
-                        text: notes[index],
-                        softWrap: true,
-                        textAlign: TextAlign.start,
-                        style: TextStyle(
-                            fontSize: 14.0,
-                            fontWeight: FontWeight.w600,
-                            height: 1.4,
-                            color: AppColor.primary500Light,
-                            fontFamily: Constants.appFontType)),
+                      onOpen: (link) => CommonFunctions.openBaladyWebView(link.url),
+                      text: notes[index],
+                      softWrap: true,
+                      textAlign: TextAlign.start,
+                      style: TextStyle(
+                        fontSize: 14.0,
+                        fontWeight: FontWeight.w600,
+                        height: 1.4,
+                        color: AppColor.primary500Light,
+                        fontFamily: Constants.appFontType,
+                      ),
+                    ),
                   ),
                 if (showText != true)
                   Flexible(
@@ -66,12 +72,13 @@ class NotesWidget extends StatelessWidget {
                       },
                       style: {
                         "body": Style(
-                            fontSize: FontSize(14.0),
-                            fontWeight: FontWeight.w600,
-                            lineHeight: const LineHeight(1.4),
-                            textAlign: TextAlign.start,
-                            color: AppColor.primary500Light,
-                            fontFamily: Constants.appFontType),
+                          fontSize: FontSize(14.0),
+                          fontWeight: FontWeight.w600,
+                          lineHeight: const LineHeight(1.4),
+                          textAlign: TextAlign.start,
+                          color: AppColor.primary500Light,
+                          fontFamily: Constants.appFontType,
+                        ),
                       },
                     ),
                   ),
@@ -79,7 +86,7 @@ class NotesWidget extends StatelessWidget {
             ),
           ),
         ),
-         SizedBox(height: marginBottom??24),
+        SizedBox(height: marginBottom ?? 24),
       ],
     );
   }

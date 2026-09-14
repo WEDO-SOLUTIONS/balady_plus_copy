@@ -29,26 +29,24 @@ class UnKownPrayerLocation extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.end,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Container(
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      SizedBox(
-                        width: 219,
-                        child: CustomTextWidget(
-                          'define_your_location_for_pray'.tr(),
-                          textAlign: TextAlign.right,
-                          fontColor: Color(0xFFE6EFEF),
-                          fontWeight: AppFontWeight.semiBold,
-                          fontSize: 14,
-                          height: 1.3,
-                          maxLines: 10,
-                        ),
+                Column(
+                  mainAxisSize: MainAxisSize.min,
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    SizedBox(
+                      width: 219,
+                      child: CustomTextWidget(
+                        'define_your_location_for_pray'.tr(),
+                        textAlign: TextAlign.right,
+                        fontColor: Color(0xFFE6EFEF),
+                        fontWeight: AppFontWeight.semiBold,
+                        fontSize: 14,
+                        height: 1.3,
+                        maxLines: 10,
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
               ],
             ),

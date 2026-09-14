@@ -23,10 +23,10 @@ class WhiteLands extends PointLayersData {
 
   WhiteLands({
     required this.paths,
-    required id,
-    required name,
-    required type,
-    required description,
+    required super.id,
+    required super.name,
+    required super.type,
+    required super.description,
     this.color = 0x26000000,
     this.strokeColor = 0xFF000000,
     this.AMANANAME,
@@ -39,7 +39,7 @@ class WhiteLands extends PointLayersData {
     this.CITYNAME,
     this.PARCELNO,
     this.PARCELLENGTH,
-  }) : super(id: id, name: name, description: description, type: type);
+  });
 
   factory WhiteLands.fromJson(Map<String, dynamic> json) => WhiteLands(
     id: json['attributes']["OBJECTID"].toString(),

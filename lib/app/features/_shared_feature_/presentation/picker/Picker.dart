@@ -2,7 +2,7 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:balady_plus/app/core/utils/constants/keys/general_keys.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/material.dart' as Dialog;
+import 'package:flutter/material.dart' as picker_dialog;
 import 'dart:async';
 import 'package:hijri/hijri_calendar.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
@@ -169,7 +169,7 @@ class Picker {
 
   /// show dialog picker
   Future<List<int>?> showDialog(BuildContext context, {bool barrierDismissible = true, Key? key}) {
-    return Dialog.showDialog<List<int>>(
+    return picker_dialog.showDialog<List<int>>(
       context: context,
       barrierDismissible: barrierDismissible,
       builder: (BuildContext context) {
@@ -361,22 +361,19 @@ class PickerWidgetState<T> extends State<_PickerWidget> {
 
     if (picker.isSearchable!) {
       _body.add(
-        Container(
-          // padding: EdgeInsets.only(right: 16),
-          child: TextField(
-            onChanged: (value) {
-              setState(() {
-                picker.adapter!.search(value);
-              });
-            },
-            style: const TextStyle(color: Colors.black),
-            maxLines: 1,
-            decoration: InputDecoration(
-              contentPadding: const EdgeInsetsDirectional.only(start: 5),
-              hintText: ("lbl_search").tr(),
-              hintStyle: const TextStyle(fontSize: 15, color: Color(0xffbfbfbf)),
-              focusedBorder: const UnderlineInputBorder(borderSide: BorderSide(color: Color(0xffbfbfbf))),
-            ),
+        TextField(
+          onChanged: (value) {
+            setState(() {
+              picker.adapter!.search(value);
+            });
+          },
+          style: const TextStyle(color: Colors.black),
+          maxLines: 1,
+          decoration: InputDecoration(
+            contentPadding: const EdgeInsetsDirectional.only(start: 5),
+            hintText: ("lbl_search").tr(),
+            hintStyle: const TextStyle(fontSize: 15, color: Color(0xffbfbfbf)),
+            focusedBorder: const UnderlineInputBorder(borderSide: BorderSide(color: Color(0xffbfbfbf))),
           ),
         ),
       );
@@ -1310,7 +1307,7 @@ class DateTimePickerAdapter extends PickerAdapter<DateTime> {
         if (minuteInterval! > 1) return v! ~/ minuteInterval!;
         break;
       case 7: // hour am/pm
-        if ((minHour! >= 0) || (maxHour! <= 23))
+        if ((minHour! >= 0) || (maxHour! <= 23)) {
           if (_colAP < 0) {
             // I don't know am or PM
             return 12;
@@ -1344,6 +1341,7 @@ class DateTimePickerAdapter extends PickerAdapter<DateTime> {
             }
             return _max > _min ? _max - _min + 1 : _min - _max + 1;
           }
+        }
         break;
     }
     return v!;

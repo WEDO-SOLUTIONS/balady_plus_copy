@@ -27,81 +27,70 @@ class ResturantModel extends PointLayersData {
   String? RATE;
   String? OPENSTATUS;
   String? REVIEW;
-  ResturantModel(
-      {required id,
-      required name,
-      required type,
-      required description,
-      required latLng,
-      this.ACTIVITY_DETAILED_DESCRIPTION,
-      this.AMANA_ID,
-      this.CITY_ID,
-      this.DISTRICT_ID,
-      this.FRIDAY,
-      this.MONDAY,
-      this.OBJECTID,
-      this.OPENSTATUS,
-      this.RATE,
-      this.REGION_ID,
-      this.REVIEW,
-      this.SATURDAY,
-      this.STREET_NAME,
-      this.SUNDAY,
-      this.THURSDAY,
-      this.TRADENAME,
-      this.TUESDAY,
-      this.WEDNESDAY,
-      this.XCOORDINATE,
-      this.YCOORDINATE})
-      : super(
-            id: id,
-            name: name,
-            description: description,
-            type: type,
-            latLng: latLng);
+  ResturantModel({
+    required super.id,
+    required super.name,
+    required super.type,
+    required super.description,
+    required super.latLng,
+    this.ACTIVITY_DETAILED_DESCRIPTION,
+    this.AMANA_ID,
+    this.CITY_ID,
+    this.DISTRICT_ID,
+    this.FRIDAY,
+    this.MONDAY,
+    this.OBJECTID,
+    this.OPENSTATUS,
+    this.RATE,
+    this.REGION_ID,
+    this.REVIEW,
+    this.SATURDAY,
+    this.STREET_NAME,
+    this.SUNDAY,
+    this.THURSDAY,
+    this.TRADENAME,
+    this.TUESDAY,
+    this.WEDNESDAY,
+    this.XCOORDINATE,
+    this.YCOORDINATE,
+  });
 
   factory ResturantModel.fromJson(Map<String, dynamic> json) => ResturantModel(
-        id: json['attributes']["OBJECTID"].toString(),
-        name: json['attributes']["TRADENAME"] ?? '',
-        description: json['attributes']["ACTIVITY_DETAILED_DESCRIPTION"] ?? '',
-        type: json['attributes']["ACTIVITY_DETAILED_DESCRIPTION"]?.toString() ??
-            '',
-        OBJECTID: json['attributes']["OBJECTID"] ?? '',
-        XCOORDINATE: json['attributes']["XCOORDINATE"] ?? '',
-        YCOORDINATE: json['attributes']["YCOORDINATE"] ?? '',
-        STREET_NAME: json['attributes']["STREET_NAME"] ?? '',
-        ACTIVITY_DETAILED_DESCRIPTION:
-            json['attributes']["ACTIVITY_DETAILED_DESCRIPTION"] ?? '',
-        TRADENAME: json['attributes']["TRADENAME"] ?? '',
-        REGION_ID: json['attributes']["REGION_ID"] ?? '',
-        AMANA_ID: json['attributes']["AMANA_ID"] ?? '',
-        DISTRICT_ID: json['attributes']["DISTRICT_ID"] ?? '',
-        CITY_ID: json['attributes']["CITY_ID"] ?? '',
-        SUNDAY: json['attributes']["SUNDAY"] ?? '',
-        MONDAY: json['attributes']["MONDAY"] ?? '',
-        TUESDAY: json['attributes']["TUESDAY"] ?? '',
-        WEDNESDAY: json['attributes']["WEDNESDAY"] ?? '',
-        THURSDAY: json['attributes']["THURSDAY"] ?? '',
-        FRIDAY: json['attributes']["FRIDAY"] ?? '',
-        SATURDAY: json['attributes']["SATURDAY"] ?? '',
-        RATE: json['attributes']["RATE"] ?? '',
-        OPENSTATUS: json['attributes']["OPENSTATUS"] ?? '',
-        REVIEW: json['attributes']["REVIEW"] ?? '',
-        latLng: GeoPointWithElevationMessage(
-          elevation: 1,
-          latitude: double.parse(json['geometry']["y"].toString()),
-          longitude: double.parse(json['geometry']["x"].toString()),
-        ),
-      );
+    id: json['attributes']["OBJECTID"].toString(),
+    name: json['attributes']["TRADENAME"] ?? '',
+    description: json['attributes']["ACTIVITY_DETAILED_DESCRIPTION"] ?? '',
+    type: json['attributes']["ACTIVITY_DETAILED_DESCRIPTION"]?.toString() ?? '',
+    OBJECTID: json['attributes']["OBJECTID"] ?? '',
+    XCOORDINATE: json['attributes']["XCOORDINATE"] ?? '',
+    YCOORDINATE: json['attributes']["YCOORDINATE"] ?? '',
+    STREET_NAME: json['attributes']["STREET_NAME"] ?? '',
+    ACTIVITY_DETAILED_DESCRIPTION: json['attributes']["ACTIVITY_DETAILED_DESCRIPTION"] ?? '',
+    TRADENAME: json['attributes']["TRADENAME"] ?? '',
+    REGION_ID: json['attributes']["REGION_ID"] ?? '',
+    AMANA_ID: json['attributes']["AMANA_ID"] ?? '',
+    DISTRICT_ID: json['attributes']["DISTRICT_ID"] ?? '',
+    CITY_ID: json['attributes']["CITY_ID"] ?? '',
+    SUNDAY: json['attributes']["SUNDAY"] ?? '',
+    MONDAY: json['attributes']["MONDAY"] ?? '',
+    TUESDAY: json['attributes']["TUESDAY"] ?? '',
+    WEDNESDAY: json['attributes']["WEDNESDAY"] ?? '',
+    THURSDAY: json['attributes']["THURSDAY"] ?? '',
+    FRIDAY: json['attributes']["FRIDAY"] ?? '',
+    SATURDAY: json['attributes']["SATURDAY"] ?? '',
+    RATE: json['attributes']["RATE"] ?? '',
+    OPENSTATUS: json['attributes']["OPENSTATUS"] ?? '',
+    REVIEW: json['attributes']["REVIEW"] ?? '',
+    latLng: GeoPointWithElevationMessage(
+      elevation: 1,
+      latitude: double.parse(json['geometry']["y"].toString()),
+      longitude: double.parse(json['geometry']["x"].toString()),
+    ),
+  );
 
-  String get getRating =>
-      RATE != null && RATE!.trim().isNotEmpty ? "$RATE/5" : "";
-  String get getReviews =>
-      REVIEW != null && REVIEW!.trim().isNotEmpty ? "($REVIEW)" : "";
-  String get getAddress => [STREET_NAME, DISTRICT_ID, CITY_ID, REGION_ID]
-      .whereNotNull()
-      .whereNot((element) => element.isEmpty)
-      .join(", ");
+  String get getRating => RATE != null && RATE!.trim().isNotEmpty ? "$RATE/5" : "";
+  String get getReviews => REVIEW != null && REVIEW!.trim().isNotEmpty ? "($REVIEW)" : "";
+  String get getAddress =>
+      [STREET_NAME, DISTRICT_ID, CITY_ID, REGION_ID].whereNotNull().whereNot((element) => element.isEmpty).join(", ");
 
   String? getCurrentDay() {
     switch (DateTime.now().weekday) {
@@ -198,18 +187,12 @@ class ResturantModel extends PointLayersData {
 
   int get shiftNo => (getCurrentDay()?.split("،").length ?? 0);
   String? get getFirstShift => getCurrentDay()?.split("،")[0];
-  String? get getSecondShift =>
-      shiftNo > 1 ? getFirstShift?.split("،")[0] : null;
+  String? get getSecondShift => shiftNo > 1 ? getFirstShift?.split("،")[0] : null;
 
-  String? get getThirdhift =>
-      shiftNo > 2 ? getSecondShift?.split("،")[0] : null;
+  String? get getThirdhift => shiftNo > 2 ? getSecondShift?.split("،")[0] : null;
 
-  int shiftsNOByIndex(int index) =>
-      (getDayByIndex(index)?.split("،").length ?? 0);
-  String? getFirstShiftByIndex(int index) =>
-      getDayByIndex(index)?.split("،")[0];
-  String? getSecondShiftByIndex(int index) =>
-      shiftsNOByIndex(index) > 1 ? getDayByIndex(index)?.split("،")[1] : null;
-  String? getThirdShiftByIndex(int index) =>
-      shiftsNOByIndex(index) > 2 ? getDayByIndex(index)?.split("،")[2] : null;
+  int shiftsNOByIndex(int index) => (getDayByIndex(index)?.split("،").length ?? 0);
+  String? getFirstShiftByIndex(int index) => getDayByIndex(index)?.split("،")[0];
+  String? getSecondShiftByIndex(int index) => shiftsNOByIndex(index) > 1 ? getDayByIndex(index)?.split("،")[1] : null;
+  String? getThirdShiftByIndex(int index) => shiftsNOByIndex(index) > 2 ? getDayByIndex(index)?.split("،")[2] : null;
 }

@@ -4,7 +4,7 @@ import 'package:balady_plus/app/core/utils/enums/app_font_weights.dart';
 import 'package:balady_plus/app/features/_shared_feature_/shared_feature_exports.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:flutter_svg_provider/flutter_svg_provider.dart' as svgProvider;
+import 'package:flutter_svg_provider/flutter_svg_provider.dart' as svg_provider;
 
 import '../../../../core/utils/constants/paths/image_paths.dart';
 import '../../domain/entities/search_events/search_events_item.dart';
@@ -19,9 +19,7 @@ class OldEventHomeCard extends StatelessWidget {
       height: 187,
       margin: EdgeInsets.only(left: 16, right: 16, top: 16),
       child: Container(
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(14),
-        ),
+        decoration: BoxDecoration(borderRadius: BorderRadius.circular(14)),
         alignment: Alignment.bottomRight,
         child: Stack(
           children: [
@@ -31,18 +29,19 @@ class OldEventHomeCard extends StatelessWidget {
                 item.logoImage ?? "",
                 imageWidth: MediaQuery.of(context).size.width,
                 imageHeight: 187,
-                placeHolderWidget:
-                    SvgPicture.asset(ImagePath.calendarBackground),
+                placeHolderWidget: SvgPicture.asset(ImagePath.calendarBackground),
               ),
             ),
             Container(
               decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(14),
-                  //   color: Color(0x3303435633),
-                  gradient: LinearGradient(
-                      begin: FractionalOffset.topCenter,
-                      end: FractionalOffset.bottomCenter,
-                      colors: [Color(0x0000394A), AppColor.primary900Light])),
+                borderRadius: BorderRadius.circular(14),
+                //   color: Color(0x3303435633),
+                gradient: LinearGradient(
+                  begin: FractionalOffset.topCenter,
+                  end: FractionalOffset.bottomCenter,
+                  colors: [Color(0x0000394A), AppColor.primary900Light],
+                ),
+              ),
             ),
             Align(
               alignment: AlignmentDirectional.bottomStart,
@@ -64,14 +63,12 @@ class OldEventHomeCard extends StatelessWidget {
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           Flexible(
-                            child: CustomTextWidget(item.eventName ?? "",
-                                textAlign: TextAlign.right,
-                                maxLines: 2,
-                                textStyle: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.w700,
-                                )),
+                            child: CustomTextWidget(
+                              item.eventName ?? "",
+                              textAlign: TextAlign.right,
+                              maxLines: 2,
+                              textStyle: TextStyle(color: Colors.white, fontSize: 14, fontWeight: FontWeight.w700),
+                            ),
                           ),
                           CustomVerticalSpace(height: 6),
                           Row(
@@ -89,15 +86,10 @@ class OldEventHomeCard extends StatelessWidget {
                                 color: Colors.white,
                               ),
                               CustomHorizontalSpace(width: 8),
-                              if (item.feesType != null &&
-                                  item.feesType!.isNotEmpty)
-                                IconName(
-                                  icon: IconPath.tagHomeEvents,
-                                  name: item.feesType!,
-                                  color: Colors.white,
-                                ),
+                              if (item.feesType != null && item.feesType!.isNotEmpty)
+                                IconName(icon: IconPath.tagHomeEvents, name: item.feesType!, color: Colors.white),
                             ],
-                          )
+                          ),
                         ],
                       ),
                     ),
@@ -111,20 +103,15 @@ class OldEventHomeCard extends StatelessWidget {
                 padding: const EdgeInsets.all(16),
                 margin: const EdgeInsets.all(16),
                 decoration: const BoxDecoration(
-                    color: Color(0x8F4CA5B4),
-                    borderRadius: BorderRadius.all(Radius.circular(4))),
+                  color: Color(0x8F4CA5B4),
+                  borderRadius: BorderRadius.all(Radius.circular(4)),
+                ),
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
-                  children: [
-                    CustomTextWidget(
-                      item.getFormatDate(),
-                      fontSize: 12,
-                      fontWeight: AppFontWeight.medium,
-                    )
-                  ],
+                  children: [CustomTextWidget(item.getFormatDate(), fontSize: 12, fontWeight: AppFontWeight.medium)],
                 ),
               ),
-            )
+            ),
           ],
         ),
       ),
@@ -136,26 +123,15 @@ class IconName extends StatelessWidget {
   final String name;
   final String icon;
   final Color color;
-  const IconName(
-      {super.key, required this.name, required this.icon, required this.color});
+  const IconName({super.key, required this.name, required this.icon, required this.color});
 
   @override
   Widget build(BuildContext context) {
     return Row(
       children: [
-        SvgPicture.asset(
-          icon,
-          width: 12,
-        ),
-        const SizedBox(
-          width: 4,
-        ),
-        CustomTextWidget(
-          name,
-          fontColor: color,
-          fontSize: 12,
-          fontWeight: AppFontWeight.medium,
-        ),
+        SvgPicture.asset(icon, width: 12),
+        const SizedBox(width: 4),
+        CustomTextWidget(name, fontColor: color, fontSize: 12, fontWeight: AppFontWeight.medium),
       ],
     );
   }
@@ -173,60 +149,39 @@ class Date extends StatelessWidget {
       height: 50,
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
       clipBehavior: Clip.antiAlias,
-      decoration: BoxDecoration(
-        color: AppColor.secondary900Light,
-        borderRadius: BorderRadius.circular(8),
-      ),
+      decoration: BoxDecoration(color: AppColor.secondary900Light, borderRadius: BorderRadius.circular(8)),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          CustomTextWidget(
-            day,
-            fontSize: 16,
-            fontColor: AppColor.white,
-            fontWeight: AppFontWeight.bold,
-          ),
-          CustomVerticalSpace(
-            height: 2,
-          ),
-          CustomTextWidget(
-            month,
-            fontSize: 12,
-            fontColor: AppColor.white,
-            fontWeight: AppFontWeight.medium,
-          )
+          CustomTextWidget(day, fontSize: 16, fontColor: AppColor.white, fontWeight: AppFontWeight.bold),
+          CustomVerticalSpace(height: 2),
+          CustomTextWidget(month, fontSize: 12, fontColor: AppColor.white, fontWeight: AppFontWeight.medium),
         ],
       ),
     );
   }
 }
 
-DecorationImage calendarImage(String? url, String? defaultImage) => (url
-            ?.isEmpty ??
-        true)
+DecorationImage calendarImage(String? url, String? defaultImage) => (url?.isEmpty ?? true)
     ? (defaultImage ?? "").endsWith(".svg")
-        ? DecorationImage(
-            image: svgProvider.Svg(defaultImage ?? "",
-                source: svgProvider.SvgSource.asset),
-            fit: BoxFit.fill,
-            colorFilter: ColorFilter.mode(Color(0x33034356), BlendMode.darken),
-          )
-        : DecorationImage(
-            image: AssetImage(defaultImage ?? ""),
-            fit: BoxFit.fill,
-            colorFilter: ColorFilter.mode(Color(0x33034356), BlendMode.darken),
-          )
+          ? DecorationImage(
+              image: svg_provider.Svg(defaultImage ?? "", source: svg_provider.SvgSource.asset),
+              fit: BoxFit.fill,
+              colorFilter: ColorFilter.mode(Color(0x33034356), BlendMode.darken),
+            )
+          : DecorationImage(
+              image: AssetImage(defaultImage ?? ""),
+              fit: BoxFit.fill,
+              colorFilter: ColorFilter.mode(Color(0x33034356), BlendMode.darken),
+            )
     : (url!.endsWith(".svg"))
-        ? DecorationImage(
-            image: svgProvider.Svg(
-              url,
-              source: svgProvider.SvgSource.network,
-            ),
-            fit: BoxFit.fill,
-            colorFilter: ColorFilter.mode(Color(0x33034356), BlendMode.darken),
-          )
-        : DecorationImage(
-            image: NetworkImage(url),
-            fit: BoxFit.fill,
-            colorFilter: ColorFilter.mode(Color(0x33034356), BlendMode.darken),
-          );
+    ? DecorationImage(
+        image: svg_provider.Svg(url, source: svg_provider.SvgSource.network),
+        fit: BoxFit.fill,
+        colorFilter: ColorFilter.mode(Color(0x33034356), BlendMode.darken),
+      )
+    : DecorationImage(
+        image: NetworkImage(url),
+        fit: BoxFit.fill,
+        colorFilter: ColorFilter.mode(Color(0x33034356), BlendMode.darken),
+      );

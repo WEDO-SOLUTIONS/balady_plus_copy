@@ -94,7 +94,7 @@ class WeatherDayCard extends StatelessWidget {
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 24),
                 child: ListView.separated(
-                  separatorBuilder: (_, __) => const SizedBox(width: 24),
+                  separatorBuilder: (_, _) => const SizedBox(width: 24),
                   scrollDirection: Axis.horizontal,
                   shrinkWrap: true,
                   itemCount: 24,

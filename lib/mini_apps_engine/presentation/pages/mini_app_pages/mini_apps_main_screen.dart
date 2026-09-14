@@ -182,41 +182,29 @@ class _MiniAppsMainScreenState extends ConsumerState<MiniAppsMainScreen> {
                       return Stack(
                         children: [
                           // Loader background
-                          Container(
-                            child: Center(
-                              child: Column(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  Image.asset(
-                                    "assets/images/newload.gif",
-                                    width: 120,
-                                    height: 120,
-                                    fit: BoxFit.contain,
-                                  ),
-                                  const SizedBox(height: 16),
-                                  if (state is MiniAppsEngineLoadingState)
-                                    state.progress.isEmpty
-                                        ? const SizedBox()
-                                        : Padding(
-                                            padding: const EdgeInsets.all(20.0),
-                                            child: SizedBox(
-                                              height: 10,
-                                              child: LinearProgressIndicator(
-                                                value: (double.parse(state.progress) / 100),
-                                                backgroundColor: Theme.of(context).disabledColor,
-                                                valueColor: const AlwaysStoppedAnimation<Color>(
-                                                  AppColor.primary900Light,
-                                                ),
-                                              ),
+                          Center(
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Image.asset("assets/images/newload.gif", width: 120, height: 120, fit: BoxFit.contain),
+                                const SizedBox(height: 16),
+                                if (state is MiniAppsEngineLoadingState)
+                                  state.progress.isEmpty
+                                      ? const SizedBox()
+                                      : Padding(
+                                          padding: const EdgeInsets.all(20.0),
+                                          child: SizedBox(
+                                            height: 10,
+                                            child: LinearProgressIndicator(
+                                              value: (double.parse(state.progress) / 100),
+                                              backgroundColor: Theme.of(context).disabledColor,
+                                              valueColor: const AlwaysStoppedAnimation<Color>(AppColor.primary900Light),
                                             ),
                                           ),
-                                  const SizedBox(height: 16),
-                                  Text(
-                                    "loading".tr(),
-                                    style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                                  ),
-                                ],
-                              ),
+                                        ),
+                                const SizedBox(height: 16),
+                                Text("loading".tr(), style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+                              ],
                             ),
                           ),
                           // WebMiniAppsScreen

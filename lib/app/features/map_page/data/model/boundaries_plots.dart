@@ -9,28 +9,22 @@ class BoundariesPlots extends PointLayersData {
   final List<GeoPointMessage> paths;
   final int color;
 
-  BoundariesPlots(
-      {required this.paths,
-      required id,
-      required name,
-      required type,
-      required description,
-      this.color = 0xFF828282})
-      : super(
-          id: id,
-          name: name,
-          description: description,
-          type: type,
-        );
+  BoundariesPlots({
+    required this.paths,
+    required super.id,
+    required super.name,
+    required super.type,
+    required super.description,
+    this.color = 0xFF828282,
+  });
 
-  factory BoundariesPlots.fromJson(Map<String, dynamic> json) =>
-      BoundariesPlots(
-        id: json['attributes']["OBJECTID"].toString(),
-        name: json['attributes']["SUBDIVISIONPLANNAME_AR"] ?? '',
-        description: json['attributes']["SUBTYPEDESCRIPTION"] ?? '',
-        type: json['attributes']["AREANAME_SPLIT"] ?? '',
+  factory BoundariesPlots.fromJson(Map<String, dynamic> json) => BoundariesPlots(
+    id: json['attributes']["OBJECTID"].toString(),
+    name: json['attributes']["SUBDIVISIONPLANNAME_AR"] ?? '',
+    description: json['attributes']["SUBTYPEDESCRIPTION"] ?? '',
+    type: json['attributes']["AREANAME_SPLIT"] ?? '',
 
-        /////////////////////////
-        paths: getList(json['geometry']["rings"]), // not tested yat
-      );
+    /////////////////////////
+    paths: getList(json['geometry']["rings"]), // not tested yat
+  );
 }

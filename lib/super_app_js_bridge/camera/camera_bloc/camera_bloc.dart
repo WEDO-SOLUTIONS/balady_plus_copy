@@ -7,7 +7,7 @@ import 'package:balady_plus/app/core/utils/enums/bloc_status.dart';
 
 import 'package:balady_plus/app/events_logs/balady_logs.dart';
 
-import 'package:image/image.dart' as myImage;
+import 'package:image/image.dart' as my_image;
 import 'package:http/http.dart' as http;
 
 import '../entities/camera/attachment_item.dart';
@@ -86,14 +86,14 @@ class CameraBloc extends Bloc<CameraEvent, CameraState> {
       if (fileBytes != null) {
         // String base64File = base64Encode(fileBytes);
         ///////////////////////////////////////////////////////////
-        myImage.Image? decodeImg = myImage.decodeImage(fileBytes);
+        my_image.Image? decodeImg = my_image.decodeImage(fileBytes);
         // DateTime? dateTime = await fetchOnlineDateTimeForKSA();
         // String date = DateFormat("yyyy-MM-dd HH:mm:ss").format(
         //   dateTime ?? DateTime.now(),
         // );
         // Define the black color
-        myImage.drawString(decodeImg!, "", font: myImage.arial14, x: 100, y: 25, color: decodeImg.getColor(0, 0, 0));
-        var encodeImage = myImage.encodeJpg(decodeImg, quality: 100);
+        my_image.drawString(decodeImg!, "", font: my_image.arial14, x: 100, y: 25, color: decodeImg.getColor(0, 0, 0));
+        var encodeImage = my_image.encodeJpg(decodeImg, quality: 100);
         String base64Image = base64.encode(encodeImage);
         // String? miniType =
         //     CommonFunctions().guessMimeTypeFromBase64(base64Image);

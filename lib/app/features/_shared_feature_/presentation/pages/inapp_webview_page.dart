@@ -17,7 +17,7 @@ class InAppWebViewPage extends StatefulWidget {
 }
 
 class _InAppWebViewPageState extends State<InAppWebViewPage> {
-  ///late StreamController<double?> _progessStream;
+  // late StreamController<double?> _progessStream;
   InAppWebViewController? _controller;
   bool isLoading = true;
   List<String> _callbackUrls = const [];

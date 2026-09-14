@@ -678,7 +678,7 @@ class CustomHtmlTextWidget extends StatelessWidget {
                         fontFamily: Constants.appFontType,
                       ),
                     },
-                    onLinkTap: (url, _, __) {
+                    onLinkTap: (url, _, _) {
                       CommonFunctions.externalLaunch(url!);
                     },
                   ),

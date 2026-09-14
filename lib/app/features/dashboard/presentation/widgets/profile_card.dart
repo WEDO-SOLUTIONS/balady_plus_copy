@@ -409,7 +409,7 @@ class ProfileCard extends StatelessWidget {
                 PageRouteBuilder(
                   opaque: false,
                   barrierColor: Colors.transparent,
-                  pageBuilder: (_, __, ___) {
+                  pageBuilder: (_, _, _) {
                     if (kDebugMode) {
                       print(
                         "DEBUG: Building Business group overlay from main screen context with groupId: $targetGroupId",

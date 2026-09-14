@@ -5,15 +5,15 @@ import 'package:mapness/widgets/path_nav/lib/utils.dart';
 
 extension ToRouteSearchPointMessage on RouteParamsPoint {
   RouteSearchPointMessage get routeSearchPointMessage => RouteSearchPointMessage(
-        coordinates: geoPoint,
-        objectId: DgisObjectIdMessage(
-          objectId: objectId ?? 0,
-          entranceId: entranceId ?? 0,
-        ),
-      );
+    coordinates: geoPoint,
+    objectId: DgisObjectIdMessage(
+      objectId: objectId ?? 0,
+      entranceId: entranceId ?? 0,
+    ),
+  );
 }
 
-extension toRouteSearchPoint on RouteParamsPoint {
+extension ToRouteSearchPoint on RouteParamsPoint {
   RouteSearchPoint? get toRouteSearch {
     if (dgisObjectId != null) {
       return RouteSearchPoint(

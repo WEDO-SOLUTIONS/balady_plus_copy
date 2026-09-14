@@ -44,7 +44,7 @@ class _HomeMiniAppsListPagesState extends State<HomeMiniAppsListPages> {
                 return PageRouteBuilder(
                   opaque: false,
                   barrierColor: Colors.transparent,
-                  pageBuilder: (_, __, ___) => AppsGroupPage(groupId: args['groupId'] as String),
+                  pageBuilder: (_, _, _) => AppsGroupPage(groupId: args['groupId'] as String),
                 );
 
               default:

@@ -8,8 +8,8 @@ import '../../errors/errors_exports.dart' show Failure;
 /// Accept any type of data and any type of parameters
 ///
 /// And play with paramters e.g. print(params)
-abstract class UseCase<Type, Params> {
-  Future<Either<Failure, Type>> call(Params params);
+abstract class UseCase<T, Params> {
+  Future<Either<Failure, T>> call(Params params);
 }
 
 /// We create NoParams class to skip Params of UseCase

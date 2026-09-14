@@ -31,7 +31,9 @@ class GetCookie extends UseCase<String, bool?> {
     await CookieManager.instance().deleteAllCookies();
     List<String> cookies = cookie.split(',');
     String appCookie = "";
-    cookies.forEach((element) async {
+    // A `forEach` with an async body never awaited these `setCookie` calls, so the
+    // method could return before the cookies were actually installed.
+    for (final element in cookies) {
       if (element.contains("AspNetCore.Identity.Application")) {
         int valueStartIndex =
             element.indexOf(".AspNetCore.Identity.Application=") + ".AspNetCore.Identity.Application=".length;
@@ -122,7 +124,7 @@ class GetCookie extends UseCase<String, bool?> {
           );
         }
       }
-    });
+    }
     return appCookie;
   }
 }

@@ -9,7 +9,7 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:geolocator/geolocator.dart';
 
-import 'package:permission_handler/permission_handler.dart' as Perm;
+import 'package:permission_handler/permission_handler.dart' as perm;
 import 'package:permission_handler/permission_handler.dart';
 
 import '../../../../core/dependency_injection/injection_container.dart';
@@ -30,17 +30,17 @@ class LocationCubit extends Cubit<LocationState> {
   }
 
   Future<void> getLocationPermission() async {
-    Perm.ServiceStatus? serviceStatus = await Perm.Permission.location.serviceStatus;
-    if (serviceStatus != Perm.ServiceStatus.disabled) {
+    perm.ServiceStatus? serviceStatus = await perm.Permission.location.serviceStatus;
+    if (serviceStatus != perm.ServiceStatus.disabled) {
       emit(state.copyWith(locationServiceStatus: BlocStatus.locationServiceSuceess));
 
-      var status = await Perm.Permission.location.request();
-      if (status == Perm.PermissionStatus.permanentlyDenied) {
+      var status = await perm.Permission.location.request();
+      if (status == perm.PermissionStatus.permanentlyDenied) {
         emit(state.copyWith(locationPermissionStatus: BlocStatus.locationPermissionFailed));
-      } else if (status != Perm.PermissionStatus.granted) {
-        PermissionStatus status = await Perm.Permission.location.request();
+      } else if (status != perm.PermissionStatus.granted) {
+        PermissionStatus status = await perm.Permission.location.request();
 
-        if (status == Perm.PermissionStatus.granted) {
+        if (status == perm.PermissionStatus.granted) {
           emit(state.copyWith(locationPermissionStatus: BlocStatus.locationPermissionSuceess));
         } else {
           emit(state.copyWith(locationPermissionStatus: BlocStatus.locationPermissionFailed));

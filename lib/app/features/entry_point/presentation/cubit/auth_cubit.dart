@@ -295,7 +295,7 @@ class EntryPointCubit extends Cubit<EntryPointState> {
       }
     }
 
-    return Future.value(false);
+    return;
   }
 
   Future<void> clearAuth({LoginDataModel? loginData}) async {
