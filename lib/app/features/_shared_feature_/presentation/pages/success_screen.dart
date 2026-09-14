@@ -456,8 +456,6 @@ class SuccessButtons extends StatelessWidget {
 
       case PAGE_TYPE.other:
         return ('close').tr();
-      default:
-        return "";
     }
   }
 
@@ -492,27 +490,25 @@ class SuccessButtons extends StatelessWidget {
         }
         break;
 
-        /* {
+      /* {
           Helpers.backNavigationToSpecificScreen2(
               navigationKey: RoutesNames.customerVoiceRoute);
         }*/
-        // break;
-        /* case PAGE_TYPE.licenseScreen:
+      // break;
+      /* case PAGE_TYPE.licenseScreen:
       case PAGE_TYPE.deleteRequestScreen:
         {
           // "license_screen_evaluation".log();
           Navigator.of(context).pop();
         }*/
-        break;
-        //MM
-        /*case PAGE_TYPE.coObserver:
+      //MM
+      /*case PAGE_TYPE.coObserver:
         {
           Navigator.of(context).push(MaterialPageRoute(
             builder: (context) =>
                 COWebViewScreen(RemoteConfig.baladyAcademyURL),
           ));
         }*/
-        break;
 
       case PAGE_TYPE.other:
         {

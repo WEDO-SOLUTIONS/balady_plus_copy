@@ -28,12 +28,10 @@ class CustomEnhancedExpansionPanelWidget extends StatefulWidget {
   });
 
   @override
-  State<CustomEnhancedExpansionPanelWidget> createState() =>
-      _CustomEnhancedExpansionPanelWidgetState();
+  State<CustomEnhancedExpansionPanelWidget> createState() => _CustomEnhancedExpansionPanelWidgetState();
 }
 
-class _CustomEnhancedExpansionPanelWidgetState
-    extends State<CustomEnhancedExpansionPanelWidget> {
+class _CustomEnhancedExpansionPanelWidgetState extends State<CustomEnhancedExpansionPanelWidget> {
   // late double _collapsedHeight;
   late bool _expandedStatus;
 
@@ -58,9 +56,7 @@ class _CustomEnhancedExpansionPanelWidgetState
     final screenWidth = MediaQuery.of(context).size.width;
     return Container(
       width: widget.expansionWidth ?? screenWidth,
-      padding: const EdgeInsets.symmetric(
-        horizontal: GeneralKey.semiMediumPadding,
-      ),
+      padding: const EdgeInsets.symmetric(horizontal: GeneralKey.semiMediumPadding),
       child: LayoutBuilder(
         builder: (context, constraints) {
           return ValueListenableBuilder<bool>(
@@ -83,8 +79,7 @@ class _CustomEnhancedExpansionPanelWidgetState
                     switchInCurve: Curves.easeInOut,
                     switchOutCurve: Curves.easeInOut,
                     child: value ? widget.child : const SizedBox(),
-                    transitionBuilder:
-                        (Widget child, Animation<double> animation) {
+                    transitionBuilder: (Widget child, Animation<double> animation) {
                       return SizeTransition(
                         sizeFactor: animation,
                         child: Padding(
@@ -107,8 +102,7 @@ class _CustomEnhancedExpansionPanelWidgetState
     );
   }
 
-  void _expansionCallback() =>
-      _expandedPanelValueNotifier.value = !_expandedPanelValueNotifier.value;
+  void _expansionCallback() => _expandedPanelValueNotifier.value = !_expandedPanelValueNotifier.value;
 }
 
 class _ExpansionPanelHeaderWidget extends StatelessWidget {
@@ -119,7 +113,6 @@ class _ExpansionPanelHeaderWidget extends StatelessWidget {
   final VoidCallback expansionCallback;
 
   const _ExpansionPanelHeaderWidget({
-    super.key,
     required this.leading,
     required this.title,
     required this.width,
@@ -134,9 +127,7 @@ class _ExpansionPanelHeaderWidget extends StatelessWidget {
       splashColor: Colors.transparent,
       highlightColor: Colors.transparent,
       child: Padding(
-        padding: const EdgeInsets.only(
-          top: GeneralKey.mediumPadding,
-        ),
+        padding: const EdgeInsets.only(top: GeneralKey.mediumPadding),
         child: Row(
           mainAxisAlignment: _getMainAxisAlignment(),
           children: [
@@ -149,9 +140,7 @@ class _ExpansionPanelHeaderWidget extends StatelessWidget {
                   title!,
                   fontSize: 17.0,
                   fontColor: AppColor.black,
-                  fontWeight: leading != null
-                      ? AppFontWeight.medium
-                      : AppFontWeight.bold,
+                  fontWeight: leading != null ? AppFontWeight.medium : AppFontWeight.bold,
                   maxLines: 2,
                   textOverflow: TextOverflow.ellipsis,
                   textAlign: TextAlign.start,
@@ -176,32 +165,21 @@ class _ExpansionPanelHeaderWidget extends StatelessWidget {
     }
   }
 
-  double _getTitleWidth() => leading == null
-      ? width - (25.0 + 10.0)
-      : width - (25.0 + 10.0 + 10.0 + 25.0);
+  double _getTitleWidth() => leading == null ? width - (25.0 + 10.0) : width - (25.0 + 10.0 + 10.0 + 25.0);
 }
 
 class _ExpansionPanelArrowWidget extends StatelessWidget {
   final bool expanded;
 
-  const _ExpansionPanelArrowWidget({
-    super.key,
-    required this.expanded,
-  });
+  const _ExpansionPanelArrowWidget({required this.expanded});
 
   @override
   Widget build(BuildContext context) {
     return Container(
       width: 25.0,
       height: 25.0,
-      decoration: const BoxDecoration(
-        color: AppColor.white6,
-        shape: BoxShape.circle,
-      ),
-      child: RotatedBox(
-        quarterTurns: expanded ? 1 : 3,
-        child: const Icon(Icons.arrow_back_ios_new, size: 13.0),
-      ),
+      decoration: const BoxDecoration(color: AppColor.white6, shape: BoxShape.circle),
+      child: RotatedBox(quarterTurns: expanded ? 1 : 3, child: const Icon(Icons.arrow_back_ios_new, size: 13.0)),
     );
   }
 }

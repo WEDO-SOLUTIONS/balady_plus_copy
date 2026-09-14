@@ -228,9 +228,7 @@ class SpecialThemeHeader extends ConsumerWidget {
 }
 
 class _MekkahQiblahIcon extends ConsumerStatefulWidget {
-  const _MekkahQiblahIcon({this.onTap});
-
-  final VoidCallback? onTap;
+  const _MekkahQiblahIcon();
 
   @override
   ConsumerState<_MekkahQiblahIcon> createState() => _MekkahQiblahIconState();
@@ -252,7 +250,6 @@ class _MekkahQiblahIconState extends ConsumerState<_MekkahQiblahIcon> with Singl
     scaleController
       ..value = 0
       ..animateTo(1, curve: Curves.easeOut);
-    widget.onTap?.call();
     // Fly camera to show all Makkah places
     ref.read(makkahPlacesLayerProvider.notifier).flyToAllPlaces();
   }

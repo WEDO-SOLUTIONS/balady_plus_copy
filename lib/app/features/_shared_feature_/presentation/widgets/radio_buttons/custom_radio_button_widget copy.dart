@@ -146,7 +146,6 @@ class _RadioWidget extends StatelessWidget {
   final Color borderColor;
 
   const _RadioWidget({
-    super.key,
     required this.width,
     required this.height,
     required this.color,

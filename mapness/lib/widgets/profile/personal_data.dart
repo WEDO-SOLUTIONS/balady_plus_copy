@@ -62,8 +62,6 @@ class _PersonalDataState extends ConsumerState<PersonalData> {
 
   String _activeEmail = '';
   String? _pendingEmail;
-  String _initialFirstName = '';
-  String _initialLastName = '';
   String _currentFirstName = '';
   String _currentLastName = '';
   int _selectedGender = 0;
@@ -93,8 +91,6 @@ class _PersonalDataState extends ConsumerState<PersonalData> {
     _emailController.text = _activeEmail;
     _isEmailVerified = userInfo.isEmailVerified;
 
-    _initialFirstName = _currentFirstName;
-    _initialLastName = _currentLastName;
     _selectedGender = int.tryParse(userInfo.sex ?? '') ?? 0;
     _initialGender = _selectedGender;
     _selectedBirthDate = _parseBirthDate(userInfo.dob);
@@ -209,8 +205,6 @@ class _PersonalDataState extends ConsumerState<PersonalData> {
           _emailController.text = _activeEmail;
         }
         _isEmailVerified = freshUserInfo.isEmailVerified;
-        _initialFirstName = _currentFirstName;
-        _initialLastName = _currentLastName;
         _selectedGender = int.tryParse(freshUserInfo.sex ?? '') ?? _selectedGender;
         _initialGender = _selectedGender;
         _selectedBirthDate = _parseBirthDate(freshUserInfo.dob) ?? _selectedBirthDate;
@@ -409,9 +403,7 @@ class _PersonalDataState extends ConsumerState<PersonalData> {
         setState(() {
           if (nameChanged) {
             _currentFirstName = newFirstName;
-            _initialFirstName = newFirstName;
             _currentLastName = newLastName;
-            _initialLastName = newLastName;
           }
           if (genderChanged) {
             _initialGender = _selectedGender;
@@ -527,8 +519,6 @@ class _PersonalDataState extends ConsumerState<PersonalData> {
         _clearOtpCooldownState();
         _currentFirstName = currentFirstName;
         _currentLastName = currentLastName;
-        _initialFirstName = currentFirstName;
-        _initialLastName = currentLastName;
         _isLoading = false;
       });
 

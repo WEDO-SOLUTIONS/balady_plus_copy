@@ -1,18 +1,10 @@
 import 'package:expandable/expandable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart' show BlocBuilder;
-import 'package:localize_and_translate/localize_and_translate.dart'
-    show Translation;
+import 'package:localize_and_translate/localize_and_translate.dart' show Translation;
 
 import '../../../../core/utils/utils_exports.dart'
-    show
-        AppColor,
-        AppFontWeight,
-        AppStyle,
-        ContextConversion,
-        DIRECTION,
-        DirectionConversion,
-        UIHelper;
+    show AppColor, AppFontWeight, AppStyle, ContextConversion, DIRECTION, DirectionConversion, UIHelper;
 import '../../shared_feature_exports.dart'
     show
         ClickableWidget,
@@ -42,12 +34,10 @@ class CustomEnhancedExpansionPanelListWidget extends StatefulWidget {
   });
 
   @override
-  State<CustomEnhancedExpansionPanelListWidget> createState() =>
-      _CustomEnhancedExpansionPanelListWidgetState();
+  State<CustomEnhancedExpansionPanelListWidget> createState() => _CustomEnhancedExpansionPanelListWidgetState();
 }
 
-class _CustomEnhancedExpansionPanelListWidgetState
-    extends State<CustomEnhancedExpansionPanelListWidget> {
+class _CustomEnhancedExpansionPanelListWidgetState extends State<CustomEnhancedExpansionPanelListWidget> {
   late List<ExpandableController> _controllers;
 
   late List<ExpansionPanelInfo> _children;
@@ -66,9 +56,7 @@ class _CustomEnhancedExpansionPanelListWidgetState
       _controllers.add(ExpandableController(initialExpanded: panel.isExpanded));
     }
 
-    _panelCubit = ExpansionPanelListCubit(
-      initialIndex: _children.indexWhere((panel) => panel.isExpanded),
-    );
+    _panelCubit = ExpansionPanelListCubit(initialIndex: _children.indexWhere((panel) => panel.isExpanded));
   }
 
   @override
@@ -84,9 +72,7 @@ class _CustomEnhancedExpansionPanelListWidgetState
   Widget build(BuildContext context) {
     return ExpandableTheme(
       data: ExpandableThemeData(
-        bodyAlignment: context.isRTL
-            ? ExpandablePanelBodyAlignment.right
-            : ExpandablePanelBodyAlignment.left,
+        bodyAlignment: context.isRTL ? ExpandablePanelBodyAlignment.right : ExpandablePanelBodyAlignment.left,
         hasIcon: false,
         useInkWell: false,
         tapHeaderToExpand: false,
@@ -179,7 +165,8 @@ class _PanelCard extends StatelessWidget {
         controller: controller,
         header: ClickableWidget(
           onPressed: onUpdated,
-          child: panelInfo.header ??
+          child:
+              panelInfo.header ??
               Container(
                 // UI of header only
                 padding: panelInfo.headerPadding ?? headerPadding,
@@ -203,8 +190,7 @@ class _PanelCard extends StatelessWidget {
   }
 
   Color get _bgColor => panelInfo.bgColor ?? bgColor ?? AppColor.ghostWhite;
-  Color get _borderColor =>
-      panelInfo.borderColor ?? borderColor ?? AppColor.brightGray;
+  Color get _borderColor => panelInfo.borderColor ?? borderColor ?? AppColor.brightGray;
   double get _borderWidth => panelInfo.borderWidth ?? borderWidth;
   double get _borderRadius => panelInfo.borderRadius ?? borderRadius;
 
@@ -212,18 +198,9 @@ class _PanelCard extends StatelessWidget {
       ? const Border(bottom: BorderSide(color: AppColor.brightGray, width: 1.0))
       : null;
 
-  EdgeInsetsGeometry get headerPadding => const EdgeInsetsDirectional.only(
-        top: 16.0,
-        bottom: 16.0,
-        start: 16.0,
-        end: 12.0,
-      );
-  EdgeInsets get bodyPadding => const EdgeInsets.fromLTRB(
-        16.0,
-        16.0,
-        16.0,
-        UIHelper.middlePadding,
-      );
+  EdgeInsetsGeometry get headerPadding =>
+      const EdgeInsetsDirectional.only(top: 16.0, bottom: 16.0, start: 16.0, end: 12.0);
+  EdgeInsets get bodyPadding => const EdgeInsets.fromLTRB(16.0, 16.0, 16.0, UIHelper.middlePadding);
 }
 
 class _HeaderWidget extends StatelessWidget {
@@ -245,29 +222,20 @@ class _HeaderWidget extends StatelessWidget {
         final width = constraints.maxWidth;
         // 25.0 for leading & 25.0 for trailing
         // 8.0*2 for two spaces
-        final titleWidth =
-            leading != null ? width - (25.0 * 2 + 8 * 2) : width - (25.0 + 8.0);
+        final titleWidth = leading != null ? width - (25.0 * 2 + 8 * 2) : width - (25.0 + 8.0);
         return Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Row(
               children: [
                 // Leading
-                if (leading != null)
-                  _ExpansionLeadingWidget(
-                    expanded: expansionState,
-                    leading: leading,
-                  ),
+                if (leading != null) _ExpansionLeadingWidget(expanded: expansionState, leading: leading),
                 //* Space
                 if (leading != null) const CustomHorizontalSpace(width: 8.0),
                 // Title
                 SizedBox(
                   width: titleWidth,
-                  child: _ExpansionTitleWidget(
-                    expanded: expansionState,
-                    title: title,
-                    maxLines: titleMaxLines,
-                  ),
+                  child: _ExpansionTitleWidget(expanded: expansionState, title: title, maxLines: titleMaxLines),
                 ),
               ],
             ),
@@ -285,11 +253,7 @@ class _HeaderWidget extends StatelessWidget {
 class _ExpansionLeadingWidget extends StatelessWidget {
   final bool expanded;
   final dynamic leading;
-  const _ExpansionLeadingWidget({
-    super.key,
-    required this.expanded,
-    required this.leading,
-  });
+  const _ExpansionLeadingWidget({required this.expanded, required this.leading});
 
   @override
   Widget build(BuildContext context) {
@@ -298,23 +262,15 @@ class _ExpansionLeadingWidget extends StatelessWidget {
             width: 25.0,
             height: 25.0,
             alignment: Alignment.center,
-            decoration: BoxDecoration(
-              color: leadingBGColor,
-              borderRadius: BorderRadius.circular(8.0),
-            ),
+            decoration: BoxDecoration(color: leadingBGColor, borderRadius: BorderRadius.circular(8.0)),
             child: leading is Widget
                 ? leading
-                : DrawIconBasedTypeWidget(
-                    icon: leading,
-                    iconSize: 16.0,
-                    iconColor: leadingColor,
-                  ),
+                : DrawIconBasedTypeWidget(icon: leading, iconSize: 16.0, iconColor: leadingColor),
           )
         : const SizedBox();
   }
 
-  Color get leadingBGColor =>
-      expanded ? AppColor.bleuDeFrance : AppColor.brightGray;
+  Color get leadingBGColor => expanded ? AppColor.bleuDeFrance : AppColor.brightGray;
   Color get leadingColor => expanded ? AppColor.indigo : AppColor.uclaBlue;
 }
 
@@ -323,12 +279,7 @@ class _ExpansionTitleWidget extends StatelessWidget {
   final int maxLines;
   final bool expanded;
 
-  const _ExpansionTitleWidget({
-    super.key,
-    required this.title,
-    required this.maxLines,
-    required this.expanded,
-  });
+  const _ExpansionTitleWidget({required this.title, required this.maxLines, required this.expanded});
 
   @override
   Widget build(BuildContext context) {
@@ -342,11 +293,8 @@ class _ExpansionTitleWidget extends StatelessWidget {
     );
   }
 
-  TextStyle get textStyle => AppStyle.s14.copyWith(
-        color: AppColor.indigo,
-        height: 1.4,
-        fontWeight: AppFontWeight.bold.fontWeight,
-      );
+  TextStyle get textStyle =>
+      AppStyle.s14.copyWith(color: AppColor.indigo, height: 1.4, fontWeight: AppFontWeight.bold.fontWeight);
 }
 
 class _ExpansionPanelArrowWidget extends StatelessWidget {
@@ -368,7 +316,6 @@ class _ExpansionPanelArrowWidget extends StatelessWidget {
 
   // because original arrow looks at the left,
   // so, if expanded we need to rotate it by 90', otherwise rotate by 270'
-  double get angle =>
-      expanded ? DIRECTION.downward.rotate : DIRECTION.upward.rotate;
+  double get angle => expanded ? DIRECTION.downward.rotate : DIRECTION.upward.rotate;
   Color get iconColor => AppColor.maastrichtBlue;
 }

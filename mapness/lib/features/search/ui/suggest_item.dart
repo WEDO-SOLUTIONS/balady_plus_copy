@@ -144,9 +144,6 @@ class SuggestItem extends ConsumerWidget {
   }
 }
 
-List<UIMarkedUpTextSpan> _getSpans(MarkedUpTextMessage message) =>
-    message.matchedParts.nonNulls.map((e) => UIMarkedUpTextSpan(length: e.length, offset: e.offset)).toList();
-
 String _brunchFromString(String engString, BuildContext context) {
   final subtitleSplit = engString.split(' ');
 

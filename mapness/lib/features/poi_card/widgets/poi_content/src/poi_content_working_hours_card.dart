@@ -36,16 +36,12 @@ class _MakkahWorkingHoursTile extends StatelessWidget {
   final String? subtitle;
   final Color iconBackgroundColor;
   final Color tileBackgroundColor;
-  final VoidCallback? onTap;
-  final bool showChevron;
 
   const _MakkahWorkingHoursTile({
     required this.title,
     required this.iconBackgroundColor,
     required this.tileBackgroundColor,
     this.subtitle,
-    this.onTap,
-    this.showChevron = false,
   });
 
   @override
@@ -54,89 +50,80 @@ class _MakkahWorkingHoursTile extends StatelessWidget {
     const iconContainerSize = 28.0;
     const iconSlotSize = 36.0;
 
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        constraints: const BoxConstraints(minHeight: 50),
-        decoration: BoxDecoration(
-          color: tileBackgroundColor,
-          borderRadius: BorderRadius.circular(10),
-        ),
-        padding: const EdgeInsetsDirectional.only(
-          start: 26,
-          end: Spacing.$3x,
-          top: Spacing.$2x,
-          bottom: Spacing.$2x,
-        ),
-        child: Row(
-          children: [
-            SizedBox(
-              width: iconSlotSize,
-              height: iconSlotSize,
-              child: Align(
-                alignment: AlignmentDirectional.topStart,
-                child: SizedBox(
-                  width: iconContainerSize,
-                  height: iconContainerSize,
-                  child: DecoratedBox(
-                    decoration: BoxDecoration(
-                      color: iconBackgroundColor,
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    child: Center(
-                      child: SvgPicture.asset(
-                        'assets/icons/makkah/clock.svg',
-                        width: iconSize,
-                        height: iconSize,
-                        colorFilter: const ColorFilter.mode(
-                          Color(0xFFFFFFFF),
-                          BlendMode.srcIn,
-                        ),
-                        matchTextDirection: true,
+    return Container(
+      constraints: const BoxConstraints(minHeight: 50),
+      decoration: BoxDecoration(
+        color: tileBackgroundColor,
+        borderRadius: BorderRadius.circular(10),
+      ),
+      padding: const EdgeInsetsDirectional.only(
+        start: 26,
+        end: Spacing.$3x,
+        top: Spacing.$2x,
+        bottom: Spacing.$2x,
+      ),
+      child: Row(
+        children: [
+          SizedBox(
+            width: iconSlotSize,
+            height: iconSlotSize,
+            child: Align(
+              alignment: AlignmentDirectional.topStart,
+              child: SizedBox(
+                width: iconContainerSize,
+                height: iconContainerSize,
+                child: DecoratedBox(
+                  decoration: BoxDecoration(
+                    color: iconBackgroundColor,
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: Center(
+                    child: SvgPicture.asset(
+                      'assets/icons/makkah/clock.svg',
+                      width: iconSize,
+                      height: iconSize,
+                      colorFilter: const ColorFilter.mode(
+                        Color(0xFFFFFFFF),
+                        BlendMode.srcIn,
                       ),
+                      matchTextDirection: true,
                     ),
                   ),
                 ),
               ),
             ),
-            const SizedBox(width: Spacing.$3x),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
+          ),
+          const SizedBox(width: Spacing.$3x),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  title,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: _makkahWorkingHoursTextStyle(
+                    context,
+                    color: context.colors.foregroundDefault,
+                  ),
+                ),
+                if (subtitle != null && subtitle!.isNotEmpty) ...[
+                  const SizedBox(height: Spacing.$0_5x),
                   Text(
-                    title,
+                    subtitle!,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     style: _makkahWorkingHoursTextStyle(
                       context,
-                      color: context.colors.foregroundDefault,
+                      color: context.colors.foregroundSoft,
                     ),
                   ),
-                  if (subtitle != null && subtitle!.isNotEmpty) ...[
-                    const SizedBox(height: Spacing.$0_5x),
-                    Text(
-                      subtitle!,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      style: _makkahWorkingHoursTextStyle(
-                        context,
-                        color: context.colors.foregroundSoft,
-                      ),
-                    ),
-                  ],
                 ],
-              ),
+              ],
             ),
-            if (showChevron)
-              Icon(
-                Icons.keyboard_arrow_down,
-                size: 24,
-                color: context.colors.foregroundMuted,
-              ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

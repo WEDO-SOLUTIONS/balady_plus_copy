@@ -721,7 +721,7 @@ class CommonFunctions {
     translator.applyChanges(NavigationService.navigatorKey.currentContext!);
     HijriCalendar.setLocal(lang);
 
-    materialAppKey.currentState?.setState(() {});
+    materialAppKey.currentState?.rebuild();
 
     refreshHomePage();
   }
@@ -1584,14 +1584,6 @@ class CommonFunctions {
   }
 
   static bool isFoundationDay() {
-    return false;
-    DateTime today = DateTime.now();
-
-    int todayDay = today.day;
-    int todayMonth = today.month;
-    int todayYear = today.year;
-    var allowedDays = [20, 21, 22, 23, 24, 25];
-    if (allowedDays.contains(todayDay) && todayMonth == 2 && todayYear == 2024) return true;
     return false;
   }
 

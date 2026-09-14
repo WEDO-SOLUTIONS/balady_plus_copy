@@ -82,6 +82,15 @@ class AppWidgetState extends State<AppWidget> {
 
   void callback() {}
 
+  /// Rebuilds the whole app subtree, e.g. after the locale changes.
+  /// Exposed because `setState` is protected and the caller lives outside this class.
+  void rebuild() {
+    if (!mounted) {
+      return;
+    }
+    setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
     return Consumer<AccessibilityController>(

@@ -186,16 +186,15 @@ class _ExpansionTitleWidget extends StatelessWidget {
 
 class _ExpansionPanelArrowWidget extends StatelessWidget {
   final bool expanded;
-  final Color? arrowBg;
 
-  const _ExpansionPanelArrowWidget({required this.expanded, this.arrowBg});
+  const _ExpansionPanelArrowWidget({required this.expanded});
 
   @override
   Widget build(BuildContext context) {
     return Container(
       width: 20,
       height: 20,
-      decoration: BoxDecoration(color: arrowBg ?? AppColor.primary900Light, shape: BoxShape.circle),
+      decoration: BoxDecoration(color: AppColor.primary900Light, shape: BoxShape.circle),
       child: Transform.rotate(
         angle: angle,
         child: Icon(Icons.arrow_back_ios_new, size: 12, color: iconColor),

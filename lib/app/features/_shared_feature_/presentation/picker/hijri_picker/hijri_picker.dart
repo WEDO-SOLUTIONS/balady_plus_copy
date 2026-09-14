@@ -1368,14 +1368,11 @@ class DateTimePickerAdapter extends PickerAdapter<DateTime> {
 
   @override
   void doSelect(int column, int index) {
-    int? year, month, day, h, m, s;
+    int? year, month, day, h;
     year = value!.hYear;
     month = value!.hMonth;
     day = value!.hDay;
     // h = value.hour;
-    // m = value.minute;
-    // s = value.second;
-    if (type != 2 && type != 6) s = 0;
 
     int colType = getColumnType(column);
     switch (colType) {
@@ -1392,10 +1389,8 @@ class DateTimePickerAdapter extends PickerAdapter<DateTime> {
         h = index + (minHour ?? 0);
         break;
       case 4:
-        m = (minuteInterval == null || minuteInterval! < 2) ? index : index * minuteInterval!;
         break;
       case 5:
-        s = index;
         break;
       case 6:
         if (picker!.selecteds![_colAP] == 0) {

@@ -28,7 +28,6 @@ import '../../../../core/services/local/helpers.dart';
 import '../../../../core/services/services_exports.dart';
 import '../../../../core/utils/utils_exports.dart';
 import '../../../location/presentation/bloc/location_bloc.dart';
-import '../../domain/use_cases/get_ekram_permission.dart';
 import '../../entry_point_exports.dart';
 
 part 'auth_state.dart';
@@ -36,11 +35,8 @@ part 'auth_state.dart';
 class EntryPointCubit extends Cubit<EntryPointState> {
   final GetToken _getToken;
   final SaveAuth _saveAuth;
-  final CheckAuth _checkAuth;
-  final RefreshToken _refreshToken;
   final GetProfile _getProfile;
   final SaveSSOProfile _saveSSOProfile;
-  final CheckSSOProfile _checkSSOProfile;
   final GetCookie _getCookie;
   final GetAPIgeeToken _getAPIgeeToken;
 
@@ -50,17 +46,13 @@ class EntryPointCubit extends Cubit<EntryPointState> {
   final GetTestData _getTestData;
 
   // final GetGISData _getGisData;
-  final GetEkramPermission _getEkramPermission;
   final GetPaymentUrl _getPaymentUrl;
 
   EntryPointCubit({
     required GetToken getToken,
     required SaveAuth saveAuth,
-    required CheckAuth checkAuth,
-    required RefreshToken refreshToken,
     required GetProfile getProfile,
     required SaveSSOProfile saveSSOProfile,
-    required CheckSSOProfile checkSSOProfile,
     required GetCookie getCookie,
     required ClearAuth clearAuth,
     required Logout logout,
@@ -69,11 +61,8 @@ class EntryPointCubit extends Cubit<EntryPointState> {
     // required GetGISData getGisData,
   }) : _getToken = getToken,
        _saveAuth = saveAuth,
-       _checkAuth = checkAuth,
-       _refreshToken = refreshToken,
        _getProfile = getProfile,
        _saveSSOProfile = saveSSOProfile,
-       _checkSSOProfile = checkSSOProfile,
        _getCookie = getCookie,
        _getAPIgeeToken = getAPIgeeToken,
        _clearAuth = clearAuth,
@@ -81,7 +70,6 @@ class EntryPointCubit extends Cubit<EntryPointState> {
        _getPaymentUrl = GetPaymentUrl(repository: sl()),
        _getForceVersion = forceVersion,
        _getTestData = GetTestData(repository: sl()),
-       _getEkramPermission = GetEkramPermission(repository: sl()),
        // _getGisData = getGisData,
        super(const EntryPointState()) {
     WidgetsBinding.instance.addPostFrameCallback((_) {

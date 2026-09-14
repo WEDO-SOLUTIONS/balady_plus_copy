@@ -1,11 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:localize_and_translate/localize_and_translate.dart'
-    show Translation;
+import 'package:localize_and_translate/localize_and_translate.dart' show Translation;
 
-import '../../../../core/utils/utils_exports.dart'
-    show AppColor, AppStyle, ContextConversion, UIHelper;
-import '../../shared_feature_exports.dart'
-    show AbstractionWidget, CustomElevatedButtonWidget;
+import '../../../../core/utils/utils_exports.dart' show AppColor, AppStyle, ContextConversion, UIHelper;
+import '../../shared_feature_exports.dart' show AbstractionWidget, CustomElevatedButtonWidget;
 
 class _TwoElevatedFooterButtons extends StatelessWidget {
   final VoidCallback onFirstButton;
@@ -13,7 +10,6 @@ class _TwoElevatedFooterButtons extends StatelessWidget {
   final VoidCallback onSecondButton;
   final String secondButtonText;
   const _TwoElevatedFooterButtons({
-    super.key,
     required this.onFirstButton,
     required this.firstButtonText,
     required this.onSecondButton,
@@ -58,47 +54,43 @@ class _TwoElevatedFooterButtons extends StatelessWidget {
 }
 
 class TwoFooterButtons extends AbstractionWidget {
-  TwoFooterButtons.addCancel({
-    super.key,
-    required VoidCallback onAdd,
-    required VoidCallback onCancel,
-  }) : super(_TwoElevatedFooterButtons(
+  TwoFooterButtons.addCancel({super.key, required VoidCallback onAdd, required VoidCallback onCancel})
+    : super(
+        _TwoElevatedFooterButtons(
           onFirstButton: onCancel,
           firstButtonText: "cancelButton".tr(),
           onSecondButton: onAdd,
           secondButtonText: "addButton".tr(),
-        ));
+        ),
+      );
 
-  TwoFooterButtons.submitBack({
-    super.key,
-    required VoidCallback onSubmit,
-    required VoidCallback onBack,
-  }) : super(_TwoElevatedFooterButtons(
+  TwoFooterButtons.submitBack({super.key, required VoidCallback onSubmit, required VoidCallback onBack})
+    : super(
+        _TwoElevatedFooterButtons(
           onFirstButton: onBack,
           firstButtonText: "backButton".tr(),
           onSecondButton: onSubmit,
           secondButtonText: "submitButton".tr(),
-        ));
+        ),
+      );
 
-  TwoFooterButtons.submitCancel({
-    super.key,
-    required VoidCallback onSubmit,
-    required VoidCallback onCancel,
-  }) : super(_TwoElevatedFooterButtons(
+  TwoFooterButtons.submitCancel({super.key, required VoidCallback onSubmit, required VoidCallback onCancel})
+    : super(
+        _TwoElevatedFooterButtons(
           onFirstButton: onCancel,
           firstButtonText: "cancelButton".tr(),
           onSecondButton: onSubmit,
           secondButtonText: "submitButton".tr(),
-        ));
+        ),
+      );
 
-  TwoFooterButtons.saveCancel({
-    super.key,
-    required VoidCallback onSave,
-    required VoidCallback onCancel,
-  }) : super(_TwoElevatedFooterButtons(
+  TwoFooterButtons.saveCancel({super.key, required VoidCallback onSave, required VoidCallback onCancel})
+    : super(
+        _TwoElevatedFooterButtons(
           onFirstButton: onCancel,
           firstButtonText: "cancelButton".tr(),
           onSecondButton: onSave,
           secondButtonText: "saveButton".tr(),
-        ));
+        ),
+      );
 }

@@ -56,22 +56,6 @@ class _FavouritesPageState extends ConsumerState<FavouritesPage> {
     // await _onDeleteConfirmation(context, item);
   }
 
-  /// Pure function to delete the item from the cache
-  /// Created specifically to work with dismissible items (Dismissible widget that can be swiped to delete)
-  /// For [Dismissible] this method should be called after the [_onDeleteConfirmation] method
-  ///
-  /// Example:
-  /// ```dart
-  ///   _onDeleteConfirmation(item, context).then((value) {
-  ///    if (value == true) {
-  ///      _onDelete(item);
-  ///    }
-  ///  });
-  /// ```
-  void _onDelete(FavouriteItem item) {
-    ref.read(favouriteCacheProvider.notifier).deleteItem(item);
-  }
-
   /// We have to pass [ctx] value because of text and colors settings, localization. The easiest way to do this
   /// Also here we have to set color for text styles because [CupertinoActionSheet] make it by default in
   /// Apple / iOS style

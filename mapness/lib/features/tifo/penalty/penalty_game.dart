@@ -1736,8 +1736,6 @@ class PenaltyGame extends FlameGame with TapCallbacks, DragCallbacks {
   /// ball arrives.
   double _reactionDelay = 0;
   int _goals = 0;
-  int _shots = 0;
-  int _saves = 0;
   final List<_ShotState> _shotHistory = [];
   bool _completed = false;
 
@@ -1949,7 +1947,6 @@ class PenaltyGame extends FlameGame with TapCallbacks, DragCallbacks {
     _shotTime = 0;
     _resultTime = 0;
     _message = '';
-    _shots++;
 
     final flightTime = _flightTimeFor(power);
     _reactionDelay = flightTime * goalkeeperDifficulty.reactionDelayFraction;
@@ -2066,7 +2063,6 @@ class PenaltyGame extends FlameGame with TapCallbacks, DragCallbacks {
     final saved = _ball.y < _goalHeight && _ballTouchesKeeperSprite();
 
     if (saved) {
-      _saves++;
       _velocity = _Vec3((_ball.x - _keeperX).signOrZero * 3.1, 2.2, -5.1);
       _finish(_ShotState.saved, _labels.save);
     } else if (insideFrame) {

@@ -995,13 +995,10 @@ class NumberPickerColumn {
 
   int indexOf(int value) {
     return items!.indexOf(value);
-    if (value < begin || value > end) return -1;
-    return (value - begin) ~/ (jump == 0 ? 1 : jump);
   }
 
   int valueOf(int index) {
     return items![index];
-    return begin + index * (jump == 0 ? 1 : jump);
   }
 
   String getValueText(int index) {
@@ -1026,7 +1023,6 @@ class NumberPickerAdapter extends PickerAdapter<int> {
   int getLength() {
     if (cur == null) return 0;
     return cur!.items!.length;
-    return cur!.count();
   }
 
   @override
@@ -1292,9 +1288,6 @@ class DateTimePickerAdapter extends PickerAdapter<DateTime> {
   // 获取当前列的类型
   int getColumnType(int index) {
     return customColumnType![index];
-    List<int> items = columnType[type];
-    if (index >= items.length) return -1;
-    return items[index];
   }
 
   @override

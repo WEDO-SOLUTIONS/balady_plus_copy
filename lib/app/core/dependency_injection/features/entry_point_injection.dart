@@ -24,20 +24,20 @@ import '../dependency_injection_exports.dart' show sl;
 
 class EntryPointInjection {
   static void init() {
-    sl.registerLazySingleton(() => EntryPointCubit(
+    sl.registerLazySingleton(
+      () => EntryPointCubit(
         clearAuth: sl(),
         // checkProfile: sl(),
         getProfile: sl(),
         saveSSOProfile: sl(),
-        checkSSOProfile: sl(),
         getToken: sl(),
-        refreshToken: sl(),
         saveAuth: sl(),
         getCookie: sl(),
         getAPIgeeToken: sl(),
         logout: sl(),
-        checkAuth: sl(),
-        forceVersion: sl()));
+        forceVersion: sl(),
+      ),
+    );
 
     //! Use Case
     sl.registerLazySingleton(() => GetToken(repository: sl()));
@@ -59,16 +59,11 @@ class EntryPointInjection {
 
     //! Repository
     sl.registerLazySingleton<EntryPointRepository>(
-      () => EntryPointRepositoryImpl(
-          localDataSource: sl(), remoteDataSource: sl()),
+      () => EntryPointRepositoryImpl(localDataSource: sl(), remoteDataSource: sl()),
     );
 
     //! Data Sources
-    sl.registerLazySingleton<EntryPointLocalDataSource>(
-      () => EntryPointLocalDataSourceImpl(),
-    );
-    sl.registerLazySingleton<EntryPointRemoteDataSource>(
-      () => EntryPointRemoteDataSourceImpl(webService: sl()),
-    );
+    sl.registerLazySingleton<EntryPointLocalDataSource>(() => EntryPointLocalDataSourceImpl());
+    sl.registerLazySingleton<EntryPointRemoteDataSource>(() => EntryPointRemoteDataSourceImpl(webService: sl()));
   }
 }
