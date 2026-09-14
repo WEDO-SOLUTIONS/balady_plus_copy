@@ -5,7 +5,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 
-import 'MimeTypeResolver.dart';
+import 'mime_type_resolver.dart';
 import 'package:shelf/shelf.dart';
 import 'package:shelf/shelf_io.dart' as io;
 

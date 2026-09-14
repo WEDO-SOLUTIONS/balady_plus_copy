@@ -1,7 +1,7 @@
 import 'package:balady_plus/super_app_js_bridge/model/base_response.dart';
 import 'package:flutter/material.dart';
 
-import '../../app/features/accecipilities/AccessibilitySettings.dart';
+import '../../app/features/accecipilities/accessibility_settings.dart';
 
 class AppThemeConfig implements BaseData {
   final String language;

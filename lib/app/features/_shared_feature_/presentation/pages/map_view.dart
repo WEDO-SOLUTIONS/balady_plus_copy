@@ -20,7 +20,7 @@
 // import '../../../transaction_inquiry/presentation/core/models/selected_location.dart';
 // import '../../../transaction_inquiry/presentation/core/services/customer_voice_repository.dart';
 // import '../../../vd/presentation/widgets/map_address_card.dart';
-// import '../../balady_features/widgets/UrbiMap/UrbiMapSection.dart';
+// import '../../balady_features/widgets/UrbiMap/urbi_map_section.dart';
 // import '../widgets/texts/custom_text_widget.dart';
 // import 'package:balady_plus/app/events_logs/balady_logs.dart';
 //

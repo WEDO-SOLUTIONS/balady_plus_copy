@@ -6,7 +6,7 @@ import 'package:balady_plus/mini_apps_engine/presentation/pages/mini_apps_list_p
 import 'package:balady_plus/mini_apps_engine/presentation/pages/mini_apps_list_pages/widgets/general_widgets/custom_sub_heading_text.dart';
 import 'package:balady_plus/mini_apps_engine/presentation/pages/new_mini_apps_ui/_shared/widgets/custom_mini_app_icon_button_widget.dart';
 import 'package:balady_plus/mini_apps_engine/presentation/pages/new_mini_apps_ui/fav_mini_apps/widgets/get_all_fav_mini_apps_widget.dart';
-import 'package:balady_plus/mini_apps_engine/presentation/pages/new_mini_apps_ui/fav_mini_apps/widgets/get_all_unFav_mini_apps_widget.dart';
+import 'package:balady_plus/mini_apps_engine/presentation/pages/new_mini_apps_ui/fav_mini_apps/widgets/get_all_unfav_mini_apps_widget.dart';
 import 'package:balady_plus/mini_apps_engine/presentation/pages/new_mini_apps_ui/fav_mini_apps/widgets/search_mini_apps_results_list.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';

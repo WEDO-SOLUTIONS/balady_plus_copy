@@ -9,7 +9,7 @@ import 'package:flutter/foundation.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:version/version.dart';
 
-import '../../data/VersionInfo.dart';
+import '../../data/version_info.dart';
 
 part 'force_update_state.dart';
 

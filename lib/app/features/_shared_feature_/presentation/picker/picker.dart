@@ -7,7 +7,7 @@ import 'dart:async';
 import 'package:hijri/hijri_calendar.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
-import 'PickerLocalizations.dart';
+import 'picker_localizations.dart';
 
 const bool __printDebug = false;
 

@@ -1,4 +1,4 @@
-import 'package:balady_plus/app/features/force_update/presentation/pages/forceUpdatePage.dart';
+import 'package:balady_plus/app/features/force_update/presentation/pages/force_update_page.dart';
 import 'package:balady_plus/app/features/notifications/presentation/pages/notifications_details_screen.dart';
 import 'package:balady_plus/app/features/notifications/presentation/pages/notifications_list_screen.dart';
 import 'package:balady_plus/app/features/splash/presentation/pages/splash_page.dart';
