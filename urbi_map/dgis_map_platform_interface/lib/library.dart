@@ -1,4 +1,4 @@
-library dgis_map_platform_interface;
+library;
 
 export 'src/dgis_map_plugin.dart' show DgisMapPlugin;
 export 'src/events/camera_state_events.dart';

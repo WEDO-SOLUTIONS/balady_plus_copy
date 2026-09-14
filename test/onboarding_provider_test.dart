@@ -11,11 +11,7 @@ class Listener<T> extends Mock {
 
 void main() {
   ProviderContainer makeProviderContainer(MockSharedPrefs sharedPrefs) {
-    final container = ProviderContainer(
-      overrides: [
-        sharedPrefsProvider.overrideWithValue(sharedPrefs),
-      ],
-    );
+    final container = ProviderContainer(overrides: [sharedPrefsProvider.overrideWithValue(sharedPrefs)]);
     addTearDown(container.dispose);
     return container;
   }
@@ -27,22 +23,14 @@ void main() {
 
     final listener = Listener<bool>();
 
-    container.listen(
-      onboardingProvider,
-      listener,
-      fireImmediately: true,
-    );
+    container.listen(onboardingProvider, listener.call, fireImmediately: true);
 
-    verify(
-      () => listener(null, false),
-    );
+    verify(() => listener(null, false));
     final notifier = container.read(onboardingProvider.notifier);
 
     notifier.setIsOnboardingShown(isOnboardingShown: true);
 
-    verify(
-      () => listener(false, true),
-    );
+    verify(() => listener(false, true));
 
     expect(() => notifier.setIsOnboardingShown(isOnboardingShown: true), isA<void>());
 

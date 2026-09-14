@@ -21,7 +21,7 @@ class CameraStateEventHandler {
   }
 
   void cameraStateEvent(Map<dynamic, dynamic> map) {
-    var state = mapCameraState(map['state'] as String);
+    final state = mapCameraState(map['state'] as String);
     final event = CameraStateEvent(state);
 
     _cameraStateController.sink.add(event);

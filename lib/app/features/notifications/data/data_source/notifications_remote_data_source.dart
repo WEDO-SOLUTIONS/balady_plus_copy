@@ -11,8 +11,7 @@ import 'package:balady_plus/app/features/notifications/data/model/notifications_
 import 'package:balady_plus/app/features/notifications/data/model/notifications_list/search_notifications_params.dart';
 import 'package:balady_plus/app/features/notifications/data/model/notifications_settings_list/notifications_settings_list_response.dart';
 import 'package:dio/dio.dart';
-import 'package:localize_and_translate/localize_and_translate.dart'
-    show Translation;
+import 'package:localize_and_translate/localize_and_translate.dart' show Translation;
 import '../../domain/entities/set_notifications_profile_params.dart';
 import '../../domain/entities/set_notifications_profile_products_params.dart';
 import '../model/noification_response.dart';
@@ -20,37 +19,29 @@ import '../model/notification_request.dart';
 import 'package:balady_plus/app/events_logs/balady_logs.dart';
 
 abstract class NotificationsRemoteDataSource {
-  Future<ResponseBodyModel<NotificationResponse>> updateNotificationSettings(
-      NotificationRequest request);
+  Future<ResponseBodyModel<NotificationResponse>> updateNotificationSettings(NotificationRequest request);
 
   //For List Screen
-  Future<NotificationsListResponse> getNotificationsMessagesList(
-      SearchNotificationsParams request);
+  Future<NotificationsListResponse> getNotificationsMessagesList(SearchNotificationsParams request);
 
-  Future<bool> markReadNotificationsMessages(
-      MarkReadNotificationsParams request);
+  Future<bool> markReadNotificationsMessages(MarkReadNotificationsParams request);
 
   Future<bool> deletedNotificationsMessages(DeletedNotificationsParams request);
 
   //For List Screen
   Future<List<NotificationType>> getNotificationsProducts();
 
-  Future<List<NotificationType>> getNotificationsServicesProducts(
-      {required String productId});
+  Future<List<NotificationType>> getNotificationsServicesProducts({required String productId});
 
   //Notifications settings list
-  Future<NotificationsSettingsList> getNotificationsSettingsList(
-      {required String notificationChannelId});
+  Future<NotificationsSettingsList> getNotificationsSettingsList({required String notificationChannelId});
 
-  Future<bool> setNotificationsProfile(
-      {required SetNotificationsProfileParams params});
+  Future<bool> setNotificationsProfile({required SetNotificationsProfileParams params});
 
-  Future<bool> setNotificationsProfileProducts(
-      {required SetNotificationsProfileProductsParams params});
+  Future<bool> setNotificationsProfileProducts({required SetNotificationsProfileProductsParams params});
 }
 
-class NotificationRemoteDataSourceImplementation
-    implements NotificationsRemoteDataSource {
+class NotificationRemoteDataSourceImplementation implements NotificationsRemoteDataSource {
   final WebService webService;
 
   final Map<String, dynamic> dataHeaders = {
@@ -64,19 +55,17 @@ class NotificationRemoteDataSourceImplementation
   NotificationRemoteDataSourceImplementation({required this.webService});
 
   @override
-  Future<ResponseBodyModel<NotificationResponse>> updateNotificationSettings(
-      NotificationRequest request) async {
-    var response;
+  Future<ResponseBodyModel<NotificationResponse>> updateNotificationSettings(NotificationRequest request) async {
+    Response? response;
     try {
-      response = await webService.dio
-          .post(ApiUrl.updateNotificationSettings(), data: request.toJson());
+      response = await webService.dio.post(ApiUrl.updateNotificationSettings(), data: request.toJson());
       final data = response.data;
 
-      var parsedResult =
-          data != null ? NotificationResponse.fromJson(data["data"]) : null;
+      var parsedResult = data != null ? NotificationResponse.fromJson(data["data"]) : null;
       final decodedResponse = ResponseBodyModel<NotificationResponse>.fromMap(
-          response.data,
-          parsedResult: parsedResult);
+        response.data,
+        parsedResult: parsedResult,
+      );
 
       return decodedResponse.toFuture();
 
@@ -95,11 +84,7 @@ class NotificationRemoteDataSourceImplementation
       if (error is NoDataFoundException) {
         rethrow;
       }
-      throw ServerException(
-        error.toString(),
-        statusCode: error.response?.statusCode,
-        dioError: error,
-      );
+      throw ServerException(error.toString(), statusCode: error.response?.statusCode, dioError: error);
     } catch (error, stackTrace) {
       LogsViewModel().sendEventFromModel(
         event: ErrorExceptionModel(
@@ -115,9 +100,7 @@ class NotificationRemoteDataSourceImplementation
       } else {
         throw ServerException(
           "errors_server_error_2".tr(),
-          exception: APIException(
-            errorMessage: error.toString(),
-          ),
+          exception: APIException(errorMessage: error.toString()),
           response: response,
         );
       }
@@ -126,18 +109,15 @@ class NotificationRemoteDataSourceImplementation
 
   //Notifications settings list
   @override
-  Future<NotificationsListResponse> getNotificationsMessagesList(
-      SearchNotificationsParams request) async {
-    var response;
+  Future<NotificationsListResponse> getNotificationsMessagesList(SearchNotificationsParams request) async {
+    Response? response;
     try {
       dataHeaders.addAll(request.persoana);
       dataHeaders['x-correlation-id'] = CommonFunctions.generateGUID();
       response = await webService.dio.get(
         ApiUrl.notificationsMessagesList,
         queryParameters: request.toJsonQueryParameters(),
-        options: Options(
-          headers: dataHeaders,
-        ),
+        options: Options(headers: dataHeaders),
       );
       final data = response.data;
       final result = ResponseBodyModel.fromMap(data).data?.result;
@@ -154,11 +134,7 @@ class NotificationRemoteDataSourceImplementation
       if (error is NoDataFoundException) {
         rethrow;
       }
-      throw ServerException(
-        error.toString(),
-        statusCode: error.response?.statusCode,
-        dioError: error,
-      );
+      throw ServerException(error.toString(), statusCode: error.response?.statusCode, dioError: error);
     } catch (error, stackTrace) {
       LogsViewModel().sendEventFromModel(
         event: ErrorExceptionModel(
@@ -172,9 +148,7 @@ class NotificationRemoteDataSourceImplementation
       } else {
         throw ServerException(
           "errors_server_error_2".tr(),
-          exception: APIException(
-            errorMessage: error.toString(),
-          ),
+          exception: APIException(errorMessage: error.toString()),
           response: response,
         );
       }
@@ -182,9 +156,8 @@ class NotificationRemoteDataSourceImplementation
   }
 
   @override
-  Future<bool> markReadNotificationsMessages(
-      MarkReadNotificationsParams request) async {
-    var response;
+  Future<bool> markReadNotificationsMessages(MarkReadNotificationsParams request) async {
+    Response? response;
     try {
       dataHeaders['x-correlation-id'] = CommonFunctions.generateGUID();
       dataHeaders['x-platform-id'] = "super-app";
@@ -208,11 +181,7 @@ class NotificationRemoteDataSourceImplementation
       if (error is NoDataFoundException) {
         rethrow;
       }
-      throw ServerException(
-        error.toString(),
-        statusCode: error.response?.statusCode,
-        dioError: error,
-      );
+      throw ServerException(error.toString(), statusCode: error.response?.statusCode, dioError: error);
     } catch (error, stackTrace) {
       LogsViewModel().sendEventFromModel(
         event: ErrorExceptionModel(
@@ -226,9 +195,7 @@ class NotificationRemoteDataSourceImplementation
       } else {
         throw ServerException(
           "errors_server_error_2".tr(),
-          exception: APIException(
-            errorMessage: error.toString(),
-          ),
+          exception: APIException(errorMessage: error.toString()),
           response: response,
         );
       }
@@ -236,9 +203,8 @@ class NotificationRemoteDataSourceImplementation
   }
 
   @override
-  Future<bool> deletedNotificationsMessages(
-      DeletedNotificationsParams request) async {
-    var response;
+  Future<bool> deletedNotificationsMessages(DeletedNotificationsParams request) async {
+    Response? response;
     try {
       dataHeaders['x-correlation-id'] = CommonFunctions.generateGUID();
       response = await webService.dio.delete(
@@ -259,11 +225,7 @@ class NotificationRemoteDataSourceImplementation
       if (error is NoDataFoundException) {
         rethrow;
       }
-      throw ServerException(
-        error.toString(),
-        statusCode: error.response?.statusCode,
-        dioError: error,
-      );
+      throw ServerException(error.toString(), statusCode: error.response?.statusCode, dioError: error);
     } catch (error, stackTrace) {
       LogsViewModel().sendEventFromModel(
         event: ErrorExceptionModel(
@@ -277,9 +239,7 @@ class NotificationRemoteDataSourceImplementation
       } else {
         throw ServerException(
           "errors_server_error_2".tr(),
-          exception: APIException(
-            errorMessage: error.toString(),
-          ),
+          exception: APIException(errorMessage: error.toString()),
           response: response,
         );
       }
@@ -289,15 +249,12 @@ class NotificationRemoteDataSourceImplementation
   //Notifications settings list
   @override
   Future<List<NotificationType>> getNotificationsProducts() async {
-    var response;
+    Response? response;
     try {
       dataHeaders['x-correlation-id'] = CommonFunctions.generateGUID();
       response = await webService.dio.get(
         ApiUrl.notificationsProducts,
-        queryParameters: {
-          "notification-channel-id": "mobile",
-          "app-id": "super-app",
-        },
+        queryParameters: {"notification-channel-id": "mobile", "app-id": "super-app"},
         options: Options(headers: dataHeaders),
       );
       final data = response.data;
@@ -315,11 +272,7 @@ class NotificationRemoteDataSourceImplementation
       if (error is NoDataFoundException) {
         rethrow;
       }
-      throw ServerException(
-        error.toString(),
-        statusCode: error.response?.statusCode,
-        dioError: error,
-      );
+      throw ServerException(error.toString(), statusCode: error.response?.statusCode, dioError: error);
     } catch (error, stackTrace) {
       LogsViewModel().sendEventFromModel(
         event: ErrorExceptionModel(
@@ -333,9 +286,7 @@ class NotificationRemoteDataSourceImplementation
       } else {
         throw ServerException(
           "errors_server_error_2".tr(),
-          exception: APIException(
-            errorMessage: error.toString(),
-          ),
+          exception: APIException(errorMessage: error.toString()),
           response: response,
         );
       }
@@ -343,18 +294,13 @@ class NotificationRemoteDataSourceImplementation
   }
 
   @override
-  Future<List<NotificationType>> getNotificationsServicesProducts(
-      {required String productId}) async {
-    var response;
+  Future<List<NotificationType>> getNotificationsServicesProducts({required String productId}) async {
+    Response? response;
     try {
       dataHeaders['x-correlation-id'] = CommonFunctions.generateGUID();
       response = await webService.dio.get(
         ApiUrl.notificationsServices,
-        queryParameters: {
-          'product-id': productId,
-          "notification-channel-id": "mobile",
-          "app-id": "super-app",
-        },
+        queryParameters: {'product-id': productId, "notification-channel-id": "mobile", "app-id": "super-app"},
         // data: request.toJson(),
         options: Options(headers: dataHeaders),
       );
@@ -373,11 +319,7 @@ class NotificationRemoteDataSourceImplementation
       if (error is NoDataFoundException) {
         rethrow;
       }
-      throw ServerException(
-        error.toString(),
-        statusCode: error.response?.statusCode,
-        dioError: error,
-      );
+      throw ServerException(error.toString(), statusCode: error.response?.statusCode, dioError: error);
     } catch (error, stackTrace) {
       LogsViewModel().sendEventFromModel(
         event: ErrorExceptionModel(
@@ -391,9 +333,7 @@ class NotificationRemoteDataSourceImplementation
       } else {
         throw ServerException(
           "errors_server_error_2".tr(),
-          exception: APIException(
-            errorMessage: error.toString(),
-          ),
+          exception: APIException(errorMessage: error.toString()),
           response: response,
         );
       }
@@ -401,14 +341,15 @@ class NotificationRemoteDataSourceImplementation
   }
 
   @override
-  Future<NotificationsSettingsList> getNotificationsSettingsList(
-      {required String notificationChannelId}) async {
+  Future<NotificationsSettingsList> getNotificationsSettingsList({required String notificationChannelId}) async {
     Response? response;
     dataHeaders['x-correlation-id'] = CommonFunctions.generateGUID();
     try {
-      response = await webService.dio.get(ApiUrl.notificationsSettingsList,
-          queryParameters: {'notification-channel-id': notificationChannelId},
-          options: Options(headers: dataHeaders));
+      response = await webService.dio.get(
+        ApiUrl.notificationsSettingsList,
+        queryParameters: {'notification-channel-id': notificationChannelId},
+        options: Options(headers: dataHeaders),
+      );
       final data = response.data;
       final result = ResponseBodyModel.fromMap(data).data?.result;
       return NotificationsSettingsList.fromJson(result);
@@ -424,11 +365,7 @@ class NotificationRemoteDataSourceImplementation
         rethrow;
       }
 
-      throw ServerException(
-        error.toString(),
-        statusCode: error.response?.statusCode,
-        dioError: error,
-      );
+      throw ServerException(error.toString(), statusCode: error.response?.statusCode, dioError: error);
     } catch (error, stackTrace) {
       LogsViewModel().sendEventFromModel(
         event: ErrorExceptionModel(
@@ -442,9 +379,7 @@ class NotificationRemoteDataSourceImplementation
       } else {
         throw ServerException(
           "errors_server_error_2".tr(),
-          exception: APIException(
-            errorMessage: error.toString(),
-          ),
+          exception: APIException(errorMessage: error.toString()),
           response: response,
         );
       }
@@ -452,15 +387,15 @@ class NotificationRemoteDataSourceImplementation
   }
 
   @override
-  Future<bool> setNotificationsProfile(
-      {required SetNotificationsProfileParams params}) async {
+  Future<bool> setNotificationsProfile({required SetNotificationsProfileParams params}) async {
     dataHeaders['x-correlation-id'] = CommonFunctions.generateGUID();
     Response? response;
     try {
       response = await webService.dio.post(
-          ApiUrl.setProfileNotificationsSettings,
-          data: params.toJson(),
-          options: Options(headers: dataHeaders));
+        ApiUrl.setProfileNotificationsSettings,
+        data: params.toJson(),
+        options: Options(headers: dataHeaders),
+      );
       return response.statusCode == 200 ? true : false;
     } on DioException catch (error, stackTrace) {
       LogsViewModel().sendEventFromModel(
@@ -474,11 +409,7 @@ class NotificationRemoteDataSourceImplementation
         rethrow;
       }
 
-      throw ServerException(
-        error.toString(),
-        statusCode: error.response?.statusCode,
-        dioError: error,
-      );
+      throw ServerException(error.toString(), statusCode: error.response?.statusCode, dioError: error);
     } catch (error, stackTrace) {
       LogsViewModel().sendEventFromModel(
         event: ErrorExceptionModel(
@@ -492,9 +423,7 @@ class NotificationRemoteDataSourceImplementation
       } else {
         throw ServerException(
           "errors_server_error_2".tr(),
-          exception: APIException(
-            errorMessage: error.toString(),
-          ),
+          exception: APIException(errorMessage: error.toString()),
           response: response,
         );
       }
@@ -502,16 +431,16 @@ class NotificationRemoteDataSourceImplementation
   }
 
   @override
-  Future<bool> setNotificationsProfileProducts(
-      {required SetNotificationsProfileProductsParams params}) async {
+  Future<bool> setNotificationsProfileProducts({required SetNotificationsProfileProductsParams params}) async {
     dataHeaders['x-correlation-id'] = CommonFunctions.generateGUID();
     dataHeaders['Accept'] = "*/*";
     Response? response;
     try {
       response = await webService.dio.post(
-          ApiUrl.setProductsNotificationsSettings,
-          data: params.toJson(),
-          options: Options(headers: dataHeaders));
+        ApiUrl.setProductsNotificationsSettings,
+        data: params.toJson(),
+        options: Options(headers: dataHeaders),
+      );
       return response.statusCode == 200 ? true : false;
     } on DioException catch (error, stackTrace) {
       LogsViewModel().sendEventFromModel(
@@ -525,11 +454,7 @@ class NotificationRemoteDataSourceImplementation
         rethrow;
       }
 
-      throw ServerException(
-        error.toString(),
-        statusCode: error.response?.statusCode,
-        dioError: error,
-      );
+      throw ServerException(error.toString(), statusCode: error.response?.statusCode, dioError: error);
     } catch (error, stackTrace) {
       LogsViewModel().sendEventFromModel(
         event: ErrorExceptionModel(
@@ -543,9 +468,7 @@ class NotificationRemoteDataSourceImplementation
       } else {
         throw ServerException(
           "errors_server_error_2".tr(),
-          exception: APIException(
-            errorMessage: error.toString(),
-          ),
+          exception: APIException(errorMessage: error.toString()),
           response: response,
         );
       }

@@ -4,8 +4,7 @@ import 'package:localize_and_translate/localize_and_translate.dart';
 import '../../../../core/dependency_injection/injection_container.dart';
 import '../../../../core/errors/errors_exports.dart';
 import '../../../../core/services/global/web_service.dart';
-import '../../../../core/utils/utils_exports.dart'
-    show ApiHeader, ApiUrl, CommonFunctions, EnvType;
+import '../../../../core/utils/utils_exports.dart' show ApiHeader, ApiUrl, CommonFunctions, EnvType;
 import '../../weather_exports.dart'
     show
         AlertsModel,
@@ -22,8 +21,7 @@ import '../../weather_exports.dart'
 import 'package:balady_plus/app/events_logs/balady_logs.dart';
 
 abstract class WeatherRemoteDataSource {
-  Future<AllWeatherInfoModel> getAllWeatherInfoForLocation(
-      {required WeatherParams params});
+  Future<AllWeatherInfoModel> getAllWeatherInfoForLocation({required WeatherParams params});
 }
 
 class WeatherRemoteDataSourceImpl extends WeatherRemoteDataSource {
@@ -31,10 +29,8 @@ class WeatherRemoteDataSourceImpl extends WeatherRemoteDataSource {
 
   WeatherRemoteDataSourceImpl({required this.webService});
   @override
-  Future<AllWeatherInfoModel> getAllWeatherInfoForLocation(
-      {required WeatherParams params}) async {
-    var response;
-
+  Future<AllWeatherInfoModel> getAllWeatherInfoForLocation({required WeatherParams params}) async {
+    Response? response;
     String weatherAPI = ApiUrl.weatherForcastAPI;
     try {
       String q = "${sl<EnvType>().domain}v1/weather-services/forecast?";
@@ -42,16 +38,17 @@ class WeatherRemoteDataSourceImpl extends WeatherRemoteDataSource {
         q += "$key=$value&";
       });
       q = q.substring(0, q.length - 1);
-      response = await webService.dio.get(weatherAPI,
-          queryParameters: params.toMap(),
-          options: Options(headers: {
+      response = await webService.dio.get(
+        weatherAPI,
+        queryParameters: params.toMap(),
+        options: Options(
+          headers: {
             "Accept-Language": "ar",
             ApiHeader.requiresToken.eName: false,
-            ApiHeader.verifyingKEY.name: CommonFunctions.hashRequest(
-              q,
-              "GET",
-            )
-          }));
+            ApiHeader.verifyingKEY.name: CommonFunctions.hashRequest(q, "GET"),
+          },
+        ),
+      );
       var locationData = response.data['data']['result']['location'];
       var currentData = response.data['data']['result']['current'];
       var forecastData = response.data['data']['result']['forecast'];
@@ -66,27 +63,23 @@ class WeatherRemoteDataSourceImpl extends WeatherRemoteDataSource {
       final currentCondition = currentData['condition'];
 
       if (currentCondition != null) {
-        decodedCurrentResponse = CurrentModel.fromMap(
-            currentData, ConditionsModel.fromMap(currentCondition));
+        decodedCurrentResponse = CurrentModel.fromMap(currentData, ConditionsModel.fromMap(currentCondition));
       }
 
-      final List<ForecastDayModel> decodedForecastDayResponse =
-          forecastDayData.map((forecastDay) {
+      final List<ForecastDayModel> decodedForecastDayResponse = forecastDayData.map((forecastDay) {
         final List hourData = forecastDay['hour'];
         final dayData = forecastDay['day'];
         final astroData = forecastDay['astro'];
 
         final List<HourModel> hourDataList = hourData.map((hour) {
-          final ConditionsModel decodedHourConditionResponse =
-              ConditionsModel.fromMap(hour['condition']);
+          final ConditionsModel decodedHourConditionResponse = ConditionsModel.fromMap(hour['condition']);
           return HourModel.fromMap(hour, decodedHourConditionResponse);
         }).toList();
         var dayConditionData;
         ConditionsModel? decodedDayConditionResponse;
         dayConditionData = dayData['condition'];
         if (dayConditionData != null) {
-          decodedDayConditionResponse =
-              ConditionsModel.fromMap(dayConditionData);
+          decodedDayConditionResponse = ConditionsModel.fromMap(dayConditionData);
         }
 
         return decodedDayConditionResponse != null
@@ -103,9 +96,7 @@ class WeatherRemoteDataSourceImpl extends WeatherRemoteDataSource {
         alerts: decodedAlertsResponse,
         location: decodedLocationResponse,
         current: decodedCurrentResponse,
-        forecast: ForecastModel(
-          forecastday: decodedForecastDayResponse,
-        ),
+        forecast: ForecastModel(forecastday: decodedForecastDayResponse),
       );
 
       return allWeatherData;
@@ -117,11 +108,7 @@ class WeatherRemoteDataSourceImpl extends WeatherRemoteDataSource {
           stackTrace: stackTrace.toString(),
         ),
       );
-      throw ServerException(
-        error.toString(),
-        statusCode: error.response?.statusCode,
-        dioError: error,
-      );
+      throw ServerException(error.toString(), statusCode: error.response?.statusCode, dioError: error);
     } catch (error, stackTrace) {
       LogsViewModel().sendEventFromModel(
         event: ErrorExceptionModel(
@@ -134,19 +121,19 @@ class WeatherRemoteDataSourceImpl extends WeatherRemoteDataSource {
         rethrow;
       } else {
         try {} catch (error, stackTrace) {
-    LogsViewModel().sendEventFromModel(
-      event: ErrorExceptionModel(
-        nameEvent: EventsName.handledException,
-        message: error.toString(),
-        stackTrace: stackTrace.toString(),
-      ),
-    );
-  }
-        throw ServerException("errors_server_error_2".tr(),
-            exception: APIException(
-              errorMessage: error.toString(),
+          LogsViewModel().sendEventFromModel(
+            event: ErrorExceptionModel(
+              nameEvent: EventsName.handledException,
+              message: error.toString(),
+              stackTrace: stackTrace.toString(),
             ),
-            response: response);
+          );
+        }
+        throw ServerException(
+          "errors_server_error_2".tr(),
+          exception: APIException(errorMessage: error.toString()),
+          response: response,
+        );
       }
     }
   }

@@ -1424,12 +1424,12 @@ class OtpBottomSheetWidget extends StatefulWidget {
   final ValueChanged<int> onFailureCountChanged;
 
   const OtpBottomSheetWidget({
-    super.key,
     required this.pendingEmail,
     required this.onVerify,
     required this.onResend,
     required this.onCancel,
     required this.onFailureCountChanged,
+    super.key,
     this.resendAttemptsLeft = 3,
     this.resendIntervalSeconds = 60,
     this.initialFailureCount = 0,

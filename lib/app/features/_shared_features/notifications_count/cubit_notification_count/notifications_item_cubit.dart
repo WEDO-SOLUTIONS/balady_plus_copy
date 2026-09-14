@@ -13,21 +13,17 @@ part 'notifications_item_state.dart';
 class NotificationsCountCubit extends Cubit<SucceedCountState> {
   final WebService webService;
 
-  NotificationsCountCubit({
-    required this.webService,
-  }) : super(const SucceedCountState(count: null)) {
+  NotificationsCountCubit({required this.webService}) : super(const SucceedCountState(count: null)) {
     getUnreadMessages();
   }
 
   Future<void> getUnreadMessages() async {
-    var response;
+    Response? response;
     try {
       // dataHeaders['x-correlation-id'] = CommonFunctions.generateGUID();
       response = await webService.dio.get(
         ApiUrl.notificationsUnreadMessages,
-        queryParameters: {
-          "status-id": "sent",
-        },
+        queryParameters: {"status-id": "sent"},
         options: Options(
           headers: {
             "x-actor-type-id": "user",
@@ -53,11 +49,7 @@ class NotificationsCountCubit extends Cubit<SucceedCountState> {
       if (error is NoDataFoundException) {
         rethrow;
       }
-      throw ServerException(
-        error.toString(),
-        statusCode: error.response?.statusCode,
-        dioError: error,
-      );
+      throw ServerException(error.toString(), statusCode: error.response?.statusCode, dioError: error);
     } catch (error, stackTrace) {
       LogsViewModel().sendEventFromModel(
         event: ErrorExceptionModel(
@@ -71,9 +63,7 @@ class NotificationsCountCubit extends Cubit<SucceedCountState> {
       } else {
         throw ServerException(
           "errors_server_error_2".tr(),
-          exception: APIException(
-            errorMessage: error.toString(),
-          ),
+          exception: APIException(errorMessage: error.toString()),
           response: response,
         );
       }

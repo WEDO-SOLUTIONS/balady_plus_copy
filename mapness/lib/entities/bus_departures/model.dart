@@ -54,10 +54,10 @@ abstract class BusTrip with _$BusTrip {
   const factory BusTrip({
     @JsonKey(name: 'trip_id') required String tripId,
     @JsonKey(name: 'departure_time') required String departureTime,
-    @JsonKey(name: 'departure_time_update') String? departureTimeUpdate,
     @JsonKey(name: 'delay_seconds') required int delaySeconds,
     @JsonKey(name: 'sort_key') required String sortKey,
     @JsonKey(name: 'is_realtime') required bool isRealtime,
+    @JsonKey(name: 'departure_time_update') String? departureTimeUpdate,
   }) = _BusTrip;
 
   factory BusTrip.fromJson(Map<String, dynamic> json) => _$BusTripFromJson(json);

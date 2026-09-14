@@ -27,8 +27,7 @@ class EventDataSourceImpl extends EventsRemoteDataSource {
 
   @override
   Future<SearchEventResponseModel> getSearchEvents({required SearchEventsParams params}) async {
-    var response;
-
+    Response? response;
     try {
       response = await webService.dio.get(
         ApiUrl.eventsSearch,
@@ -79,7 +78,7 @@ class EventDataSourceImpl extends EventsRemoteDataSource {
 
   @override
   Future<EventsDetailsItemModel> getEventDetails({required EventDetailsParams params}) async {
-    var response;
+    Response? response;
     try {
       response = await webService.dio.get(
         "${ApiUrl.eventsDetails}/${params.key}",
@@ -122,8 +121,7 @@ class EventDataSourceImpl extends EventsRemoteDataSource {
 
   @override
   Future<EventsCategoryResponseModel> getEventCategory({required EventsCategoryParams params}) async {
-    var response;
-
+    Response? response;
     try {
       response = await webService.dio.get("${ApiUrl.eventsCategory}/${params.key}");
 

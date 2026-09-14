@@ -23,8 +23,7 @@ class VDRemoteDataSourceImpl extends VDRemoteDataSource {
 
   @override
   Future<GISResponseModel> getGISData({required GISParams params}) async {
-    var response;
-
+    Response? response;
     try {
       response = await webService.dio.get(ApiUrl.gis, queryParameters: params.toMap());
 

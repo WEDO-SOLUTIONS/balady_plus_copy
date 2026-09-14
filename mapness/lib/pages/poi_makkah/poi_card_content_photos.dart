@@ -307,9 +307,9 @@ class _MakkahDummyPhotosRow extends StatelessWidget {
   double _interpolation({
     required double initialValue,
     required double finalValue,
-    double? expandedValue,
     required PoiCardBottomSheetState state,
     required double interpolation,
+    double? expandedValue,
     Curve? curve,
   }) {
     if (state == PoiCardBottomSheetState.hidden) {

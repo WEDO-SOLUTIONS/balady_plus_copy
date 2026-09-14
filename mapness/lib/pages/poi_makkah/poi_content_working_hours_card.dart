@@ -144,10 +144,10 @@ class _MakkahWorkingHoursExpandable extends StatefulWidget {
   const _MakkahWorkingHoursExpandable({
     required this.colors,
     required this.title,
-    this.subtitle,
     required this.workingHours,
     required this.formatOpenClose,
     required this.formatBreaks,
+    this.subtitle,
     this.workhoursHint,
   });
 
@@ -278,8 +278,8 @@ class _MakkahWorkTimeRow extends StatelessWidget {
     required this.colors,
     required this.dayTitle,
     required this.workHours,
-    this.breakHours,
     required this.showDivider,
+    this.breakHours,
   });
 
   @override

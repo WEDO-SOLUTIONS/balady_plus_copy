@@ -20,13 +20,12 @@ class MiniAppsDataSourceImplementation implements MiniAppsLocalDataSource {
 
   @override
   Future<List<MiniAppModel>> getAllServices() async {
-    var response;
+    Response? response;
     try {
       response = await webServices.dio.get("/v1/balady-mini-apps/services");
 
       var result = response.data["data"]["result"]['items'];
-      List<MiniAppModel> list =
-          result.map<MiniAppModel>((e) => MiniAppModel.fromJson(e)).toList();
+      List<MiniAppModel> list = result.map<MiniAppModel>((e) => MiniAppModel.fromJson(e)).toList();
       return list;
     } on DioException catch (error, stackTrace) {
       LogsViewModel().sendEventFromModel(
@@ -57,9 +56,7 @@ class MiniAppsDataSourceImplementation implements MiniAppsLocalDataSource {
       } else {
         throw ServerException(
           "errors_server_error_2".tr(),
-          exception: APIException(
-            errorMessage: error.toString(),
-          ),
+          exception: APIException(errorMessage: error.toString()),
           response: response,
         );
       }
@@ -68,7 +65,7 @@ class MiniAppsDataSourceImplementation implements MiniAppsLocalDataSource {
 
   @override
   Future<String> getMiniAppAcessToken(String serviceId) async {
-    var response;
+    Response? response;
     try {
       response = await webServices.dio.post("/v1/balady-mini-apps/services/5D9B75C5-4F10-4D2D-A8EB-08DD972A4B5A/token");
 
@@ -104,9 +101,7 @@ class MiniAppsDataSourceImplementation implements MiniAppsLocalDataSource {
       } else {
         throw ServerException(
           "errors_server_error_2".tr(),
-          exception: APIException(
-            errorMessage: error.toString(),
-          ),
+          exception: APIException(errorMessage: error.toString()),
           response: response,
         );
       }

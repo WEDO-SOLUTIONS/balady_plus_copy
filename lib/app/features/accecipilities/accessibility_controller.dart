@@ -146,11 +146,11 @@ class AccessibilityController extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> _syncMapFontScale(double scale, DgisMapController? _dgisController) async {
-    if (_dgisController == null) return;
+  Future<void> _syncMapFontScale(double scale, DgisMapController? dgisController) async {
+    if (dgisController == null) return;
 
     try {
-      await _dgisController.setMapAttributeString('fontScaleMultiplier', value: scale.toString());
+      await dgisController.setMapAttributeString('fontScaleMultiplier', value: scale.toString());
     } catch (e) {
       debugPrint('Error syncing map font scale: $e');
     }

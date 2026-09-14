@@ -119,11 +119,9 @@ class AppColor {
   static const base500Light50 = Color(0x33fdfdfd);
   static const riverBed = Color(0xFF47515C);
   static const mystic = Color(0x7FE6EFEF);
-  static const lightgery = Color(0xfff545480);
-  static const borderBlck = Color(0xfff545454);
+  static const lightgery = Color(0xFF545480);
+  static const borderBlck = Color(0xFF545454);
   static const greenOptacty = Color(0xFFE6EFEF);
-
-
 
   static const Color kGray115 = Color.fromARGB(255, 115, 115, 115);
   static const Color kGray191 = Color.fromARGB(255, 191, 191, 191);
@@ -140,7 +138,6 @@ class AppColor {
   static const Color darkGrey = Color(0xffA9A9A9);
   static const Color kGreenBoarder = Color(0x32979797);
   static const Color darkGreylight = Color(0xff656363);
-
 
   static const Color greenLight = Color(0xff82c936);
   static const Color warmGreyText = Color(0xff808080);
@@ -168,8 +165,7 @@ class AppColor {
   static const golden = Color(0xffDFB300);
   static const litgrey = Color(0xff868686);
 
-
-// Primary Light Colors
+  // Primary Light Colors
 
   static const Color primary50Light = Color(0xffF4F9F8);
 
@@ -194,11 +190,9 @@ class AppColor {
   static const Color grey900Light = Color(0xffEEEEF1);
   static const Color greyLight = Color(0xff838A9E);
 
-
-
   // Secondary Light Colors
 
-// Secondary Light Colors
+  // Secondary Light Colors
 
   static const Color secondary50Light = Color(0xfff3f8ed);
 

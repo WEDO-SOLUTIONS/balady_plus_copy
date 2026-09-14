@@ -409,9 +409,9 @@ class _MakkahFeatureTile extends StatelessWidget {
   const _MakkahFeatureTile({
     required this.colors,
     required this.svgAsset,
-    this.iconUrl,
     required this.title,
     required this.subtitle,
+    this.iconUrl,
   });
 
   @override
