@@ -7,12 +7,15 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:mapness/_features/common/widgets/dragger.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
+import 'package:mapness/entities/favourites/favourite_item.dart';
 import 'package:mapness/features/favorite_lists/data/favorite_lists_remote_datasource.dart';
 import 'package:mapness/features/favorite_lists/providers/aggregated_favorite_markers.dart';
+import 'package:mapness/features/favorite_lists/providers/favorite_list_detail.dart';
 import 'package:mapness/features/favorite_lists/providers/favorite_lists.dart';
 import 'package:mapness/features/favorite_lists/ui/models/favorite_list_form_params.dart';
 import 'package:mapness/features/favorite_lists/ui/models/sheet_action_button.dart';
 import 'package:mapness/features/favorite_lists/ui/show_favorite_lists_error_sheet.dart';
+import 'package:mapness/features/favourites/helpers/favourite_entity_id.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/hooks/toggle_sheet_controller_hook.dart';
 import 'package:sheetify/sheetify.dart';
@@ -77,8 +80,37 @@ class FavoriteListMenuPage extends HookConsumerWidget {
                 title: context.l10n.addPlace,
               ),
               onTap: () async {
-                // TODO(claude): what should I do here? Ask designer
-                context.router.pop();
+                if (isSubmitting.value) {
+                  return;
+                }
+                final favItem = await context.router.push<FavouriteItem>(
+                  FavouritesSearchRoute(markerType: FavouriteItemMarkerType.place),
+                );
+                if (favItem == null) {
+                  return;
+                }
+                final placeId = parseObjectIdFromFavouriteEntityId(favItem.entity?.id)?.toString();
+                if (placeId == null) {
+                  return;
+                }
+                isSubmitting.value = true;
+                try {
+                  final dataSource = await ref.read(favoriteListsRemoteDataSourceProvider.future);
+                  await dataSource.addPlaceToList(listId, placeId);
+                  ref
+                    ..invalidate(favoriteListsResponseProvider)
+                    ..invalidate(favoriteListDetailProvider(listId: listId))
+                    ..invalidate(aggregatedFavoriteMarkersProvider);
+                } catch (e) {
+                  if (context.mounted) {
+                    showFavoriteListsErrorSheet(context, ref, e);
+                  }
+                } finally {
+                  isSubmitting.value = false;
+                  if (context.mounted) {
+                    context.router.pop();
+                  }
+                }
               },
             ),
             ContentRow(

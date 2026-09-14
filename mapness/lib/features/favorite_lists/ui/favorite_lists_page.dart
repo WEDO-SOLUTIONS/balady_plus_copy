@@ -156,9 +156,7 @@ class FavoriteListsPage extends HookConsumerWidget {
                         titleOptions: ContentRowTextOption(baseColor: context.colors.accentDefault),
                       ),
                       isDividerEnabled: true,
-                      onTap: () {
-                        // todo create new list
-                      },
+                      onTap: context.router.pop,
                     ),
                     ...favoriteListsAsync.when(
                       data: (lists) => lists.map((list) {
