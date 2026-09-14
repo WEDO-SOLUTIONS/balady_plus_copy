@@ -798,6 +798,11 @@ class _DgisBottomSheetState extends State<DgisBottomSheet>
   bool isFirstOpen = false;
 
   Future<void> onPopInvokedWithResult(didPop, Object? result) async {
+    // PopScope runs AFTER the route is already popped, so a second pop here
+    // would remove the screen underneath (the tab shell). BALADY-3614.
+    if (didPop) {
+      return;
+    }
     final lowestAvailableExpansion = _lowestAvailableExpansion();
     if (_expansion == lowestAvailableExpansion) {
       if (result != null) {
