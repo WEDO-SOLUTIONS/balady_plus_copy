@@ -28,10 +28,8 @@ class _ForceUpdatePageState extends State<ForceUpdatePage> {
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: () {
-        return Future.value(false);
-      },
+    return PopScope(
+      canPop: false,
       child: Scaffold(
         body: Center(child: SingleChildScrollView(child: body())),
       ),
@@ -76,10 +74,7 @@ class _ForceUpdatePageState extends State<ForceUpdatePage> {
             text: "force_update_app".tr(),
             onPressed: () {
               if (Platform.isAndroid) {
-                StoreRedirect.redirect(
-                  androidAppId: "momra.balady.android",
-                  iOSAppId: "1522185123",
-                );
+                StoreRedirect.redirect(androidAppId: "momra.balady.android", iOSAppId: "1522185123");
               } else {
                 _openAppStore();
               }

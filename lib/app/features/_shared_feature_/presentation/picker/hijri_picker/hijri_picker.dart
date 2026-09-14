@@ -174,8 +174,11 @@ class Picker {
                   if (onCancel != null) onCancel!();
                 },
                 child: cancelTextStyle == null
-                    ? Text(_cancelText, textScaleFactor: 1)
-                    : DefaultTextStyle(style: cancelTextStyle!, child: Text(_cancelText, textScaleFactor: 1)),
+                    ? Text(_cancelText, textScaler: TextScaler.noScaling)
+                    : DefaultTextStyle(
+                        style: cancelTextStyle!,
+                        child: Text(_cancelText, textScaler: TextScaler.noScaling),
+                      ),
               ),
             );
           }
@@ -193,8 +196,11 @@ class Picker {
                   if (onConfirm != null) onConfirm!(this, selecteds!);
                 },
                 child: confirmTextStyle == null
-                    ? Text(_confirmText, textScaleFactor: 1)
-                    : DefaultTextStyle(style: confirmTextStyle!, child: Text(_confirmText, textScaleFactor: 1)),
+                    ? Text(_confirmText, textScaler: TextScaler.noScaling)
+                    : DefaultTextStyle(
+                        style: confirmTextStyle!,
+                        child: Text(_confirmText, textScaler: TextScaler.noScaling),
+                      ),
               ),
             );
           }
@@ -390,7 +396,7 @@ class PickerWidgetState<T> extends State<_PickerWidget> {
             child: Text(
               _cancelText,
               overflow: TextOverflow.ellipsis,
-              textScaleFactor: 1,
+              textScaler: TextScaler.noScaling,
               style:
                   picker!.cancelTextStyle ??
                   TextStyle(color: theme!.colorScheme.secondary, fontSize: Picker.defaultTextSize),
@@ -434,7 +440,7 @@ class PickerWidgetState<T> extends State<_PickerWidget> {
             },
             child: Text(
               _confirmText,
-              textScaleFactor: 1,
+              textScaler: TextScaler.noScaling,
               overflow: TextOverflow.ellipsis,
               style:
                   picker!.confirmTextStyle ??
@@ -598,7 +604,8 @@ abstract class PickerAdapter<T> {
         maxLines: 1,
         textAlign: picker!.textAlign,
         style: picker!.textStyle ?? const TextStyle(color: Colors.black87, fontSize: Picker.defaultTextSize),
-        child: child ?? Text(text!, textScaleFactor: 1, style: (isSel! ? picker!.selectedTextStyle : null)),
+        child:
+            child ?? Text(text!, textScaler: TextScaler.noScaling, style: (isSel! ? picker!.selectedTextStyle : null)),
       ),
     );
   }
@@ -606,7 +613,9 @@ abstract class PickerAdapter<T> {
   Widget makeTextEx(Widget? child, String? text, Widget? postfix, Widget? suffix, bool? isSel) {
     List<Widget> items = [];
     if (postfix != null) items.add(postfix);
-    items.add(child ?? Text(text!, style: (isSel! ? picker!.selectedTextStyle : null), textScaleFactor: 1));
+    items.add(
+      child ?? Text(text!, style: (isSel! ? picker!.selectedTextStyle : null), textScaler: TextScaler.noScaling),
+    );
     if (suffix != null) items.add(suffix);
 
     var _txtColor = Colors.black87;

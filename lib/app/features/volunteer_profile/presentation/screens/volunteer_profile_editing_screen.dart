@@ -59,13 +59,15 @@ class _VolunteerProfileEditingScreenState extends State<VolunteerProfileEditingS
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: () async {
-        // This will be called when back button is pressed
-        debugPrint('WillPopScope triggered in edit mode');
-        // Restore original values
+    return PopScope(
+      // The pop was always allowed; only the cleanup mattered. PopScope runs
+      // this after the route is gone, which is fine for restoring the bloc's
+      // pre-edit values.
+      onPopInvokedWithResult: (didPop, _) {
+        if (!didPop) {
+          return;
+        }
         VolunteerPresentationMode.cancelEditMode(context, widget.volunteerProfileBloc, originalValues!);
-        return true; // Allow pop
       },
       child: Theme(
         data: Theme.of(NavigationService.navigatorKey.currentState!.context),

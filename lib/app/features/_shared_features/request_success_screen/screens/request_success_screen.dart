@@ -39,10 +39,8 @@ class SubmitApplicationSuccessfullyCancel extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Map arguments = ModalRoute.of(context)!.settings.arguments as Map;
-    return WillPopScope(
-      onWillPop: () async {
-        return Future<bool>.value(false);
-      },
+    return PopScope(
+      canPop: false,
       child: Scaffold(
         body: Padding(
           padding: const EdgeInsets.all(16.0),

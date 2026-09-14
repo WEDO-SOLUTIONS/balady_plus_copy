@@ -8,11 +8,7 @@ class BaseView<T extends BaseViewModel> extends StatefulWidget {
   final Function(T) onModelReady;
   final Function()? onHideKeyboard;
 
-  const BaseView(
-      {super.key,
-      required this.builder,
-      required this.onModelReady,
-      this.onHideKeyboard});
+  const BaseView({super.key, required this.builder, required this.onModelReady, this.onHideKeyboard});
 
   @override
   _BaseViewState<T> createState() => _BaseViewState<T>();
@@ -34,16 +30,13 @@ class _BaseViewState<T extends BaseViewModel> extends State<BaseView<T>> {
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: () =>
-          model.isLoading ? Future.value(false) : Future.value(true),
+    return PopScope(
+      canPop: !model.isLoading,
       child: GestureDetector(
         onTap: () => hideKeyboard(),
         child: ChangeNotifierProvider<T>.value(
           value: model,
-          child: Consumer<T>(
-            builder: widget.builder,
-          ),
+          child: Consumer<T>(builder: widget.builder),
         ),
       ),
     );

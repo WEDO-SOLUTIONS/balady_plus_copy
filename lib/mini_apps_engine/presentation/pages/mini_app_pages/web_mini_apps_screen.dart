@@ -109,14 +109,23 @@ class _WebMiniAppsScreenState extends ConsumerState<WebMiniAppsScreen> {
       _initialized = true;
     }
 
-    return WillPopScope(
-      onWillPop: () async {
-        final canPop = await _controller.canGoBack();
-        if (canPop) {
-          _controller.goBack();
-          return false;
+    return PopScope(
+      // Back first walks the web view's own history; only when it has none left
+      // does the route itself go. `canGoBack` is async, so the decision cannot
+      // be made in `canPop` - the route is held and popped by hand instead.
+      canPop: false,
+      onPopInvokedWithResult: (didPop, _) async {
+        if (didPop) {
+          return;
         }
-        return true;
+        // Resolved before the await: `context` here is the build parameter, not
+        // `State.context`, so a `mounted` check afterwards would not cover it.
+        final navigator = Navigator.of(context);
+        if (await _controller.canGoBack()) {
+          await _controller.goBack();
+          return;
+        }
+        navigator.pop();
       },
       child: ValueListenableBuilder<bool>(
         valueListenable: _isLoading,

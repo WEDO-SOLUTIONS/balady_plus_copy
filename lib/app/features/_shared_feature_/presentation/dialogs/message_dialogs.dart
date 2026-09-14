@@ -30,8 +30,8 @@ class MessageDialog {
       (await showGeneralDialog<bool>(
         barrierColor: Colors.black.withValues(alpha: 0.6),
         transitionBuilder: (_, a1, a2, widget) {
-          return WillPopScope(
-            onWillPop: () async => false,
+          return PopScope(
+            canPop: false,
             child: Transform.scale(
               scale: a1.value,
               child: Opacity(opacity: a1.value, child: child),
