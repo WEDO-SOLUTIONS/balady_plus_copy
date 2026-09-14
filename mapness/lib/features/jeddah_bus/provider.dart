@@ -1,11 +1,9 @@
-import 'dart:async';
-
 import 'package:dgis_map/library.dart';
 import 'package:mapness/entities/bus/model.dart';
 import 'package:mapness/features/jeddah_bus/repo.dart';
 import 'package:mapness/features/jeddah_bus/visible_provider.dart';
-import 'package:mapness/shared/providers/dark_mode.dart';
 import 'package:mapness/shared/providers/map/camera_position.dart';
+import 'package:mapness/shared/providers/map/map_layer_visibility_sync.dart';
 import 'package:mapness/shared/providers/map/object_manager.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -35,40 +33,21 @@ class JeddahBusLayer extends _$JeddahBusLayer {
       return lines;
     }
 
-    bool isDrawn = false;
+    // Visibility is driven from two independent listeners, and show/hide both
+    // clear and repopulate the same object manager - overlapping calls used to
+    // leave the layer half-drawn. The sync serialises them and collapses
+    // bursts into the last requested state.
+    final visibility = MapLayerVisibilitySync(
+      apply: ({required bool visible}) => visible ? show(data: lines) : hide(),
+      isDisposed: () => _isDisposed,
+      tag: 'jeddahBus.layer',
+    );
 
     ref
-      ..listen(cameraPositionProvider, (prev, position) {
-        if (_isDisposed) {
-          return;
-        }
-        final isShown = ref.read(jeddahBusLayerVisibleProvider);
-        if (isShown && !isDrawn) {
-          isDrawn = true;
-          unawaited(show());
-        } else if (!isShown && isDrawn) {
-          isDrawn = false;
-          unawaited(hide());
-        }
-      })
-      ..listen(jeddahBusLayerVisibleProvider, (prev, isShown) {
-        if (_isDisposed) {
-          return;
-        }
-        if (isShown && !isDrawn) {
-          isDrawn = true;
-          unawaited(show());
-        } else if (!isShown && isDrawn) {
-          isDrawn = false;
-          unawaited(hide());
-        }
-      });
+      ..listen(cameraPositionProvider, (_, __) => visibility.request(visible: ref.read(jeddahBusLayerVisibleProvider)))
+      ..listen(jeddahBusLayerVisibleProvider, (_, isShown) => visibility.request(visible: isShown));
 
-    final isShown = ref.read(jeddahBusLayerVisibleProvider);
-    if (isShown) {
-      isDrawn = true;
-      unawaited(show(data: lines));
-    }
+    visibility.request(visible: ref.read(jeddahBusLayerVisibleProvider));
 
     return lines;
   }
@@ -84,9 +63,6 @@ class JeddahBusLayer extends _$JeddahBusLayer {
         layerId: mapOptions.layerId,
       ).notifier,
     );
-
-    final darkMode = await ref.read(darkModeProvider.future);
-    final isDarkMode = darkMode.isDark;
 
     await mapManager.removeAllMarkers();
     await mapManager.removeAllPolyLines();

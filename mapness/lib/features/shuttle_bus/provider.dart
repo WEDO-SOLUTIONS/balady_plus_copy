@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:mapness/entities/makkah_buses/model.dart';
@@ -7,6 +5,7 @@ import 'package:mapness/shared/providers/dark_mode.dart' show darkModeProvider;
 import 'repo.dart';
 import 'visible_provider.dart';
 import 'package:mapness/shared/providers/map/camera_position.dart';
+import 'package:mapness/shared/providers/map/map_layer_visibility_sync.dart';
 import 'package:mapness/shared/providers/map/object_manager.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -35,40 +34,21 @@ class ShuttleBusLayer extends _$ShuttleBusLayer {
       return list;
     }
 
-    bool isDrawn = false;
+    // Visibility is driven from two independent listeners, and show/hide both
+    // clear and repopulate the same object manager - overlapping calls used to
+    // leave the layer half-drawn. The sync serialises them and collapses
+    // bursts into the last requested state.
+    final visibility = MapLayerVisibilitySync(
+      apply: ({required bool visible}) => visible ? show(data: list) : hide(),
+      isDisposed: () => _isDisposed,
+      tag: 'shuttleBus.layer',
+    );
 
     ref
-      ..listen(cameraPositionProvider, (prev, position) {
-        if (_isDisposed) {
-          return;
-        }
-        final isShown = ref.read(shuttleBusLayerVisibleProvider);
-        if (isShown && !isDrawn) {
-          isDrawn = true;
-          unawaited(show());
-        } else if (!isShown && isDrawn) {
-          isDrawn = false;
-          unawaited(hide());
-        }
-      })
-      ..listen(shuttleBusLayerVisibleProvider, (prev, isShown) {
-        if (_isDisposed) {
-          return;
-        }
-        if (isShown && !isDrawn) {
-          isDrawn = true;
-          unawaited(show());
-        } else if (!isShown && isDrawn) {
-          isDrawn = false;
-          unawaited(hide());
-        }
-      });
+      ..listen(cameraPositionProvider, (_, __) => visibility.request(visible: ref.read(shuttleBusLayerVisibleProvider)))
+      ..listen(shuttleBusLayerVisibleProvider, (_, isShown) => visibility.request(visible: isShown));
 
-    final isVisible = ref.read(shuttleBusLayerVisibleProvider);
-    if (isVisible) {
-      isDrawn = true;
-      unawaited(show(data: list));
-    }
+    visibility.request(visible: ref.read(shuttleBusLayerVisibleProvider));
 
     return list;
   }
@@ -86,6 +66,9 @@ class ShuttleBusLayer extends _$ShuttleBusLayer {
     );
 
     final darkMode = await ref.read(darkModeProvider.future);
+    if (_isDisposed) {
+      return;
+    }
     final isDarkMode = darkMode.isDark;
     await mapManager.removeAllMarkers();
     await mapManager.removeAllPolyLines();
