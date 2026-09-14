@@ -21,7 +21,7 @@ import 'package:mapness/features/lifestyle_layers/providers/layers_controls.dart
 import 'package:mapness/features/map_tap_handler/map_tap_handler_provider.dart';
 import 'package:mapness/features/search/providers/search.dart';
 import 'package:mapness/features/search/ui/search_scope.dart';
-import 'package:mapness/pages/landing/landing_page.dart';
+import 'package:mapness/pages/bottom_menu/bottom_sheet_controllers.dart';
 import 'package:mapness/pages/routing/ui/routing_header_delegate.dart';
 import 'package:mapness/pages/routing/ui/routing_history.dart';
 import 'package:mapness/pages/routing/ui/routing_map_controls.dart';
@@ -37,8 +37,13 @@ import 'package:sheetify/sheetify.dart';
 class RoutingPointsPage extends StatelessWidget {
   const RoutingPointsPage({super.key});
 
+  // No LayoutBuilder here on purpose: the one that used to wrap this ignored
+  // `constraints` and returned a const child, so it never rebuilt on a
+  // constraint change - it only added a relayout boundary and its own
+  // BuildScope for nothing. IndexedStack lays out every tab, not just the
+  // visible one, so that cost was paid on every frame.
   @override
-  Widget build(BuildContext context) => LayoutBuilder(builder: (context, constraints) => const RoutingPointsSheet());
+  Widget build(BuildContext context) => const RoutingPointsSheet();
 }
 
 class RoutingPointsSheet extends ConsumerStatefulWidget {
@@ -53,9 +58,7 @@ class _RoutingPointsSheetState extends ConsumerState<RoutingPointsSheet> {
 
   /// Subscribes to object tap events on the map
   StreamSubscription<TapEvent>? _objectTapStreamSubscription;
-  MultiStateSheetController<ThreeStateSheet>? _bottomSheetController;
-  VoidCallback? _removeFooterOpacityListener;
-  VoidCallback? _clearBottomSheetController;
+  late final MultiStateSheetController<ThreeStateSheet> _bottomSheetController;
 
   final ValueNotifier<double> footerOpacity = ValueNotifier<double>(1.0);
 
@@ -66,36 +69,29 @@ class _RoutingPointsSheetState extends ConsumerState<RoutingPointsSheet> {
   @override
   void initState() {
     _setupTapListener();
-    final bottomSheetControllerWrapper = ref.read(bottomSheetControllerProvider.notifier).state;
-    final bottomSheetController = bottomSheetControllerWrapper.controller;
-    _bottomSheetController = bottomSheetController;
-    bottomSheetController?.addListener(updateFooterOpacity);
-    _removeFooterOpacityListener = () => bottomSheetController?.removeListener(updateFooterOpacity);
-    _clearBottomSheetController = () {
-      if (identical(bottomSheetControllerWrapper.controller, bottomSheetController)) {
-        bottomSheetControllerWrapper.controller = null;
-      }
-    };
+    // This page drives the Routes tab's own controller. It used to read
+    // whichever controller happened to be active, which meant it could attach
+    // to - and on dispose clear - the Landing tab's one instead. BottomMenuPage
+    // supplies it through a ProviderScope override, so it is non-null here.
+    _bottomSheetController = ref.read(routingSheetControllerProvider);
+    _bottomSheetController.addListener(updateFooterOpacity);
     super.initState();
   }
 
-  void updateFooterOpacity() => footerOpacity.value = min(
-    1.0,
-    (1 - _bottomSheetController!.fraction) * 2,
-  );
+  void updateFooterOpacity() => footerOpacity.value = min(1.0, (1 - _bottomSheetController.fraction) * 2);
 
   @override
   void dispose() {
-    _removeFooterOpacityListener?.call();
-    _clearBottomSheetController?.call();
+    // The controller itself belongs to BottomMenuPage. This page used to null it
+    // out of the shared slot on dispose, which cleared the *active* tab's
+    // controller whenever it was torn down while another tab was open.
+    _bottomSheetController.removeListener(updateFooterOpacity);
+    // Was cancelled in `deactivate` with no matching re-subscribe in
+    // `activate`, so the map tap listener died for good the first time this
+    // element was moved in the tree.
+    _objectTapStreamSubscription?.cancel();
     footerOpacity.dispose();
     super.dispose();
-  }
-
-  @override
-  void deactivate() {
-    _objectTapStreamSubscription?.cancel();
-    super.deactivate();
   }
 
   @override
@@ -187,7 +183,7 @@ class _RoutingPointsSheetState extends ConsumerState<RoutingPointsSheet> {
             ),
           ),
         ),
-        scrollController: ref.read(bottomSheetControllerProvider.notifier).state.controller!,
+        scrollController: _bottomSheetController,
       ),
     );
   }
@@ -321,16 +317,23 @@ class _RoutingPointsSheetState extends ConsumerState<RoutingPointsSheet> {
   }
 
   void _tapListener(event) {
-    if (event is ObjectTapEvent) {
-      final state = ref.read(bottomSheetControllerProvider.notifier).state.controller!.state;
-      switch (state) {
-        case ThreeStateSheet.open:
-          break;
-        case ThreeStateSheet.hidden:
-        case ThreeStateSheet.expanded:
-          ref.read(bottomSheetControllerProvider.notifier).state.controller?.setState(ThreeStateSheet.open);
-          break;
-      }
+    if (event is! ObjectTapEvent) {
+      return;
+    }
+    // Fires from a map stream, long after build: the controller may already be
+    // gone. This used to bang on it and crash on any object tap once the
+    // reference had been cleared.
+    final controller = ref.read(activeBottomSheetControllerProvider);
+    if (controller == null) {
+      return;
+    }
+    switch (controller.state) {
+      case ThreeStateSheet.open:
+        break;
+      case ThreeStateSheet.hidden:
+      case ThreeStateSheet.expanded:
+        controller.setState(ThreeStateSheet.open);
+        break;
     }
   }
 }

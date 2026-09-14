@@ -71,8 +71,8 @@ import 'package:mapness/features/stories/providers/stories_open_state.dart';
 import 'package:mapness/l10n/generated/app_localizations.dart';
 import 'package:mapness/l10n/generated/app_localizations_ar.dart';
 import 'package:mapness/l10n/generated/app_localizations_en.dart';
+import 'package:mapness/pages/bottom_menu/bottom_sheet_controllers.dart';
 import 'package:mapness/pages/debug_overlay/debug_overlay.dart';
-import 'package:mapness/pages/landing/landing_page.dart';
 import 'package:mapness/pages/path_nav/path_nav_page.dart';
 import 'package:mapness/shared/constants/constants.dart';
 import 'package:mapness/shared/lib/auth/auth_methods.dart';
@@ -1112,7 +1112,7 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> with Widg
     // if we come from stories we must close them for nice user experience
     if (eventHandled && areStoriesOpen && router.canPop()) {
       await router.topMostRouter().maybePop();
-      ref.read(bottomSheetControllerProvider.notifier).state.controller?.setState(ThreeStateSheet.hidden);
+      ref.read(activeBottomSheetControllerProvider)?.setState(ThreeStateSheet.hidden);
     }
   }
 

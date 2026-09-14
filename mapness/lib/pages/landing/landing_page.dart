@@ -17,14 +17,13 @@ import 'package:mapness/features/thermal_monitor/thermal_monitor.dart';
 import 'package:mapness/shared/lib/urbi_metrics_utils.dart';
 import 'package:mapness/shared/providers/map/camera_padding.dart';
 import 'package:mapness/shared/providers/map/object_manager.dart';
+import 'package:mapness/pages/bottom_menu/bottom_sheet_controllers.dart';
 import 'package:mapness/shared/providers/map/sound_settings.dart';
 import 'package:mapness/shared/providers/media_query.dart';
 import 'package:mapness/widgets/hajj/hajj_wrapper_listeners.dart';
 import 'package:mapness/widgets/landing/dashboard/dashboard.dart';
 import 'package:provider/provider.dart';
 import 'package:sheetify/sheetify.dart';
-
-part 'landing_page_bottom_sheet_controller.dart';
 
 @RoutePage()
 class LandingPage extends ConsumerStatefulWidget {
@@ -36,9 +35,18 @@ class LandingPage extends ConsumerStatefulWidget {
 
 class _LandingPageState extends ConsumerState<LandingPage>
     with WidgetsBindingObserver, TickerProviderStateMixin, AutoRouteAwareStateMixin<LandingPage> {
-  late final bottomSheetController = ref.read(bottomSheetControllerProvider.notifier).state.controller;
+  /// The Landing tab's *own* sheet controller.
+  ///
+  /// This page stays mounted behind the other tabs, so it must drive its own
+  /// sheet - it used to read the shared "active" slot and silently pick up the
+  /// Routes tab's controller. BottomMenuPage supplies this through a
+  /// ProviderScope override, so it is available and non-null from the first
+  /// build; reading it once is safe.
+  late final MultiStateSheetController<ThreeStateSheet> bottomSheetController = ref.read(
+    landingSheetControllerProvider,
+  );
 
-  ThreeStateSheet? get bottomSheetState => bottomSheetController?.state;
+  ThreeStateSheet get bottomSheetState => bottomSheetController.state;
 
   ConfettiGeneratorConfig getConfettiConfig(BuildContext context) {
     final color = ref.read(activeCityEventProvider)?.fireworkGradientColors;
@@ -80,8 +88,7 @@ class _LandingPageState extends ConsumerState<LandingPage>
       _mediaQuery = ref.read(mediaQueryInfoProvider);
     });
     _sheetOverlayVisible = bottomSheetState != ThreeStateSheet.hidden;
-    bottomSheetController?.addListener(_bottomsheetListener);
-    _traceSheet('init');
+    bottomSheetController.addListener(_bottomsheetListener);
 
     _setupTapListener();
   }
@@ -96,8 +103,7 @@ class _LandingPageState extends ConsumerState<LandingPage>
   }
 
   void _calculatePadding() {
-    final bottomSheetController = this.bottomSheetController;
-    if (!mounted || bottomSheetController == null) {
+    if (!mounted) {
       return;
     }
 
@@ -114,15 +120,14 @@ class _LandingPageState extends ConsumerState<LandingPage>
   }
 
   void _bottomsheetListener() {
-    final state = bottomSheetController?.state;
-    final closestState = bottomSheetController?.closestState;
+    final state = bottomSheetController.state;
+    final closestState = bottomSheetController.closestState;
     if (state != _lastTracedSheetState || closestState != _lastTracedClosestSheetState) {
       _lastTracedSheetState = state;
       _lastTracedClosestSheetState = closestState;
-      _traceSheet('sheet-listener');
     }
 
-    if (bottomSheetController?.state == ThreeStateSheet.expanded && !_sheetExpanded) {
+    if (bottomSheetController.state == ThreeStateSheet.expanded && !_sheetExpanded) {
       _sheetExpanded = true;
       final isFoundingDayToday = ref.read(foundingDayUrbiProvider);
       if (isFoundingDayToday) {
@@ -138,8 +143,7 @@ class _LandingPageState extends ConsumerState<LandingPage>
 
   @override
   void dispose() {
-    _traceSheet('dispose');
-    bottomSheetController?.removeListener(_bottomsheetListener);
+    bottomSheetController.removeListener(_bottomsheetListener);
 
     WidgetsBinding.instance.removeObserver(this);
     confettiController.dispose();
@@ -243,7 +247,7 @@ class _LandingPageState extends ConsumerState<LandingPage>
                 Padding(
                   padding: const EdgeInsets.only(top: Spacing.$3x),
                   child: Dashboard(
-                    bottomSheetController: bottomSheetController!,
+                    bottomSheetController: bottomSheetController,
                     fireworksController: confettiController,
                   ),
                 ),
@@ -274,18 +278,9 @@ class _LandingPageState extends ConsumerState<LandingPage>
   }
 
   void _hideBottomSheet() {
-    _traceSheet('hideBottomSheet-before');
     if (bottomSheetState != ThreeStateSheet.hidden) {
-      bottomSheetController?.setState(ThreeStateSheet.hidden);
+      bottomSheetController.setState(ThreeStateSheet.hidden);
     }
     _syncSheetOverlayVisibility();
-    _traceSheet('hideBottomSheet-after');
-  }
-
-  void _traceSheet(String event) {
-    final controller = bottomSheetController;
-    if (controller == null) {
-      return;
-    }
   }
 }

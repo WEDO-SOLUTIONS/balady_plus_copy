@@ -6,7 +6,7 @@ import 'package:mapness/_features/common/widgets/dragger.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/features/lifestyle_layers/providers/layers_controls.dart';
 import 'package:mapness/features/lifestyle_layers/providers/layers_state.dart';
-import 'package:mapness/pages/landing/landing_page.dart';
+import 'package:mapness/pages/bottom_menu/bottom_sheet_controllers.dart';
 import 'package:mapness/widgets/lifestyle_layers/bus/bus_details_content.dart';
 import 'package:mapness/widgets/lifestyle_layers/layers_sheet_content.dart';
 import 'package:mapness/widgets/lifestyle_layers/parking_details_content.dart';
@@ -136,7 +136,7 @@ class LayersSheetPageState extends ConsumerState<LayersSheetPage> {
                 // This trick we use to open the sheet after closing it
                 // in order to avoid overlapping of the two sheets
                 if (isRoutingOpen) {
-                  final controller = ref.read(bottomSheetControllerProvider).controller;
+                  final controller = ref.read(activeBottomSheetControllerProvider);
                   final isBottomSheetOpen = controller?.state == ThreeStateSheet.open;
                   if (isBottomSheetOpen) {
                     controller?.setState(ThreeStateSheet.open);

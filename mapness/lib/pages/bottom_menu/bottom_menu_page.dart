@@ -11,6 +11,7 @@ import 'package:mapness/features/app_analytics/app_analytics.dart';
 import 'package:mapness/features/app_analytics/datafinder_source_tracker.dart';
 import 'package:mapness/features/app_analytics/models/datafinder_models.dart';
 import 'package:mapness/features/city_event/active_city_event.dart';
+import 'package:mapness/pages/bottom_menu/bottom_sheet_controllers.dart';
 import 'package:mapness/pages/landing/landing_page.dart';
 import 'package:mapness/pages/landing/landing_state_mapper.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
@@ -46,18 +47,52 @@ class _BottomMenuPageState extends ConsumerState<BottomMenuPage> with TickerProv
     initialState: ThreeStateSheet.open,
   );
 
+  /// The controller of the tab currently on screen.
+  ///
+  /// Tabs 2 and 3 have no sheet of their own, so they keep whatever the
+  /// previous tab published rather than clearing it.
+  late MultiStateSheetController<ThreeStateSheet> _activeController = landingController;
+
   @override
   void initState() {
-    ref.read(bottomSheetControllerProvider.notifier).state.controller = landingController;
     super.initState();
+    // AutoTabsRouter does not fire `onNavigate` for the initial tab, so the
+    // first publish has to happen here. Descendants do not depend on it - they
+    // read the controllers through the ProviderScope override in `build`.
+    _afterFrame(_publishActiveController);
   }
+
+  /// Runs [action] once the current frame is over.
+  ///
+  /// Every mutation of provider state goes through here. Riverpod forbids
+  /// provider writes from widget life-cycles, and both entry points into this
+  /// class are life-cycles: `initState` runs inside
+  /// `StatefulElement._firstBuild`, and AutoTabsRouter calls `onNavigate` from
+  /// `didUpdateWidget` as well as from its tab controller's listener.
+  void _afterFrame(VoidCallback action) => WidgetsBinding.instance.addPostFrameCallback((_) {
+    if (!mounted) {
+      return;
+    }
+    action();
+  });
 
   @override
   void dispose() {
-    landingController.dispose();
-    routingController.dispose();
+    // `dispose` is one of the life-cycles Riverpod forbids writes from, so the
+    // release is deferred - and the controllers are disposed with it, so the
+    // provider never points at a dead controller in between.
+    final landing = landingController;
+    final routing = routingController;
+    final active = ref.read(activeBottomSheetControllerProvider.notifier);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      active.release([landing, routing]);
+      landing.dispose();
+      routing.dispose();
+    });
     super.dispose();
   }
+
+  void _publishActiveController() => ref.read(activeBottomSheetControllerProvider.notifier).attach(_activeController);
 
   void _onTabChanged(int index) {
     // DataFinder: the bottom-menu tab sets the journey origin. Tab 0 = Explore
@@ -70,49 +105,60 @@ class _BottomMenuPageState extends ConsumerState<BottomMenuPage> with TickerProv
       tracker.stampOrigin(DataFinderOrigin.routes);
     }
 
-    final controller = switch (index) {
+    _activeController = switch (index) {
       0 => landingController,
       1 => routingController,
-      _ => ref.read(bottomSheetControllerProvider.notifier).state.controller,
+      _ => _activeController,
     };
 
     if (index > 1) {
-      controller?.setState(ThreeStateSheet.open);
+      final controller = _activeController;
+      _afterFrame(() => controller.setState(ThreeStateSheet.open));
     }
 
-    ref.read(bottomSheetControllerProvider.notifier).state.controller = controller;
+    _afterFrame(_publishActiveController);
   }
 
   @override
-  Widget build(BuildContext context) => AutoTabsRouter.builder(
-    routes: [const LandingRoute(), const RoutingPointsRoute(), MapnessServicesRoute(), const ProfileRoute()],
-    onNavigate: (tab) {
-      _onTabChanged(tab.activeIndex);
+  Widget build(BuildContext context) => ProviderScope(
+    // An override is scope configuration, not a provider write, so it is legal
+    // during build - and it makes both controllers available synchronously on
+    // the descendants' first build. That is what lets LandingPage and
+    // RoutingPointsSheet treat them as non-null and keep their subtrees
+    // structurally stable.
+    overrides: [
+      landingSheetControllerProvider.overrideWithValue(landingController),
+      routingSheetControllerProvider.overrideWithValue(routingController),
+    ],
+    child: AutoTabsRouter.builder(
+      routes: [const LandingRoute(), const RoutingPointsRoute(), MapnessServicesRoute(), const ProfileRoute()],
+      onNavigate: (tab) {
+        _onTabChanged(tab.activeIndex);
 
-      // Send event to analytics when route is Selected
-      if (tab.activeIndex == 1) {
-        ref.read(advertMetricsProvider.notifier).sendEvent(AdvertMetricsKeys.exploreLandingRoute);
-      }
+        // Send event to analytics when route is Selected
+        if (tab.activeIndex == 1) {
+          ref.read(advertMetricsProvider.notifier).sendEvent(AdvertMetricsKeys.exploreLandingRoute);
+        }
 
-      if (tab.activeIndex == 2 && tab.previousIndex != 2) {
-        ref.read(appAnalyticsProvider).serviceSectionVisited();
-      }
-    },
-    builder: (_, tabsRouter, route) {
-      final controller = ref.watch(bottomSheetControllerProvider.notifier).state.controller;
-      final isFoundedDay = ref.watch(activeCityEventProvider)?.isFoundingDay ?? false;
-      final accentColor = isFoundedDay ? context.colors.accentSecondaryDefault : context.colors.accentDefault;
-      return Column(
-        children: [
-          Expanded(
-            child: LazyIndexedStack(
-              index: route.activeIndex,
-              children: tabsRouter,
+        if (tab.activeIndex == 2 && tab.previousIndex != 2) {
+          ref.read(appAnalyticsProvider).serviceSectionVisited();
+        }
+      },
+      builder: (_, tabsRouter, route) {
+        // The nav bar owns this controller directly - going through the provider
+        // would leave it blank for the frame before the deferred publish lands.
+        // auto_route calls setState right after onNavigate, so this stays fresh.
+        final controller = _activeController;
+        final isFoundedDay = ref.watch(activeCityEventProvider)?.isFoundingDay ?? false;
+        final accentColor = isFoundedDay ? context.colors.accentSecondaryDefault : context.colors.accentDefault;
+        return Column(
+          children: [
+            Expanded(
+              child: LazyIndexedStack(
+                index: route.activeIndex,
+                children: tabsRouter,
+              ),
             ),
-          ),
-          if (controller == null)
-            const SizedBox.shrink()
-          else
             ListenableBuilder(
               listenable: controller,
               builder: (context, child) {
@@ -199,8 +245,9 @@ class _BottomMenuPageState extends ConsumerState<BottomMenuPage> with TickerProv
                 );
               },
             ),
-        ],
-      );
-    },
+          ],
+        );
+      },
+    ),
   );
 }

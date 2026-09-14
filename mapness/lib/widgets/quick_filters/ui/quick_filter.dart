@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/features/special_themes/core/special_theme_mode.dart';
 import 'package:mapness/features/special_themes/modes/mekkah_base/makkah_poi_constants.dart';
-import 'package:mapness/pages/landing/landing_page.dart';
+import 'package:mapness/pages/bottom_menu/bottom_sheet_controllers.dart';
 import 'package:mapness/shared/providers/dark_mode.dart';
 import 'package:mapness/widgets/quick_filters/models/filter_item.dart';
 
@@ -17,8 +17,7 @@ class QuickFilter extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final controllerWrapper = ref.watch(bottomSheetControllerProvider);
-    final controller = controllerWrapper.controller;
+    final controller = ref.watch(activeBottomSheetControllerProvider);
 
     final colors = context.colors;
 
@@ -49,9 +48,7 @@ class QuickFilter extends ConsumerWidget {
     final Color chipBackground = isMekkahTheme && isDark
         ? MakkahPoiConstants.darkSheet
         : context.colors.backgroundSurface2;
-    final Color chipForeground = isMekkahTheme && isDark
-        ? const Color(0xFFFFFFFF)
-        : context.colors.foregroundDefault;
+    final Color chipForeground = isMekkahTheme && isDark ? const Color(0xFFFFFFFF) : context.colors.foregroundDefault;
     final WidgetColors chipsColors = WidgetColors(
       background: chipBackground,
       foreground: chipForeground,
