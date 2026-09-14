@@ -1,6 +1,5 @@
 import 'package:balady_uikit/balady_uikit.dart' as uikit;
 import 'package:balady_uikit/core/extensions/layout_extension.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/_features/common/providers/ui_direction.dart';
@@ -16,7 +15,6 @@ import 'package:mapness/widgets/landing/follow_control.dart';
 import 'package:mapness/widgets/landing/indoor_control.dart';
 import 'package:mapness/widgets/landing/layers_control.dart';
 import 'package:mapness/widgets/landing/tifo_control.dart';
-import 'package:mapness/widgets/landing/zoom_control.dart';
 import 'package:mapness/widgets/map_dimensions_control/dimension_contrtol.dart';
 import 'package:mapness/widgets/parking_spot/parking_control.dart';
 import 'package:mapness/widgets/weather/weather_control.dart';
@@ -36,6 +34,7 @@ class MapDashboardControls extends ConsumerWidget {
     final controlsHeight = 56 + (showLaunchingFreeRoam ? 8 : 0);
 
     final uiDirection = ref.watch(uiDirectionProvider);
+    final tifoBuildingsVisible = ref.watch(tifoBuildingsMapLayerProvider);
     return Directionality(
       textDirection: TextDirection.ltr,
       child: Column(
@@ -85,26 +84,31 @@ class MapDashboardControls extends ConsumerWidget {
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
                       const LayersControl(),
-                      const SizedBox(height: uikit.Spacing.$2x),
-                      const DimensionControl(),
+                      // The 2D/3D toggle steps aside while the TIFO overlay is
+                      // up: the camera is pinned to the bird-eye view there
+                      // (BR-05) and `_reassertTopDown` flattens it again after
+                      // every gesture, so switching to 3D is undone within a
+                      // fraction of a second. Left out of the column rather
+                      // than hidden - its own hidden state still returns a
+                      // 48px box so neighbours don't jump, which would free no
+                      // space and the column would keep overflowing.
+                      if (!tifoBuildingsVisible) ...[
+                        const SizedBox(height: uikit.Spacing.$2x),
+                        const DimensionControl(),
+                      ],
                       if (ref.watch(tifoAvailableProvider)) ...[
                         const SizedBox(height: uikit.Spacing.$2x),
                         const TifoControl(),
                       ],
-                      if (ref.watch(tifoBuildingsMapLayerProvider)) ...[
+                      if (tifoBuildingsVisible) ...[
                         const SizedBox(height: uikit.Spacing.$2x),
                         const TifoLeaderboardControl(),
                       ],
                       const SizedBox(height: uikit.Spacing.$2x),
-                      // The debug zoom stack (2 buttons) is the one item this
-                      // column can't fit once the TIFO trophy joins it — hence
-                      // the "BOTTOM OVERFLOWED" banner on debug builds. Give
-                      // way to the game controls instead of overflowing; zoom
-                      // is still reachable by pinching.
-                      if (kDebugMode && !ref.watch(tifoBuildingsMapLayerProvider)) ...[
-                        const Spacer(),
-                        const ZoomControl(),
-                      ],
+                      // No zoom stack here. It is debug-only and two buttons
+                      // tall, and this column has no room for it once the TIFO
+                      // controls join - it was the first thing to overflow.
+                      // Zoom stays reachable by pinching.
                       const Spacer(),
                       const CompassControl(),
                       const SizedBox(height: uikit.Spacing.$2x),
@@ -142,7 +146,7 @@ class MapDashboardControls extends ConsumerWidget {
                                 // Rules/support entry point — only meaningful
                                 // once the player has actually turned the game
                                 // on (⚽ toggle).
-                                if (ref.watch(tifoBuildingsMapLayerProvider)) ...[
+                                if (tifoBuildingsVisible) ...[
                                   const TifoHelpControl(),
                                 ],
                               ],
@@ -162,8 +166,7 @@ class MapDashboardControls extends ConsumerWidget {
                     // player still has a gate left — see `shouldOfferJoin`.
                     // Gating on `!isPlayReady` alone put the pill on screen
                     // after every relaunch, before the session had loaded.
-                    if (ref.watch(tifoBuildingsMapLayerProvider) &&
-                        ref.watch(tifoSessionProvider.select((s) => s.shouldOfferJoin)))
+                    if (tifoBuildingsVisible && ref.watch(tifoSessionProvider.select((s) => s.shouldOfferJoin)))
                       const TifoJoinPill(),
                   ],
                 ),
