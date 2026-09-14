@@ -286,8 +286,7 @@ class EntryPointCubit extends Cubit<EntryPointState> {
           return false;
         },
         (success) async {
-          success.expirationTime = success.getExpireTime().toString();
-          emit(state.copyWith(apigeeToken: success));
+          emit(state.copyWith(apigeeToken: success.copyWith(expirationTime: success.getExpireTime().toString())));
           return true;
         },
       );
@@ -584,8 +583,7 @@ class EntryPointCubit extends Cubit<EntryPointState> {
                 emit(state.copyWith(status: AuthStatus.failure, errorMessage: (failure as ServerFailure).errorMessage));
               },
               (r) async {
-                SSOToken? token = state.token;
-                token?.appCookie = r;
+                final SSOToken? token = state.token?.copyWith(appCookie: r);
                 if (token != null) {
                   await _saveAuth(token);
                   emit(state.copyWith(token: token));
@@ -594,8 +592,7 @@ class EntryPointCubit extends Cubit<EntryPointState> {
             );
           },
           (r) async {
-            SSOToken? token = state.token;
-            token?.appCookie = r;
+            final SSOToken? token = state.token?.copyWith(appCookie: r);
             if (token != null) {
               await _saveAuth(token);
               emit(state.copyWith(token: token));

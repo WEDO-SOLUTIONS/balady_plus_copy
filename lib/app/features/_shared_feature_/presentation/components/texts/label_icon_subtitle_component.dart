@@ -13,9 +13,9 @@ class LabelIconSubtitleComponent extends StatelessWidget {
   final String? icon;
   final double? iconSize;
   final Function? onPress;
-  EdgeInsetsDirectional? padding;
+  final EdgeInsetsDirectional? padding;
 
-  LabelIconSubtitleComponent({
+  const LabelIconSubtitleComponent({
     required this.text,
     this.subtitle,
     this.subWidget,

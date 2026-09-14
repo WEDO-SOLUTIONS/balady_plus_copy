@@ -15,9 +15,8 @@ abstract class Failure extends Equatable {
 class ServerFailure extends Failure {
   final String errorMessage;
   final int? statusCode;
-  dynamic errorCode;
-  ServerFailure(this.errorMessage, {this.statusCode, this.errorCode})
-      : super([errorMessage, statusCode, errorCode]);
+  final dynamic errorCode;
+  ServerFailure(this.errorMessage, {this.statusCode, this.errorCode}) : super([errorMessage, statusCode, errorCode]);
 
   @override
   String toString() => errorMessage;

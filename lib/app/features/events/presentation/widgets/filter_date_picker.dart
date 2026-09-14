@@ -5,20 +5,18 @@ import 'package:localize_and_translate/localize_and_translate.dart';
 
 import '../../../../core/utils/utils_exports.dart'
     show AppColor, AppStyle, CommonFunctions, DateForm, DateTimeExtension;
-import '../../../_shared_feature_/presentation/enhanced_widgets/pickers/hijri_picker/hijri_picker.dart'
-    as hijri_picker;
-import '../../../_shared_feature_/shared_feature_exports.dart'
-    show CustomTextWidget, DropDownWithTitle;
+import '../../../_shared_feature_/presentation/enhanced_widgets/pickers/hijri_picker/hijri_picker.dart' as hijri_picker;
+import '../../../_shared_feature_/shared_feature_exports.dart' show CustomTextWidget, DropDownWithTitle;
 
 class EventFilterDatePicker extends StatelessWidget {
   final String title;
-  DateTime? initialDate;
-  DateForm initialDateForm;
+  final DateTime? initialDate;
+  final DateForm initialDateForm;
   final DateTime? startDate;
   final DateTime? endDate;
   final void Function(DateTime, DateForm) onChange;
 
-  EventFilterDatePicker({
+  const EventFilterDatePicker({
     super.key,
     required this.title,
     this.initialDate,
@@ -51,25 +49,18 @@ class EventFilterDatePicker extends StatelessWidget {
   }
 
   void showPickerHijriDate(DateTime? currentDate, BuildContext context) {
-    final minValue =
-        startDate == null ? null : HijriCalendar.fromDate(startDate!);
+    final minValue = startDate == null ? null : HijriCalendar.fromDate(startDate!);
     final maxValue = endDate == null ? null : HijriCalendar.fromDate(endDate!);
-    final date =
-        currentDate == null ? null : HijriCalendar.fromDate(currentDate);
+    final date = currentDate == null ? null : HijriCalendar.fromDate(currentDate);
 
     hijri_picker.Picker(
       isAr: CommonFunctions.isAppAR,
-      confirmTextStyle: AppStyle.textButtonStyle.copyWith(
-        color: AppColor.primary900Light,
-      ),
+      confirmTextStyle: AppStyle.textButtonStyle.copyWith(color: AppColor.primary900Light),
       headercolor: AppColor.paleGrey,
       cancel: Container(),
       height: 270,
       confirmText: 'choose'.tr(),
-      title: CustomTextWidget(
-        title,
-        textStyle: AppStyle.dropDownTitleTextStyle,
-      ),
+      title: CustomTextWidget(title, textStyle: AppStyle.dropDownTitleTextStyle),
       hideHeader: false,
       adapter: hijri_picker.DateTimePickerAdapter(
         minValue: minValue,
@@ -79,34 +70,24 @@ class EventFilterDatePicker extends StatelessWidget {
       ),
       selectedTextStyle: const TextStyle(color: AppColor.primary900Light),
       onConfirm: (picker, value) {
-        final date =
-            (picker.adapter as hijri_picker.DateTimePickerAdapter).value;
+        final date = (picker.adapter as hijri_picker.DateTimePickerAdapter).value;
 
-        initialDate = date?.hijriToGregorian(
-          date.hYear,
-          date.hMonth,
-          date.hDay,
-        );
+        final initialDate = date?.hijriToGregorian(date.hYear, date.hMonth, date.hDay);
 
         if (initialDate == null) return;
-        onChange(initialDate!, initialDateForm);
+        onChange(initialDate, initialDateForm);
       },
     ).showModal(context);
   }
 
   void showPickerDate(DateTime? currentDate, BuildContext context) {
     Picker(
-      confirmTextStyle: AppStyle.textButtonStyle.copyWith(
-        color: AppColor.primary900Light,
-      ),
+      confirmTextStyle: AppStyle.textButtonStyle.copyWith(color: AppColor.primary900Light),
       headerColor: AppColor.paleGrey,
       cancel: Container(),
       height: 270,
       confirmText: 'choose'.tr(),
-      title: CustomTextWidget(
-        title,
-        textStyle: AppStyle.dropDownTitleTextStyle,
-      ),
+      title: CustomTextWidget(title, textStyle: AppStyle.dropDownTitleTextStyle),
       hideHeader: false,
       adapter: DateTimePickerAdapter(
         minValue: startDate,
@@ -116,10 +97,10 @@ class EventFilterDatePicker extends StatelessWidget {
       ),
       selectedTextStyle: const TextStyle(color: AppColor.primary900Light),
       onConfirm: (picker, value) {
-        initialDate = (picker.adapter as DateTimePickerAdapter).value;
+        final initialDate = (picker.adapter as DateTimePickerAdapter).value;
 
         if (initialDate == null) return;
-        onChange(initialDate!, initialDateForm);
+        onChange(initialDate, initialDateForm);
       },
     ).showModal(context);
   }

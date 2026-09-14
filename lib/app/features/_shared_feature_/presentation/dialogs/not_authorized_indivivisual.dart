@@ -15,8 +15,8 @@ import 'bottom_sheet_dialogs.dart';
 import 'package:balady_plus/app/events_logs/balady_logs.dart';
 
 class NotAuthorizedIndivisualDialog extends StatelessWidget {
-  String? routName;
-  NotAuthorizedIndivisualDialog({super.key, this.routName});
+  final String? routName;
+  const NotAuthorizedIndivisualDialog({super.key, this.routName});
 
   @override
   Widget build(BuildContext context) {

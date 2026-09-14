@@ -5,13 +5,22 @@ class SSOToken extends Equatable {
   final String? idToken;
   final String? refreshToken;
   final String? expirationTime;
-  String? appCookie;
-  SSOToken(
-      {this.expirationTime,
-      this.refreshToken,
-      this.token,
-      this.idToken,
-      this.appCookie});
+  final String? appCookie;
+  const SSOToken({this.expirationTime, this.refreshToken, this.token, this.idToken, this.appCookie});
+
+  SSOToken copyWith({
+    String? token,
+    String? idToken,
+    String? refreshToken,
+    String? expirationTime,
+    String? appCookie,
+  }) => SSOToken(
+    token: token ?? this.token,
+    idToken: idToken ?? this.idToken,
+    refreshToken: refreshToken ?? this.refreshToken,
+    expirationTime: expirationTime ?? this.expirationTime,
+    appCookie: appCookie ?? this.appCookie,
+  );
 
   DateTime? getExpirationTime() => DateTime.tryParse(expirationTime ?? "");
 

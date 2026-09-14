@@ -12,13 +12,13 @@ import 'dialog_header.dart';
 
 class IncidentTypeWithSearchDialog extends StatefulWidget {
   final Function(DropDownItem item) onSelect;
-  List<DropDownItem> items;
-  DropDownItem? selectedItem;
-  String? title;
-  String? searchHint;
+  final List<DropDownItem> items;
+  final DropDownItem? selectedItem;
+  final String? title;
+  final String? searchHint;
   final bool? isButtonDisabled;
 
-  IncidentTypeWithSearchDialog({
+  const IncidentTypeWithSearchDialog({
     super.key,
     required this.onSelect,
     this.selectedItem,

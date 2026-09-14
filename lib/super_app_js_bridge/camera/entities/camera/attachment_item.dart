@@ -3,27 +3,18 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
 
 class AttachmentItem extends BaseData with EquatableMixin {
-  int? index;
-  String? base64;
-  Uint8List? encodeImage;
-  String? filePath;
-  String? fileId;
-  String? caseId;
-  String? categoryId;
+  final int? index;
+  final String? base64;
+  final Uint8List? encodeImage;
+  final String? filePath;
+  final String? fileId;
+  final String? caseId;
+  final String? categoryId;
 
-  AttachmentItem({
-    this.base64,
-    this.filePath,
-    this.fileId,
-    this.encodeImage,
-    this.index,
-    this.caseId,
-    this.categoryId,
-  });
+  AttachmentItem({this.base64, this.filePath, this.fileId, this.encodeImage, this.index, this.caseId, this.categoryId});
 
   @override
   List<Object?> get props => [index, fileId, filePath, caseId, categoryId];
-
 
   @override
   toJson() {

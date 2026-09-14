@@ -176,13 +176,13 @@ class _CustomHeaderAndDescOnTapWidget extends State<CustomHeaderAndDescOnTapWidg
 }
 
 class CustomTapWidgetForLongDialog extends StatefulWidget {
-  DropDownItem? value;
-  Function(DropDownItem? item) onChangeType;
-  List<DropDownItem> items;
-  String label;
-  String? hint;
-  String? searchHint;
-  String? errorText;
+  final DropDownItem? value;
+  final Function(DropDownItem? item) onChangeType;
+  final List<DropDownItem> items;
+  final String label;
+  final String? hint;
+  final String? searchHint;
+  final String? errorText;
   final bool? showOptional;
   final bool showHintAsTitle;
   final double? marginBottom;
@@ -190,7 +190,7 @@ class CustomTapWidgetForLongDialog extends StatefulWidget {
   final bool? isButtonDisabled;
   final bool? readOnly;
 
-  CustomTapWidgetForLongDialog({
+  const CustomTapWidgetForLongDialog({
     super.key,
     required this.onChangeType,
     this.value,
@@ -306,7 +306,7 @@ class _CustomLookUpLongDialog extends State<CustomLookUpLongDialog> {
           : () async {
               FocusManager.instance.primaryFocus?.unfocus();
               if (widget.onEmptyList != null) {
-                List<LookUpItem>? items = await widget.onEmptyList!();
+                final List<LookUpItem>? items = await widget.onEmptyList!();
                 if (items != null) {
                   FocusManager.instance.primaryFocus?.unfocus();
                   await CustomPopUpsWidgets.showBottomSheet(
@@ -330,16 +330,16 @@ class _CustomLookUpLongDialog extends State<CustomLookUpLongDialog> {
 }
 */
 class CustomTapWidgetForMultiLongDialog extends StatefulWidget {
-  List<DropDownItem>? values;
-  Function(List<DropDownItem>? item) onChangeType;
-  List<DropDownItem> items;
-  String label;
-  String? hint;
-  String? searchHint;
-  String? errorText;
+  final List<DropDownItem>? values;
+  final Function(List<DropDownItem>? item) onChangeType;
+  final List<DropDownItem> items;
+  final String label;
+  final String? hint;
+  final String? searchHint;
+  final String? errorText;
   final bool? showOptional;
   final bool showHintAsTitle;
-  CustomTapWidgetForMultiLongDialog({
+  const CustomTapWidgetForMultiLongDialog({
     super.key,
     required this.onChangeType,
     this.values,

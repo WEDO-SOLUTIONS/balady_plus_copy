@@ -377,11 +377,17 @@ class SuccessBody extends StatelessWidget {
 
 class SuccessButtons extends StatelessWidget {
   final PAGE_TYPE pageType;
-  bool fromHomePage;
-  bool isFawry;
-  String? requestId;
+  final bool fromHomePage;
+  final bool isFawry;
+  final String? requestId;
 
-  SuccessButtons({super.key, required this.pageType, this.isFawry = false, this.fromHomePage = false, this.requestId});
+  const SuccessButtons({
+    super.key,
+    required this.pageType,
+    this.isFawry = false,
+    this.fromHomePage = false,
+    this.requestId,
+  });
 
   @override
   Widget build(BuildContext context) {

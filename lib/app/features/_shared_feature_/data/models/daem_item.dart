@@ -1,11 +1,11 @@
 import 'package:equatable/equatable.dart';
 
 class DaemItem extends Equatable {
-  String? id;
+  final String? id;
 
-  String? name;
+  final String? name;
 
-  DaemItem({this.id, this.name});
+  const DaemItem({this.id, this.name});
 
   @override
   List<Object?> get props => [id];

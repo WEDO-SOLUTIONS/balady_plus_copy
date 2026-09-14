@@ -1,18 +1,17 @@
 part of 'camera_bloc.dart';
 
 class CameraState extends Equatable {
-  BlocStatus status;
-  String? errorMessage;
-  bool? showCamera;
-  bool isFlashOn;
-  double zoom;
-  double scaleFactor;
-  bool? multi;
-  bool? isCameraInitialized;
-  AttachmentItem? files;
+  final BlocStatus status;
+  final String? errorMessage;
+  final bool? showCamera;
+  final bool isFlashOn;
+  final double zoom;
+  final double scaleFactor;
+  final bool? multi;
+  final bool? isCameraInitialized;
+  final AttachmentItem? files;
 
-
-  CameraState({
+  const CameraState({
     this.status = BlocStatus.initial,
     this.errorMessage,
     this.showCamera = true,
@@ -49,12 +48,5 @@ class CameraState extends Equatable {
   }
 
   @override
-  List<Object?> get props => [
-        status,
-        showCamera,
-        isFlashOn,
-        zoom,
-        scaleFactor,
-        isCameraInitialized,
-      ];
+  List<Object?> get props => [status, showCamera, isFlashOn, zoom, scaleFactor, isCameraInitialized];
 }

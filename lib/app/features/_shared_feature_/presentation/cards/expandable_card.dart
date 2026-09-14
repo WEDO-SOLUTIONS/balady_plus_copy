@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../../core/utils/utils_exports.dart' show AppColor, AppStyle;
-import '../../shared_feature_exports.dart'
-    show CustomTextWidget, DrawIconBasedTypeWidget;
+import '../../shared_feature_exports.dart' show CustomTextWidget, DrawIconBasedTypeWidget;
 
 class ExpandableCard extends StatefulWidget {
   final String title;
@@ -10,16 +9,17 @@ class ExpandableCard extends StatefulWidget {
   final String? badgeTitle;
   final List<Widget> children;
   final bool isExpandedByDefault;
-  Color? bgColor;
+  final Color? bgColor;
 
-  ExpandableCard(
-      {super.key,
-      required this.title,
-      this.icon,
-      required this.children,
-      this.isExpandedByDefault = false,
-      this.badgeTitle,
-      this.bgColor});
+  const ExpandableCard({
+    super.key,
+    required this.title,
+    this.icon,
+    required this.children,
+    this.isExpandedByDefault = false,
+    this.badgeTitle,
+    this.bgColor,
+  });
 
   @override
   State<ExpandableCard> createState() => _ExpandableCardState();
@@ -59,33 +59,20 @@ class _ExpandableCardState extends State<ExpandableCard> {
                   child: Row(
                     children: [
                       widget.icon != null
-                          ? DrawIconBasedTypeWidget(
-                              icon: widget.icon!,
-                              iconSize: 20,
-                            )
+                          ? DrawIconBasedTypeWidget(icon: widget.icon!, iconSize: 20)
                           : const SizedBox(),
                       const SizedBox(width: 4),
                       Flexible(
-                        child: CustomTextWidget(
-                          widget.title,
-                          textStyle: AppStyle.cardTitleTextStle,
-                          maxLines: 2,
-                        ),
+                        child: CustomTextWidget(widget.title, textStyle: AppStyle.cardTitleTextStle, maxLines: 2),
                       ),
                       widget.badgeTitle != null
                           ? Chip(
                               label: Text(
                                 widget.badgeTitle!,
-                                style: AppStyle.requestParamterTitleTextStle
-                                    .copyWith(
-                                  color: Colors.white,
-                                ),
+                                style: AppStyle.requestParamterTitleTextStle.copyWith(color: Colors.white),
                               ),
                               backgroundColor: const Color(0xfff1b074),
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 2,
-                                vertical: 0,
-                              ),
+                              padding: const EdgeInsets.symmetric(horizontal: 2, vertical: 0),
                             )
                           : const SizedBox(),
                     ],
@@ -94,16 +81,8 @@ class _ExpandableCardState extends State<ExpandableCard> {
 
                 // const Spacer(),
                 Container(
-                  decoration: const BoxDecoration(
-                    color: AppColor.primary300Light,
-                    shape: BoxShape.circle,
-                  ),
-                  child: Icon(
-                    _isExpanded
-                        ? Icons.keyboard_arrow_up
-                        : Icons.keyboard_arrow_down,
-                    color: AppColor.white,
-                  ),
+                  decoration: const BoxDecoration(color: AppColor.primary300Light, shape: BoxShape.circle),
+                  child: Icon(_isExpanded ? Icons.keyboard_arrow_up : Icons.keyboard_arrow_down, color: AppColor.white),
                 ),
               ],
             ),

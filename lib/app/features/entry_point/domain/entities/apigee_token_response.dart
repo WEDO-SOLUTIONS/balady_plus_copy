@@ -2,7 +2,7 @@ import 'package:equatable/equatable.dart';
 import 'package:balady_plus/app/events_logs/balady_logs.dart';
 
 class ApigeeTokenResponse extends Equatable {
-  ApigeeTokenResponse({
+  const ApigeeTokenResponse({
     required this.refreshTokenExpiresIn,
     //required this.apiProductList,
     // required this.apiProductListJson,
@@ -18,8 +18,8 @@ class ApigeeTokenResponse extends Equatable {
     // required this.refreshCount,
     // required this.status,
   });
-  late final String refreshTokenExpiresIn;
-  String? expirationTime;
+  final String refreshTokenExpiresIn;
+  final String? expirationTime;
 
   //late final String apiProductList;
   //late final List<String> apiProductListJson;
@@ -27,18 +27,26 @@ class ApigeeTokenResponse extends Equatable {
   // late final String tokenType;
   //late final String issuedAt;
   // late final String clientId;
-  late final String accessToken;
+  final String accessToken;
   // late final String applicationName;
   // late final String scope;
-  late final String expiresIn;
+  final String expiresIn;
   // late final String refreshCount;
   // late final String status;
+
+  /// The fields are final, so the expiry is stamped by producing a new value
+  /// rather than by mutating the one the state already holds.
+  ApigeeTokenResponse copyWith({String? expirationTime}) => ApigeeTokenResponse(
+    refreshTokenExpiresIn: refreshTokenExpiresIn,
+    accessToken: accessToken,
+    expiresIn: expiresIn,
+    expirationTime: expirationTime ?? this.expirationTime,
+  );
 
   DateTime getExpireTime() {
     try {
       int durationInSeconds = int.parse(expiresIn);
-      DateTime expiresInDate =
-          DateTime.now().add(Duration(seconds: durationInSeconds));
+      DateTime expiresInDate = DateTime.now().add(Duration(seconds: durationInSeconds));
 
       return expiresInDate;
     } catch (error, stackTrace) {

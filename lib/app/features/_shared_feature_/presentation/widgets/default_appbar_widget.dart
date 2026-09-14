@@ -12,9 +12,9 @@ class DefaultAppBarWidget extends StatelessWidget implements PreferredSizeWidget
   final Widget? flexibleSpace;
   final VoidCallback? onBack;
   final bool showBack;
-  Widget? titleWidget;
+  final Widget? titleWidget;
 
-  DefaultAppBarWidget({
+  const DefaultAppBarWidget({
     super.key,
     this.title,
     this.bottom,

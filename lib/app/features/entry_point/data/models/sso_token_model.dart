@@ -1,19 +1,15 @@
 import '../../entry_point_exports.dart';
 
 class SSOTokenModel extends SSOToken {
-  SSOTokenModel(
-      {super.expirationTime,
-      super.refreshToken,
-      super.token,
-      super.idToken,
-      super.appCookie});
+  const SSOTokenModel({super.expirationTime, super.refreshToken, super.token, super.idToken, super.appCookie});
 
   factory SSOTokenModel.fromMap(Map<String, dynamic> json) => SSOTokenModel(
-      expirationTime: json["expirationTime"],
-      refreshToken: json["refreshToken"],
-      token: json["token"],
-      idToken: json["idToken"],
-      appCookie: json["appCookie"]);
+    expirationTime: json["expirationTime"],
+    refreshToken: json["refreshToken"],
+    token: json["token"],
+    idToken: json["idToken"],
+    appCookie: json["appCookie"],
+  );
 
   Map<String, dynamic> toJson() {
     return {
@@ -21,16 +17,17 @@ class SSOTokenModel extends SSOToken {
       "refreshToken": refreshToken,
       "token": token,
       "idToken": idToken,
-      "appCookie": appCookie
+      "appCookie": appCookie,
     };
   }
 }
 
 extension SSOTokenModelFromEntity on SSOToken {
   SSOTokenModel get toModel => SSOTokenModel(
-      expirationTime: expirationTime,
-      refreshToken: refreshToken,
-      token: token,
-      idToken: idToken,
-      appCookie: appCookie);
+    expirationTime: expirationTime,
+    refreshToken: refreshToken,
+    token: token,
+    idToken: idToken,
+    appCookie: appCookie,
+  );
 }
