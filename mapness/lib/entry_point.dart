@@ -96,6 +96,7 @@ import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:mapness/shared/providers/map/rubric_marker_type_mapper.dart';
 import 'package:mapness/shared/providers/map/selected_marker.dart';
 import 'package:mapness/shared/providers/media_query.dart';
+import 'package:mapness/shared/providers/observer/provider_error_observer.dart';
 import 'package:mapness/shared/providers/short_link_repository.dart';
 import 'package:mapness/shared/providers/urbi_analytics.dart';
 import 'package:mapness/shared/providers/vendor_config.dart';
@@ -143,6 +144,9 @@ class MapnessProviderScope extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => ProviderScope(
+    // Surfaces provider build/async failures in the logs instead of letting
+    // them vanish when no widget happens to be rendering the error state.
+    observers: const [ProviderErrorObserver()],
     child: Consumer(
       builder: (context, ref, child) {
         // Must run before [EagerInitWidget] — eager init shows a spinner instead of [child].

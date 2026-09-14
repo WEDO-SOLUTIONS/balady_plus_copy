@@ -2,9 +2,26 @@ formatter:
   page_width: 120
   trailing_commas: preserve
 
+# NOTE: riverpod_lint is intentionally NOT wired up as an analyzer plugin.
+#
+# riverpod_lint 3.x dropped custom_lint in favour of analysis_server_plugin.
+# That mechanism compiles the plugin with `dart compile aot-snapshot`, which
+# refuses to run in any project whose dependency graph contains native build
+# hooks. We transitively depend on `objective_c` (via path_provider_foundation),
+# so the compile fails with:
+#     'dart compile' does not support build hooks, use 'dart build' instead.
+# A failing plugin aborts the whole analysis run - `dart analyze` then reports
+# no diagnostics at all - so enabling it would break CI.
+#
+# Re-enable once the SDK supports it, by adding BOTH:
+#     plugins:
+#       riverpod_lint: ^3.1.0
+#     analyzer:
+#       plugins:
+#         - riverpod_lint
+# Verify with `dart analyze` that diagnostics are still produced.
+
 analyzer:
-  plugins:
-    - custom_lint
 
   strong-mode:
     strict-casts: true
@@ -16,7 +33,11 @@ analyzer:
     missing_required_param: error # Не пропускаем обязательные параметры
     prefer_relative_imports: error # Относительные импорты в проекте
     directives_ordering: ignore # Следим за порядком импортов в проекте
-    unawaited_futures: ignore # Всегда резолвим Future
+    unawaited_futures: warning # Всегда резолвим Future
+    # 735 pre-existing hits across 238 files - kept at `info` so it shows up in
+    # the IDE without failing CI. Fix opportunistically in touched files and
+    # raise to `warning` once the backlog is drained.
+    discarded_futures: info # Потерянные Future в синхронных телах
     invalid_assignment: error
     missing_return: ignore
     dead_code: error
@@ -105,6 +126,9 @@ linter:
     - avoid_unnecessary_containers # https://dart-lang.github.io/linter/lints/avoid_unnecessary_containers.html
     - avoid_unused_constructor_parameters # https://dart-lang.github.io/linter/lints/avoid_unused_constructor_parameters.html
     - avoid_void_async # https://dart-lang.github.io/linter/lints/avoid_void_async.html
+    # Complements unawaited_futures: catches dropped futures in *sync* bodies
+    # (listeners, onTap, onDispose), where unawaited_futures does not look.
+    - discarded_futures # https://dart.dev/tools/linter-rules/discarded_futures
     - await_only_futures # https://dart-lang.github.io/linter/lints/await_only_futures.html
     - camel_case_extensions # https://dart-lang.github.io/linter/lints/camel_case_extensions.html
     - camel_case_types # https://dart-lang.github.io/linter/lints/camel_case_types.html

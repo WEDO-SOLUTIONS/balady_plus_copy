@@ -9,9 +9,12 @@
 # packages, and plugins designed to encourage good coding practices.
 include: package:flutter_lints/flutter.yaml
 
-analyzer:
-  plugins:
-    - custom_lint
+# NOTE: no analyzer plugins are registered here.
+# This file used to declare the `custom_lint` plugin while the root package had
+# no `custom_lint` dependency, so every analysis run failed with
+# "The plugin cupertino_icons was not found in the package config" and filled
+# custom_lint.log with megabytes of the same stack trace.
+# See mapness/analysis_options.yaml for why riverpod_lint is not wired up either.
 
 linter:
   # The lint rules applied to this project can be customized in the
