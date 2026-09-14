@@ -38,7 +38,7 @@ class Picker {
   final PickerConfirmCallback? onConfirm;
 
   /// When the previous level selection changes, scroll the child to the first item.
-  final changeToFirst;
+  final bool changeToFirst;
 
   /// Specify flex for each column
   final List<int>? columnFlex;

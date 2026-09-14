@@ -218,7 +218,7 @@ class MiniAppsEngineBloc extends Bloc<MiniAppsEngineEvent, MiniAppsEngineState> 
     return null;
   }
 
-  Future<void> unarchiveAndSave(var zippedFile, String extractPath) async {
+  Future<void> unarchiveAndSave(File zippedFile, String extractPath) async {
     var bytes = zippedFile.readAsBytesSync();
     var archive = ZipDecoder().decodeBytes(bytes);
     try {

@@ -109,7 +109,7 @@ class PegaWebService {
       result.putIfAbsent("state", () => false);
       result.putIfAbsent("error", () => ('errors_server_error_2').tr());
       var connectivityResult = await (Connectivity().checkConnectivity());
-      if (connectivityResult == ConnectivityResult.none) {
+      if (connectivityResult.contains(ConnectivityResult.none)) {
         result["error"] = ('errors_internet_error_1').tr();
       }
 
@@ -221,7 +221,7 @@ class PegaWebService {
   //     result.putIfAbsent("state", () => false);
   //     result.putIfAbsent("error", () => ('errors_server_error_2').tr());
   //     var connectivityResult = await (Connectivity().checkConnectivity());
-  //     if (connectivityResult == ConnectivityResult.none) {
+  //     if (connectivityResult.contains(ConnectivityResult.none)) {
   //       result["error"] = ('errors_internet_error_1').tr();
   //     }
   //
@@ -359,7 +359,7 @@ class PegaWebService {
         result.putIfAbsent("state", () => false);
         result.putIfAbsent("error", () => ('errors_server_error_2').tr());
         var connectivityResult = await (Connectivity().checkConnectivity());
-        if (connectivityResult == ConnectivityResult.none) {
+        if (connectivityResult.contains(ConnectivityResult.none)) {
           result["error"] = ('errors_internet_error_1').tr();
         }
 
@@ -505,7 +505,7 @@ class PegaWebService {
       result.putIfAbsent("state", () => false);
       result.putIfAbsent("error", () => ('errors_server_error_2').tr());
       var connectivityResult = await (Connectivity().checkConnectivity());
-      if (connectivityResult == ConnectivityResult.none) {
+      if (connectivityResult.contains(ConnectivityResult.none)) {
         result["error"] = ('errors_internet_error_1').tr();
       }
 
@@ -635,7 +635,7 @@ class PegaWebService {
       result.putIfAbsent("state", () => false);
       result.putIfAbsent("error", () => ('errors_server_error_2').tr());
       var connectivityResult = await (Connectivity().checkConnectivity());
-      if (connectivityResult == ConnectivityResult.none) {
+      if (connectivityResult.contains(ConnectivityResult.none)) {
         result["error"] = ('errors_internet_error_1').tr();
       }
 
@@ -738,7 +738,7 @@ class PegaWebService {
       result.putIfAbsent("state", () => false);
       result.putIfAbsent("error", () => ('errors_server_error_2').tr());
       var connectivityResult = await (Connectivity().checkConnectivity());
-      if (connectivityResult == ConnectivityResult.none) {
+      if (connectivityResult.contains(ConnectivityResult.none)) {
         result["error"] = ('errors_internet_error_1').tr();
       }
 
@@ -824,7 +824,7 @@ class PegaWebService {
       result.putIfAbsent("state", () => false);
       result.putIfAbsent("error", () => ('errors_server_error_2').tr());
       var connectivityResult = await (Connectivity().checkConnectivity());
-      if (connectivityResult == ConnectivityResult.none) {
+      if (connectivityResult.contains(ConnectivityResult.none)) {
         result["error"] = ('errors_internet_error_1').tr();
       }
 

@@ -1109,8 +1109,12 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
   /// Checks if the distance between current position and route start point is reasonable
   bool _isLocationAccuracyAcceptable(double latitude, double longitude) {
     final routeStartPoint = ref.read(etaRouteInfoProvider).startPoint;
-    if (routeStartPoint != null) {
-      final distance = CommonFunctions.calculateDistance(latitude, longitude, routeStartPoint.lat, routeStartPoint.lon);
+    final startLat = routeStartPoint?.lat;
+    final startLon = routeStartPoint?.lon;
+    // A start point without coordinates says nothing about accuracy, so it is
+    // treated like having no start point at all rather than as a failure.
+    if (startLat != null && startLon != null) {
+      final distance = CommonFunctions.calculateDistance(latitude, longitude, startLat, startLon);
 
       // If the calculated distance is more than 100 meters, the calculation error is too big
       if (distance > 70) {

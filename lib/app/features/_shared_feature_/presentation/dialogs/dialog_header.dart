@@ -9,7 +9,7 @@ import '../widgets/texts/custom_text_widget.dart';
 
 class DialogHeader extends StatelessWidget {
   final String title;
-  final withDivider;
+  final bool withDivider;
 
   const DialogHeader({super.key, required this.title, this.withDivider = false});
 

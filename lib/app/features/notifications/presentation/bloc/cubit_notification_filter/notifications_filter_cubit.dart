@@ -11,49 +11,36 @@ part 'notifications_filter_state.dart';
 class NotificationsFilterCubit extends Cubit<NotificationsFilterState> {
   final NotificationsFilterRepository filterRepository;
 
-  NotificationsFilterCubit({
-    required this.filterRepository,
-  }) : super(InitialNotificationsFilterState()) {
+  NotificationsFilterCubit({required this.filterRepository}) : super(InitialNotificationsFilterState()) {
     getNotificationsProducts();
   }
 
   Future<void> getNotificationsProducts() async {
     NotificationsFilterState stateType = state;
-    if (stateType is InitialNotificationsFilterState ||
-        stateType is FailureNotificationsFilterState) {
+    if (stateType is InitialNotificationsFilterState || stateType is FailureNotificationsFilterState) {
       emit(LoadingNotificationsFilterState());
-      Either<Failure, List<NotificationType>> failureOrSuccess =
-          await filterRepository.getNotificationsProducts();
+      Either<Failure, List<NotificationType>> failureOrSuccess = await filterRepository.getNotificationsProducts();
       failureOrSuccess.fold(
         (failure) {
           if (failure is NoDataFoundException) {
-            emit(SucceedServicesFilterState(
-                listProducts: const [], listServices: []));
+            emit(SucceedServicesFilterState(listProducts: const [], listServices: []));
           } else if (failure is ServerFailure) {
-            emit(FailureNotificationsFilterState(
-                errorMessage: failure.errorMessage));
+            emit(FailureNotificationsFilterState(errorMessage: failure.errorMessage));
           } else {
             emit(FailureNotificationsFilterState(errorMessage: "error"));
           }
         },
         (listProducts) {
-          emit(
-            SucceedServicesFilterState(
-              listProducts: listProducts,
-              listServices: [],
-            ),
-          );
+          emit(SucceedServicesFilterState(listProducts: listProducts, listServices: []));
         },
       );
     }
   }
 
-  Future<void> getNotificationsServicesProducts(
-      {required NotificationType product}) async {
+  Future<void> getNotificationsServicesProducts({required NotificationType product}) async {
     SucceedServicesFilterState states = state as SucceedServicesFilterState;
     emit(states.copyWith(selectedProduct: product));
-    Either<Failure, List<NotificationType>> failureOrSuccess =
-        await filterRepository.getNotificationsServicesProducts(
+    Either<Failure, List<NotificationType>> failureOrSuccess = await filterRepository.getNotificationsServicesProducts(
       productId: product.id,
     );
     failureOrSuccess.fold(
@@ -61,18 +48,12 @@ class NotificationsFilterCubit extends Cubit<NotificationsFilterState> {
         emit(states.copyWith(selectedProduct: product, listServices: []));
       },
       (listMessages) {
-        emit(
-          states.copyWith(
-            selectedProduct: product,
-            listServices: listMessages,
-            selectedServices: null,
-          ),
-        );
+        emit(states.copyWith(selectedProduct: product, listServices: listMessages, selectedServices: null));
       },
     );
   }
 
-  void selectedServices({required service}) {
+  void selectedServices({required NotificationType service}) {
     SucceedServicesFilterState states = state as SucceedServicesFilterState;
     emit(states.copyWith(selectedServices: service));
   }

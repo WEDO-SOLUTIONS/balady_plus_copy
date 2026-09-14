@@ -16,10 +16,7 @@ import '../../services/services_exports.dart' show NavigationService;
 import '../utils_exports.dart' show ContextConversion, DIRECTION, BorderType;
 
 extension BorderConversion on BorderType {
-  InputBorder inputBorder({
-    required Color color,
-    double radius = 8.0,
-  }) {
+  InputBorder inputBorder({required Color color, double radius = 8.0}) {
     switch (this) {
       case BorderType.none:
         return InputBorder.none;
@@ -47,7 +44,7 @@ extension BorderConversion on BorderType {
     }
   }
 
-  BorderRadiusGeometry? boxBorderRadius({required radius}) {
+  BorderRadiusGeometry? boxBorderRadius({required double radius}) {
     switch (this) {
       case BorderType.none:
         return null;

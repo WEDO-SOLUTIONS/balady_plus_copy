@@ -212,7 +212,7 @@ class AccessibilityController extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> toggleScreenReader(value) async {
+  Future<void> toggleScreenReader(bool value) async {
     AppSettings.openAppSettings(type: AppSettingsType.accessibility);
     screenReaderEnabled = value;
     _saveSettings();

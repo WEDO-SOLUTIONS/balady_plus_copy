@@ -36,14 +36,8 @@ extension PublicTransportTransferRouteLongEntryMessageExt on PublicTransportTran
     final value = Map<String, dynamic>.from(transfer['value'] as Map);
 
     return PublicTransportTransferRouteLongEntryMessage(
-      point: RoutePointMessage(
-        distance: RouteDistanceMessage(
-          millimeters: distanceMm,
-        ),
-      ),
-      length: RouteDistanceMessage(
-        millimeters: lengthMm,
-      ),
+      point: RoutePointMessage(distance: RouteDistanceMessage(millimeters: distanceMm)),
+      length: RouteDistanceMessage(millimeters: lengthMm),
       value: PublicTransportTransferMessageExt.fromJson(value),
     );
   }
@@ -105,13 +99,14 @@ extension PublicTransportStopMessageExt on PublicTransportStopMessage {
 extension PublicTransportTransferMessageExt on PublicTransportTransferMessage {
   /// This method is used to convert [PublicTransportTransferMessage] from JSON.
   static PublicTransportTransferMessage fromJson(Map<String, dynamic> routes) => PublicTransportTransferMessage(
-        startPointName: routes['startPointName'] as String? ?? '',
-        finishPointName: routes['finishPointName'] as String? ?? '',
-        routeParts: (routes['routeParts'] as List<dynamic>?)
-                ?.map((routePart) => PublicRoutePartMessageExt.fromJson(Map<String, dynamic>.from(routePart as Map)))
-                .toList() ??
-            [],
-      );
+    startPointName: routes['startPointName'] as String? ?? '',
+    finishPointName: routes['finishPointName'] as String? ?? '',
+    routeParts:
+        (routes['routeParts'] as List<dynamic>?)
+            ?.map((routePart) => PublicRoutePartMessageExt.fromJson(Map<String, dynamic>.from(routePart as Map)))
+            .toList() ??
+        [],
+  );
 }
 
 /// This extension is used to convert [PublicRoutePartMessage] from JSON.
@@ -138,7 +133,7 @@ extension PublicRoutePartMessageExt on PublicRoutePartMessage {
   }
 }
 
-PublicTransportRouteTypeMessage _parseRouteType(type) {
+PublicTransportRouteTypeMessage _parseRouteType(Object? type) {
   if (type is String) {
     return PublicTransportRouteTypeMessage.values.firstWhere(
       (e) => e.toString().split('.').last.toLowerCase() == type.toLowerCase(),
