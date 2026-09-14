@@ -15,8 +15,18 @@ export 'events_names.dart';
 
 Future<void> unhandledExceptionBaladyLogs(FutureOr<void> Function() main) async {
   FlutterError.onError = (FlutterErrorDetails details) {
-    //this line prints the default flutter gesture caught exception in console
-    //FlutterError.dumpErrorToConsole(details);
+    if (kDebugMode) {
+      // Prints the full diagnostics, not just exception + stack. For rendering
+      // errors that is the only place the offending RenderObject and the widget
+      // that created it show up (`details.context`, `details.library` and
+      // `informationCollector`); printing the two fields below alone throws
+      // that away and leaves every framework error unattributable.
+      // `forceReport: true` matters: without it Flutter prints the full dump
+      // only for the *first* error of the session and collapses every later
+      // one to "Another exception was thrown: ...", which drops the widget
+      // and creator chain - the only parts that identify the culprit.
+      FlutterError.dumpErrorToConsole(details, forceReport: true);
+    }
     _debugLog('Error From INSIDE FRAME_WORK');
     _debugLog('--------------------------------');
     _debugLog('Error :  ${details.exception}');
