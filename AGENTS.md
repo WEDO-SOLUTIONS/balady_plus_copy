@@ -59,6 +59,51 @@ Editing the **route list** in `app_routes.dart` (transitions, durations, guards)
 - Never commit secrets (`.env`, signing certs, service-account JSON). The git hooks do not catch every leak.
 - Never `git push --force` to a release branch.
 
+## Async and Riverpod rules
+
+A bare `unawaited(...)` is **banned** in `mapness/`. There were 192 of them and not
+one attached an error handler, so a failure inside any of them escaped to the
+`Zone`: a red screen in debug, a silent no-op in release. Every call site is now
+one of:
+
+- **`await`** — the default. Use it whenever the caller's next statement assumes
+  the work is done.
+- **`detach(future, tag: '<area>.<what>')`** from
+  `mapness/lib/shared/utils/detach.dart` — only where awaiting is impossible or
+  wrong: synchronous callbacks (`ref.listen`, `onTap`, `onDispose`, `Timer`), and
+  calls that complete only when the user dismisses something. `router.push` and
+  the share sheets are the usual cases: they complete on *pop*, so awaiting one
+  holds the caller open for as long as the user stays on the page. Say so in a
+  comment at the site.
+
+`detach` logs through the existing `logger`, and a null future is a no-op, so
+`detach(sub?.cancel(), tag: ...)` needs no narrowing.
+
+Enforced by the analyzer:
+
+- `unawaited_futures: error` — at zero, so it is a ratchet for `async` bodies.
+- `discarded_futures: info` — the same rule for synchronous bodies, where
+  `unawaited_futures` does not look. ~728 pre-existing hits remain; fix them in
+  files you touch anyway rather than in a sweep.
+
+Related lifecycle rules, all of which have bitten this codebase:
+
+- Re-check `ref.mounted` (providers) or `mounted` (widgets) after **every** await
+  before touching `ref`, `context` or `setState`.
+- Riverpod rejects provider writes from `build`, `initState`, `dispose`,
+  `didUpdateWidget` and `didChangeDependencies`. `initState` counts because it
+  runs inside `StatefulElement._firstBuild`. Defer with a post-frame callback.
+- A `ProviderScope` **override** is scope configuration, not a write, so it is
+  legal during build — it is the right way to hand a widget-owned object to a
+  subtree without a mutable global slot.
+- Never publish a widget-owned disposable (a controller, a subscription) into a
+  provider without clearing it before disposing the object.
+- Reset flags with `whenComplete`, not `.then` — `.then` does not run on error,
+  and a guard flag stuck at `true` silently disables the feature it guards.
+
+`riverpod_lint` is deliberately **not** wired up; see the comment at the top of
+`mapness/analysis_options.yaml` for why and what would have to change.
+
 ## Session Context: Navigation, Favourites, Performance
 
 The current work session focused on production-only freezes/jank where the UI disappeared and only the native map stayed visible, plus related Riverpod lifecycle errors and favourites persistence issues.

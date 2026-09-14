@@ -33,10 +33,16 @@ analyzer:
     missing_required_param: error # Не пропускаем обязательные параметры
     prefer_relative_imports: error # Относительные импорты в проекте
     directives_ordering: ignore # Следим за порядком импортов в проекте
-    unawaited_futures: warning # Всегда резолвим Future
-    # 735 pre-existing hits across 238 files - kept at `info` so it shows up in
-    # the IDE without failing CI. Fix opportunistically in touched files and
-    # raise to `warning` once the backlog is drained.
+    # At zero as of BE-221, so this is a ratchet: any newly dropped future in an
+    # `async` body is an error. Fix it by awaiting, or - where awaiting is
+    # genuinely wrong - by handing it to `detach(tag:)` from
+    # shared/utils/detach.dart. A bare `unawaited(...)` is not an option: it
+    # silences the analyzer and loses the error.
+    unawaited_futures: error # Всегда резолвим Future
+    # The same rule for *synchronous* bodies (listeners, onTap, onDispose),
+    # where unawaited_futures does not look. 728 pre-existing hits across ~235
+    # files, so it stays at `info` until that backlog is drained - fix them in
+    # files you touch anyway.
     discarded_futures: info # Потерянные Future в синхронных телах
     invalid_assignment: error
     missing_return: ignore
