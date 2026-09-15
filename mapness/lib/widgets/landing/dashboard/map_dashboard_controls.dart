@@ -1,5 +1,6 @@
 import 'package:balady_uikit/balady_uikit.dart' as uikit;
 import 'package:balady_uikit/core/extensions/layout_extension.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/_features/common/providers/ui_direction.dart';
@@ -118,12 +119,17 @@ class MapDashboardControls extends ConsumerWidget {
                       // against the actual remainder rather than against
                       // whichever feature happens to be switched on - which is
                       // what used to hide it even when it would have fitted.
+                      // The Expanded stays in both builds: it is what replaced the
+                      // Spacer, so it is what keeps the compass and the legend
+                      // pinned to the bottom of the column.
                       Expanded(
-                        child: LayoutBuilder(
-                          builder: (context, constraints) => constraints.maxHeight < _zoomStackHeight
-                              ? const SizedBox.shrink()
-                              : const Center(child: ZoomControl()),
-                        ),
+                        child: kDebugMode
+                            ? LayoutBuilder(
+                                builder: (context, constraints) => constraints.maxHeight < _zoomStackHeight
+                                    ? const SizedBox.shrink()
+                                    : const Center(child: ZoomControl()),
+                              )
+                            : const SizedBox.shrink(),
                       ),
                       const CompassControl(),
                       const SizedBox(height: uikit.Spacing.$2x),
