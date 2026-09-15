@@ -23,6 +23,7 @@ import 'package:mapness/features/tifo/tutorial/tifo_guided_tutorial.dart';
 import 'package:mapness/features/tifo/tutorial/tifo_spotlight.dart';
 import 'package:mapness/features/tifo/ui/tifo_theme.dart';
 import 'package:mapness/l10n/generated/app_localizations.dart';
+import 'package:mapness/shared/providers/app_language.dart';
 import 'package:mapness/shared/ui/buttons/map_button.dart';
 import 'package:mapness/shared/utils/logger/logger.dart';
 
@@ -54,21 +55,40 @@ class TifoControl extends ConsumerWidget {
     // debug builds (compiled out of release); remove with the rest of the
     // spike scaffolding.
     if (kDebugMode) {
-      return GestureDetector(onLongPress: () => _debugLaunchUnity(context), child: button);
+      return GestureDetector(onLongPress: () => _debugLaunchUnity(context, ref), child: button);
     }
     return button;
   }
 
-  void _debugLaunchUnity(BuildContext context) {
+  /// Exercises the whole PenaltyApp contract with representative values so
+  /// kits/crowd colors, the idle prompt (30 s timeout → prompt at 22 s idle),
+  /// forfeit and connection loss can be checked without a TIFO session.
+  void _debugLaunchUnity(BuildContext context, WidgetRef ref) {
     logger.log('[tifo] SPIKE: long-press → PenaltyApp3D (no backend)');
+    final rootNav = Navigator.of(context, rootNavigator: true);
     unawaited(
-      Navigator.of(context, rootNavigator: true).push<void>(
+      rootNav.push<void>(
         MaterialPageRoute<void>(
           fullscreenDialog: true,
           builder: (_) => PenaltyApp3D(
+            missesAllowed: 3,
+            scoreToBeat: 2,
+            strikerColor: 'Blue',
+            keeperColor: 'Red',
+            sessionTimeoutSeconds: 30,
+            locale: ref.read(appLanguageProvider).locale,
+            onReady: (arm) {
+              logger.log('[tifo] SPIKE ready → arm');
+              arm();
+            },
+            onConnectionLost: () {
+              logger.log('[tifo] SPIKE connection lost → closing');
+              rootNav.pop();
+            },
             onComplete: (outcome) {
-              logger.log('[tifo] SPIKE complete: goals=${outcome.goals} misses=${outcome.misses}');
-              Navigator.of(context, rootNavigator: true).pop();
+              final kicks = outcome.events.map((e) => e.scored ? 'g' : 'm').join();
+              logger.log('[tifo] SPIKE complete: goals=${outcome.goals} misses=${outcome.misses} kicks=$kicks');
+              rootNav.pop();
             },
           ),
         ),
