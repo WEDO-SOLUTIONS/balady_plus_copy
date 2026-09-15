@@ -19,7 +19,6 @@ enum LicenseManagementStatus {
   active,
   canceled,
   holded,
-  EXPIRED,
   pendingRequestExists,
 
   underProcedure,

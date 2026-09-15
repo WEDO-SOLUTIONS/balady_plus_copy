@@ -434,7 +434,7 @@ class Constants {
 
   static const String radiobutton = 'Radiobutton';
 
-  static const String HijriCalendar = 'Hijri Calendar';
+  static const String hijriCalendar = 'Hijri Calendar';
 
   static const String gregorianCalendar = 'Gregorian Calendar';
 

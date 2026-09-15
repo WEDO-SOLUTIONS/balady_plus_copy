@@ -110,7 +110,7 @@ class _IncidentTypeWithSearchDialog extends State<LookupWithSearchDialog> {
                   },
             btnText: Helpers.translatingWord("bookNewAppointmentSelectWord"),
             btnTextSize: 16,
-            btnTextWeight: FONT_WEIGHT.regular,
+            btnTextWeight: AppFontWeight.regular,
             btnHeight: 56,
           )
         ],

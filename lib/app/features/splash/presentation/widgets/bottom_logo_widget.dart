@@ -6,10 +6,7 @@ import 'package:flutter/material.dart';
 import '../../../../core/utils/constants/paths/icon_paths.dart';
 
 class BottomLogoWidget extends StatelessWidget {
-  const BottomLogoWidget({
-    super.key,
-    required this.animation,
-  });
+  const BottomLogoWidget({super.key, required this.animation});
 
   final SplashScreenAnimation? animation;
 
@@ -19,9 +16,7 @@ class BottomLogoWidget extends StatelessWidget {
     return Align(
       alignment: Alignment.bottomCenter,
       child: Padding(
-        padding: const EdgeInsets.only(
-          bottom: 32 * 1.5,
-        ),
+        padding: const EdgeInsets.only(bottom: 32 * 1.5),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -29,7 +24,7 @@ class BottomLogoWidget extends StatelessWidget {
               opacity: 0.24,
               child: CustomTextWidget(
                 Helpers.translatingWord('test_launch'),
-                fontWeight: FONT_WEIGHT.medium,
+                fontWeight: AppFontWeight.medium,
               ),
             ),*/
             const CustomVerticalSpace(height: 24),
@@ -53,18 +48,8 @@ class BottomLogoWidget extends StatelessWidget {
                       mainAxisSize: MainAxisSize.min,
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Expanded(
-                          child: Image.asset(
-                            IconPath.splashScreen2030LogoImg,
-                            height: 40,
-                          ),
-                        ),
-                        Expanded(
-                          child: Image.asset(
-                            IconPath.splashScreenQualityLogoImg,
-                            height: 40,
-                          ),
-                        ),
+                        Expanded(child: Image.asset(IconPath.splashScreen2030LogoImg, height: 40)),
+                        Expanded(child: Image.asset(IconPath.splashScreenQualityLogoImg, height: 40)),
                       ],
                     ),
                   ),

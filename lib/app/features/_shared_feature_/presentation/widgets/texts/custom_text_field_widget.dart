@@ -2,7 +2,6 @@ import 'package:balady_plus/app/core/utils/constants/keys/general_keys.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show FilteringTextInputFormatter, TextInputFormatter;
 
-import '../../../../../core/utils/enums/enums.dart';
 import '../../../../../core/utils/utils_exports.dart' show AppColor, AppStyle, BorderConversion, BorderType;
 import '../../../shared_feature_exports.dart'
     show CustomHorizontalSpace, CustomVerticalSpace, LabelTextWithOptional, WidgetLabel;
@@ -308,7 +307,7 @@ class CustomTextFieldWidgetWithOptinal extends StatelessWidget {
   final double borderWidth;
   final double borderRadius;
   final Color borderColor;
-  final BORDER_TYPE borderType;
+  final BorderType borderType;
 
   final TextEditingController? controller;
   final FocusNode? focusNode;
@@ -356,7 +355,7 @@ class CustomTextFieldWidgetWithOptinal extends StatelessWidget {
     this.borderWidth = 1.0,
     this.borderRadius = 2.0,
     this.borderColor = AppColor.black200,
-    this.borderType = BORDER_TYPE.underline,
+    this.borderType = BorderType.underline,
     this.controller,
     this.focusNode,
     this.autoCorrect = true,
@@ -506,14 +505,14 @@ class CustomTextFieldWidgetWithOptinal extends StatelessWidget {
 
   InputBorder _getBorder(Color borderColor) {
     switch (borderType) {
-      case BORDER_TYPE.none:
+      case BorderType.none:
         return InputBorder.none;
-      case BORDER_TYPE.outline:
+      case BorderType.outline:
         return OutlineInputBorder(
           borderRadius: BorderRadius.circular(borderRadius),
           borderSide: BorderSide(color: borderColor, width: borderWidth),
         );
-      case BORDER_TYPE.underline:
+      case BorderType.underline:
         return UnderlineInputBorder(
           borderRadius: BorderRadius.circular(borderRadius),
           borderSide: BorderSide(color: borderColor, width: borderWidth),

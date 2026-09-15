@@ -3,9 +3,6 @@ enum ButtonIconPosition { left, right }
 
 enum AppSupportedLanguages { ar, en }
 
-// font-weight
-enum FONT_WEIGHT { regular, medium, bold, black }
-
 // pop-up message type
 enum PopUpMessageType { success, error, warning, confirm, none }
 
@@ -21,7 +18,6 @@ enum AppointmentType { newAppointment, reviewAppointment }
 enum FacilityStatus { open, close, cancel }
 
 // text field border
-enum BORDER_TYPE { none, outline, underline }
 
 // page type for success screen
 enum PageType {

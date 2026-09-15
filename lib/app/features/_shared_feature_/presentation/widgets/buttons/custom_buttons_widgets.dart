@@ -818,7 +818,7 @@ class CustomElevatedButtonWidget extends StatelessWidget {
   final AlignmentGeometry btnAlignment;
   final String btnText;
   final Color btnTextColor;
-  final FONT_WEIGHT btnTextWeight;
+  final AppFontWeight btnTextWeight;
   final double btnTextSize;
   final bool btnTextUnderline;
   final Color? btnTextUnderlineColor;

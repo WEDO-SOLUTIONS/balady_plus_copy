@@ -24,7 +24,7 @@ class CustomHeaderAndDescOnTapWidget extends StatefulWidget {
   final double borderWidth;
   final double borderRadius;
   final Color borderColor;
-  final BORDER_TYPE borderType;
+  final BorderType borderType;
   final bool readOnly;
   final VoidCallback onTap;
   final String? errorMsg;
@@ -47,7 +47,7 @@ class CustomHeaderAndDescOnTapWidget extends StatefulWidget {
     this.borderRadius = 8.0,
     this.borderColor = AppColor.blackModern300Light,
     this.borderWidth = 1.5,
-    this.borderType = BORDER_TYPE.outline,
+    this.borderType = BorderType.outline,
     this.readOnly = false,
     required this.onTap,
     this.errorMsg,
@@ -152,11 +152,11 @@ class _CustomHeaderAndDescOnTapWidget extends State<CustomHeaderAndDescOnTapWidg
 
   BoxBorder? _getBorder() {
     switch (widget.borderType) {
-      case BORDER_TYPE.none:
+      case BorderType.none:
         return null;
-      case BORDER_TYPE.outline:
+      case BorderType.outline:
         return Border.all(width: widget.borderWidth, color: widget.borderColor);
-      case BORDER_TYPE.underline:
+      case BorderType.underline:
         return Border(
           bottom: BorderSide(width: widget.borderWidth, color: widget.borderColor),
         );
@@ -165,11 +165,11 @@ class _CustomHeaderAndDescOnTapWidget extends State<CustomHeaderAndDescOnTapWidg
 
   BorderRadiusGeometry? _getBorderRadius() {
     switch (widget.borderType) {
-      case BORDER_TYPE.none:
+      case BorderType.none:
         return null;
-      case BORDER_TYPE.outline:
+      case BorderType.outline:
         return BorderRadius.circular(widget.borderRadius);
-      case BORDER_TYPE.underline:
+      case BorderType.underline:
         return null;
     }
   }
