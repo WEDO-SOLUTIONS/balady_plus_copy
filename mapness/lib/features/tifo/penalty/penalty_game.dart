@@ -4979,6 +4979,12 @@ const Map<String, int> _keeperColorRgb = {
   'Sand': 0x9B7D64,
 };
 
+/// Reference RGB (0xRRGGBB) of a striker/keeper jersey-color bucket, or null
+/// for an unknown bucket. The Unity penalty game tints its 3D kits with these
+/// so both renderers agree on what "Blue" looks like.
+int? tifoStrikerColorRgb(String bucket) => _strikerColorRgb[bucket];
+int? tifoKeeperColorRgb(String bucket) => _keeperColorRgb[bucket];
+
 /// Nearest striker jersey-color bucket for a club's `colorArgb`, or null if
 /// [colorArgb] is null (caller should then omit `color` and get the default).
 String? tifoNearestStrikerColor(int? colorArgb) => _nearestColorBucket(colorArgb, _strikerColorRgb);
