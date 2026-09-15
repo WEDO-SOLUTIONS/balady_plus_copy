@@ -27,6 +27,7 @@ abstract class VolunteerProfileRemoteDataSource {
   Future<List<VolunteerLookup>> getLvls();
   Future<List<VolunteerLookup>> getInterests();
   Future<List<VolunteerLookup>> getVolunteeringFields();
+  Future<List<VolunteerLookup>> getVolunteeringServices(String parentId);
   Future<CVUploadResponse> uploadCV(FileDataItem file);
   Future<void> submitProfile(
       Map<String, dynamic> profileData, String profileId);
@@ -42,9 +43,8 @@ class VolunteerDataSourceImpl extends VolunteerProfileRemoteDataSource {
     try {
       response = await webService.dio.get(ApiUrl.getVolunteerProfile);
       final data = response.data;
-      final List result = ResponseBodyModel.fromMap(data).data?.result;
-
-      return ProfileModel.fromJson(result.first);
+      final result = ResponseBodyModel.fromMap(data).data?.result;
+      return ProfileModel.fromJson(result);
     } on DioException catch (error, stackTrace) {
       LogsViewModel().sendEventFromModel(
         event: ErrorExceptionModel(
@@ -704,6 +704,41 @@ class VolunteerDataSourceImpl extends VolunteerProfileRemoteDataSource {
             ),
           );
         }
+        throw ServerException('errors_server_error_2'.tr());
+      }
+    }
+  }
+
+  @override
+  Future<List<VolunteerLookup>> getVolunteeringServices(String parentId) async {
+    Response response;
+
+    try {
+      response = await webService.dio.get(ApiUrl.getVolunteeringServices, queryParameters: {'parentId': parentId});
+
+      final data = response.data;
+      final List result = ResponseBodyModel.fromMap(data).data?.result;
+      return result.map<VolunteerLookup>((e) => VolunteerLookup.fromJson(e as Map<String, dynamic>)).toList();
+    } on DioException catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+      throw ServerException(error.toString(), statusCode: error.response?.statusCode, dioError: error);
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+      if (error is ServerException) {
+        rethrow;
+      } else {
         throw ServerException('errors_server_error_2'.tr());
       }
     }
