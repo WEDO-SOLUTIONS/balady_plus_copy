@@ -956,6 +956,10 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> with Widg
     final serviceKey = url.path; //queryParameters[BaldayDeeplink.serviceKey];
     final path = url.queryParameters[BaldayDeeplink.miniAppPath];
     final dtId = url.queryParameters[BaldayDeeplink.miniAppItemId];
+    final shouldNavigate = BaldayDeeplink.isNavigateEnabled(
+      url.queryParameters[BaldayDeeplink.navigateKey],
+    );
+    final searchText = url.queryParameters[BaldayDeeplink.searchTextKey]?.trim();
 
     double? latitude;
     double? longitude;
@@ -997,8 +1001,18 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> with Widg
         await _poiDeeplinkById(id, location);
       }
     } else if (latitude != null && longitude != null) {
-      // we agreed to treat absence of objectId as it is My location and open the point immediately
-      _myLocationDeepLinkHandler(latitude, longitude);
+      await _delayIfFirstRun(isFirstRun: isFirstRun);
+      if (shouldNavigate) {
+        // `?q=<lat>,<lon>&navigate=yes` - build a route from the current location to the point
+        await _routeToPointDeepLinkHandler(latitude, longitude);
+      } else {
+        // we agreed to treat absence of objectId as it is My location and open the point immediately
+        _myLocationDeepLinkHandler(latitude, longitude);
+      }
+    } else if (searchText != null && searchText.isNotEmpty) {
+      // `?s=<text>` - addresses coming from other apps (e.g. a contact's address)
+      await _delayIfFirstRun(isFirstRun: isFirstRun);
+      await _searchTextDeepLinkHandler(searchText);
     } else if (momrahId != null) {
       await _momrahDeepLinkHandler(momrahId);
     } else if (homeWidget != null) {
@@ -1421,6 +1435,69 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> with Widg
             cameraConfig: const PoiCameraConfig(zoom: 17),
           ),
         );
+  }
+
+  /// `?q=<lat>,<lon>&navigate=yes` - draws a route from the current location to
+  /// the requested point. Falls back to showing the point when the current
+  /// location is not available (permission denied, timeout, ...).
+  Future<void> _routeToPointDeepLinkHandler(double latitude, double longitude) async {
+    try {
+      final l10n = ref.read(appLocaleProvider);
+      final location = await ref.read(getLocationSyncProvider().future);
+      if (!mounted) {
+        return;
+      }
+
+      final startPoint = RouteParamsPointWithLabel(
+        label: l10n.myLocation,
+        value: RouteParamsPoint(latitude: location.latitude, longitude: location.longitude),
+      );
+      final finishPoint = RouteParamsPointWithLabel(
+        label: 'B',
+        value: RouteParamsPoint(latitude: latitude, longitude: longitude),
+      );
+
+      ref
+          .read(appRouterProvider)
+          .replaceOrPush(
+            route: RoutingRoutesRoute(points: [startPoint, finishPoint]),
+            shouldPopAndPush: true,
+            toCompareRoutes: [RoutingRoutesRoute.page, PoiCardWidgetRoute.page],
+          );
+    } catch (e) {
+      logger.log('failed to build route from deeplink: $e', logLevel: MapnessLogLevel.error);
+      if (mounted) {
+        _myLocationDeepLinkHandler(latitude, longitude);
+      }
+    }
+  }
+
+  /// `?s=<text>` - opens the search sheet with the query prefilled and runs it,
+  /// used for free-text addresses shared from other apps.
+  Future<void> _searchTextDeepLinkHandler(String query) async {
+    final AppRouter router = await ref.watch(appRouterProvider);
+
+    unawaited(
+      BssService.instance.sendEvent(
+        BssRequest(
+          eventType: BSSEventType.action,
+          actionType: BSSActionType.deeplink,
+          uiElement: const BssUIElement(
+            name: BssUIElementNames.searchStart,
+            ownerName: BssUIElementNames.searchBar,
+          ),
+          payload: BssPayload(searchRequest: BssSearchRequest(text: query)),
+        ),
+      ),
+    );
+
+    unawaited(router.push(SearchRoute(requestFocus: false)));
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) {
+        return;
+      }
+      ref.read(searchProvider(SearchScopeEnum.map.value).notifier).searchByText(query);
+    });
   }
 
   Future<void> _momrahDeepLinkHandler(String momrahId) async {
