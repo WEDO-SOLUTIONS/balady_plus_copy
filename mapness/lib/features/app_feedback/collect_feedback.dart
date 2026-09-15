@@ -31,4 +31,10 @@ class CollectFeedback extends _$CollectFeedback {
   }
 }
 
+// mocktail's `Mock` is a class, not a mixin, and this has to be mixed in
+// rather than extended because the generated `_$CollectFeedback` is already
+// the superclass. Nor can the mock move to the test that uses it:
+// `_$CollectFeedback` is private to this library. Same situation, and the same
+// ignore, as MockDeviceInfoProvider in device_info_provider.dart.
+// ignore: prefer_mixin
 class MockCollectFeedback extends _$CollectFeedback with Mock implements CollectFeedback {}
