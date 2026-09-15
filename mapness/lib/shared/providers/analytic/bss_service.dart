@@ -12,11 +12,10 @@ import 'package:mapness/shared/providers/analytic/models/payload/bss_entity.dart
 import 'package:rxdart/rxdart.dart';
 
 class BssService {
-  static BssService? _instance;
-  static BssService get instance {
-    _instance ??= BssService._internal();
-    return _instance!;
-  }
+  /// The one instance for the whole app. Dart initialises a `static final`
+  /// on first access, so this stays as lazy as the getter it replaces while
+  /// no longer looking like a factory method.
+  static final BssService instance = BssService._internal();
 
   BssService._internal();
 
@@ -126,11 +125,5 @@ class BssService {
 
   void dispose() {
     _sendTimer?.cancel();
-  }
-
-  /// Reset the singleton instance (useful for testing)
-  static void reset() {
-    _instance?.dispose();
-    _instance = null;
   }
 }
