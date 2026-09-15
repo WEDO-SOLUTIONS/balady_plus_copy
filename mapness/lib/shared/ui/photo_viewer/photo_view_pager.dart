@@ -11,7 +11,7 @@ class PhotoViewPager extends StatefulWidget {
 
   /// Callback for when the scale has changed, only invoked at the end of
   /// an interaction.
-  final void Function(bool)? showTitleBar;
+  final void Function({required bool visible})? showTitleBar;
 
   final List<String> imageSource;
   final List<String> imagePreviews;
@@ -64,7 +64,7 @@ class _PhotoViewPagerState extends State<PhotoViewPager> {
         onTap: () {
           setState(() {
             imageIndex = null;
-            widget.showTitleBar?.call(true);
+            widget.showTitleBar?.call(visible: true);
           });
         },
         child: PhotoView(
@@ -73,15 +73,15 @@ class _PhotoViewPagerState extends State<PhotoViewPager> {
           scaleStateChangedCallback: (value) {
             switch (value) {
               case PhotoViewScaleState.initial:
-                widget.showTitleBar?.call(false);
+                widget.showTitleBar?.call(visible: false);
                 setState(() => imageIndex = null);
               case PhotoViewScaleState.originalSize:
-                widget.showTitleBar?.call(true);
+                widget.showTitleBar?.call(visible: true);
                 setState(() => imageIndex = null);
               case PhotoViewScaleState.covering:
               case PhotoViewScaleState.zoomedIn:
               case PhotoViewScaleState.zoomedOut:
-                widget.showTitleBar?.call(false);
+                widget.showTitleBar?.call(visible: false);
             }
           },
         ),
@@ -96,7 +96,7 @@ class _PhotoViewPagerState extends State<PhotoViewPager> {
         onTap: () {
           setState(() {
             imageIndex = index;
-            widget.showTitleBar?.call(false);
+            widget.showTitleBar?.call(visible: false);
           });
         },
         child: _buildPageImage(index),

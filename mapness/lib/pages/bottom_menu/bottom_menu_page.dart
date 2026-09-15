@@ -194,10 +194,10 @@ class _BottomMenuPageState extends ConsumerState<BottomMenuPage> with TickerProv
                       BottomNavigationBarItem(
                         icon: AppBottomNavigationBarItem(
                           selected: route.activeIndex == 0,
-                          iconBuilder: (ctx, isSelected) => DefaultIcon(
+                          iconBuilder: (ctx, {required selected}) => DefaultIcon(
                             icon: GeneralIcons.pin,
-                            selected: isSelected,
-                            color: isSelected ? accentColor : context.colors.foregroundSoft,
+                            selected: selected,
+                            color: selected ? accentColor : context.colors.foregroundSoft,
                           ),
                           label: context.l10n.nav_general,
                         ),
@@ -206,10 +206,10 @@ class _BottomMenuPageState extends ConsumerState<BottomMenuPage> with TickerProv
                       BottomNavigationBarItem(
                         icon: AppBottomNavigationBarItem(
                           selected: route.activeIndex == 1,
-                          iconBuilder: (ctx, isSelected) => DefaultIcon(
+                          iconBuilder: (ctx, {required selected}) => DefaultIcon(
                             icon: GeneralIcons.routeStroke,
-                            selected: isSelected,
-                            color: isSelected ? accentColor : context.colors.foregroundSoft,
+                            selected: selected,
+                            color: selected ? accentColor : context.colors.foregroundSoft,
                           ),
                           label: context.l10n.nav_route,
                         ),
@@ -218,10 +218,10 @@ class _BottomMenuPageState extends ConsumerState<BottomMenuPage> with TickerProv
                       BottomNavigationBarItem(
                         icon: AppBottomNavigationBarItem(
                           selected: route.activeIndex == 2,
-                          iconBuilder: (ctx, isSelected) => DefaultIcon(
+                          iconBuilder: (ctx, {required selected}) => DefaultIcon(
                             icon: GeneralIcons.dashboard,
-                            selected: isSelected,
-                            color: isSelected ? accentColor : context.colors.foregroundSoft,
+                            selected: selected,
+                            color: selected ? accentColor : context.colors.foregroundSoft,
                           ),
                           label: context.l10n.nav_landing,
                         ),
@@ -230,9 +230,9 @@ class _BottomMenuPageState extends ConsumerState<BottomMenuPage> with TickerProv
                       BottomNavigationBarItem(
                         icon: AppBottomNavigationBarItem(
                           selected: route.activeIndex == 3,
-                          iconBuilder: (context, isSelected) => ProfileImageWidget(
+                          iconBuilder: (context, {required selected}) => ProfileImageWidget(
                             dimension: AvatarSize.$24,
-                            isSelected: isSelected,
+                            isSelected: selected,
                           ),
                           label: context.l10n.nav_profile,
                         ),

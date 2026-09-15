@@ -61,37 +61,37 @@ class _PhotoViewerPageState extends State<PhotoViewerPage> {
 
   @override
   Widget build(BuildContext context) => ValueListenableBuilder(
-        valueListenable: isAppBarVisible,
-        builder: (context, isAppBarVisible, child) => Material(
-          color: backgroundColor,
-          child: Material(
-            color: Colors.transparent,
-            child: Scaffold(
-              extendBodyBehindAppBar: true,
-              appBar: isAppBarVisible
-                  // TODO: Update when BaladyTopBar starts supporting background color
-                  ? _PhotoAppBar(title: title)
-                  : null,
-              body: child,
-            ),
-          ),
+    valueListenable: isAppBarVisible,
+    builder: (context, isAppBarVisible, child) => Material(
+      color: backgroundColor,
+      child: Material(
+        color: Colors.transparent,
+        child: Scaffold(
+          extendBodyBehindAppBar: true,
+          appBar: isAppBarVisible
+              // TODO: Update when BaladyTopBar starts supporting background color
+              ? _PhotoAppBar(title: title)
+              : null,
+          body: child,
         ),
-        child: DecoratedBox(
-          decoration: const BoxDecoration(color: backgroundColor),
-          child: PhotoViewPager(
-            imageSource: widget.photoPaths ?? [],
-            imagePreviews: widget.previewUrls ?? [],
-            scrollPhysics: CustomScrollPhysics.common(),
-            doubleTapZoomable: true,
-            pageController: pageController,
-            showTitleBar: (show) {
-              setState(() {
-                isAppBarVisible.value = show;
-              });
-            },
-          ),
-        ),
-      );
+      ),
+    ),
+    child: DecoratedBox(
+      decoration: const BoxDecoration(color: backgroundColor),
+      child: PhotoViewPager(
+        imageSource: widget.photoPaths ?? [],
+        imagePreviews: widget.previewUrls ?? [],
+        scrollPhysics: CustomScrollPhysics.common(),
+        doubleTapZoomable: true,
+        pageController: pageController,
+        showTitleBar: ({required visible}) {
+          setState(() {
+            isAppBarVisible.value = visible;
+          });
+        },
+      ),
+    ),
+  );
 
   String getTitle(int currentIndex) {
     final photoNumber = [(currentIndex + 1).toString(), context.l10n.wordOf, widget.photoPaths?.length.toString()];
@@ -118,46 +118,46 @@ class _PhotoAppBar extends StatelessWidget implements PreferredSizeWidget {
 
   @override
   Widget build(BuildContext context) => Stack(
-        alignment: Alignment.topCenter,
-        children: [
-          Container(
-            width: double.maxFinite,
-            height: 140,
-            decoration: const BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-                colors: _appBarBackground,
-              ),
-            ),
+    alignment: Alignment.topCenter,
+    children: [
+      Container(
+        width: double.maxFinite,
+        height: 140,
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: _appBarBackground,
           ),
-          ValueListenableBuilder(
-            valueListenable: title,
-            builder: (context, value, _) => BaladyTopBar(
-              textStyle: context.textStyle.callout.copyWith(color: Colors.white),
-              title: value,
+        ),
+      ),
+      ValueListenableBuilder(
+        valueListenable: title,
+        builder: (context, value, _) => BaladyTopBar(
+          textStyle: context.textStyle.callout.copyWith(color: Colors.white),
+          title: value,
 
-              /// TODO(ui_kit): Fix leading in UIKIT
-              leading: Semantics(
-                label: context.l10n.a11yBack,
-                button: true,
-                child: ExcludeSemantics(
-                  child: Container(
-                    padding: const EdgeInsetsDirectional.only(start: Spacing.$4x),
-                    alignment: context.isLTR ? Alignment.centerLeft : Alignment.centerRight,
-                    child: const Icon(
-                      SystemIcons.arrowCornerLeftSmall,
-                      color: Colors.white,
-                      size: 24,
-                    ),
-                  ),
+          /// TODO(ui_kit): Fix leading in UIKIT
+          leading: Semantics(
+            label: context.l10n.a11yBack,
+            button: true,
+            child: ExcludeSemantics(
+              child: Container(
+                padding: const EdgeInsetsDirectional.only(start: Spacing.$4x),
+                alignment: context.isLTR ? Alignment.centerLeft : Alignment.centerRight,
+                child: const Icon(
+                  SystemIcons.arrowCornerLeftSmall,
+                  color: Colors.white,
+                  size: 24,
                 ),
               ),
-              onLeadingPressed: () => context.router.pop(),
             ),
           ),
-        ],
-      );
+          onLeadingPressed: () => context.router.pop(),
+        ),
+      ),
+    ],
+  );
 
   @override
   Size get preferredSize => const Size(double.maxFinite, 140);

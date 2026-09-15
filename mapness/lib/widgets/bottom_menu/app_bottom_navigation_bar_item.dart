@@ -3,7 +3,7 @@ import 'package:mapness/widgets/bottom_menu/default_label.dart';
 
 class AppBottomNavigationBarItem extends StatelessWidget {
   final bool selected;
-  final Widget Function(BuildContext, bool) iconBuilder;
+  final Widget Function(BuildContext context, {required bool selected}) iconBuilder;
   final String? label;
 
   const AppBottomNavigationBarItem({required this.selected, required this.iconBuilder, super.key, this.label});
@@ -21,9 +21,11 @@ class AppBottomNavigationBarItem extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            ExcludeSemantics(child: iconBuilder.call(context, selected)),
+            ExcludeSemantics(child: iconBuilder(context, selected: selected)),
             const SizedBox(height: 2),
-            ExcludeSemantics(child: DefaultLabel(label: labelText, selected: selected)),
+            ExcludeSemantics(
+              child: DefaultLabel(label: labelText, selected: selected),
+            ),
           ],
         ),
       ),
