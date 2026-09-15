@@ -80,11 +80,10 @@ class _GenericBottomSheetListState<T> extends State<GenericBottomSheetList> {
                               ),
                               const Spacer(),
                               if (widget.onTap != null && !multipleSelection)
-                                Radio(
-                                  value: item,
+                                RadioGroup<dynamic>(
                                   groupValue: selectedValue,
-                                  activeColor: AppColor.primary700Light,
                                   onChanged: (_) => selectItem(item),
+                                  child: Radio<dynamic>(value: item, activeColor: AppColor.primary700Light),
                                 )
                               else if (widget.onTap != null)
                                 Checkbox(

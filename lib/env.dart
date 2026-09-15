@@ -13,20 +13,12 @@ import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:hijri/hijri_calendar.dart' show HijriCalendar;
 import 'package:localize_and_translate/localize_and_translate.dart' show LocalizationDefaultType, translator;
 
-import './app/core/dependency_injection/dependency_injection_exports.dart'
-    as di
-    show initialize;
-import './app/core/dependency_injection/dependency_injection_exports.dart'
-    show sl;
-import './app/core/services/services_exports.dart'
-    show HiveManager, NotificationService;
-import './app/core/dependency_injection/dependency_injection_exports.dart'
-    as di
-    show initialize;
-import './app/core/dependency_injection/dependency_injection_exports.dart'
-    show sl;
-import './app/core/utils/utils_exports.dart'
-    show AppConfig, CommonFunctions, EnvType;
+import './app/core/dependency_injection/dependency_injection_exports.dart' as di show initialize;
+import './app/core/dependency_injection/dependency_injection_exports.dart' show sl;
+import './app/core/services/services_exports.dart' show HiveManager, NotificationService;
+import './app/core/dependency_injection/dependency_injection_exports.dart' as di show initialize;
+import './app/core/dependency_injection/dependency_injection_exports.dart' show sl;
+import './app/core/utils/utils_exports.dart' show AppConfig, CommonFunctions, EnvType;
 import 'app/core/services/local/initializer.dart';
 import 'app/core/services/local/notification_hawaii.dart';
 
@@ -43,9 +35,7 @@ abstract class AppEnv {
     final status = await AppTrackingTransparency.requestTrackingAuthorization();
     AdjustConfig config = AdjustConfig(
       await CommonFunctions.isHuaweiDevice() ? 'je5w29fx8y68' : 'tung4x27vt34',
-      (type == EnvType.prod)
-          ? AdjustEnvironment.production
-          : AdjustEnvironment.sandbox,
+      (type == EnvType.prod) ? AdjustEnvironment.production : AdjustEnvironment.sandbox,
     );
 
     config.logLevel = AdjustLogLevel.verbose;
@@ -107,7 +97,7 @@ abstract class AppEnv {
     );
 
     if (Platform.isAndroid && type == EnvType.dev) {
-      await AndroidInAppWebViewController.setWebContentsDebuggingEnabled(true);
+      await InAppWebViewController.setWebContentsDebuggingEnabled(true);
     }
     const hijriSupportedLocales = {'en', 'ar', 'tr'};
     final hijriLocale = hijriSupportedLocales.contains(translator.activeLanguageCode)

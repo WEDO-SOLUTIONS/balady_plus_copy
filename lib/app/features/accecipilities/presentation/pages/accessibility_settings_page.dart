@@ -68,19 +68,15 @@ class _AccessibilitySettingsPageState extends ConsumerState<AccessibilitySetting
                           onTap: () => Navigator.of(
                             context,
                           ).push(MaterialPageRoute(builder: (context) => const TextSizePreviewPage())),
-                          options: ContentRowOptions(
-                            leadingIcon: AppIcons(
-                              iconData: GeneralIcons.messageTextLTR,
-                              color: context.colors.accentDefault,
-                              size: 24,
-                            ),
-                            title: 'fontSize'.tr(),
-                            actionWidget: ContentRowActionOptions(
-                              actionIcon: AppIcons(
-                                iconData: SystemIcons.arrowCornerRightLarge,
-                                color: context.colors.foregroundSoft,
-                              ),
-                            ),
+                          leading: AppIcons(
+                            iconData: GeneralIcons.messageTextLTR,
+                            color: context.colors.accentDefault,
+                            size: 24,
+                          ),
+                          text: ContentRowTextOptions(title: 'fontSize'.tr()),
+                          trailing: ContentRowTextTrailingOptions(
+                            icon: SystemIcons.arrowCornerRightLarge,
+                            iconColor: context.colors.foregroundSoft,
                           ),
                         ),
                       ],
@@ -91,24 +87,19 @@ class _AccessibilitySettingsPageState extends ConsumerState<AccessibilitySetting
                       children: [
                         ContentRow(
                           onTap: () => controller.toggleGrayscale(!controller.grayscale),
-                          options: ContentRowOptions(
-                            leadingIcon: AppIcons(
-                              iconData: Icons.color_lens_outlined,
-                              color: context.colors.accentDefault,
-                              size: 24,
-                            ),
-                            title: 'grayScaleMode'.tr(),
-                            actionWidget: ContentRowActionOptions(
-                              customToggleBuilder: ({required onToggle, bool? initial}) {
-                                return CupertinoSwitch(
-                                  value: controller.grayscale,
-                                  onChanged: (value) {
-                                    controller.toggleGrayscale(value);
-                                    onToggle?.call(value);
-                                  },
-                                  activeTrackColor: context.colors.accentDefault,
-                                );
-                              },
+                          leading: AppIcons(
+                            iconData: Icons.color_lens_outlined,
+                            color: context.colors.accentDefault,
+                            size: 24,
+                          ),
+                          text: ContentRowTextOptions(title: 'grayScaleMode'.tr()),
+                          // Kept as a custom trailing so the switch stays the
+                          // CupertinoSwitch this screen already showed.
+                          trailing: ContentRowCustomTrailingOptions(
+                            builder: (_) => CupertinoSwitch(
+                              value: controller.grayscale,
+                              onChanged: controller.toggleGrayscale,
+                              activeTrackColor: context.colors.accentDefault,
                             ),
                           ),
                         ),
@@ -130,20 +121,16 @@ class _AccessibilitySettingsPageState extends ConsumerState<AccessibilitySetting
                               }),
                             ),
                           ),
-                          options: ContentRowOptions(
-                            leadingIcon: SvgPicture.asset(
-                              'assets/icons/svg/voice_reader_icon.svg',
-                              width: 24,
-                              height: 24,
-                              colorFilter: ColorFilter.mode(context.colors.accentDefault, BlendMode.srcIn),
-                            ),
-                            title: 'voiceReader'.tr(),
-                            actionWidget: ContentRowActionOptions(
-                              actionIcon: AppIcons(
-                                iconData: SystemIcons.arrowCornerRightLarge,
-                                color: context.colors.foregroundSoft,
-                              ),
-                            ),
+                          leading: SvgPicture.asset(
+                            'assets/icons/svg/voice_reader_icon.svg',
+                            width: 24,
+                            height: 24,
+                            colorFilter: ColorFilter.mode(context.colors.accentDefault, BlendMode.srcIn),
+                          ),
+                          text: ContentRowTextOptions(title: 'voiceReader'.tr()),
+                          trailing: ContentRowTextTrailingOptions(
+                            icon: SystemIcons.arrowCornerRightLarge,
+                            iconColor: context.colors.foregroundSoft,
                           ),
                         ),
                       ],

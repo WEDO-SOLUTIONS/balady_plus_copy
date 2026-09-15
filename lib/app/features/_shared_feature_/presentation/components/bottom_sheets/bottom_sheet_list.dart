@@ -73,11 +73,10 @@ class _BottomSheetListState extends State<BottomSheetList> {
                         ),
                         const Spacer(),
                         if (widget.onTap != null && !multipleSelection)
-                          Radio(
-                            value: item,
+                          RadioGroup<String>(
                             groupValue: selectedValue,
-                            activeColor: AppColor.primary700Light,
                             onChanged: (_) => selectItem(item),
+                            child: Radio<String>(value: item, activeColor: AppColor.primary700Light),
                           )
                         else if (widget.onTap != null)
                           Checkbox(

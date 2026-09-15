@@ -128,13 +128,6 @@ class _InAppWebViewPageState extends State<InAppWebViewPage> {
                 url: WebUri(url),
                 headers: {"Authorization": "Bearer ${CommonProperties.token}", "authToken": CommonProperties.token},
               ),
-              initialOptions: InAppWebViewGroupOptions(
-                android: AndroidInAppWebViewOptions(
-                  useHybridComposition: true,
-                  // safeBrowsingEnabled: false,
-                ),
-                crossPlatform: InAppWebViewOptions(useShouldOverrideUrlLoading: true),
-              ),
               onLoadStart: (controller, Uri? url) {},
               onLoadStop: (controller, Uri? url) {
                 /* 
@@ -213,7 +206,7 @@ class _InAppWebViewPageState extends State<InAppWebViewPage> {
                   isLoading = false;
                 });
               },
-              onLoadError: (controller, url, code, message) => debugPrint(message.toString()),
+              onReceivedError: (controller, request, error) => debugPrint(error.description),
               onProgressChanged: (controller, int progress) {
                 progress / 100;
               },

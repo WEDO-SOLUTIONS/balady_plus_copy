@@ -44,22 +44,16 @@ class _QiblahWebViewPageState extends State<QiblahWebViewPage> {
                   // url: Uri.parse('https://flutter.dev/'),
                   url: WebUri("https://qiblafinder.withgoogle.com/intl/ar/finder/ar"),
                 ),
-                androidOnGeolocationPermissionsShowPrompt: (controller, origin) async {
+                onGeolocationPermissionsShowPrompt: (controller, origin) async {
                   return GeolocationPermissionShowPromptResponse(origin: origin, allow: true, retain: true);
                 },
-                initialOptions: InAppWebViewGroupOptions(
-                  android: AndroidInAppWebViewOptions(
-                    useHybridComposition: true,
-                    geolocationEnabled: true,
-                    // safeBrowsingEnabled: false,
-                  ),
-                  crossPlatform: InAppWebViewOptions(
-                    useShouldOverrideUrlLoading: true,
-                    javaScriptCanOpenWindowsAutomatically: true,
-
-                    //  allowUniversalAccessFromFileURLs: true,
-                    //  preferredContentMode: UserPreferredContentMode.MOBILE
-                  ),
+                initialSettings: InAppWebViewSettings(
+                  // Android-only in the old AndroidInAppWebViewOptions; the
+                  // merged settings class ignores them on other platforms.
+                  useHybridComposition: true,
+                  geolocationEnabled: true,
+                  useShouldOverrideUrlLoading: true,
+                  javaScriptCanOpenWindowsAutomatically: true,
                 ),
                 onLoadStart: (controller, Uri? url) async {},
                 onLoadStop: (controller, Uri? url) async {
@@ -94,7 +88,7 @@ class _QiblahWebViewPageState extends State<QiblahWebViewPage> {
                     });
                   }
                 },
-                onLoadError: (controller, url, code, message) => debugPrint(message.toString()),
+                onReceivedError: (controller, request, error) => debugPrint(error.description),
                 onProgressChanged: (controller, int progress) {
                   final percent = progress / 100;
                   debugPrint(percent.toString());
