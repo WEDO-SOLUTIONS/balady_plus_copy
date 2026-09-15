@@ -278,13 +278,14 @@ class _PickerWidget<T> extends StatefulWidget {
   const _PickerWidget({super.key, required this.picker, required this.themeData, this.isModal});
 
   @override
-  PickerWidgetState createState() => PickerWidgetState<T>(picker: picker!, themeData: themeData);
+  PickerWidgetState createState() => PickerWidgetState<T>();
 }
 
 class PickerWidgetState<T> extends State<_PickerWidget> {
-  final Picker? picker;
-  final ThemeData? themeData;
-  PickerWidgetState({Key? key, required this.picker, required this.themeData});
+  // Read straight from the widget instead of being handed copies in
+  // createState, which must not contain logic.
+  Picker? get picker => widget.picker;
+  ThemeData? get themeData => widget.themeData;
 
   ThemeData? theme;
   final List<FixedExtentScrollController> scrollController = [];

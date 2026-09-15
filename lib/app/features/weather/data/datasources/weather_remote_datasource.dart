@@ -54,7 +54,7 @@ class WeatherRemoteDataSourceImpl extends WeatherRemoteDataSource {
       var forecastData = response.data['data']['result']['forecast'];
       var alertsData = response.data['data']['result']['alerts'];
 
-      var decodedCurrentResponse;
+      CurrentModel? decodedCurrentResponse;
       final decodedAlertsResponse = AlertsModel.fromJson(alertsData);
 
       final List forecastDayData = forecastData['forecastday'];
@@ -75,9 +75,8 @@ class WeatherRemoteDataSourceImpl extends WeatherRemoteDataSource {
           final ConditionsModel decodedHourConditionResponse = ConditionsModel.fromMap(hour['condition']);
           return HourModel.fromMap(hour, decodedHourConditionResponse);
         }).toList();
-        var dayConditionData;
         ConditionsModel? decodedDayConditionResponse;
-        dayConditionData = dayData['condition'];
+        final dayConditionData = dayData['condition'];
         if (dayConditionData != null) {
           decodedDayConditionResponse = ConditionsModel.fromMap(dayConditionData);
         }

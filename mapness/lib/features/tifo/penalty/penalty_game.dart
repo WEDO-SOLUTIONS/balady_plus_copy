@@ -5646,7 +5646,7 @@ class _MiniChrome {
   final String scoreLabel; // "NUD" / "vs" / ...
   final Color scoreSeparator;
 
-  static _MiniChrome of(MiniGameStyle s) => switch (s) {
+  factory _MiniChrome.of(MiniGameStyle s) => switch (s) {
     MiniGameStyle.cyber => const _MiniChrome(
       title: 'MINI FOOTBALL GAME',
       titleStyle: TextStyle(
@@ -5807,7 +5807,7 @@ class _MiniPalette {
   final Color keeperHaloPrimary;
   final Color keeperHaloSecondary;
 
-  static _MiniPalette of(MiniGameStyle s) => switch (s) {
+  factory _MiniPalette.of(MiniGameStyle s) => switch (s) {
     MiniGameStyle.cyber => const _MiniPalette(
       ballFill: Colors.white,
       ballSpot: Color(0xFF0E1130),

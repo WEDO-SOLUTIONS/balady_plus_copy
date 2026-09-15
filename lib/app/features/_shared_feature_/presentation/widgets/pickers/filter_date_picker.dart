@@ -77,7 +77,7 @@ class _FilterDatePickerState extends State<FilterDatePicker> {
   }
 
   void showPickerHijriDate(DateTime? currentDate, BuildContext context) {
-    var minValue;
+    HijriCalendar? minValue;
     try {
       minValue = widget.startDate == null
           ? HijriCalendar.fromDate((DateTime(1937, 3, 14)))
