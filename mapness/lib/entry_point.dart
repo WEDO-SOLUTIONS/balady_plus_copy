@@ -54,6 +54,7 @@ import 'package:mapness/features/city_event/active_city_event.dart';
 import 'package:mapness/features/cityscape/cityscape.dart';
 import 'package:mapness/features/dynamic_poi/dynamic_poi_layer_provider.dart';
 import 'package:mapness/features/external_map_links/lib/external_map_link_parser.dart';
+import 'package:mapness/features/external_map_links/services/directions_request_platform.dart';
 import 'package:mapness/features/external_map_links/services/external_map_link_navigator.dart';
 import 'package:mapness/features/favourites/data/models/favorite_cache_item.dart';
 import 'package:mapness/features/favourites/mappers/favourite_item_mapper.dart';
@@ -216,6 +217,7 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> with Widg
     initMixpanel();
     initDeepLinks();
     initAppIconQuickActionsPending();
+    initExternalDirectionsRequests();
     listenNavigationEvents();
     checkConnection();
     PersistentSafeAreaBottom.startObserving();
@@ -331,6 +333,8 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> with Widg
     if (state == AppLifecycleState.resumed) {
       // Warm-start shortcuts are stored natively; the plugin callback may not fire.
       unawaited(deliverNativeShortcutIfPresent());
+      // Same story for a directions request that arrived while we were backgrounded.
+      unawaited(deliverPendingExternalDirectionsRequest());
       unawaited(ref.read(appIconQuickActionsManagerProvider.notifier).syncPublishedShortcuts());
       if (ref.read(pendingAppIconQuickActionProvider.notifier).hasPending) {
         unawaited(ref.read(appIconQuickActionHandlerProvider.notifier).deliverColdStartShortcut());
@@ -779,6 +783,33 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> with Widg
       final stillPending = ref.read(pendingAppIconQuickActionProvider.notifier).hasPending;
       if (stillPending && attempt < 90) {
         _scheduleColdStartDelivery(attempt: attempt + 1);
+      }
+    });
+  }
+
+  /// BE-335: Apple Maps / Find My hand us a `MKDirectionsRequest`, which the
+  /// native side both pushes and stores for us to poll.
+  void initExternalDirectionsRequests() {
+    unawaited(initExternalDirectionsRequestBridge());
+    bindExternalDirectionsRequestHandler(
+      (intent) => ExternalMapLinkNavigator(ref).openDirections(intent),
+    );
+    _scheduleExternalDirectionsDelivery(attempt: 0);
+  }
+
+  void _scheduleExternalDirectionsDelivery({required int attempt}) {
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      if (!mounted) {
+        return;
+      }
+      await deliverPendingExternalDirectionsRequest();
+      if (!mounted) {
+        return;
+      }
+      // The scene may open the URL after the first frames of a cold start, so
+      // we keep polling for the same budget as the quick-action delivery.
+      if (attempt < 90) {
+        _scheduleExternalDirectionsDelivery(attempt: attempt + 1);
       }
     });
   }
