@@ -17,6 +17,7 @@ import 'package:dgis_map_platform_interface/src/control_handlers/traffic_and_par
 import 'package:dgis_map_platform_interface/src/control_handlers/visible_rect_event_handler.dart';
 import 'package:dgis_map_platform_interface/src/control_handlers/zoom_event_handler.dart';
 import 'package:dgis_map_platform_interface/src/events/object_tap_events.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 
 import 'control_handlers/navigation/compass_event_handler.dart';
@@ -219,6 +220,29 @@ class DgisMapPlugin extends FlutterMapApi {
     return _api.stopFollowNavigation();
   }
 
+  /// Runs the cluster tap handler and then hands the native cluster object
+  /// back to the SDK.
+  ///
+  /// The release sits in `whenComplete` rather than being chained off `then`,
+  /// because `then` does not run when the handler throws - and the cluster
+  /// the native side allocated for this tap would never be released.
+  ///
+  /// Nothing here can await: this is reached from a synchronous stream
+  /// listener. So the future is closed off with its own error handler instead
+  /// of being dropped, which is what the `unawaited` this replaced was doing.
+  void _handleClusterTap(Map<dynamic, dynamic> map) {
+    final cluster = map['cluster'] as Map<dynamic, dynamic>;
+    final clusterId = cluster['id'] as String;
+
+    // ignore: discarded_futures
+    _objectTapEventHandler.clusterTapEvent(map, _api).whenComplete(() => _api.releaseCluster(clusterId)).catchError((
+      Object error,
+      StackTrace stackTrace,
+    ) {
+      debugPrint('dgis_map: cluster tap for $clusterId failed: $error\n$stackTrace');
+    });
+  }
+
   StreamSubscription _initEventChannel() {
     return EventChannel('com.dgis.map_view_events_$_viewId').receiveBroadcastStream().listen((event) {
       final map = event as Map<dynamic, dynamic>;
@@ -249,11 +273,7 @@ class DgisMapPlugin extends FlutterMapApi {
         case ModelTapEvent.name:
           return _objectTapEventHandler.modelTapEvent(map);
         case ClusterTapEvent.name:
-          unawaited(
-            _objectTapEventHandler.clusterTapEvent(map, _api).then((value) async {
-              await _api.releaseCluster(map["cluster"]["id"]);
-            }),
-          );
+          _handleClusterTap(map);
           break;
         case PolygonTapEvent.name:
           return _objectTapEventHandler.polygonTapEvent(map);
