@@ -100,6 +100,9 @@ extension AVAudioSession {
 
         AppIconQuickActionChannel.register(messenger: sharedSingleFlutterEngine.binaryMessenger)
 
+        // Apple Maps / Find My "Directions" hand-off (BE-335).
+        DirectionsRequestChannel.register(messenger: sharedSingleFlutterEngine.binaryMessenger)
+
         // Native radio player — bypasses just_audio_background interruption handling.
         nativeRadioPlayer = NativeRadioPlayer(messenger: sharedSingleFlutterEngine.binaryMessenger)
 

@@ -52,6 +52,9 @@
             ReferencedContainer = "container:Runner.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
+      <RoutingCoverageFileReference
+         FilePath = "Runner/SaudiArabiaCoverage.geojson">
+      </RoutingCoverageFileReference>
    </LaunchAction>
    <ProfileAction
       buildConfiguration = "Profile-dev"

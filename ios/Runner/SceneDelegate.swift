@@ -37,6 +37,12 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     
     func scene(_ scene: UIScene, openURLContexts URLContexts: Set<UIOpenURLContext>) {
         for context in URLContexts {
+            // BE-335: MapKit directions requests are not app links — hand them to the
+            // directions channel before AppLinks turns them into a Flutter deep link.
+            if DirectionsRequestChannel.handle(url: context.url) {
+                continue
+            }
+
             AppLinks.shared.handleLink(url: context.url)
         }
     }
