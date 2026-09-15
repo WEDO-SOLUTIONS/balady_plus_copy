@@ -17,6 +17,8 @@ class CarPlaySoundChannel {
     _channel.setMethodCallHandler(_handleMethodCall);
   }
 
+  /// The one handler for the whole app; it is tied to the FlutterEngine
+  /// rather than to any view.
   static final CarPlaySoundChannel instance = CarPlaySoundChannel._();
 
   static const _channel = MethodChannel('com.dgis.carplay_events');

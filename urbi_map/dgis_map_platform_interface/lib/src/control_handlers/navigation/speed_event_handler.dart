@@ -2,13 +2,19 @@ import 'dart:async';
 
 import 'package:dgis_map_platform_interface/src/events/navi_speed_event.dart';
 
+/// Turns everything navigation reports about speed - the current speed, the
+/// limit, exceeding it, and cameras ahead - into one Dart stream.
 class SpeedEventHandler {
+  /// Creates the handler.
   SpeedEventHandler();
 
+  /// Every speed-related event navigation has reported.
   Stream<NaviSpeedEvent> get speedEvents => _controller.stream;
 
   final _controller = StreamController<NaviSpeedEvent>();
 
+  /// Decodes a speed payload off the platform channel and publishes the
+  /// matching [NaviSpeedEvent] subclass on [speedEvents].
   void handleNavigationEvent(Map<dynamic, dynamic> map) {
     switch (map[NaviSpeedEvent.name]) {
       case NaviCurrentSpeedEvent.name:
@@ -41,6 +47,7 @@ class SpeedEventHandler {
     }
   }
 
+  /// Closes the speed stream.
   Future<void> dispose() {
     return _controller.close();
   }

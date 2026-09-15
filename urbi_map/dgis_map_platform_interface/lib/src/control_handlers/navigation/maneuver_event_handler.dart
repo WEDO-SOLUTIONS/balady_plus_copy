@@ -3,11 +3,17 @@ import 'dart:math';
 
 import '../../events/navi_maneuver_event.dart';
 
+/// Turns navigation's maneuver notifications into a Dart stream, and formats
+/// the distance the banner shows.
 class ManeuverEventHandler {
+  /// Every maneuver navigation has asked the banner to show, including the
+  /// instructions to hide it.
   Stream<NaviManeuverEvent> get maneuverEvents => _controller.stream;
 
   final _controller = StreamController<NaviManeuverEvent>();
 
+  /// Decodes the main maneuver off the platform channel and publishes it on
+  /// [maneuverEvents].
   void handleManeuverEvent(Map<dynamic, dynamic> map) {
     switch (map['type']) {
       case "nextHidden":
@@ -18,15 +24,19 @@ class ManeuverEventHandler {
         }
 
         final formattedDistance = formatMeters(map['distance']);
-        return _controller.sink.add(ManeuverEvent(
-          distance: formattedDistance.value,
-          unit: formattedDistance.unit,
-          roadName: map['roadName'],
-          instruction: ManeuverInstruction.fromString(map['instruction']),
-        ));
+        return _controller.sink.add(
+          ManeuverEvent(
+            distance: formattedDistance.value,
+            unit: formattedDistance.unit,
+            roadName: map['roadName'],
+            instruction: ManeuverInstruction.fromString(map['instruction']),
+          ),
+        );
     }
   }
 
+  /// Decodes the banner's secondary line off the platform channel and
+  /// publishes it on [maneuverEvents].
   void handleAdditionalManeuverEvent(Map<dynamic, dynamic> map) {
     switch (map['type']) {
       case "additionalHide":
@@ -34,16 +44,18 @@ class ManeuverEventHandler {
       case "additionalExitName":
         return _controller.sink.add(ManeuverAdditionalEventExit(map['value']));
       case "additionalIconWithText":
-        return _controller.sink.add(
-          ManeuverAdditionalEventWithIcon(ManeuverInstruction.fromString(map['value'])),
-        );
+        return _controller.sink.add(ManeuverAdditionalEventWithIcon(ManeuverInstruction.fromString(map['value'])));
     }
   }
 
+  /// Closes the maneuver stream.
   Future<void> dispose() {
     return _controller.close();
   }
 
+  /// Rounds a distance given in millimetres to what a driver can act on, and
+  /// picks the unit to show it in: whole kilometres above 3 km, then 100 m
+  /// steps above 500 m, 50 m steps above 250 m, and 10 m steps below that.
   FormattedMeasure formatMeters(int millis) {
     final meters = millis / 1000;
     if (meters > 3000) {
@@ -84,9 +96,14 @@ class ManeuverEventHandler {
   }
 }
 
+/// A distance already rounded and paired with the unit it should be shown in.
 class FormattedMeasure {
+  /// Creates the measure from its [value] and [unit].
   FormattedMeasure(this.value, this.unit);
 
+  /// The number to show, already rounded.
   final String value;
+
+  /// Unit [value] is expressed in, either "m" or "km".
   final String unit;
 }
