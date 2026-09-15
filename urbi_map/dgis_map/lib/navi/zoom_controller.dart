@@ -21,11 +21,12 @@ class NaviZoomController {
     ];
   }
 
-  /// Cancels the subscriptions [init] opened.
-  void dispose() {
-    for (var s in _subscriptions) {
-      s.cancel();
-    }
+  /// Cancels the subscriptions [init] opened and releases the notifiers.
+  ///
+  /// Returns a future so the cancellations can be awaited - every other
+  /// handler in this package disposes the same way.
+  Future<void> dispose() async {
+    await Future.wait(_subscriptions.map((s) => s.cancel()));
     _subscriptions.clear();
     zoomInState.dispose();
     zoomOutState.dispose();

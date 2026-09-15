@@ -38,8 +38,8 @@ class CarPlaySoundChannel {
 
   /// Dispose the channel handler (typically never called — singleton lives
   /// for the lifetime of the app).
-  void dispose() {
-    _controller.close();
+  Future<void> dispose() async {
+    await _controller.close();
     _channel.setMethodCallHandler(null);
   }
 }

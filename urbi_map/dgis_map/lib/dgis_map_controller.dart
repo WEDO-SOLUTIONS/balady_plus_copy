@@ -147,7 +147,7 @@ class DgisMapController {
 
   /// Dispose [naviZoomController] and plugin instance.
   Future<void> dispose() async {
-    naviZoomController.dispose();
+    await naviZoomController.dispose();
     await _instance.dispose();
   }
 
