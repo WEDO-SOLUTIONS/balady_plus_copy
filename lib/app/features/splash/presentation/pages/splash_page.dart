@@ -16,7 +16,7 @@ class _SplashPageState extends State<SplashPage> with SingleTickerProviderStateM
   void initState() {
     super.initState();
 
-    CommonFunctions.sendEventToAnalytics(AppEvents.OpenApp);
+    CommonFunctions.sendEventToAnalytics(AppEvents.openApp);
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky, overlays: []);
   }
 

@@ -97,7 +97,7 @@ class DashboardProductDropDown extends StatelessWidget {
   }
 
   Future<void> showProducts({required BuildContext context, required DashboardState state}) async {
-    CommonFunctions.sendAnalyticsEvent(AnalyticsEvents.DashBoard_Click_Dashboard_Filter_Event);
+    CommonFunctions.sendAnalyticsEvent(AnalyticsEvents.dashBoardClickDashboardFilterEvent);
     final items = state.cardsStates[card]?.products.map((e) => e.name).toList() ?? [];
     items.insert(0, "all".tr());
 

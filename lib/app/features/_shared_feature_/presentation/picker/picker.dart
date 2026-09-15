@@ -22,7 +22,7 @@ typedef PickerValueFormat<T> = String Function(T value);
 
 /// Picker
 class Picker {
-  static const double DefaultTextSize = 20.0;
+  static const double defaultTextSize = 20.0;
 
   /// Index of currently selected items
   List<int>? selecteds;
@@ -406,7 +406,7 @@ class PickerWidgetState<T> extends State<_PickerWidget> {
     if (picker.cancel != null) {
       items.add(
         DefaultTextStyle(
-          style: picker.cancelTextStyle ?? TextStyle(color: theme!.primaryColor, fontSize: Picker.DefaultTextSize),
+          style: picker.cancelTextStyle ?? TextStyle(color: theme!.primaryColor, fontSize: Picker.defaultTextSize),
           child: picker.cancel!,
         ),
       );
@@ -422,7 +422,7 @@ class PickerWidgetState<T> extends State<_PickerWidget> {
               _cancelText.toString(),
               textScaler: TextScaler.noScaling,
               overflow: TextOverflow.ellipsis,
-              style: picker.cancelTextStyle ?? TextStyle(color: theme!.primaryColor, fontSize: Picker.DefaultTextSize),
+              style: picker.cancelTextStyle ?? TextStyle(color: theme!.primaryColor, fontSize: Picker.defaultTextSize),
             ),
           ),
         );
@@ -438,7 +438,7 @@ class PickerWidgetState<T> extends State<_PickerWidget> {
               ? picker.title
               : DefaultTextStyle(
                   style: TextStyle(
-                    fontSize: Picker.DefaultTextSize,
+                    fontSize: Picker.defaultTextSize,
                     fontWeight: FontWeight.w700,
                     fontFamily: GeneralKey.appFontType,
                     fontStyle: FontStyle.normal,
@@ -453,7 +453,7 @@ class PickerWidgetState<T> extends State<_PickerWidget> {
     if (picker.confirm != null) {
       items.add(
         DefaultTextStyle(
-          style: picker.confirmTextStyle ?? TextStyle(color: theme!.primaryColor, fontSize: Picker.DefaultTextSize),
+          style: picker.confirmTextStyle ?? TextStyle(color: theme!.primaryColor, fontSize: Picker.defaultTextSize),
           child: picker.confirm!,
         ),
       );
@@ -469,7 +469,7 @@ class PickerWidgetState<T> extends State<_PickerWidget> {
               _confirmText,
               textScaler: TextScaler.noScaling,
               overflow: TextOverflow.ellipsis,
-              style: picker.confirmTextStyle ?? TextStyle(color: theme!.primaryColor, fontSize: Picker.DefaultTextSize),
+              style: picker.confirmTextStyle ?? TextStyle(color: theme!.primaryColor, fontSize: Picker.defaultTextSize),
             ),
           ),
         );
@@ -669,7 +669,7 @@ abstract class PickerAdapter<T> {
     items.add(suffix!);
 
     var _txtColor = Colors.black87;
-    var _txtSize = Picker.DefaultTextSize;
+    var _txtSize = Picker.defaultTextSize;
     if (isSel! && picker!.selectedTextStyle != null) {
       if (picker!.selectedTextStyle!.color != null) {
         _txtColor = picker!.selectedTextStyle!.color!;
@@ -1102,15 +1102,15 @@ class PickerDateTimeType {
   static const int kMDY = 0; // m, d, y
   static const int kHM = 1; // hh, mm
   static const int kHMS = 2; // hh, mm, ss
-  static const int kHM_AP = 3; // hh, mm, ap(AM/PM)
+  static const int kHMAp = 3; // hh, mm, ap(AM/PM)
   static const int kMDYHM = 4; // m, d, y, hh, mm
-  static const int kMDYHM_AP = 5; // m, d, y, hh, mm, AM/PM
+  static const int kMDYHMAp = 5; // m, d, y, hh, mm, AM/PM
   static const int kMDYHMS = 6; // m, d, y, hh, mm, ss
 
   static const int kYMD = 7; // y, m, d
   static const int kYMDHM = 8; // y, m, d, hh, mm
   static const int kYMDHMS = 9; // y, m, d, hh, mm, ss
-  static const int kYMD_AP_HM = 10; // y, m, d, ap, hh, mm
+  static const int kYMDApHm = 10; // y, m, d, ap, hh, mm
 
   static const int kYM = 11; // y, m
   static const int kDMY = 12; // d, m, y
@@ -1151,7 +1151,7 @@ class DateTimePickerAdapter extends PickerAdapter<DateTime> {
   /// year 0, month 1, day 2, hour 3, minute 4, sec 5, am/pm 6, hour-ap: 7
   final List<int>? customColumnType;
 
-  static const List<String> MonthsList_EN = [
+  static const List<String> monthsListEn = [
     "Jan",
     "Feb",
     "Mar",
@@ -1166,7 +1166,7 @@ class DateTimePickerAdapter extends PickerAdapter<DateTime> {
     "Dec",
   ];
 
-  static const List<String> MonthsList_EN_L = [
+  static const List<String> monthsListEnL = [
     "January",
     "February",
     "March",
@@ -1181,7 +1181,7 @@ class DateTimePickerAdapter extends PickerAdapter<DateTime> {
     "December",
   ];
 
-  static const List<String> MonthsList_AR_L = [
+  static const List<String> monthsListArL = [
     "يناير",
     "فبراير",
     "مارس",
@@ -1200,7 +1200,7 @@ class DateTimePickerAdapter extends PickerAdapter<DateTime> {
     Picker? picker,
     this.type = 0,
     this.isNumberMonth = false,
-    this.months = MonthsList_AR_L,
+    this.months = monthsListArL,
     this.strAMPM,
     this.yearBegin = 1900,
     this.yearEnd = 2100,

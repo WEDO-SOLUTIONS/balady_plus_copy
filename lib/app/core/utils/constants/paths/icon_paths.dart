@@ -158,7 +158,7 @@ class IconPath {
   static const sun = '${_svgWeatherIconPath}sun$_svg';
 
   static const rainy = '${_svgWeatherIconPath}rainyWeather$_svg';
-  static const wind_speed = '${_svgWeatherIconPath}wind_speed$_svg';
+  static const windSpeed = '${_svgWeatherIconPath}wind_speed$_svg';
   static const eye = '${_svgWeatherIconPath}eye$_svg';
   static const danger = '${_svgWeatherIconPath}danger$_svg';
 
@@ -280,10 +280,10 @@ class IconPath {
   static const msrParksIcon = '${_msrPath}msrParksIcon$_svg';
   static const msrCleanIcon = '${_msrPath}msrCleanIcon$_svg';
 
-  static const Inq_6Icon = '${_inqPath}Inq_6Icon$_svg';
-  static const Inq_3Icon = '${_inqPath}Inq_3Icon$_svg';
-  static const Inq_14Icon = '${_inqPath}Inq_14Icon$_svg';
-  static const Inq_11Icon = '${_inqPath}Inq_11Icon$_svg';
+  static const inq6Icon = '${_inqPath}Inq_6Icon$_svg';
+  static const inq3Icon = '${_inqPath}Inq_3Icon$_svg';
+  static const inq14Icon = '${_inqPath}Inq_14Icon$_svg';
+  static const inq11Icon = '${_inqPath}Inq_11Icon$_svg';
 
   static const tsr_1 = '${_tsrPath}1$_svg';
   static const tsr_2 = '${_tsrPath}2$_svg';
@@ -429,21 +429,21 @@ class IconPath {
   static const trash01 = '${_svgIconPath}trash_01$_svg';
   static const check = '${_svgIconPath}check$_svg';
 
-  static const chat_bot_icon = '${_svgIconPath}chat-bot$_svg';
+  static const chatBotIcon = '${_svgIconPath}chat-bot$_svg';
   static const arrowCircleDown = '${_pngIconPath}arrow-circle-down$_png';
 
   // Auth
   static const biometric = '${_authPath}biometric$_svg';
-  static const quick_access = '${_authPath}quick_access$_svg';
+  static const quickAccess = '${_authPath}quick_access$_svg';
 
   // Classification Certificate
   static const newOfficeIcon = '${_svgIconPath}new_office$_svg';
 
-  static const chat_bot_like_icon = '${_svgIconPath}chat-bot-like$_svg';
-  static const chat_bot_dislike_icon = '${_svgIconPath}chat-bot-dislike$_svg';
-  static const chat_bot_copy_icon = '${_svgIconPath}chat-bot-copy$_svg';
-  static const chat_bot_side_menu_icon = '${_svgIconPath}sidemenu$_svg';
-  static const chat_gpt_bot_icon = '${_svgIconPath}chat_gpt$_svg';
+  static const chatBotLikeIcon = '${_svgIconPath}chat-bot-like$_svg';
+  static const chatBotDislikeIcon = '${_svgIconPath}chat-bot-dislike$_svg';
+  static const chatBotCopyIcon = '${_svgIconPath}chat-bot-copy$_svg';
+  static const chatBotSideMenuIcon = '${_svgIconPath}sidemenu$_svg';
+  static const chatGptBotIcon = '${_svgIconPath}chat_gpt$_svg';
 
   static const edit = '${_svgIconPath}edit$_svg';
 

@@ -57,7 +57,7 @@ class _EventsFilterDialogState extends State<EventsFilterDialog> {
     sortBy = widget.params.sortBy;
     textEditingController?.text = widget.params.keyword ?? "";
 
-    CommonFunctions.sendAnalyticsEvent(AnalyticsEvents.Events_List_Click_Filter_Event);
+    CommonFunctions.sendAnalyticsEvent(AnalyticsEvents.eventsListClickFilterEvent);
   }
 
   @override
@@ -382,7 +382,7 @@ class _EventsFilterDialogState extends State<EventsFilterDialog> {
                           ),
                         );
 
-                        CommonFunctions.sendAnalyticsEvent(AnalyticsEvents.Events_List_Click_Apply_Filter_Event);
+                        CommonFunctions.sendAnalyticsEvent(AnalyticsEvents.eventsListClickApplyFilterEvent);
                       },
                     ),
                     const SizedBox(height: 16),

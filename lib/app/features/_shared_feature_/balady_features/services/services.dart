@@ -82,7 +82,7 @@ class BaladyServices {
 
     if (investmentDetailsResponse != null) {
       NavigationService.navigatorKey.currentState!.pushNamed(
-        RouteName.DirectRentalPage,
+        RouteName.directRentalPage,
         arguments: investmentDetailsResponse,
       );
     }

@@ -24,15 +24,15 @@ class GISResponse extends Equatable {
   final bool? vdExcepted;
   final bool? vdPriority;
   final String? locationURL;
-  final String? Balady_DistrictID;
-  final String? Balady_DistrictName;
+  final String? baladyDistrictID;
+  final String? baladyDistrictName;
 
   const GISResponse({
     this.adminMunicipalityId,
     this.adminMunicipalityName,
     this.cityName,
-    this.Balady_DistrictID,
-    this.Balady_DistrictName,
+    this.baladyDistrictID,
+    this.baladyDistrictName,
     // this.cleanInfo,
     this.districtId,
     this.districtName,

@@ -10,40 +10,43 @@ class UserProfileEntity {
   String? roleId;
   String? agencyRequestKey;
   UserProfileType? profileType;
-  UserProfileEntity(
-      {this.id,
-      this.type,
-      this.name,
-      this.roleName,
-      this.roleId,
-      this.profileType,
-      this.agencyRequestKey});
+  UserProfileEntity({
+    this.id,
+    this.type,
+    this.name,
+    this.roleName,
+    this.roleId,
+    this.profileType,
+    this.agencyRequestKey,
+  });
 
-  UserProfileEntity copyWith(
-      {String? id,
-      String? type,
-      String? name,
-      String? roleName,
-      String? roleId,
-      UserProfileType? profileType,
-      String? agencyRequestKey}) {
+  UserProfileEntity copyWith({
+    String? id,
+    String? type,
+    String? name,
+    String? roleName,
+    String? roleId,
+    UserProfileType? profileType,
+    String? agencyRequestKey,
+  }) {
     return UserProfileEntity(
-        id: id ?? this.id,
-        type: type ?? this.type,
-        name: name ?? this.name,
-        roleName: roleName ?? this.roleName,
-        roleId: roleId ?? this.roleId,
-        profileType: profileType ?? this.profileType,
-        agencyRequestKey: agencyRequestKey ?? this.agencyRequestKey);
+      id: id ?? this.id,
+      type: type ?? this.type,
+      name: name ?? this.name,
+      roleName: roleName ?? this.roleName,
+      roleId: roleId ?? this.roleId,
+      profileType: profileType ?? this.profileType,
+      agencyRequestKey: agencyRequestKey ?? this.agencyRequestKey,
+    );
   }
 
   String getRole() {
-    if (profileType == UserProfileType.Delegator) {
+    if (profileType == UserProfileType.delegator) {
       if (roleId == "20") return "OWNER_MANAGER";
       if (roleId == "30") return "DELEGATOR";
     }
 
-    if (profileType == UserProfileType.Agent) {
+    if (profileType == UserProfileType.agent) {
       return "AGENT";
     }
 

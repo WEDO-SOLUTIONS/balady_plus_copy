@@ -72,116 +72,116 @@ class _SuccessScreenState extends State<SuccessScreen> {
     );
   }
 
-  void sendSuccessEvent(PAGE_TYPE type) {
+  void sendSuccessEvent(PageType type) {
     switch (type) {
-      case PAGE_TYPE.emtethal:
+      case PageType.emtethal:
         CommonFunctions.sendEventToAnalytics(AppEvents.createComplianceSuccess);
         CommonFunctions.sendAnalyticsEvent(AnalyticsEvents.finishServiceComplianceCertificate);
         break;
-      case PAGE_TYPE.deleteEmtethal:
+      case PageType.deleteEmtethal:
         break;
-      case PAGE_TYPE.appointmentScreen:
+      case PageType.appointmentScreen:
         CommonFunctions.sendEventToAnalytics(AppEvents.makeAppointmentSuccess);
         CommonFunctions.sendAnalyticsEvent(AnalyticsEvents.finishServiceAppointmentBooking);
 
         break;
 
-      case PAGE_TYPE.updateAppointment:
+      case PageType.updateAppointment:
         break;
-      case PAGE_TYPE.cancelAppointment:
+      case PageType.cancelAppointment:
         CommonFunctions.sendEventToAnalytics(AppEvents.cancelAppointmentSuccess);
 
         break;
 
-      case PAGE_TYPE.confirmAppointment:
+      case PageType.confirmAppointment:
         CommonFunctions.sendEventToAnalytics(AppEvents.confirmAppointmentSuccess);
 
         break;
 
-      case PAGE_TYPE.daem:
-        CommonFunctions.sendEventToAnalytics(AppEvents.DaemSuccess);
+      case PageType.daem:
+        CommonFunctions.sendEventToAnalytics(AppEvents.daemSuccess);
         CommonFunctions.sendAnalyticsEvent(AnalyticsEvents.finishServiceDaem);
         break;
 
-      case PAGE_TYPE.dc:
+      case PageType.dc:
         CommonFunctions.sendEventToAnalytics(AppEvents.damagedCarsReportSuccess);
         CommonFunctions.sendAnalyticsEvent(AnalyticsEvents.finishServiceReportWriteOffVehicle);
         break;
 
-      case PAGE_TYPE.vhr:
+      case PageType.vhr:
         CommonFunctions.sendEventToAnalytics(AppEvents.vhrRequestSuccess);
         CommonFunctions.sendAnalyticsEvent(AnalyticsEvents.finishServiceRetrieveImpoundedVehicle);
 
         break;
 
-      case PAGE_TYPE.deleteRequestScreen:
-        CommonFunctions.sendEventToAnalytics(AppEvents.IssuHealthCertDeleteSuccess);
+      case PageType.deleteRequestScreen:
+        CommonFunctions.sendEventToAnalytics(AppEvents.issuHealthCertDeleteSuccess);
 
         break;
 
-      case PAGE_TYPE.facilityIncidentScreen:
+      case PageType.facilityIncidentScreen:
         CommonFunctions.sendEventToAnalytics(AppEvents.snapAndSendSuccess);
         CommonFunctions.sendAnalyticsEvent(AnalyticsEvents.finishServiceSnapAndSend);
 
         break;
 
-      case PAGE_TYPE.incidentsScreen:
+      case PageType.incidentsScreen:
         CommonFunctions.sendEventToAnalytics(AppEvents.snapAndSendSuccess);
         CommonFunctions.sendAnalyticsEvent(AnalyticsEvents.finishServiceSnapAndSend);
 
         break;
 
-      case PAGE_TYPE.inquiry:
+      case PageType.inquiry:
         CommonFunctions.sendEventToAnalytics(AppEvents.generalInqSuccess);
 
         break;
 
-      case PAGE_TYPE.msr:
+      case PageType.msr:
         CommonFunctions.sendEventToAnalytics(AppEvents.municipalRequestSuccess);
         CommonFunctions.sendAnalyticsEvent(AnalyticsEvents.finishServiceMunicipalServiceRequest);
 
         break;
-      case PAGE_TYPE.newVD:
+      case PageType.newVD:
         CommonFunctions.sendEventToAnalytics(AppEvents.snapAndSendSuccess);
         CommonFunctions.sendAnalyticsEvent(AnalyticsEvents.finishServiceSnapAndSend);
 
         break;
 
-      case PAGE_TYPE.objction:
+      case PageType.objction:
         CommonFunctions.sendEventToAnalytics(AppEvents.objectableSuccess);
         CommonFunctions.sendAnalyticsEvent(AnalyticsEvents.finishServiceAppealRequest);
 
         break;
-      case PAGE_TYPE.qrDetailsScreen:
+      case PageType.qrDetailsScreen:
         CommonFunctions.sendEventToAnalytics(AppEvents.snapAndSendSuccess);
         CommonFunctions.sendAnalyticsEvent(AnalyticsEvents.finishServiceSnapAndSend);
 
         break;
 
-      case PAGE_TYPE.qrDialog:
+      case PageType.qrDialog:
         CommonFunctions.sendEventToAnalytics(AppEvents.snapAndSendSuccess);
         CommonFunctions.sendAnalyticsEvent(AnalyticsEvents.finishServiceSnapAndSend);
 
         break;
 
-      case PAGE_TYPE.ratingScreen:
+      case PageType.ratingScreen:
         break;
 
-      case PAGE_TYPE.licenseScreen:
+      case PageType.licenseScreen:
         break;
 
-      case PAGE_TYPE.coObserver:
+      case PageType.coObserver:
         break;
 
-      case PAGE_TYPE.contactUs:
+      case PageType.contactUs:
         break;
 
-      case PAGE_TYPE.visitScreen:
+      case PageType.visitScreen:
         break;
 
-      case PAGE_TYPE.renewCommercial:
-      case PAGE_TYPE.ekramCemetry:
-      case PAGE_TYPE.other:
+      case PageType.renewCommercial:
+      case PageType.ekramCemetry:
+      case PageType.other:
         break;
     }
   }
@@ -234,7 +234,7 @@ class SuccessBody extends StatelessWidget {
               // const CustomVerticalSpace(
               //   height: 48,
               // ),
-              successScreenArgs?.idNumber != null && successScreenArgs?.type == PAGE_TYPE.ekramCemetry
+              successScreenArgs?.idNumber != null && successScreenArgs?.type == PageType.ekramCemetry
                   ? CustomElevatedButtonWidget(
                       btnColor: Colors.transparent,
                       textStyle: AppStyle.elevatedButtonStyle.copyWith(
@@ -269,32 +269,32 @@ class SuccessBody extends StatelessWidget {
 
   String getTitle() {
     switch (successScreenArgs?.type) {
-      case PAGE_TYPE.facilityIncidentScreen:
-      case PAGE_TYPE.inquiry:
-      case PAGE_TYPE.incidentsScreen:
-      case PAGE_TYPE.msr:
-      case PAGE_TYPE.qrDetailsScreen:
-      case PAGE_TYPE.qrDialog:
-      case PAGE_TYPE.visitScreen:
+      case PageType.facilityIncidentScreen:
+      case PageType.inquiry:
+      case PageType.incidentsScreen:
+      case PageType.msr:
+      case PageType.qrDetailsScreen:
+      case PageType.qrDialog:
+      case PageType.visitScreen:
         return ('lbl_thank_you2').tr();
-      case PAGE_TYPE.ratingScreen:
-      case PAGE_TYPE.licenseScreen:
-      case PAGE_TYPE.contactUs:
-      case PAGE_TYPE.deleteRequestScreen:
-      case PAGE_TYPE.appointmentScreen:
-      case PAGE_TYPE.cancelAppointment:
-      case PAGE_TYPE.confirmAppointment:
-      case PAGE_TYPE.coObserver:
-      case PAGE_TYPE.daem:
-      case PAGE_TYPE.newVD:
-      case PAGE_TYPE.dc:
-      case PAGE_TYPE.vhr:
-      case PAGE_TYPE.objction:
-      case PAGE_TYPE.emtethal:
-      case PAGE_TYPE.deleteEmtethal:
-      case PAGE_TYPE.renewCommercial:
-      case PAGE_TYPE.ekramCemetry:
-      case PAGE_TYPE.updateAppointment:
+      case PageType.ratingScreen:
+      case PageType.licenseScreen:
+      case PageType.contactUs:
+      case PageType.deleteRequestScreen:
+      case PageType.appointmentScreen:
+      case PageType.cancelAppointment:
+      case PageType.confirmAppointment:
+      case PageType.coObserver:
+      case PageType.daem:
+      case PageType.newVD:
+      case PageType.dc:
+      case PageType.vhr:
+      case PageType.objction:
+      case PageType.emtethal:
+      case PageType.deleteEmtethal:
+      case PageType.renewCommercial:
+      case PageType.ekramCemetry:
+      case PageType.updateAppointment:
         return "vd_request_submit".tr();
       default:
         return ('lbl_thank_you').tr();
@@ -303,14 +303,14 @@ class SuccessBody extends StatelessWidget {
 
   String getDesc() {
     switch (successScreenArgs?.type) {
-      case PAGE_TYPE.licenseScreen:
+      case PageType.licenseScreen:
         return ('order_thanks_desc').tr().replaceAll("-", successScreenArgs?.idNumber ?? "");
 
-      case PAGE_TYPE.ratingScreen:
+      case PageType.ratingScreen:
         return ('lbl_evaluation_thanks_desc').tr();
-      case PAGE_TYPE.facilityIncidentScreen:
-      case PAGE_TYPE.incidentsScreen:
-      case PAGE_TYPE.qrDetailsScreen:
+      case PageType.facilityIncidentScreen:
+      case PageType.incidentsScreen:
+      case PageType.qrDetailsScreen:
       //MM
       /*case PAGE_TYPE.qrDialog:
         {
@@ -325,48 +325,48 @@ class SuccessBody extends StatelessWidget {
                 .replaceAll("-", successScreenArgs?.idNumber ?? "");
         }*/
 
-      case PAGE_TYPE.msr:
+      case PageType.msr:
         return ('req_order_thanks_desc').tr().replaceAll("-", successScreenArgs?.idNumber ?? "");
 
-      case PAGE_TYPE.visitScreen:
+      case PageType.visitScreen:
         return successScreenArgs?.thanksMessage ?? "";
 
-      case PAGE_TYPE.appointmentScreen:
+      case PageType.appointmentScreen:
         return ("bookNewAppointmentSuccessfullyApplicationRecievedWord").tr().replaceAll(
           "{}",
           successScreenArgs?.idNumber ?? "",
         );
-      case PAGE_TYPE.cancelAppointment:
+      case PageType.cancelAppointment:
         return ("cancel_appointment_success").tr();
-      case PAGE_TYPE.confirmAppointment:
+      case PageType.confirmAppointment:
         return ("confirm_appointment_success").tr();
-      case PAGE_TYPE.deleteRequestScreen:
+      case PageType.deleteRequestScreen:
         return ("health_request_deleted").tr();
-      case PAGE_TYPE.inquiry:
+      case PageType.inquiry:
         return ('inq_order_thanks_desc').tr().replaceAll("-", successScreenArgs?.idNumber ?? "");
-      case PAGE_TYPE.contactUs:
+      case PageType.contactUs:
         return ('lbl_we_recived_your_msg').tr();
-      case PAGE_TYPE.coObserver:
+      case PageType.coObserver:
         return ('success_register_co_desc').tr().replaceAll("-", successScreenArgs?.idNumber ?? "--");
-      case PAGE_TYPE.daem:
+      case PageType.daem:
         return ('daem_success_desc').tr().replaceAll("-", successScreenArgs?.idNumber ?? "--");
 
-      case PAGE_TYPE.objction:
+      case PageType.objction:
         return ('objection_success_message').tr().replaceAll("-", successScreenArgs?.idNumber ?? "--");
 
-      case PAGE_TYPE.deleteEmtethal:
+      case PageType.deleteEmtethal:
         return ("delete_compliance_request_message").tr().replaceAll("_", successScreenArgs?.idNumber ?? "--");
 
-      case PAGE_TYPE.newVD:
-      case PAGE_TYPE.dc:
-      case PAGE_TYPE.vhr:
-      case PAGE_TYPE.emtethal:
-      case PAGE_TYPE.renewCommercial:
-      case PAGE_TYPE.ekramCemetry:
-      case PAGE_TYPE.updateAppointment:
+      case PageType.newVD:
+      case PageType.dc:
+      case PageType.vhr:
+      case PageType.emtethal:
+      case PageType.renewCommercial:
+      case PageType.ekramCemetry:
+      case PageType.updateAppointment:
         return successScreenArgs?.thanksMessage ?? "";
 
-      case PAGE_TYPE.other:
+      case PageType.other:
         return successScreenArgs?.thanksMessage ?? "";
 
       default:
@@ -376,7 +376,7 @@ class SuccessBody extends StatelessWidget {
 }
 
 class SuccessButtons extends StatelessWidget {
-  final PAGE_TYPE pageType;
+  final PageType pageType;
   final bool fromHomePage;
   final bool isFawry;
   final String? requestId;
@@ -397,7 +397,7 @@ class SuccessButtons extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            if (pageType == PAGE_TYPE.emtethal && isFawry == true)
+            if (pageType == PageType.emtethal && isFawry == true)
               ElevatedButtonWidget.primaryCustomBorder(
                 onPressed: () {
                   onPressWhiteButton(context, requestId: requestId);
@@ -421,70 +421,70 @@ class SuccessButtons extends StatelessWidget {
 
   String getGreenBtnText() {
     switch (pageType) {
-      case PAGE_TYPE.ratingScreen:
-      case PAGE_TYPE.facilityIncidentScreen:
-      case PAGE_TYPE.inquiry:
-      case PAGE_TYPE.contactUs:
-      case PAGE_TYPE.incidentsScreen:
-      case PAGE_TYPE.newVD:
-      case PAGE_TYPE.dc:
-      case PAGE_TYPE.vhr:
-      case PAGE_TYPE.msr:
-      case PAGE_TYPE.qrDetailsScreen:
-      case PAGE_TYPE.qrDialog:
-      case PAGE_TYPE.appointmentScreen:
-      case PAGE_TYPE.cancelAppointment:
-      case PAGE_TYPE.confirmAppointment:
-      case PAGE_TYPE.visitScreen:
-      case PAGE_TYPE.daem:
-      case PAGE_TYPE.objction:
-      case PAGE_TYPE.licenseScreen:
-      case PAGE_TYPE.deleteRequestScreen:
-      case PAGE_TYPE.emtethal:
-      case PAGE_TYPE.deleteEmtethal:
-      case PAGE_TYPE.renewCommercial:
-      case PAGE_TYPE.ekramCemetry:
-      case PAGE_TYPE.updateAppointment:
+      case PageType.ratingScreen:
+      case PageType.facilityIncidentScreen:
+      case PageType.inquiry:
+      case PageType.contactUs:
+      case PageType.incidentsScreen:
+      case PageType.newVD:
+      case PageType.dc:
+      case PageType.vhr:
+      case PageType.msr:
+      case PageType.qrDetailsScreen:
+      case PageType.qrDialog:
+      case PageType.appointmentScreen:
+      case PageType.cancelAppointment:
+      case PageType.confirmAppointment:
+      case PageType.visitScreen:
+      case PageType.daem:
+      case PageType.objction:
+      case PageType.licenseScreen:
+      case PageType.deleteRequestScreen:
+      case PageType.emtethal:
+      case PageType.deleteEmtethal:
+      case PageType.renewCommercial:
+      case PageType.ekramCemetry:
+      case PageType.updateAppointment:
         return ('go_to_home').tr();
       //   return Helpers.translatingWord('go_back_to_customer_voice_page');
       // case PAGE_TYPE.licenseScreen:
       // case PAGE_TYPE.deleteRequestScreen:
       //return Helpers.translatingWord('lbl_evaluate_service');
       // return ('go_to_license_management_screen').tr();
-      case PAGE_TYPE.coObserver:
+      case PageType.coObserver:
         return ('go_to_balady_academy').tr();
 
-      case PAGE_TYPE.other:
+      case PageType.other:
         return ('close').tr();
     }
   }
 
   void onPressGreenButton(BuildContext context) {
     switch (pageType) {
-      case PAGE_TYPE.ratingScreen:
-      case PAGE_TYPE.facilityIncidentScreen:
-      case PAGE_TYPE.inquiry:
-      case PAGE_TYPE.contactUs:
-      case PAGE_TYPE.incidentsScreen:
-      case PAGE_TYPE.newVD:
-      case PAGE_TYPE.dc:
-      case PAGE_TYPE.vhr:
-      case PAGE_TYPE.msr:
-      case PAGE_TYPE.qrDetailsScreen:
-      case PAGE_TYPE.qrDialog:
-      case PAGE_TYPE.appointmentScreen:
-      case PAGE_TYPE.cancelAppointment:
-      case PAGE_TYPE.confirmAppointment:
-      case PAGE_TYPE.visitScreen:
-      case PAGE_TYPE.daem:
-      case PAGE_TYPE.objction:
-      case PAGE_TYPE.emtethal:
-      case PAGE_TYPE.deleteEmtethal:
-      case PAGE_TYPE.licenseScreen:
-      case PAGE_TYPE.deleteRequestScreen:
-      case PAGE_TYPE.renewCommercial:
-      case PAGE_TYPE.ekramCemetry:
-      case PAGE_TYPE.updateAppointment:
+      case PageType.ratingScreen:
+      case PageType.facilityIncidentScreen:
+      case PageType.inquiry:
+      case PageType.contactUs:
+      case PageType.incidentsScreen:
+      case PageType.newVD:
+      case PageType.dc:
+      case PageType.vhr:
+      case PageType.msr:
+      case PageType.qrDetailsScreen:
+      case PageType.qrDialog:
+      case PageType.appointmentScreen:
+      case PageType.cancelAppointment:
+      case PageType.confirmAppointment:
+      case PageType.visitScreen:
+      case PageType.daem:
+      case PageType.objction:
+      case PageType.emtethal:
+      case PageType.deleteEmtethal:
+      case PageType.licenseScreen:
+      case PageType.deleteRequestScreen:
+      case PageType.renewCommercial:
+      case PageType.ekramCemetry:
+      case PageType.updateAppointment:
         {
           Helpers.backNavigationToHomeScreen();
         }
@@ -510,7 +510,7 @@ class SuccessButtons extends StatelessWidget {
           ));
         }*/
 
-      case PAGE_TYPE.other:
+      case PageType.other:
         {
           Navigator.of(context).pop();
         }
@@ -548,7 +548,7 @@ class SuccessButtons extends StatelessWidget {
         return ('go_to_visit_list').tr();
 
       case PAGE_TYPE.objction:*/
-      case PAGE_TYPE.emtethal:
+      case PageType.emtethal:
         return ('compliance_show_certificate').tr();
 
       default:
@@ -558,7 +558,7 @@ class SuccessButtons extends StatelessWidget {
 
   void onPressWhiteButton(BuildContext context, {String? requestId}) {
     switch (pageType) {
-      case PAGE_TYPE.emtethal:
+      case PageType.emtethal:
         Navigator.pushNamed(
           context,
           RouteName.complianceDetailsPage,
@@ -585,8 +585,8 @@ class SuccessButtons extends StatelessWidget {
           NavigationService.goBack();
         }*/
         break;
-      case PAGE_TYPE.qrDetailsScreen:
-      case PAGE_TYPE.qrDialog: //MM
+      case PageType.qrDetailsScreen:
+      case PageType.qrDialog: //MM
         /*{
           bool Function(Route<dynamic>) predicate =
               ModalRoute.withName(RoutesNames.bottomNavigationRoute);
@@ -595,9 +595,9 @@ class SuccessButtons extends StatelessWidget {
               RoutesNames.customerVoiceRoute, predicate);
         }*/
         break;
-      case PAGE_TYPE.appointmentScreen:
-      case PAGE_TYPE.cancelAppointment:
-      case PAGE_TYPE.confirmAppointment:
+      case PageType.appointmentScreen:
+      case PageType.cancelAppointment:
+      case PageType.confirmAppointment:
         //MM
         /*if (fromHomePage) {
           NavigationService.navigatorKey.currentState!.pushNamedAndRemoveUntil(
@@ -607,21 +607,21 @@ class SuccessButtons extends StatelessWidget {
           NavigationService.goBack();
         }*/
         break;
-      case PAGE_TYPE.licenseScreen:
+      case PageType.licenseScreen:
         {
           // Helpers.backNavigationToSpecificScreen2(
           //     navigationKey: RoutesNames.ordersRoute);
         }
         break;
-      case PAGE_TYPE.coObserver:
+      case PageType.coObserver:
         {
           //  Helpers.backNavigationToHomeScreen();
         }
         break;
 
-      case PAGE_TYPE.objction:
-      case PAGE_TYPE.emtethal:
-      case PAGE_TYPE.deleteEmtethal:
+      case PageType.objction:
+      case PageType.emtethal:
+      case PageType.deleteEmtethal:
         /*{
           NavigationService.goBack();
         }*/

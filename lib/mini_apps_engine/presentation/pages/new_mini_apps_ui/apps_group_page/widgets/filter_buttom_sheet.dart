@@ -29,18 +29,18 @@ class _FilterButtomSheetState extends State<FilterButtomSheet> {
   @override
   void initState() {
     super.initState();
-    selectedOption = widget.initialSelectedType ?? FilterOptionType.ServiceDateAscending;
+    selectedOption = widget.initialSelectedType ?? FilterOptionType.serviceDateAscending;
   }
 
   List<FilterOptionModel> filterOptions = [
     FilterOptionModel(
       translationKey: 'alphabetical_ascending',
-      type: FilterOptionType.AlphabeticalAscending,
+      type: FilterOptionType.alphabeticalAscending,
       isEnabled: true,
     ),
     FilterOptionModel(
       translationKey: 'alphabetical_descending',
-      type: FilterOptionType.AlphabeticalDescending,
+      type: FilterOptionType.alphabeticalDescending,
       isEnabled: true,
     ),
   ];
@@ -208,4 +208,4 @@ class FilterOptionModel {
   FilterOptionModel({required this.translationKey, required this.type, this.isEnabled = true});
 }
 
-enum FilterOptionType { ServiceDateAscending, ServiceDateDescending, AlphabeticalAscending, AlphabeticalDescending }
+enum FilterOptionType { serviceDateAscending, serviceDateDescending, alphabeticalAscending, alphabeticalDescending }

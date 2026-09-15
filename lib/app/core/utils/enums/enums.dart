@@ -1,30 +1,30 @@
 // button icon position
-enum BUTTON_ICON_POSITION { left, right }
+enum ButtonIconPosition { left, right }
 
-enum APP_SUPPORTED_LANGUAGES { ar, en }
+enum AppSupportedLanguages { ar, en }
 
 // font-weight
 enum FONT_WEIGHT { regular, medium, bold, black }
 
 // pop-up message type
-enum POP_UP_MESSAGE_TYPE { success, error, warning, confirm, none }
+enum PopUpMessageType { success, error, warning, confirm, none }
 
 // material icon direction
-enum MATERIAL_ICON_DIRECTION { up, down, left, right }
+enum MaterialIconDirection { up, down, left, right }
 
 // appointment types
-enum APPOINTMENT_TYPE { newAppointment, reviewAppointment }
+enum AppointmentType { newAppointment, reviewAppointment }
 
 // button icon position
 
 // facility status
-enum FACILITY_STATUS { open, close, cancel }
+enum FacilityStatus { open, close, cancel }
 
 // text field border
 enum BORDER_TYPE { none, outline, underline }
 
 // page type for success screen
-enum PAGE_TYPE {
+enum PageType {
   ratingScreen,
   facilityIncidentScreen,
   incidentsScreen,
@@ -51,29 +51,25 @@ enum PAGE_TYPE {
   deleteEmtethal,
   renewCommercial,
   other,
-  ekramCemetry
+  ekramCemetry,
 }
 
 enum RequestsType {
-  INC(title: "inc_title", type: "inc"),
-  VHR(title: "vhr_title", type: "vhr"),
-  REQ(title: "req_title", type: "req"),
-  INQ(title: "inq_title", type: "inq"),
-  DC(title: "dc_title", type: "dc"),
-  TSR(title: "tsr_title", type: "tsr"),
-  MUN(title: "mun_title", type: "mun"),
-  ;
+  inc(title: "inc_title", type: "inc"),
+  vhr(title: "vhr_title", type: "vhr"),
+  req(title: "req_title", type: "req"),
+  inq(title: "inq_title", type: "inq"),
+  dc(title: "dc_title", type: "dc"),
+  tsr(title: "tsr_title", type: "tsr"),
+  mun(title: "mun_title", type: "mun");
 
-  const RequestsType({
-    required this.type,
-    required this.title,
-  });
+  const RequestsType({required this.type, required this.title});
 
   final String type;
   final String title;
 }
 
-enum ATHKAR_CATAGORIES { morning, sleep, evening }
+enum AthkarCatagories { morning, sleep, evening }
 
 enum CRSubmitterType { owner, rental }
 
@@ -126,18 +122,18 @@ enum CRContractCleanRenewOptions {
   const CRContractCleanRenewOptions({required this.name});
 }
 
-enum UserProfileType { Delegator, Agent }
+enum UserProfileType { delegator, agent }
 
 enum ServiceCardsTypes { desc, req, flow, authorInfo, others, conditions }
 
 enum QRSiteLocationType {
-  INSIDE_BUILDING(name: "INSIDE_BUILDING"),
-  ON_STREET(name: "ON_STREET");
+  insIdEBuilding(name: "INSIDE_BUILDING"),
+  onStreet(name: "ON_STREET");
 
   final String name;
   const QRSiteLocationType({required this.name});
 }
 
-enum QRWorkTimes { SHIFTED, OPEN_24HOUR, CLOSED }
+enum QRWorkTimes { shifted, open24hour, closed }
 
 enum EkramType { transport, cemetry }

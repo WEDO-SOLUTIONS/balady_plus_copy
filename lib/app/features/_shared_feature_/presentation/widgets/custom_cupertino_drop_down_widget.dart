@@ -29,7 +29,7 @@ class CustomHeaderAndDescOnTapWidget extends StatefulWidget {
   final VoidCallback onTap;
   final String? errorMsg;
   final String? textValue;
-  final MATERIAL_ICON_DIRECTION materialIconDirection;
+  final MaterialIconDirection materialIconDirection;
   final Widget? icon;
   final bool? showOptional;
   final double? marginBottom;
@@ -52,7 +52,7 @@ class CustomHeaderAndDescOnTapWidget extends StatefulWidget {
     required this.onTap,
     this.errorMsg,
     this.textValue,
-    this.materialIconDirection = MATERIAL_ICON_DIRECTION.down,
+    this.materialIconDirection = MaterialIconDirection.down,
     this.icon,
     this.showOptional = false,
   });

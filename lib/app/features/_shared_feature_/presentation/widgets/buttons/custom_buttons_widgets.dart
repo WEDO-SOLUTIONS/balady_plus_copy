@@ -242,7 +242,7 @@ class EnhancedCustomElevatedButtonWidget extends StatelessWidget {
   final Color? btnTextUnderlineColor;
   final double spaceBetweenTextAndIcon;
   final Widget? icon;
-  final BUTTON_ICON_POSITION buttonIconPosition;
+  final ButtonIconPosition buttonIconPosition;
   final double horizontalMargin;
   final double verticalMargin;
 
@@ -257,7 +257,7 @@ class EnhancedCustomElevatedButtonWidget extends StatelessWidget {
     this.btnBorderWidth = 2.0,
     this.btnAlignment = Alignment.center,
     required this.btnText,
-    this.buttonIconPosition = BUTTON_ICON_POSITION.right,
+    this.buttonIconPosition = ButtonIconPosition.right,
     this.btnTextColor = AppColor.white,
     this.btnTextWeight = AppFontWeight.medium,
     this.btnTextSize = 18.0,
@@ -290,8 +290,8 @@ class EnhancedCustomElevatedButtonWidget extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           mainAxisSize: MainAxisSize.min,
           children: [
-            if (icon != null && buttonIconPosition == BUTTON_ICON_POSITION.right) icon ?? Container(),
-            if (icon != null && buttonIconPosition == BUTTON_ICON_POSITION.right)
+            if (icon != null && buttonIconPosition == ButtonIconPosition.right) icon ?? Container(),
+            if (icon != null && buttonIconPosition == ButtonIconPosition.right)
               CustomHorizontalSpace(width: spaceBetweenTextAndIcon),
             CustomTextWidget(
               btnText,
@@ -301,9 +301,9 @@ class EnhancedCustomElevatedButtonWidget extends StatelessWidget {
               textDecoration: btnTextUnderline ? TextDecoration.underline : TextDecoration.none,
               textDecorationColor: btnTextUnderlineColor,
             ),
-            if (icon != null && buttonIconPosition == BUTTON_ICON_POSITION.left)
+            if (icon != null && buttonIconPosition == ButtonIconPosition.left)
               CustomHorizontalSpace(width: spaceBetweenTextAndIcon),
-            if (icon != null && buttonIconPosition == BUTTON_ICON_POSITION.left) icon ?? Container(),
+            if (icon != null && buttonIconPosition == ButtonIconPosition.left) icon ?? Container(),
           ],
         ),
       ),
@@ -589,7 +589,7 @@ class CustomTextButtonWithIconWidget extends StatelessWidget {
   final AlignmentGeometry? btnAlignment;
   final VoidCallback? btnPressed;
   final Widget icon;
-  final BUTTON_ICON_POSITION buttonIconPosition;
+  final ButtonIconPosition buttonIconPosition;
   final MainAxisAlignment mainAxisAlignment;
   final double spaceBetweenTextAndIcon;
   final String btnText;
@@ -608,7 +608,7 @@ class CustomTextButtonWithIconWidget extends StatelessWidget {
     this.btnAlignment,
     required this.btnPressed,
     required this.icon,
-    this.buttonIconPosition = BUTTON_ICON_POSITION.left,
+    this.buttonIconPosition = ButtonIconPosition.left,
     this.mainAxisAlignment = MainAxisAlignment.center,
     this.spaceBetweenTextAndIcon = 4.0,
     required this.btnText,
@@ -637,8 +637,8 @@ class CustomTextButtonWithIconWidget extends StatelessWidget {
         mainAxisAlignment: mainAxisAlignment,
         mainAxisSize: mainAxisSize,
         children: [
-          if (buttonIconPosition == BUTTON_ICON_POSITION.right) icon,
-          if (buttonIconPosition == BUTTON_ICON_POSITION.right) CustomHorizontalSpace(width: spaceBetweenTextAndIcon),
+          if (buttonIconPosition == ButtonIconPosition.right) icon,
+          if (buttonIconPosition == ButtonIconPosition.right) CustomHorizontalSpace(width: spaceBetweenTextAndIcon),
           CustomTextWidget(
             btnText,
             fontColor: btnTextColor,
@@ -647,8 +647,8 @@ class CustomTextButtonWithIconWidget extends StatelessWidget {
             textDecoration: textUnderline ? TextDecoration.underline : TextDecoration.none,
             textDecorationColor: textUnderlineColor,
           ),
-          if (buttonIconPosition == BUTTON_ICON_POSITION.left) CustomHorizontalSpace(width: spaceBetweenTextAndIcon),
-          if (buttonIconPosition == BUTTON_ICON_POSITION.left) icon,
+          if (buttonIconPosition == ButtonIconPosition.left) CustomHorizontalSpace(width: spaceBetweenTextAndIcon),
+          if (buttonIconPosition == ButtonIconPosition.left) icon,
         ],
       ),
     );
@@ -661,7 +661,7 @@ class CustomTextButtonWithIconWidgetWithFlexible extends StatelessWidget {
   final AlignmentGeometry? btnAlignment;
   final VoidCallback? btnPressed;
   final Widget icon;
-  final BUTTON_ICON_POSITION buttonIconPosition;
+  final ButtonIconPosition buttonIconPosition;
   final MainAxisAlignment mainAxisAlignment;
   final double spaceBetweenTextAndIcon;
   final String btnText;
@@ -679,7 +679,7 @@ class CustomTextButtonWithIconWidgetWithFlexible extends StatelessWidget {
     this.btnAlignment,
     required this.btnPressed,
     required this.icon,
-    this.buttonIconPosition = BUTTON_ICON_POSITION.left,
+    this.buttonIconPosition = ButtonIconPosition.left,
     this.mainAxisAlignment = MainAxisAlignment.center,
     this.spaceBetweenTextAndIcon = 4.0,
     required this.btnText,
@@ -703,8 +703,8 @@ class CustomTextButtonWithIconWidgetWithFlexible extends StatelessWidget {
       child: Row(
         mainAxisAlignment: mainAxisAlignment,
         children: [
-          if (buttonIconPosition == BUTTON_ICON_POSITION.right) icon,
-          if (buttonIconPosition == BUTTON_ICON_POSITION.right) CustomHorizontalSpace(width: spaceBetweenTextAndIcon),
+          if (buttonIconPosition == ButtonIconPosition.right) icon,
+          if (buttonIconPosition == ButtonIconPosition.right) CustomHorizontalSpace(width: spaceBetweenTextAndIcon),
           Flexible(
             child: CustomTextWidget(
               btnText,
@@ -717,8 +717,8 @@ class CustomTextButtonWithIconWidgetWithFlexible extends StatelessWidget {
               textDecorationColor: textUnderlineColor,
             ),
           ),
-          if (buttonIconPosition == BUTTON_ICON_POSITION.left) CustomHorizontalSpace(width: spaceBetweenTextAndIcon),
-          if (buttonIconPosition == BUTTON_ICON_POSITION.left) icon,
+          if (buttonIconPosition == ButtonIconPosition.left) CustomHorizontalSpace(width: spaceBetweenTextAndIcon),
+          if (buttonIconPosition == ButtonIconPosition.left) icon,
         ],
       ),
     );
@@ -743,7 +743,7 @@ class CustomElevatedButtonWidget1 extends StatelessWidget {
   final Color? btnTextUnderlineColor;
   final double spaceBetweenTextAndIcon;
   final Widget? icon;
-  final BUTTON_ICON_POSITION buttonIconPosition;
+  final ButtonIconPosition buttonIconPosition;
 
   const CustomElevatedButtonWidget1({
     super.key,
@@ -757,7 +757,7 @@ class CustomElevatedButtonWidget1 extends StatelessWidget {
     this.btnElevation = 2.0,
     this.btnAlignment = Alignment.center,
     required this.btnText,
-    this.buttonIconPosition = BUTTON_ICON_POSITION.right,
+    this.buttonIconPosition = ButtonIconPosition.right,
     this.btnTextColor = AppColor.white,
     this.btnTextWeight = AppFontWeight.medium,
     this.btnTextSize = 18.0,
@@ -786,8 +786,8 @@ class CustomElevatedButtonWidget1 extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         mainAxisSize: MainAxisSize.min,
         children: [
-          if (icon != null && buttonIconPosition == BUTTON_ICON_POSITION.right) icon ?? Container(),
-          if (icon != null && buttonIconPosition == BUTTON_ICON_POSITION.right)
+          if (icon != null && buttonIconPosition == ButtonIconPosition.right) icon ?? Container(),
+          if (icon != null && buttonIconPosition == ButtonIconPosition.right)
             CustomHorizontalSpace(width: spaceBetweenTextAndIcon),
           CustomTextWidget(
             btnText,
@@ -797,9 +797,9 @@ class CustomElevatedButtonWidget1 extends StatelessWidget {
             textDecoration: btnTextUnderline ? TextDecoration.underline : TextDecoration.none,
             textDecorationColor: btnTextUnderlineColor,
           ),
-          if (icon != null && buttonIconPosition == BUTTON_ICON_POSITION.left)
+          if (icon != null && buttonIconPosition == ButtonIconPosition.left)
             CustomHorizontalSpace(width: spaceBetweenTextAndIcon),
-          if (icon != null && buttonIconPosition == BUTTON_ICON_POSITION.left) icon ?? Container(),
+          if (icon != null && buttonIconPosition == ButtonIconPosition.left) icon ?? Container(),
         ],
       ),
     );
@@ -919,7 +919,7 @@ class CustomElevatedButtonWithIconWidget1 extends StatelessWidget {
   final bool btnTextUnderline;
   final Color? btnTextUnderlineColor;
   final Widget icon;
-  final BUTTON_ICON_POSITION buttonIconPosition;
+  final ButtonIconPosition buttonIconPosition;
   final MainAxisAlignment mainAxisAlignment;
   final double spaceBetweenTextAndIcon;
 
@@ -941,7 +941,7 @@ class CustomElevatedButtonWithIconWidget1 extends StatelessWidget {
     this.btnTextUnderline = false,
     this.btnTextUnderlineColor,
     required this.icon,
-    this.buttonIconPosition = BUTTON_ICON_POSITION.left,
+    this.buttonIconPosition = ButtonIconPosition.left,
     this.mainAxisAlignment = MainAxisAlignment.center,
     this.spaceBetweenTextAndIcon = 4.0,
   });
@@ -964,8 +964,8 @@ class CustomElevatedButtonWithIconWidget1 extends StatelessWidget {
       child: Row(
         mainAxisAlignment: mainAxisAlignment,
         children: [
-          if (buttonIconPosition == BUTTON_ICON_POSITION.right) icon,
-          if (buttonIconPosition == BUTTON_ICON_POSITION.right) CustomHorizontalSpace(width: spaceBetweenTextAndIcon),
+          if (buttonIconPosition == ButtonIconPosition.right) icon,
+          if (buttonIconPosition == ButtonIconPosition.right) CustomHorizontalSpace(width: spaceBetweenTextAndIcon),
           CustomTextWidget(
             btnText,
             fontColor: btnTextColor,
@@ -974,8 +974,8 @@ class CustomElevatedButtonWithIconWidget1 extends StatelessWidget {
             textDecoration: btnTextUnderline ? TextDecoration.underline : TextDecoration.none,
             textDecorationColor: btnTextUnderlineColor,
           ),
-          if (buttonIconPosition == BUTTON_ICON_POSITION.left) CustomHorizontalSpace(width: spaceBetweenTextAndIcon),
-          if (buttonIconPosition == BUTTON_ICON_POSITION.left) icon,
+          if (buttonIconPosition == ButtonIconPosition.left) CustomHorizontalSpace(width: spaceBetweenTextAndIcon),
+          if (buttonIconPosition == ButtonIconPosition.left) icon,
         ],
       ),
     );
@@ -999,7 +999,7 @@ class CustomElevatedButtonWithIconWidget extends StatelessWidget {
   final bool btnTextUnderline;
   final Color? btnTextUnderlineColor;
   final Widget icon;
-  final BUTTON_ICON_POSITION buttonIconPosition;
+  final ButtonIconPosition buttonIconPosition;
   final MainAxisAlignment mainAxisAlignment;
   final double spaceBetweenTextAndIcon;
 
@@ -1021,7 +1021,7 @@ class CustomElevatedButtonWithIconWidget extends StatelessWidget {
     this.btnTextUnderline = false,
     this.btnTextUnderlineColor,
     required this.icon,
-    this.buttonIconPosition = BUTTON_ICON_POSITION.left,
+    this.buttonIconPosition = ButtonIconPosition.left,
     this.mainAxisAlignment = MainAxisAlignment.center,
     this.spaceBetweenTextAndIcon = 4.0,
   });
@@ -1045,8 +1045,8 @@ class CustomElevatedButtonWithIconWidget extends StatelessWidget {
         child: Row(
           mainAxisAlignment: mainAxisAlignment,
           children: [
-            if (buttonIconPosition == BUTTON_ICON_POSITION.right) icon,
-            if (buttonIconPosition == BUTTON_ICON_POSITION.right) CustomHorizontalSpace(width: spaceBetweenTextAndIcon),
+            if (buttonIconPosition == ButtonIconPosition.right) icon,
+            if (buttonIconPosition == ButtonIconPosition.right) CustomHorizontalSpace(width: spaceBetweenTextAndIcon),
             CustomTextWidget(
               btnText,
               fontColor: btnTextColor,
@@ -1055,8 +1055,8 @@ class CustomElevatedButtonWithIconWidget extends StatelessWidget {
               textDecoration: btnTextUnderline ? TextDecoration.underline : TextDecoration.none,
               textDecorationColor: btnTextUnderlineColor,
             ),
-            if (buttonIconPosition == BUTTON_ICON_POSITION.left) CustomHorizontalSpace(width: spaceBetweenTextAndIcon),
-            if (buttonIconPosition == BUTTON_ICON_POSITION.left) icon,
+            if (buttonIconPosition == ButtonIconPosition.left) CustomHorizontalSpace(width: spaceBetweenTextAndIcon),
+            if (buttonIconPosition == ButtonIconPosition.left) icon,
           ],
         ),
       ),

@@ -483,7 +483,7 @@ class NewMiniAppLogicCubit extends Cubit<NewMiniAppLogicState> {
     final sortedApps = List<MiniApp>.from(apps);
 
     switch (sortType) {
-      case FilterOptionType.ServiceDateAscending:
+      case FilterOptionType.serviceDateAscending:
         sortedApps.sort((a, b) {
           if (a.serviceOrder == null && b.serviceOrder == null) return 0;
           if (a.serviceOrder == null) return 1;
@@ -492,7 +492,7 @@ class NewMiniAppLogicCubit extends Cubit<NewMiniAppLogicState> {
         });
         break;
 
-      case FilterOptionType.ServiceDateDescending:
+      case FilterOptionType.serviceDateDescending:
         sortedApps.sort((a, b) {
           if (a.serviceOrder == null && b.serviceOrder == null) return 0;
           if (a.serviceOrder == null) return 1;
@@ -501,11 +501,11 @@ class NewMiniAppLogicCubit extends Cubit<NewMiniAppLogicState> {
         });
         break;
 
-      case FilterOptionType.AlphabeticalAscending:
+      case FilterOptionType.alphabeticalAscending:
         sortedApps.sort((a, b) => a.name.compareTo(b.name));
         break;
 
-      case FilterOptionType.AlphabeticalDescending:
+      case FilterOptionType.alphabeticalDescending:
         sortedApps.sort((a, b) => b.name.compareTo(a.name));
         break;
     }

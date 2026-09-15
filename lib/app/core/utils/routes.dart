@@ -6,15 +6,7 @@ import 'package:balady_plus/app/features/volunteer_profile/injection/volunteer_p
 import 'package:balady_plus/app/features/weather/presentation/pages/weather_main_page.dart';
 import 'package:balady_plus/mini_apps_engine/presentation/pages/mini_app_pages/mini_apps_main_screen.dart';
 import 'package:flutter/material.dart'
-    show
-        AppBar,
-        BuildContext,
-        Center,
-        MaterialPageRoute,
-        Route,
-        RouteSettings,
-        Scaffold,
-        Widget;
+    show AppBar, BuildContext, Center, MaterialPageRoute, Route, RouteSettings, Scaffold, Widget;
 import '../../../super_app_js_bridge/camera/camera_page.dart';
 import '../../core/utils/utils_exports.dart' show RouteName;
 import '../../features/_shared_feature_/presentation/pages/qiblah_webview_page.dart';
@@ -24,9 +16,7 @@ import '../../features/_shared_feature_/presentation/pages/view_dms_image_screen
 import '../../features/_shared_feature_/shared_feature_exports.dart';
 import '../../features/_shared_feature_/presentation/pages/success_screen.dart';
 import '../../features/bottom_navigation/bottom_navigation_exports.dart' as b;
-import '../../features/public_services_features/prayer_times/prayer_times_exports.dart'
-    show PrayerTimesPage;
-
+import '../../features/public_services_features/prayer_times/prayer_times_exports.dart' show PrayerTimesPage;
 
 import '../../features/public_services_features/prayer_times/presentation/pages/prayer_times_page.dart';
 
@@ -42,74 +32,46 @@ class Routes {
     //! Etmam Start
     // Success Page
 
-
-
-
-//! Etmam End
+    //! Etmam End
   };
   static Map<String, Widget Function(BuildContext)> routesApp = {
     RouteName.bottomNavigation: (context) => const b.BottomNavigationPage(),
     RouteName.splashScreen: (context) => const SplashPage(),
     RouteName.vdCameraPage: (context) => const VDCameraPage(),
 
-
-
     RouteName.forceUpdateRoute: (context) => const ForceUpdatePage(),
-
 
     RouteName.inappWebview: (context) => const InAppWebViewPage(),
 
     RouteName.dmsImageFullScreen: (context) => const ViewDMSImageScreen(),
+
     // RouteName.serviceCards: (context) => const ServiceCardsPage(),
 
     //? General Services
-
     RouteName.prayerTimes: (context) => const PrayerTimesPage(),
 
     RouteName.qiblahCompass: (context) => const QiblahWebViewPage(),
 
     //? personalInformation page
-
-
-
     RouteName.successRoute: (context) => const SuccessScreen(),
+
     // ------ Commercial License -----
 
     // ------ Wallet -----
-
-
     RouteName.weatherMainPage: (context) => const WeatherMainPage(),
 
     RouteName.eventsMainPage: (context) => const EventsMainPage(),
 
-    RouteName.eventsDetailsPage: (context) =>
-        const SingleEventDescriptionPage(),
+    RouteName.eventsDetailsPage: (context) => const SingleEventDescriptionPage(),
 
-    RouteName.notificationsListScreen: (context) =>
-        const NotificationsListScreen(),
-    RouteName.notificationsDetailsScreen: (context) =>
-        const NotificationsDetailsScreen(),
-    RouteName.miniAppsMainScreen: (context) =>
-    const MiniAppsMainScreen(),
+    RouteName.notificationsListScreen: (context) => const NotificationsListScreen(),
+    RouteName.notificationsDetailsScreen: (context) => const NotificationsDetailsScreen(),
+    RouteName.miniAppsMainScreen: (context) => const MiniAppsMainScreen(),
 
-    RouteName.VolunteerProfile: (context) =>
-     VolunteerProfileScreen(
-      volunteerProfileBloc:
-      slVolunteer<VolunteerProfileBloc>(),
-    ),
-    RouteName.VolunteerEditProfile: (context) =>
-        VolunteerProfileEditingScreen(
-          volunteerProfileBloc:
-          slVolunteer<VolunteerProfileBloc>(),
-        ),
-
-
-
-
-
-
-
-
+    RouteName.volunteerProfile: (context) =>
+        VolunteerProfileScreen(volunteerProfileBloc: slVolunteer<VolunteerProfileBloc>()),
+    RouteName.volunteerEditProfile: (context) =>
+        VolunteerProfileEditingScreen(volunteerProfileBloc: slVolunteer<VolunteerProfileBloc>()),
   };
 
   static Map<String, Widget Function(BuildContext)> routes() {
@@ -134,12 +96,8 @@ class AppRouter1 {
       default:
         return MaterialPageRoute(
           builder: (_) => Scaffold(
-            appBar: AppBar(
-              title: const CustomTextWidget("Error"),
-            ),
-            body: const Center(
-              child: CustomTextWidget("Page not found"),
-            ),
+            appBar: AppBar(title: const CustomTextWidget("Error")),
+            body: const Center(child: CustomTextWidget("Page not found")),
           ),
         );
     }

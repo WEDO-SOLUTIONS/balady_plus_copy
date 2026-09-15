@@ -28,7 +28,7 @@ class WindAndWeatherCard extends StatelessWidget {
                     Row(
                       children: [
                         SvgPicture.asset(
-                          IconPath.wind_speed,
+                          IconPath.windSpeed,
                           width: 21,
                           height: 21,
                           colorFilter: ColorFilter.mode(AppColor.primary200Light, BlendMode.srcIn),

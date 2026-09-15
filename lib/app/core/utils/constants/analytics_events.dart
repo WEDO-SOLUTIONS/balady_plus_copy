@@ -271,337 +271,310 @@ class AnalyticsEvents {
 
   // Snap & Send
 
-  static String SnapAndSend_Open_From_Home_Event = "SnapAndSend_Open_From_Home_Event"; //Done
+  static String snapAndSendOpenFromHomeEvent = "SnapAndSend_Open_From_Home_Event"; //Done
 
-  static String SnapAndSend_Open_From_Services_Event = "SnapAndSend_Open_From_Services_Event"; //Done
+  static String snapAndSendOpenFromServicesEvent = "SnapAndSend_Open_From_Services_Event"; //Done
 
-  static String SnapAndSend_Open_From_FeedBack_Event = "SnapAndSend_Open_From_FeedBack_Event"; //Done
+  static String snapAndSendOpenFromFeedBackEvent = "SnapAndSend_Open_From_FeedBack_Event"; //Done
 
-  static String SnapAndSend_Open_QR_Types_Event = "SnapAndSend_Open_QR_Types_Event"; //Done
+  static String snapAndSendOpenQrTypesEvent = "SnapAndSend_Open_QR_Types_Event"; //Done
 
-  static String SnapAndSend_Open_Types_Event = "SnapAndSend_Open_Types_Event"; //Done
-  static String SnapAndSend_Open_Camera_Step_Event = "SnapAndSend_Open_Camera_Step_Event"; //Done
-  static String SnapAndSend_Open_Location_Step_Event = "SnapAndSend_Open_Location_Step_Event"; // Done
-  static String SnapAndSend_Open_Map_Step_Event = "SnapAndSend_Open_Map_Step_Event"; //Done
-  static String SnapAndSend_Open_SPL_Step_Event = "SnapAndSend_Open_SPL_Step_Event"; //Done
-  static String SnapAndSend_Open_Guest_Info_Step_Event = "SnapAndSend_Open_Guest_Info_Step_Event"; //Done
-  static String SnapAndSend_Open_Details_Step_Event = "SnapAndSend_Open_Details_Step_Event"; //Done
-  static String SnapAndSend_Open_Review_Step_Event = "SnapAndSend_Open_Review_Step_Event"; // Done
-  static String SnapAndSend_Open_OTP_Step_Event = "SnapAndSend_Open_OTP_Step_Event"; //Done
-  static String SnapAndSend_Submit_Event = "SnapAndSend_Submit_Event"; //Done
-  static String SnapAndSend_Success_Event = "SnapAndSend_Success_Event"; //Done
+  static String snapAndSendOpenTypesEvent = "SnapAndSend_Open_Types_Event"; //Done
+  static String snapAndSendOpenCameraStepEvent = "SnapAndSend_Open_Camera_Step_Event"; //Done
+  static String snapAndSendOpenLocationStepEvent = "SnapAndSend_Open_Location_Step_Event"; // Done
+  static String snapAndSendOpenMapStepEvent = "SnapAndSend_Open_Map_Step_Event"; //Done
+  static String snapAndSendOpenSplStepEvent = "SnapAndSend_Open_SPL_Step_Event"; //Done
+  static String snapAndSendOpenGuestInfoStepEvent = "SnapAndSend_Open_Guest_Info_Step_Event"; //Done
+  static String snapAndSendOpenDetailsStepEvent = "SnapAndSend_Open_Details_Step_Event"; //Done
+  static String snapAndSendOpenReviewStepEvent = "SnapAndSend_Open_Review_Step_Event"; // Done
+  static String snapAndSendOpenOtpStepEvent = "SnapAndSend_Open_OTP_Step_Event"; //Done
+  static String snapAndSendSubmitEvent = "SnapAndSend_Submit_Event"; //Done
+  static String snapAndSendSuccessEvent = "SnapAndSend_Success_Event"; //Done
 
   // Athkar
 
-  static String Athkar_Open_Event = "Athkar_Open_Event";
-  static String Athkar_Open_Category_Event = "Athkar_Open_Category_Event";
-  static String Athkar_Open_Category_Item_Event = "Athkar_Open_Category_Item_Event";
-  static String Athkar_Click_Count = "Athkar_Click_Count";
-  static String Athkar_Click_Clear_Count = "Athkar_Click_Clear_Count";
+  static String athkarOpenEvent = "Athkar_Open_Event";
+  static String athkarOpenCategoryEvent = "Athkar_Open_Category_Event";
+  static String athkarOpenCategoryItemEvent = "Athkar_Open_Category_Item_Event";
+  static String athkarClickCount = "Athkar_Click_Count";
+  static String athkarClickClearCount = "Athkar_Click_Clear_Count";
 
   // Events
 
-  static String Events_Open_List_Event = "Events_Open_List_Event"; //Done
-  static String Events_Open_Item_Event = "Events_Open_Item_Event"; //Done
-  static String Events_List_Click_Filter_Event = "Events_List_Click_Filter_Event"; //Done
-  static String Events_List_Click_Apply_Filter_Event = "Events_List_Click_Apply_Filter_Event"; //Done
-  static String Events_List_Click_Item_AddToCalender_Event = "Events_List_Click_Item_AddToCalender_Event"; //Done
-  static String Events_List_Click_Item_Share_Event = "Events_List_Click_Item_Share_Event"; //Done
-  static String Events_List_Click_Item_Move_To_Details_Event = "Events_List_Click_Item_Move_To_Details_Event"; //Done
+  static String eventsOpenListEvent = "Events_Open_List_Event"; //Done
+  static String eventsOpenItemEvent = "Events_Open_Item_Event"; //Done
+  static String eventsListClickFilterEvent = "Events_List_Click_Filter_Event"; //Done
+  static String eventsListClickApplyFilterEvent = "Events_List_Click_Apply_Filter_Event"; //Done
+  static String eventsListClickItemAddToCalenderEvent = "Events_List_Click_Item_AddToCalender_Event"; //Done
+  static String eventsListClickItemShareEvent = "Events_List_Click_Item_Share_Event"; //Done
+  static String eventsListClickItemMoveToDetailsEvent = "Events_List_Click_Item_Move_To_Details_Event"; //Done
 
   // KingdomCalendar
-  static String KingdomCalendar_List_Click_Filter_Event = "KingdomCalendar_List_Click_Filter_Event";
-  static String KingdomCalendar_List_Click_Apply_Filter_Event = "KingdomCalendar_List_Click_Apply_Filter_Event";
-  static String KingdomCalendar_List_AddToCalender_Event = "KingdomCalendar_List_AddToCalender_Event";
+  static String kingdomCalendarListClickFilterEvent = "KingdomCalendar_List_Click_Filter_Event";
+  static String kingdomCalendarListClickApplyFilterEvent = "KingdomCalendar_List_Click_Apply_Filter_Event";
+  static String kingdomCalendarListAddToCalenderEvent = "KingdomCalendar_List_AddToCalender_Event";
 
   // Municipal Service Request
-  static String MunicipalServiceRequest_Open_Types_Event = "MunicipalServiceRequest_Open_Types_Event"; //Done
-  static String MunicipalServiceRequest_Open_Map_Step_Event = "MunicipalServiceRequest_Open_Map_Step_Event"; //Done
+  static String municipalServiceRequestOpenTypesEvent = "MunicipalServiceRequest_Open_Types_Event"; //Done
+  static String municipalServiceRequestOpenMapStepEvent = "MunicipalServiceRequest_Open_Map_Step_Event"; //Done
 
-  static String MunicipalServiceRequest_Open_Details_Step_Event =
-      "MunicipalServiceRequest_Open_Details_Step_Event"; //Done
-  static String MunicipalServiceRequest_Submit_Event = "MunicipalServiceRequest_Submit_Event";
-  static String MunicipalServiceRequest_Success_Event = "MunicipalServiceRequest_Success_Event";
+  static String municipalServiceRequestOpenDetailsStepEvent = "MunicipalServiceRequest_Open_Details_Step_Event"; //Done
+  static String municipalServiceRequestSubmitEvent = "MunicipalServiceRequest_Submit_Event";
+  static String municipalServiceRequestSuccessEvent = "MunicipalServiceRequest_Success_Event";
 
   // Premises Assessment
 
-  static String ViolationGuide_Open_Event = "ViolationGuide_Open_Event";
-  static String PViolationGuide_Open_Select_Type_Step_Event = "ViolationGuide_Open_Select_Type_Step_Event"; //Done
-  static String ViolationGuide_Open_Select_Location_Event = "ViolationGuide_Open_Select_Location_Event";
-  static String ViolationGuide_Open_Select_Establishment_Size_Event =
+  static String violationGuideOpenEvent = "ViolationGuide_Open_Event";
+  static String pViolationGuideOpenSelectTypeStepEvent = "ViolationGuide_Open_Select_Type_Step_Event"; //Done
+  static String violationGuideOpenSelectLocationEvent = "ViolationGuide_Open_Select_Location_Event";
+  static String violationGuideOpenSelectEstablishmentSizeEvent =
       "ViolationGuide_Open_Select_Establishment_Size_Event"; //Done
-  static String ViolationGuide_Open_Result_Event = "ViolationGuide_Open_Result_Event"; //Done
-  static String PViolationGuide_Open_Result_Select_Violation_Event =
+  static String violationGuideOpenResultEvent = "ViolationGuide_Open_Result_Event"; //Done
+  static String pViolationGuideOpenResultSelectViolationEvent =
       "ViolationGuide_Open_Result_Select_Violation_Event"; //Done
 
   // Your FeedBack
 
-  static String YourFeedback_Open_Scan_Event = "YourFeedback_Open_Scan_Event"; //Done
-  static String YourFeedback_Scan_Wrong_QR_Event = "YourFeedback_Scan_Wrong_QR_Event"; //Done
+  static String yourFeedbackOpenScanEvent = "YourFeedback_Open_Scan_Event"; //Done
+  static String yourFeedbackScanWrongQrEvent = "YourFeedback_Scan_Wrong_QR_Event"; //Done
 
-  static String YourFeedback_Show_Dialog_QR_Event = "YourFeedback_Show_Dialog_QR_Event"; //Done
-  static String YourFeedback_Scan_Correct_QR_Event = "YourFeedback_Scan_Correct_QR_Event"; //Done
-  static String YourFeedback_Retrive_License_Data_Event = "YourFeedback_Retrive_License_Data_Event"; //Done
-  static String YourFeedback_Open_Rating_Event = "YourFeedback_Open_Rating_Event";
-  static String YourFeedback_Submit_Rating_Event = "YourFeedback_Submit_Rating_Event";
-  static String YourFeedback_Success_Rating_Event = "YourFeedback_Success_Rating_Event"; //Done
+  static String yourFeedbackShowDialogQrEvent = "YourFeedback_Show_Dialog_QR_Event"; //Done
+  static String yourFeedbackScanCorrectQrEvent = "YourFeedback_Scan_Correct_QR_Event"; //Done
+  static String yourFeedbackRetriveLicenseDataEvent = "YourFeedback_Retrive_License_Data_Event"; //Done
+  static String yourFeedbackOpenRatingEvent = "YourFeedback_Open_Rating_Event";
+  static String yourFeedbackSubmitRatingEvent = "YourFeedback_Submit_Rating_Event";
+  static String yourFeedbackSuccessRatingEvent = "YourFeedback_Success_Rating_Event"; //Done
 
   // Commercial License
 
-  static String CommercialLicense_Open_Service_Card_Event = "CommercialLicense_Open_Service_Card_Event"; //Done
-  static String CommercialLicense_Open_Create_Details_Event = "CommercialLicense_Open_Create_Details_Event"; //Done
-  static String CommercialLicense_Open_Applicant_Info_Step_Event =
-      "CommercialLicense_Open_Applicant_Info_Step_Event"; //Done
-  static String CommercialLicense_Open_Activity_Info_Step_Event =
-      "CommercialLicense_Open_Activity_Info_Step_Event"; //Done
-  static String CommercialLicense_Open_Location_Info_Step_Event =
-      "CommercialLicense_Open_Location_Info_Step_Event"; //Done
-  static String CommercialLicense_Open_Map_Locator_Page_Event = "CommercialLicense_Open_Map_Locator_Page_Event"; //Done
-  static String CommercialLicense_Open_Shop_And_Board_Details_Step_Event =
+  static String commercialLicenseOpenServiceCardEvent = "CommercialLicense_Open_Service_Card_Event"; //Done
+  static String commercialLicenseOpenCreateDetailsEvent = "CommercialLicense_Open_Create_Details_Event"; //Done
+  static String commercialLicenseOpenApplicantInfoStepEvent = "CommercialLicense_Open_Applicant_Info_Step_Event"; //Done
+  static String commercialLicenseOpenActivityInfoStepEvent = "CommercialLicense_Open_Activity_Info_Step_Event"; //Done
+  static String commercialLicenseOpenLocationInfoStepEvent = "CommercialLicense_Open_Location_Info_Step_Event"; //Done
+  static String commercialLicenseOpenMapLocatorPageEvent = "CommercialLicense_Open_Map_Locator_Page_Event"; //Done
+  static String commercialLicenseOpenShopAndBoardDetailsStepEvent =
       "CommercialLicense_Open_Shop_And_Board_Details_Step_Event";
-  static String CommercialLicense_Open_Attachment_Step_Event = "CommercialLicense_Open_Attachment_Step_Event"; //Done
-  static String CommercialLicense_Open_QR_Establishment_Info_Event =
+  static String commercialLicenseOpenAttachmentStepEvent = "CommercialLicense_Open_Attachment_Step_Event"; //Done
+  static String commercialLicenseOpenQrEstablishmentInfoEvent =
       "CommercialLicense_Open_QR_Establishment_Info_Event"; //Done
-  static String CommercialLicense_Check_QR_OTP_Page_Event = "CommercialLicense_Check_QR_OTP_Page_Event"; //Done
-  static String CommercialLicense_Open_QR_Working_Hours_Info_Event =
+  static String commercialLicenseCheckQrOtpPageEvent = "CommercialLicense_Check_QR_OTP_Page_Event"; //Done
+  static String commercialLicenseOpenQrWorkingHoursInfoEvent =
       "CommercialLicense_Open_QR_Working_Hours_Info_Event"; //Done
-  static String CommercialLicense_Open_QR_Addetional_Data_Event =
-      "CommercialLicense_Open_QR_Addetional_Data_Event"; //Done
-  static String CommercialLicense_Open_QR_Attachment_Info_Event =
-      "CommercialLicense_Open_QR_Attachment_Info_Event"; //Done
-  static String CommercialLicense_Open_Saddad_Years_Step_Event =
-      "CommercialLicense_Open_Saddad_Years_Step_Event"; //Done
-  static String CommercialLicense_Open_Calculator_Step_Event = "CommercialLicense_Open_Calculator_Step_Event"; //Done
-  static String CommercialLicense_Send_Request_Event = "CommercialLicense_Send_Request_Event"; //Done
-  static String CommercialLicense_Open_Success_Page_Event = "CommercialLicense_Open_Success_Page_Event"; //Done
+  static String commercialLicenseOpenQrAddetionalDataEvent = "CommercialLicense_Open_QR_Addetional_Data_Event"; //Done
+  static String commercialLicenseOpenQrAttachmentInfoEvent = "CommercialLicense_Open_QR_Attachment_Info_Event"; //Done
+  static String commercialLicenseOpenSaddadYearsStepEvent = "CommercialLicense_Open_Saddad_Years_Step_Event"; //Done
+  static String commercialLicenseOpenCalculatorStepEvent = "CommercialLicense_Open_Calculator_Step_Event"; //Done
+  static String commercialLicenseSendRequestEvent = "CommercialLicense_Send_Request_Event"; //Done
+  static String commercialLicenseOpenSuccessPageEvent = "CommercialLicense_Open_Success_Page_Event"; //Done
 
   // Renew Commercial Service
 
-  static String RenewCommercialLicense_Open_Service_Card_Event =
-      "RenewCommercialLicense_Open_Service_Card_Event"; //Done
-  static String RenewCommercialLicense_Open_Create_Details_Event =
+  static String renewCommercialLicenseOpenServiceCardEvent = "RenewCommercialLicense_Open_Service_Card_Event"; //Done
+  static String renewCommercialLicenseOpenCreateDetailsEvent =
       "RenewCommercialLicense_Open_Create_Details_Event"; //Done
-  static String RenewCommercialLicense_Open_Info_Step_Event = "RenewCommercialLicense_Open_Info_Step_Event"; //Done
-  static String RenewCommercialLicense_Open_Attachments_Step_Event =
+  static String renewCommercialLicenseOpenInfoStepEvent = "RenewCommercialLicense_Open_Info_Step_Event"; //Done
+  static String renewCommercialLicenseOpenAttachmentsStepEvent =
       "RenewCommercialLicense_Open_Attachments_Step_Event"; //Done
-  static String RenewCommercialLicense_Open_Calculator_Step_Event =
+  static String renewCommercialLicenseOpenCalculatorStepEvent =
       "RenewCommercialLicense_Open_Calculator_Step_Event"; //Done
-  static String RenewCommercialLicense_Send_Request_Event = "RenewCommercialLicense_Send_Request_Event"; //Done
-  static String RenewCommercialLicense_Open_Success_Page_Event =
-      "RenewCommercialLicense_Open_Success_Page_Event"; //Done
+  static String renewCommercialLicenseSendRequestEvent = "RenewCommercialLicense_Send_Request_Event"; //Done
+  static String renewCommercialLicenseOpenSuccessPageEvent = "RenewCommercialLicense_Open_Success_Page_Event"; //Done
 
   // 24 Permit
-  static String Permit_24_Open_Service_Card_Event = "Permit_24_Open_Service_Card_Event"; //Done
-  static String Permit_24_Open_Create_Details_Event = "Permit_24_Open_Create_Details_Event"; //Done
-  static String Permit_24_Open_Review_Step_Event = "Permit_24_Open_Review_Step_Event";
-  static String Permit_24_Send_Request_Event = "Permit_24_Send_Request_Event";
-  static String Permit_24_Open_Success_Page_Event = "Permit_24_Open_Success_Page_Event"; //Done
-  static String My_Requests_24_Permit_Details_Delete_Request_Event =
-      "My_Requests_24_Permit_Details_Delete_Request_Event";
+  static String permit24OpenServiceCardEvent = "Permit_24_Open_Service_Card_Event"; //Done
+  static String permit24OpenCreateDetailsEvent = "Permit_24_Open_Create_Details_Event"; //Done
+  static String permit24OpenReviewStepEvent = "Permit_24_Open_Review_Step_Event";
+  static String permit24SendRequestEvent = "Permit_24_Send_Request_Event";
+  static String permit24OpenSuccessPageEvent = "Permit_24_Open_Success_Page_Event"; //Done
+  static String myRequests24PermitDetailsDeleteRequestEvent = "My_Requests_24_Permit_Details_Delete_Request_Event";
 
   // Tobaco Permit
 
-  static String Permit_Tobaco_Open_Service_Card_Event = "Permit_Tobaco_Open_Service_Card_Event"; //Done
-  static String Permit_Tobaco_Open_Create_Details_Event = "Permit_Tobaco_Open_Create_Details_Event"; //Done
-  static String Permit_Tobaco_Open_Hotel_Step_Event = "Permit_Tobaco_Open_Hotel_Step_Event"; //Done
-  static String Permit_Tobaco_Open_Review_Step_Event = "Permit_Tobaco_Open_Review_Step_Event"; //Done
-  static String Permit_Tobaco_Send_Request_Event = "Permit_Tobaco_Send_Request_Event"; //Done
-  static String Permit_Tobaco_Open_Success_Page_Event = "Permit_Tobaco_Open_Success_Page_Event"; //Done
+  static String permitTobacoOpenServiceCardEvent = "Permit_Tobaco_Open_Service_Card_Event"; //Done
+  static String permitTobacoOpenCreateDetailsEvent = "Permit_Tobaco_Open_Create_Details_Event"; //Done
+  static String permitTobacoOpenHotelStepEvent = "Permit_Tobaco_Open_Hotel_Step_Event"; //Done
+  static String permitTobacoOpenReviewStepEvent = "Permit_Tobaco_Open_Review_Step_Event"; //Done
+  static String permitTobacoSendRequestEvent = "Permit_Tobaco_Send_Request_Event"; //Done
+  static String permitTobacoOpenSuccessPageEvent = "Permit_Tobaco_Open_Success_Page_Event"; //Done
 
-  static String My_Requests_Tobaco_Permit_Details_Delete_Request_Event =
+  static String myRequestsTobacoPermitDetailsDeleteRequestEvent =
       "My_Requests_Tobaco_Permit_Details_Delete_Request_Event"; //Done
 
   // Complaince Certificate
 
-  static String Compliance_Certificate_Open_Service_Card_Event = "Compliance_Certificate_Open_Service_Card_Event";
-  static String Compliance_Certificate_Open_Create_Details_Event = "Compliance_Certificate_Open_Create_Details_Event";
-  static String Compliance_Certificate_Open_Select_Method_Step_Event =
-      "Compliance_Certificate_Open_Select_Method_Step_Event";
-  static String Compliance_Certificate_Open_Select_Benficiry_Event =
-      "Compliance_Certificate_Open_Select_Benficiry_Event";
-  static String Compliance_Certificate_Open_Select_EngOffice_Event =
-      "Compliance_Certificate_Open_Select_EngOffice_Event";
-  static String Compliance_Certificate_Open_Application_Info_Step_Event =
+  static String complianceCertificateOpenServiceCardEvent = "Compliance_Certificate_Open_Service_Card_Event";
+  static String complianceCertificateOpenCreateDetailsEvent = "Compliance_Certificate_Open_Create_Details_Event";
+  static String complianceCertificateOpenSelectMethodStepEvent = "Compliance_Certificate_Open_Select_Method_Step_Event";
+  static String complianceCertificateOpenSelectBenficiryEvent = "Compliance_Certificate_Open_Select_Benficiry_Event";
+  static String complianceCertificateOpenSelectEngOfficeEvent = "Compliance_Certificate_Open_Select_EngOffice_Event";
+  static String complianceCertificateOpenApplicationInfoStepEvent =
       "Compliance_Certificate_Open_Application_Info_Step_Event";
-  static String Compliance_Certificate_Send_OTP_Event = "Compliance_Certificate_Send_OTP_Event"; //Done
-  static String Compliance_Certificate_Verify_OTP_Event = "Compliance_Certificate_Verify_OTP_Event"; //Done
-  static String Compliance_Certificate_Open_Document_Info_Step_Event =
-      "Compliance_Certificate_Open_Document_Info_Step_Event";
-  static String Compliance_Certificate_Open_Usage_Info_Step_Event = "Compliance_Certificate_Open_Usage_Info_Step_Event";
-  static String Compliance_Certificate_Open_Compliance_Info_Step_Event =
+  static String complianceCertificateSendOtpEvent = "Compliance_Certificate_Send_OTP_Event"; //Done
+  static String complianceCertificateVerifyOtpEvent = "Compliance_Certificate_Verify_OTP_Event"; //Done
+  static String complianceCertificateOpenDocumentInfoStepEvent = "Compliance_Certificate_Open_Document_Info_Step_Event";
+  static String complianceCertificateOpenUsageInfoStepEvent = "Compliance_Certificate_Open_Usage_Info_Step_Event";
+  static String complianceCertificateOpenComplianceInfoStepEvent =
       "Compliance_Certificate_Open_Compliance_Info_Step_Event";
-  static String Compliance_Certificate_Open_Attachments_Info_Step_Event =
+  static String complianceCertificateOpenAttachmentsInfoStepEvent =
       "Compliance_Certificate_Open_Attachments_Info_Step_Event";
-  static String Compliance_Certificate_Open_Review_Step_Event = "Compliance_Certificate_Open_Review_Step_Event";
-  static String Compliance_Certificate_Send_Request_Event = "Compliance_Certificate_Send_Request_Event";
-  static String Compliance_Certificate_Open_Success_Page_Event = "Compliance_Certificate_Open_Success_Page_Event";
+  static String complianceCertificateOpenReviewStepEvent = "Compliance_Certificate_Open_Review_Step_Event";
+  static String complianceCertificateSendRequestEvent = "Compliance_Certificate_Send_Request_Event";
+  static String complianceCertificateOpenSuccessPageEvent = "Compliance_Certificate_Open_Success_Page_Event";
 
-  static String My_Requests_Compliance_Details_Request_Event = "My_Requests_Compliance_Details_Request_Event";
+  static String myRequestsComplianceDetailsRequestEvent = "My_Requests_Compliance_Details_Request_Event";
 
-  static String My_Requests_Compliance_Details_Cancel_Request_Event =
-      "My_Requests_Compliance_Details_Cancel_Request_Event";
+  static String myRequestsComplianceDetailsCancelRequestEvent = "My_Requests_Compliance_Details_Cancel_Request_Event";
 
   // Daem
 
-  static String Daem_Open_Types_Dialog_Event = "Daem_Open_Types_Dialog_Event";
-  static String Daem_Open_Create_Details_Event = "Daem_Open_Create_Details_Event";
-  static String Daem_Send_Request_Event = "Daem_Send_Request_Event";
-  static String Daem_Open_Success_Page_Event = "Daem_Open_Success_Page_Event";
+  static String daemOpenTypesDialogEvent = "Daem_Open_Types_Dialog_Event";
+  static String daemOpenCreateDetailsEvent = "Daem_Open_Create_Details_Event";
+  static String daemSendRequestEvent = "Daem_Send_Request_Event";
+  static String daemOpenSuccessPageEvent = "Daem_Open_Success_Page_Event";
 
   //RequestFollowUp
 
-  static String RequestFollowUp_Open_Create_Details_Event = "RequestFollowUp_Open_Create_Details_Event";
-  static String RequestFollowUp_Send_Request_Event = "RequestFollowUp_Send_Request_Event";
-  static String RequestFollowUp_Open_Success_Page_Event = "RequestFollowUp_Open_Success_Page_Event";
+  static String requestFollowUpOpenCreateDetailsEvent = "RequestFollowUp_Open_Create_Details_Event";
+  static String requestFollowUpSendRequestEvent = "RequestFollowUp_Send_Request_Event";
+  static String requestFollowUpOpenSuccessPageEvent = "RequestFollowUp_Open_Success_Page_Event";
 
   // General_Inquiries
 
-  static String General_Inquiries_Open_Create_Details_Event = "General_Inquiries_Open_Create_Details_Event";
-  static String General_Inquiries_Send_Request_Event = "General_Inquiries_Send_Request_Event";
-  static String General_Inquiries_Open_Success_Page_Event = "General_Inquiries_Open_Success_Page_Event";
+  static String generalInquiriesOpenCreateDetailsEvent = "General_Inquiries_Open_Create_Details_Event";
+  static String generalInquiriesSendRequestEvent = "General_Inquiries_Send_Request_Event";
+  static String generalInquiriesOpenSuccessPageEvent = "General_Inquiries_Open_Success_Page_Event";
 
   // Appointment Booking
 
-  static String Appointment_Booking_Open_Create_Details_Event = "Appointment_Booking_Open_Create_Details_Event";
-  static String Appointment_Booking_Send_Request_Event = "Appointment_Booking_Send_Request_Event";
-  static String Appointment_Booking_Open_Success_Page_Event = "Appointment_Booking_Open_Success_Page_Event";
+  static String appointmentBookingOpenCreateDetailsEvent = "Appointment_Booking_Open_Create_Details_Event";
+  static String appointmentBookingSendRequestEvent = "Appointment_Booking_Send_Request_Event";
+  static String appointmentBookingOpenSuccessPageEvent = "Appointment_Booking_Open_Success_Page_Event";
 
   // Premises Assessment
 
-  static String PremisesAssessment_Main_Page_Event = "PremisesAssessment_Main_Page_Event";
-  static String PremisesAssessment_Details_Page_Event = "PremisesAssessment_Details_Page_Event";
-  static String PremisesAssessment_Check_Result_Event = "PremisesAssessment_Check_Result_Event";
+  static String premisesAssessmentMainPageEvent = "PremisesAssessment_Main_Page_Event";
+  static String premisesAssessmentDetailsPageEvent = "PremisesAssessment_Details_Page_Event";
+  static String premisesAssessmentCheckResultEvent = "PremisesAssessment_Check_Result_Event";
 
   // Health Certificate Issue
-  static String HealthCertificate_Issue_Create_Details_Page_Event =
+  static String healthCertificateIssueCreateDetailsPageEvent =
       "HealthCertificate_Issue_Create_Details_Page_Event"; //Done
-  static String HealthCertificate_Issue_Open_Details_Step_Event =
-      "HealthCertificate_Issue_Open_Details_Step_Event"; //Done
-  static String HealthCertificate_Issue_Open_Terms_Step_Event = "HealthCertificate_Issue_Open_Terms_Step_Event"; //Done
-  static String HealthCertificate_Issue_Submit_Event = "HealthCertificate_Issue_Submit_Event"; //Done
-  static String HealthCertificate_Issue_Success_Event = "HealthCertificate_Issue_Success_Event"; //Done
+  static String healthCertificateIssueOpenDetailsStepEvent = "HealthCertificate_Issue_Open_Details_Step_Event"; //Done
+  static String healthCertificateIssueOpenTermsStepEvent = "HealthCertificate_Issue_Open_Terms_Step_Event"; //Done
+  static String healthCertificateIssueSubmitEvent = "HealthCertificate_Issue_Submit_Event"; //Done
+  static String healthCertificateIssueSuccessEvent = "HealthCertificate_Issue_Success_Event"; //Done
 
   // Health Certificate Renew
 
-  static String HealthCertificate_renew_Create_Details_Page_Event =
+  static String healthCertificateRenewCreateDetailsPageEvent =
       "HealthCertificate_renew_Create_Details_Page_Event"; //Done
-  static String HealthCertificate_renew_Open_Details_Step_Event =
-      "HealthCertificate_renew_Open_Details_Step_Event"; //Done
-  static String HealthCertificate_renew_Open_Terms_Step_Event = "HealthCertificate_renew_Open_Terms_Step_Event"; //Done
-  static String HealthCertificate_renew_Submit_Event = "HealthCertificate_renew_Submit_Event"; //Done
-  static String HealthCertificate_renew_Success_Event = "HealthCertificate_renew_Success_Event"; //Done
+  static String healthCertificateRenewOpenDetailsStepEvent = "HealthCertificate_renew_Open_Details_Step_Event"; //Done
+  static String healthCertificateRenewOpenTermsStepEvent = "HealthCertificate_renew_Open_Terms_Step_Event"; //Done
+  static String healthCertificateRenewSubmitEvent = "HealthCertificate_renew_Submit_Event"; //Done
+  static String healthCertificateRenewSuccessEvent = "HealthCertificate_renew_Success_Event"; //Done
 
   // Posters
 
-  static String Posters_Open_Service_Card_For_Multiple_Event =
+  static String postersOpenServiceCardForMultipleEvent =
       "RenewCommercialLicense_Open_Service_Card_For_Multiple_Event"; //Done
-  static String Posters_Open_Create_Details_For_Multiple_Event =
+  static String postersOpenCreateDetailsForMultipleEvent =
       "RenewCommercialLicense_Open_Create_Details_For_Multiple_Event"; //Done
-  static String Posters_Open_licenses_Step_For_Multiple_Event =
+  static String postersOpenLicensesStepForMultipleEvent =
       "RenewCommercialLicense_Open_licenses_Step_For_Multiple_Event";
-  static String Posters_Open_Posters_Data_Step_For_Multiple_Event =
+  static String postersOpenPostersDataStepForMultipleEvent =
       "RenewCommercialLicense_Open_Posters_Data_Step_For_Multiple_Event";
-  static String Posters_Open_Review_Step_For_Multiple_Event =
-      "RenewCommercialLicense_Open_Review_Step_For_Multiple_Event";
-  static String Posters_Send_Request_For_Multiple_Event = "RenewCommercialLicense_Send_Request_For_Multiple_Event";
-  static String Posters_Open_Success_Page_For_Multiple_Event =
-      "RenewCommercialLicense_Open_Success_Page_For_Multiple_Event";
+  static String postersOpenReviewStepForMultipleEvent = "RenewCommercialLicense_Open_Review_Step_For_Multiple_Event";
+  static String postersSendRequestForMultipleEvent = "RenewCommercialLicense_Send_Request_For_Multiple_Event";
+  static String postersOpenSuccessPageForMultipleEvent = "RenewCommercialLicense_Open_Success_Page_For_Multiple_Event";
 
-  static String Posters_Open_Service_Card_For_License_Event =
+  static String postersOpenServiceCardForLicenseEvent =
       "RenewCommercialLicense_Open_Service_Card_For_License_Event"; //Done
-  static String Posters_Open_Create_Details_For_License_Event =
+  static String postersOpenCreateDetailsForLicenseEvent =
       "RenewCommercialLicense_Open_Create_Details_For_License_Event"; //Done
-  static String Posters_Open_licenses_Step_For_License_Event =
-      "RenewCommercialLicense_Open_licenses_Step_For_License_Event";
-  static String Posters_Open_Posters_Data_Step_For_License_Event =
+  static String postersOpenLicensesStepForLicenseEvent = "RenewCommercialLicense_Open_licenses_Step_For_License_Event";
+  static String postersOpenPostersDataStepForLicenseEvent =
       "RenewCommercialLicense_Open_Posters_Data_Step_For_License_Event";
-  static String Posters_Open_Review_Step_For_License_Event =
-      "RenewCommercialLicense_Open_Review_Step_For_License_Event";
-  static String Posters_Send_Request_For_License_Event = "RenewCommercialLicense_Send_Request_For_License_Event";
-  static String Posters_Open_Success_Page_For_License_Event =
-      "RenewCommercialLicense_Open_Success_Page_For_License_Event";
+  static String postersOpenReviewStepForLicenseEvent = "RenewCommercialLicense_Open_Review_Step_For_License_Event";
+  static String postersSendRequestForLicenseEvent = "RenewCommercialLicense_Send_Request_For_License_Event";
+  static String postersOpenSuccessPageForLicenseEvent = "RenewCommercialLicense_Open_Success_Page_For_License_Event";
 
   // Print Burial Certificate
 
-  static String Print_Burial_Certificate_Page_Event = "Print_Burial_Certificate_Page_Event";
+  static String printBurialCertificatePageEvent = "Print_Burial_Certificate_Page_Event";
 
-  static String Print_Burial_Certificate_Request_OTP_Event = "Print_Burial_Certificate_Request_OTP_Event";
-  static String Print_Burial_Certificate_Send_OTP_Event = "Print_Burial_Certificate_Send_OTP_Event";
-  static String Print_Burial_Certificate_Verify_OTP_Event = "Print_Burial_Certificate_Verify_OTP_Event";
-  static String Print_Burial_Certificate_Print_Event = "Print_Burial_Certificate_Print_Event";
+  static String printBurialCertificateRequestOtpEvent = "Print_Burial_Certificate_Request_OTP_Event";
+  static String printBurialCertificateSendOtpEvent = "Print_Burial_Certificate_Send_OTP_Event";
+  static String printBurialCertificateVerifyOtpEvent = "Print_Burial_Certificate_Verify_OTP_Event";
+  static String printBurialCertificatePrintEvent = "Print_Burial_Certificate_Print_Event";
 
   // SelectAndReserveCemetery
 
-  static String SelectAndReserveCemetery_List_Enter_Page_Event = "SelectAndReserveCemetery_List_Enter_Page_Event";
-  static String SelectAndReserveCemetery_Create_Condolence_Enter_Page_Event =
+  static String selectAndReserveCemeteryListEnterPageEvent = "SelectAndReserveCemetery_List_Enter_Page_Event";
+  static String selectAndReserveCemeteryCreateCondolenceEnterPageEvent =
       "SelectAndReserveCemetery_Create_Condolence_Enter_Page_Event";
-  static String SelectAndReserveCemetery_Create_Details_Enter_Page_Event =
+  static String selectAndReserveCemeteryCreateDetailsEnterPageEvent =
       "SelectAndReserveCemetery_Create_Details_Enter_Page_Event";
-  static String SelectAndReserveCemetery_Open_Applicant_Info_Step_Event =
+  static String selectAndReserveCemeteryOpenApplicantInfoStepEvent =
       "SelectAndReserveCemetery_Open_Applicant_Info_Step_Event"; //Done
-  static String SelectAndReserveCemetery_Open_Deceased_Info_Step_Event =
+  static String selectAndReserveCemeteryOpenDeceasedInfoStepEvent =
       "SelectAndReserveCemetery_Open_Deceased_Info_Step_Event"; //Done
-  static String SelectAndReserveCemetery_Open_Review_Info_Step_Event =
+  static String selectAndReserveCemeteryOpenReviewInfoStepEvent =
       "SelectAndReserveCemetery_Open_Review_Info_Step_Event"; //Done
-  static String SelectAndReserveCemetery_Send_Request_Event = "SelectAndReserveCemetery_Send_Request_Event"; //Done
-  static String SelectAndReserveCemetery_Open_Success_Page_Event =
+  static String selectAndReserveCemeterySendRequestEvent = "SelectAndReserveCemetery_Send_Request_Event"; //Done
+  static String selectAndReserveCemeteryOpenSuccessPageEvent =
       "SelectAndReserveCemetery_Open_Success_Page_Event"; //Done
 
   //RequestsTransportingAndPreparingDeceased
 
-  static String RequestsTransportingAndPreparingDeceased_List_Enter_Page_Event =
+  static String requestsTransportingAndPreparingDeceasedListEnterPageEvent =
       "RequestsTransportingAndPreparingDeceased_List_Enter_Page_Event";
-  static String RequestsTransportingAndPreparingDeceased_Create_Condolence_Enter_Page_Event =
+  static String requestsTransportingAndPreparingDeceasedCreateCondolenceEnterPageEvent =
       "RequestsTransportingAndPreparingDeceased_Create_Condolence_Enter_Page_Event";
-  static String RequestsTransportingAndPreparingDeceased_Create_Details_Enter_Page_Event =
+  static String requestsTransportingAndPreparingDeceasedCreateDetailsEnterPageEvent =
       "RequestsTransportingAndPreparingDeceased_Create_Details_Enter_Page_Event";
-  static String RequestsTransportingAndPreparingDeceased_Open_Applicant_Info_Step_Event =
+  static String requestsTransportingAndPreparingDeceasedOpenApplicantInfoStepEvent =
       "RequestsTransportingAndPreparingDeceased_Open_Applicant_Info_Step_Event"; //Done
-  static String RequestsTransportingAndPreparingDeceased_Open_Deceased_Info_Step_Event =
+  static String requestsTransportingAndPreparingDeceasedOpenDeceasedInfoStepEvent =
       "RequestsTransportingAndPreparingDeceased_Open_Deceased_Info_Step_Event"; //Done
-  static String RequestsTransportingAndPreparingDeceased_Open_Location_Info_Step_Event =
+  static String requestsTransportingAndPreparingDeceasedOpenLocationInfoStepEvent =
       "RequestsTransportingAndPreparingDeceased_Open_Location_Info_Step_Event"; //Done
-  static String RequestsTransportingAndPreparingDeceased_Open_Review_Info_Step_Event =
+  static String requestsTransportingAndPreparingDeceasedOpenReviewInfoStepEvent =
       "RequestsTransportingAndPreparingDeceased_Open_Review_Info_Step_Event"; //Done
-  static String RequestsTransportingAndPreparingDeceased_Send_Request_Event =
+  static String requestsTransportingAndPreparingDeceasedSendRequestEvent =
       "RequestsTransportingAndPreparingDeceased_Send_Request_Event"; //Done
-  static String RequestsTransportingAndPreparingDeceased_Open_Success_Page_Event =
+  static String requestsTransportingAndPreparingDeceasedOpenSuccessPageEvent =
       "RequestsTransportingAndPreparingDeceased_Open_Success_Page_Event"; //Done
 
   //
 
-  static String CancelCommercialLicense_Open_Service_Card_Event =
-      "CancelCommercialLicense_Open_Service_Card_Event"; //Done
-  static String CancelCommercialLicense_Open_Create_Details_Event =
+  static String cancelCommercialLicenseOpenServiceCardEvent = "CancelCommercialLicense_Open_Service_Card_Event"; //Done
+  static String cancelCommercialLicenseOpenCreateDetailsEvent =
       "CancelCommercialLicense_Open_Create_Details_Event"; //Done
 
-  static String CancelCommercialLicense_Send_Request_Event = "CancelCommercialLicense_Send_Request_Event"; //Done
-  static String CancelCommercialLicense_Open_Success_Page_Event =
-      "CancelCommercialLicense_Open_Success_Page_Event"; //Done
+  static String cancelCommercialLicenseSendRequestEvent = "CancelCommercialLicense_Send_Request_Event"; //Done
+  static String cancelCommercialLicenseOpenSuccessPageEvent = "CancelCommercialLicense_Open_Success_Page_Event"; //Done
 
   // Objectable Transations
 
-  static String Objectable_Transactions_Open_Create_Details_Event =
+  static String objectableTransactionsOpenCreateDetailsEvent =
       "Objectable_Transactions_Open_Create_Details_Event"; //Done
-  static String Objectable_Transaction_Open_Info_Step_Event = "Objectable_Transaction_Open_Info_Step_Event"; //Done
-  static String Objectable_Transaction_Open_User_Data_Step_Event = "Objectable_Transaction_Open_User_Data_Step_Event";
-  static String Objectable_Transaction_Open_Reasons_Step_Event = "Objectable_Transaction_Open_Reasons_Step_Event";
-  static String Objectable_Transaction_Open_Review_Step_Event = "Objectable_Transaction_Open_Review_Step_Event";
-  static String Objectable_Transaction_Send_Request_Event = "Objectable_Transaction_Send_Request_Event"; //Done
-  static String Objectable_Transaction_Open_Success_Page_Event =
-      "Objectable_Transaction_Open_Success_Page_Event"; //Done
+  static String objectableTransactionOpenInfoStepEvent = "Objectable_Transaction_Open_Info_Step_Event"; //Done
+  static String objectableTransactionOpenUserDataStepEvent = "Objectable_Transaction_Open_User_Data_Step_Event";
+  static String objectableTransactionOpenReasonsStepEvent = "Objectable_Transaction_Open_Reasons_Step_Event";
+  static String objectableTransactionOpenReviewStepEvent = "Objectable_Transaction_Open_Review_Step_Event";
+  static String objectableTransactionSendRequestEvent = "Objectable_Transaction_Send_Request_Event"; //Done
+  static String objectableTransactionOpenSuccessPageEvent = "Objectable_Transaction_Open_Success_Page_Event"; //Done
 
   // DadhBoard
 
-  static String DashBoard_Click_View_All_Event = "DashBoard_Click_View_All_Event";
-  static String DashBoard_Click_Switch_Account_From_Services_Event =
-      "DashBoard_Click_Switch_Account_From_Services_Event";
+  static String dashBoardClickViewAllEvent = "DashBoard_Click_View_All_Event";
+  static String dashBoardClickSwitchAccountFromServicesEvent = "DashBoard_Click_Switch_Account_From_Services_Event";
 
-  static String DashBoard_Click_Switch_Account_From_Dashboard_Event =
-      "DashBoard_Click_Switch_Account_From_Dashboard_Event";
+  static String dashBoardClickSwitchAccountFromDashboardEvent = "DashBoard_Click_Switch_Account_From_Dashboard_Event";
 
-  static String DashBoard_Click_Dashboard_Event = "DashBoard_Click_Dashboard_Event";
-  static String DashBoard_Click_Dashboard_Filter_Event = "DashBoard_Click_Dashboard_Filter_Event";
+  static String dashBoardClickDashboardEvent = "DashBoard_Click_Dashboard_Event";
+  static String dashBoardClickDashboardFilterEvent = "DashBoard_Click_Dashboard_Filter_Event";
 
   static String startCardServiceQueryLicenseService = "Start_Card_Service_QueryLicenseService"; //Done
   static String startServiceQueryLicenseService = "Start_Service_QueryLicenseService"; //Done

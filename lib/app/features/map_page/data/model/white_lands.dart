@@ -10,16 +10,16 @@ class WhiteLands extends PointLayersData {
 
   final List<GeoPointMessage> paths;
 
-  final String? AMANANAME;
-  final String? MUNNAME;
-  final String? PARCELCODE;
-  final String? STATUS;
-  final String? STREETNAME;
-  final String? PARCELAREA;
-  final String? CITYNAME;
-  final String? PARCELNO;
-  final dynamic PARCELLENGTH;
-  final String? PHASE;
+  final String? amanaName;
+  final String? munName;
+  final String? parcelCode;
+  final String? status;
+  final String? streetName;
+  final String? parcelArea;
+  final String? cityName;
+  final String? parcelNo;
+  final dynamic parcelLength;
+  final String? phase;
 
   WhiteLands({
     required this.paths,
@@ -29,16 +29,16 @@ class WhiteLands extends PointLayersData {
     required super.description,
     this.color = 0x26000000,
     this.strokeColor = 0xFF000000,
-    this.AMANANAME,
-    this.MUNNAME,
-    this.PHASE,
-    this.PARCELCODE,
-    this.STATUS,
-    this.STREETNAME,
-    this.PARCELAREA,
-    this.CITYNAME,
-    this.PARCELNO,
-    this.PARCELLENGTH,
+    this.amanaName,
+    this.munName,
+    this.phase,
+    this.parcelCode,
+    this.status,
+    this.streetName,
+    this.parcelArea,
+    this.cityName,
+    this.parcelNo,
+    this.parcelLength,
   });
 
   factory WhiteLands.fromJson(Map<String, dynamic> json) => WhiteLands(
@@ -48,15 +48,15 @@ class WhiteLands extends PointLayersData {
     type: json['attributes']["PLANNO"] ?? '',
     color: json['attributes']["STATUS"] == "1" ? 0x3342D991 : 0x26000000,
     strokeColor: json['attributes']["STATUS"] == "1" ? 0xFF0B7E47 : 0xFF000000,
-    AMANANAME: json['attributes']["AMANANAME"] ?? '',
-    MUNNAME: json['attributes']["MUNNAME"] ?? '',
-    PARCELCODE: json['attributes']["PARCELCODE"] ?? '',
-    STREETNAME: json['attributes']["STREETNAME"] ?? '',
-    PARCELAREA: json['attributes']["PARCELAREA"] ?? '',
-    CITYNAME: json['attributes']["CITYNAME"] ?? '',
-    PARCELNO: json['attributes']["PARCELNO"] ?? '',
-    PARCELLENGTH: json['attributes']["PARCELLENGTH"] ?? '',
-    PHASE: json['attributes']['PHASE'],
+    amanaName: json['attributes']["AMANANAME"] ?? '',
+    munName: json['attributes']["MUNNAME"] ?? '',
+    parcelCode: json['attributes']["PARCELCODE"] ?? '',
+    streetName: json['attributes']["STREETNAME"] ?? '',
+    parcelArea: json['attributes']["PARCELAREA"] ?? '',
+    cityName: json['attributes']["CITYNAME"] ?? '',
+    parcelNo: json['attributes']["PARCELNO"] ?? '',
+    parcelLength: json['attributes']["PARCELLENGTH"] ?? '',
+    phase: json['attributes']['PHASE'],
     /////////////////////////
     paths: getList(json['geometry']["rings"]),
 

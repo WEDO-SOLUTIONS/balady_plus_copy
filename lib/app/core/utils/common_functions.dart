@@ -126,7 +126,7 @@ class CommonFunctions {
     PackageDetails info = sl();
     NotificationRequest request = NotificationRequest();
     request.fcmToken = fcm;
-    request.FCMTokenSource = await isHuaweiDevice() ? "HUAWEI" : "FIREBASE";
+    request.fCMTokenSource = await isHuaweiDevice() ? "HUAWEI" : "FIREBASE";
     request.appId = GeneralKey.appId;
     request.device = device;
     request.appVersion = info.version;
@@ -153,7 +153,7 @@ class CommonFunctions {
 
   //! Come here please
   static void openVolunteerProfileScreen() {
-    NavigationService.navigatorKey.currentState!.pushNamed(RouteName.VolunteerProfile);
+    NavigationService.navigatorKey.currentState!.pushNamed(RouteName.volunteerProfile);
     /*
   NavigationService.navigatorKey.currentState!.push(
                         MaterialPageRoute(
@@ -1432,7 +1432,7 @@ class CommonFunctions {
   }
 
   static void openSnapAndSend() async {
-    CommonFunctions.sendAnalyticsEvent(AnalyticsEvents.SnapAndSend_Open_From_Home_Event);
+    CommonFunctions.sendAnalyticsEvent(AnalyticsEvents.snapAndSendOpenFromHomeEvent);
 
     NavigationService.navigatorKey.currentState!.pushNamed(RouteName.vDAllTypesScreen);
   }
@@ -1463,7 +1463,7 @@ class CommonFunctions {
 
   static void openComplianceFaq(String serviceID) {
     //اطلع على الاسئلة الشائعة
-    NavigationService.navigatorKey.currentState!.pushNamed(RouteName.QAPage, arguments: serviceID);
+    NavigationService.navigatorKey.currentState!.pushNamed(RouteName.qAPage, arguments: serviceID);
   }
 
   static void openComplianceTerms() async {

@@ -29,7 +29,7 @@ class _SingleEventDescriptionPageState extends State<SingleEventDescriptionPage>
   void initState() {
     super.initState();
 
-    CommonFunctions.sendAnalyticsEvent(AnalyticsEvents.Events_Open_Item_Event);
+    CommonFunctions.sendAnalyticsEvent(AnalyticsEvents.eventsOpenItemEvent);
   }
 
   String img = "";
@@ -126,7 +126,7 @@ class _SingleEventDescriptionPageState extends State<SingleEventDescriptionPage>
                                           }
 
                                           CommonFunctions.sendAnalyticsEvent(
-                                            AnalyticsEvents.Events_List_Click_Item_Share_Event,
+                                            AnalyticsEvents.eventsListClickItemShareEvent,
                                           );
                                         },
                                         child: Container(
@@ -196,7 +196,7 @@ class _SingleEventDescriptionPageState extends State<SingleEventDescriptionPage>
                                 CommonFunctions.externalLaunch(state.eventDetails.ticketUrl);
 
                                 CommonFunctions.sendAnalyticsEvent(
-                                  AnalyticsEvents.Events_List_Click_Item_Move_To_Details_Event,
+                                  AnalyticsEvents.eventsListClickItemMoveToDetailsEvent,
                                 );
                               },
                             ),

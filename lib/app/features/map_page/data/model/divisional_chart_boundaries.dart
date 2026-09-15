@@ -9,9 +9,9 @@ class DivisionalChartBoundaries extends PointLayersData {
   final List<GeoPointMessage> paths;
   final int color;
   final int strokeColor;
-  String? SUBDIVISIONPLAN_ID;
-  String? BLOCK_ID;
-  String? SUBDIVISIONPARCELNUMBER;
+  String? subdivisionPlanId;
+  String? blockId;
+  String? subdivisionParcelNumber;
 
   DivisionalChartBoundaries({
     required this.paths,
@@ -19,9 +19,9 @@ class DivisionalChartBoundaries extends PointLayersData {
     required super.name,
     required super.type,
     required super.description,
-    this.SUBDIVISIONPLAN_ID,
-    this.BLOCK_ID,
-    this.SUBDIVISIONPARCELNUMBER,
+    this.subdivisionPlanId,
+    this.blockId,
+    this.subdivisionParcelNumber,
     latLng,
     this.color = 0x26000000,
     this.strokeColor = 0xFF000000,
@@ -34,9 +34,9 @@ class DivisionalChartBoundaries extends PointLayersData {
     type: json['attributes']["AREANAME_SPLIT"] ?? '',
     color: 0x26000000,
     strokeColor: 0xFF000000,
-    SUBDIVISIONPARCELNUMBER: json['attributes']["SUBDIVISIONPARCELNUMBER"] ?? '',
-    BLOCK_ID: json['attributes']["BLOCK_ID"] ?? '',
-    SUBDIVISIONPLAN_ID: json['attributes']["SUBDIVISIONPLAN_ID"] ?? '',
+    subdivisionParcelNumber: json['attributes']["SUBDIVISIONPARCELNUMBER"] ?? '',
+    blockId: json['attributes']["BLOCK_ID"] ?? '',
+    subdivisionPlanId: json['attributes']["SUBDIVISIONPLAN_ID"] ?? '',
 
     /////////////////////////
     paths: getList(json['geometry']["rings"]), // not tested yat

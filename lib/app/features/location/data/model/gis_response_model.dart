@@ -4,8 +4,8 @@ class GISResponseModel extends GISResponse {
   const GISResponseModel({
     super.adminMunicipalityId,
     super.adminMunicipalityName,
-    super.Balady_DistrictID,
-    super.Balady_DistrictName,
+    super.baladyDistrictID,
+    super.baladyDistrictName,
 
     // super.cleanInfo,
     super.districtId,
@@ -35,8 +35,8 @@ class GISResponseModel extends GISResponse {
   factory GISResponseModel.fromMap(Map<String, dynamic> json) => GISResponseModel(
     adminMunicipalityId: json["Admin_MunicipalityID"],
     adminMunicipalityName: json["Admin_MunicipalityName"],
-    Balady_DistrictID: json["Balady_DistrictID"],
-    Balady_DistrictName: json["Balady_DistrictName"],
+    baladyDistrictID: json["Balady_DistrictID"],
+    baladyDistrictName: json["Balady_DistrictName"],
     //cleanInfo: json["CleanInfo"],
     districtId: json["DistrictID"],
     districtName: json["DistrictName"],
@@ -65,8 +65,8 @@ class GISResponseModel extends GISResponse {
   Map<String, dynamic> toMap() => {
     "Admin_MunicipalityID": adminMunicipalityId,
     "Admin_MunicipalityName": adminMunicipalityName,
-    "Balady_DistrictID": Balady_DistrictID,
-    "Balady_DistrictName": Balady_DistrictName,
+    "Balady_DistrictID": baladyDistrictID,
+    "Balady_DistrictName": baladyDistrictName,
     // "CleanInfo": cleanInfo,
     "DistrictID": districtId,
     "DistrictName": districtName,
@@ -97,8 +97,8 @@ extension GISResponseModelFromEntity on GISResponse {
   GISResponseModel get toModel => GISResponseModel(
     adminMunicipalityId: adminMunicipalityId,
     adminMunicipalityName: adminMunicipalityId,
-    Balady_DistrictID: Balady_DistrictID,
-    Balady_DistrictName: Balady_DistrictID,
+    baladyDistrictID: baladyDistrictID,
+    baladyDistrictName: baladyDistrictID,
     districtId: districtId,
     districtName: districtName,
     following: following,

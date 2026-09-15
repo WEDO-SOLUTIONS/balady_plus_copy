@@ -31,7 +31,7 @@ class _DashBoardPageState extends State<DashBoardPage> {
     super.initState();
     CommonFunctions.sendEventToAnalytics(AppEvents.delegators);
     CommonFunctions.sendAnalyticsEvent(AnalyticsEvents.openDashboard);
-    CommonFunctions.sendAnalyticsEvent(AnalyticsEvents.DashBoard_Click_Dashboard_Event);
+    CommonFunctions.sendAnalyticsEvent(AnalyticsEvents.dashBoardClickDashboardEvent);
   }
 
   @override

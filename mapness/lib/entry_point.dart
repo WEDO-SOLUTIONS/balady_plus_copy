@@ -1251,7 +1251,7 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> with Widg
   Future<void> _openSnapSend({bool fromQuickAction = false}) async {
     if (!fromQuickAction) {
       CommonFunctions.sendAnalyticsEvent(
-        AnalyticsEvents.SnapAndSend_Open_From_Home_Event,
+        AnalyticsEvents.snapAndSendOpenFromHomeEvent,
       );
     } else {
       ServiceEvents.setPendingOpenSource(ServiceEvents.sourceQuickAction);

@@ -20,7 +20,7 @@ class _VDCameraPageState extends State<VDCameraPage> with TickerProviderStateMix
     super.initState();
     CommonFunctions.sendAnalyticsEvent(AnalyticsEvents.startServiceSnapAndSend);
     CommonFunctions.sendAnalyticsEvent(AnalyticsEvents.cameraServiceSnapAndSend);
-    CommonFunctions.sendAnalyticsEvent(AnalyticsEvents.SnapAndSend_Open_Camera_Step_Event);
+    CommonFunctions.sendAnalyticsEvent(AnalyticsEvents.snapAndSendOpenCameraStepEvent);
   }
 
   @override

@@ -13,7 +13,7 @@ class NotesWidget extends StatelessWidget {
     this.marginBottom,
     this.padding,
     this.separatorHeight,
-    this.BgColor,
+    this.bgColor,
   });
 
   final List<String> notes;
@@ -21,7 +21,7 @@ class NotesWidget extends StatelessWidget {
   final double? marginBottom;
   final double? padding;
   final double? separatorHeight;
-  final Color? BgColor;
+  final Color? bgColor;
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -30,7 +30,7 @@ class NotesWidget extends StatelessWidget {
           padding: EdgeInsets.symmetric(vertical: padding ?? 12, horizontal: padding ?? 10),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.all(Radius.circular(8)),
-            color: BgColor ?? AppColor.primary50Light,
+            color: bgColor ?? AppColor.primary50Light,
           ),
           child: ListView.separated(
             separatorBuilder: (_, _) => SizedBox(height: separatorHeight ?? 8),

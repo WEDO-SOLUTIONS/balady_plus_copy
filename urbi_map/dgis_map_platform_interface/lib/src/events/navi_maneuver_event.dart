@@ -9,12 +9,7 @@ class ManeuverEventHidden extends NaviManeuverEvent {
 }
 
 class ManeuverEvent extends NaviManeuverEvent {
-  const ManeuverEvent({
-    required this.distance,
-    required this.unit,
-    required this.roadName,
-    required this.instruction,
-  });
+  const ManeuverEvent({required this.distance, required this.unit, required this.roadName, required this.instruction});
 
   final String distance;
   final String unit;
@@ -50,27 +45,27 @@ enum ManeuverInstruction {
   none,
   start,
   finish,
-  crossroad_straight,
-  crossroad_slightly_left,
-  crossroad_left,
-  crossroad_sharply_left,
-  crossroad_slightly_right,
-  crossroad_right,
-  crossroad_sharply_right,
-  crossroad_keep_left,
-  crossroad_keep_right,
-  crossroad_uturn,
-  roundabout_forward,
-  roundabout_left_45,
-  roundabout_left_90,
-  roundabout_left_135,
-  roundabout_right_45,
-  roundabout_right_90,
-  roundabout_right_135,
-  roundabout_backward,
-  roundabout_exit,
+  crossroadStraight,
+  crossroadSlightlyLeft,
+  crossroadLeft,
+  crossroadSharplyLeft,
+  crossroadSlightlyRight,
+  crossroadRight,
+  crossroadSharplyRight,
+  crossroadKeepLeft,
+  crossroadKeepRight,
+  crossroadUturn,
+  roundaboutForward,
+  roundaboutLeft45,
+  roundaboutLeft90,
+  roundaboutLeft135,
+  roundaboutRight45,
+  roundaboutRight90,
+  roundaboutRight135,
+  roundaboutBackward,
+  roundaboutExit,
   uturn,
-  road_crossing;
+  roadCrossing;
 
   static ManeuverInstruction fromString(String s) {
     switch (s.toLowerCase()) {
@@ -81,47 +76,47 @@ enum ManeuverInstruction {
       case "finish":
         return ManeuverInstruction.finish;
       case "crossroad_straight":
-        return ManeuverInstruction.crossroad_straight;
+        return ManeuverInstruction.crossroadStraight;
       case "crossroad_slightly_left":
-        return ManeuverInstruction.crossroad_slightly_left;
+        return ManeuverInstruction.crossroadSlightlyLeft;
       case "crossroad_left":
-        return ManeuverInstruction.crossroad_left;
+        return ManeuverInstruction.crossroadLeft;
       case "crossroad_sharply_left":
-        return ManeuverInstruction.crossroad_sharply_left;
+        return ManeuverInstruction.crossroadSharplyLeft;
       case "crossroad_slightly_right":
-        return ManeuverInstruction.crossroad_slightly_right;
+        return ManeuverInstruction.crossroadSlightlyRight;
       case "crossroad_right":
-        return ManeuverInstruction.crossroad_right;
+        return ManeuverInstruction.crossroadRight;
       case "crossroad_sharply_right":
-        return ManeuverInstruction.crossroad_sharply_right;
+        return ManeuverInstruction.crossroadSharplyRight;
       case "crossroad_keep_left":
-        return ManeuverInstruction.crossroad_keep_left;
+        return ManeuverInstruction.crossroadKeepLeft;
       case "crossroad_keep_right":
-        return ManeuverInstruction.crossroad_keep_right;
+        return ManeuverInstruction.crossroadKeepRight;
       case "crossroad_uturn":
-        return ManeuverInstruction.crossroad_uturn;
+        return ManeuverInstruction.crossroadUturn;
       case "roundabout_forward":
-        return ManeuverInstruction.roundabout_forward;
+        return ManeuverInstruction.roundaboutForward;
       case "roundabout_left_45":
-        return ManeuverInstruction.roundabout_left_45;
+        return ManeuverInstruction.roundaboutLeft45;
       case "roundabout_left_90":
-        return ManeuverInstruction.roundabout_left_90;
+        return ManeuverInstruction.roundaboutLeft90;
       case "roundabout_left_135":
-        return ManeuverInstruction.roundabout_left_135;
+        return ManeuverInstruction.roundaboutLeft135;
       case "roundabout_right_45":
-        return ManeuverInstruction.roundabout_right_45;
+        return ManeuverInstruction.roundaboutRight45;
       case "roundabout_right_90":
-        return ManeuverInstruction.roundabout_right_90;
+        return ManeuverInstruction.roundaboutRight90;
       case "roundabout_right_135":
-        return ManeuverInstruction.roundabout_right_135;
+        return ManeuverInstruction.roundaboutRight135;
       case "roundabout_backward":
-        return ManeuverInstruction.roundabout_backward;
+        return ManeuverInstruction.roundaboutBackward;
       case "roundabout_exit":
-        return ManeuverInstruction.roundabout_exit;
+        return ManeuverInstruction.roundaboutExit;
       case "uturn":
         return ManeuverInstruction.uturn;
       case "road_crossing":
-        return ManeuverInstruction.road_crossing;
+        return ManeuverInstruction.roadCrossing;
       default:
         throw Exception("Unknown instruction type: $s");
     }

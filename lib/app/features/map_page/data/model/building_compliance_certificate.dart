@@ -7,16 +7,16 @@ List<BuildingComplianceCertificate> buildingComplianceCertificateFromJson(List l
 
 class BuildingComplianceCertificate extends PointLayersData {
   final List<GeoPointMessage> paths;
-  String? PRIORITYAREA;
-  String? STARTDATE;
-  String? TARGETBUILDINGTYPE;
-  String? STAGENO;
-  String? AMANANAME;
-  String? MUNICIPALITYNAME;
-  String? DISTRICTNAME;
-  String? STREETTYPE;
-  String? STREETWIDTH;
-  String? STREETNAME;
+  String? priorityArea;
+  String? startDate;
+  String? targetBuildingType;
+  String? stageNo;
+  String? amanaName;
+  String? municipalityName;
+  String? districtName;
+  String? streetType;
+  String? streetWIdTh;
+  String? streetName;
   final List<List<GeoPointMessage>>? pathsGoogle;
 
   BuildingComplianceCertificate({
@@ -27,16 +27,16 @@ class BuildingComplianceCertificate extends PointLayersData {
     required super.description,
     latLng,
     this.pathsGoogle,
-    this.STREETNAME,
-    this.AMANANAME,
-    this.DISTRICTNAME,
-    this.MUNICIPALITYNAME,
-    this.PRIORITYAREA,
-    this.STAGENO,
-    this.STARTDATE,
-    this.STREETTYPE,
-    this.STREETWIDTH,
-    this.TARGETBUILDINGTYPE,
+    this.streetName,
+    this.amanaName,
+    this.districtName,
+    this.municipalityName,
+    this.priorityArea,
+    this.stageNo,
+    this.startDate,
+    this.streetType,
+    this.streetWIdTh,
+    this.targetBuildingType,
   });
 
   factory BuildingComplianceCertificate.fromJson(Map<String, dynamic> json) => BuildingComplianceCertificate(
@@ -44,16 +44,16 @@ class BuildingComplianceCertificate extends PointLayersData {
     name: json['attributes']["DISTRICTNAME"] ?? '',
     description: json['attributes']["AMANANAME"] ?? '',
     type: json['attributes']["MUNICIPALITYNAME"] ?? '',
-    STREETNAME: json['attributes']["STREETNAME"] ?? '',
-    PRIORITYAREA: json['attributes']["PRIORITYAREA"] ?? '',
-    STARTDATE: json['attributes']["STARTDATE"] ?? '',
-    TARGETBUILDINGTYPE: json['attributes']["TARGETBUILDINGTYPE"] ?? '',
-    STAGENO: json['attributes']["STAGENO"] ?? '',
-    AMANANAME: json['attributes']["AMANANAME"] ?? '',
-    MUNICIPALITYNAME: json['attributes']["MUNICIPALITYNAME"] ?? '',
-    DISTRICTNAME: json['attributes']["DISTRICTNAME"] ?? '',
-    STREETTYPE: json['attributes']["STREETTYPE"] ?? '',
-    STREETWIDTH: json['attributes']["STREETWIDTH"] ?? '',
+    streetName: json['attributes']["STREETNAME"] ?? '',
+    priorityArea: json['attributes']["PRIORITYAREA"] ?? '',
+    startDate: json['attributes']["STARTDATE"] ?? '',
+    targetBuildingType: json['attributes']["TARGETBUILDINGTYPE"] ?? '',
+    stageNo: json['attributes']["STAGENO"] ?? '',
+    amanaName: json['attributes']["AMANANAME"] ?? '',
+    municipalityName: json['attributes']["MUNICIPALITYNAME"] ?? '',
+    districtName: json['attributes']["DISTRICTNAME"] ?? '',
+    streetType: json['attributes']["STREETTYPE"] ?? '',
+    streetWIdTh: json['attributes']["STREETWIDTH"] ?? '',
     pathsGoogle: getGoogleList(json['geometry']["paths"]),
     ///////////////
     paths: getList(json['geometry']["paths"]),
@@ -72,10 +72,10 @@ class BuildingComplianceCertificate extends PointLayersData {
     // not tested yat
   );
   String getMunAndDis() {
-    return "${MUNICIPALITYNAME ?? ""},${DISTRICTNAME ?? ""}";
+    return "${municipalityName ?? ""},${districtName ?? ""}";
   }
 
   String getStreetName() {
-    return STREETNAME ?? "";
+    return streetName ?? "";
   }
 }

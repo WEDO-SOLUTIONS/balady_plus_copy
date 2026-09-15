@@ -49,7 +49,7 @@ class RemoteConfig {
 
   static String get regaClass => _RemoteConfig.regaClass[env]!;
 
-  static List<String> get MSRAllowedMuncipalites => _RemoteConfig.MSRAllowedMuncipalites[env]!;
+  static List<String> get mSRAllowedMuncipalites => _RemoteConfig.mSRAllowedMuncipalites[env]!;
 
   //////////////////////////////////////////////////////
   //   static String get apigeeURL => "__APIGEE-URL__";
@@ -136,7 +136,7 @@ class RemoteConfig {
 
   static EnvType get env => sl<EnvType>();
 
-  static Map<String, dynamic> get MunicipalServicesIDs => _RemoteConfig.municipal_services_IDS[env]!;
+  static Map<String, dynamic> get municipalServicesIDs => _RemoteConfig.municipalServicesIds[env]!;
 
   // BaladyAnalytics (our own pipeline) — mode read per-flavor from the loaded
   // .env: legacy | dual | ours. Absent/unknown value falls back to `legacy`.
@@ -150,7 +150,7 @@ class RemoteConfig {
 
   static String get movingVeichleCategoryKey => _RemoteConfig.movingVeichleCategoryKey[env]!;
 
-  static String get QaseemCategoryKey => _RemoteConfig.QaseemCategoryKey[env]!;
+  static String get qaseemCategoryKey => _RemoteConfig.qaseemCategoryKey[env]!;
 }
 
 //! First solution
@@ -341,7 +341,7 @@ class _RemoteConfig {
     urbiPreVal: "BIGipServerssoappstg.momra.gov.sa.app~ssoappstg.momra.gov.sa_pool",
   );
 
-  static final MSRAllowedMuncipalites = _initValues<List<String>>(
+  static final mSRAllowedMuncipalites = _initValues<List<String>>(
     devVal: ["007", "010", "016", "002", "008", "009", "012", "011", "013", "014", "015", "017", "018", "003", "005"],
     stgVal: ["007", "010", "016", "002", "008", "009", "012", "011", "013", "014", "015", "017", "018", "003", "005"],
     preVal: ["007", "010", "016", "002", "008", "009", "012", "011", "013", "014", "015", "017", "018", "003", "005"],
@@ -365,7 +365,7 @@ class _RemoteConfig {
     ],
   );
 
-  static final municipal_services_IDS = _initValues<Map<String, dynamic>>(
+  static final municipalServicesIds = _initValues<Map<String, dynamic>>(
     devVal: {
       "CommercialLicenseRenew": {"id": 10485, "Key_name": "CommercialLicenseRenew"},
       "CommercialLicenseTransfer": {"id": 10502, "Key_name": "CommercialLicenseTransfer"},
@@ -456,7 +456,7 @@ class _RemoteConfig {
     urbiPreVal: "CG-53",
   );
 
-  static final QaseemCategoryKey = _initValues<String>(
+  static final qaseemCategoryKey = _initValues<String>(
     devVal: "CG-61",
     stgVal: "CG-61",
     preVal: "CG-14",

@@ -6,20 +6,13 @@ class AllWeatherInfoEntity {
   final Forecast? forecast;
   final Alerts? alerts;
 
-  AllWeatherInfoEntity({
-    this.location,
-    this.current,
-    this.forecast,
-    this.alerts,
-  });
+  AllWeatherInfoEntity({this.location, this.current, this.forecast, this.alerts});
 }
 
 class Alerts {
   final List<Alert>? alert;
 
-  Alerts({
-    this.alert,
-  });
+  Alerts({this.alert});
 }
 
 class Alert {
@@ -111,11 +104,7 @@ class Condition {
   final String? icon;
   final int? code;
 
-  Condition({
-    this.text,
-    this.icon,
-    this.code,
-  });
+  Condition({this.text, this.icon, this.code});
 
   bool get isNight => icon?.contains("night") ?? false;
 
@@ -130,19 +119,17 @@ class Condition {
 }
 
 enum Icon {
-  CDN_WEATHERAPI_COM_WEATHER_64_X64_DAY_113_PNG,
-  CDN_WEATHERAPI_COM_WEATHER_64_X64_NIGHT_113_PNG,
-  CDN_WEATHERAPI_COM_WEATHER_64_X64_DAY_116_PNG
+  cdnWeatherapiComWeather64X64Day113Png,
+  cdnWeatherapiComWeather64X64Night113Png,
+  cdnWeatherapiComWeather64X64Day116Png,
 }
 
-enum Text { EMPTY, TEXT, PURPLE }
+enum Text { empty, text, purple }
 
 class Forecast {
   final List<ForecastDay>? forecastday;
 
-  Forecast({
-    this.forecastday,
-  });
+  Forecast({this.forecastday});
 }
 
 class ForecastDay {
@@ -152,13 +139,7 @@ class ForecastDay {
   final Astro? astro;
   final List<Hour>? hour;
 
-  ForecastDay({
-    this.date,
-    this.dateEpoch,
-    this.day,
-    this.astro,
-    this.hour,
-  });
+  ForecastDay({this.date, this.dateEpoch, this.day, this.astro, this.hour});
 }
 
 class Astro {
@@ -311,14 +292,5 @@ class Location {
   final int? localtimeEpoch;
   final String? localtime;
 
-  Location({
-    this.name,
-    this.region,
-    this.country,
-    this.lat,
-    this.lon,
-    this.tzId,
-    this.localtimeEpoch,
-    this.localtime,
-  });
+  Location({this.name, this.region, this.country, this.lat, this.lon, this.tzId, this.localtimeEpoch, this.localtime});
 }

@@ -31,7 +31,7 @@ class _EventsMainPageState extends State<EventsMainPage> {
     CommonFunctions.sendEventToAnalytics(AppEvents.events);
     CommonFunctions.sendAnalyticsEvent(AnalyticsEvents.startServiceEvents);
 
-    CommonFunctions.sendAnalyticsEvent(AnalyticsEvents.Events_Open_List_Event);
+    CommonFunctions.sendAnalyticsEvent(AnalyticsEvents.eventsOpenListEvent);
   }
 
   @override

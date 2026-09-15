@@ -42,11 +42,7 @@ class PhotoPreviewWidgetNew extends StatelessWidget {
                   Expanded(
                     flex: 2,
                     child: Container(
-                      margin: const EdgeInsetsDirectional.only(
-                        bottom: 30,
-                        end: 16,
-                        start: 16,
-                      ),
+                      margin: const EdgeInsetsDirectional.only(bottom: 30, end: 16, start: 16),
                       child: EnhancedCustomElevatedButtonWidget(
                         btnText: ("take_photo_again").tr(),
                         btnHeight: 48,
@@ -59,19 +55,11 @@ class PhotoPreviewWidgetNew extends StatelessWidget {
                       ),
                     ),
                   ),
-                  const Expanded(
-                    flex: 1,
-                    child: SizedBox(
-                      height: 1,
-                    ),
-                  ),
+                  const Expanded(flex: 1, child: SizedBox(height: 1)),
                   Expanded(
                     flex: 2,
                     child: Container(
-                      margin: const EdgeInsetsDirectional.only(
-                        bottom: 30,
-                        end: 16,
-                      ),
+                      margin: const EdgeInsetsDirectional.only(bottom: 30, end: 16),
                       child: EnhancedCustomElevatedButtonWidget(
                         btnPressed: () {
                           // CreateVDParamsPage
@@ -91,14 +79,9 @@ class PhotoPreviewWidgetNew extends StatelessWidget {
                         btnRadius: 8,
                         icon: RotatedBox(
                           quarterTurns: CommonFunctions.isAppAR ? 0 : 2,
-                          child: Image.asset(
-                            IconPath.vdarrowLeftIcon,
-                            height: 16,
-                            width: 16,
-                            color: AppColor.white,
-                          ),
+                          child: Image.asset(IconPath.vdarrowLeftIcon, height: 16, width: 16, color: AppColor.white),
                         ),
-                        buttonIconPosition: BUTTON_ICON_POSITION.left,
+                        buttonIconPosition: ButtonIconPosition.left,
                       ),
                     ),
                   ),
@@ -108,10 +91,7 @@ class PhotoPreviewWidgetNew extends StatelessWidget {
             Align(
               alignment: AlignmentDirectional.topStart,
               child: Padding(
-                padding: EdgeInsets.only(
-                    top: MediaQuery.of(context).padding.top + 16,
-                    left: 16,
-                    right: 16),
+                padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top + 16, left: 16, right: 16),
                 child: IconButton(
                   icon: const Icon(Icons.close),
                   iconSize: 36,
@@ -123,10 +103,7 @@ class PhotoPreviewWidgetNew extends StatelessWidget {
               ),
             ),
             if (state.status == BlocStatus.loading)
-              const Align(
-                alignment: Alignment.center,
-                child: CustomCircularLoadingWidget(),
-              )
+              const Align(alignment: Alignment.center, child: CustomCircularLoadingWidget()),
           ],
         );
       },

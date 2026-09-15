@@ -1,26 +1,26 @@
 // license management status
-enum LICENSE_MANAGEMENT_STATUS {
-  NONE,
-  DRAFT,
-  DONE,
-  CANCELLED,
-  SADAD_BILL_ISSUED,
-  REJECTED,
-  WAITING_PAY_PROCCESS,
-  WAITING_MEDICAL_EXAM,
-  WAITING_MEDICAL_TRAINING,
-  WAITING_EMPLOYEE_VISIT,
-  BUY_BAG,
-  GO_TO_COURSE,
-  PASSED_AND_COMPLETED_TRAINING,
-  FAILED,
-  RECIPT_FOR_RETEST,
+enum LicenseManagementStatus {
+  none,
+  draft,
+  done,
+  cancelled,
+  sadadBillIssued,
+  rejected,
+  waitingPayProccess,
+  waitingMedicalExam,
+  waitingMedicalTraining,
+  waitingEmployeeVisit,
+  buyBag,
+  goToCourse,
+  passedAndCompletedTraining,
+  failed,
+  reciptForRetest,
 
-  ACTIVE,
-  CANCELED,
-  HOLDED,
+  active,
+  canceled,
+  holded,
   EXPIRED,
-  PENDING_REQUEST_EXISTS,
+  pendingRequestExists,
 
   underProcedure,
   valid,
@@ -28,18 +28,11 @@ enum LICENSE_MANAGEMENT_STATUS {
   completed,
   expired,
   awaitPayment,
-  donePayment
+  donePayment,
 }
 
 // license management types
-enum LICENSE_MANAGEMENT_TYPES { license, order, bill }
+enum LicenseManagementTypes { license, order, bill }
 
 // submit license types
-enum SUBMIT_LICENSE_TYPES {
-  newLicense,
-  renewLicense,
-  cancelLicense,
-  editLicense,
-  transferLicense,
-  printLicense,
-}
+enum SubmitLicenseTypes { newLicense, renewLicense, cancelLicense, editLicense, transferLicense, printLicense }

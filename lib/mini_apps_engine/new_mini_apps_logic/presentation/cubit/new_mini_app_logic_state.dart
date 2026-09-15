@@ -72,7 +72,7 @@ class NewMiniAppLogicState {
       entryPoints: const [],
       isRefreshing: false,
       reachLimitNumber: 0,
-      selectedSortType: FilterOptionType.ServiceDateAscending,
+      selectedSortType: FilterOptionType.serviceDateAscending,
     );
   }
 

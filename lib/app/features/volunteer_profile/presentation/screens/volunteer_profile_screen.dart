@@ -123,7 +123,7 @@ class _VolunteerProfileScreenState extends State<VolunteerProfileScreen> {
                     IconButton(
                       icon: const Icon(Icons.edit, color: Color(0xFF00796B)),
                       onPressed: () async {
-                        Navigator.of(context).pushNamed(RouteName.VolunteerEditProfile);
+                        Navigator.of(context).pushNamed(RouteName.volunteerEditProfile);
                       },
                     ),
                   ],

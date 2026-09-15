@@ -1,17 +1,11 @@
 class NotificationRequest {
-  NotificationRequest({
-    this.device,
-    this.appId,
-    this.appVersion,
-    this.fcmToken,
-    this.FCMTokenSource
-  });
+  NotificationRequest({this.device, this.appId, this.appVersion, this.fcmToken, this.fCMTokenSource});
 
   Device? device;
   String? appId;
   String? appVersion;
   String? fcmToken;
-  String? FCMTokenSource;
+  String? fCMTokenSource;
 
   Map<String, dynamic> toJson() {
     final map = <String, dynamic>{};
@@ -21,21 +15,13 @@ class NotificationRequest {
     map['appId'] = appId;
     map['appVersion'] = appVersion;
     map['fcmToken'] = fcmToken;
-    map['appNotificationsChannel'] = FCMTokenSource;
+    map['appNotificationsChannel'] = fCMTokenSource;
     return map;
   }
 }
 
 class Device {
-  Device({
-    this.id,
-    this.typeId,
-    this.osTypeId,
-    this.isRooted,
-    this.ip,
-    this.location,
-    this.metaData,
-  });
+  Device({this.id, this.typeId, this.osTypeId, this.isRooted, this.ip, this.location, this.metaData});
 
   Device.fromJson(dynamic json) {
     id = json['id'];
@@ -43,10 +29,8 @@ class Device {
     osTypeId = json['osTypeId'];
     isRooted = json['isRooted'];
     ip = json['ip'];
-    location =
-        json['location'] != null ? Location.fromJson(json['location']) : null;
-    metaData =
-        json['metaData'] != null ? MetaData.fromJson(json['metaData']) : null;
+    location = json['location'] != null ? Location.fromJson(json['location']) : null;
+    metaData = json['metaData'] != null ? MetaData.fromJson(json['metaData']) : null;
   }
   String? id;
   String? typeId;
@@ -74,11 +58,7 @@ class Device {
 }
 
 class MetaData {
-  MetaData({
-    this.additionalProp1,
-    this.additionalProp2,
-    this.additionalProp3,
-  });
+  MetaData({this.additionalProp1, this.additionalProp2, this.additionalProp3});
 
   MetaData.fromJson(dynamic json) {
     additionalProp1 = json['additionalProp1'];
@@ -99,10 +79,7 @@ class MetaData {
 }
 
 class Location {
-  Location({
-    this.latitude,
-    this.longitude,
-  });
+  Location({this.latitude, this.longitude});
 
   Location.fromJson(dynamic json) {
     latitude = json['latitude'];

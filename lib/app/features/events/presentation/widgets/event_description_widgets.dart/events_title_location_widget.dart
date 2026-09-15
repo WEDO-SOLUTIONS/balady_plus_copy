@@ -57,7 +57,7 @@ class EventsTitleLocationWidget extends StatelessWidget {
                       ),
                     );
 
-                    CommonFunctions.sendAnalyticsEvent(AnalyticsEvents.Events_List_Click_Item_AddToCalender_Event);
+                    CommonFunctions.sendAnalyticsEvent(AnalyticsEvents.eventsListClickItemAddToCalenderEvent);
                   },
                   child: Container(
                     width: 36,
