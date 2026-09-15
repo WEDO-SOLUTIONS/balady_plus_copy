@@ -51,11 +51,6 @@ analyzer:
     # shared/utils/detach.dart. A bare `unawaited(...)` is not an option: it
     # silences the analyzer and loses the error.
     unawaited_futures: error # Всегда резолвим Future
-    # The same rule for *synchronous* bodies (listeners, onTap, onDispose),
-    # where unawaited_futures does not look. 728 pre-existing hits across ~235
-    # files, so it stays at `info` until that backlog is drained - fix them in
-    # files you touch anyway.
-    discarded_futures: info # Потерянные Future в синхронных телах
     invalid_assignment: error
     missing_return: ignore
     dead_code: error
@@ -161,9 +156,15 @@ linter:
     - avoid_unnecessary_containers # https://dart-lang.github.io/linter/lints/avoid_unnecessary_containers.html
     - avoid_unused_constructor_parameters # https://dart-lang.github.io/linter/lints/avoid_unused_constructor_parameters.html
     - avoid_void_async # https://dart-lang.github.io/linter/lints/avoid_void_async.html
-    # Complements unawaited_futures: catches dropped futures in *sync* bodies
-    # (listeners, onTap, onDispose), where unawaited_futures does not look.
-    - discarded_futures # https://dart.dev/tools/linter-rules/discarded_futures
+    # discarded_futures (the same idea for *synchronous* bodies - listeners,
+    # onTap, onDispose) is deliberately NOT enabled. It was switched on during
+    # BE-221 and reported 729 pre-existing hits across ~235 files; nobody was
+    # going to wrap that many, and a rule that permanently shows 700+ trains
+    # people to stop reading the Problems panel. The ratchet that actually
+    # holds is `unawaited_futures: error` above, which is at zero. Dropped
+    # futures still reach the logs either way - `runZonedGuarded` in
+    # balady_logs.dart wraps main(). Use `detach(tag:)` in sync bodies because
+    # of the tag it puts on the log line, not because the error would be lost.
     - await_only_futures # https://dart-lang.github.io/linter/lints/await_only_futures.html
     - camel_case_extensions # https://dart-lang.github.io/linter/lints/camel_case_extensions.html
     - camel_case_types # https://dart-lang.github.io/linter/lints/camel_case_types.html

@@ -82,9 +82,17 @@ one of:
 Enforced by the analyzer:
 
 - `unawaited_futures: error` — at zero, so it is a ratchet for `async` bodies.
-- `discarded_futures: info` — the same rule for synchronous bodies, where
-  `unawaited_futures` does not look. ~728 pre-existing hits remain; fix them in
-  files you touch anyway rather than in a sweep.
+- `discarded_futures` — **not** enabled, deliberately. It covers synchronous
+  bodies, where `unawaited_futures` does not look, and switching it on during
+  BE-221 surfaced 729 pre-existing hits across ~235 files. Nobody was going to
+  wrap that many, and a rule that permanently reports 700+ just teaches people
+  to stop reading the Problems panel. See the comment in
+  `mapness/analysis_options.yaml` before turning it back on.
+
+Note what this does *not* change: a dropped future still reaches the logs,
+because `runZonedGuarded` in `balady_logs.dart` wraps `main()`. The reason to
+use `detach(tag:)` in a synchronous body is the tag it puts on the log line, not
+that the error would otherwise be lost.
 
 Related lifecycle rules, all of which have bitten this codebase:
 
