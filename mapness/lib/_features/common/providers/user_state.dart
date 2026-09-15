@@ -9,7 +9,10 @@ class _UserState extends _$UserState {
   @override
   UserState build() => UserState.guest;
 
-  void update(UserState value) => state = value;
+  /// The state this notifier holds.
+  UserState get value => state;
+
+  set value(UserState newValue) => state = newValue;
 }
 
 final userStateProvider = _userStateProvider;

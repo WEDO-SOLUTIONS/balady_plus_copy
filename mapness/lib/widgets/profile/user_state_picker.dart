@@ -10,12 +10,12 @@ class UserStatePicker extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => const Column(
-        children: [
-          UserStateRow(userState: UserState.guest),
-          UserStateRow(userState: UserState.personal),
-          UserStateRow(userState: UserState.business),
-        ],
-      );
+    children: [
+      UserStateRow(userState: UserState.guest),
+      UserStateRow(userState: UserState.personal),
+      UserStateRow(userState: UserState.business),
+    ],
+  );
 }
 
 class UserStateRow extends ConsumerWidget {
@@ -36,7 +36,7 @@ class UserStateRow extends ConsumerWidget {
       child: InkWell(
         borderRadius: BorderRadius.circular(8),
         onTap: () {
-          ref.read(userStateProvider.notifier).update(userState);
+          ref.read(userStateProvider.notifier).value = userState;
         },
         child: Padding(
           padding: const EdgeInsets.symmetric(

@@ -100,7 +100,13 @@ class SpecialThemeModeDebugOverride extends _$SpecialThemeModeDebugOverride {
   @override
   SpecialThemeMode? build() => null;
 
-  void setOverride(SpecialThemeMode? mode) {
+  /// The mode forced from the debug overlay, or null when none is forced.
+  ///
+  /// Deliberately not called `override`: that name shadows the `@override`
+  /// annotation for every member declared after it.
+  SpecialThemeMode? get forcedMode => state;
+
+  set forcedMode(SpecialThemeMode? mode) {
     state = mode;
   }
 

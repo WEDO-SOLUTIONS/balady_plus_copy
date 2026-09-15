@@ -9,7 +9,10 @@ class SuggestQuery extends _$SuggestQuery {
   @override
   String build() => '';
 
-  void update(String value) {
+  /// What the user has typed into the search field so far.
+  String get query => state;
+
+  set query(String value) {
     state = value;
   }
 }

@@ -51,9 +51,9 @@ class _FavouriteTextFieldState extends ConsumerState<FavouriteTextField> {
               focusNode: _searchFocus,
               onChanged: (value) {
                 if (value.isEmpty) {
-                  ref.read(suggestQueryProvider.notifier).update('');
+                  ref.read(suggestQueryProvider.notifier).query = '';
                 } else {
-                  ref.read(suggestQueryProvider.notifier).update(value);
+                  ref.read(suggestQueryProvider.notifier).query = value;
                 }
                 setState(() {});
               },
