@@ -39,93 +39,93 @@ class NavigatorSettingsPageContent extends ConsumerWidget {
                 ContentWrapper(
                   color: cardColor,
                   children: [
-                      Consumer(
-                        builder: (context, ref, _) {
-                          final navigatorRouteSettings = ref.watch(navigatorRouteSettingsProvider);
+                    Consumer(
+                      builder: (context, ref, _) {
+                        final navigatorRouteSettings = ref.watch(navigatorRouteSettingsProvider);
 
-                          return ContentRow(
-                            onToggle: (_) => navigatorRouteSettingsNotifier.toggleAvoidTollRoads(),
-                            options: ContentRowOptions(
-                              title: context.l10n.avoidTollRoads,
-                              dividerEnabled: true,
-                              titleStyle: context.textStyle.text.copyWith(color: context.colors.foregroundDefault),
-                              actionWidget: ContentRowActionOptions(
-                                enabledToggle: true,
-                                toggleInitialValue: navigatorRouteSettings.avoidTollRoads,
-                              ),
+                        return ContentRow(
+                          onToggle: (_) => navigatorRouteSettingsNotifier.toggleAvoidTollRoads(),
+                          options: ContentRowOptions(
+                            title: context.l10n.avoidTollRoads,
+                            dividerEnabled: true,
+                            titleStyle: context.textStyle.text.copyWith(color: context.colors.foregroundDefault),
+                            actionWidget: ContentRowActionOptions(
+                              enabledToggle: true,
+                              toggleInitialValue: navigatorRouteSettings.avoidTollRoads,
                             ),
-                          );
-                        },
-                      ),
-                      Consumer(
-                        builder: (context, ref, _) {
-                          final navigatorRouteSettings = ref.watch(navigatorRouteSettingsProvider);
-                          return ContentRow(
-                            onToggle: (_) => navigatorRouteSettingsNotifier.toggleAvoidUnpavedRoads(),
-                            options: ContentRowOptions(
-                              title: context.l10n.avoidUnpavedRoads,
-                              dividerEnabled: true,
-                              titleStyle: context.textStyle.text.copyWith(color: context.colors.foregroundDefault),
-                              actionWidget: ContentRowActionOptions(
-                                enabledToggle: true,
-                                toggleInitialValue: navigatorRouteSettings.avoidUnpavedRoads,
-                              ),
+                          ),
+                        );
+                      },
+                    ),
+                    Consumer(
+                      builder: (context, ref, _) {
+                        final navigatorRouteSettings = ref.watch(navigatorRouteSettingsProvider);
+                        return ContentRow(
+                          onToggle: (_) => navigatorRouteSettingsNotifier.toggleAvoidUnpavedRoads(),
+                          options: ContentRowOptions(
+                            title: context.l10n.avoidUnpavedRoads,
+                            dividerEnabled: true,
+                            titleStyle: context.textStyle.text.copyWith(color: context.colors.foregroundDefault),
+                            actionWidget: ContentRowActionOptions(
+                              enabledToggle: true,
+                              toggleInitialValue: navigatorRouteSettings.avoidUnpavedRoads,
                             ),
-                          );
-                        },
-                      ),
-                      Consumer(
-                        builder: (context, ref, _) {
-                          final betterRouteSettings = ref.watch(betterRouteSuggestionsProvider);
-                          return ContentRow(
-                            onToggle: (_) => betterRouteSettingsNotifier.toggle(),
-                            options: ContentRowOptions(
-                              title: context.l10n.suggestRouteBetter,
-                              dividerEnabled: true,
-                              titleStyle: context.textStyle.text.copyWith(color: context.colors.foregroundDefault),
-                              actionWidget: ContentRowActionOptions(
-                                enabledToggle: true,
-                                toggleInitialValue: betterRouteSettings,
-                              ),
+                          ),
+                        );
+                      },
+                    ),
+                    Consumer(
+                      builder: (context, ref, _) {
+                        final betterRouteSettings = ref.watch(betterRouteSuggestionsProvider);
+                        return ContentRow(
+                          onToggle: (_) => betterRouteSettingsNotifier.toggle(),
+                          options: ContentRowOptions(
+                            title: context.l10n.suggestRouteBetter,
+                            dividerEnabled: true,
+                            titleStyle: context.textStyle.text.copyWith(color: context.colors.foregroundDefault),
+                            actionWidget: ContentRowActionOptions(
+                              enabledToggle: true,
+                              toggleInitialValue: betterRouteSettings,
                             ),
-                          );
-                        },
-                      ),
-                      Consumer(
-                        builder: (context, ref, _) {
-                          final autoEnableParking = ref.watch(navigatorAutoEnableParkingProvider) ?? false;
-                          return ContentRow(
-                            onToggle: (_) => ref
-                                .read(navigatorAutoEnableParkingProvider.notifier)
-                                .toggleAutoEnableParking(value: !autoEnableParking),
-                            options: ContentRowOptions(
-                              title: context.l10n.automaticParkingLayer,
-                              dividerEnabled: true,
-                              titleStyle: context.textStyle.text.copyWith(color: context.colors.foregroundDefault),
-                              actionWidget: ContentRowActionOptions(
-                                enabledToggle: true,
-                                toggleInitialValue: autoEnableParking,
-                              ),
+                          ),
+                        );
+                      },
+                    ),
+                    Consumer(
+                      builder: (context, ref, _) {
+                        final autoEnableParking = ref.watch(navigatorAutoEnableParkingProvider) ?? false;
+                        return ContentRow(
+                          onToggle: (_) => ref
+                              .read(navigatorAutoEnableParkingProvider.notifier)
+                              .toggleAutoEnableParking(value: !autoEnableParking),
+                          options: ContentRowOptions(
+                            title: context.l10n.automaticParkingLayer,
+                            dividerEnabled: true,
+                            titleStyle: context.textStyle.text.copyWith(color: context.colors.foregroundDefault),
+                            actionWidget: ContentRowActionOptions(
+                              enabledToggle: true,
+                              toggleInitialValue: autoEnableParking,
                             ),
-                          );
-                        },
-                      ),
-                      Consumer(
-                        builder: (context, ref, child) {
-                          final autorun = ref.watch(freeRoamAutostartSettingsProvider.notifier).isEnabled;
+                          ),
+                        );
+                      },
+                    ),
+                    Consumer(
+                      builder: (context, ref, child) {
+                        final autorun = ref.watch(freeRoamAutostartSettingsProvider.notifier).isEnabled;
 
-                          return ContentRow(
-                            onToggle: (_) => ref.read(freeRoamAutostartSettingsProvider.notifier).toggleAutostart(),
-                            options: ContentRowOptions(
-                              title: context.l10n.autorunNavigator,
-                              titleStyle: context.textStyle.text.copyWith(color: context.colors.foregroundDefault),
-                              subtitle: context.l10n.automaticallyLaunchNavigator,
-                              subtitleMaxlines: 2,
-                              actionWidget: ContentRowActionOptions(enabledToggle: true, toggleInitialValue: autorun),
-                            ),
-                          );
-                        },
-                      ),
+                        return ContentRow(
+                          onToggle: (_) => ref.read(freeRoamAutostartSettingsProvider.notifier).toggleAutostart(),
+                          options: ContentRowOptions(
+                            title: context.l10n.autorunNavigator,
+                            titleStyle: context.textStyle.text.copyWith(color: context.colors.foregroundDefault),
+                            subtitle: context.l10n.automaticallyLaunchNavigator,
+                            subtitleMaxlines: 2,
+                            actionWidget: ContentRowActionOptions(enabledToggle: true, toggleInitialValue: autorun),
+                          ),
+                        );
+                      },
+                    ),
                   ],
                 ),
               ],
@@ -160,7 +160,9 @@ class NavigatorSettingsPageContent extends ConsumerWidget {
                     titleStyle: context.textStyles.bodyLargeRegular.copyWith(color: context.colors.foregroundDefault),
                     wrapperColor: cardColor,
                     wrapperEnabled: true,
-                    leadingIcon: mappness.Assets.icons.svg.icNotification.svg(color: context.colors.accentDefault),
+                    leadingIcon: mappness.Assets.icons.svg.icNotification.svg(
+                      colorFilter: ColorFilter.mode(context.colors.accentDefault, BlendMode.srcIn),
+                    ),
                     title: context.l10n.soundSettings,
                     actionWidget: ContentRowActionOptions(
                       actionIcon: AppIcons(

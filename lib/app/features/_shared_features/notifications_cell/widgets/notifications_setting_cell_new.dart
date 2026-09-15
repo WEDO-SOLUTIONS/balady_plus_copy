@@ -102,7 +102,7 @@ class _NotificationsSettingCellState extends State<NotificationsSettingCell> {
                       const SizedBox(height: Spacing.$2x),
                       Text(
                         'enable_disable_notifications'.tr(),
-                        style: context.textStyle.caption.copyWith(
+                        style: context.textStyles.captionMediumRegular.copyWith(
                           color: const Color(0xFF1E2A36).withValues(alpha: 0.36),
                         ),
                       ),
