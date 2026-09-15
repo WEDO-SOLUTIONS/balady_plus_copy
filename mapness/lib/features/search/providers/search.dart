@@ -54,6 +54,35 @@ class Search extends _$Search {
     GeoPointMessage(latitude: 15.506104, longitude: 56.694472),
   ];
 
+  /// Kingdom-wide search polygon, exposed for callers that have no viewport of
+  /// their own — external map links (BE-334) arrive before the map is shown.
+  static List<GeoPointMessage> get kingdomRestriction => _saRestrictions;
+
+  /// Bounding box of [kingdomRestriction]: the search rect used when an
+  /// external link gives us no `near` hint, so results stay inside the Kingdom
+  /// instead of following wherever the camera happens to sit.
+  static GeoRectMessage get kingdomSearchRect => GeoRectMessage(
+    northEast: GeoPointMessage(latitude: 32.568765, longitude: 56.694472),
+    southWest: GeoPointMessage(latitude: 15.506104, longitude: 32.61185),
+  );
+
+  /// A square of ±[halfSpanDeg] around [center], clamped to valid coordinates.
+  /// The default spans roughly 16 km — close enough to bias a search towards
+  /// the hint an external link carried, wide enough to still find the city.
+  static GeoRectMessage rectAround(GeoPointMessage center, {double halfSpanDeg = 0.15}) {
+    final span = halfSpanDeg.abs();
+    return GeoRectMessage(
+      northEast: GeoPointMessage(
+        latitude: (center.latitude + span).clamp(-90, 90).toDouble(),
+        longitude: (center.longitude + span).clamp(-180, 180).toDouble(),
+      ),
+      southWest: GeoPointMessage(
+        latitude: (center.latitude - span).clamp(-90, 90).toDouble(),
+        longitude: (center.longitude - span).clamp(-180, 180).toDouble(),
+      ),
+    );
+  }
+
   /// Google search rubric id
   static const googleSearchRubricId = 900913;
 
@@ -480,7 +509,17 @@ class Search extends _$Search {
     _searchInThisAreaMetric();
   }
 
-  Future<void> searchByText(String query, {bool isGoogle = false}) async {
+  /// Runs a full text search.
+  ///
+  /// [searchRect] and [spatialRestriction] default to the current viewport and
+  /// the Kingdom polygon; external map links (BE-334) override them because
+  /// they open the search before the camera is anywhere near the target.
+  Future<void> searchByText(
+    String query, {
+    bool isGoogle = false,
+    GeoRectMessage? searchRect,
+    List<GeoPointMessage>? spatialRestriction,
+  }) async {
     try {
       await _searchOperation?.cancel();
       state = SearchStateLoading(searchText: query); // for loading only Suggests use (state is! SearchStateSuggest)
@@ -492,12 +531,9 @@ class Search extends _$Search {
       // DataFinder: new search session + request id for this full search.
       _searchSessionId = DataFinderIds.uuid();
       _requestId = DataFinderIds.uuid();
-      final searchRect = ref
-          .read(dgisControllerProvider.notifier)
-          .visibleRectSubject
-          .valueOrNull
-          ?.visibleRect
-          .geoRectMessage();
+      final effectiveSearchRect =
+          searchRect ??
+          ref.read(dgisControllerProvider.notifier).visibleRectSubject.valueOrNull?.visibleRect.geoRectMessage();
       // -- Analytics
       AdvancedMetrics.instance.startSearchResponse(
         queryType: _previousType!.name,
@@ -513,9 +549,9 @@ class Search extends _$Search {
           query,
           // TODO(Sergei): revert value to _saRestrictions when search performance is improved
           // TODO(Dmitrii): Search improved but we have to test it more so we could return `_getRestrictionFromRect()` here
-          spatialRestriction: _saRestrictions,
+          spatialRestriction: spatialRestriction ?? _saRestrictions,
           rubricIds: isGoogle ? [googleSearchRubricId] : null,
-          searchRect: searchRect,
+          searchRect: effectiveSearchRect,
           locale: _currentQueryLocale?.localeForMapness,
         ),
       );
