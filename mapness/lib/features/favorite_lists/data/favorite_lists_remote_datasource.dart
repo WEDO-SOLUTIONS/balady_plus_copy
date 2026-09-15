@@ -89,12 +89,28 @@ class _FavoriteListsRemoteDataSource implements FavoriteListsRemoteDataSource {
     Future<Response<dynamic>> Function() call,
     T Function(Map<String, dynamic>) fromJson,
   ) async {
+    Response<dynamic>? response;
     try {
-      final response = await call();
+      response = await call();
       return fromJson(_unwrap(response));
     } on DioException catch (e) {
-      logger.log('FAVORITE LISTS API [$label] DioException $e', logLevel: MapnessLogLevel.error);
+      logger.log(
+        'FAVORITE LISTS API [$label] DioException status=${e.response?.statusCode} '
+        'data=${e.response?.data} $e',
+        logLevel: MapnessLogLevel.error,
+      );
       throw FavoriteListsApiException.fromDioException(e);
+    } catch (e, stackTrace) {
+      // Not a DioException: the HTTP call succeeded but parsing the response into a DTO failed
+      // (unexpected shape/type, e.g. a missing/malformed field). Log the raw body so the actual
+      // contract mismatch is visible, then rethrow unchanged so callers keep seeing the real error.
+      logger.log(
+        'FAVORITE LISTS API [$label] unexpected error: $e\n'
+        'status=${response?.statusCode} data=${response?.data}\n'
+        '$stackTrace',
+        logLevel: MapnessLogLevel.error,
+      );
+      rethrow;
     }
   }
 

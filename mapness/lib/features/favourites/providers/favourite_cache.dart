@@ -43,6 +43,9 @@ class _FavouriteCache extends _$FavouriteCache {
 
   // Load _lastUpdate from Hive on init
   Future<void> _initLastUpdate() async {
+    if (!ref.mounted) {
+      return;
+    }
     final favoritesBox = await ref.read(hiveProvider(_boxName).future);
     final stored = favoritesBox.get(_keyLastUpdate) as int?;
     if (stored != null) {
@@ -52,6 +55,9 @@ class _FavouriteCache extends _$FavouriteCache {
 
   // Save _lastUpdate and _lastUserId to Hive when updated
   Future<void> _saveLastUpdate(String? userId) async {
+    if (!ref.mounted) {
+      return;
+    }
     final favoritesBox = await ref.read(hiveProvider(_boxName).future);
     if (_lastUpdate != null) {
       await favoritesBox.put(_keyLastUpdate, _lastUpdate!.millisecondsSinceEpoch);
@@ -63,6 +69,9 @@ class _FavouriteCache extends _$FavouriteCache {
 
   // Check if user has changed
   Future<bool> _hasUserChanged(String? currentUserId) async {
+    if (!ref.mounted) {
+      return false;
+    }
     final favoritesBox = await ref.read(hiveProvider(_boxName).future);
     final storedUserId = favoritesBox.get(_keyLastUserId) as String?;
 
@@ -75,6 +84,9 @@ class _FavouriteCache extends _$FavouriteCache {
 
   // Clear cache when user changes
   Future<void> _clearCacheForUserChange() async {
+    if (!ref.mounted) {
+      return;
+    }
     final favoritesBox = await ref.read(hiveProvider(_boxName).future);
     _lastUpdate = null;
     await favoritesBox.delete(_keyLastUpdate);
@@ -82,6 +94,9 @@ class _FavouriteCache extends _$FavouriteCache {
   }
 
   Future<void> _notifyMapAboutFavourites(FavouritesState data) async {
+    if (!ref.mounted) {
+      return;
+    }
     try {
       final controller = await ref
           .read(dgisControllerProvider.future)
@@ -102,7 +117,13 @@ class _FavouriteCache extends _$FavouriteCache {
   }
 
   Future<void> _updateState(FavouritesState data) async {
+    if (!ref.mounted) {
+      return;
+    }
     final favoritesBox = await ref.read(hiveProvider(_boxName).future);
+    if (!ref.mounted) {
+      return;
+    }
     state = AsyncValue.data(data);
     await _notifyMapAboutFavourites(data);
     return favoritesBox.put(_keyCache, data.toHive());
@@ -110,7 +131,7 @@ class _FavouriteCache extends _$FavouriteCache {
 
   Future<FavouritesState> _fetchFavourites() async {
     mixpanel?.timeEvent('Favorites: fetchFavourites');
-    final dio = await ref.watch(dGisNetworkProvider.future);
+    final dio = await ref.read(dGisNetworkProvider.future);
     final raw = await dio.get('favourites');
     final response = proto.FavouritesResponse.fromBuffer(raw.data as List<int>);
     await mixpanel?.track('Favorites: fetchFavourites');
@@ -131,6 +152,9 @@ class _FavouriteCache extends _$FavouriteCache {
     if (authState == null) {
       return const FavouritesState(items: []);
     }
+    if (!ref.mounted) {
+      return const FavouritesState(items: []);
+    }
 
     //  'idNo' from auth state
     final currentUserId = authState.idNo ?? '';
@@ -143,6 +167,9 @@ class _FavouriteCache extends _$FavouriteCache {
         logLevel: MapnessLogLevel.info,
       );
       await _clearCacheForUserChange();
+      if (!ref.mounted) {
+        return const FavouritesState(items: []);
+      }
       // Also clear the main cache for the new user
       final favoritesBox = await ref.read(hiveProvider(_boxName).future);
       await favoritesBox.delete(_keyCache);
@@ -151,6 +178,9 @@ class _FavouriteCache extends _$FavouriteCache {
     } else {
       // Only initialize last update if user hasn't changed
       await _initLastUpdate();
+    }
+    if (!ref.mounted) {
+      return const FavouritesState(items: []);
     }
 
     final favoritesBox = await ref.read(hiveProvider(_boxName).future);
@@ -188,14 +218,20 @@ class _FavouriteCache extends _$FavouriteCache {
       }
     }
 
+    if (!ref.mounted) {
+      return result;
+    }
     final link = ref.keepAlive();
     final timer = Timer(_cacheFor, link.close);
-    ref.onDispose(() => timer.cancel);
+    ref.onDispose(timer.cancel);
 
     return result;
   }
 
   Future<void> clear() async {
+    if (!ref.mounted) {
+      return;
+    }
     final favoritesBox = await ref.read(hiveProvider(_boxName).future);
     await favoritesBox.clear();
     const newState = FavouritesState(items: []);
