@@ -6,6 +6,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/app/auto_route/app_routes.dart';
 import 'package:mapness/features/tifo/building_sheet.dart';
+import 'package:mapness/features/tifo/data/tifo_debug_lod_zoom.dart';
 import 'package:mapness/features/tifo/data/tifo_models.dart';
 import 'package:mapness/features/tifo/data/tifo_region_outline.dart';
 import 'package:mapness/features/tifo/district_sheet.dart';
@@ -81,6 +82,10 @@ class _Bounds {
 ///   * zoom <= 11 → ONE region-outline polygon in the season leader's color;
 ///   * zoom < 15  → district polygons tinted by each district's leading club;
 ///   * zoom >= 15 → individual buildings colored by owner, tappable to play.
+///
+/// Those three numbers are the DEFAULTS of [TifoLodZoomThresholds]; the debug
+/// panel can move the two switch points at runtime (the class keeps the tiers
+/// ordered and non-overlapping).
 ///
 /// Owns two independent [MapObjectManagerMessage]s so the two layers can be
 /// cleared/redrawn without touching each other or the debug district layer.
@@ -161,16 +166,17 @@ class TifoBuildingsMapLayer extends Notifier<bool> {
     return true;
   }
 
-  /// At/above this zoom we show buildings; below it, districts. API §3 says 16,
-  /// but this map's `visibleRectEvent.zoom` reads ~1 lower than the camera's
-  /// zoom, so 16 is effectively unreachable on that stream — 15 is the real
-  /// street-level threshold here.
-  static const double _buildingMinZoom = 15;
-
-  /// At/below this zoom the district layer collapses into one city-wide color
-  /// (see [_TifoLod.cluster]). Same `visibleRectEvent.zoom` units as
-  /// [_buildingMinZoom] above — i.e. roughly one lower than camera zoom.
-  static const double _districtClusterMaxZoom = 11;
+  /// Zoom thresholds the three tiers switch at. Defaults (cluster ≤ 11,
+  /// districts 12–14, buildings ≥ 15) reproduce the constants this layer used
+  /// to hardcode; the debug panel can move them at runtime, which is why this
+  /// is a cached field rather than a `ref.read` in [_lodFor] — the tier is
+  /// asked for on the viewport stream and from teardown paths, where reading
+  /// a provider is either hot or unsafe.
+  ///
+  /// The buildings threshold is 15 and not the API's §3 value of 16 because
+  /// this map's `visibleRectEvent.zoom` reads ~1 lower than the camera's own
+  /// zoom, so 16 is effectively unreachable on that stream.
+  TifoLodZoomThresholds _lodZooms = const TifoLodZoomThresholds();
 
   /// Fallback district fill when nobody leads it (or the server sent no
   /// paint-ready color): the neutral palette grey.
@@ -242,13 +248,13 @@ class TifoBuildingsMapLayer extends Notifier<bool> {
   _TifoLod get _lod => _lodFor(_zoom);
 
   _TifoLod _lodFor(double zoom) {
-    if (zoom >= _buildingMinZoom) {
+    if (zoom >= _lodZooms.buildingMinZoom) {
       return _TifoLod.buildings;
     }
     // `zoom == 0` means "the camera never reported a zoom" (see `enable`),
     // not "zoomed all the way out" — painting the entire city one color off
     // that guess would be a worse first frame than per-district paint.
-    if (zoom > 0 && zoom <= _districtClusterMaxZoom) {
+    if (zoom > 0 && zoom <= _lodZooms.clusterMaxZoom) {
       return _TifoLod.cluster;
     }
     return _TifoLod.districts;
@@ -264,7 +270,17 @@ class TifoBuildingsMapLayer extends Notifier<bool> {
 
   @override
   bool build() {
+    _lodZooms = ref.read(tifoDebugLodZoomProvider);
     ref
+      // Debug-only: the LOD switch points are tunable at runtime, and moving
+      // them changes which tier the CURRENT camera belongs to without any
+      // camera event firing — so repaint off the threshold change itself.
+      ..listen<TifoLodZoomThresholds>(tifoDebugLodZoomProvider, (_, next) {
+        _lodZooms = next;
+        if (state) {
+          unawaited(_refreshLodTier());
+        }
+      })
       ..listen<TifoBuildingsState>(tifoBuildingsProvider, (_, next) {
         if (state && _buildingsMode) {
           unawaited(_syncBuildings(next));
@@ -466,6 +482,26 @@ class TifoBuildingsMapLayer extends Notifier<bool> {
     }
     // Keep the geometry cache (cheap re-enable); just drop the viewport set.
     ref.read(tifoBuildingsProvider.notifier).clearViewport();
+  }
+
+  /// Re-runs the current viewport through the tier router after the LOD
+  /// thresholds moved (debug panel only). Goes through [_applyForViewport] so
+  /// a tier change here retires the outgoing layer exactly the way a pinch
+  /// would; [_zoom] is deliberately left alone — the last value the viewport
+  /// stream reported is still what the camera is showing, and re-seeding it
+  /// from `getCameraPosition` would mix the two zoom scales.
+  Future<void> _refreshLodTier() async {
+    String? bbox;
+    try {
+      bbox = await _currentBbox(await ref.read(dgisControllerProvider.future));
+    } catch (_) {
+      // Map gone — `_applyForViewport` bails on `state` anyway.
+    }
+    if (!state) {
+      return;
+    }
+    logger.log('[tifo-map] LOD thresholds changed → $_lodZooms (zoom=$_zoom → ${_lod.name} mode)');
+    await _applyForViewport(bbox);
   }
 
   Future<void> _onViewport(VisibleRect rect) async {
