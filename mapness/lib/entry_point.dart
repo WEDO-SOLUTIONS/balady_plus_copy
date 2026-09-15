@@ -53,6 +53,8 @@ import 'package:mapness/features/car/car_enable_free_roam.dart';
 import 'package:mapness/features/city_event/active_city_event.dart';
 import 'package:mapness/features/cityscape/cityscape.dart';
 import 'package:mapness/features/dynamic_poi/dynamic_poi_layer_provider.dart';
+import 'package:mapness/features/external_map_links/lib/external_map_link_parser.dart';
+import 'package:mapness/features/external_map_links/services/external_map_link_navigator.dart';
 import 'package:mapness/features/favourites/data/models/favorite_cache_item.dart';
 import 'package:mapness/features/favourites/mappers/favourite_item_mapper.dart';
 import 'package:mapness/features/favourites/providers/favourite_cache.dart';
@@ -929,6 +931,21 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> with Widg
 
   Future<void> openAppLink(Uri uri, {bool isFirstRun = false, bool fromQuickAction = false}) async {
     await initCameraPositionPoint();
+
+    // BE-334: `baladymaps:` and `geo:` are parsed on their own branch — before the
+    // short-link lookup (which reads `geo:24.7,46.6` as a short code and shows a
+    // bogus "no internet" toast) and before the generic parser (which treats `q`
+    // as `lat,lon` for share links).
+    if (ExternalMapLinkParser.handlesScheme(uri.scheme)) {
+      final intent = ExternalMapLinkParser.parse(uri);
+      if (intent == null) {
+        logger.log('External map link ignored (unparsable): $uri', logLevel: MapnessLogLevel.warning);
+        return;
+      }
+      await _delayIfFirstRun(isFirstRun: isFirstRun);
+      await ExternalMapLinkNavigator(ref).open(intent);
+      return;
+    }
 
     final shortLinkHandled = await _handleShortLink(uri);
     if (shortLinkHandled == null) {
