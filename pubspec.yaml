@@ -200,7 +200,7 @@ dependencies:
   balady_authorization:
     # path: /Users/hashemalkhateeb/Development/flutter_projects/nhc_projects/packages//BaladyAuthorization
     hosted: https://unpub.balady.gov.sa/
-    version: 1.0.18
+    version: 1.0.19
   #path: /Users/mhamed/work/projects/Balady/BaladyAuthorization
   # git:
   #   url: https://tfs.momra.gov.sa/tfs/MOMRACollection/MobileApps/_git/BaladyAuthorization

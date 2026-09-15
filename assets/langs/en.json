@@ -2890,7 +2890,7 @@
   "Please enable Location service": "Please activate the website",
   "gyroscope_error": "Sorry, you cannot benefit from the service because your device does not support the Gyroscope feature.",
   "cancelText": "Cancel",
-  "not_registered": "You cannot log in using quick access",
+  "not_registered": "You cannot log in",
   "not_register_desc": "Municipal services require logging in via Nafath or using your Balady account",
   "24Hour": "24 hours",
   "limited": "Limited period",
