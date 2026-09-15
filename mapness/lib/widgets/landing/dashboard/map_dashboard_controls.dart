@@ -7,6 +7,7 @@ import 'package:mapness/features/free_roam/free_roam_starter.dart';
 import 'package:mapness/features/special_themes/modes/saudi_national_day/saudi_national_day.dart';
 import 'package:mapness/features/tifo/providers/tifo_session_provider.dart';
 import 'package:mapness/features/tifo/tifo_buildings_map_layer.dart';
+import 'package:mapness/shared/ui/buttons/map_button.dart';
 import 'package:mapness/widgets/landing/compass_control.dart';
 import 'package:mapness/widgets/landing/complience_building_legend.dart';
 import 'package:mapness/widgets/landing/dashboard_header.dart';
@@ -15,10 +16,16 @@ import 'package:mapness/widgets/landing/follow_control.dart';
 import 'package:mapness/widgets/landing/indoor_control.dart';
 import 'package:mapness/widgets/landing/layers_control.dart';
 import 'package:mapness/widgets/landing/tifo_control.dart';
+import 'package:mapness/widgets/landing/zoom_control.dart';
 import 'package:mapness/widgets/map_dimensions_control/dimension_contrtol.dart';
 import 'package:mapness/widgets/parking_spot/parking_control.dart';
 import 'package:mapness/widgets/weather/weather_control.dart';
 import 'package:sheetify/sheetify.dart';
+
+/// Height of [ZoomControl]: two [MapButton]s stacked with no gap between them.
+/// The only fixed number the fit check needs - everything it is measured
+/// against comes from the layout itself.
+const double _zoomStackHeight = MapButton.defaultSize * 2;
 
 class MapDashboardControls extends ConsumerWidget {
   final MultiStateSheetController<ThreeStateSheet> scrollController;
@@ -105,11 +112,19 @@ class MapDashboardControls extends ConsumerWidget {
                         const TifoLeaderboardControl(),
                       ],
                       const SizedBox(height: uikit.Spacing.$2x),
-                      // No zoom stack here. It is debug-only and two buttons
-                      // tall, and this column has no room for it once the TIFO
-                      // controls join - it was the first thing to overflow.
-                      // Zoom stays reachable by pinching.
-                      const Spacer(),
+                      // The zoom stack is dropped only when the column really
+                      // has no room for it. This Expanded is handed exactly the
+                      // space the fixed controls leave over, so the check is
+                      // against the actual remainder rather than against
+                      // whichever feature happens to be switched on - which is
+                      // what used to hide it even when it would have fitted.
+                      Expanded(
+                        child: LayoutBuilder(
+                          builder: (context, constraints) => constraints.maxHeight < _zoomStackHeight
+                              ? const SizedBox.shrink()
+                              : const Center(child: ZoomControl()),
+                        ),
+                      ),
                       const CompassControl(),
                       const SizedBox(height: uikit.Spacing.$2x),
                       ComplianceBuildingLegend(),
