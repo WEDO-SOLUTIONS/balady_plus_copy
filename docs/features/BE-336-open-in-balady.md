@@ -1,6 +1,6 @@
 # BE-336 — Open in Balady+ from third-party apps
 
-**Status:** in development on `feat/BE-336/open-in-balady-plus` (not yet merged to `development`)
+**Status:** implementation complete; [PR #551](https://github.com/WEDO-SOLUTIONS/balady-plus-superapp/pull/551) open against `development`; Android smoke-verified on device 2026-09-15
 **JIRA:** [BE-336 — Epic](https://wedosolutions-sa.atlassian.net/browse/BE-336), [BE-334 — `baladymaps://` scheme + Android `geo:` fix](https://wedosolutions-sa.atlassian.net/browse/BE-334), [BE-335 — iOS routing-app registration](https://wedosolutions-sa.atlassian.net/browse/BE-335)
 
 ## What it is
@@ -161,6 +161,18 @@ review:
 
 ### 4. Android verification on real WhatsApp
 
+**Verified 2026-09-15.** All five smoke cases below passed on a Samsung
+Galaxy A14 (SM-A145F, Android 15) running the stg release APK built
+from this branch: `geo:<lat>,<lng>` (point card),
+`geo:…?q=…(Kingdom Centre)` (labelled card), `geo:0,0?q=الرياض` (search
+screen with the Arabic query intact), `baladymaps://?ll=…&label=Balady%20HQ&z=14`
+(labelled card), and `baladymaps://?daddr=…&mode=walking` (routing
+screen, my-location → point prefilled, pedestrian mode selected).
+Environment caveat: 2GIS tiles/search data were unreachable from the
+test network (known geo-WAF issue), which does not affect the
+deep-link flow — repeat final acceptance from a network where the SDK
+backend is reachable.
+
 1. Install a build containing this change.
 2. Test on two devices: one **with** Google Maps installed, one
    **without**.
@@ -179,6 +191,36 @@ review:
    adb shell am start -a android.intent.action.VIEW -d "geo:0,0?q=%D8%A7%D9%84%D8%B1%D9%8A%D8%A7%D8%B6"
    adb shell am start -a android.intent.action.VIEW -d "baladymaps://?daddr=24.6877,46.7219&mode=walking"
    ```
+
+#### If Google Maps opens directly instead of the chooser
+
+Two distinct mechanisms can cause this, with different fixes:
+
+- **The phone has Google Maps set as the default handler for `geo:`
+  links** (the user once tapped "Always"). Fix on the device: Settings
+  → Apps → Google Maps → Open by default → Clear defaults; the next
+  `geo:` tap then shows the system chooser listing Balady+. Quick
+  diagnosis:
+
+  ```bash
+  adb shell pm resolve-activity -a android.intent.action.VIEW -d "geo:24.7,46.6"
+  ```
+
+  `ResolverActivity` means the chooser will show; a Google Maps
+  activity means a default is set.
+- **The WhatsApp build fires an explicit Google Maps intent**
+  (package-targeted) — then no system setting helps and only Meta's
+  in-app "Open in … Maps" menu integration puts Balady+ in front of
+  users. If clearing defaults still lands in Google Maps, report
+  exactly that to Meta.
+
+Note for the Meta thread: an app cannot force the chooser from the
+receiving side (Android anti-hijack design); WhatsApp could use
+`Intent.createChooser()`, which always shows the picker regardless of
+defaults — worth requesting. For ordinary users the systemic fix is
+the Meta menu integration itself; links we control
+(`plus.balady.gov.sa` / `go.balady.gov.sa` app links) already open
+Balady+ directly regardless of Google Maps defaults.
 
 ### 5. iOS verification of Apple Maps / Find My
 
