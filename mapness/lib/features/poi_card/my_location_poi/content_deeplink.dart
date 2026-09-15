@@ -29,9 +29,14 @@ class DeeplinkPage extends ConsumerWidget {
   final LatLng? closestPoint;
   final PoiCameraConfig? cameraConfig;
 
+  /// Name the caller gave the point (BE-334: the `label` of an external map
+  /// link). Shown instead of the generic "point on the map" title.
+  final String? label;
+
   const DeeplinkPage({
     required this.closestPoint,
     this.cameraConfig,
+    this.label,
     super.key,
   });
 
@@ -75,6 +80,7 @@ class DeeplinkPage extends ConsumerWidget {
                   location: closestPoint!,
                   onTapClose: () => onClose(context, ref),
                   data: data,
+                  label: label,
                 ),
                 PoiDeeplinkPersonActions(
                   onShare: () => ref.read(poiCardActionsProvider.notifier).shareMyLocation(closestPoint),
@@ -131,11 +137,16 @@ class DeeplinkPage extends ConsumerWidget {
       twoLineAddress = true;
     }
 
+    // The header renders the caller's label when it has one, so measure that
+    // very text — otherwise a long external name would never wrap.
+    final trimmedLabel = label?.trim() ?? '';
     final sizeOfTitle = _textSize(
-      data.maybeWhen(
-        data: (value) => value?.title ?? '',
-        orElse: () => '',
-      ),
+      trimmedLabel.isNotEmpty
+          ? trimmedLabel
+          : data.maybeWhen(
+              data: (value) => value?.title ?? '',
+              orElse: () => '',
+            ),
       context.textStyles.h4SemiBold,
     );
 

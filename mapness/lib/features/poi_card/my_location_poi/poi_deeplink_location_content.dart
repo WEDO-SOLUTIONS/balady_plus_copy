@@ -5,10 +5,15 @@ class PoiDeeplinkContent extends ConsumerWidget {
   final LatLng location;
   final AsyncValue<PoiMyLocationState?> data;
 
+  /// Title supplied by whoever opened the link; falls back to the generic
+  /// "point on the map" when absent or blank.
+  final String? label;
+
   const PoiDeeplinkContent({
     required this.onTapClose,
     required this.location,
     required this.data,
+    this.label,
     super.key,
   });
 
@@ -27,7 +32,8 @@ class PoiDeeplinkContent extends ConsumerWidget {
     ),
     child: Builder(
       builder: (context) {
-        final title = context.l10n.pointToMap;
+        final trimmedLabel = label?.trim() ?? '';
+        final title = trimmedLabel.isNotEmpty ? trimmedLabel : context.l10n.pointToMap;
 
         return Column(
           mainAxisSize: MainAxisSize.min,
