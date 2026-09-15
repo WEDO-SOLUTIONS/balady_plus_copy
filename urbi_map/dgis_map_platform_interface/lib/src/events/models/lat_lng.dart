@@ -1,10 +1,12 @@
+/// A point on the map.
 class LatLng {
-  const LatLng({
-    required this.latitude,
-    required this.longitude,
-  });
+  /// Creates a point from its [latitude] and [longitude] in degrees.
+  const LatLng({required this.latitude, required this.longitude});
 
+  /// Degrees north of the equator.
   final double latitude;
+
+  /// Degrees east of the prime meridian.
   final double longitude;
 
   @override
