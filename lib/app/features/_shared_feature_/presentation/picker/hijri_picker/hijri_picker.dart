@@ -165,8 +165,8 @@ class Picker {
         List<Widget> actions = [];
 
         if (cancel == null) {
-          String _cancelText = cancelText ?? PickerLocalizations.of(context).cancelText;
-          if (_cancelText != "") {
+          String resolvedCancelText = cancelText ?? PickerLocalizations.of(context).cancelText;
+          if (resolvedCancelText != "") {
             actions.add(
               TextButton(
                 onPressed: () {
@@ -174,10 +174,10 @@ class Picker {
                   if (onCancel != null) onCancel!();
                 },
                 child: cancelTextStyle == null
-                    ? Text(_cancelText, textScaler: TextScaler.noScaling)
+                    ? Text(resolvedCancelText, textScaler: TextScaler.noScaling)
                     : DefaultTextStyle(
                         style: cancelTextStyle!,
-                        child: Text(_cancelText, textScaler: TextScaler.noScaling),
+                        child: Text(resolvedCancelText, textScaler: TextScaler.noScaling),
                       ),
               ),
             );
@@ -187,8 +187,8 @@ class Picker {
         }
 
         if (confirm == null) {
-          String _confirmText = confirmText ?? PickerLocalizations.of(context).confirmText;
-          if (_confirmText != "") {
+          String resolvedConfirmText = confirmText ?? PickerLocalizations.of(context).confirmText;
+          if (resolvedConfirmText != "") {
             actions.add(
               TextButton(
                 onPressed: () {
@@ -196,10 +196,10 @@ class Picker {
                   if (onConfirm != null) onConfirm!(this, selecteds!);
                 },
                 child: confirmTextStyle == null
-                    ? Text(_confirmText, textScaler: TextScaler.noScaling)
+                    ? Text(resolvedConfirmText, textScaler: TextScaler.noScaling)
                     : DefaultTextStyle(
                         style: confirmTextStyle!,
-                        child: Text(_confirmText, textScaler: TextScaler.noScaling),
+                        child: Text(resolvedConfirmText, textScaler: TextScaler.noScaling),
                       ),
               ),
             );
@@ -387,15 +387,15 @@ class PickerWidgetState<T> extends State<_PickerWidget> {
         ),
       );
     } else {
-      String _cancelText = picker!.cancelText ?? PickerLocalizations.of(context).cancelText;
-      if (_cancelText != "") {
+      String resolvedCancelText = picker!.cancelText ?? PickerLocalizations.of(context).cancelText;
+      if (resolvedCancelText != "") {
         items.add(
           TextButton(
             onPressed: () {
               picker!.doCancel(context);
             },
             child: Text(
-              _cancelText,
+              resolvedCancelText,
               overflow: TextOverflow.ellipsis,
               textScaler: TextScaler.noScaling,
               style:
@@ -432,15 +432,15 @@ class PickerWidgetState<T> extends State<_PickerWidget> {
         ),
       );
     } else {
-      String _confirmText = picker!.confirmText ?? PickerLocalizations.of(context).confirmText;
-      if (_confirmText != "") {
+      String resolvedConfirmText = picker!.confirmText ?? PickerLocalizations.of(context).confirmText;
+      if (resolvedConfirmText != "") {
         items.add(
           TextButton(
             onPressed: () {
               picker!.doConfirm(context);
             },
             child: Text(
-              _confirmText,
+              resolvedConfirmText,
               textScaler: TextScaler.noScaling,
               overflow: TextOverflow.ellipsis,
               style:
@@ -470,7 +470,7 @@ class PickerWidgetState<T> extends State<_PickerWidget> {
     adapter.setColumn(-1);
 
     if (adapter.length > 0) {
-      var _decoration = BoxDecoration(
+      var columnDecoration = BoxDecoration(
         color: picker!.containerColor ?? theme!.dialogTheme.backgroundColor ?? theme!.colorScheme.surface,
       );
 
@@ -480,14 +480,14 @@ class PickerWidgetState<T> extends State<_PickerWidget> {
           child: Container(
             padding: picker!.columnPadding,
             height: picker!.height,
-            decoration: _decoration,
+            decoration: columnDecoration,
             child: _wait
                 ? null
                 : _StateView(
                     key: _keys[i],
                     builder: (context) {
                       adapter.setColumn(i - 1);
-                      var _length = adapter.length;
+                      var columnLength = adapter.length;
                       var view = CupertinoPicker.builder(
                         backgroundColor: picker!.backgroundColor,
                         scrollController: scrollController[i],
@@ -496,9 +496,9 @@ class PickerWidgetState<T> extends State<_PickerWidget> {
                         magnification: picker!.magnification!,
                         diameterRatio: picker!.diameterRatio!,
                         squeeze: picker!.squeeze!,
-                        onSelectedItemChanged: (int _index) {
+                        onSelectedItemChanged: (int rawIndex) {
                           if (__printDebug) debugPrint("onSelectedItemChanged");
-                          var index = _index % _length;
+                          var index = rawIndex % columnLength;
                           picker!.selecteds![i] = index;
                           updateScrollController(i);
                           adapter.doSelect(i, index);
@@ -527,18 +527,18 @@ class PickerWidgetState<T> extends State<_PickerWidget> {
                         },
                         itemBuilder: (context, index) {
                           adapter.setColumn(i - 1);
-                          return adapter.buildItem(context, index % _length);
+                          return adapter.buildItem(context, index % columnLength);
                         },
-                        childCount: picker!.looping! ? null : _length,
+                        childCount: picker!.looping! ? null : columnLength,
                       );
 
-                      if (!picker!.changeToFirst! && picker!.selecteds![i] >= _length) {
+                      if (!picker!.changeToFirst! && picker!.selecteds![i] >= columnLength) {
                         Timer(const Duration(milliseconds: 100), () {
                           if (__printDebug) debugPrint("timer last");
                           adapter.setColumn(i - 1);
                           var len = adapter.length;
-                          var _index = (len < _length ? len : _length) - 1;
-                          scrollController[i].jumpToItem(_index);
+                          var rawIndex = (len < columnLength ? len : columnLength) - 1;
+                          scrollController[i].jumpToItem(rawIndex);
                         });
                       }
 
@@ -762,10 +762,10 @@ class PickerDataAdapter<T> extends PickerAdapter<T> {
         for (int j = 0; j < mapList.length; j++) {
           var o = map[mapList[j]];
           if (o is List && o.isNotEmpty) {
-            List<PickerItem<T>> _children = [];
+            List<PickerItem<T>> childItems = [];
             //print('add: ${data.runtimeType.toString()}');
-            data!.add(PickerItem<T>(value: mapList[j], children: _children));
-            _parsePickerDataItem(o, _children);
+            data!.add(PickerItem<T>(value: mapList[j], children: childItems));
+            _parsePickerDataItem(o, childItems);
           }
         }
       } else if (T == String && !(item is! List)) {
@@ -1114,14 +1114,14 @@ class DateTimePickerAdapter extends PickerAdapter<DateTime> {
     }
     // Judge whether the day is in front of the month
     // If in the front, set "needUpdatePrev" = true
-    List<int> _columnType;
+    List<int> resolvedColumnTypes;
     if (customColumnType != null) {
-      _columnType = customColumnType!;
+      resolvedColumnTypes = customColumnType!;
     } else {
-      _columnType = columnType[type!];
+      resolvedColumnTypes = columnType[type!];
     }
-    var month = _columnType.indexWhere((element) => element == 1);
-    var day = _columnType.indexWhere((element) => element == 2);
+    var month = resolvedColumnTypes.indexWhere((element) => element == 1);
+    var day = resolvedColumnTypes.indexWhere((element) => element == 2);
     _needUpdatePrev = day < month;
   }
 
@@ -1192,8 +1192,8 @@ class DateTimePickerAdapter extends PickerAdapter<DateTime> {
       return ye - _yearBegin + 1;
     }
     if (v == 31) return _calcDateCount(value!.hYear, value!.hMonth);
-    int _type = getColumnType(_col);
-    switch (_type) {
+    int colType = getColumnType(_col);
+    switch (colType) {
       case 3: // hour
         if ((minHour != null && minHour! >= 0) || (maxHour != null && maxHour! <= 23)) {
           return (maxHour ?? 23) - (minHour ?? 0) + 1;
@@ -1300,8 +1300,8 @@ class DateTimePickerAdapter extends PickerAdapter<DateTime> {
           if (months != null) {
             text = months![index].tr();
           } else {
-            List _months = PickerLocalizations.of(context).months;
-            text = "${_months[index]}";
+            List monthLabels = PickerLocalizations.of(context).months;
+            text = "${monthLabels[index]}";
           }
         }
         break;
@@ -1322,8 +1322,8 @@ class DateTimePickerAdapter extends PickerAdapter<DateTime> {
         }
         break;
       case 6:
-        List _ampm = strAMPM ?? PickerLocalizations.of(context).ampm;
-        text = "${_ampm[index]}";
+        List ampmLabels = strAMPM ?? PickerLocalizations.of(context).ampm;
+        text = "${ampmLabels[index]}";
         break;
       case 7:
         text = intToStr(index + (minHour == null ? 0 : (picker!.selecteds![_colAP] == 0 ? minHour : 0)!) + 1);
@@ -1420,11 +1420,11 @@ class DateTimePickerAdapter extends PickerAdapter<DateTime> {
         if (h > 23) h = 0;
         break;
     }
-    int __day = _calcDateCount(year, month);
+    int daysInMonth = _calcDateCount(year, month);
 
     bool isChangeDay = false;
-    if (day > __day) {
-      day = __day;
+    if (day > daysInMonth) {
+      day = daysInMonth;
       isChangeDay = true;
     }
     value = HijriCalendar()
