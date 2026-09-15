@@ -1,6 +1,8 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mapness/features/saudi_national_day/saudi_national_day.dart';
+// There are two byte-identical copies of this file in the tree; this is the
+// one the app actually uses, and the only one whose `isNow` is not deprecated.
+import 'package:mapness/features/special_themes/modes/saudi_national_day/saudi_national_day.dart';
 
 void main() {
   group('Saudi National Day Providers', () {
@@ -41,7 +43,8 @@ void main() {
       test('returns true for Saudi National Day date', () {
         // Test the logic with September 23rd, 2025
         final saudiNationalDay = DateTime(2025, 9, 24);
-        final isInRange = saudiNationalDay.isAfter(SaudiNationalDayConfig.startDate) &&
+        final isInRange =
+            saudiNationalDay.isAfter(SaudiNationalDayConfig.startDate) &&
             saudiNationalDay.isBefore(SaudiNationalDayConfig.endDate);
         expect(isInRange, true);
       });

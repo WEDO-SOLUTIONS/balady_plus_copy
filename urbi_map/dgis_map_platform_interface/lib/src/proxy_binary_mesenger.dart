@@ -14,8 +14,14 @@ class ProxyBinaryMessenger implements BinaryMessenger {
   final BinaryMessenger _binaryMessenger;
   final String _suffix;
 
+  // `BinaryMessenger` still declares this member abstract, so a proxy has to
+  // implement it, and the only correct implementation is to forward to the
+  // messenger being wrapped. The warning goes away on its own when Flutter
+  // removes the method, and this override goes with it.
   @override
+  // ignore: deprecated_member_use
   Future<void> handlePlatformMessage(String channel, ByteData? data, ui.PlatformMessageResponseCallback? callback) {
+    // ignore: deprecated_member_use
     return _binaryMessenger.handlePlatformMessage("$channel$_suffix", data, callback);
   }
 
