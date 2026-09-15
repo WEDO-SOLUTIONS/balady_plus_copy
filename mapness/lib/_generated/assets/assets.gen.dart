@@ -394,6 +394,9 @@ class $AssetsImagesSvgGen {
   /// File path: assets/images_svg/inactive_star.svg
   SvgGenImage get inactiveStar => const SvgGenImage('assets/images_svg/inactive_star.svg');
 
+  /// File path: assets/images_svg/ksa_national_day_header.svg
+  SvgGenImage get ksaNationalDayHeader => const SvgGenImage('assets/images_svg/ksa_national_day_header.svg');
+
   /// Directory path: assets/images_svg/layers
   $AssetsImagesSvgLayersGen get layers => const $AssetsImagesSvgLayersGen();
 
@@ -446,6 +449,7 @@ class $AssetsImagesSvgGen {
     illustrationPercentFoundingDay,
     illustrationThanks,
     inactiveStar,
+    ksaNationalDayHeader,
     lostLocation,
     lostLocationDark,
     sadFace,
