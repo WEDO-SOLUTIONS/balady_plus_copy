@@ -510,7 +510,7 @@ class _ColorOverrideSwitcher extends ConsumerWidget {
               : 'Off — the game picks colors from club data, as normal',
           value: override.enabled,
           gradient: DebugTheme.gradientTeal,
-          onChanged: (value) => controller.setEnabled(value),
+          onChanged: (value) => controller.setEnabled(enabled: value),
         ),
         if (override.enabled) ...[
           const SizedBox(height: 10),

@@ -26,7 +26,7 @@ class StreamAudioProvider extends ChangeNotifier {
   Timer? _contextualMessageTimer;
   bool _isDragging = false;
   bool _isFloatingPlayerVisible = true;
-  bool isInWeb = false;
+  bool _isInWeb = false;
   bool _isLoadingChannels = false;
   bool _isSelectingChannel = false; // Track when we're actively selecting a channel
 
@@ -73,7 +73,7 @@ class StreamAudioProvider extends ChangeNotifier {
     _audioService
       ..addListener(_onAudioServiceChanged)
       // Set callback for notification dismissal
-      ..setOnNotificationDismissedCallback(() {
+      ..onNotificationDismissedCallback = (() {
         debugPrint('StreamAudioProvider: Notification dismissed callback received - forcing exit (like mustRemove)');
         // When notification is dismissed from outside, ALWAYS exit (like mustRemove)
         // This is a user action that should take precedence over any ongoing operations
@@ -328,23 +328,25 @@ class StreamAudioProvider extends ChangeNotifier {
 
   bool get hasChannels => filteredChannels.isNotEmpty;
 
-  void setDraggingState(bool isDragging) {
-    debugPrint('StreamAudioProvider: setDraggingState called - old: $_isDragging, new: $isDragging');
-    _isDragging = isDragging;
+  set isDragging(bool value) {
+    debugPrint('StreamAudioProvider: isDragging set - old: $_isDragging, new: $value');
+    _isDragging = value;
     notifyListeners();
     debugPrint('StreamAudioProvider: notifyListeners called');
   }
 
-  void setInWeb(bool inWeb) {
-    debugPrint('StreamAudioProvider: setInWeb called - old: $isInWeb, new: $inWeb');
-    isInWeb = inWeb;
+  bool get isInWeb => _isInWeb;
+
+  set isInWeb(bool value) {
+    debugPrint('StreamAudioProvider: isInWeb set - old: $_isInWeb, new: $value');
+    _isInWeb = value;
     notifyListeners();
-    debugPrint('StreamAudioProvider: InWeb state changed to $inWeb');
+    debugPrint('StreamAudioProvider: InWeb state changed to $value');
   }
 
-  void setFloatingPlayerVisibility(bool isVisible) {
+  set isFloatingPlayerVisible(bool isVisible) {
     debugPrint(
-      'StreamAudioProvider: setFloatingPlayerVisibility called - old: $_isFloatingPlayerVisible, new: $isVisible',
+      'StreamAudioProvider: isFloatingPlayerVisible set - old: $_isFloatingPlayerVisible, new: $isVisible',
     );
     if (isInWeb && isVisible) {
       _isFloatingPlayerVisible = false;
@@ -535,7 +537,7 @@ class StreamAudioProvider extends ChangeNotifier {
 
       _selectedChannel = channel;
       _isExited = false;
-      setFloatingPlayerVisibility(true); // Show floating player when selecting a channel
+      isFloatingPlayerVisible = true; // Show floating player when selecting a channel
 
       final playlistArgs = filteredChannels
           .map(
@@ -590,7 +592,7 @@ class StreamAudioProvider extends ChangeNotifier {
     _audioService
       ..addListener(_onAudioServiceChanged)
       // Re-set callback for notification dismissal
-      ..setOnNotificationDismissedCallback(() {
+      ..onNotificationDismissedCallback = (() {
         debugPrint('StreamAudioProvider: Notification dismissed callback received - forcing exit (like mustRemove)');
         // When notification is dismissed from outside, ALWAYS exit (like mustRemove)
         // This is a user action that should take precedence over any ongoing operations
@@ -627,7 +629,7 @@ class StreamAudioProvider extends ChangeNotifier {
     }
 
     _isExited = false;
-    setFloatingPlayerVisibility(true); // Show floating player when playing
+    isFloatingPlayerVisible = true; // Show floating player when playing
 
     try {
       final playlistArgs = filteredChannels
@@ -793,7 +795,7 @@ class StreamAudioProvider extends ChangeNotifier {
     _isExited = true;
     _selectedChannel = null;
     _isInitialized = false;
-    setFloatingPlayerVisibility(false); // Hide floating player when exiting
+    isFloatingPlayerVisible = false; // Hide floating player when exiting
 
     debugPrint('StreamAudioProvider: Player exited successfully');
     notifyListeners();

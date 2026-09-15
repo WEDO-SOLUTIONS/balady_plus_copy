@@ -6,6 +6,7 @@ import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/app/auto_route/poi_card_ext.dart';
 import 'package:mapness/features/cityscape/cityscape_debug.dart';
 import 'package:mapness/features/poi_card/domain/model/poi_camera_config.dart';
+import 'package:mapness/shared/config/environment_config.dart';
 import 'package:mapness/shared/constants/constants.dart';
 import 'package:mapness/shared/providers/app_language.dart';
 import 'package:mapness/shared/providers/dgis_environment.dart';
@@ -44,7 +45,7 @@ class Cityscape extends _$Cityscape {
 
   String get globalImg => Assets.images.cityscapeGlobal.keyName;
 
-  ProviderSubscription? _environmentProviderSubscription;
+  ProviderSubscription<AsyncValue<EnvironmentConfig>>? _environmentProviderSubscription;
 
   @override
   bool build() {
@@ -55,9 +56,8 @@ class Cityscape extends _$Cityscape {
     }
 
     _environmentProviderSubscription = ref.listen(dgisEnvironmentProvider, (prev, current) {
-      if (current.value != null) {
-        final range = current.value!.cityscapeDateTimeRange;
-
+      final range = current.value?.cityscapeDateTimeRange;
+      if (range != null) {
         state = _checkIfInRange(range.from, range.to);
       }
     });

@@ -58,7 +58,7 @@ class EtaGeoSubscriber extends _$EtaGeoSubscriber {
   Timer? _lastActiveMessageReceiverTimer;
 
   DateTime? _lastActiveMessageTime;
-  ProviderSubscription? _routeSubscription;
+  ProviderSubscription<AsyncValue<List<RouteInfo>>>? _routeSubscription;
 
   @override
   (EtaInfoModel<dynamic>?, EtaInfoModel<EtaRoutePayload?>?) build() {
@@ -332,7 +332,7 @@ class EtaGeoSubscriber extends _$EtaGeoSubscriber {
     _routeSubscription = ref.listen(
       routesProvider(startPoint: startPoint, finishPoint: finishPoint, navType: type, showOnlyActiveRoute: true),
       (_, current) async {
-        if (current.valueOrNull?.isEmpty ?? false) {
+        if (current.value?.isEmpty ?? false) {
           _isRoutePresent = false;
           return;
         } else {

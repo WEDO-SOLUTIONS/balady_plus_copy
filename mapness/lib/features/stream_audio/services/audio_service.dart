@@ -165,7 +165,8 @@ class AudioService extends ChangeNotifier {
   }
 
   // Callback for notification dismissal
-  VoidCallback? _onNotificationDismissed;
+  /// Called when the user swipes the playback notification away.
+  VoidCallback? onNotificationDismissedCallback;
 
   // Getters
   bool get isInitialized => _isInitialized;
@@ -176,11 +177,6 @@ class AudioService extends ChangeNotifier {
   String? get currentChannelId => _currentChannelId;
   bool get isDucked => _isDucked;
   bool get isEffectivelyPlaying => _isPlaying || _isDucked;
-
-  // Set callback for notification dismissal
-  void setOnNotificationDismissedCallback(VoidCallback? callback) {
-    _onNotificationDismissed = callback;
-  }
 
   static Future<void> initializeGlobally() async {
     if (_backgroundInitialized) {
@@ -1063,9 +1059,9 @@ class AudioService extends ChangeNotifier {
 
     // Always call the callback - let the provider decide if it should exit
     // This ensures notification dismissal from outside always triggers exit
-    if (_onNotificationDismissed != null) {
+    if (onNotificationDismissedCallback != null) {
       debugPrint('AudioService: Calling notification dismissed callback');
-      _onNotificationDismissed!();
+      onNotificationDismissedCallback!();
     }
 
     _isHandlingDismissal = false;

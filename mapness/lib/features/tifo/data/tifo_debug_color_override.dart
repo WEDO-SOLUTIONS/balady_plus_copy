@@ -24,8 +24,8 @@ class TifoDebugColorOverrideController extends Notifier<TifoColorOverride> {
   @override
   TifoColorOverride build() => const TifoColorOverride();
 
-  void setEnabled(bool value) =>
-      state = TifoColorOverride(enabled: value, strikerColor: state.strikerColor, keeperColor: state.keeperColor);
+  void setEnabled({required bool enabled}) =>
+      state = TifoColorOverride(enabled: enabled, strikerColor: state.strikerColor, keeperColor: state.keeperColor);
 
   void setStrikerColor(String? color) =>
       state = TifoColorOverride(enabled: state.enabled, strikerColor: color, keeperColor: state.keeperColor);
@@ -34,5 +34,6 @@ class TifoDebugColorOverrideController extends Notifier<TifoColorOverride> {
       state = TifoColorOverride(enabled: state.enabled, strikerColor: state.strikerColor, keeperColor: color);
 }
 
-final tifoDebugColorOverrideProvider =
-    NotifierProvider<TifoDebugColorOverrideController, TifoColorOverride>(TifoDebugColorOverrideController.new);
+final tifoDebugColorOverrideProvider = NotifierProvider<TifoDebugColorOverrideController, TifoColorOverride>(
+  TifoDebugColorOverrideController.new,
+);
