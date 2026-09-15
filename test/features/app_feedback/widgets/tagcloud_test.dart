@@ -20,15 +20,17 @@ void main() {
 
     testWidgets('TagCloud displays correct tags based on rating', (WidgetTester tester) async {
       const rating = 5;
-      final tags = AppFeedbackTagMapper().getTags(rating, false);
+      final tags = AppFeedbackTagMapper().getTags(rating, isRtl: false);
 
       final l10n = AppLocalizationsAr();
 
-      await tester.pumpWidget(const ProviderScope(
-        child: TestMaterialApp(
-          child: Material(child: TagCloud(rating: rating)),
+      await tester.pumpWidget(
+        const ProviderScope(
+          child: TestMaterialApp(
+            child: Material(child: TagCloud(rating: rating)),
+          ),
         ),
-      ));
+      );
 
       for (final tag in tags) {
         expect(find.text(AppFeedbackTagMapper.getLocalizedText(l10n, tag)), findsOneWidget);
@@ -37,19 +39,23 @@ void main() {
 
     testWidgets('TagCloud updates selected tags when a tag is tapped', (WidgetTester tester) async {
       const rating = 4;
-      final tags = AppFeedbackTagMapper().getTags(rating, false);
+      final tags = AppFeedbackTagMapper().getTags(rating, isRtl: false);
       Set<Tag>? selectedTags;
 
-      await tester.pumpWidget(ProviderScope(
+      await tester.pumpWidget(
+        ProviderScope(
           child: TestMaterialApp(
-              child: Material(
-        child: TagCloud(
-          rating: rating,
-          onTagsChanged: (tags) {
-            selectedTags = tags;
-          },
+            child: Material(
+              child: TagCloud(
+                rating: rating,
+                onTagsChanged: (tags) {
+                  selectedTags = tags;
+                },
+              ),
+            ),
+          ),
         ),
-      ))));
+      );
 
       final firstTag = tags.first;
       final l10n = AppLocalizationsAr();

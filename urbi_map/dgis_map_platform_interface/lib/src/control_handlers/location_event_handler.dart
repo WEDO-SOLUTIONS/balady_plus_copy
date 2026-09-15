@@ -14,17 +14,11 @@ class LocationEventHandler {
   final _locationFollowController = StreamController<LocationFollowEvent>.broadcast();
 
   void enabledEvent(Map<dynamic, dynamic> map) {
-    _locationEnabledController.sink.add(
-      LocationEnabledEvent(map['value']),
-    );
+    _locationEnabledController.sink.add(LocationEnabledEvent(isEnabled: map['value'] as bool));
   }
 
   void followEvent(Map<dynamic, dynamic> map) {
-    _locationFollowController.sink.add(
-      LocationFollowEvent(LocationFollowType.fromValue(
-        map['value'],
-      )),
-    );
+    _locationFollowController.sink.add(LocationFollowEvent(LocationFollowType.fromValue(map['value'])));
   }
 
   Future<void> toggleFollowState() => _api.toggleFollowState();

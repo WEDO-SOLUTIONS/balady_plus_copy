@@ -7,7 +7,7 @@ class RecommendationsFeatureFlag extends _$RecommendationsFeatureFlag {
   @override
   bool build() => false;
 
-  void set(bool value) {
-    state = value;
-  }
+  bool get enabled => state;
+
+  set enabled(bool value) => state = value;
 }

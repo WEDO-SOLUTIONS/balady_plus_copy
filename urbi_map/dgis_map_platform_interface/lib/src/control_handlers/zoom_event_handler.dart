@@ -21,21 +21,11 @@ class ZoomEventHandler {
   }
 
   void zoomInEvent(Map<dynamic, dynamic> map) {
-    _zoomController.sink.add(
-      ZoomControlEnabledEvent(
-        ZoomControlType.zoomIn,
-        map['value'],
-      ),
-    );
+    _zoomController.sink.add(ZoomControlEnabledEvent(button: ZoomControlType.zoomIn, isEnabled: map['value'] as bool));
   }
 
   void zoomOutEvent(Map<dynamic, dynamic> map) {
-    _zoomController.sink.add(
-      ZoomControlEnabledEvent(
-        ZoomControlType.zoomOut,
-        map['value'],
-      ),
-    );
+    _zoomController.sink.add(ZoomControlEnabledEvent(button: ZoomControlType.zoomOut, isEnabled: map['value'] as bool));
   }
 
   Future<void> dispose() async {

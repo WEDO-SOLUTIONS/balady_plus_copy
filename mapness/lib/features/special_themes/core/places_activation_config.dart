@@ -414,9 +414,9 @@ class PilgrimFeatureDebug extends _$PilgrimFeatureDebug {
   @override
   bool build() => false;
 
-  void set(bool value) {
-    state = value;
-  }
+  bool get enabled => state;
+
+  set enabled(bool value) => state = value;
 }
 
 /// Check if current date is past the feature's start date.

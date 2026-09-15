@@ -400,7 +400,7 @@ class _DebugTogglesCard extends ConsumerWidget {
             label: 'Foundation Day',
             value: foundationDay,
             onChanged: (v) {
-              ref.read(foundationDayDebugProvider.notifier).set(v);
+              ref.read(foundationDayDebugProvider.notifier).enabled = v;
             },
             gradient: _DebugColors.gradientPurple,
           ),
@@ -408,7 +408,7 @@ class _DebugTogglesCard extends ConsumerWidget {
             label: 'Makkah Base',
             value: mekkahBase,
             onChanged: (v) {
-              ref.read(mekkahBaseThemeDebugProvider.notifier).set(v);
+              ref.read(mekkahBaseThemeDebugProvider.notifier).enabled = v;
             },
             gradient: _DebugColors.gradientAmber,
           ),
@@ -416,7 +416,7 @@ class _DebugTogglesCard extends ConsumerWidget {
           //   label: 'Ramadan Season',
           //   value: ramadan,
           //   onChanged: (v) {
-          //     ref.read(ramadanSeasonDebugProvider.notifier).set(v);
+          //     ref.read(ramadanSeasonDebugProvider.notifier).enabled = v;
           //   },
           //   gradient: _DebugColors.gradientTeal,
           // ),
@@ -424,7 +424,7 @@ class _DebugTogglesCard extends ConsumerWidget {
           //   label: 'Hajj Season',
           //   value: hajj,
           //   onChanged: (v) {
-          //     ref.read(hajjSeasonDebugProvider.notifier).set(v);
+          //     ref.read(hajjSeasonDebugProvider.notifier).enabled = v;
           //   },
           //   gradient: _DebugColors.gradientBlue,
           // ),
@@ -432,7 +432,7 @@ class _DebugTogglesCard extends ConsumerWidget {
             label: 'Pilgrim Feature',
             value: pilgrimFeature,
             onChanged: (v) {
-              ref.read(pilgrimFeatureDebugProvider.notifier).set(v);
+              ref.read(pilgrimFeatureDebugProvider.notifier).enabled = v;
             },
             gradient: _DebugColors.gradientGreen,
           ),
@@ -440,7 +440,7 @@ class _DebugTogglesCard extends ConsumerWidget {
             label: 'Recommendations Feature',
             value: recommendationsFeature,
             onChanged: (v) {
-              ref.read(recommendationsFeatureFlagProvider.notifier).set(v);
+              ref.read(recommendationsFeatureFlagProvider.notifier).enabled = v;
             },
             gradient: _DebugColors.gradientGreen,
           ),

@@ -18,7 +18,7 @@ enum LocationFollowType {
 }
 
 class LocationEnabledEvent {
-  LocationEnabledEvent(this.isEnabled);
+  LocationEnabledEvent({required this.isEnabled});
 
   static const name = 'locationEnabledEvent';
 

@@ -1,7 +1,7 @@
 enum ZoomControlType { zoomIn, zoomOut }
 
 class ZoomControlEnabledEvent {
-  const ZoomControlEnabledEvent(this.button, this.isEnabled);
+  const ZoomControlEnabledEvent({required this.button, required this.isEnabled});
 
   static const zoomInEvent = 'zoomInEvent';
   static const zoomOutEvent = 'zoomOutEvent';

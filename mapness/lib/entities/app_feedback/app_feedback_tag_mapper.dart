@@ -23,93 +23,86 @@ enum Tag {
 }
 
 class AppFeedbackTagMapper {
-  Set<Tag> getTags(int rating, bool isRtl) => switch (rating) {
-        1 || 2 => isRtl
-            ? {
-                Tag.badDirections,
-                Tag.parkingProblems,
-                Tag.poorDesign,
-                Tag.poorTraffic,
-                Tag.wrongArrivalTime,
-                Tag.location,
-              }
-            : {
-                Tag.badDirections,
-                Tag.location,
-                Tag.poorTraffic,
-                Tag.poorDesign,
-                Tag.parkingProblems,
-                Tag.wrongArrivalTime,
-              },
-        3 => isRtl
-            ? {
-                Tag.poorTraffic,
-                Tag.wrongArrivalTime,
-                Tag.poorDesign,
-                Tag.easyToUse,
-                Tag.location,
-              }
-            : {
-                Tag.poorTraffic,
-                Tag.wrongArrivalTime,
-                Tag.poorDesign,
-                Tag.badDirections,
-                Tag.location,
-              },
-        4 => isRtl
-            ? {
-                Tag.easyToUse,
-                Tag.helpfulDirections,
-                Tag.niceDesign,
-                Tag.goodNavigation,
-                Tag.traffic,
-              }
-            : {
-                Tag.easyToUse,
-                Tag.helpfulDirections,
-                Tag.parking,
-                Tag.niceDesign,
-                Tag.goodNavigation,
-              },
-        5 => isRtl
-            ? {
-                Tag.arrivalTime,
-                Tag.goodNavigation,
-                Tag.greatDesign,
-                Tag.easyToUse,
-                Tag.parking,
-              }
-            : {
-                Tag.arrivalTime,
-                Tag.goodNavigation,
-                Tag.parking,
-                Tag.easyToUse,
-                Tag.greatDesign,
-              },
-        _ => {},
-      };
+  Set<Tag> getTags(int rating, {required bool isRtl}) => switch (rating) {
+    1 || 2 =>
+      isRtl
+          ? {
+              Tag.badDirections,
+              Tag.parkingProblems,
+              Tag.poorDesign,
+              Tag.poorTraffic,
+              Tag.wrongArrivalTime,
+              Tag.location,
+            }
+          : {
+              Tag.badDirections,
+              Tag.location,
+              Tag.poorTraffic,
+              Tag.poorDesign,
+              Tag.parkingProblems,
+              Tag.wrongArrivalTime,
+            },
+    3 =>
+      isRtl
+          ? {
+              Tag.poorTraffic,
+              Tag.wrongArrivalTime,
+              Tag.poorDesign,
+              Tag.easyToUse,
+              Tag.location,
+            }
+          : {
+              Tag.poorTraffic,
+              Tag.wrongArrivalTime,
+              Tag.poorDesign,
+              Tag.badDirections,
+              Tag.location,
+            },
+    4 =>
+      isRtl
+          ? {
+              Tag.easyToUse,
+              Tag.helpfulDirections,
+              Tag.niceDesign,
+              Tag.goodNavigation,
+              Tag.traffic,
+            }
+          : {
+              Tag.easyToUse,
+              Tag.helpfulDirections,
+              Tag.parking,
+              Tag.niceDesign,
+              Tag.goodNavigation,
+            },
+    5 =>
+      isRtl
+          ? {
+              Tag.arrivalTime,
+              Tag.goodNavigation,
+              Tag.greatDesign,
+              Tag.easyToUse,
+              Tag.parking,
+            }
+          : {
+              Tag.arrivalTime,
+              Tag.goodNavigation,
+              Tag.parking,
+              Tag.easyToUse,
+              Tag.greatDesign,
+            },
+    _ => {},
+  };
 
   static String getIconByTag(Tag tag) => switch (tag) {
-        Tag.badDirections ||
-        Tag.wrongDirections ||
-        Tag.helpfulDirections =>
-          Assets.icons.svg.tagDirections.keyName,
-        Tag.locationProblems || Tag.location => Assets.icons.svg.tagGps.keyName,
-        Tag.poorTraffic || Tag.traffic => Assets.icons.svg.tagTraffic.keyName,
-        Tag.wrongArrivalTime ||
-        Tag.arrivalTime =>
-          Assets.icons.svg.tagArrival.keyName,
-        Tag.poorDesign ||
-        Tag.design ||
-        Tag.niceDesign ||
-        Tag.greatDesign =>
-          Assets.icons.svg.tagDesign.keyName,
-        Tag.easyToUse => Assets.icons.svg.tagEasyToUse.keyName,
-        Tag.goodNavigation => Assets.icons.svg.tagNavi.keyName,
-        Tag.parkingProblems ||
-        Tag.parking =>
-          Assets.icons.svg.tagParking.keyName,
-      };
+    Tag.badDirections || Tag.wrongDirections || Tag.helpfulDirections => Assets.icons.svg.tagDirections.keyName,
+    Tag.locationProblems || Tag.location => Assets.icons.svg.tagGps.keyName,
+    Tag.poorTraffic || Tag.traffic => Assets.icons.svg.tagTraffic.keyName,
+    Tag.wrongArrivalTime || Tag.arrivalTime => Assets.icons.svg.tagArrival.keyName,
+    Tag.poorDesign || Tag.design || Tag.niceDesign || Tag.greatDesign => Assets.icons.svg.tagDesign.keyName,
+    Tag.easyToUse => Assets.icons.svg.tagEasyToUse.keyName,
+    Tag.goodNavigation => Assets.icons.svg.tagNavi.keyName,
+    Tag.parkingProblems || Tag.parking => Assets.icons.svg.tagParking.keyName,
+  };
 
   /// Because in task requirements, the tags must send to backend localized in English
   static String getSourceTagText(Tag tag) {

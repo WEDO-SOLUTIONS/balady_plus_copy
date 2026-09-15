@@ -36,7 +36,9 @@ class FoundationDayDebug extends _$FoundationDayDebug {
   @override
   bool build() => false;
 
-  void set(bool value) {
+  bool get enabled => state;
+
+  set enabled(bool value) {
     state = value;
     final isEnabled = ref.watch(foundingDayDebugUrbiProvider);
     final notifier = ref.read(foundingDayDebugUrbiProvider.notifier);
@@ -53,9 +55,9 @@ class MekkahBaseThemeDebug extends _$MekkahBaseThemeDebug {
   @override
   bool build() => false;
 
-  void set(bool value) {
-    state = value;
-  }
+  bool get enabled => state;
+
+  set enabled(bool value) => state = value;
 }
 
 @Riverpod(keepAlive: true)
@@ -63,9 +65,9 @@ class RamadanSeasonDebug extends _$RamadanSeasonDebug {
   @override
   bool build() => false;
 
-  void set(bool value) {
-    state = value;
-  }
+  bool get enabled => state;
+
+  set enabled(bool value) => state = value;
 }
 
 @Riverpod(keepAlive: true)
@@ -73,9 +75,9 @@ class HajjSeasonDebug extends _$HajjSeasonDebug {
   @override
   bool build() => false;
 
-  void set(bool value) {
-    state = value;
-  }
+  bool get enabled => state;
+
+  set enabled(bool value) => state = value;
 }
 
 @Riverpod(keepAlive: true)

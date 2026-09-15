@@ -21,7 +21,7 @@ class NaviSpeedLimitEvent extends NaviSpeedEvent {
 }
 
 class NaviExceedSpeedLimitEvent extends NaviSpeedEvent {
-  const NaviExceedSpeedLimitEvent(this.isExceed);
+  const NaviExceedSpeedLimitEvent({required this.isExceed});
 
   final bool isExceed;
 
@@ -31,7 +31,7 @@ class NaviExceedSpeedLimitEvent extends NaviSpeedEvent {
 enum NaviCameraDirection { along, against, both }
 
 class NaviCameraEvent extends NaviSpeedEvent {
-  const NaviCameraEvent(this.isControlCamera, this.direction);
+  const NaviCameraEvent({required this.isControlCamera, required this.direction});
 
   final bool isControlCamera;
   final NaviCameraDirection? direction;

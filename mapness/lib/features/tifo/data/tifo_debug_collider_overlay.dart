@@ -9,7 +9,9 @@ class TifoDebugColliderOverlayController extends Notifier<bool> {
   @override
   bool build() => false;
 
-  void set(bool value) => state = value;
+  bool get enabled => state;
+
+  set enabled(bool value) => state = value;
 }
 
 final tifoDebugColliderOverlayProvider = NotifierProvider<TifoDebugColliderOverlayController, bool>(

@@ -12,19 +12,13 @@ class SpeedEventHandler {
   void handleNavigationEvent(Map<dynamic, dynamic> map) {
     switch (map[NaviSpeedEvent.name]) {
       case NaviCurrentSpeedEvent.name:
-        _controller.sink.add(
-          NaviCurrentSpeedEvent(map["value"]),
-        );
+        _controller.sink.add(NaviCurrentSpeedEvent(map["value"]));
         break;
       case NaviSpeedLimitEvent.name:
-        _controller.sink.add(
-          NaviSpeedLimitEvent(map["value"]),
-        );
+        _controller.sink.add(NaviSpeedLimitEvent(map["value"]));
         break;
       case NaviExceedSpeedLimitEvent.name:
-        _controller.sink.add(
-          NaviExceedSpeedLimitEvent(map["value"]),
-        );
+        _controller.sink.add(NaviExceedSpeedLimitEvent(isExceed: map["value"] as bool));
         break;
       case NaviCameraEvent.name:
         final isControlCamera = map["value"] as bool?;
@@ -42,12 +36,7 @@ class SpeedEventHandler {
             break;
         }
 
-        _controller.sink.add(
-          NaviCameraEvent(
-            isControlCamera ?? false,
-            cameraDirection,
-          ),
-        );
+        _controller.sink.add(NaviCameraEvent(isControlCamera: isControlCamera ?? false, direction: cameraDirection));
         break;
     }
   }

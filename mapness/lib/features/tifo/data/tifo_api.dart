@@ -42,7 +42,9 @@ class TifoDebugModeController extends Notifier<bool> {
   @override
   bool build() => false;
 
-  void set(bool value) => state = value;
+  bool get enabled => state;
+
+  set enabled(bool value) => state = value;
 }
 
 final tifoDebugModeProvider = NotifierProvider<TifoDebugModeController, bool>(TifoDebugModeController.new);
