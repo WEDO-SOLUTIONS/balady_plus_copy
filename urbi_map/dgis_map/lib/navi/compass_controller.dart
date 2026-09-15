@@ -10,5 +10,6 @@ class NaviCompassController {
   /// All events without filtering
   final Stream<CompassBearingEvent> events;
 
+  /// Run when the compass is tapped; typically points the camera north.
   final Future<void> Function() onCompassClicked;
 }

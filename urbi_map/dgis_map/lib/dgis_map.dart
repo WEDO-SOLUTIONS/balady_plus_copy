@@ -7,9 +7,14 @@ import 'dgis_map_controller.dart';
 
 const String _viewType = 'com.dgis.map_view';
 
+/// Hosts the native map view and hands back its controller once the platform
+/// side is ready.
 class DgisMap extends StatelessWidget {
+  /// Creates the map view.
   DgisMap({required this.onMapCreated, this.androidUseExpensive = false, super.key});
 
+  /// Called once, with the controller for the native view that was just
+  /// created.
   final Function(DgisMapController controller) onMapCreated;
 
   ///  Setting [androidUseExpensive] to true eradicates spaming "SurfaceView"

@@ -526,6 +526,7 @@ class DgisMapPlugin extends FlutterMapApi {
     return _api.addMarker(MarkerMessage(id: marker.id, options: marker.options), manager);
   }
 
+  /// Changes the appearance of the marker already on the map with this [id].
   Future<void> setMarkerOptions(String id, ChangeMarkerOptionsMessage options) {
     return _api.setMarkerOptions(id, options);
   }
