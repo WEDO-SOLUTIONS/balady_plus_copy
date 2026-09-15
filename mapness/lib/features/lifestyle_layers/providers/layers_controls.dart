@@ -5,6 +5,8 @@ import 'package:balady_uikit/core/colors/non_theme_colors.dart';
 import 'package:dgis_map/library.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:mapness/shared/lib/geo/geo_utils.dart';
 import 'package:mapness/_generated/assets/assets.gen.dart';
 import 'package:mapness/app/auto_route/app_routes.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
@@ -38,7 +40,6 @@ import 'package:mapness/features/shuttle_bus/repo.dart';
 import 'package:mapness/features/shuttle_bus/visible_provider.dart';
 import 'package:mapness/shared/config/environment_config.dart';
 import 'package:mapness/shared/constants/constants.dart';
-import 'package:mapness/shared/lib/search/compute_camera_position.dart';
 import 'package:mapness/shared/providers/dgis_environment.dart';
 import 'package:mapness/shared/providers/location.dart';
 import 'package:mapness/shared/providers/map/camera_position.dart';
@@ -624,7 +625,7 @@ class LayersControls extends _$LayersControls {
         .timeout(duration, onTimeout: onError);
     update(isLoading: false);
 
-    await computeCameraPosition(
+    await _computeCameraPosition(
       markers,
       ref.read(cameraPositionProvider),
       ref.read(locationProvider),
@@ -1051,4 +1052,44 @@ class LayersControls extends _$LayersControls {
       setSelection(selectedType: LayerType.traffic);
     }
   }
+}
+
+/// Frames the camera so the nearby [markers] fit, without zooming in past
+/// whatever the camera is already showing.
+///
+/// This used to live in `shared/lib/search` and carried a deprecation saying
+/// Search zooms by itself now. It does - but the lifestyle layers are not
+/// Search, and this was its only remaining caller, so it moved here and became
+/// private rather than staying deprecated-but-in-use.
+Future<void> _computeCameraPosition(
+  List<Marker> markers,
+  CameraPositionMessage? cameraPosition,
+  Position? userLocation,
+  Future<void> Function(CameraPositionMessage) animateTo,
+) async {
+  var location = cameraPosition?.point;
+  if (location == null && userLocation != null) {
+    location = GeoPointMessage(latitude: userLocation.latitude, longitude: userLocation.longitude);
+  }
+
+  if (location == null) {
+    return;
+  }
+
+  var zoom = await GeoUtils.zoomByMarkersNearby(
+    markers: markers,
+    position: location,
+  );
+  if (cameraPosition?.zoom != null) {
+    zoom = cameraPosition!.zoom < zoom ? cameraPosition.zoom : zoom;
+  }
+
+  await animateTo(
+    CameraPositionMessage(
+      point: location,
+      tilt: cameraPosition?.tilt ?? 0.0,
+      bearing: cameraPosition?.bearing ?? 0.0,
+      zoom: zoom,
+    ),
+  );
 }
