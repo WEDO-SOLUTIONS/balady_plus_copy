@@ -18,31 +18,27 @@ class IwishActions extends StatelessWidget {
   final String driveLabel;
 
   @override
-  Widget build(BuildContext context) {
-    // const gap = SizedBox(width: 8);
-
-    return SizedBox(
-      height: 41,
-      child: Row(
-        children: [
-          IwishActionDriveButton(label: driveLabel, onPressed: onDrive),
-          // gap,
-          // IwishActionIconButton(
-          //   iconAsset: Assets.icons.svg.icShare.keyName,
-          //   onPressed: onShare,
-          // ),
-          // gap,
-          // IwishActionIconButton(
-          //   iconAsset: Assets.icons.svg.icEntrance.keyName,
-          //   onPressed: onEnter,
-          // ),
-          // gap,
-          // IwishActionIconButton(
-          //   iconAsset: Assets.icons.svg.icPhone.keyName,
-          //   onPressed: onCall,
-          // ),
-        ],
-      ),
-    );
-  }
+  Widget build(BuildContext context) => SizedBox(
+    height: 41,
+    child: Row(
+      children: [
+        IwishActionDriveButton(label: driveLabel, onPressed: onDrive),
+        // gap,
+        // IwishActionIconButton(
+        //   iconAsset: Assets.icons.svg.icShare.keyName,
+        //   onPressed: onShare,
+        // ),
+        // gap,
+        // IwishActionIconButton(
+        //   iconAsset: Assets.icons.svg.icEntrance.keyName,
+        //   onPressed: onEnter,
+        // ),
+        // gap,
+        // IwishActionIconButton(
+        //   iconAsset: Assets.icons.svg.icPhone.keyName,
+        //   onPressed: onCall,
+        // ),
+      ],
+    ),
+  );
 }

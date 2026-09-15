@@ -42,7 +42,7 @@ class _WrapperState extends ConsumerState<_PoiCardWrapper>
       if (kDebugMode) {
         logger.log('[MakkahPinDebug] Wrapper: initState setActive(true)');
       }
-      ref.read(regularPoiActiveProvider.notifier).setActive(true);
+      ref.read(regularPoiActiveProvider.notifier).isActive = true;
     });
 
     Future.delayed(Duration.zero, () {
@@ -105,7 +105,7 @@ class _WrapperState extends ConsumerState<_PoiCardWrapper>
   @override
   void didPush() {
     _scheduleProviderUpdate(() {
-      ref.read(regularPoiActiveProvider.notifier).setActive(true);
+      ref.read(regularPoiActiveProvider.notifier).isActive = true;
     });
   }
 
@@ -115,7 +115,7 @@ class _WrapperState extends ConsumerState<_PoiCardWrapper>
     ref.read(parkingManageProvider(theme: context.read<ThemeController>().currentTheme).notifier).restoreMarker();
 
     // Show Makkah place markers again when POI card is closed
-    ref.read(regularPoiActiveProvider.notifier).setActive(false);
+    ref.read(regularPoiActiveProvider.notifier).isActive = false;
   }
 
   void _scheduleProviderUpdate(VoidCallback action) {
@@ -170,13 +170,14 @@ class _WrapperState extends ConsumerState<_PoiCardWrapper>
       storeParking.addPinParking(storeParkingData?.markerPosition, context.l10n.yourParkingSpot);
     }
     ref.watch(dgisEnvironmentProvider);
-    final poiCardState = gisPoiCardState ??
-              PoiCardState(
-                showEntrances: false,
-                isLoading: false,
-                gisObjectIdMessage: data,
-                organizations: null,
-              );
+    final poiCardState =
+        gisPoiCardState ??
+        PoiCardState(
+          showEntrances: false,
+          isLoading: false,
+          gisObjectIdMessage: data,
+          organizations: null,
+        );
 
     final isCityscapeObject = ref.read(cityscapeProvider.notifier).showCustomPin(widget.objectId.objectId);
 
@@ -242,7 +243,7 @@ class _WrapperState extends ConsumerState<_PoiCardWrapper>
             onClose: () async {
               await ref.read(selectedMarkerProvider.notifier).removeAllMarkers();
               await ref.read(highlightProvider.notifier).removeHighlight(widget.objectId);
-              ref.read(regularPoiActiveProvider.notifier).setActive(false);
+              ref.read(regularPoiActiveProvider.notifier).isActive = false;
               context.router.pop();
             },
             onRetry: () {
@@ -255,7 +256,7 @@ class _WrapperState extends ConsumerState<_PoiCardWrapper>
           errorContent: context.l10n.saudiPassSomethingWentWrongHint,
           buttonLabel: context.l10n.complete,
           onRetry: () {
-            ref.read(regularPoiActiveProvider.notifier).setActive(false);
+            ref.read(regularPoiActiveProvider.notifier).isActive = false;
             context.router.pop();
           },
         );

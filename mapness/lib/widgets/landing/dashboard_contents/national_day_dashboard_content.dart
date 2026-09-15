@@ -17,15 +17,13 @@ class NationalDayDashboardContent extends StatelessWidget {
     super.key,
   });
 
+  // Поведение сейчас такое же, как у BaseDashboardContent, но вынесено
+  // в отдельный виджет под тему. Если для National Day понадобится другая
+  // верстка, её можно будет поменять только здесь.
   @override
-  Widget build(BuildContext context) {
-    // Поведение сейчас такое же, как у BaseDashboardContent, но вынесено
-    // в отдельный виджет под тему. Если для National Day понадобится другая
-    // верстка, её можно будет поменять только здесь.
-    return BaseDashboardContent(
-      themeConfig: themeConfig,
-      bottomSheetController: bottomSheetController,
-      fireworksController: fireworksController,
-    );
-  }
+  Widget build(BuildContext context) => BaseDashboardContent(
+    themeConfig: themeConfig,
+    bottomSheetController: bottomSheetController,
+    fireworksController: fireworksController,
+  );
 }

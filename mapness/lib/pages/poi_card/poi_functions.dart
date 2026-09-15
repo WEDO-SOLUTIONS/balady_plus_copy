@@ -2,7 +2,7 @@ part of 'poi_card_widget_page.dart';
 
 Future<void> closePoiCard(BuildContext context, WidgetRef ref) async {
   // Show Makkah place markers again when POI card is closed
-  ref.read(regularPoiActiveProvider.notifier).setActive(false);
+  ref.read(regularPoiActiveProvider.notifier).isActive = false;
 
   await ref.read(selectedMarkerProvider.notifier).removeMarker(poiPinId);
   await ref.read(highlightProvider.notifier).removeAll();

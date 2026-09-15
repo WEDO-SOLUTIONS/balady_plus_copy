@@ -6,18 +6,17 @@ part 'ramadan_season.g.dart';
 ///
 /// Business requirement:
 ///   Ramadan theme should be switched on only Feb 17 – March 20 (2026).
+/// Currently forced off. The date check to restore when the theme is switched
+/// back on:
+///
+/// ```dart
+/// final now = DateTime.now();
+/// final today = DateTime(now.year, now.month, now.day);
+///
+/// final start = DateTime(2026, 2, 17);
+/// final end = DateTime(2026, 3, 20);
+///
+/// return !today.isBefore(start) && !today.isAfter(end);
+/// ```
 @riverpod
-bool ramadanSeason() {
-  return false;
-
-  // final now = DateTime.now();
-  // final today = DateTime(now.year, now.month, now.day);
-  //
-  // final start = DateTime(2026, 2, 17);
-  // final end = DateTime(2026, 3, 20);
-  //
-  // final isOnOrAfterStart = !today.isBefore(start);
-  // final isOnOrBeforeEnd = !today.isAfter(end);
-  //
-  // return isOnOrAfterStart && isOnOrBeforeEnd;
-}
+bool ramadanSeason() => false;

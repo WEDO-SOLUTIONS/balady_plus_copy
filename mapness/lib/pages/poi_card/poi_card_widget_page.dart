@@ -135,7 +135,7 @@ class PoiCardWidgetPage extends StatelessWidget {
   Widget build(BuildContext context) => PopScope(
     onPopInvokedWithResult: (didPop, result) {
       final container = ProviderScope.containerOf(context, listen: false);
-      container.read(regularPoiActiveProvider.notifier).setActive(false);
+      container.read(regularPoiActiveProvider.notifier).isActive = false;
     },
     child: _PoiCardWrapper(
       objectId: objectId ?? DgisObjectIdMessage(objectId: dGisObjectId ?? 0, entranceId: 0),

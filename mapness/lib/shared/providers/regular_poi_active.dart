@@ -9,9 +9,12 @@ class RegularPoiActive extends _$RegularPoiActive {
   @override
   bool build() => false;
 
-  void setActive(bool active) {
+  /// Whether a regular POI card is open right now.
+  bool get isActive => state;
+
+  set isActive(bool value) {
     // ignore: avoid_print
-    print('[MakkahPinDebug] Provider: setActive($active) was: $state');
-    state = active;
+    print('[MakkahPinDebug] Provider: isActive set to $value, was: $state');
+    state = value;
   }
 }

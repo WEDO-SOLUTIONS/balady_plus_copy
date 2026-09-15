@@ -181,7 +181,7 @@ class _ContentState extends ConsumerState<_PoiCardContent> with SingleTickerProv
           if (kDebugMode) {
             logger.log('[MakkahPinDebug] Content: sheet hidden, setActive(false)');
           }
-          ref.read(regularPoiActiveProvider.notifier).setActive(false);
+          ref.read(regularPoiActiveProvider.notifier).isActive = false;
         case PoiCardBottomSheetState.open:
           uiElementName = BssUIElementNames.placeCardTwoThird;
         case PoiCardBottomSheetState.expanded:

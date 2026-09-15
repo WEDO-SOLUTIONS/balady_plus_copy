@@ -29,7 +29,7 @@ class PoiLoadingOrErrorSheet extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final onClose = () {
-      ref.read(regularPoiActiveProvider.notifier).setActive(false);
+      ref.read(regularPoiActiveProvider.notifier).isActive = false;
       if (data is PoiError && (data as PoiError).onClose != null) {
         (data as PoiError).onClose!.call();
       } else {

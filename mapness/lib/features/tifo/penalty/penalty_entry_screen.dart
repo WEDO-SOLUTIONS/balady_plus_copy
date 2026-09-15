@@ -35,60 +35,58 @@ class PenaltyEntryScreen extends ConsumerWidget {
   static const Color _ctaStart = Color(0xFF8F45FF);
   static const Color _ctaEnd = Color(0xFFA95CFF);
 
+  // Stadium/game chrome mirrors the physical pitch, not reading order — kept
+  // LTR regardless of app locale so it never flips in Arabic.
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    // Stadium/game chrome mirrors the physical pitch, not reading order — kept
-    // LTR regardless of app locale so it never flips in Arabic.
-    return Directionality(
-      textDirection: TextDirection.ltr,
-      child: Scaffold(
-        backgroundColor: _bgMid,
-        body: DecoratedBox(
-          decoration: const BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment(-0.7, -1.0),
-              end: Alignment(0.7, 1.0),
-              stops: [0.08, 0.5, 0.92],
-              colors: [_bgTop, _bgMid, _bgTop],
-            ),
+  Widget build(BuildContext context, WidgetRef ref) => Directionality(
+    textDirection: TextDirection.ltr,
+    child: Scaffold(
+      backgroundColor: _bgMid,
+      body: DecoratedBox(
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment(-0.7, -1.0),
+            end: Alignment(0.7, 1.0),
+            stops: [0.08, 0.5, 0.92],
+            colors: [_bgTop, _bgMid, _bgTop],
           ),
-          child: SafeArea(
-            child: Padding(
-              padding: const EdgeInsets.fromLTRB(20, 16, 20, 24),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const _Header(),
-                  const SizedBox(height: 16),
-                  Expanded(
-                    child: SingleChildScrollView(
-                      physics: const ClampingScrollPhysics(),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children: [
-                          _Caption(),
-                          const SizedBox(height: 4),
-                          _HeroTitle(),
-                          const SizedBox(height: 16),
-                          const _StadiumImage(),
-                          const SizedBox(height: 24),
-                          const _StatsCard(),
-                        ],
-                      ),
+        ),
+        child: SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(20, 16, 20, 24),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const _Header(),
+                const SizedBox(height: 16),
+                Expanded(
+                  child: SingleChildScrollView(
+                    physics: const ClampingScrollPhysics(),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        _Caption(),
+                        const SizedBox(height: 4),
+                        _HeroTitle(),
+                        const SizedBox(height: 16),
+                        const _StadiumImage(),
+                        const SizedBox(height: 24),
+                        const _StatsCard(),
+                      ],
                     ),
                   ),
-                  const SizedBox(height: 12),
-                  _StartButton(
-                    onTap: () => _startPenalty(context, ref),
-                  ),
-                ],
-              ),
+                ),
+                const SizedBox(height: 12),
+                _StartButton(
+                  onTap: () => _startPenalty(context, ref),
+                ),
+              ],
             ),
           ),
         ),
       ),
-    );
-  }
+    ),
+  );
 
   /// Minimum goals (out of 5 attempts) required to capture the polygon.
   static const int _goalsToCapture = 3;
