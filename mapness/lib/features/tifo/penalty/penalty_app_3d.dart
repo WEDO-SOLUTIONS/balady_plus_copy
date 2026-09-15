@@ -122,6 +122,18 @@ class _Penalty3DPageState extends State<_Penalty3DPage> {
   bool _armed = false;
   bool _completed = false;
 
+  /// Unity stays resident between matches, and the `Leave` we send on dispose
+  /// can be dropped when the previous view is already torn down — leaving a
+  /// stale, still-armed scene that never says "ready" for the new view. So a
+  /// new view waits for "ready" only this long, then asks Unity to reset
+  /// (reload, or just repeat "ready" if the scene is already fresh), and keeps
+  /// asking a few times: a cold boot takes ~3–4 s and drops early messages.
+  static const Duration _readyRetryInterval = Duration(milliseconds: 1500);
+  static const int _readyRetryLimit = 6;
+  bool _gotReady = false;
+  int _readyRetries = 0;
+  Timer? _readyTimer;
+
   Timer? _idleCheckTimer;
   DateTime? _lastActivityAt;
   bool _idlePromptOpen = false;
@@ -142,6 +154,11 @@ class _Penalty3DPageState extends State<_Penalty3DPage> {
     }
     switch (data['event']) {
       case 'ready':
+        if (_gotReady) {
+          return; // a reset racing a cold boot can repeat it — configure once
+        }
+        _gotReady = true;
+        _readyTimer?.cancel();
         _configureUnity();
         final onReady = widget.onReady;
         if (onReady != null) {
@@ -217,6 +234,27 @@ class _Penalty3DPageState extends State<_Penalty3DPage> {
   }
 
   // ---- Flutter -> Unity -------------------------------------------------
+
+  @override
+  void initState() {
+    super.initState();
+    _readyTimer = Timer.periodic(_readyRetryInterval, (timer) {
+      if (_gotReady || !mounted || _readyRetries >= _readyRetryLimit) {
+        timer.cancel();
+        if (!_gotReady && mounted) {
+          debugPrint('[Penalty3D] no "ready" from Unity after $_readyRetries resets');
+        }
+        return;
+      }
+      _readyRetries++;
+      debugPrint('[Penalty3D] no "ready" yet — asking Unity to reset (#$_readyRetries)');
+      try {
+        sendToUnity(_bridge, 'Reset', '');
+      } catch (e) {
+        debugPrint('[Penalty3D] Reset not delivered: $e');
+      }
+    });
+  }
 
   void _forfeit() {
     if (_completed) {
@@ -332,6 +370,7 @@ class _Penalty3DPageState extends State<_Penalty3DPage> {
 
   @override
   void dispose() {
+    _readyTimer?.cancel();
     _idleCheckTimer?.cancel();
     _offlineTimer?.cancel();
     unawaited(_connectivitySub?.cancel());
