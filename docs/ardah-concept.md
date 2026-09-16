@@ -12,7 +12,7 @@ Companion reading: [tifo-brd-v2-reference.md](tifo-brd-v2-reference.md),
 **Al-Ardah** (العرضة) — the Saudi ceremonial sword dance: two facing rows of
 performers, drummers (`zeer`/`takhmir`) between them, a chanted poem, swords
 raised on the beat. It is a *national heritage performance*, not a folk game —
-tone matters (see §10 Risks).
+tone matters (see §11 Risks).
 
 The game is a **rhythm / timing game**: the player keeps the row in sync with
 the drums. This is the second standalone game in Balady+ after TIFO, and the
@@ -51,7 +51,7 @@ entry hero → (tutorial once) → chart select → calibration (first run only)
   `good ±90 ms`, `late/early ±140 ms`, beyond that `miss`.
 - **Sync meter** replaces "lives": misses drain it, perfects refill it. At zero
   the row "breaks formation" → run ends early. Never shown as a personal
-  failure — the framing is *the row loses sync*, not *you lose* (§10).
+  failure — the framing is *the row loses sync*, not *you lose* (§11).
 - **Scoring.** `note score × combo multiplier` (×1 → ×2 → ×3 → ×4 at 10/25/50
   combo) + flourish bonus. Result screen shows **accuracy %** and a grade
   (`S / A / B / C`), plus max combo. Accuracy, not raw score, is the number we
@@ -73,7 +73,7 @@ sync. All three are plausible v2 ideas and all three are 10× the cost.
 | 1 | Entry hero | Stories-style, same shape as `tifo/entry_screen.dart`. Shown once per session. |
 | 2 | Tutorial | 3 static frames (tap / hold / flourish) + one guided run on a 20 s chart. Gate flag persisted in Hive — reuse the TIFO lesson: mark it **as soon as the tour is shown**, not on completion. |
 | 3 | Chart select | Track cards: title, difficulty, best grade, locked/unlocked. |
-| 4 | Calibration | Audio-offset wizard — tap along to 8 bare beats, store median delta per device. First run only, re-openable from settings. **Non-negotiable**, see §6. |
+| 4 | Calibration | Audio-offset wizard — tap along to 8 bare beats, store median delta per device. First run only, re-openable from settings. **Non-negotiable**, see §7. |
 | 5 | Gameplay | Flame surface + Flutter HUD overlay (score, combo, sync meter, pause). |
 | 6 | Pause | Resume / restart / quit. Must hard-pause the audio clock. |
 | 7 | Result | Grade, accuracy, max combo, best-run delta, retry CTA. Same one-hero-per-outcome pattern as `penalty_result_screen.dart` is an option if design bakes art. |
@@ -82,6 +82,10 @@ sync. All three are plausible v2 ideas and all three are 10× the cost.
 ---
 
 ## 4. Code layout
+
+This describes **option A** (the game written in Dart/Flame and embedded in the
+app). If the spike picks the HTML mini-app of §6, this layout is replaced by
+§6.5 — read both before starting.
 
 Two layers, split for the reasons in §5: a **standalone package** holding the
 game itself, and a thin **host feature** inside `mapness` that wires it into
@@ -95,7 +99,7 @@ ardah_game/                      # workspace package — no mapness/uikit/SSO de
     ardah_game.dart              # public entry: ArdahGameApp(config, backends)
     game/
       ardah_game_widget.dart     # FlameGame: components + input, no tuning consts
-      ardah_conductor.dart       # the audio clock (§6) — the heart of the game
+      ardah_conductor.dart       # the audio clock (§7) — the heart of the game
       ardah_judge.dart           # windows, combo, sync meter, scoring
       ardah_note_component.dart
       ardah_hud.dart             # Flutter overlay, not Flame text
@@ -170,6 +174,10 @@ Asked directly: *can we ship Ardah as a separately pluggable module so we have
 no sound problems?* Short answer: **packaging is worth doing, but it is not
 what fixes the sound.** The two need to be decided separately.
 
+This section describes the in-app (Dart/Flame) path and the audio facts that
+hold regardless of path; §6 covers the HTML mini-app alternative, which removes
+most — not all — of what follows.
+
 ### 5.1 The sound problem is process-global, not architectural
 
 iOS `AVAudioSession` is per **process**; Android audio focus is per **app**. A
@@ -220,7 +228,7 @@ Building Ardah on `just_audio` reproduces all three. This is the real "проб�
    §5.1(3) instead of adding a second offender.
 3. **An explicit "radio is playing, a game starts" policy.** Duck the radio,
    pause it with resume-on-exit, or let it play and mute the game's music?
-   Product decision (§11). Navigation voice is not a choice: it always wins —
+   Product decision (§12). Navigation voice is not a choice: it always wins —
    it is safety-relevant.
 
 ### 5.3 What separate packaging IS good for
@@ -257,22 +265,146 @@ Honest limits, so nobody is surprised later:
   or add-to-app). If the spike says the superapp cannot host a rhythm game's
   audio, that is the fallback — and this packaging is what makes it cheap.
 
-### 5.4 Spike — do this before P0 (2–3 days)
+### 5.4 Spike — do this before P0 (3–5 days, both paths)
 
-1. `ardah_game/example/`: metronome + tap input, measure real round-trip
-   latency on a low-end Android and an iPhone.
-2. The same build embedded in the superapp **with the radio playing**: does the
-   game get sound at all; does the radio survive; does navigation voice still
-   interrupt correctly; what happens on backgrounding, on an incoming call, and
-   on the iOS mute switch.
-3. Output: median latency and spread per device, conflicts found, engine
-   recommendation. This is the go/no-go gate for the whole concept.
+Build the **same metronome-and-tap test twice** — once in Dart/Flame
+(`ardah_game/example/`), once as a plain HTML page (§6) — and measure both on
+the same devices. The extra days are cheap next to rebuilding the game.
+
+1. Standalone: measure real round-trip latency on a low-end Android and an
+   iPhone. Record the **median and the spread** — constant offset is
+   calibratable, jitter is not.
+2. Embedded in the superapp **with the radio playing**: does the game get sound
+   at all; does the radio survive; does navigation voice still interrupt
+   correctly; what happens on backgrounding, on an incoming call, and on the
+   iOS mute switch. For the HTML path also check `AudioContext` suspend/resume
+   and sustained frame pacing inside the WebView on a low-end Android.
+3. Output: latency median and spread per device per path, conflicts found, and
+   a path + engine recommendation. This is the go/no-go gate for the concept.
 
 ---
 
-## 6. The one hard technical problem: the audio clock
+## 6. Delivery option B: an HTML mini-app
 
-Every rhythm game lives or dies here. Rules for this codebase:
+Asked directly: *what if the game is just a separate HTML?* This turns out to
+be the strongest option on the table, because the superapp **already ships a
+production mini-app engine** — we would be using an existing channel, not
+inventing one.
+
+### 6.1 The channel already exists
+
+`lib/mini_apps_engine/` + `lib/super_app_js_bridge/`:
+
+- A versioned archive per `serviceKey` is downloaded, extracted, and served
+  from a **local HTTP server** (`server/CustomInAppLocalhostServer.dart`, shelf)
+  on a deterministic per-app port with unsafe-port avoidance
+  (`helper/port_helper.dart`), then loaded as `http://localhost:<port>/`.
+- The WebView is `webview_flutter` with a **dsbridge** JS bridge, and WKWebView
+  is already created with `allowsInlineMediaPlayback: true` and
+  `mediaTypesRequiringUserAction: {}` — inline autoplay works out of the box.
+- The bridge already exposes SSO tokens, user profile, location, camera, file
+  picker, share, analytics (`trackEvent` / `trackLogs`), navigation back into
+  the superapp, calendar, permissions, deep links and `downloadAndExtractInAssets`.
+- After the first download the game runs from localhost — **offline by
+  construction**, which is exactly what a crowded Founding Day event needs.
+
+### 6.2 What this fixes outright
+
+1. **The whole of §5.1 disappears from the game's side.** No
+   `just_audio_background`, no mandatory `MediaItem` tags, no iOS
+   "supports only a single player" limit. WebAudio gives many concurrent
+   voices for free — the thing a rhythm game actually needs.
+2. **A better clock than the Flutter stack offers.** `AudioContext.currentTime`
+   is a sample-accurate audio clock, and notes are scheduled ahead with
+   `source.start(when)` instead of chased with a polled position. The
+   conductor of §7 becomes simpler *and* more accurate.
+3. **Over-the-air updates.** Charts, audio, tuning — even the whole game —
+   ship without a store release. For a date-gated event game this is the
+   strongest single argument: a broken chart is fixed the same day, not in the
+   next release train.
+4. **No new Flutter dependencies, no new native plugins**, and none of the
+   shared-pub-graph risk listed in §5.3.
+5. **Parallel team and reuse.** Web developers build it off the Flutter release
+   train, and the same build can run on a campaign page or a shared link.
+
+### 6.3 What it does NOT fix, and what it adds
+
+1. **The iOS session is still process-global.** WKWebView audio plays under the
+   app's `AVAudioSession`, so the radio's category still decides whether the
+   game is audible; an interruption (call, navigation voice) suspends the
+   `AudioContext`, and the page must `resume()` on `statechange` /
+   `visibilitychange`. The session owner of §5.2.2 shrinks — it does not vanish.
+2. **Output latency is usually worse in a WebView than native**, most of all on
+   Android, where WebAudio does not get the low-latency audio path. Calibration
+   absorbs a *constant* offset; it cannot absorb **jitter**. Jitter is the
+   make-or-break measurement of the spike.
+3. **Input latency and frame pacing.** Touch → JS adds delay, and on Android the
+   WebView is a platform view composited into Flutter. Mitigations belong in the
+   brief from day one: canvas rendering (never DOM nodes per note),
+   `requestAnimationFrame`, `touch-action: none` with pointer events, a
+   fullscreen WebView with no Flutter widgets layered on top, and no layout
+   work mid-run.
+4. **No haptics.** The Vibration API is unavailable in WKWebView and the bridge
+   has no `vibrate` method today. Adding one is trivial — but it is a *native*
+   change, so the "updates without a release" property has a boundary worth
+   knowing.
+5. **First-run download at the event.** The engine downloads a versioned zip
+   with progress; audio is the heavy part. Budget the size, allow retry, and
+   consider pre-bundling the Founding Day chart.
+6. **Governance.** Bridge capabilities are gated by
+   `checkAppRequirement(serviceKey, …)`, but every method in
+   `js_bridge_listener.dart` currently hardcodes `serviceKey = "municipalservice"`
+   with the real per-app value commented out — so any mini-app is evaluated
+   against the municipal permission set rather than its own. Ardah needs **none**
+   of those capabilities (keep its bridge surface empty), but this should be
+   raised with the mini-apps owners on its own merits.
+
+### 6.4 Flame in-app vs HTML mini-app
+
+| | Flame in `mapness` | HTML mini-app |
+|---|---|---|
+| Audio stack | fights `just_audio_background` (§5.1) | own WebAudio context |
+| Clock quality | polled position + interpolation | sample-accurate, schedule-ahead |
+| Concurrent SFX | 1 player on iOS without a new engine | unlimited |
+| Output latency | native path, best case | WebView path, usually worse |
+| Input / frame risk | low (Flame on a Flutter surface) | **the main risk** (platform view) |
+| Update without release | no | yes |
+| Offline | yes (bundled assets) | yes (after first download) |
+| Haptics | yes (`vibration`) | needs a new bridge method |
+| App size | grows the APK | stays out of the binary |
+| Team | Flutter devs, on the release train | web devs, in parallel |
+| Reuse outside the app | none | campaign page, shared link |
+| Delivery channel | to be built | **already in production** |
+
+**Recommendation: default to the HTML mini-app, keep Flame as the fallback,
+and let the spike decide** — the same metronome, both paths, the same devices.
+Running the spike twice costs a couple of extra days; guessing wrong costs a
+rebuilt game.
+
+### 6.5 What changes in the plan if HTML wins
+
+- The `ardah_game` package of §4 becomes a **web project** instead of a Dart
+  one. The ports idea survives in spirit: the game talks to a thin adapter
+  layer, which is either a stub (standalone page) or the dsbridge JS bridge
+  (inside the superapp).
+- The `mapness` host feature shrinks to an entry tile, the seasonal gate, and a
+  mini-app launch by `serviceKey` — no Flame, no audio adapter, no Hive store
+  (scores live in the web app's own storage, or on the backend).
+- §5's latency lab becomes a plain web page served over localhost — the same
+  role, less machinery.
+- The audio-session owner (§5.2.2) is still worth doing, both for the §5.1(3)
+  TIFO bug and for the `AudioContext` suspend/resume case in §6.3(1).
+
+---
+
+## 7. The one hard technical problem: the audio clock
+
+Every rhythm game lives or dies here. The rules below are written for the
+in-app path; on the HTML path (§6) the same principles apply with better
+primitives — `AudioContext.currentTime` *is* the master clock, and notes are
+scheduled ahead rather than polled — which is one of that path's main arguments.
+
+Rules for this codebase:
 
 1. **The audio position is the master clock.** Never accumulate Flame's frame
    `dt` — it drifts by tens of ms per minute. `ArdahConductor` samples
@@ -323,7 +455,7 @@ at load, never mid-run.
 
 ---
 
-## 7. Backend
+## 8. Backend
 
 **P0/P1: none.** Runs, best grades and the calibration offset live in Hive. This
 is the main reason Ardah can ship faster than TIFO did.
@@ -349,7 +481,11 @@ the chart. Accuracy-based scoring makes this cheap to validate.
 
 ---
 
-## 8. Reuse map (concrete)
+## 9. Reuse map (concrete)
+
+Option A. On the HTML path only the host-side rows survive (seasonal gating,
+entry tile, design tokens) — the game-side rows are replaced by the mini-app
+engine itself, which is the point of §6.
 
 | Need | Take from |
 |---|---|
@@ -368,13 +504,16 @@ and the `Random(8)`-seeded determinism (a rhythm game needs none of it).
 
 ---
 
-## 9. Phases & rough effort
+## 10. Phases & rough effort
 
 Engineering only, one developer, excludes art/audio production and analyst time.
+The P0–P2 content below is the same work on either path; only the technology
+differs (Flutter/Flame vs. web), and the HTML path can be staffed by web
+developers in parallel with the Flutter release train.
 
 | Phase | Content | Estimate |
 |---|---|---|
-| **S — audio spike** (§5.4) | Package skeleton + `example/` metronome, engine choice, latency measured on real devices, coexistence with radio and navigation voice verified inside the superapp. **Go/no-go gate.** | 2–3 days |
+| **S — delivery & audio spike** (§5.4) | The same metronome built both ways (Flame package + HTML page), latency median and spread measured on real devices, coexistence with radio and navigation voice verified inside the superapp. Decides path and engine. **Go/no-go gate.** | 3–5 days |
 | **P0 — playable prototype** (debug flag only) | Conductor + one hand-made chart + tap notes + judgment + placeholder art. Answers the only question that matters: does the timing feel right on real devices? | ~1 week |
 | **P1 — vertical slice** | Hold + flourish notes, calibration screen, chart select, result + grade, local best runs, real art for one track, tutorial. | 2–3 weeks |
 | **P2 — event-ready** | Seasonal gate + entry tile, Arabic/English l10n, analytics events, 3 charts × 3 difficulties, low-end device pass, accessibility, optional server leaderboard. | 3–4 weeks |
@@ -392,7 +531,7 @@ bug — but Ardah's P1 depends on it, so it cannot slip past that point.
 
 ---
 
-## 10. Risks
+## 11. Risks
 
 1. **Cultural sensitivity — the top risk.** Ardah is ceremonial heritage, tied
    to national identity. A "you failed" screen over a heritage performance, a
@@ -409,25 +548,33 @@ bug — but Ardah's P1 depends on it, so it cannot slip past that point.
    the radio plays, or the game's engine leaves the session in a state where
    the radio no longer coexists with navigation voice. The §5.4 spike exists to
    find these before they are expensive; the session owner (§5.2.2) is the fix.
-4. **Android audio latency.** Mitigated by calibration (§6) — but if median
+   The HTML path (§6) removes most of this — but not the process-global session
+   itself.
+4. **WebView input latency and frame pacing** — the price of the HTML path
+   (§6.3). A rhythm game needs steady 60 fps and a short touch-to-judgment path,
+   and on Android the WebView is a composited platform view. Measured in the
+   spike; mitigated by canvas rendering, a fullscreen WebView with nothing
+   layered over it, and no layout work mid-run. If it fails on the low-end
+   target device, the path falls back to Flame.
+5. **Android audio latency.** Mitigated by calibration (§7) — but if median
    latency on the test fleet is above ~150 ms, widen windows and simplify
    patterns rather than shipping something that feels unresponsive.
-5. **App size.** Audio + sprites are heavy. Budget the delta, and put the
+6. **App size.** Audio + sprites are heavy. Budget the delta, and put the
    charts/tracks behind on-demand download if the APK grows past the agreed
    ceiling.
-6. **Low-end device performance.** Flame over a paused map should be fine; over
+7. **Low-end device performance.** Flame over a paused map should be fine; over
    a live map it is not. Pause the map, cap particle effects, profile in
    `profile` mode, not `debug` (repo-wide rule).
-7. **RTL.** The gameplay surface stays **LTR in both locales** (explicit
+8. **RTL.** The gameplay surface stays **LTR in both locales** (explicit
    precedent: `penalty_entry_screen.dart` — game chrome mirrors the physical
    stage, not reading order). All chrome around it is localized normally.
    Arabic copy needs the long-label treatment already applied in `ai_summary`.
-8. **Scope creep toward AR/pose detection.** Named in §2 as out of scope on
+9. **Scope creep toward AR/pose detection.** Named in §2 as out of scope on
    purpose.
 
 ---
 
-## 11. Open questions for product
+## 12. Open questions for product
 
 1. Event window: Founding Day only, National Day too, or always-on?
 2. Is a **shared leaderboard** required for v1? It is the single largest
@@ -443,3 +590,10 @@ bug — but Ardah's P1 depends on it, so it cannot slip past that point.
    and mute the game's music?
 8. Is the audio-session owner (§5.2.2) acceptable as a shared refactor touching
    the radio and TIFO, or must Ardah work around them?
+9. **Delivery channel** (§6): is the mini-app engine open to a game — who owns
+   the `serviceKey`, the hosting of the archive, and its release process?
+10. If HTML wins, who builds it — an internal web team, the Flutter team, or a
+    vendor? This decides the schedule far more than the technology does.
+11. Should the HTML build also be published outside the app (a campaign page or
+    a shared link), or stay in-app only? It is nearly free, but it is a comms
+    decision, not an engineering one.
