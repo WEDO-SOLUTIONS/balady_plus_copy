@@ -30,6 +30,8 @@ window.Ardah = window.Ardah || {};
     this.offsetMs = store('offsetMs') || 0;
     this.calibrated = store('offsetMs') !== null;
     this.debug = /[?&]debug=1/.test(location.search);
+    this.muted = store('muted') === true;
+    A.audio.setMuted(this.muted);
     this.conductor = new A.Conductor(A.audio);
     this.judge = null;
     this.renderer = null;
@@ -288,6 +290,16 @@ window.Ardah = window.Ardah || {};
     store('offsetMs', this.offsetMs);
     A.ui.refreshOffset();
   };
+
+  Game.prototype.setMuted = function (muted) {
+    this.muted = !!muted;
+    store('muted', this.muted);
+    A.audio.setMuted(this.muted);
+    A.bridge.track('ardah_mute', { muted: this.muted });
+    if (A.ui) A.ui.refreshMute();
+  };
+
+  Game.prototype.toggleMute = function () { this.setMuted(!this.muted); };
 
   /* ----------------------------- latency lab ----------------------------- */
 

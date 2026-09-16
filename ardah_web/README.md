@@ -46,6 +46,14 @@ mini-app engine serves a folder.
 | Raise (hold) | press and hold, release on the last beat | hold the lane key |
 | Flourish | swipe across the lanes | `Space` |
 | Pause | — | `Esc` |
+| Mute music | the speaker button, top right | `M` |
+
+Mute takes the **music bus**, not the master: the calibration metronome hangs
+off the master directly, because that screen exists to measure the device's
+audio and silencing it would make the measurement impossible. The calibration
+screen says so when muted. Timing is untouched either way — the conductor runs
+off the audio clock and keeps scheduling on mute, so a muted run is judged
+exactly like a loud one. The choice persists in `localStorage`.
 
 ## Calibrate first
 

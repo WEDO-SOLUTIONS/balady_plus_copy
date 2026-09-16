@@ -23,6 +23,7 @@ window.Ardah = window.Ardah || {};
     this.master = null;
     this.musicGain = null;
     this._noise = null;
+    this._muted = false;
   }
 
   /** Must be called from a user gesture: iOS starts every context suspended. */
@@ -35,7 +36,7 @@ window.Ardah = window.Ardah || {};
       this.master.gain.value = 0.9;
       this.master.connect(this.ctx.destination);
       this.musicGain = this.ctx.createGain();
-      this.musicGain.gain.value = 1;
+      this.musicGain.gain.value = this._muted ? 0.0001 : 1;
       this.musicGain.connect(this.master);
       this._buildNoise();
     }
@@ -126,6 +127,26 @@ window.Ardah = window.Ardah || {};
       osc.start(when); osc.stop(when + 0.6);
     }
   };
+
+  /** Mutes the music bus — the drums and everything else the chart plays.
+      Deliberately NOT the master: the calibration metronome hangs off the
+      master directly, because that screen exists to measure the device's audio
+      and silencing it would make the measurement impossible.
+
+      Timing is untouched either way. The conductor runs off the audio clock and
+      keeps scheduling on mute, so a muted run is judged exactly like a loud
+      one. */
+  AudioEngine.prototype.setMuted = function (muted) {
+    this._muted = !!muted;
+    if (!this.musicGain) return;                 // applied when the context opens
+    var g = this.musicGain.gain, t = this.ctx.currentTime;
+    g.cancelScheduledValues(t);
+    g.setValueAtTime(Math.max(0.0001, g.value), t);
+    // A ramp, not a jump: cutting a gain to zero mid-sample clicks.
+    g.exponentialRampToValueAtTime(this._muted ? 0.0001 : 1, t + 0.09);
+  };
+
+  AudioEngine.prototype.isMuted = function () { return this._muted; };
 
   /** Metronome click for the calibration screen — dry and unmistakable. */
   AudioEngine.prototype.click = function (when, accent) {

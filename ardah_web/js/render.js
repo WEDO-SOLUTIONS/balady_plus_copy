@@ -24,6 +24,7 @@ window.Ardah = window.Ardah || {};
     { kind: 'coin',  gem: '#F5D779', rim: '#96701F', glow: '#FFF0B8', cap: '#6B4E12' }
   ];
   var LANE_KEYS = ['A', 'S', 'D'];
+  var HUD_RIGHT = 58;      // clearance for the floating sound toggle
   // Keycap faces, matching the lanes: tabl wood, swords steel-blue, tar green.
   var KEY_SPRITE = ['key_tabl', 'key_swords', 'key_tar'];
   var KEYCAP = [
@@ -812,8 +813,9 @@ window.Ardah = window.Ardah || {};
     var vw = c.measureText(value).width;
     c.font = '700 12px -apple-system, system-ui, sans-serif';
     var lw = c.measureText(label).width;
-    var pw = Math.min(w * 0.44, vw + lw + 34), ph = 30;
-    var px = w - 16 - pw, py = top;
+    // The sound toggle owns the top-right corner, so the plate stops short of it.
+    var pw = Math.min(w * 0.42, vw + lw + 34), ph = 30;
+    var px = w - HUD_RIGHT - pw, py = top;
 
     c.fillStyle = 'rgba(10, 8, 14, 0.8)';
     this._roundRect(c, px, py, pw, ph, 9); c.fill();
@@ -834,11 +836,11 @@ window.Ardah = window.Ardah || {};
     if (j.combo >= 2) {
       c.fillStyle = '#FFD978';
       c.font = '700 13px -apple-system, system-ui, sans-serif';
-      c.fillText(((A.i18n && A.i18n.t('combo')) || 'COMBO') + ' ×' + j.combo, w - 16, top + ph + 16);
+      c.fillText(((A.i18n && A.i18n.t('combo')) || 'COMBO') + ' ×' + j.combo, w - HUD_RIGHT, top + ph + 16);
     } else {
       c.fillStyle = 'rgba(243, 237, 226, 0.6)';
       c.font = '600 12px -apple-system, system-ui, sans-serif';
-      c.fillText((j.accuracy() * 100).toFixed(1) + '%', w - 16, top + ph + 16);
+      c.fillText((j.accuracy() * 100).toFixed(1) + '%', w - HUD_RIGHT, top + ph + 16);
     }
   };
 

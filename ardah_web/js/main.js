@@ -118,6 +118,17 @@
       A.bridge.track('ardah_calibrated', { offsetMs: offsetMs });
     },
 
+    refreshMute: function () {
+      var btn = $('btn-mute');
+      if (!btn) return;
+      var muted = A.game.muted;
+      btn.setAttribute('aria-pressed', String(muted));
+      btn.setAttribute('title', A.i18n.t(muted ? 'muteOff' : 'muteOn'));
+      btn.setAttribute('aria-label', A.i18n.t(muted ? 'muteOff' : 'muteOn'));
+      var hint = $('calib-muted');
+      if (hint) hint.hidden = !muted;
+    },
+
     setDebugVisible: function (on) { $('debug').hidden = !on; },
     setDebugText: function (text) { $('debug').textContent = text; }
   };
@@ -133,6 +144,7 @@
       A.ui.refreshOffset();
     });
     $('btn-lang').addEventListener('click', function () { A.i18n.toggle(); });
+    $('btn-mute').addEventListener('click', function () { A.game.toggleMute(); });
     $('btn-debug').addEventListener('click', function () { A.game.toggleDebug(); });
 
     var closers = document.querySelectorAll('[data-close]');
@@ -160,6 +172,10 @@
       A.game.calibTap(Math.max(0, Math.min(120, performance.now() - ev.timeStamp)));
     });
     window.addEventListener('keydown', function (ev) {
+      if (ev.key === 'm' || ev.key === 'M' || ev.key === 'ь' || ev.key === 'Ь') {
+        A.game.toggleMute();
+        return;
+      }
       if (A.game.phase !== 'calibrating') return;
       if (ev.key === ' ' || ev.code === 'Space') {
         ev.preventDefault();
@@ -174,10 +190,12 @@
     A.game.onLanguageChanged = function () {
       A.ui.renderCharts();
       A.ui.refreshOffset();
+      A.ui.refreshMute();
     };
     wire();
     A.ui.renderCharts();
     A.ui.refreshOffset();
+    A.ui.refreshMute();
     A.ui.setDebugVisible(A.game.debug);
     A.ui.showScreen('screen-menu');
     A.bridge.track('ardah_opened', { inApp: A.bridge.inApp });

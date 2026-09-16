@@ -317,3 +317,38 @@ html, body {
 .menu-bottom .chart-card { padding: 10px 14px; }
 .menu-bottom .chart-card b { font-size: 15px; }
 .menu-bottom .foot { font-size: 11px; }
+
+
+/* ========================= sound toggle ========================= */
+
+/* Sits above every screen (.screen is z-10, #debug is z-20) and outside the
+   canvas, so a tap on it can never reach the lane hit-testing underneath. */
+.icon-btn {
+  position: fixed;
+  top: calc(12px + env(safe-area-inset-top));
+  inset-inline-end: 12px;
+  z-index: 30;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  border: 1px solid rgba(231, 180, 76, 0.45);
+  background: rgba(10, 8, 14, 0.62);
+  backdrop-filter: blur(4px);
+  cursor: pointer;
+  transition: transform 0.06s ease, background 0.15s ease;
+}
+.icon-btn:active { transform: scale(0.94); }
+
+.icon-btn svg { width: 22px; height: 22px; }
+.icon-btn .ico-body { fill: #F6E7C4; }
+.icon-btn .ico-waves path { fill: none; stroke: #F6E7C4; stroke-width: 1.8; stroke-linecap: round; }
+.icon-btn .ico-cross { fill: none; stroke: #E06B4E; stroke-width: 2; stroke-linecap: round; opacity: 0; }
+
+/* Muted: the arcs give way to the cross, and the whole control cools down. */
+.icon-btn[aria-pressed="true"] { border-color: rgba(224, 107, 78, 0.55); }
+.icon-btn[aria-pressed="true"] .ico-body { fill: #C9BFAE; }
+.icon-btn[aria-pressed="true"] .ico-waves { opacity: 0; }
+.icon-btn[aria-pressed="true"] .ico-cross { opacity: 1; }

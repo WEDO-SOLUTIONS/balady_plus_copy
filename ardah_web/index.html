@@ -17,6 +17,19 @@
      penalty screen follows). -->
 <canvas id="stage" width="720" height="1280"></canvas>
 
+<!-- Sound toggle: one control that stays put across the menu and the run, so
+     muting never means hunting through a pause screen. -->
+<button class="icon-btn" id="btn-mute" type="button" aria-pressed="false">
+  <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+    <path class="ico-body" d="M4 9.5h3.2L12 5.4v13.2L7.2 14.5H4z"/>
+    <g class="ico-waves">
+      <path d="M15.4 9.1a4 4 0 0 1 0 5.8"/>
+      <path d="M17.8 6.7a7.4 7.4 0 0 1 0 10.6"/>
+    </g>
+    <path class="ico-cross" d="M15.6 9.6l4.8 4.8M20.4 9.6l-4.8 4.8"/>
+  </svg>
+</button>
+
 <!-- ============================ MENU ============================ -->
 <section class="screen screen-stage" id="screen-menu">
   <div class="sheet sheet-split">
@@ -64,6 +77,7 @@
   <div class="sheet">
     <h2 class="title sm" data-i18n="calibTitle"></h2>
     <p class="lede" data-i18n="calibHint"></p>
+    <p class="foot" id="calib-muted" data-i18n="mutedHint" hidden></p>
     <div class="calib-dots" id="calib-dots"></div>
     <p class="calib-value" id="calib-value">—</p>
     <button class="btn btn-primary" id="btn-calib-start" data-i18n="calibStart"></button>

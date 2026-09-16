@@ -27,6 +27,10 @@ decision it exists to settle: [`docs/ardah-concept.md`](../docs/ardah-concept.md
   keep `?art=0` working — it is how the two versions get compared.
 - **`js/judge.js` stays pure.** No canvas, no audio, no globals: it is the part
   a native rewrite would port line for line, and the part worth unit tests.
+- **Mute is the music bus, never the master.** `AudioEngine.setMuted` ramps
+  `musicGain`; the calibration metronome is wired to `master` on purpose and
+  must keep sounding, or the screen that measures the device's latency cannot
+  do its job. Ramp, never jump — a gain cut mid-sample clicks.
 - **The bridge surface stays minimal.** Analytics and best-effort haptics. No
   SSO token, no location, no camera — the game needs none of them.
 
