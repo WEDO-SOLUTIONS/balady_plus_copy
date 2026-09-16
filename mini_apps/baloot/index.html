@@ -84,50 +84,34 @@ button{font:inherit;color:inherit;border:0;background:none;cursor:pointer}
   background:radial-gradient(ellipse 88% 66% at 50% 52%, transparent 44%, rgba(0,0,0,.42) 100%);
 }
 
-/* ---------- crest: the ornate plaque ---------- */
+/* ---------- crest: the plaque lifted from the mock-up ---------- */
 #crest{
   position:relative;z-index:8;
   display:flex;justify-content:center;
-  padding:6px 12px 0;
+  padding:2px 10px 0;
 }
 .crest-plaque{
   position:relative;
-  padding:9px 30px;
-  background:linear-gradient(180deg,#2f9a5a 0%,#1a6238 42%,var(--plaque-2) 100%);
-  border:2px solid var(--gold);
-  border-radius:4px 4px 4px 4px / 50% 50% 50% 50%;
-  box-shadow:
-    0 0 0 1px rgba(0,0,0,.5),
-    0 6px 20px rgba(0,0,0,.55),
-    inset 0 1px 0 rgba(255,255,255,.16);
-  max-width:calc(100% - 24px);
+  width:min(76%, 330px);aspect-ratio:424/138;
+  background:center/100% 100% no-repeat url("crest.webp");
+  display:grid;place-items:center;
+  filter:drop-shadow(0 6px 14px rgba(0,0,0,.6));
 }
-/* ogee ends, drawn as gold lozenges on either side */
-.crest-plaque::before,.crest-plaque::after{
-  content:"";position:absolute;top:50%;width:18px;height:18px;
-  transform:translateY(-50%) rotate(45deg);
-  background:linear-gradient(140deg,var(--gold-hi),var(--gold-dim));
-  border-radius:3px;box-shadow:0 2px 6px rgba(0,0,0,.5);
-}
-.crest-plaque::before{inset-inline-start:-11px}
-.crest-plaque::after{inset-inline-end:-11px}
 .crest-title{
-  display:block;position:relative;z-index:2;
-  font-size:clamp(15px,4.4vw,21px);font-weight:900;letter-spacing:.06em;
+  position:absolute;top:62%;left:50%;transform:translate(-50%,-50%);
+  width:66%;text-align:center;
+  font-size:clamp(14px,4vw,20px);font-weight:900;letter-spacing:.05em;
   background:linear-gradient(180deg,var(--gold-hi) 0%,var(--gold) 46%,#c79a40 100%);
   -webkit-background-clip:text;background-clip:text;color:transparent;
-  text-shadow:0 2px 4px rgba(0,0,0,.45);
+  text-shadow:0 2px 4px rgba(0,0,0,.4);
   white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
 }
 html[dir="ltr"] .crest-title{text-transform:uppercase}
+/* the deal number rides the shield in the scrollwork */
 .crest-badge{
-  position:absolute;top:-2px;left:50%;transform:translateX(-50%);
-  z-index:9;width:26px;height:26px;border-radius:50%;
-  background:linear-gradient(170deg,#2f9a5a,#14512f);
-  border:2px solid var(--gold);
-  display:grid;place-items:center;
-  font-size:12px;font-weight:900;color:var(--gold-hi);
-  box-shadow:0 3px 9px rgba(0,0,0,.6);
+  position:absolute;top:19%;left:50%;transform:translate(-50%,-50%);
+  z-index:9;font-size:11px;font-weight:900;line-height:1;
+  color:#0a3f22;text-shadow:0 1px 0 rgba(255,255,255,.45);
 }
 
 /* ---------- status line ---------- */
@@ -175,111 +159,84 @@ html[dir="ltr"] .st-deal{text-transform:uppercase}
 
 /* ---------- seats ---------- */
 #felt{position:relative;flex:1;min-height:0}
+#felt::before{                      /* the cloth the trick is played on */
+  content:"";position:absolute;inset:0;pointer-events:none;
+  background:linear-gradient(180deg,transparent 30%,#0e4028 52%,#08301e 74%,#052315 100%);
+}
 
-/* ---------- the table: wooden rim around green felt ---------- */
+/* ---------- the room, lifted from the mock-up ----------
+   The scene carries the table and the other players; it fades at the bottom
+   into the cloth where the trick is played. A drawn fallback keeps the page
+   sane if the image is missing.
+   ------------------------------------------------------------------ */
 #board{
-  position:absolute;top:48%;left:50%;transform:translate(-50%,-50%);
-  width:min(88vw,392px);height:min(88vw,392px);max-height:53vh;
-  border-radius:50%;pointer-events:none;
-  background:
-    radial-gradient(ellipse 70% 52% at 50% 30%, rgba(255,255,255,.10), transparent 62%),
-    radial-gradient(circle at 50% 46%, #2b8f57 0%, #1b7245 46%, #0f4b2d 100%);
-  border:calc(var(--card-w)*.16) solid transparent;
-  background-origin:border-box;
-  box-shadow:
-    0 26px 50px rgba(0,0,0,.55),
-    inset 0 0 44px rgba(0,0,0,.30);
+  position:absolute;top:0;left:0;right:0;height:56%;
+  background:center 42%/cover no-repeat url("room.webp");
+  pointer-events:none;
 }
-/* the wooden rim is painted as a ring on top of the felt */
-#board::before{
-  content:"";position:absolute;inset:calc(var(--card-w)*-.16);
-  border-radius:50%;
-  border:calc(var(--card-w)*.16) solid;
-  border-color:#a9612f #7d4420 #5f3317 #8e5027;
-  background:conic-gradient(from 210deg,#6b3a1a,#a9612f 18%,#c07a42 30%,#8e5027 48%,#5f3317 66%,#a9612f 84%,#6b3a1a);
-  -webkit-mask:radial-gradient(farthest-side,transparent calc(100% - var(--card-w)*.16),#000 0);
-          mask:radial-gradient(farthest-side,transparent calc(100% - var(--card-w)*.16),#000 0);
-  box-shadow:0 8px 22px rgba(0,0,0,.5);
-}
-/* a thin gold inlay where the rim meets the cloth */
-#board::after{
-  content:"";position:absolute;inset:0;border-radius:50%;
-  box-shadow:inset 0 0 0 1px rgba(240,207,114,.28);
+#board::after{                       /* seat the scene into the cloth */
+  content:"";position:absolute;inset:auto 0 -2px 0;height:46%;
+  background:linear-gradient(180deg,
+    transparent 0%, rgba(11,54,34,.28) 38%, rgba(11,54,34,.72) 68%,
+    rgba(12,58,36,.95) 86%, #0c3a24 100%);
 }
 
+/* ---------- seat plates, pinned to the painted players ---------- */
 .seat{
-  position:absolute;display:flex;align-items:center;gap:7px;z-index:5;
-  transition:opacity .2s;
+  position:absolute;z-index:5;transform:translate(-50%,-50%);
+  display:flex;flex-direction:column;align-items:center;gap:3px;
+  pointer-events:none;
 }
-.seat[data-pos="north"]{top:2px;left:50%;transform:translateX(-50%);flex-direction:column;align-items:center;gap:3px}
-.seat[data-pos="east"]{top:47%;right:6px;transform:translateY(-50%);flex-direction:column;align-items:center;gap:3px}
-.seat[data-pos="west"]{top:47%;left:6px;transform:translateY(-50%);flex-direction:column;align-items:center;gap:3px}
-.avatar{
-  width:46px;height:46px;border-radius:50%;
-  background:
-    radial-gradient(circle at 34% 26%, rgba(255,255,255,.22), transparent 58%),
-    linear-gradient(160deg,#1e8562,#0a3a2b);
-  border:2px solid rgba(226,187,100,.4);
-  display:grid;place-items:center;font-size:19px;font-weight:800;
-  box-shadow:0 5px 16px rgba(0,0,0,.45), inset 0 -3px 8px rgba(0,0,0,.28);
-  position:relative;
-}
-.avatar.mate{                      /* your partner, across the table */
-  background:
-    radial-gradient(circle at 34% 26%, rgba(255,255,255,.24), transparent 58%),
-    linear-gradient(160deg,#2a8f6b,#13543d);
-  border-color:rgba(226,187,100,.62);
-}
-/* the ring sweeps while that seat is thinking */
-.avatar.turn::after{
-  content:"";position:absolute;inset:-5px;border-radius:50%;
-  background:conic-gradient(from 0deg, var(--gold), rgba(226,187,100,.05) 45%, var(--gold) 100%);
-  -webkit-mask:radial-gradient(farthest-side,transparent calc(100% - 3px),#000 calc(100% - 3px));
-          mask:radial-gradient(farthest-side,transparent calc(100% - 3px),#000 calc(100% - 3px));
-  animation:spin 1.7s linear infinite;
-}
-.avatar.turn{box-shadow:0 5px 18px rgba(0,0,0,.45),0 0 22px rgba(226,187,100,.5),
-             inset 0 -3px 8px rgba(0,0,0,.28)}
-@keyframes spin{to{transform:rotate(360deg)}}
-.avatar .badge{
-  position:absolute;top:-5px;inset-inline-end:-7px;z-index:3;
-  background:linear-gradient(170deg,#f0d491,#cda45c);color:var(--ink);
-  font-size:9px;font-weight:900;border-radius:999px;padding:1px 5px;line-height:1.35;
-  box-shadow:0 2px 5px rgba(0,0,0,.4);
-}
-.avatar .badge.bot{background:#6f8f9e;color:#fff}
-.avatar .badge.wait{background:var(--warn);color:#fff}
-.nm{font-size:11.5px;font-weight:700;text-align:center;max-width:86px;
-    overflow:hidden;text-overflow:ellipsis;white-space:nowrap;text-shadow:0 1px 4px rgba(0,0,0,.75)}
-/* one dot per trick that seat's team has taken */
-.wins{display:flex;gap:3px;justify-content:center;height:5px}
-.wins i{width:5px;height:5px;border-radius:50%;background:rgba(255,255,255,.22)}
-.wins i.on{background:var(--gold);box-shadow:0 0 5px rgba(226,187,100,.8)}
-.hand-back{display:flex;gap:-6px;max-width:74px;overflow:hidden}
-.cardback{
-  width:17px;height:24px;border-radius:3px;margin-inline-start:-9px;
-  background:
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cg fill='none' stroke='%23f0d79a' stroke-width='1' opacity='.55'%3E%3Crect x='3.2' y='3.2' width='5.6' height='5.6'/%3E%3Cpath d='M6 2 10 6 6 10 2 6Z'/%3E%3C/g%3E%3C/svg%3E") center/9px 9px,
-    linear-gradient(150deg,#b02a40 0%,#8c1c30 55%,#6d1224 100%);
-  border:1px solid rgba(255,235,200,.45);
-  box-shadow:0 2px 5px rgba(0,0,0,.45), inset 0 0 0 1px rgba(0,0,0,.18);
-}
-.cardback:first-child{margin-inline-start:0}
+.seat[data-pos="west"] {left:15.5%;top:84%}
+.seat[data-pos="north"]{left:28.5%;top:57%}
+.seat[data-pos="east"] {left:72.5%;top:57%}
 
-/* ---------- trick area ---------- */
-#trick{
-  position:absolute;top:48%;left:50%;transform:translate(-50%,-50%);
-  width:min(52vw,226px);height:min(52vw,226px);
+.plate{
+  display:flex;align-items:center;gap:5px;
+  max-width:104px;
+  padding:3px 9px;border-radius:999px;
+  background:linear-gradient(180deg,rgba(6,32,20,.92),rgba(3,18,11,.94));
+  border:1px solid rgba(240,207,114,.5);
+  box-shadow:0 3px 10px rgba(0,0,0,.6);
+  font-size:11px;font-weight:800;color:var(--cream);
+  white-space:nowrap;
 }
-/* these need to outrank `.card{position:relative}`, which is declared later */
+.plate .nm{overflow:hidden;text-overflow:ellipsis;max-width:70px}
+.plate .tag{
+  font-size:8.5px;font-weight:900;border-radius:999px;padding:1px 5px;line-height:1.35;
+  background:rgba(255,255,255,.14);color:rgba(245,239,228,.8);
+}
+.plate .tag.bidder{background:linear-gradient(170deg,#f2d891,#c99a3f);color:#2a1a05}
+.plate .tag.wait{background:var(--warn);color:#fff}
+.seat.turn .plate{
+  border-color:#fff;
+  box-shadow:0 3px 10px rgba(0,0,0,.6), 0 0 16px rgba(240,207,114,.85);
+  animation:platePulse 1.6s ease-in-out infinite;
+}
+@keyframes platePulse{50%{box-shadow:0 3px 10px rgba(0,0,0,.6),0 0 26px rgba(240,207,114,1)}}
+/* one dot per trick that seat's team has taken */
+.wins{display:flex;gap:2.5px;justify-content:center;height:5px}
+.wins i{width:4.5px;height:4.5px;border-radius:50%;background:rgba(255,255,255,.28)}
+.wins i.on{background:var(--gold);box-shadow:0 0 5px rgba(240,207,114,.9)}
+
+/* ---------- trick area: a shallow arc in front of the table ---------- */
+#trick{
+  position:absolute;top:auto;bottom:17%;left:50%;transform:translateX(-50%);
+  display:flex;justify-content:center;align-items:flex-end;
+  width:100%;height:calc(var(--card-h) * 1.35);
+}
 #trick .tc{
-  position:absolute;width:var(--card-w);height:calc(var(--card-w) * 1.42);
+  position:relative;flex:0 0 auto;
+  width:var(--card-w);height:calc(var(--card-w) * 1.42);
+  margin-inline-start:calc(var(--card-w) * .02);
+  transform:translateY(var(--ty,0px)) rotate(var(--tr,0deg));
   transition:transform .28s cubic-bezier(.2,.8,.3,1),opacity .28s;
 }
-#trick .tc.south{bottom:0;left:50%;margin-left:calc(var(--card-w)/-2);transform:rotate(-2deg)}
-#trick .tc.north{top:0;left:50%;margin-left:calc(var(--card-w)/-2);transform:rotate(3deg)}
-#trick .tc.east{right:0;top:50%;margin-top:calc(var(--card-h)/-2);transform:rotate(8deg)}
-#trick .tc.west{left:0;top:50%;margin-top:calc(var(--card-h)/-2);transform:rotate(-8deg)}
+#trick .tc:first-child{margin-inline-start:0}
+#trick .tc.winning{
+  transform:translateY(calc(var(--ty,0px) - 16px)) rotate(var(--tr,0deg)) scale(1.06);
+  z-index:3;
+}
 /* a played card flies in from its owner's side of the table */
 #trick .tc.deal-in{animation:inCard .30s cubic-bezier(.2,.9,.3,1)}
 #trick .tc.north.deal-in{animation-name:inN}
@@ -287,17 +244,17 @@ html[dir="ltr"] .st-deal{text-transform:uppercase}
 #trick .tc.east.deal-in {animation-name:inE}
 #trick .tc.west.deal-in {animation-name:inW}
 @keyframes inCard{from{opacity:0;transform:scale(.7)}}
-@keyframes inN{from{opacity:0;transform:translateY(-84px) scale(.72) rotate(3deg)}}
-@keyframes inS{from{opacity:0;transform:translateY( 84px) scale(.72) rotate(-2deg)}}
-@keyframes inE{from{opacity:0;transform:translateX( 92px) scale(.72) rotate(8deg)}}
-@keyframes inW{from{opacity:0;transform:translateX(-92px) scale(.72) rotate(-8deg)}}
+@keyframes inN{from{opacity:0;transform:translateY(-110px) scale(.72)}}
+@keyframes inS{from{opacity:0;transform:translateY(  70px) scale(.72)}}
+@keyframes inE{from{opacity:0;transform:translateX( 110px) scale(.72)}}
+@keyframes inW{from{opacity:0;transform:translateX(-110px) scale(.72)}}
 
 /* the finished trick is swept towards whoever won it */
 #trick.collect .tc{opacity:0;transform:scale(.55)}
-#trick.collect.w-north .tc{transform:translateY(-150px) scale(.5) rotate(8deg)}
-#trick.collect.w-south .tc{transform:translateY( 150px) scale(.5) rotate(-8deg)}
-#trick.collect.w-east  .tc{transform:translateX( 170px) scale(.5) rotate(14deg)}
-#trick.collect.w-west  .tc{transform:translateX(-170px) scale(.5) rotate(-14deg)}
+#trick.collect.w-north .tc{transform:translateY(-170px) scale(.5)}
+#trick.collect.w-south .tc{transform:translateY( 120px) scale(.5)}
+#trick.collect.w-east  .tc{transform:translateX( 190px) scale(.5)}
+#trick.collect.w-west  .tc{transform:translateX(-190px) scale(.5)}
 
 /* ---------- centre HUD ---------- */
 #centre{
@@ -310,7 +267,7 @@ html[dir="ltr"] .st-deal{text-transform:uppercase}
   color:#fff;text-shadow:0 0 40px rgba(0,0,0,.35);
   transition:opacity .6s;
 }
-#trumpmark.on{opacity:.04}
+#trumpmark.on{opacity:0}
 .st-side .suit{font-size:12px;line-height:1}
 
 /* ---------- cards ----------
@@ -420,7 +377,7 @@ html[dir="ltr"] .st-deal{text-transform:uppercase}
   box-shadow:inset 0 0 0 1.5px rgba(226,187,100,.85), 0 0 14px rgba(226,187,100,.45);
 }
 #hand .slot.playable:active .card,#hand .slot.playable.sel .card{transform:translateY(-20px) scale(1.05)}
-#hand .slot.blocked .card::after{background:rgba(5,22,14,.30)}
+#hand .slot.blocked .card::after{background:rgba(5,22,14,.22)}
 #hand .slot.blocked{cursor:not-allowed}
 @media (hover:hover){#hand .slot.playable:hover .card{transform:translateY(-18px);box-shadow:0 16px 32px rgba(0,0,0,.5)}}
 
@@ -482,13 +439,12 @@ html[dir="ltr"] #hint{text-transform:uppercase}
 }
 /* gold arabesque in both bottom corners */
 #rail::before,#rail::after{
-  content:"";position:absolute;bottom:4px;width:54px;height:40px;
-  pointer-events:none;opacity:.85;
-  background:no-repeat center/contain
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 54 40'%3E%3Cg fill='none' stroke='%23f0cf72' stroke-width='1.6' stroke-linecap='round'%3E%3Cpath d='M2 38V12C2 6 6 2 12 2h30'/%3E%3Cpath d='M8 38V16c0-5 3-8 8-8h22'/%3E%3Cpath d='M14 36c0-7 5-12 12-12 5 0 8 3 8 7s-3 6-6 6-5-2-5-4'/%3E%3Cpath d='M40 8c4 0 7 2 7 6s-3 6-6 6'/%3E%3C/g%3E%3C/svg%3E");
+  content:"";position:absolute;bottom:2px;width:48px;height:54px;
+  pointer-events:none;opacity:.95;
+  background:no-repeat left bottom/contain url("corner.webp");
 }
-#rail::before{left:3px}
-#rail::after{right:3px;transform:scaleX(-1)}
+#rail::before{left:2px}
+#rail::after{right:2px;transform:scaleX(-1)}
 .rail-btn{
   position:relative;z-index:2;
   min-height:46px;border-radius:11px;
@@ -518,7 +474,7 @@ html[dir="ltr"] .rail-btn{text-transform:uppercase}
   .rail-btn.sq{width:42px}
   .rail-btn.out{padding:0 10px}
   #rail{gap:6px;padding-inline:44px}
-  #rail::before,#rail::after{width:42px;height:32px}
+  #rail::before,#rail::after{width:40px;height:45px}
 }
 
 /* ---------- bubbles / announcements ---------- */
@@ -545,7 +501,7 @@ html[dir="ltr"] .rail-btn{text-transform:uppercase}
 
 /* ---------- toast ---------- */
 #toast{
-  position:fixed;bottom:calc(var(--safe-b) + var(--card-h) + 158px);
+  position:fixed;top:calc(var(--safe-t) + 27vh);
   left:50%;transform:translateX(-50%);max-width:88vw;
   z-index:40;display:flex;flex-direction:column;gap:6px;align-items:center;pointer-events:none;
 }
@@ -555,7 +511,7 @@ html[dir="ltr"] .rail-btn{text-transform:uppercase}
   text-align:center;
   box-shadow:var(--shadow);animation:toastIn .24s ease, toastOut .3s ease 2.1s forwards;
 }
-@keyframes toastIn{from{opacity:0;transform:translateY(12px)}}
+@keyframes toastIn{from{opacity:0;transform:translateY(-10px)}}
 @keyframes toastOut{to{opacity:0;transform:translateY(-6px)}}
 
 /* ---------- panels / modals ---------- */
@@ -725,7 +681,7 @@ html[dir="ltr"] .rail-btn{text-transform:uppercase}
 
 @media (max-height:660px){
   :root{--card-w:clamp(52px,13vw,68px)}
-  #board{width:min(74vw,320px);height:min(74vw,320px);max-height:46vh}
+  #board{height:50%}
   .avatar{width:36px;height:36px;font-size:15px}
   #trick{width:min(52vw,196px);height:min(52vw,196px)}
 }
@@ -758,10 +714,11 @@ html[dir="ltr"] .rail-btn{text-transform:uppercase}
   </div>
 
   <div id="felt">
-    <div id="board"></div>
-    <div class="seat" data-pos="north" id="seat-n"></div>
-    <div class="seat" data-pos="west"  id="seat-w"></div>
-    <div class="seat" data-pos="east"  id="seat-e"></div>
+    <div id="board">
+      <div class="seat" data-pos="north" id="seat-n"></div>
+      <div class="seat" data-pos="west"  id="seat-w"></div>
+      <div class="seat" data-pos="east"  id="seat-e"></div>
+    </div>
     <div id="centre"><div id="trumpmark"></div></div>
     <div id="trick"></div>
     <div id="winmark" hidden><span data-i18n="winning">الفائزة</span></div>
@@ -1711,19 +1668,16 @@ const UI = {
     for (const seat of [1,2,3]){
       const node = $(map[seat]); node.innerHTML = "";
       const m = G.seats[seat];
-      const av = el("div", "avatar" + (seat === 2 ? " mate" : "")
-                    + (R && R.turn === seat && R.mode ? " turn" : ""),
-                    (m.name || "?").trim().charAt(0).toUpperCase());
-      if (R && R.bidder === seat) av.appendChild(el("span", "badge", "★"));
-      else if (m.type === "bot") av.appendChild(el("span", "badge bot", T("bot")));
-      else if (m.type === "friend" && !m.joined) av.appendChild(el("span", "badge wait", "…"));
-      node.appendChild(av);
-      node.appendChild(el("div", "nm", m.name));
+      node.classList.toggle("turn", !!(R && R.mode && R.turn === seat));
+
+      const plate = el("div", "plate");
+      plate.appendChild(el("span", "nm", m.name));
+      if (R && R.bidder === seat) plate.appendChild(el("span", "tag bidder", "★"));
+      else if (m.type === "friend" && !m.joined) plate.appendChild(el("span", "tag wait", "…"));
+      else if (R && R.hands) plate.appendChild(el("span", "tag", String(R.hands[seat].length)));
+      node.appendChild(plate);
+
       if (R && R.hands){
-        const back = el("div", "hand-back");
-        for (let i=0;i<R.hands[seat].length;i++) back.appendChild(el("div", "cardback"));
-        node.appendChild(back);
-        // how many tricks this seat's team has taken so far
         const wins = el("div", "wins");
         for (let i=0;i<8;i++) wins.appendChild(el("i", i < R.tricksWon[seat % 2] ? "on" : ""));
         node.appendChild(wins);
@@ -1862,10 +1816,23 @@ const UI = {
   },
 
   placeCard(seat, c, R){
+    const t = $("#trick");
     const n = cardNode(c, R, "tc " + POSNAME[seat] + " deal-in");
     n.dataset.seat = seat;
-    $("#trick").appendChild(n);
+    t.appendChild(n);
+    this.layTrick();
     setTimeout(() => this.markWinning(), 30);
+  },
+
+  /** Spread the played cards along a shallow arc, like the cards in the mock-up. */
+  layTrick(){
+    const cards = [...$("#trick").querySelectorAll(".tc")];
+    const n = cards.length;
+    cards.forEach((node, i) => {
+      const t = n > 1 ? (i - (n - 1) / 2) / ((n - 1) / 2) : 0;
+      node.style.setProperty("--tr", (t * 7).toFixed(2) + "deg");
+      node.style.setProperty("--ty", (t * t * 13).toFixed(1) + "px");
+    });
   },
   collectTrick(seat){
     const t = $("#trick");

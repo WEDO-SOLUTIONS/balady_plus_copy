@@ -6,9 +6,21 @@ file in any browser, and it is meant to be served as a Balady+ mini-app.
 
 ```
 mini_apps/baloot/
-  index.html   the whole game (markup, styles, rules engine, AI, UI, host bridge)
-  README.md    this file
+  index.html                 the whole game (markup, styles, rules engine, AI, UI, host bridge)
+  room.webp                  the majlis scene, cut from the mock-up
+  crest.webp                 the plaque, scroll and shield, emptied of their baked text
+  corner.webp                the gold arabesque on the action rail
+  tools/extract-assets.py    re-cuts the three images from the source mock-up
+  README.md                  this file
 ```
+
+The three `.webp` files are cut out of the supplied `Baloot final.png` mock-up
+by `tools/extract-assets.py`, which also repaints the two cards baked onto the
+table so live ones can be dealt in front of it, wipes the baked title and deal
+number off the plaque, and fades the scene's bottom edge into the cloth. Re-run
+it if the source art changes; the pixel offsets in it were measured by hand
+against the 937x1679 original. Everything else in the page is still drawn in
+CSS, and the game keeps working (plainer) if the images are missing.
 
 ## Running it
 
@@ -53,9 +65,11 @@ trick laid on the cloth, a `WINNING` marker over whichever card currently leads,
 a green "your turn" bubble naming a card worth playing, an arced hand fan, and a
 gold-ornamented action rail (play the suggested card / toggle hints / invite).
 
-The mock-up's photographic majlis is not reproducible in a dependency-free page,
-so the room is rendered procedurally — warm walls with lantern pools, an
-arabesque lattice and a vignette — keeping its palette and composition.
+The majlis, the plaque and the rail's arabesque are the mock-up's own artwork,
+sliced out as three small WebP files (about 150 KB together). The scene carries
+the table and the other players and fades into the cloth where the trick is
+played, exactly as the mock-up stages it; seat plates are pinned to the painted
+players in percentages of the picture, so they follow it as it scales.
 
 Hints are a real suggestion: the bubble and the rail button both name the card
 the bots would play from your seat, and the rail button plays it. They can be
