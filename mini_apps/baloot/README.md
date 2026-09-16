@@ -12,9 +12,18 @@ mini_apps/baloot/
   btn-gold.webp              the primary button face, emptied of its label
   btn-outline.webp           the outlined button face, emptied of its label
   corner-{tl,tr,bl,br}.webp  the gold arabesque, one file per corner
+  baloot-standalone.html     the same game as one file, assets inlined
   tools/extract-assets.py    re-cuts the images from the source mock-up
+  tools/build-standalone.py  folds the images into the single-file build
   README.md                  this file
 ```
+
+`baloot-standalone.html` is `index.html` with every image inlined as a data URI
+— one 364 KB file that opens straight from disk with nothing beside it, handy
+for sending to someone or dropping into a WebView that has no asset directory.
+Rebuild it with `python3 tools/build-standalone.py` after changing `index.html`
+or any asset, otherwise it goes stale. The mini-app bundle should keep using
+`index.html` plus the separate `.webp` files, which cache far better.
 
 The `.webp` files are cut out of the supplied `Baloot final.png` mock-up by
 `tools/extract-assets.py` (about 190 KB in total). It does the work that makes
@@ -35,7 +44,7 @@ CSS, and the game keeps working (plainer) if the images are missing.
 
 | Context | How |
 |---|---|
-| Browser | open `index.html` |
+| Browser | open `index.html`, or `baloot-standalone.html` for a single file |
 | Self-check | open `index.html?test=1` — 30 rules assertions, results in the console and a toast |
 | Deep link into a room | `index.html?room=UY9ED8` |
 | Mini-app | ship the folder as a mini-app bundle; `CustomInAppLocalhostServer` serves `index.html` from the bundle's document root (see `lib/mini_apps_engine/`) |
