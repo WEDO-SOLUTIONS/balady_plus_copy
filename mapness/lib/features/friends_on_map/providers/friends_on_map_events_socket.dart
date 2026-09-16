@@ -7,6 +7,7 @@ import 'package:mapness/features/friends_on_map/data/friends_on_map_ipv4_http_cl
 import 'package:mapness/features/friends_on_map/providers/friend_requests.dart';
 import 'package:mapness/features/friends_on_map/providers/friends_list.dart';
 import 'package:mapness/features/friends_on_map/providers/friends_on_map_service_token.dart';
+import 'package:mapness/features/friends_on_map/providers/meetups_list.dart';
 import 'package:mapness/shared/utils/logger/logger.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -18,7 +19,7 @@ const Duration _kMaxBackoff = Duration(seconds: 30);
 /// Live "something changed" push from the real backend's `GET /v1/events`
 /// (upgraded to a WebSocket) — see `~/dev/code/wedo/go/balady-friends-service`'s
 /// `internal/api/hub.go`. Messages are deliberately just invalidation hints
-/// (`{"type": "friends_changed" | "requests_changed"}`), never a full
+/// (`{"type": "friends_changed" | "requests_changed" | "meetups_changed"}`), never a full
 /// payload: the client already trusts the REST endpoints for real data, so
 /// there's no second schema to keep in sync.
 ///
@@ -91,6 +92,8 @@ class FriendsOnMapEventsSocket extends _$FriendsOnMapEventsSocket {
           ref
             ..invalidate(incomingFriendRequestsProvider)
             ..invalidate(outgoingFriendRequestsProvider);
+        case 'meetups_changed':
+          ref.invalidate(receivedMeetupsProvider);
       }
     } on Object catch (e) {
       logger.log('friends_on_map: events socket bad message: $e');

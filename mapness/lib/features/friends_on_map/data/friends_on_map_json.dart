@@ -1,6 +1,7 @@
 import 'package:mapness/features/friends_on_map/models/friend.dart';
 import 'package:mapness/features/friends_on_map/models/friend_request.dart';
 import 'package:mapness/features/friends_on_map/models/blocked_user.dart';
+import 'package:mapness/features/friends_on_map/models/meetup.dart';
 
 /// Shared JSON decoding for the real backend's DTOs (see
 /// `~/Downloads/friends-on-map/GO_BACKEND_SPEC.md` /
@@ -27,4 +28,15 @@ BlockedUser blockedUserFromJson(Map<String, dynamic> json) => BlockedUser(
   id: json['id'] as String,
   displayName: json['displayName'] as String,
   profilePictureUrl: json['profilePictureUrl'] as String?,
+);
+
+Meetup meetupFromJson(Map<String, dynamic> json) => Meetup(
+  id: json['id'] as String,
+  senderId: json['senderId'] as String,
+  senderDisplayName: json['senderDisplayName'] as String,
+  senderProfilePictureUrl: json['senderProfilePictureUrl'] as String?,
+  latitude: (json['latitude'] as num).toDouble(),
+  longitude: (json['longitude'] as num).toDouble(),
+  label: json['label'] as String?,
+  createdAt: DateTime.parse(json['createdAt'] as String),
 );

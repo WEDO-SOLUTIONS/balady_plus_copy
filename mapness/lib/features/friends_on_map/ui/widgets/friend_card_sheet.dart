@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:dgis_map/library.dart';
@@ -8,6 +10,7 @@ import 'package:mapness/features/friends_on_map/friend_elapsed_time.dart';
 import 'package:mapness/features/friends_on_map/models/friend.dart';
 import 'package:mapness/features/friends_on_map/providers/friends_controller.dart';
 import 'package:mapness/features/friends_on_map/ui/friends_on_map_error_dialog.dart';
+import 'package:mapness/features/friends_on_map/ui/meetup_share_flow.dart';
 import 'package:mapness/features/friends_on_map/ui/widgets/friend_avatar.dart';
 import 'package:mapness/features/friends_on_map/ui/widgets/friend_confirm_sheet.dart';
 import 'package:mapness/features/share_eta/ui/eta_share_control_sheet/eta_share_sheet.dart';
@@ -114,6 +117,11 @@ class FriendCardSheet extends ConsumerWidget {
           ],
         ),
         ContentRow(
+          onTap: () => _shareMeetup(context),
+          leading: Icon(GeneralIcons.pin, color: context.colors.foregroundDefault),
+          text: ContentRowTextOptions(title: context.l10n.friendCardShareMeetupCta),
+        ),
+        ContentRow(
           onTap: () => _confirmRemove(context),
           leading: Icon(GeneralIcons.trash, color: context.colors.errorDefault),
           text: ContentRowTextOptions(
@@ -147,6 +155,15 @@ class FriendCardSheet extends ConsumerWidget {
   // `ProviderScope.containerOf` on the root navigator's context instead,
   // *inside* the onConfirm closure (evaluated at confirm-tap time, not
   // capture time), avoids depending on any widget's lifetime at all.
+  // S-17: skips the friend-picker entirely — the recipient is already this
+  // one friend. Pops the card first, same reasoning as _confirmRemove below
+  // (the place-picker/confirm sheets that follow live off the root
+  // navigator's context, not this card's).
+  void _shareMeetup(BuildContext context) {
+    Navigator.of(context).pop();
+    unawaited(startMeetupShareFlow(rootNavigatorKey.currentContext!, [friend]));
+  }
+
   void _confirmRemove(BuildContext context) {
     final title = context.l10n.friendCardRemoveConfirmTitle;
     final body = context.l10n.friendCardRemoveConfirmBody(friend.displayName);

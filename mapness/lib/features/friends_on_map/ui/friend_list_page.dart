@@ -9,6 +9,7 @@ import 'package:mapness/features/friends_on_map/models/friend.dart';
 import 'package:mapness/features/friends_on_map/providers/friend_requests.dart';
 import 'package:mapness/features/friends_on_map/providers/friend_search_query.dart';
 import 'package:mapness/features/friends_on_map/providers/friends_list.dart';
+import 'package:mapness/features/friends_on_map/ui/meetup_share_flow.dart';
 import 'package:mapness/features/friends_on_map/ui/widgets/friend_list_empty_state.dart';
 import 'package:mapness/features/friends_on_map/ui/widgets/friend_list_item.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
@@ -75,6 +76,27 @@ class FriendListPage extends ConsumerWidget {
                     ContentRow(
                       onTap: () => context.router.push(const BlockedUsersRoute()),
                       text: ContentRowTextOptions(title: context.l10n.friendListBlockedUsersRow),
+                    ),
+                  ],
+                ),
+                // S-17: always visible, same as Blocked Users above (no
+                // "unread" concept to gate on, unlike the requests row).
+                ContentWrapper(
+                  color: context.colors.backgroundSurface1,
+                  children: [
+                    ContentRow(
+                      onTap: () async {
+                        final recipients = await context.router.push<List<Friend>>(const MeetupFriendPickerRoute());
+                        if (recipients == null || recipients.isEmpty || !context.mounted) {
+                          return;
+                        }
+                        await startMeetupShareFlow(context, recipients);
+                      },
+                      text: ContentRowTextOptions(title: context.l10n.friendListShareMeetupRow),
+                    ),
+                    ContentRow(
+                      onTap: () => context.router.push(const MeetupListRoute()),
+                      text: ContentRowTextOptions(title: context.l10n.friendListMeetupsRow),
                     ),
                   ],
                 ),

@@ -10,10 +10,12 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/app/auto_route/app_routes.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/features/friends_on_map/models/friends_on_map_activation_status.dart';
+import 'package:mapness/features/friends_on_map/models/meetup.dart';
 import 'package:mapness/features/friends_on_map/providers/friends_on_map_activated.dart';
 import 'package:mapness/features/friends_on_map/providers/friend_markers.dart';
 import 'package:mapness/features/friends_on_map/providers/friends_on_map_activation.dart';
 import 'package:mapness/features/friends_on_map/providers/friends_on_map_position_reporter.dart';
+import 'package:mapness/features/friends_on_map/providers/meetups_list.dart';
 import 'package:mapness/features/lifestyle_layers/providers/layers_controls.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/providers/first_start.dart';
@@ -107,6 +109,18 @@ class _MapPageState extends ConsumerState<MapPage>
             title: context.l10n.friendsOnMapRevokedToast,
             isDismissible: true,
           );
+        }
+      })
+      // S-17: a toast the moment a new place is shared with the user — no
+      // unread badge/count exists (no read-state is modeled server-side),
+      // so this only fires once a first successful list is already in hand
+      // (previous?.value != null), never for meetups that were already
+      // there on cold start.
+      ..listen<AsyncValue<List<Meetup>>>(receivedMeetupsProvider, (previous, next) {
+        final previousCount = previous?.value?.length;
+        final nextCount = next.value?.length;
+        if (previousCount != null && nextCount != null && nextCount > previousCount) {
+          ToastOverlay.of(context).show(title: context.l10n.meetupReceivedToast, isDismissible: true);
         }
       })
       // R-13: keeps the position-reporting Timer alive for as long as

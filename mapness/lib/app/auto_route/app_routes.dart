@@ -334,6 +334,16 @@ class AppRouter extends RootStackRouter {
           customRouteBuilder: RouteBuilders.cupertinoRouteBuilder,
         ),
         CustomRoute(
+          path: 'meetup_friend_picker',
+          page: MeetupFriendPickerRoute.page,
+          customRouteBuilder: RouteBuilders.cupertinoRouteBuilder,
+        ),
+        CustomRoute(
+          path: 'meetup_list',
+          page: MeetupListRoute.page,
+          customRouteBuilder: RouteBuilders.cupertinoRouteBuilder,
+        ),
+        CustomRoute(
           path: 'help_center',
           page: HelpCenterRoute.page,
           customRouteBuilder: RouteBuilders.cupertinoRouteBuilder,
