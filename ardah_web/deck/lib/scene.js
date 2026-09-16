@@ -53,7 +53,7 @@ function crystal() {
         type: 'glass',
         ior: 1.56,
         // absorbs blue hard and green moderately: what comes through is amber
-        absorb: [0.16, 1.28, 3.70],
+        absorb: [0.24, 1.25, 4.60],
         spec: 900,
       },
     }],
@@ -87,14 +87,14 @@ function gem() {
       {
         planes: prism(64, OUT, H, -H, 0, 1, 0),
         sub: prism(64, IN, H * 3, -H * 3, 0, 1, 0),
-        mat: { type: 'metal', f0: [1.00, 0.590, 0.190], rough: 0.30, spec: 320 },
+        mat: { type: 'metal', f0: [0.96, 0.555, 0.175], rough: 0.34, spec: 230 },
       },
       {
         planes,
         mat: {
           type: 'glass',
           ior: 1.72,
-          absorb: [8.00, 1.45, 0.14],     // the complement: a cool blue stone
+          absorb: [7.60, 1.95, 0.40],     // the complement: a cool blue stone
           spec: 1400,
         },
       },
@@ -115,7 +115,7 @@ function coin() {
     glow: [1.00, 0.60, 0.14],
     parts: [{
       planes: prism(128, 0.455, 0.072, -0.072, 0, 1, 2),
-      mat: { type: 'metal', f0: [1.00, 0.545, 0.150], rough: 0.16, spec: 520 },
+      mat: { type: 'metal', f0: [0.96, 0.520, 0.140], rough: 0.26, spec: 260 },
     }],
   };
 }

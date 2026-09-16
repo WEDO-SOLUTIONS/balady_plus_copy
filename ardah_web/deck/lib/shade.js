@@ -16,9 +16,9 @@ const FIRE = (() => { const l = Math.hypot(0.18, -0.72, 0.67); return [0.18 / l,
 const RIM  = (() => { const l = Math.hypot(0.75, 0.10, -0.65); return [0.75 / l, 0.10 / l, -0.65 / l]; })();
 
 const LIGHTS = [
-  { d: MOON, c: [1.35, 1.40, 1.55] },     // moon, faintly cool
-  { d: FIRE, c: [2.60, 1.05, 0.28] },     // braziers, strongly warm
-  { d: RIM,  c: [0.95, 0.42, 0.14] },     // a second brazier behind and right
+  { d: MOON, c: [0.62, 0.65, 0.74] },     // moon, faintly cool
+  { d: FIRE, c: [1.30, 0.52, 0.14] },     // braziers, strongly warm
+  { d: RIM,  c: [0.52, 0.23, 0.08] },     // a second brazier behind and right
 ];
 
 /* Radiance arriving from a direction. Kept smooth and cheap: it is sampled
@@ -37,18 +37,18 @@ function env(dx, dy, dz, out) {
   const md = dx * MOON[0] + dy * MOON[1] + dz * MOON[2];
   if (md > 0) {
     const m2 = md * md, m4 = m2 * m2, m8 = m4 * m4;
-    const disc = m8 * m8 * m8 * m8 * 46.0;     // md^128, the moon itself
-    const halo = m8 * 1.30;                    // md^8, the haze around it
-    r += disc * 1.00 + halo * 0.55;
-    g += disc * 1.00 + halo * 0.62;
-    b += disc * 0.96 + halo * 0.85;
+    const disc = m8 * m8 * 5.4;                // md^32, the moon itself
+    const halo = m4 * 0.62;                    // md^4, the haze around it
+    r += disc * 1.00 + halo * 0.50;
+    g += disc * 1.00 + halo * 0.57;
+    b += disc * 0.96 + halo * 0.78;
   }
   for (let i = 1; i < LIGHTS.length; i++) {
     const L = LIGHTS[i];
     const d = dx * L.d[0] + dy * L.d[1] + dz * L.d[2];
     if (d > 0) {
       const d2 = d * d, d4 = d2 * d2, d8 = d4 * d4;
-      const s = d8 * d8 * 16.0 + d4 * 1.70;    // a soft, big flame source
+      const s = d8 * 3.1 + d2 * 1.15;          // a soft, big flame source
       r += s * L.c[0] * 0.55;
       g += s * L.c[1] * 0.55;
       b += s * L.c[2] * 0.55;

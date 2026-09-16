@@ -34,9 +34,9 @@ const SS = arg('--ss', 3);
 const FOV = 16 * Math.PI / 180;
 const MAX_BOUNCE = 6;
 const EXPOSURE = arg('--exposure', 1.15);
-const BLOOM_CUT = 1.30;   // linear radiance a pixel must exceed to bleed
-const BLOOM_MIX = 0.30;
-const GLOW_GAIN = 0.55;
+const BLOOM_CUT = 1.55;   // linear radiance a pixel must exceed to bleed
+const BLOOM_MIX = 0.16;
+const GLOW_GAIN = 0.32;
 
 /* --------------------------- surface perturbation -------------------------- */
 

@@ -173,6 +173,25 @@ Two constraints the objects answer to:
   **Saudi state emblem**; `docs/ardah-art-brief.md` §1 rules that out as
   decoration. Anything struck on the coin has to clear that bar.
 
+**Highlights are deliberately muted.** Two things were making the gold glare
+and the stones look like tinted plastic, and both are in the physics rather
+than in any post pass:
+
+- The environment's sources were near-pinpricks (the moon at `md^128`, the
+  braziers at `d^16`) with very high peaks. A tiny, very hot source is exactly
+  what produces a mirror-sharp blown highlight. They are now broad and much
+  dimmer (`md^32`, `d^8`), which gives a sheen that still reads as a highlight
+  but stays inside the tone map — under 4 % of pixels clip anywhere on the
+  three sprites.
+- The stones' absorption coefficients were too low for path length to matter,
+  so a ray crossing 1.2 units came out the same colour as one crossing 0.3 and
+  the stone had no depth. Raised until thickness is visible: thin edges stay
+  bright, the body goes deep.
+
+The trade is real — at ~38 pt the traced sprites now sit dimmer than the cuts,
+which carry the concept's own baked highlights. That is the cost of matching
+the game's night-stage atmosphere rather than the concept render's.
+
 Colour still answers to the cuts. Their measured mid-tone (H 26–33°, S ≈ 0.7),
 near-black shadows and cream-clipping highlights are in the header of
 `make_notes.js`, but they now enter as physical quantities — an absorption
