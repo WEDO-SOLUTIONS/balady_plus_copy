@@ -117,31 +117,59 @@ evaluation only. Not cleared for release — and note that the banners in it car
 the state emblem, which is exactly the compliance question raised in the brief's
 §1.
 
-### Redrawn note sprites
+### Traced note sprites
 
-`assets/hd/` holds 512 px masters of the three note objects, drawn by
-`deck/make_notes.js` (canvas at 4x, downsampled) rather than cut from the
-concept image. The cut sprites are 60–80 px crops, and the game draws a note at
-~115 pt near the judgment line — 345 device pixels on a 3x screen — so those
-crops are running at a five-fold upscale and show it.
+`assets/hd/` holds 512 px masters of the three note objects, produced by
+`deck/make_notes.js` rather than cut from the concept image. The cut sprites
+are 60–80 px crops, and the game draws a note at ~115 pt near the judgment
+line — 345 device pixels on a 3x screen — so those crops run at a five-fold
+upscale and show it.
 
-The palette is **sampled from the cuts, not invented**: `deck/make_notes.js`
-carries the measured numbers in its header (mid-tone at H 26-33 deg and S ~0.7,
-shadows down to near-black, highlights clipping to cream rather than
-blue-white, and a warm firelight rim on the sword gem alongside its cyan). Two
-post-passes finish them — a bloom that squares the luminance before blurring,
-so only real speculars bleed, and a fine warm grain, masked to the sprite's own
-alpha because `overlay` would otherwise fog the whole square.
+Earlier passes painted them with canvas gradients, which is why they read as
+illustrations: every highlight sat where a hand put it. These are **ray
+traced**, in about 400 lines and with no dependencies:
 
-`deck/notes_sheets.py` rebuilds two sheets into `deck/out/` for judging the
-result: `notes_hd.png` (the masters on a checkerboard) and `notes_compare.png`
-(cut vs redraw at the ~38 / ~67 / ~115 pt the runway actually uses). Judge them
-on the compare sheet, not at 512 px — a note is never seen that large.
+- `deck/lib/trace.js` — geometry. Bodies are convex polyhedra, so a ray is an
+  exact slab test over the planes: facet edges are analytic, not marched to,
+  and facet normals come from the geometry. The gem's collet is the one
+  non-convex part, done as a CSG difference of two convex solids.
+- `deck/lib/shade.js` — the environment and the tone map. The environment is
+  the stage the game paints: moon high and left, braziers low and in front, a
+  dark night sky. Every reflection and refraction samples it, so a facet is
+  bright because it points at the moon, not because a highlight was placed
+  there. It is kept deliberately dark — fill the whole sphere with light and
+  gold renders as one flat lemon tone.
+- `deck/lib/scene.js` — the three objects. The crystal and the gem are
+  dielectrics with Fresnel, refraction and Beer-Lambert absorption, so their
+  colour is whatever light survived the path through them; the coin is a metal.
+- `deck/lib/png.js` — a minimal RGBA PNG writer.
 
-The coin's motif is an eight-point geometric rosette. An earlier pass had two
-crossed sabres under a palm, which is the arrangement of the **Saudi state
-emblem**; `docs/ardah-art-brief.md` §1 rules that out as decoration, so it was
-replaced. Anything struck on the coin has to clear that bar.
+Everything accumulates in linear HDR, blooms there, and is tone mapped once
+through an ACES curve at the end. Run it with `node deck/make_notes.js`;
+`--size`, `--ss` and `--exposure` are the knobs (`--ss 2` for a fast look).
+
+Two constraints the objects answer to:
+
+- **The tabl lane's object is a crystal**, not a gold bar. That is what the
+  lane's drawn fallback in `js/render.js` always was, and a faceted crystal
+  gets to refract, which is most of what sells a render.
+- **The coin's motif is an eight-point geometric rosette.** An earlier pass
+  struck two crossed sabres under a palm, which is the arrangement of the
+  **Saudi state emblem**; `docs/ardah-art-brief.md` §1 rules that out as
+  decoration. Anything struck on the coin has to clear that bar.
+
+Colour still answers to the cuts. Their measured mid-tone (H 26–33°, S ≈ 0.7),
+near-black shadows and cream-clipping highlights are in the header of
+`make_notes.js`, but they now enter as physical quantities — an absorption
+coefficient for the stones, a reflectance for the gold — and the lighting
+decides the rest.
+
+`deck/notes_sheets.py` rebuilds two sheets into `deck/out/`: `notes_hd.png`
+(the masters on a checkerboard) and `notes_compare.png` (cut vs traced at the
+~38 / ~67 / ~115 pt the runway actually uses). Judge on the compare sheet, not
+at 512 px — a note is never seen that large. Judge by eye, too: the cuts'
+luminance statistics include baked-in dark fringe from the crop that a traced
+sprite has no reason to reproduce, so matching their mean is the wrong target.
 
 The masters are not wired into the game: swapping them in changes the art
 direction (the cut sprites carry the concept's own lighting), so that is a
