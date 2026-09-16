@@ -27,6 +27,16 @@ modules, precisely so that it does.
 
 Append `?debug=1` for the latency lab, or press the **Latency lab** button.
 
+### One file to pass around
+
+```bash
+./build-single.sh        # -> dist/ardah-standalone.html (~80 KB, git-ignored)
+```
+
+Inlines the CSS and scripts into a single HTML file you can mail, drop into a
+chat, or double-click. Same code — the split version is what ships, because the
+mini-app engine serves a folder.
+
 ## Controls
 
 | | Touch | Keyboard |
@@ -110,6 +120,7 @@ resume rather than assuming its own pause was the only cause.
 
 ```
 index.html        screen shells; the canvas is the whole stage
+build-single.sh   inlines everything into one distributable HTML file
 css/ardah.css     menus; WebView hardening (no selection, no overscroll, safe areas)
 js/i18n.js        ar/en strings, RTL flip (gameplay stays LTR by design)
 js/bridge.js      dsBridge adapter, no-op in a browser
