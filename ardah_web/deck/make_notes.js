@@ -95,7 +95,7 @@ function perturb(kind, px, py, pz, nx, ny, nz, out) {
 function render(obj) {
   const W = SIZE * SS;
   const hdr = new Float32Array(W * W * 4);          // premultiplied linear RGB + A
-  const R = rot(obj.rot.rx, obj.rot.ry);
+  const R = rot(obj.rot.rx, obj.rot.ry, obj.rot.rz);
   const dist = obj.radius / Math.tan(FOV / 2) * 1.30;
 
   // Rays are built in world space, then rotated into the object's frame; the

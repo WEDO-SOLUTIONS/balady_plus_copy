@@ -148,6 +148,21 @@ Everything accumulates in linear HDR, blooms there, and is tone mapped once
 through an ACES curve at the end. Run it with `node deck/make_notes.js`;
 `--size`, `--ss` and `--exposure` are the knobs (`--ss 2` for a fast look).
 
+**They lie on the runway, they do not stand on it.** The elevation comes from
+`js/render.js`: on a 440x956 phone `C = judgeY - vpY` is 425 and `halfNear` is
+202, and since `C = f * cameraHeight` while `halfNear = f * fieldHalfWidth`,
+the camera sits 2.1 field-half-widths above the floor — 64° down onto the
+judgment line, 23° at the spawn point. One sprite serves the whole runway, so
+`TILT` in `deck/lib/scene.js` cuts that at 52°, a little towards the judging
+end where the note is largest and actually being read. The crystal is laid on
+its side with the third rotation axis (`rz`); the gem and the coin lie face
+up.
+
+Their drawn widths are also equalised to ~340 px, because `_gem` in
+`js/render.js` sizes a note by the sprite's **width** and lets the height
+follow the aspect — three silhouettes of different widths would render at
+three different scales.
+
 Two constraints the objects answer to:
 
 - **The tabl lane's object is a crystal**, not a gold bar. That is what the

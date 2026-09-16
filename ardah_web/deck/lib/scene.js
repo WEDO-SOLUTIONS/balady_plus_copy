@@ -15,25 +15,37 @@ const { prism, cone } = require('./trace');
 
 const TAU = Math.PI * 2;
 
+/* Every object lies on the runway rather than standing on it, and is seen
+   from the elevation the game's camera actually has.
+
+   From render.js on a 440x956 phone: C = judgeY - vpY = 425 and halfNear =
+   202, and since C = f * cameraHeight while halfNear = f * fieldHalfWidth,
+   the camera sits C / halfNear = 2.1 field-half-widths above the floor. That
+   is atan(2.1 / 1) = 64 degrees down onto the judgment line and atan(2.1 / 5)
+   = 23 degrees at the spawn point. One sprite has to serve the whole runway,
+   so it is cut near the middle of that range, a little towards the judging
+   end where the note is largest and actually being read. */
+const TILT = 52 * Math.PI / 180;
+
 /* ------------------------------ tabl: crystal ----------------------------- */
 /* A six-sided crystal with a tall termination. The lane's object was a
    faceted block to begin with; as a crystal the same silhouette gets to
    refract, which is most of what sells a render. */
 function crystal() {
-  const R = 0.425;
+  const R = 0.300;
   const planes = [];
   for (let i = 0; i < 6; i++) {
     const a = (i / 6) * TAU + 0.26;
     planes.push([Math.cos(a), 0, Math.sin(a), R, 0]);
   }
-  planes.push(...cone(6, R, 0.20, 0.88, 1, 0.26));      // termination
-  planes.push(...cone(6, R, 0.18, 0.60, 1, 0.26 + Math.PI / 6));   // shoulder bevel
-  planes.push(...cone(6, R, -0.30, -0.60, -1, 0.26));   // lower point
-  planes.push(...cone(6, R, -0.28, -0.50, -1, 0.26 + Math.PI / 6)); // lower bevel
+  planes.push(...cone(6, R, 0.30, 1.05, 1, 0.26));      // termination
+  planes.push(...cone(6, R, 0.26, 0.74, 1, 0.26 + Math.PI / 6));   // shoulder bevel
+  planes.push(...cone(6, R, -0.42, -0.80, -1, 0.26));   // lower point
+  planes.push(...cone(6, R, -0.38, -0.64, -1, 0.26 + Math.PI / 6)); // lower bevel
   return {
     name: 'tabl',
-    radius: 0.90,
-    rot: { rx: -0.11, ry: 0.52 },
+    radius: 0.83,
+    rot: { rx: TILT, ry: 0.20, rz: Math.PI / 2 },
     glow: [1.00, 0.44, 0.10],
     parts: [{
       planes,
@@ -68,8 +80,8 @@ function gem() {
   const OUT = 0.462, IN = 0.404, H = 0.052;
   return {
     name: 'swords',
-    radius: 0.62,
-    rot: { rx: -1.30, ry: 0.22 },
+    radius: 0.54,
+    rot: { rx: TILT, ry: 0.22, rz: 0 },
     glow: [0.22, 0.72, 1.00],
     parts: [
       {
@@ -98,8 +110,8 @@ function gem() {
 function coin() {
   return {
     name: 'tar',
-    radius: 0.52,
-    rot: { rx: -1.02, ry: 0.30 },
+    radius: 0.65,
+    rot: { rx: TILT, ry: 0.30, rz: 0 },
     glow: [1.00, 0.60, 0.14],
     parts: [{
       planes: prism(128, 0.455, 0.072, -0.072, 0, 1, 2),
