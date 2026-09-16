@@ -35,6 +35,36 @@ window.Ardah = window.Ardah || {};
   // that is what keeps them localisable (see docs/ardah-art-brief.md §1) while
   // still being modelled rather than flat canvas text.
   var GLYPH_SPRITE = ['glyph_a', 'glyph_s', 'glyph_d'];
+
+  /* The angle each pad was RENDERED from — mirrors CAP_VIEW in
+     deck/lib/scene.js. The glyph is a separate sprite laid onto the pad's
+     face, so it needs the same numbers to lie flat on it instead of floating
+     square-on above a turned pad. */
+  var CAP_VIEW = [
+    { elev: 62.7, azim: -13 },
+    { elev: 67.8, azim: 0 },
+    { elev: 62.7, azim: 13 }
+  ];
+
+  /* The pad face's basis, projected to the screen.
+
+     The pad is rotated by Rx(elev) * Ry(azim). Take the face's two in-plane
+     directions, across (1,0,0) and along (0,0,1), push them through that and
+     drop the depth — screen y runs down, world y runs up, hence the sign:
+
+       across -> ( cos a, -sin a sin e )
+       along  -> ( sin a,  cos a sin e )
+
+     which is exactly a canvas transform. It is a rotation and a shear, not
+     just a rotation: a letter painted on a tilted, turned plane is sheared,
+     and rotating it alone would look almost right and read as slightly
+     wrong. */
+  function faceBasis(lane) {
+    var v = CAP_VIEW[lane];
+    var e = v.elev * Math.PI / 180, a = v.azim * Math.PI / 180;
+    var ca = Math.cos(a), sa = Math.sin(a), se = Math.sin(e);
+    return [ca, -sa * se, sa, ca * se];
+  }
   var KEYCAP = [
     ['#8A5A2B', '#4A2F14'],
     ['#3F6F9E', '#1B355A'],
@@ -52,6 +82,7 @@ window.Ardah = window.Ardah || {};
     this.sparks = [];
     this.bursts = [];
     this.shards = [];
+    this.lands = [];       // notes travelling into their pad
     this.floats = [];
     this.flashes = [0, 0, 0];
     this.held = [0, 0, 0];       // key or finger currently down, per lane
@@ -156,7 +187,7 @@ window.Ardah = window.Ardah || {};
 
   /* -------------------------------- events -------------------------------- */
 
-  Renderer.prototype.hit = function (lane, judgment) {
+  Renderer.prototype.hit = function (lane, judgment, t) {
     if (lane >= 0 && lane < 3) this.flashes[lane] = judgment === 'stray' ? 0.3 : 1;
     if (judgment === 'stray') return;
 
@@ -168,6 +199,8 @@ window.Ardah = window.Ardah || {};
     this.performers[half + Math.floor(Math.random() * half)] = 1;
 
     if (lane >= 0) this._sparks(this.xAt(lane, 1), this.judgeY, LANE[lane].glow, judgment === 'perfect' ? 18 : 10);
+    // The note itself goes on to the pad it was hit with.
+    if (lane >= 0) this.lands.push({ lane: lane, t: t || 0, life: 1 });
   };
 
   /* Key state, so the pads can depress under the finger.
@@ -258,6 +291,7 @@ window.Ardah = window.Ardah || {};
       this._notes(c, state);
       this._judgeLine(c);
     }
+    this._lands(c, dtMs);
     this._keycaps(c, state, dtMs);
     this._effects(c, decay, dtMs);
     if (state.chart) this._hud(c, state);
@@ -759,6 +793,44 @@ window.Ardah = window.Ardah || {};
 
   /* -------------------------------- keycaps -------------------------------- */
 
+  /* A hit note travelling from the judgment line into its keycap.
+
+     Drawn before the pads, so the note sinks BEHIND the key rather than over
+     it: the read is that the pad swallowed it. The travel eases in rather than
+     out -- a note that drifts down and lands gently looks like it missed, and
+     the whole point is that it was struck. */
+  Renderer.prototype._lands = function (c, dtMs) {
+    if (!this.lands.length) return;
+    var base = this.halfNear * 0.34 * 1.60;
+    for (var i = this.lands.length - 1; i >= 0; i--) {
+      var L = this.lands[i];
+      L.life -= dtMs / 165;
+      if (L.life <= 0) { this.lands.splice(i, 1); continue; }
+      var u = 1 - L.life, e = u * u;
+      var sprite = A.assets && A.assets.img(noteSprite(L.lane, L.t));
+      if (!sprite) { this.lands.splice(i, 1); continue; }
+
+      var x = this.xAt(L.lane, 1);
+      var y = this.judgeY + (this.keyY - this.judgeY) * e;
+      var dw = base * (1 - 0.62 * e), dh = dw * (sprite.height / sprite.width);
+      c.globalAlpha = Math.min(1, L.life * 1.7);
+      c.drawImage(sprite, x - dw / 2, y - dh / 2, dw, dh);
+      c.globalAlpha = 1;
+
+      // A flash on the pad as it arrives, so the landing has an impact and not
+      // just an ending.
+      var glow = u > 0.6 && A.assets.img('fx_glow');
+      if (glow) {
+        var k = (u - 0.6) / 0.4, gs = base * (0.9 + k * 1.5);
+        c.save();
+        c.globalCompositeOperation = 'lighter';
+        c.globalAlpha = (1 - k) * 0.7;
+        c.drawImage(glow, x - gs / 2, this.keyY - gs / 2, gs, gs);
+        c.restore();
+      }
+    }
+  };
+
   Renderer.prototype._keycaps = function (c, state, dtMs) {
     var labels = (A.i18n && A.i18n.t('laneNames')) || ['ZEER', 'TAR', 'CLAP'];
     // Exponential ease towards the held state, frame-rate independent.
@@ -812,8 +884,12 @@ window.Ardah = window.Ardah || {};
           // crops the three pads symmetrically about the centre of their
           // coloured face, so the sprite's centre IS the face's centre on all
           // three, turned or not. No per-lane offset table.
-          var gh = ch * 0.42, gw = gh * (glyph.width / glyph.height);
+          var gh = ch * 0.46, gw = gh * (glyph.width / glyph.height);
+          var fb = faceBasis(lane);
+          c.save();
+          c.transform(fb[0], fb[1], fb[2], fb[3], 0, 0);
           c.drawImage(glyph, -gw / 2, -gh / 2, gw, gh);
+          c.restore();
         } else {
           c.textAlign = 'center';
           c.font = '700 15px -apple-system, system-ui, sans-serif';
@@ -844,10 +920,13 @@ window.Ardah = window.Ardah || {};
       c.restore();
 
       // The label stays put: it names the lane, it is not part of the key.
+      // Cleared from the SPRITE's height (h * 1.5), not the fallback pad's:
+      // measuring from h put it 5 pt under a 45 pt sprite, close enough to
+      // look attached to the key.
       c.textAlign = 'center';
       c.fillStyle = 'rgba(231, 180, 76, 0.75)';
       c.font = '600 10px -apple-system, system-ui, sans-serif';
-      c.fillText(labels[lane], x, y + h / 2 + 13);
+      c.fillText(labels[lane], x, y + h * 0.75 + 15);
     }
   };
 

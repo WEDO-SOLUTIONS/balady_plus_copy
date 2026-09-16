@@ -94,6 +94,27 @@ const server = http.createServer((req, res) => {
   }));
   console.log('fps:', fps.toFixed(1));
 
+  // The note-into-pad landing is a 165 ms animation, so it is triggered and
+  // caught deliberately rather than hoped for in a random frame.
+  // Pushed straight onto the queue rather than through hit(), because hit()
+  // also fires the burst and the shards, and the flash buries the very thing
+  // this frame exists to show.
+  //
+  // The three lanes are staggered by 55 ms so that ONE screenshot catches
+  // three stages of the same 165 ms animation. Screenshotting costs enough
+  // time that asking for a particular stage is a lottery; the lanes' relative
+  // stages are not, so the strip is readable however late the capture lands.
+  await page.evaluate(() => {
+    const g = window.Ardah.game;
+    for (const a of [g.renderer.lands, g.renderer.sparks, g.renderer.bursts, g.renderer.shards]) a.length = 0;
+    const push = (lane, t) => g.renderer.lands.push({ lane, t, life: 1 });
+    push(2, 3000);
+    setTimeout(() => push(1, 2000), 55);
+    setTimeout(() => push(0, 1000), 110);
+  });
+  await page.waitForTimeout(115);
+  await page.screenshot({ path: path.join(OUT, 'live_landing.png') });
+
   // A frame with two pads actually held, so the press animation is captured
   // rather than assumed.
   await page.evaluate(() => {

@@ -159,7 +159,7 @@ window.Ardah = window.Ardah || {};
   Game.prototype._reactTo = function (ev) {
     if (!ev) return;
     var lane = ev.note ? ev.note.lane : -1;
-    this.renderer.hit(lane, ev.judgment);
+    this.renderer.hit(lane, ev.judgment, ev.note ? ev.note.t : 0);
     if (ev.points) this.renderer.score(lane, ev.points);
     this.renderer.say(A.i18n.t(ev.judgment), ev.judgment === 'perfect' ? '#E7B44C'
       : ev.judgment === 'miss' ? '#C8553D' : '#6FD3A0');

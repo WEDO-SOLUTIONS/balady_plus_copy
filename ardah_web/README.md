@@ -310,7 +310,30 @@ blue; emerald rejects red and blue.
 Which variant a note wears is hashed from its own time, so it is stable across
 frames, retries and pauses without storing anything on the chart.
 
-### Keycap press
+### Keycap press and the note landing
+
+The key glyph is laid **onto the pad's face**, not floated square-on above it.
+`faceBasis` pushes the face's two in-plane directions — across `(1,0,0)` and
+along `(0,0,1)` — through the same `Rx(elev) * Ry(azim)` the pad was rendered
+with and drops the depth, giving a canvas transform directly:
+
+```
+across -> ( cos a, -sin a sin e )
+along  -> ( sin a,  cos a sin e )
+```
+
+That is a rotation **and a shear**. A letter painted on a tilted, turned plane
+is sheared, and rotating it alone looks almost right, which is worse.
+`CAP_VIEW` in `js/render.js` mirrors the one in `deck/lib/scene.js`; they have
+to agree.
+
+A hit note then travels from the judgment line into its pad — `_lands`, drawn
+*before* the keycaps so it sinks behind the key rather than over it, which is
+what makes the pad look like it swallowed the note. The travel eases **in**,
+not out: a note that drifts down and settles looks like it missed, and the
+point is that it was struck.
+
+
 
 `_keycaps` eases each pad towards its held state: it dips 3.4 pt, shrinks 7.5 %
 and pools a little of `fx_glow` underneath. The press **snaps** to 1 and only
