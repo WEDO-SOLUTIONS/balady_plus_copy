@@ -409,6 +409,11 @@ What is placeholder and must not ship: synthesised percussion instead of
 licensed audio, drawn silhouettes instead of reviewed artwork, generated charts
 instead of authored ones.
 
+Art production for this path is specified in
+[`ardah-art-brief.md`](ardah-art-brief.md): the layer list, the exact scene
+geometry the engine expects, animation timing locked to 96 BPM, the download
+budget, and the cultural review gate that comes before any production.
+
 It carries the latency lab described in §5.3, so the numbers that decide §6.4
 can be collected now: run it in a browser, then in the superapp WebView with
 the radio playing, and compare `mean` (calibratable) against `jitter`
