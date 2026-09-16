@@ -125,6 +125,24 @@ concept image. The cut sprites are 60–80 px crops, and the game draws a note a
 ~115 pt near the judgment line — 345 device pixels on a 3x screen — so those
 crops are running at a five-fold upscale and show it.
 
+The palette is **sampled from the cuts, not invented**: `deck/make_notes.js`
+carries the measured numbers in its header (mid-tone at H 26-33 deg and S ~0.7,
+shadows down to near-black, highlights clipping to cream rather than
+blue-white, and a warm firelight rim on the sword gem alongside its cyan). Two
+post-passes finish them — a bloom that squares the luminance before blurring,
+so only real speculars bleed, and a fine warm grain, masked to the sprite's own
+alpha because `overlay` would otherwise fog the whole square.
+
+`deck/notes_sheets.py` rebuilds two sheets into `deck/out/` for judging the
+result: `notes_hd.png` (the masters on a checkerboard) and `notes_compare.png`
+(cut vs redraw at the ~38 / ~67 / ~115 pt the runway actually uses). Judge them
+on the compare sheet, not at 512 px — a note is never seen that large.
+
+The coin's motif is an eight-point geometric rosette. An earlier pass had two
+crossed sabres under a palm, which is the arrangement of the **Saudi state
+emblem**; `docs/ardah-art-brief.md` §1 rules that out as decoration, so it was
+replaced. Anything struck on the coin has to clear that bar.
+
 The masters are not wired into the game: swapping them in changes the art
 direction (the cut sprites carry the concept's own lighting), so that is a
 design call, not a technical one. To try them, export to webp at the size the
