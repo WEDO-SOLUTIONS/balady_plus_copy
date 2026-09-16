@@ -74,6 +74,18 @@ window.Ardah = window.Ardah || {};
     this.laneW = (this.halfNear * 2) / 3;
 
     this.scene.build(this.w, this.h, this.dpr, this.stageY);
+
+    // Every gradient below depends only on the layout, so they are built once
+    // per resize instead of once per frame. Creating a dozen CanvasGradients
+    // every frame was costing three to five frames a second on the art path.
+    this._grad = {};
+  };
+
+  /** Layout-scoped gradient cache. */
+  Renderer.prototype._g = function (key, make) {
+    var g = this._grad[key];
+    if (!g) { g = make(this.ctx); this._grad[key] = g; }
+    return g;
   };
 
   /* ------------------------------ projection ------------------------------ */
@@ -220,27 +232,34 @@ window.Ardah = window.Ardah || {};
 
     // A short feather over the join itself: the plate's last rows carry a dark
     // edge from the original render, which otherwise reads as a hairline.
-    var seam = c.createLinearGradient(0, joinY - 14, 0, joinY + 14);
-    seam.addColorStop(0, 'rgba(161, 95, 64, 0)');
-    seam.addColorStop(0.5, 'rgba(161, 95, 64, 0.6)');
-    seam.addColorStop(1, 'rgba(161, 95, 64, 0)');
-    c.fillStyle = seam;
+    c.fillStyle = this._g('plateSeam', function (cc) {
+      var g = cc.createLinearGradient(0, joinY - 14, 0, joinY + 14);
+      g.addColorStop(0, 'rgba(161, 95, 64, 0)');
+      g.addColorStop(0.5, 'rgba(161, 95, 64, 0.6)');
+      g.addColorStop(1, 'rgba(161, 95, 64, 0)');
+      return g;
+    });
     c.fillRect(0, joinY - 14, this.w, 28);
 
     // Darken with distance so the deck stays readable over it, and keep the
     // plate's brighter middle.
-    var shade = c.createLinearGradient(0, joinY, 0, this.h);
-    shade.addColorStop(0, 'rgba(10, 7, 6, 0)');
-    shade.addColorStop(0.45, 'rgba(10, 7, 6, 0.35)');
-    shade.addColorStop(1, 'rgba(8, 6, 5, 0.82)');
-    c.fillStyle = shade;
+    var self = this;
+    c.fillStyle = this._g('plateShade', function (cc) {
+      var g = cc.createLinearGradient(0, joinY, 0, self.h);
+      g.addColorStop(0, 'rgba(10, 7, 6, 0)');
+      g.addColorStop(0.45, 'rgba(10, 7, 6, 0.35)');
+      g.addColorStop(1, 'rgba(8, 6, 5, 0.82)');
+      return g;
+    });
     c.fillRect(0, joinY, this.w, this.h - joinY);
 
-    var across = c.createLinearGradient(0, 0, this.w, 0);
-    across.addColorStop(0, 'rgba(0, 0, 0, 0.3)');
-    across.addColorStop(0.5, 'rgba(255, 205, 150, 0.04)');
-    across.addColorStop(1, 'rgba(0, 0, 0, 0.3)');
-    c.fillStyle = across;
+    c.fillStyle = this._g('plateAcross', function (cc) {
+      var g = cc.createLinearGradient(0, 0, self.w, 0);
+      g.addColorStop(0, 'rgba(0, 0, 0, 0.3)');
+      g.addColorStop(0.5, 'rgba(255, 205, 150, 0.04)');
+      g.addColorStop(1, 'rgba(0, 0, 0, 0.3)');
+      return g;
+    });
     c.fillRect(0, joinY, this.w, this.h - joinY);
 
     this._floorGrid(c, joinY);
@@ -318,11 +337,13 @@ window.Ardah = window.Ardah || {};
     var cx = this.w / 2;
 
     // Deck
-    var deck = c.createLinearGradient(0, yTop, 0, yBot);
-    deck.addColorStop(0, 'rgba(18, 26, 44, 0.35)');
-    deck.addColorStop(0.55, 'rgba(24, 20, 30, 0.75)');
-    deck.addColorStop(1, 'rgba(12, 10, 16, 0.92)');
-    c.fillStyle = deck;
+    c.fillStyle = this._g('deck', function (cc) {
+      var g = cc.createLinearGradient(0, yTop, 0, yBot);
+      g.addColorStop(0, 'rgba(18, 26, 44, 0.35)');
+      g.addColorStop(0.55, 'rgba(24, 20, 30, 0.75)');
+      g.addColorStop(1, 'rgba(12, 10, 16, 0.92)');
+      return g;
+    });
     c.beginPath();
     c.moveTo(cx - wTop, yTop); c.lineTo(cx + wTop, yTop);
     c.lineTo(cx + wBot, yBot); c.lineTo(cx - wBot, yBot);
@@ -346,11 +367,13 @@ window.Ardah = window.Ardah || {};
       var yEnd = this.judgeY;
       var offTop = (this.halfNear * 2 / 3) / Z_FAR, offEnd = (this.halfNear * 2 / 3);
       var ctTop = cx + (lane - 1) * offTop, ctEnd = cx + (lane - 1) * offEnd;
-      var g = c.createLinearGradient(0, yTop, 0, yEnd);
-      g.addColorStop(0, 'rgba(0,0,0,0)');
-      g.addColorStop(1, LANE[lane].glow);
       c.globalAlpha = this.flashes[lane] * 0.26;
-      c.fillStyle = g;
+      c.fillStyle = this._g('flash' + lane, function (cc) {
+        var g = cc.createLinearGradient(0, yTop, 0, yEnd);
+        g.addColorStop(0, 'rgba(0,0,0,0)');
+        g.addColorStop(1, LANE[lane].glow);
+        return g;
+      });
       c.beginPath();
       c.moveTo(ctTop - offTop / 2, yTop); c.lineTo(ctTop + offTop / 2, yTop);
       c.lineTo(ctEnd + offEnd / 2, yEnd); c.lineTo(ctEnd - offEnd / 2, yEnd);
@@ -379,12 +402,14 @@ window.Ardah = window.Ardah || {};
     var thickTop = 5, thickBot = 16;
 
     var xTopIn = cx + side * wTop, xBotIn = cx + side * wBot;
-    var g = c.createLinearGradient(0, yTop, 0, yBot);
-    g.addColorStop(0, '#6B5220');
-    g.addColorStop(0.4, '#C79A3E');
-    g.addColorStop(0.75, '#F3D98A');
-    g.addColorStop(1, '#A87C2C');
-    c.fillStyle = g;
+    c.fillStyle = this._g('rail', function (cc) {
+      var g = cc.createLinearGradient(0, yTop, 0, yBot);
+      g.addColorStop(0, '#6B5220');
+      g.addColorStop(0.4, '#C79A3E');
+      g.addColorStop(0.75, '#F3D98A');
+      g.addColorStop(1, '#A87C2C');
+      return g;
+    });
     c.beginPath();
     c.moveTo(xTopIn, yTop);
     c.lineTo(xTopIn + side * thickTop, yTop);
@@ -415,18 +440,22 @@ window.Ardah = window.Ardah || {};
 
   Renderer.prototype._judgeLine = function (c) {
     var half = this.halfAt(1), cx = this.w / 2, y = this.judgeY;
-    var glow = c.createLinearGradient(0, y - 16, 0, y + 16);
-    glow.addColorStop(0, 'rgba(255, 214, 130, 0)');
-    glow.addColorStop(0.5, 'rgba(255, 214, 130, 0.35)');
-    glow.addColorStop(1, 'rgba(255, 214, 130, 0)');
-    c.fillStyle = glow;
+    c.fillStyle = this._g('judgeGlow', function (cc) {
+      var g = cc.createLinearGradient(0, y - 16, 0, y + 16);
+      g.addColorStop(0, 'rgba(255, 214, 130, 0)');
+      g.addColorStop(0.5, 'rgba(255, 214, 130, 0.35)');
+      g.addColorStop(1, 'rgba(255, 214, 130, 0)');
+      return g;
+    });
     c.fillRect(cx - half, y - 16, half * 2, 32);
 
-    var bar = c.createLinearGradient(cx - half, 0, cx + half, 0);
-    bar.addColorStop(0, 'rgba(231, 180, 76, 0.35)');
-    bar.addColorStop(0.5, '#FFE7AE');
-    bar.addColorStop(1, 'rgba(231, 180, 76, 0.35)');
-    c.fillStyle = bar;
+    c.fillStyle = this._g('judgeBar', function (cc) {
+      var g = cc.createLinearGradient(cx - half, 0, cx + half, 0);
+      g.addColorStop(0, 'rgba(231, 180, 76, 0.35)');
+      g.addColorStop(0.5, '#FFE7AE');
+      g.addColorStop(1, 'rgba(231, 180, 76, 0.35)');
+      return g;
+    });
     c.fillRect(cx - half, y - 2, half * 2, 4);
   };
 
@@ -739,10 +768,13 @@ window.Ardah = window.Ardah || {};
     var j = state.judge, w = this.w;
     var top = 16;
 
-    var scrim = c.createLinearGradient(0, 0, 0, 92);
-    scrim.addColorStop(0, 'rgba(7, 11, 22, 0.75)');
-    scrim.addColorStop(1, 'rgba(7, 11, 22, 0)');
-    c.fillStyle = scrim;
+    var self = this;
+    c.fillStyle = this._g('hudScrim', function (cc) {
+      var g = cc.createLinearGradient(0, 0, 0, 92);
+      g.addColorStop(0, 'rgba(7, 11, 22, 0.75)');
+      g.addColorStop(1, 'rgba(7, 11, 22, 0)');
+      return g;
+    });
     c.fillRect(0, 0, w, 92);
 
     // Crowd meter: the row's composure, framed like a stage gauge.
@@ -754,11 +786,14 @@ window.Ardah = window.Ardah || {};
     this._roundRect(c, mx, my, mw, mh, mh / 2); c.stroke();
 
     var pct = Math.max(0.02, j.sync / 100);
-    var fill = c.createLinearGradient(mx, 0, mx + mw, 0);
-    if (pct > 0.45) { fill.addColorStop(0, '#2FB574'); fill.addColorStop(1, '#8FE3C0'); }
-    else if (pct > 0.2) { fill.addColorStop(0, '#C79A3E'); fill.addColorStop(1, '#FFD978'); }
-    else { fill.addColorStop(0, '#8A2E22'); fill.addColorStop(1, '#E06B4E'); }
-    c.fillStyle = fill;
+    var tone = pct > 0.45 ? 'ok' : (pct > 0.2 ? 'warn' : 'low');
+    c.fillStyle = this._g('meter_' + tone, function (cc) {
+      var g = cc.createLinearGradient(mx, 0, mx + mw, 0);
+      if (tone === 'ok') { g.addColorStop(0, '#2FB574'); g.addColorStop(1, '#8FE3C0'); }
+      else if (tone === 'warn') { g.addColorStop(0, '#C79A3E'); g.addColorStop(1, '#FFD978'); }
+      else { g.addColorStop(0, '#8A2E22'); g.addColorStop(1, '#E06B4E'); }
+      return g;
+    });
     this._roundRect(c, mx + 2, my + 2, Math.max(6, (mw - 4) * pct), mh - 4, (mh - 4) / 2);
     c.fill();
 

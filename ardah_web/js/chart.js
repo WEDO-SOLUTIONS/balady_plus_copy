@@ -30,11 +30,27 @@ window.Ardah = window.Ardah || {};
               [12, LANE_TAR, 0.95], [14, LANE_SWORDS, 0.8] ]
   };
 
-  /* Which groove hits become playable notes, per difficulty. */
+  /* Which groove hits become playable notes, per difficulty: lane -> `true`
+     for every slot the groove plays, or a list of slots.
+
+     The slot lists exist because of the swords lane. Selecting it wholesale
+     hands the player four clashes a bar in the chorus, which is a hard chart;
+     leaving it out entirely leaves a lane that shows nothing for the first
+     forty seconds and reads as broken. A couple of accents a bar is the middle
+     ground, and every difficulty now uses all three lanes. */
   var PLAYABLE = {
-    easy:   { verse: [LANE_TABL], chorus: [LANE_TABL, LANE_TAR] },
-    normal: { verse: [LANE_TABL, LANE_TAR], chorus: [LANE_TABL, LANE_TAR] },
-    hard:   { verse: [LANE_TABL, LANE_SWORDS, LANE_TAR], chorus: [LANE_TABL, LANE_SWORDS, LANE_TAR] }
+    easy: {
+      verse:  { 0: true, 1: [14] },
+      chorus: { 0: true, 1: [14], 2: true }
+    },
+    normal: {
+      verse:  { 0: true, 1: [14], 2: true },
+      chorus: { 0: true, 1: [6, 14], 2: true }
+    },
+    hard: {
+      verse:  { 0: true, 1: true, 2: true },
+      chorus: { 0: true, 1: true, 2: true }
+    }
   };
 
   /* Bar plan. 30 bars at 96 BPM ≈ 75 s — a run you can repeat without fatigue.
@@ -80,7 +96,9 @@ window.Ardah = window.Ardah || {};
 
           if (!section.playable) continue;
           if (wantsFlourish && slot >= 8) continue;   // cleared for the flourish
-          if (playableLanes[section.kind].indexOf(lane) === -1) continue;
+          var allowed = playableLanes[section.kind][lane];
+          if (!allowed) continue;
+          if (allowed !== true && allowed.indexOf(slot) === -1) continue;
           notes.push({ t: Math.round(t), lane: lane, type: 'tap' });
         }
 

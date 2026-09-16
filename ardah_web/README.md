@@ -90,7 +90,7 @@ What the slicing produced, at **180 KB total in WebP**:
 |---|---|---|
 | `bg_stage` | Rectangular crop of the stage band, title plaque painted out and blurred back into the sky | Yes — this is most of the visual win |
 | `note_tabl/swords/tar` | Keyed against the dark deck: distance-from-background alpha, colour unmultiplied, largest blob kept, ellipse mask to cut the neighbouring coin | Yes |
-| `key_tabl/swords/tar` | Same, with a rounded-rect mask to drop the sparks above the S key | Yes |
+| `key_tabl/swords/tar` | **No keying at all** — a plain crop with a rounded-rect mask. Keying kept eating a bevel or a corner off these (they are layered: coloured top, metal base, and sparks drawn over the S), and the dark pixels a plain mask keeps are the deck, which is what the caps are drawn back onto | Yes |
 | `ui_plaque` | Keyed against the sky | Cut cleanly, **but unusable**: the title is baked in as English pixels, so it cannot localise. Kept in `assets/` as the exhibit for why the brief bans text in artwork |
 | Performers, musicians, fires | — | **Not cuttable.** They sit against the fort, not a flat background, and they overlap each other. They stay baked into `bg_stage`, which is why the stage no longer animates in art mode |
 
@@ -188,8 +188,11 @@ performers.
 
 ## Verified
 
-Headless Chromium (Playwright), 390×844 @2x: audio context runs, 60 fps
-throughout, pause suspends and resume restores the context, calibration
+Headless Chromium (Playwright), 390×844 @2x: audio context runs, **59.7 fps
+with the artwork and 59.9 without it** (measured by counting frames, not by the
+in-game average — earlier readings of 53–57 came from the test harness's robot
+player scanning every note each frame, not from the game). The renderer's own
+work is ~0.31 ms per frame, of which the stage plate is 0.13 ms. Also verified: pause suspends and resume restores the context, calibration
 measures and persists an offset, judging and scoring behave, Arabic flips to
 RTL, no console errors. Timing numbers from a headless run mean nothing —
 measure on real devices.

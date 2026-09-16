@@ -47,7 +47,8 @@ def largest_blob(mask):
     return best if best is not None else mask
 
 
-def sprite(name, box, pad=6, thresh=70.0, feather=1.2, bg=None, floor=0.34, shape=None):
+def sprite(name, box, pad=6, thresh=70.0, feather=1.2, bg=None, floor=0.34, shape=None,
+           radius=0.18, shrink=1.0):
     """Cut `box` and key it against its own border colour."""
     x0, y0, x1, y1 = box
     crop = A[y0 - pad:y1 + pad, x0 - pad:x1 + pad].copy()
@@ -75,9 +76,9 @@ def sprite(name, box, pad=6, thresh=70.0, feather=1.2, bg=None, floor=0.34, shap
         yy, xx = np.mgrid[0:h, 0:w]
         cy, cx = (h - 1) / 2, (w - 1) / 2
         if shape == 'ellipse':
-            m = ((xx - cx) / (w / 2 - 1)) ** 2 + ((yy - cy) / (h / 2 - 1)) ** 2 <= 1.0
-        else:                      # rounded rect, radius = 18 % of the short side
-            r = min(w, h) * 0.18
+            m = ((xx - cx) / (w / 2 * shrink - 1)) ** 2 + ((yy - cy) / (h / 2 * shrink - 1)) ** 2 <= 1.0
+        else:                      # rounded rect
+            r = min(w, h) * radius
             dx = np.maximum(np.abs(xx - cx) - (w / 2 - 1 - r), 0)
             dy = np.maximum(np.abs(yy - cy) - (h / 2 - 1 - r), 0)
             m = (dx ** 2 + dy ** 2) <= r ** 2
@@ -129,6 +130,31 @@ def plate(name, box, patches=()):
     return img.size
 
 
+def sprite_plain(name, box, radius=14, feather=1.0):
+    """Crop with a rounded-rect mask and no colour keying at all.
+
+    The keycaps defeated the keyer: they are layered objects (coloured top,
+    metal base, bevel) sitting under a spray of sparks, and every threshold that
+    removed the deck also ate a bevel or a corner. A plain mask keeps the whole
+    object intact. The few dark pixels it keeps in the corners are the deck —
+    and the caps are drawn back onto that same dark deck, so nothing shows.
+    """
+    x0, y0, x1, y1 = box
+    crop = A[y0:y1, x0:x1]
+    h, w, _ = crop.shape
+    yy, xx = np.mgrid[0:h, 0:w]
+    r = radius
+    dx = np.maximum(np.abs(xx - (w - 1) / 2) - (w / 2 - r), 0)
+    dy = np.maximum(np.abs(yy - (h - 1) / 2) - (h / 2 - r), 0)
+    alpha = ((dx ** 2 + dy ** 2) <= r ** 2).astype(float) * 255
+
+    out = Image.fromarray(np.dstack([crop, alpha]).astype(np.uint8), 'RGBA')
+    if feather:
+        out.putalpha(out.getchannel('A').filter(ImageFilter.GaussianBlur(feather)))
+    out.save(f'{OUT}/{name}.png')
+    return out.size
+
+
 manifest = {}
 # The stage: sky, fort, palms, banners, the rows, the musicians, the floor.
 # The title plaque is painted out — it is UI, not scenery.
@@ -139,11 +165,16 @@ manifest['bg_stage'] = plate('bg_stage', (88, 128, 852, 945),
 
 manifest['note_tabl']   = sprite('note_tabl',   (250, 1118, 318, 1170), thresh=64)
 manifest['note_swords'] = sprite('note_swords', (440, 1046, 496, 1098), thresh=64, shape='ellipse', pad=2)
-manifest['note_tar']    = sprite('note_tar',    (630, 1157, 698, 1211), thresh=64, shape='ellipse', pad=2)
+manifest['note_tar']    = sprite('note_tar',    (630, 1157, 698, 1211), thresh=64, shape='ellipse',
+                                pad=2, shrink=0.94)
 
-manifest['key_tabl']   = sprite('key_tabl',   (178, 1358, 266, 1430), thresh=60, floor=0.45, shape='rect', pad=3)
-manifest['key_swords'] = sprite('key_swords', (430, 1358, 516, 1430), thresh=60, floor=0.45, shape='rect', pad=3)
-manifest['key_tar']    = sprite('key_tar',    (675, 1358, 761, 1430), thresh=60, floor=0.45, shape='rect', pad=3)
+# Keycaps: the box has to take the whole thing — the coloured top AND the metal
+# base plate under it — and stop above the deck's reflection. The mask keeps a
+# soft radius so the base plate's corners survive; earlier boxes clipped the
+# base and the mask ate the corners, which is what made the caps look gnawed.
+manifest['key_tabl']   = sprite_plain('key_tabl',   (170, 1352, 266, 1440), radius=15)
+manifest['key_swords'] = sprite_plain('key_swords', (420, 1363, 518, 1440), radius=13)
+manifest['key_tar']    = sprite_plain('key_tar',    (678, 1352, 774, 1440), radius=15)
 
 manifest['ui_plaque'] = sprite('ui_plaque', (255, 190, 692, 336), thresh=52, feather=0.8)
 
