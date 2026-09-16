@@ -1,1 +1,7 @@
 dist/
+deck/frames/
+deck/mock/
+deck/*.pptx
+deck/*.pdf
+deck/preview/
+node_modules/

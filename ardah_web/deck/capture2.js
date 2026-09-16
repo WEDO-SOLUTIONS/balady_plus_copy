@@ -1,0 +1,55 @@
+const { chromium } = require('/opt/node22/lib/node_modules/playwright');
+const OUT = require('path').join(__dirname, 'frames');
+const URL = 'http://localhost:8123/index.html';
+const ROBOT = () => {
+  const A = window.Ardah, held = {}; let cursor = 0;
+  (function f() {
+    if (A.game.phase === 'playing' && A.game.judge) {
+      const t = A.game.conductor.judgeTimeMs(), notes = A.game.judge.notes;
+      while (cursor < notes.length && notes[cursor].t < t - 200) cursor++;
+      for (let i = cursor; i < notes.length && notes[i].t < t + 40; i++) {
+        const n = notes[i];
+        if (n.state !== 'pending' || Math.abs(n.t - t) > 18) continue;
+        if (n.type === 'flourish') A.game._flourish(0);
+        else { A.game._press(n.lane, 0); if (n.type === 'hold') held[n.lane] = n.t + n.durMs; }
+      }
+      Object.keys(held).forEach(l => { if (t >= held[l]) { A.game._release(+l, 0); delete held[l]; } });
+    }
+    requestAnimationFrame(f);
+  })();
+};
+const waitSong = (p, ms) => p.waitForFunction(t => window.Ardah.game.conductor.judgeTimeMs() >= t, ms, { timeout: 90000, polling: 30 });
+
+(async () => {
+  const browser = await chromium.launch({ args: ['--autoplay-policy=no-user-gesture-required', '--mute-audio'] });
+  const ctx = await browser.newContext({ viewport: { width: 440, height: 956 }, deviceScaleFactor: 3, isMobile: true, hasTouch: true });
+
+  // muted, in play
+  let p = await ctx.newPage();
+  await p.goto(URL, { waitUntil: 'load' });
+  await p.click('#btn-mute');
+  await p.click('#btn-play'); await p.evaluate(ROBOT);
+  await waitSong(p, 33000);
+  await p.screenshot({ path: `${OUT}/17-muted.png` });
+  await p.close();
+
+  // latency lab, in play
+  p = await ctx.newPage();
+  await p.goto(URL + '?debug=1', { waitUntil: 'load' });
+  await p.click('#btn-play'); await p.evaluate(ROBOT);
+  await waitSong(p, 34000);
+  await p.screenshot({ path: `${OUT}/18-latency-lab.png` });
+  await p.close();
+
+  // pause, over a lit stage
+  p = await ctx.newPage();
+  await p.goto(URL, { waitUntil: 'load' });
+  await p.click('#btn-play'); await p.evaluate(ROBOT);
+  await waitSong(p, 35000);
+  await p.keyboard.press('Escape'); await p.waitForTimeout(500);
+  await p.screenshot({ path: `${OUT}/15-pause.png` });
+  await p.close();
+
+  await browser.close();
+  console.log('re-captured');
+})();

@@ -778,8 +778,42 @@ window.Ardah = window.Ardah || {};
     });
     c.fillRect(0, 0, w, 92);
 
-    // Crowd meter: the row's composure, framed like a stage gauge.
-    var mw = Math.min(w * 0.52, 250), mx = 16, my = top + 6, mh = 14;
+    // Score plate first: it is fixed-width content, and the meter has to fit
+    // in whatever is left. On a 440pt-wide phone the two used to overlap.
+    var label = ((A.i18n && A.i18n.t('score')) || 'SCORE').toUpperCase();
+    var value = formatScore(j.score);
+    c.font = '800 19px -apple-system, system-ui, sans-serif';
+    var vw = c.measureText(value).width;
+    c.font = '700 12px -apple-system, system-ui, sans-serif';
+    var lw = c.measureText(label).width;
+
+    var maxW = w - HUD_RIGHT - 16;
+    var showLabel = vw + lw + 34 <= maxW;
+    var pw = Math.min(maxW, showLabel ? vw + lw + 34 : vw + 26), ph = 30;
+    var px = w - HUD_RIGHT - pw, py = top;
+
+    c.fillStyle = 'rgba(10, 8, 14, 0.8)';
+    this._roundRect(c, px, py, pw, ph, 9); c.fill();
+    c.strokeStyle = 'rgba(231, 180, 76, 0.7)';
+    c.lineWidth = 1.4;
+    this._roundRect(c, px, py, pw, ph, 9); c.stroke();
+
+    if (showLabel) {
+      c.textAlign = 'left';
+      c.fillStyle = 'rgba(246, 231, 196, 0.72)';
+      c.font = '700 11px -apple-system, system-ui, sans-serif';
+      c.fillText(label, px + 11, py + 19);
+    }
+
+    c.textAlign = 'right';
+    c.fillStyle = '#FFD978';
+    c.font = '800 19px -apple-system, system-ui, sans-serif';
+    c.fillText(value, px + pw - 11, py + 21);
+
+    // Crowd meter: the row's composure, framed like a stage gauge. It takes the
+    // space the plate leaves, never less than a readable stub.
+    var mx = 16, mh = 14, my = top + 6;
+    var mw = Math.max(90, Math.min(250, px - mx - 14));
     c.fillStyle = 'rgba(10, 8, 14, 0.75)';
     this._roundRect(c, mx, my, mw, mh, mh / 2); c.fill();
     c.strokeStyle = 'rgba(231, 180, 76, 0.6)';
@@ -788,7 +822,8 @@ window.Ardah = window.Ardah || {};
 
     var pct = Math.max(0.02, j.sync / 100);
     var tone = pct > 0.45 ? 'ok' : (pct > 0.2 ? 'warn' : 'low');
-    c.fillStyle = this._g('meter_' + tone, function (cc) {
+    var self2 = this;
+    c.fillStyle = this._g('meter_' + tone + '_' + Math.round(mw), function (cc) {
       var g = cc.createLinearGradient(mx, 0, mx + mw, 0);
       if (tone === 'ok') { g.addColorStop(0, '#2FB574'); g.addColorStop(1, '#8FE3C0'); }
       else if (tone === 'warn') { g.addColorStop(0, '#C79A3E'); g.addColorStop(1, '#FFD978'); }
@@ -806,33 +841,7 @@ window.Ardah = window.Ardah || {};
     c.font = '700 10px -apple-system, system-ui, sans-serif';
     c.fillText((A.i18n && A.i18n.t('crowd')) || 'CROWD', mx + 2, my + mh + 13);
 
-    // Score plate: dark field, gold frame, label plus value.
-    var label = ((A.i18n && A.i18n.t('score')) || 'SCORE').toUpperCase();
-    var value = formatScore(j.score);
-    c.font = '800 19px -apple-system, system-ui, sans-serif';
-    var vw = c.measureText(value).width;
-    c.font = '700 12px -apple-system, system-ui, sans-serif';
-    var lw = c.measureText(label).width;
-    // The sound toggle owns the top-right corner, so the plate stops short of it.
-    var pw = Math.min(w * 0.42, vw + lw + 34), ph = 30;
-    var px = w - HUD_RIGHT - pw, py = top;
-
-    c.fillStyle = 'rgba(10, 8, 14, 0.8)';
-    this._roundRect(c, px, py, pw, ph, 9); c.fill();
-    c.strokeStyle = 'rgba(231, 180, 76, 0.7)';
-    c.lineWidth = 1.4;
-    this._roundRect(c, px, py, pw, ph, 9); c.stroke();
-
-    c.textAlign = 'left';
-    c.fillStyle = 'rgba(246, 231, 196, 0.72)';
-    c.font = '700 11px -apple-system, system-ui, sans-serif';
-    c.fillText(label, px + 11, py + 19);
-
     c.textAlign = 'right';
-    c.fillStyle = '#FFD978';
-    c.font = '800 19px -apple-system, system-ui, sans-serif';
-    c.fillText(value, px + pw - 11, py + 21);
-
     if (j.combo >= 2) {
       c.fillStyle = '#FFD978';
       c.font = '700 13px -apple-system, system-ui, sans-serif';
