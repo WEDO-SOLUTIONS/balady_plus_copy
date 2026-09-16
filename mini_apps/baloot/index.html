@@ -1511,6 +1511,7 @@ const Game = {
     await wait(pace(260));
     this.bidRound = 1;
     this.bidsSeen = 0;
+    this.bidLocked = false;
     this.currentBid = null;
     this.bidTurn = (G.dealer + 1) % 4;
     this.nextBid();
@@ -1553,6 +1554,9 @@ const Game = {
   },
 
   async applyBid(seat, b){
+    // a double tap on a bid button would otherwise advance the auction twice
+    if (this.bidLocked) return;
+    this.bidLocked = true;
     UI.hide("#m-bid");
     Sound.bid();
     const label = b.type === "pass" ? T("pass")
@@ -1563,6 +1567,7 @@ const Game = {
     this.bidsSeen++;
     this.bidTurn = (this.bidTurn + 1) % 4;
     await wait(pace(480));
+    this.bidLocked = false;
     this.nextBid();
   },
 
