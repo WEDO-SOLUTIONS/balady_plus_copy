@@ -22,7 +22,16 @@ Future<List<FriendRequest>> outgoingFriendRequests(Ref ref) =>
 /// Accept/decline/cancel actions, kept separate from the plain list reads
 /// above so a screen that only displays requests doesn't need to depend on
 /// the mutation surface.
-@riverpod
+///
+/// keepAlive: this notifier is only ever reached via `.notifier` from a
+/// button/confirm-sheet callback, never `ref.watch`/`ref.listen`ed — with
+/// nothing keeping a listener on it, auto-dispose would tear it down almost
+/// immediately after that one read. Against the real backend, the
+/// `await`ed repository calls now take real network time, long enough for
+/// that disposal to land mid-flight and throw on a trailing
+/// `ref.invalidate` (see `providers/friends_controller.dart`'s matching
+/// note and AGENTS.md's "Real backend wiring" section).
+@Riverpod(keepAlive: true)
 class FriendRequestsController extends _$FriendRequestsController {
   @override
   void build() {}
@@ -33,7 +42,13 @@ class FriendRequestsController extends _$FriendRequestsController {
   /// half can't be demonstrated in a single-device mock.
   Future<void> accept(String id) async {
     final friend = await ref.read(friendRequestRepositoryProvider).acceptRequest(id);
+    if (!ref.mounted) {
+      return;
+    }
     await ref.read(friendsRepositoryProvider).addFriend(friend);
+    if (!ref.mounted) {
+      return;
+    }
     ref
       ..invalidate(incomingFriendRequestsProvider)
       ..invalidate(friendsListProvider);
@@ -42,12 +57,18 @@ class FriendRequestsController extends _$FriendRequestsController {
   /// R-38: silent — no friend created, no notification.
   Future<void> decline(String id) async {
     await ref.read(friendRequestRepositoryProvider).declineRequest(id);
+    if (!ref.mounted) {
+      return;
+    }
     ref.invalidate(incomingFriendRequestsProvider);
   }
 
   /// R-37: withdraws a request this user sent.
   Future<void> cancel(String id) async {
     await ref.read(friendRequestRepositoryProvider).cancelRequest(id);
+    if (!ref.mounted) {
+      return;
+    }
     ref.invalidate(outgoingFriendRequestsProvider);
   }
 
@@ -57,13 +78,28 @@ class FriendRequestsController extends _$FriendRequestsController {
   /// (i.e. one that went through scan/link) — the two seeded fixture
   /// requests in `FakeFriendRequestRepository` have no such token, see
   /// `features/friends_on_map/AGENTS.md`.
+  ///
+  /// Blocks before declining (not the other way around): against the real
+  /// backend, blocking resolves the token to the requester's account id via
+  /// the still-pending request row (`handleBlockUser`) and already deletes
+  /// that request as part of blocking — declining first would leave nothing
+  /// for the block call to resolve against. The trailing `declineRequest`
+  /// then legitimately 404s against the real backend; the remote repository
+  /// treats that as an already-applied no-op (see AGENTS.md's "Real backend
+  /// wiring" note).
   Future<void> blockIncoming(FriendRequest request) async {
-    await ref.read(friendRequestRepositoryProvider).declineRequest(request.id);
     await ref
         .read(blockedUsersRepositoryProvider)
         .blockUser(
           BlockedUser(id: request.id, displayName: request.displayName, profilePictureUrl: request.profilePictureUrl),
         );
+    if (!ref.mounted) {
+      return;
+    }
+    await ref.read(friendRequestRepositoryProvider).declineRequest(request.id);
+    if (!ref.mounted) {
+      return;
+    }
     ref
       ..invalidate(incomingFriendRequestsProvider)
       ..invalidate(blockedUsersProvider);

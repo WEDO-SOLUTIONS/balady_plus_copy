@@ -128,6 +128,113 @@ Precisely by BRD story (a correction from this note's earlier draft): R-31 (QR s
   - Verified via a real iOS simulator run with the native change (a full Xcode rebuild, ~53s, succeeded) — an independent `simctl log stream` capture (started separately from `flutter run`, so it survives that process detaching on its own after ~90s, an unrelated environment quirk of this sandbox) ran across multiple 60s refresh ticks (~3.7 minutes) with zero `Exception`/`Error refreshing marker label`/`Error building friend markers` lines — consistent with, though not itself visual proof of, all markers now completing their updates. The user's own device is what confirms the actual on-screen result (all captions updating, not just one).
 - Verified via a real iOS simulator debug run past the first 60-second refresh tick: 0 analyzer/format issues, no exceptions, no `Error building friend markers` log line at either the initial build or after the first `setMarkerOptions` refresh cycle. Same sandbox-tile limitation as every prior map slice — the user's own device is what confirms the actual caption/colour appearance.
 
+## Real backend wiring (2026-09-13)
+
+A real backend for this feature exists now: a personal Fly.io deployment at
+`https://balady-friends-service.fly.dev`, built from
+`~/Downloads/friends-on-map/GO_BACKEND_SPEC.md` (Go source mirrored at
+`~/dev/code/wedo/go/balady-friends-service`) — not a provisioned environment,
+just a throwaway cross-device test server. All five repository seams
+(`FriendsRepository`, `FriendRequestRepository`, `BlockedUsersRepository`,
+`InviteLinkRepository`, `FriendsOnMapPositionRepository`) are now bound to
+`Remote*` implementations in `data/`; the `Fake*` implementations are kept in
+the repo, unreferenced, as an easy one-line-per-file fallback if this
+personal deployment goes down.
+
+- **Auth is not the app's real SSO token.** The mock server only understands
+  its own test login (`POST /test/login {username}` → a token stable per
+  username) — the app's real `AuthTokenInterceptor`/`tokenProvider` bearer
+  would just 401 against it. `providers/friends_on_map_service_token.dart`
+  bootstraps a second, independent identity instead, keyed by this device's
+  own persisted `uuidProviderProvider` (not any real user identity/PII) so
+  two installs act as two distinct test accounts and the same install stays
+  stable across restarts; cached in SharedPreferences
+  (`friends_on_map_service_token`) after the first login.
+- `data/friends_on_map_api_config.dart` holds the base URL as a plain
+  constant — deliberately **not** added to `EnvironmentConfig`
+  (`shared/config/environment_config.dart`), which is reserved for the app's
+  real per-environment backends sourced from Firebase Remote Config; this
+  server has no such environments to select between.
+- `providers/friends_on_map_network.dart`: a fresh, feature-scoped
+  `Dio(BaseOptions(baseUrl: ...))`, same convention as
+  `shared/providers/dgis_network.dart` et al. Building the `Dio` instance
+  needs nothing async (the base URL is a constant), so it's a plain
+  synchronous `@Riverpod(keepAlive: true)` provider — only the per-request
+  auth-token lookup inside its interceptor is async
+  (`ref.read(friendsOnMapServiceTokenProvider.future)`).
+- `data/friends_on_map_json.dart`: shared JSON decoding for `Friend`/
+  `FriendRequest`/`BlockedUser` — field names match the Dart models exactly,
+  since the server's own DTOs were written against these models as the
+  source of truth (not the other way around).
+- The real invite-link endpoints return a bare token, not a URL —
+  `data/remote_invite_link_repository.dart` wraps it into the same
+  `https://plus.balady.gov.sa/invite/<token>` shape the mock produced, so
+  `providers/invite_resolution_flow.dart`'s URL parsing needed no changes.
+- `RemoteFriendsRepository.addFriend` is a deliberate no-op: the real
+  backend already establishes mutual visibility server-side when a request
+  is accepted (`handleAcceptRequest`), unlike the mock, which needed a
+  client-side "add to my list" call. Kept in the interface so
+  `FriendRequestsController.accept` doesn't need a repository-specific
+  branch.
+- **A real ordering bug, found while wiring this, not by manual QA**: both
+  `FriendsController.blockFriend` and `FriendRequestsController.blockIncoming`
+  used to remove/decline *before* blocking. Against the real server, blocking
+  resolves the target's identity from the still-current
+  friendship/pending-request row and already removes it as part of blocking
+  (`handleBlockUser`) — removing/declining first leaves nothing for the
+  block call to resolve against, and the block would 404. Both methods now
+  block first, then call the now-redundant remove/decline (a harmless
+  already-applied no-op against `/v1/friends/{id}` — no error path in
+  `handleRemoveFriend` — but a legitimate 404 against
+  `/v1/friend-requests/{id}/decline`, which
+  `RemoteFriendRequestRepository.declineRequest` tolerates and treats as
+  success). This reorder doesn't change the net user-visible effect or the
+  `ref.invalidate` calls, only the internal call order.
+- **Gotcha for whoever tested the mocked invite flow before this switch**:
+  the persistent invite link is cached in SharedPreferences
+  (`friends_on_map_invite_link`, see `providers/friends_on_map_invite_link.dart`)
+  and is only ever (re)fetched when that key is absent. A link cached from
+  the old `FakeInviteLinkRepository` will keep being reused forever and won't
+  resolve against the real server — clear that key (or the app's local
+  storage) once after this switch if your own test device has stale local
+  state from before.
+- Not verified end-to-end through the running app in this session (this was
+  a client-code wiring pass, not a UI QA pass) — the underlying contract was
+  verified directly against the deployed server via `curl` first (full
+  invite → accept → mutual-friends → block → re-resolve → position-report
+  round trip, all matching `GO_BACKEND_SPEC.md`'s acceptance criteria). Give
+  the user the same manual QA checklist as every other slice, now across two
+  real devices/installs instead of one: add via QR/link, accept, see each
+  other in both friend lists, block from one side removes it on both, remove
+  friend, unblock.
+- **Real bug found by the user via manual QA immediately after this wiring
+  shipped: removing a friend crashed with `Cannot use the Ref of
+  friendsControllerProvider after it has been disposed`.** Root cause:
+  `FriendsController`, `FriendRequestsController`, and
+  `BlockedUsersController` (`providers/friends_controller.dart`,
+  `friend_requests.dart`, `blocked_users_controller.dart`) were plain
+  `@riverpod` (auto-dispose) notifiers whose `build()` returns `void` and
+  which are never `ref.watch`/`ref.listen`ed anywhere — only ever reached
+  via `.notifier` from a button/confirm-sheet callback. With nothing keeping
+  a listener on them, Riverpod schedules them for disposal almost
+  immediately after that one read. Against the old in-memory fakes the
+  awaited repository call resolved within the same microtask, so disposal
+  never got a chance to fire before a method's trailing `ref.invalidate(...)`
+  ran; against the real backend's network latency, disposal now reliably
+  lands mid-flight instead, and the post-`await` `ref.invalidate` throws.
+  **Fix**: all three made `@Riverpod(keepAlive: true)` (they hold no state
+  to leak, so this has no downside beyond removing the race) plus, as
+  defense-in-depth matching this feature's existing `ref.mounted` idiom
+  (`friends_on_map_position_reporter.dart`, `friend_markers.dart`), a
+  `if (!ref.mounted) return;` guard after every `await` and before every
+  subsequent `ref.read`/`ref.invalidate` in every mutation method
+  (`removeFriend`, `blockFriend`, `accept`, `decline`, `cancel`,
+  `blockIncoming`, `unblock`). Worth knowing for any future action-only
+  controller in this app that wraps a real network call: auto-dispose plus
+  "only ever read via `.notifier`, never watched" is exactly this shape of
+  latent bug, invisible against instant mocks and real against a live
+  backend.
+
 ## A BR-05 tension to resolve later, not now
 
 BRD business rule BR-05 (S-11) describes the friend list as "the single in-feature hub" that requests/activity/shared-lists/privacy/notifications are all reached *from* — implying it should eventually **replace** `FriendsOnMapPage`'s post-activation view, not be a screen reached *from* it. Right now it's the other way around: the friend list is one more row on `FriendsOnMapStatusView`, alongside pause/deactivate, for the same reason those are there — no other destination exists yet to justify restructuring around. Revisit this once enough of the hub's rows (requests, activity, shared lists, the real privacy screen) exist to make one restructuring worthwhile, rather than moving the entry point piecemeal on every slice.
@@ -184,6 +291,7 @@ BRD business rule BR-05 (S-11) describes the friend list as "the single in-featu
 - `ui/widgets/friend_confirm_sheet.dart`: this app's first confirm-before-destructive-action sheet, reused by remove/block/unblock — see the remove/block slice note above.
 - `ui/blocked_users_page.dart` (`BlockedUsersRoute`): the R-45 blocked-users list + unblock.
 - `friends_on_map/friend_elapsed_time.dart`: `friendElapsedTimeLabel`/`friendPositionIsStale` — shared by the card and the marker, see "What the marker-staleness slice actually built" above.
+- `data/friends_on_map_api_config.dart`, `data/friends_on_map_json.dart`, `data/remote_*.dart` (5 files, one per repository interface), `providers/friends_on_map_service_token.dart`, `providers/friends_on_map_network.dart`: the real-backend wiring — see "Real backend wiring" above for the full shape and the two ordering fixes it required.
 
 ## Verification
 

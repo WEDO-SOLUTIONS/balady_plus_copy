@@ -6,7 +6,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:mapness/_features/common/providers/ui_direction.dart';
 import 'package:mapness/features/friends_on_map/models/friends_on_map_activation_status.dart';
+import 'package:mapness/features/friends_on_map/providers/friend_requests.dart';
+import 'package:mapness/features/friends_on_map/providers/friends_list.dart';
 import 'package:mapness/features/friends_on_map/providers/friends_on_map_activation.dart';
+import 'package:mapness/features/friends_on_map/providers/friends_on_map_events_socket.dart';
 import 'package:mapness/features/friends_on_map/ui/widgets/friends_on_map_background_prompt_view.dart';
 import 'package:mapness/features/friends_on_map/ui/widgets/friends_on_map_disclosure_view.dart';
 import 'package:mapness/features/friends_on_map/ui/widgets/friends_on_map_permission_denied_view.dart';
@@ -46,10 +49,24 @@ class _FriendsOnMapPageState extends ConsumerState<FriendsOnMapPage> with Widget
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     super.didChangeAppLifecycleState(state);
-    // Lets the denied view recover on its own once the user grants location
-    // from OS Settings and comes back, without needing to retap Activate.
     if (state == AppLifecycleState.resumed) {
+      // Lets the denied view recover on its own once the user grants
+      // location from OS Settings and comes back, without needing to retap
+      // Activate.
       ref.read(friendsOnMapActivationProvider.notifier).refreshPermissionStatus();
+
+      // The events socket can die silently while backgrounded (OS network
+      // suspension, or the personal test server's Fly machine scaling to
+      // zero while idle) — reconnect it and force an immediate refresh of
+      // the friend/request lists rather than waiting for a live event that
+      // might never arrive if the remote change happened while this device
+      // had no working connection at all. See
+      // `providers/friends_on_map_events_socket.dart`.
+      ref.read(friendsOnMapEventsSocketProvider.notifier).reconnectNow();
+      ref
+        ..invalidate(friendsListProvider)
+        ..invalidate(incomingFriendRequestsProvider)
+        ..invalidate(outgoingFriendRequestsProvider);
     }
   }
 
@@ -87,6 +104,11 @@ class _FriendsOnMapPageState extends ConsumerState<FriendsOnMapPage> with Widget
   @override
   Widget build(BuildContext context) {
     final status = ref.watch(friendsOnMapActivationProvider);
+    // Keeps the events socket connected for as long as this page (or the
+    // friend list/requests routes pushed on top of it) stays mounted — same
+    // watch-from-an-always-mounted-place cascade as `friendMarkersProvider`
+    // elsewhere in this feature.
+    ref.watch(friendsOnMapEventsSocketProvider);
 
     return Directionality(
       textDirection: ref.watch(uiDirectionProvider),
