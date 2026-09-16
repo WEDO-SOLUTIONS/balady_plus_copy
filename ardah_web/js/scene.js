@@ -1,23 +1,24 @@
 /* The stage: everything above the note runway.
 
    Two layers, and the split is a performance decision, not a stylistic one.
-   The backdrop — sky, stars, the fort, bunting, the plaza — never changes
-   between frames, so it is painted ONCE into an offscreen canvas on resize and
-   blitted afterwards. Only what actually moves is redrawn: firelight, the two
-   rows of performers, the drummers. That is what keeps a scene this busy at
-   60 fps inside a WebView, where the page is a composited platform view.
+   The backdrop — sky, moon, fort, palms, banners, the tiled plaza — never
+   changes between frames, so it is painted ONCE into an offscreen canvas on
+   resize and blitted afterwards. Only what moves is redrawn: the braziers, the
+   two rows of performers, the musicians. That is what keeps a scene this busy
+   at 60 fps inside a WebView, where the page is a composited platform view.
 
-   Everything is drawn with paths and gradients. No images, no sprite sheets —
-   the whole game still fits in one file you can mail to someone.
+   Everything is drawn with paths and gradients. No images, no sprite sheets.
 
-   On the art itself: this is a stylised placeholder, not the shipping look.
-   Dignified posture, no caricature, swords held ceremonially. Real artwork is
-   commissioned and goes through cultural review first (concept doc §11). */
+   On the art itself: this is a stylised placeholder following the concept
+   art's composition. Dignified posture, no caricature, sabres held
+   ceremonially. Real artwork is commissioned and goes through cultural review
+   before anything ships (concept doc §11). */
 window.Ardah = window.Ardah || {};
 (function (A) {
   'use strict';
 
-  var FLAG_COLORS = ['#C8553D', '#E7B44C', '#2E8B57', '#3E6D9C', '#D9BF9A'];
+  var GREEN = '#0E6B3C';
+  var GOLD = '#E7B44C';
 
   function Scene() {
     this.backdrop = null;
@@ -25,15 +26,15 @@ window.Ardah = window.Ardah || {};
     this.horizonY = 0;
     this.stageY = 0;
     this.embers = [];
-    this.fires = [];
+    this.braziers = [];
   }
 
   /* ---------------------------- static backdrop ---------------------------- */
 
   Scene.prototype.build = function (w, h, dpr, stageY) {
     this.w = w; this.h = h;
-    this.stageY = stageY;                 // where the runway begins
-    this.horizonY = stageY * 0.62;
+    this.stageY = stageY;
+    this.horizonY = stageY * 0.60;
 
     var cv = document.createElement('canvas');
     cv.width = Math.round(w * dpr);
@@ -43,207 +44,352 @@ window.Ardah = window.Ardah || {};
 
     this._sky(c, w, h);
     this._fort(c, w);
+    this._palms(c, w);
     this._plaza(c, w);
-    this._bunting(c, w);
-
+    this._banners(c, w);
     this.backdrop = cv;
 
-    // Fire positions, reused by the dynamic pass.
-    this.fires = [
-      { x: w * 0.09, y: this.horizonY + 26, r: 34 },
-      { x: w * 0.26, y: this.horizonY + 18, r: 26 },
-      { x: w * 0.74, y: this.horizonY + 18, r: 26 },
-      { x: w * 0.91, y: this.horizonY + 26, r: 34 }
+    var floor = this.horizonY + 44;
+    this.braziers = [
+      { x: w * 0.055, y: floor + 16, r: 15 },
+      { x: w * 0.205, y: floor + 2, r: 12 },
+      { x: w * 0.795, y: floor + 2, r: 12 },
+      { x: w * 0.945, y: floor + 16, r: 15 }
     ];
     this.embers.length = 0;
   };
 
-  Scene.prototype._sky = function (c, w, h) {
+  /** The night gradient, shared so the moon can carve its crescent out of an
+      exact copy of the sky behind it. */
+  Scene.prototype._skyGradient = function (c) {
     var g = c.createLinearGradient(0, 0, 0, this.stageY);
-    g.addColorStop(0, '#0A1430');
-    g.addColorStop(0.45, '#13203F');
-    g.addColorStop(0.8, '#2A2A44');
-    g.addColorStop(1, '#3A2B33');
+    g.addColorStop(0, '#081226');
+    g.addColorStop(0.42, '#102B4E');
+    g.addColorStop(0.78, '#2B3354');
+    g.addColorStop(1, '#4A3A44');
+    return g;
+  };
+
+  Scene.prototype._sky = function (c, w, h) {
+    var g = this._skyGradient(c);
     c.fillStyle = g;
     c.fillRect(0, 0, w, this.stageY + 2);
 
     c.fillStyle = '#FFFFFF';
-    for (var i = 0; i < 90; i++) {
-      var x = Math.random() * w, y = Math.random() * this.horizonY * 0.9;
-      c.globalAlpha = Math.random() * 0.5 + 0.15;
-      var r = Math.random() * 1.3 + 0.3;
+    for (var i = 0; i < 110; i++) {
+      var x = Math.random() * w, y = Math.random() * this.horizonY * 0.95;
+      c.globalAlpha = Math.random() * 0.55 + 0.12;
+      var r = Math.random() * 1.4 + 0.3;
       c.fillRect(x, y, r, r);
     }
     c.globalAlpha = 1;
 
-    // Warm haze rising off the fires, behind everything else.
-    var haze = c.createRadialGradient(w / 2, this.horizonY + 30, 10, w / 2, this.horizonY + 30, w * 0.7);
-    haze.addColorStop(0, 'rgba(231, 150, 60, 0.20)');
-    haze.addColorStop(1, 'rgba(231, 150, 60, 0)');
+    var haze = c.createRadialGradient(w / 2, this.horizonY + 40, 10, w / 2, this.horizonY + 40, w * 0.8);
+    haze.addColorStop(0, 'rgba(236, 156, 62, 0.22)');
+    haze.addColorStop(1, 'rgba(236, 156, 62, 0)');
     c.fillStyle = haze;
     c.fillRect(0, 0, w, this.stageY);
+
+    // After the haze: it would otherwise tint the moon orange.
+    this._moon(c, w * 0.74, this.horizonY * 0.52, Math.max(14, w * 0.045));
   };
 
-  /* Diriyah-style mud-brick wall: crenellated towers with lit windows. */
+  /* Crescent: a lit disc with a bite taken out of it. The bite is painted in
+     the sky's own gradient rather than erased — erasing would punch a hole
+     through the backdrop and show the canvas base colour instead of the sky. */
+  Scene.prototype._moon = function (c, x, y, r) {
+    var glow = c.createRadialGradient(x, y, r * 0.2, x, y, r * 3.2);
+    glow.addColorStop(0, 'rgba(255, 244, 214, 0.32)');
+    glow.addColorStop(1, 'rgba(255, 244, 214, 0)');
+    c.fillStyle = glow;
+    c.beginPath(); c.arc(x, y, r * 3.2, 0, Math.PI * 2); c.fill();
+
+    c.fillStyle = '#FFF6DC';
+    c.beginPath(); c.arc(x, y, r, 0, Math.PI * 2); c.fill();
+
+    c.save();
+    c.beginPath(); c.arc(x, y, r, 0, Math.PI * 2); c.clip();
+    c.fillStyle = this._skyGradient(c);
+    c.beginPath(); c.arc(x - r * 0.46, y - r * 0.3, r * 0.94, 0, Math.PI * 2); c.fill();
+    c.restore();
+  };
+
+  /* Diriyah-style mud-brick fort: crenellated towers, arched windows, a lit
+     gate and a low flight of steps down to the plaza. */
   Scene.prototype._fort = function (c, w) {
-    var baseY = this.horizonY + 34;
-    var wallTop = this.horizonY - 44;
-    var wall = c.createLinearGradient(0, wallTop, 0, baseY);
-    wall.addColorStop(0, '#6B4A33');
-    wall.addColorStop(1, '#3B2A22');
+    var baseY = this.horizonY + 44;
+    var wallTop = this.horizonY - 40;
+    var wall = c.createLinearGradient(0, wallTop - 30, 0, baseY);
+    wall.addColorStop(0, '#9A6E45');
+    wall.addColorStop(0.5, '#7A5433');
+    wall.addColorStop(1, '#4A3220');
 
-    // Main wall
     c.fillStyle = wall;
-    c.fillRect(w * 0.07, wallTop + 26, w * 0.86, baseY - wallTop - 26);
+    c.fillRect(w * 0.06, wallTop + 22, w * 0.88, baseY - wallTop - 22);
+    this._merlons(c, w * 0.06, wallTop + 22, w * 0.88, 11, 8);
 
-    // Towers
     var towers = [
-      { x: w * 0.10, w: w * 0.13, top: wallTop - 10 },
-      { x: w * 0.42, w: w * 0.16, top: wallTop - 26 },
-      { x: w * 0.77, w: w * 0.13, top: wallTop - 10 }
+      { x: w * 0.09, w: w * 0.15, top: wallTop - 6 },
+      { x: w * 0.39, w: w * 0.22, top: wallTop - 34 },
+      { x: w * 0.76, w: w * 0.15, top: wallTop - 6 }
     ];
     for (var i = 0; i < towers.length; i++) {
       var t = towers[i];
       c.fillStyle = wall;
       c.fillRect(t.x, t.top, t.w, baseY - t.top);
-      this._merlons(c, t.x, t.top, t.w);
-      this._windows(c, t.x, t.top, t.w, baseY);
+      this._merlons(c, t.x, t.top, t.w, 12, 9);
+      this._archWindows(c, t.x, t.top + 24, t.w, i === 1 ? 3 : 2, i === 1 ? 2 : 2);
     }
-    this._merlons(c, w * 0.07, wallTop + 26, w * 0.86);
 
-    // Door of the central tower, lit from inside.
-    var dx = w * 0.46, dw = w * 0.07, dy = baseY - 42;
-    var door = c.createLinearGradient(0, dy, 0, baseY);
-    door.addColorStop(0, '#F4B860');
-    door.addColorStop(1, '#8A4A1E');
-    c.fillStyle = door;
+    // Gate: a tall arch with light spilling out of it.
+    var gx = w * 0.455, gw = w * 0.09, gTop = baseY - 56;
+    var glow = c.createLinearGradient(0, gTop, 0, baseY);
+    glow.addColorStop(0, '#FFD98A');
+    glow.addColorStop(0.55, '#E79A3C');
+    glow.addColorStop(1, '#8A4A1E');
+    c.fillStyle = glow;
     c.beginPath();
-    c.moveTo(dx, baseY);
-    c.lineTo(dx, dy + 10);
-    c.quadraticCurveTo(dx + dw / 2, dy - 8, dx + dw, dy + 10);
-    c.lineTo(dx + dw, baseY);
+    c.moveTo(gx, baseY);
+    c.lineTo(gx, gTop + 16);
+    c.quadraticCurveTo(gx + gw / 2, gTop - 12, gx + gw, gTop + 16);
+    c.lineTo(gx + gw, baseY);
     c.closePath();
     c.fill();
-  };
 
-  Scene.prototype._merlons = function (c, x, y, width) {
-    var step = 13, mw = 8, mh = 9;
-    c.fillStyle = '#5A3E2B';
-    for (var mx = x + 2; mx < x + width - mw; mx += step) {
-      c.beginPath();
-      c.moveTo(mx, y);
-      c.lineTo(mx + mw / 2, y - mh);
-      c.lineTo(mx + mw, y);
-      c.closePath();
-      c.fill();
+    var spill = c.createRadialGradient(gx + gw / 2, baseY, 4, gx + gw / 2, baseY, w * 0.26);
+    spill.addColorStop(0, 'rgba(255, 196, 110, 0.4)');
+    spill.addColorStop(1, 'rgba(255, 196, 110, 0)');
+    c.fillStyle = spill;
+    c.fillRect(gx - w * 0.26, baseY - 40, w * 0.52 + gw, 80);
+
+    // Steps
+    for (var s = 0; s < 3; s++) {
+      c.fillStyle = s % 2 ? 'rgba(150, 116, 78, 0.95)' : 'rgba(126, 96, 64, 0.95)';
+      var sw = w * (0.30 + s * 0.05), sx = w / 2 - sw / 2;
+      c.fillRect(sx, baseY + s * 7, sw, 7);
     }
   };
 
-  Scene.prototype._windows = function (c, x, top, width, baseY) {
-    var rows = 2, cols = 2;
+  Scene.prototype._merlons = function (c, x, y, width, step, mh) {
+    var mw = step * 0.62;
+    c.fillStyle = '#6A4A2E';
+    for (var mx = x + 2; mx < x + width - mw; mx += step) {
+      c.fillRect(mx, y - mh, mw, mh);
+    }
+  };
+
+  Scene.prototype._archWindows = function (c, x, top, width, cols, rows) {
     for (var r = 0; r < rows; r++) {
       for (var k = 0; k < cols; k++) {
-        var wx = x + width * (0.25 + k * 0.42) - 3;
-        var wy = top + 26 + r * 30;
-        if (wy > baseY - 28) continue;
-        var glow = c.createRadialGradient(wx + 3, wy + 6, 1, wx + 3, wy + 6, 16);
-        glow.addColorStop(0, 'rgba(255, 190, 90, 0.75)');
+        var wx = x + width * ((k + 0.5) / cols);
+        var wy = top + r * 26;
+        var ww = 6, hh = 13;
+
+        var glow = c.createRadialGradient(wx, wy + hh / 2, 1, wx, wy + hh / 2, 18);
+        glow.addColorStop(0, 'rgba(255, 190, 90, 0.7)');
         glow.addColorStop(1, 'rgba(255, 190, 90, 0)');
         c.fillStyle = glow;
-        c.fillRect(wx - 13, wy - 10, 32, 32);
-        c.fillStyle = '#FFC978';
-        c.fillRect(wx, wy, 6, 12);
-      }
-    }
-  };
+        c.fillRect(wx - 18, wy - 12, 36, 38);
 
-  /* The plaza the row stands on. */
-  Scene.prototype._plaza = function (c, w) {
-    var top = this.horizonY + 30;
-    var g = c.createLinearGradient(0, top, 0, this.h);
-    g.addColorStop(0, '#4A3428');
-    g.addColorStop(0.35, '#3A2920');
-    g.addColorStop(1, '#17100D');
-    c.fillStyle = g;
-    c.fillRect(0, top, w, this.h - top);
-
-    // Firelight pooling on the ground.
-    var pool = c.createRadialGradient(w / 2, this.stageY - 10, 12, w / 2, this.stageY - 10, w * 0.62);
-    pool.addColorStop(0, 'rgba(240, 160, 70, 0.22)');
-    pool.addColorStop(1, 'rgba(240, 160, 70, 0)');
-    c.fillStyle = pool;
-    c.fillRect(0, top, w, this.h - top);
-  };
-
-  Scene.prototype._bunting = function (c, w) {
-    for (var line = 0; line < 2; line++) {
-      var y0 = 16 + line * 26, sag = 26 + line * 10;
-      c.strokeStyle = 'rgba(217, 191, 154, 0.5)';
-      c.lineWidth = 1.2;
-      c.beginPath();
-      c.moveTo(-10, y0);
-      c.quadraticCurveTo(w / 2, y0 + sag, w + 10, y0 - 4);
-      c.stroke();
-
-      var n = 13;
-      for (var i = 0; i <= n; i++) {
-        var t = i / n;
-        // Point on the same quadratic as the string.
-        var x = (1 - t) * (1 - t) * -10 + 2 * (1 - t) * t * (w / 2) + t * t * (w + 10);
-        var y = (1 - t) * (1 - t) * y0 + 2 * (1 - t) * t * (y0 + sag) + t * t * (y0 - 4);
-        c.fillStyle = FLAG_COLORS[(i + line) % FLAG_COLORS.length];
-        c.globalAlpha = 0.85;
+        c.fillStyle = '#FFCE85';
         c.beginPath();
-        c.moveTo(x - 7, y);
-        c.lineTo(x + 7, y);
-        c.lineTo(x, y + 17);
+        c.moveTo(wx - ww / 2, wy + hh);
+        c.lineTo(wx - ww / 2, wy + 4);
+        c.quadraticCurveTo(wx, wy - 5, wx + ww / 2, wy + 4);
+        c.lineTo(wx + ww / 2, wy + hh);
         c.closePath();
         c.fill();
       }
-      c.globalAlpha = 1;
     }
+  };
+
+  /* Palms framing both edges, drawn small-to-large for depth. */
+  Scene.prototype._palms = function (c, w) {
+    var base = this.horizonY + 40;
+    var set = [
+      { x: w * 0.03, h: 128, s: 1.0 }, { x: w * 0.13, h: 96, s: 0.8 },
+      { x: w * 0.30, h: 74, s: 0.62 }, { x: w * 0.70, h: 74, s: 0.62 },
+      { x: w * 0.87, h: 96, s: 0.8 }, { x: w * 0.97, h: 128, s: 1.0 }
+    ];
+    for (var i = 0; i < set.length; i++) this._palm(c, set[i].x, base, set[i].h, set[i].s);
+  };
+
+  Scene.prototype._palm = function (c, x, baseY, height, s) {
+    var topY = baseY - height;
+    c.strokeStyle = 'rgba(48, 34, 22, 0.92)';
+    c.lineWidth = 5 * s;
+    c.lineCap = 'round';
+    c.beginPath();
+    c.moveTo(x, baseY);
+    c.quadraticCurveTo(x - 8 * s, baseY - height * 0.55, x, topY);
+    c.stroke();
+
+    c.strokeStyle = 'rgba(26, 58, 36, 0.95)';
+    c.lineWidth = 3.4 * s;
+    for (var i = 0; i < 7; i++) {
+      var a = -Math.PI * 0.92 + (i / 6) * Math.PI * 0.84;
+      var len = (26 + Math.random() * 10) * s + height * 0.16;
+      c.beginPath();
+      c.moveTo(x, topY);
+      c.quadraticCurveTo(
+        x + Math.cos(a) * len * 0.6, topY + Math.sin(a) * len * 0.6 - 6 * s,
+        x + Math.cos(a) * len, topY + Math.sin(a) * len + 10 * s
+      );
+      c.stroke();
+    }
+  };
+
+  /* Green banners on gilded poles, with the palm-and-swords emblem. */
+  Scene.prototype._banners = function (c, w) {
+    var tops = this.horizonY - 62;
+    var set = [
+      { x: w * 0.085, s: 1 }, { x: w * 0.235, s: 0.84 },
+      { x: w * 0.765, s: 0.84 }, { x: w * 0.915, s: 1 }
+    ];
+    for (var i = 0; i < set.length; i++) {
+      var b = set[i], bw = 26 * b.s, bh = 84 * b.s;
+      var px = b.x, py = tops + (1 - b.s) * 26;
+
+      c.strokeStyle = '#C79A3E';                       // pole
+      c.lineWidth = 3 * b.s;
+      c.beginPath(); c.moveTo(px, py - 12); c.lineTo(px, py + bh + 28); c.stroke();
+      c.fillStyle = GOLD;                              // finial
+      c.beginPath(); c.arc(px, py - 14, 3.4 * b.s, 0, Math.PI * 2); c.fill();
+
+      var g = c.createLinearGradient(px - bw / 2, 0, px + bw / 2, 0);
+      g.addColorStop(0, '#0B5730');
+      g.addColorStop(0.5, GREEN);
+      g.addColorStop(1, '#083F24');
+      c.fillStyle = g;
+      c.beginPath();
+      c.moveTo(px - bw / 2, py);
+      c.lineTo(px + bw / 2, py);
+      c.lineTo(px + bw / 2, py + bh);
+      c.quadraticCurveTo(px, py + bh - 10 * b.s, px - bw / 2, py + bh);
+      c.closePath();
+      c.fill();
+
+      this._emblem(c, px, py + bh * 0.42, 9 * b.s);
+
+      c.strokeStyle = 'rgba(231, 180, 76, 0.75)';      // fringe
+      c.lineWidth = 1.2;
+      c.beginPath();
+      c.moveTo(px - bw / 2, py + 3); c.lineTo(px + bw / 2, py + 3);
+      c.stroke();
+    }
+  };
+
+  /* Two crossed sabres under a palm — drawn, never a national emblem copy. */
+  Scene.prototype._emblem = function (c, x, y, r) {
+    c.strokeStyle = 'rgba(246, 226, 166, 0.9)';
+    c.lineWidth = Math.max(1.1, r * 0.13);
+    c.lineCap = 'round';
+    c.beginPath();
+    c.moveTo(x - r, y + r * 0.5); c.quadraticCurveTo(x, y + r * 1.15, x + r, y + r * 0.5);
+    c.stroke();
+    c.beginPath();
+    c.moveTo(x - r * 0.95, y + r * 0.75); c.quadraticCurveTo(x, y + r * 0.2, x + r * 0.95, y + r * 0.75);
+    c.stroke();
+
+    c.strokeStyle = 'rgba(246, 226, 166, 0.85)';       // palm above them
+    c.lineWidth = Math.max(1, r * 0.1);
+    c.beginPath(); c.moveTo(x, y + r * 0.35); c.lineTo(x, y - r * 0.55); c.stroke();
+    for (var i = 0; i < 5; i++) {
+      var a = -Math.PI * 0.85 + (i / 4) * Math.PI * 0.7;
+      c.beginPath();
+      c.moveTo(x, y - r * 0.55);
+      c.quadraticCurveTo(x + Math.cos(a) * r * 0.5, y - r * 0.55 + Math.sin(a) * r * 0.5,
+                         x + Math.cos(a) * r * 0.78, y - r * 0.35 + Math.sin(a) * r * 0.78);
+      c.stroke();
+    }
+  };
+
+  /* Polished tiles in perspective, catching the firelight. */
+  Scene.prototype._plaza = function (c, w) {
+    var top = this.horizonY + 44;
+    var g = c.createLinearGradient(0, top, 0, this.h);
+    g.addColorStop(0, '#6A4A30');
+    g.addColorStop(0.3, '#4E3524');
+    g.addColorStop(1, '#1A120E');
+    c.fillStyle = g;
+    c.fillRect(0, top, w, this.h - top);
+
+    // Tile grid: lines converge on the centre, rows compress toward the back.
+    c.save();
+    c.beginPath(); c.rect(0, top, w, this.stageY - top + 40); c.clip();
+    c.strokeStyle = 'rgba(255, 214, 150, 0.10)';
+    c.lineWidth = 1;
+    var vpX = w / 2, vpY = top - 10;
+    for (var i = -8; i <= 8; i++) {
+      c.beginPath();
+      c.moveTo(vpX + i * (w * 0.045), top);
+      c.lineTo(vpX + i * (w * 0.30), this.stageY + 60);
+      c.stroke();
+    }
+    for (var rIdx = 1; rIdx <= 7; rIdx++) {
+      var z = 1 + rIdx * 0.55;
+      var y = vpY + (this.stageY + 40 - vpY) / z;
+      c.beginPath(); c.moveTo(0, y); c.lineTo(w, y); c.stroke();
+    }
+    c.restore();
+
+    var pool = c.createRadialGradient(w / 2, this.stageY - 6, 12, w / 2, this.stageY - 6, w * 0.7);
+    pool.addColorStop(0, 'rgba(255, 176, 88, 0.26)');
+    pool.addColorStop(1, 'rgba(255, 176, 88, 0)');
+    c.fillStyle = pool;
+    c.fillRect(0, top, w, this.h - top);
   };
 
   /* ----------------------------- dynamic pass ----------------------------- */
 
   Scene.prototype.draw = function (c, tMs, dtMs, performers, drumPulse) {
-    if (this.backdrop) {
-      c.drawImage(this.backdrop, 0, 0, this.w, this.h);
-    }
-    this._fires(c, tMs, dtMs);
+    if (this.backdrop) c.drawImage(this.backdrop, 0, 0, this.w, this.h);
+    this._braziers(c, tMs, dtMs);
     this._carpet(c);
-    this._drummers(c, drumPulse);
+    this._musicians(c, drumPulse);
     this._rows(c, performers);
   };
 
-  Scene.prototype._fires = function (c, tMs, dtMs) {
-    for (var i = 0; i < this.fires.length; i++) {
-      var f = this.fires[i];
-      // Two out-of-phase sines read as a flicker without any randomness cost.
+  Scene.prototype._braziers = function (c, tMs, dtMs) {
+    for (var i = 0; i < this.braziers.length; i++) {
+      var f = this.braziers[i];
       var flick = 0.82 + 0.18 * Math.sin(tMs / 90 + i * 2.1) + 0.08 * Math.sin(tMs / 37 + i);
       var r = f.r * flick;
 
-      var glow = c.createRadialGradient(f.x, f.y - r * 0.3, 2, f.x, f.y, r * 3.4);
-      glow.addColorStop(0, 'rgba(255, 196, 110, 0.55)');
-      glow.addColorStop(0.35, 'rgba(240, 130, 45, 0.22)');
+      var glow = c.createRadialGradient(f.x, f.y - r * 0.4, 2, f.x, f.y, r * 5);
+      glow.addColorStop(0, 'rgba(255, 200, 120, 0.5)');
+      glow.addColorStop(0.35, 'rgba(240, 130, 45, 0.2)');
       glow.addColorStop(1, 'rgba(240, 130, 45, 0)');
       c.fillStyle = glow;
-      c.beginPath(); c.arc(f.x, f.y, r * 3.4, 0, Math.PI * 2); c.fill();
+      c.beginPath(); c.arc(f.x, f.y, r * 5, 0, Math.PI * 2); c.fill();
 
-      // Flame body
-      var flame = c.createLinearGradient(0, f.y - r * 1.6, 0, f.y + 6);
-      flame.addColorStop(0, 'rgba(255, 236, 170, 0.95)');
-      flame.addColorStop(0.5, '#F6A33C');
-      flame.addColorStop(1, 'rgba(198, 74, 26, 0.9)');
+      // Bowl on a stand
+      c.fillStyle = '#4A3520';
+      c.fillRect(f.x - 2.5, f.y + 4, 5, 26);
+      c.fillRect(f.x - 9, f.y + 30, 18, 4);
+      var bowl = c.createLinearGradient(0, f.y - 2, 0, f.y + 8);
+      bowl.addColorStop(0, '#C79A3E');
+      bowl.addColorStop(1, '#5E441C');
+      c.fillStyle = bowl;
+      c.beginPath();
+      c.moveTo(f.x - r * 0.95, f.y - 2);
+      c.lineTo(f.x + r * 0.95, f.y - 2);
+      c.lineTo(f.x + r * 0.55, f.y + 9);
+      c.lineTo(f.x - r * 0.55, f.y + 9);
+      c.closePath(); c.fill();
+
+      var flame = c.createLinearGradient(0, f.y - r * 1.9, 0, f.y + 2);
+      flame.addColorStop(0, 'rgba(255, 240, 190, 0.95)');
+      flame.addColorStop(0.45, '#F8A93F');
+      flame.addColorStop(1, 'rgba(198, 74, 26, 0.85)');
       c.fillStyle = flame;
       c.beginPath();
-      c.moveTo(f.x - r * 0.42, f.y + 6);
-      c.quadraticCurveTo(f.x - r * 0.5, f.y - r * 0.8, f.x, f.y - r * 1.6 * flick);
-      c.quadraticCurveTo(f.x + r * 0.5, f.y - r * 0.8, f.x + r * 0.42, f.y + 6);
-      c.closePath();
-      c.fill();
+      c.moveTo(f.x - r * 0.6, f.y);
+      c.quadraticCurveTo(f.x - r * 0.7, f.y - r, f.x, f.y - r * 1.9 * flick);
+      c.quadraticCurveTo(f.x + r * 0.7, f.y - r, f.x + r * 0.6, f.y);
+      c.closePath(); c.fill();
 
-      if (Math.random() < dtMs / 260) {
+      if (Math.random() < dtMs / 240) {
         this.embers.push({ x: f.x + (Math.random() - 0.5) * r, y: f.y - r, vy: -0.02 - Math.random() * 0.03, life: 1 });
       }
     }
@@ -254,7 +400,7 @@ window.Ardah = window.Ardah || {};
       em.x += Math.sin(em.y / 14) * 0.25;
       em.life -= dtMs / 2200;
       if (em.life <= 0) { this.embers.splice(e, 1); continue; }
-      c.globalAlpha = em.life * 0.8;
+      c.globalAlpha = em.life * 0.85;
       c.fillStyle = '#FFC46E';
       c.fillRect(em.x, em.y, 2, 2);
     }
@@ -262,229 +408,272 @@ window.Ardah = window.Ardah || {};
   };
 
   Scene.prototype._carpet = function (c) {
-    var w = this.w, cx = w / 2, y = this.stageY - 34;
-    var halfNear = w * 0.20, halfFar = w * 0.145, depth = 30;
-    c.fillStyle = '#7E2B2B';
-    c.beginPath();
-    c.moveTo(cx - halfFar, y - depth);
-    c.lineTo(cx + halfFar, y - depth);
-    c.lineTo(cx + halfNear, y);
-    c.lineTo(cx - halfNear, y);
-    c.closePath();
-    c.fill();
+    var w = this.w, cx = w / 2, y = this.stageY - 18;
+    var halfNear = w * 0.24, halfFar = w * 0.17, depth = 34;
 
-    c.strokeStyle = 'rgba(231, 180, 76, 0.65)';
-    c.lineWidth = 1.4;
-    c.stroke();
+    c.fillStyle = '#8E2F2B';
     c.beginPath();
-    c.moveTo(cx - halfFar * 0.75, y - depth * 0.62);
-    c.lineTo(cx + halfFar * 0.75, y - depth * 0.62);
-    c.lineTo(cx + halfNear * 0.78, y - 6);
-    c.lineTo(cx - halfNear * 0.78, y - 6);
+    c.moveTo(cx - halfFar, y - depth); c.lineTo(cx + halfFar, y - depth);
+    c.lineTo(cx + halfNear, y); c.lineTo(cx - halfNear, y);
+    c.closePath(); c.fill();
+
+    c.strokeStyle = 'rgba(231, 180, 76, 0.8)';
+    c.lineWidth = 1.6; c.stroke();
+
+    c.beginPath();
+    c.moveTo(cx - halfFar * 0.78, y - depth * 0.7); c.lineTo(cx + halfFar * 0.78, y - depth * 0.7);
+    c.lineTo(cx + halfNear * 0.82, y - 5); c.lineTo(cx - halfNear * 0.82, y - 5);
     c.closePath();
-    c.strokeStyle = 'rgba(231, 180, 76, 0.35)';
-    c.stroke();
+    c.strokeStyle = 'rgba(231, 180, 76, 0.4)';
+    c.lineWidth = 1.2; c.stroke();
+
+    c.fillStyle = 'rgba(231, 180, 76, 0.35)';          // medallions
+    for (var i = -1; i <= 1; i++) {
+      c.beginPath();
+      c.ellipse(cx + i * halfNear * 0.42, y - depth * 0.42, 7, 4.5, 0, 0, Math.PI * 2);
+      c.fill();
+    }
   };
 
-  /* Two seated drummers on the carpet; each drum hit gives them a small bounce. */
-  Scene.prototype._drummers = function (c, pulse) {
-    var cx = this.w / 2, baseY = this.stageY - 46;
+  /* One tabl player and one oud player, seated on stools. */
+  Scene.prototype._musicians = function (c, pulse) {
+    var cx = this.w / 2, baseY = this.stageY - 30;
     var s = Math.min(1, this.w / 420);
-    this._drummer(c, cx - 30 * s, baseY, s, pulse[0] || 0, true);
-    this._drummer(c, cx + 30 * s, baseY, s, pulse[1] || 0, false);
+    this._tablPlayer(c, cx - 34 * s, baseY, s, pulse[0] || 0);
+    this._oudPlayer(c, cx + 34 * s, baseY, s, pulse[1] || 0);
   };
 
-  Scene.prototype._drummer = function (c, x, baseY, s, pulse, left) {
-    var lift = pulse * 2.5 * s;
-    var bodyH = 34 * s, headR = 7 * s;
-    var y = baseY - lift;
+  Scene.prototype._stool = function (c, x, y, s) {
+    var g = c.createLinearGradient(0, y - 12 * s, 0, y);
+    g.addColorStop(0, '#B98A4A');
+    g.addColorStop(1, '#6A4522');
+    c.fillStyle = g;
+    c.fillRect(x - 11 * s, y - 12 * s, 22 * s, 12 * s);
+    c.fillStyle = 'rgba(231, 180, 76, 0.45)';
+    c.fillRect(x - 11 * s, y - 12 * s, 22 * s, 2 * s);
+  };
 
-    c.fillStyle = 'rgba(0,0,0,0.3)';
+  Scene.prototype._seated = function (c, x, baseY, s, lift) {
+    var y = baseY - lift * 2 * s, bodyH = 30 * s, headR = 7 * s;
+    c.fillStyle = 'rgba(0,0,0,0.32)';
     c.beginPath(); c.ellipse(x, baseY + 3, 15 * s, 4 * s, 0, 0, Math.PI * 2); c.fill();
 
-    // Thobe (seated: a wide, low shape)
     var g = c.createLinearGradient(0, y - bodyH, 0, y);
-    g.addColorStop(0, '#F2EDE3');
-    g.addColorStop(1, '#BFB5A4');
+    g.addColorStop(0, '#F7F3EA');
+    g.addColorStop(1, '#BCAF9A');
     c.fillStyle = g;
     c.beginPath();
     c.moveTo(x - 9 * s, y - bodyH);
     c.lineTo(x + 9 * s, y - bodyH);
-    c.lineTo(x + 14 * s, y);
-    c.lineTo(x - 14 * s, y);
-    c.closePath();
-    c.fill();
+    c.lineTo(x + 13 * s, y);
+    c.lineTo(x - 13 * s, y);
+    c.closePath(); c.fill();
 
-    this._head(c, x, y - bodyH - headR * 0.5, headR);
-
-    // Drum in the lap, tilted toward the player.
-    var dx = x + (left ? 9 : -9) * s, dy = y - 12 * s;
-    var dg = c.createLinearGradient(dx - 9 * s, 0, dx + 9 * s, 0);
-    dg.addColorStop(0, '#8A5A2B');
-    dg.addColorStop(0.5, '#C08A4A');
-    dg.addColorStop(1, '#6E441F');
-    c.fillStyle = dg;
-    c.beginPath();
-    c.ellipse(dx, dy, 10 * s, 12 * s, left ? -0.35 : 0.35, 0, Math.PI * 2);
-    c.fill();
-    c.fillStyle = 'rgba(243, 237, 226, ' + (0.75 + pulse * 0.25) + ')';
-    c.beginPath();
-    c.ellipse(dx, dy - 1 * s, 6.5 * s, 8 * s, left ? -0.35 : 0.35, 0, Math.PI * 2);
-    c.fill();
+    this._head(c, x, y - bodyH - headR * 0.55, headR);
+    return { y: y, bodyH: bodyH };
   };
 
-  /* The two facing rows. Left row faces right, right row mirrors it. */
+  Scene.prototype._tablPlayer = function (c, x, baseY, s, pulse) {
+    this._stool(c, x, baseY, s);
+    var b = this._seated(c, x, baseY, s, pulse);
+
+    // The drum sits across the lap, head turned toward the player.
+    var dx = x + 10 * s, dy = b.y - 13 * s, rw = 15 * s, rh = 11 * s;
+    var shell = c.createLinearGradient(dx - rw, 0, dx + rw, 0);
+    shell.addColorStop(0, '#7E4A1E');
+    shell.addColorStop(0.5, '#C9924A');
+    shell.addColorStop(1, '#6A3C16');
+    c.fillStyle = shell;
+    c.beginPath(); c.ellipse(dx, dy, rw, rh, -0.28, 0, Math.PI * 2); c.fill();
+    c.fillStyle = 'rgba(247, 243, 234, ' + (0.8 + pulse * 0.2) + ')';
+    c.beginPath(); c.ellipse(dx - 2 * s, dy - 1 * s, rw * 0.66, rh * 0.68, -0.28, 0, Math.PI * 2); c.fill();
+    c.strokeStyle = 'rgba(90, 58, 24, 0.7)';
+    c.lineWidth = 1.2 * s;
+    c.stroke();
+
+    // Striking arm, following the pulse.
+    c.strokeStyle = 'rgba(236, 228, 214, 0.95)';
+    c.lineWidth = 3.4 * s; c.lineCap = 'round';
+    c.beginPath();
+    c.moveTo(x + 7 * s, b.y - b.bodyH + 6 * s);
+    c.lineTo(dx + 3 * s, dy - (10 + pulse * 10) * s);
+    c.stroke();
+  };
+
+  Scene.prototype._oudPlayer = function (c, x, baseY, s, pulse) {
+    this._stool(c, x, baseY, s);
+    var b = this._seated(c, x, baseY, s, pulse * 0.6);
+
+    var bx = x - 8 * s, by = b.y - 13 * s;
+    var body = c.createLinearGradient(bx - 11 * s, 0, bx + 11 * s, 0);
+    body.addColorStop(0, '#6A3C16');
+    body.addColorStop(0.5, '#C08A4A');
+    body.addColorStop(1, '#5A3212');
+    c.fillStyle = body;
+    c.beginPath(); c.ellipse(bx, by, 14 * s, 11 * s, 0.2, 0, Math.PI * 2); c.fill();
+
+    c.fillStyle = 'rgba(40, 24, 10, 0.75)';            // rosette
+    c.beginPath(); c.arc(bx + 1 * s, by - 1 * s, 2.6 * s, 0, Math.PI * 2); c.fill();
+
+    c.strokeStyle = '#4A2C12';                          // neck
+    c.lineWidth = 3 * s;
+    c.beginPath(); c.moveTo(bx + 10 * s, by - 6 * s); c.lineTo(bx + 34 * s, by - 22 * s); c.stroke();
+
+    c.strokeStyle = 'rgba(236, 228, 214, 0.9)';         // plucking arm
+    c.lineWidth = 3.2 * s;
+    c.beginPath();
+    c.moveTo(x + 6 * s, b.y - b.bodyH + 7 * s);
+    c.lineTo(bx + 5 * s, by + (2 + pulse * 3) * s);
+    c.stroke();
+  };
+
+  /* Five a side, receding from the camera, sabres up. */
   Scene.prototype._rows = function (c, performers) {
-    var w = this.w, baseY = this.stageY - 6;
+    var w = this.w, baseY = this.stageY - 2;
     var s = Math.min(1, w / 420);
     var count = performers.length / 2;
 
     for (var i = 0; i < count; i++) {
-      // Nearer figures sit lower and larger — a cheap depth cue.
-      var depth = i / Math.max(1, count - 1);
-      var scale = (0.78 + depth * 0.32) * s;
-      var y = baseY - (1 - depth) * 26 * s;
-      var xL = w * 0.5 - (w * 0.19 + depth * w * 0.235);
-      var xR = w * 0.5 + (w * 0.19 + depth * w * 0.235);
-      this._performer(c, xL, y, scale, performers[i], 1);
-      this._performer(c, xR, y, scale, performers[count + i], -1);
+      var depth = i / Math.max(1, count - 1);          // 0 = far, 1 = near
+      var scale = (0.7 + depth * 0.42) * s;
+      var y = baseY - (1 - depth) * 34 * s;
+      var spread = w * 0.15 + depth * w * 0.29;
+      this._performer(c, w * 0.5 - spread, y, scale, performers[i], 1);
+      this._performer(c, w * 0.5 + spread, y, scale, performers[count + i], -1);
     }
   };
 
-  /* One performer. `face` is +1 for the left row (facing right) and -1 for the
-     right row. `lift` 0..1 raises the sword from rest to the ceremonial high. */
+  /* One performer, facing the centre. `lift` 0..1 goes from the ceremonial
+     ready position to the full raise. */
   Scene.prototype._performer = function (c, x, baseY, s, lift, face) {
-    var bodyH = 74 * s, headR = 8.5 * s;
+    var bodyH = 78 * s, headR = 9 * s;
     var shoulderY = baseY - bodyH * 0.74;
 
     c.save();
     c.translate(x, 0);
     c.scale(face, 1);
 
-    c.fillStyle = 'rgba(0, 0, 0, 0.32)';
-    c.beginPath(); c.ellipse(0, baseY + 2, 15 * s, 4 * s, 0, 0, Math.PI * 2); c.fill();
+    c.fillStyle = 'rgba(0, 0, 0, 0.35)';
+    c.beginPath(); c.ellipse(0, baseY + 2, 16 * s, 4.5 * s, 0, 0, Math.PI * 2); c.fill();
 
-    // Thobe: white, warmed from below by the fires.
     var g = c.createLinearGradient(0, shoulderY, 0, baseY);
-    g.addColorStop(0, '#F7F3EA');
-    g.addColorStop(0.55, '#E4DDCF');
+    g.addColorStop(0, '#FFFCF4');
+    g.addColorStop(0.5, '#EDE6D8');
     g.addColorStop(1, '#B49B7E');
     c.fillStyle = g;
     c.beginPath();
     c.moveTo(-9 * s, shoulderY);
-    c.quadraticCurveTo(-11 * s, shoulderY + bodyH * 0.4, -15 * s, baseY);
-    c.lineTo(15 * s, baseY);
-    c.quadraticCurveTo(11 * s, shoulderY + bodyH * 0.4, 9 * s, shoulderY);
+    c.quadraticCurveTo(-12 * s, shoulderY + bodyH * 0.45, -16 * s, baseY);
+    c.lineTo(16 * s, baseY);
+    c.quadraticCurveTo(12 * s, shoulderY + bodyH * 0.45, 9 * s, shoulderY);
     c.closePath();
     c.fill();
 
-    // Crossed bandolier
-    c.strokeStyle = 'rgba(74, 48, 30, 0.85)';
-    c.lineWidth = 2.4 * s;
+    c.fillStyle = 'rgba(20, 16, 12, 0.9)';              // shoes
+    c.beginPath(); c.ellipse(-6 * s, baseY, 5 * s, 2.4 * s, 0, 0, Math.PI * 2); c.fill();
+    c.beginPath(); c.ellipse(6 * s, baseY, 5 * s, 2.4 * s, 0, 0, Math.PI * 2); c.fill();
+
+    c.strokeStyle = 'rgba(58, 38, 22, 0.9)';            // crossed bandolier
+    c.lineWidth = 3 * s;
     c.beginPath();
-    c.moveTo(-8 * s, shoulderY + 2 * s); c.lineTo(7 * s, shoulderY + bodyH * 0.34);
-    c.moveTo(8 * s, shoulderY + 2 * s); c.lineTo(-7 * s, shoulderY + bodyH * 0.34);
+    c.moveTo(-8.5 * s, shoulderY + 2 * s); c.lineTo(8 * s, shoulderY + bodyH * 0.36);
+    c.moveTo(8.5 * s, shoulderY + 2 * s); c.lineTo(-8 * s, shoulderY + bodyH * 0.36);
     c.stroke();
-    c.fillStyle = '#C89A3C';
-    c.fillRect(-2.5 * s, shoulderY + bodyH * 0.3, 5 * s, 4 * s);
+    c.fillStyle = '#E7B44C';                            // belt medallion
+    c.beginPath(); c.arc(0, shoulderY + bodyH * 0.33, 3.4 * s, 0, Math.PI * 2); c.fill();
+    c.fillStyle = 'rgba(58, 38, 22, 0.9)';
+    c.fillRect(-9 * s, shoulderY + bodyH * 0.30, 18 * s, 4 * s);
+    c.fillStyle = '#E7B44C';
+    c.beginPath(); c.arc(0, shoulderY + bodyH * 0.33, 3.2 * s, 0, Math.PI * 2); c.fill();
 
-    this._head(c, 2 * s, shoulderY - headR * 0.9, headR);
+    this._head(c, 2 * s, shoulderY - headR * 0.85, headR);
 
-    // Sword arm. Rest is lowered; a hit lifts the sabre high and forward.
-    var angle = (0.3 - lift * 0.82) * Math.PI;
-    var arm = 26 * s;
-    var sx = 7 * s, sy = shoulderY + 5 * s;
-    var hx = sx + Math.cos(angle) * arm * 0.6;
-    var hy = sy + Math.sin(angle) * arm * 0.6;
+    // Sabre: ready is already high — this is a ceremony, the blades are up.
+    var angle = (-0.34 - lift * 0.2) * Math.PI;
+    var arm = 30 * s;
+    var sx = 7 * s, sy = shoulderY + 4 * s;
+    var hx = sx + Math.cos(angle) * arm * 0.85;
+    var hy = sy + Math.sin(angle) * arm * 0.85;
 
-    c.strokeStyle = 'rgba(236, 228, 214, 0.95)';
-    c.lineWidth = 4.5 * s;
-    c.lineCap = 'round';
+    c.strokeStyle = 'rgba(252, 249, 242, 0.97)';        // sleeve
+    c.lineWidth = 6 * s; c.lineCap = 'round';
     c.beginPath(); c.moveTo(sx, sy); c.lineTo(hx, hy); c.stroke();
 
-    // Curved sabre: a quadratic with a highlight along the spine.
-    var bl = 34 * s;
-    var tipX = hx + Math.cos(angle) * bl;
-    var tipY = hy + Math.sin(angle) * bl;
-    var ctrlX = hx + Math.cos(angle - 0.42) * bl * 0.62;
-    var ctrlY = hy + Math.sin(angle - 0.42) * bl * 0.62;
+    var bl = 38 * s;
+    var tipX = hx + Math.cos(angle - 0.06) * bl;
+    var tipY = hy + Math.sin(angle - 0.06) * bl;
+    var ctrlX = hx + Math.cos(angle - 0.26) * bl * 0.55;
+    var ctrlY = hy + Math.sin(angle - 0.26) * bl * 0.55;
 
-    c.strokeStyle = 'rgba(20, 24, 34, 0.55)';
-    c.lineWidth = 4.2 * s;
+    c.strokeStyle = 'rgba(18, 22, 32, 0.5)';
+    c.lineWidth = 4.4 * s;
     c.beginPath(); c.moveTo(hx, hy); c.quadraticCurveTo(ctrlX, ctrlY, tipX, tipY); c.stroke();
 
     var blade = c.createLinearGradient(hx, hy, tipX, tipY);
-    blade.addColorStop(0, '#9AA4B2');
-    blade.addColorStop(0.5, '#FFFFFF');
-    blade.addColorStop(1, '#C9D2DD');
+    blade.addColorStop(0, '#8E99A8');
+    blade.addColorStop(0.45, '#FFFFFF');
+    blade.addColorStop(1, '#D3DBE6');
     c.strokeStyle = blade;
-    c.lineWidth = 2.6 * s;
+    c.lineWidth = 2.8 * s;
     c.beginPath(); c.moveTo(hx, hy); c.quadraticCurveTo(ctrlX, ctrlY, tipX, tipY); c.stroke();
 
     if (lift > 0.04) {
-      c.globalAlpha = lift * 0.55;
-      c.strokeStyle = '#FFD98A';
-      c.lineWidth = 6 * s;
+      c.globalAlpha = lift * 0.6;
+      c.strokeStyle = '#FFE6A8';
+      c.lineWidth = 6.5 * s;
       c.stroke();
       c.globalAlpha = 1;
     }
 
-    c.fillStyle = '#E7B44C';                    // hilt
-    c.beginPath(); c.arc(hx, hy, 2.6 * s, 0, Math.PI * 2); c.fill();
+    c.fillStyle = '#E7B44C';                            // hilt
+    c.beginPath(); c.arc(hx, hy, 3 * s, 0, Math.PI * 2); c.fill();
 
     c.restore();
   };
 
-  /* Head: face first, then the shemagh framing it — otherwise the cloth reads
-     as a blank blob at this size. */
+  /* Head: face first, then the shemagh framing it. */
   Scene.prototype._head = function (c, x, y, r) {
-    // Face
     c.fillStyle = '#E3C49E';
-    c.beginPath(); c.ellipse(x, y + r * 0.12, r * 0.62, r * 0.78, 0, 0, Math.PI * 2); c.fill();
-    // Beard, suggested rather than drawn
-    c.fillStyle = 'rgba(38, 26, 18, 0.75)';
-    c.beginPath(); c.ellipse(x, y + r * 0.62, r * 0.52, r * 0.34, 0, 0, Math.PI * 2); c.fill();
-    c.fillStyle = 'rgba(38, 26, 18, 0.9)';
-    c.fillRect(x - r * 0.34, y, r * 0.16, r * 0.14);
-    c.fillRect(x + r * 0.18, y, r * 0.16, r * 0.14);
+    c.beginPath(); c.ellipse(x, y + r * 0.12, r * 0.6, r * 0.76, 0, 0, Math.PI * 2); c.fill();
+    c.fillStyle = 'rgba(38, 26, 18, 0.78)';
+    c.beginPath(); c.ellipse(x, y + r * 0.6, r * 0.5, r * 0.33, 0, 0, Math.PI * 2); c.fill();
+    c.fillStyle = 'rgba(30, 20, 14, 0.9)';
+    c.fillRect(x - r * 0.32, y - r * 0.02, r * 0.15, r * 0.13);
+    c.fillRect(x + r * 0.17, y - r * 0.02, r * 0.15, r * 0.13);
 
-    // Shemagh: crown plus a panel down each side of the face.
     c.fillStyle = '#D9534F';
     c.beginPath();
     c.moveTo(x - r * 1.0, y + r * 0.1);
-    c.quadraticCurveTo(x, y - r * 1.6, x + r * 1.0, y + r * 0.1);
-    c.lineTo(x + r * 0.62, y + r * 0.2);
-    c.quadraticCurveTo(x, y - r * 0.85, x - r * 0.62, y + r * 0.2);
-    c.closePath();
-    c.fill();
+    c.quadraticCurveTo(x, y - r * 1.55, x + r * 1.0, y + r * 0.1);
+    c.lineTo(x + r * 0.6, y + r * 0.2);
+    c.quadraticCurveTo(x, y - r * 0.82, x - r * 0.6, y + r * 0.2);
+    c.closePath(); c.fill();
 
-    c.beginPath();                                  // left fall
-    c.moveTo(x - r * 1.0, y + r * 0.05);
-    c.quadraticCurveTo(x - r * 1.15, y + r * 1.2, x - r * 0.72, y + r * 1.55);
-    c.lineTo(x - r * 0.5, y + r * 0.9);
-    c.quadraticCurveTo(x - r * 0.62, y + r * 0.4, x - r * 0.62, y + r * 0.1);
-    c.closePath();
-    c.fill();
-    c.beginPath();                                  // right fall
-    c.moveTo(x + r * 1.0, y + r * 0.05);
-    c.quadraticCurveTo(x + r * 1.15, y + r * 1.2, x + r * 0.72, y + r * 1.55);
-    c.lineTo(x + r * 0.5, y + r * 0.9);
-    c.quadraticCurveTo(x + r * 0.62, y + r * 0.4, x + r * 0.62, y + r * 0.1);
-    c.closePath();
-    c.fill();
-
-    c.strokeStyle = 'rgba(255,255,255,0.5)';        // the woven check
-    c.lineWidth = Math.max(0.6, r * 0.13);
     c.beginPath();
-    c.moveTo(x - r * 0.95, y + r * 0.45); c.lineTo(x - r * 0.55, y + r * 0.5);
-    c.moveTo(x + r * 0.55, y + r * 0.5); c.lineTo(x + r * 0.95, y + r * 0.45);
-    c.moveTo(x - r * 0.78, y - r * 0.5); c.lineTo(x + r * 0.78, y - r * 0.5);
+    c.moveTo(x - r * 1.0, y + r * 0.05);
+    c.quadraticCurveTo(x - r * 1.18, y + r * 1.25, x - r * 0.74, y + r * 1.6);
+    c.lineTo(x - r * 0.5, y + r * 0.9);
+    c.quadraticCurveTo(x - r * 0.62, y + r * 0.4, x - r * 0.6, y + r * 0.1);
+    c.closePath(); c.fill();
+    c.beginPath();
+    c.moveTo(x + r * 1.0, y + r * 0.05);
+    c.quadraticCurveTo(x + r * 1.18, y + r * 1.25, x + r * 0.74, y + r * 1.6);
+    c.lineTo(x + r * 0.5, y + r * 0.9);
+    c.quadraticCurveTo(x + r * 0.62, y + r * 0.4, x + r * 0.6, y + r * 0.1);
+    c.closePath(); c.fill();
+
+    c.strokeStyle = 'rgba(255,255,255,0.5)';
+    c.lineWidth = Math.max(0.6, r * 0.12);
+    c.beginPath();
+    c.moveTo(x - r * 0.95, y + r * 0.5); c.lineTo(x - r * 0.55, y + r * 0.55);
+    c.moveTo(x + r * 0.55, y + r * 0.55); c.lineTo(x + r * 0.95, y + r * 0.5);
+    c.moveTo(x - r * 0.76, y - r * 0.48); c.lineTo(x + r * 0.76, y - r * 0.48);
     c.stroke();
 
-    c.strokeStyle = '#100C09';                      // agal, on the crown
-    c.lineWidth = Math.max(1, r * 0.2);
+    c.strokeStyle = '#100C09';
+    c.lineWidth = Math.max(1, r * 0.19);
     c.beginPath();
-    c.ellipse(x, y - r * 0.72, r * 0.86, r * 0.22, 0, Math.PI * 0.04, Math.PI * 0.96, true);
+    c.ellipse(x, y - r * 0.7, r * 0.84, r * 0.21, 0, Math.PI * 0.04, Math.PI * 0.96, true);
     c.stroke();
   };
 

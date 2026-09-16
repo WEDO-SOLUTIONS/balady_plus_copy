@@ -42,6 +42,7 @@ mini-app engine serves a folder.
 | | Touch | Keyboard |
 |---|---|---|
 | Strike | tap a lane | `A` `S` `D`, or `←` `↓` `→` |
+| | lanes are **TABL** (deep drum), **SWORDS** (blades) and **TAR** (frame drum) | |
 | Raise (hold) | press and hold, release on the last beat | hold the lane key |
 | Flourish | swipe across the lanes | `Space` |
 | Pause | — | `Esc` |
@@ -95,10 +96,11 @@ Placeholder — replace before anything ships:
 
 - **All percussion is synthesised** in `js/audio.js` (oscillators and filtered
   noise). Real Ardah percussion and chant must be licensed or commissioned.
-- **The stage is drawn with canvas paths** — fort, fires, bunting, two facing
-  rows, drummers on a carpet. Stylised on purpose, dignified posture, no
-  caricature. It follows the concept art's composition, but real artwork is
-  commissioned and goes through cultural review first.
+- **The stage is drawn with canvas paths** — a Diriyah-style fort with a lit
+  gate, palms, green banners, brazier fires, a tiled plaza, two facing rows of
+  five, and a tabl player and an oud player on stools. Stylised on purpose,
+  dignified posture, no caricature. It follows the concept art's composition,
+  but real artwork is commissioned and goes through cultural review first.
 - **Charts are generated** from a groove table rather than authored against a
   recording.
 - No backend, no leaderboard, no tutorial gate, no seasonal gating. Scores live
@@ -126,8 +128,8 @@ build-single.sh   inlines everything into one distributable HTML file
 css/ardah.css     menus; WebView hardening (no selection, no overscroll, safe areas)
 js/i18n.js        ar/en strings, RTL flip (gameplay stays LTR by design)
 js/bridge.js      dsBridge adapter, no-op in a browser
-js/audio.js       synthesised zeer / tar / clap + metronome
-js/scene.js       the stage: fort, fires, bunting, two rows, drummers
+js/audio.js       synthesised tabl / swords / tar + metronome
+js/scene.js       the stage: fort, palms, banners, braziers, rows, musicians
 js/chart.js       chart format, groove generator, validator
 js/conductor.js   the audio clock and schedule-ahead loop
 js/judge.js       windows, scoring, combo, sync meter  ← port this as-is

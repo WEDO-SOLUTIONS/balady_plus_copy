@@ -15,14 +15,21 @@ window.Ardah = window.Ardah || {};
   var APPROACH_MS = 1500;
   var Z_FAR = 5.0;          // spawn distance
   var Z_LIP = 0.86;         // a little past the judgment line, for the near lip
-  var PERFORMERS = 8;       // four a side
+  var PERFORMERS = 10;      // five a side, as in the concept art
 
   var LANE = [
-    { gem: '#F2B33D', rim: '#8A5A12', glow: '#FFD978' },   // zeer  — amber
-    { gem: '#2FB574', rim: '#0E5234', glow: '#7BF0B7' },   // tar   — emerald
-    { gem: '#4C8FD6', rim: '#173C66', glow: '#9CCBFF' }    // clap  — sapphire
+    // tabl — a gold ingot, swords — a cut gem, tar — a struck coin
+    { kind: 'ingot', gem: '#F2B33D', rim: '#7A5310', glow: '#FFD978', cap: '#8A5A2B' },
+    { kind: 'gem',   gem: '#3AA3E8', rim: '#123B63', glow: '#9CD8FF', cap: '#2E6FA8' },
+    { kind: 'coin',  gem: '#F5D779', rim: '#96701F', glow: '#FFF0B8', cap: '#6B4E12' }
   ];
   var LANE_KEYS = ['A', 'S', 'D'];
+  // Keycap faces, matching the lanes: tabl wood, swords steel-blue, tar green.
+  var KEYCAP = [
+    ['#8A5A2B', '#4A2F14'],
+    ['#3F6F9E', '#1B355A'],
+    ['#2E7D52', '#143E2A']
+  ];
 
   function Renderer(canvas) {
     this.canvas = canvas;
@@ -33,6 +40,7 @@ window.Ardah = window.Ardah || {};
     this.drumPulse = [0, 0];
     this.drumCursor = 0;
     this.sparks = [];
+    this.bursts = [];
     this.floats = [];
     this.flashes = [0, 0, 0];
     this.popup = null;
@@ -112,6 +120,7 @@ window.Ardah = window.Ardah || {};
   };
 
   Renderer.prototype._sparks = function (x, y, color, n) {
+    this.bursts.push({ x: x, y: y, life: 1, color: color, rot: Math.random() * Math.PI });
     for (var i = 0; i < n; i++) {
       var a = -Math.PI / 2 + (Math.random() - 0.5) * Math.PI * 1.25;
       var sp = 0.12 + Math.random() * 0.34;
@@ -165,7 +174,9 @@ window.Ardah = window.Ardah || {};
     }
     while (this.drumCursor < drums.length && drums[this.drumCursor].t <= t) {
       var voice = drums[this.drumCursor].voice;
-      this.drumPulse[voice === 'zeer' ? 0 : 1] = 1;
+      if (voice === 'tabl') this.drumPulse[0] = 1;
+      else if (voice === 'tar') this.drumPulse[1] = 1;
+      else this.performers[Math.floor(Math.random() * this.performers.length)] = 0.75;
       this.drumCursor++;
     }
   };
@@ -186,6 +197,17 @@ window.Ardah = window.Ardah || {};
     c.beginPath();
     c.moveTo(cx - wTop, yTop); c.lineTo(cx + wTop, yTop);
     c.lineTo(cx + wBot, yBot); c.lineTo(cx - wBot, yBot);
+    c.closePath();
+    c.fill();
+
+    // Blend the far end into the plaza so the deck does not start on a hard line.
+    var fade = c.createLinearGradient(0, yTop - 16, 0, yTop + 46);
+    fade.addColorStop(0, 'rgba(90, 62, 40, 0.55)');
+    fade.addColorStop(1, 'rgba(90, 62, 40, 0)');
+    c.fillStyle = fade;
+    c.beginPath();
+    c.moveTo(cx - wTop * 1.6, yTop - 16); c.lineTo(cx + wTop * 1.6, yTop - 16);
+    c.lineTo(cx + wTop * 2.2, yTop + 46); c.lineTo(cx - wTop * 2.2, yTop + 46);
     c.closePath();
     c.fill();
 
@@ -299,38 +321,93 @@ window.Ardah = window.Ardah || {};
 
   Renderer.prototype._gem = function (c, lane, z, isHold) {
     var x = this.xAt(lane, z), y = this.yAt(z), s = 1 / z;
-    var w = this.halfNear * 0.40 * s, h = Math.max(5, 19 * s);
     var pal = LANE[lane];
+    var w = this.halfNear * 0.34 * s;
 
     c.save();
     c.shadowColor = pal.glow;
-    c.shadowBlur = 16 * s;
-
-    var rim = c.createLinearGradient(0, y - h, 0, y + h);
-    rim.addColorStop(0, '#F6DFA4');
-    rim.addColorStop(0.5, pal.rim);
-    rim.addColorStop(1, '#8A6A22');
-    c.fillStyle = rim;
-    this._roundRect(c, x - w, y - h, w * 2, h * 2, h * 0.55);
-    c.fill();
+    c.shadowBlur = 18 * s;
+    if (pal.kind === 'ingot') this._ingot(c, x, y, w, s, pal);
+    else if (pal.kind === 'coin') this._coin(c, x, y, w, s, pal);
+    else this._jewel(c, x, y, w, s, pal);
     c.restore();
 
-    var gem = c.createLinearGradient(0, y - h, 0, y + h);
-    gem.addColorStop(0, pal.glow);
-    gem.addColorStop(0.55, pal.gem);
-    gem.addColorStop(1, pal.rim);
-    c.fillStyle = gem;
-    this._roundRect(c, x - w * 0.82, y - h * 0.62, w * 1.64, h * 1.24, h * 0.4);
-    c.fill();
-
-    c.fillStyle = 'rgba(255,255,255,0.45)';
-    this._roundRect(c, x - w * 0.6, y - h * 0.46, w * 1.2, h * 0.3, h * 0.15);
-    c.fill();
-
     if (isHold) {
-      c.fillStyle = 'rgba(20, 14, 6, 0.45)';
-      c.fillRect(x - w * 0.34, y - h * 0.1, w * 0.68, h * 0.2);
+      c.fillStyle = 'rgba(20, 14, 6, 0.4)';
+      c.fillRect(x - w * 0.34, y - 1.5 * s, w * 0.68, 3 * s);
     }
+  };
+
+  /* A gold bar seen slightly from above: top face, front face, highlight. */
+  Renderer.prototype._ingot = function (c, x, y, w, s, pal) {
+    var h = 13 * s, topInset = w * 0.22;
+    var front = c.createLinearGradient(0, y, 0, y + h);
+    front.addColorStop(0, pal.gem);
+    front.addColorStop(1, pal.rim);
+    c.fillStyle = front;
+    c.beginPath();
+    c.moveTo(x - w, y); c.lineTo(x + w, y);
+    c.lineTo(x + w * 0.92, y + h); c.lineTo(x - w * 0.92, y + h);
+    c.closePath(); c.fill();
+
+    var top = c.createLinearGradient(x - w, 0, x + w, 0);
+    top.addColorStop(0, '#FFE9B0');
+    top.addColorStop(0.5, pal.glow);
+    top.addColorStop(1, '#C89127');
+    c.fillStyle = top;
+    c.beginPath();
+    c.moveTo(x - w, y); c.lineTo(x - w + topInset, y - h * 0.85);
+    c.lineTo(x + w - topInset, y - h * 0.85); c.lineTo(x + w, y);
+    c.closePath(); c.fill();
+
+    c.fillStyle = 'rgba(255,255,255,0.5)';
+    c.fillRect(x - w * 0.55, y - h * 0.62, w * 1.1, h * 0.2);
+  };
+
+  /* A cut jewel: an octagon with a bright crown facet. */
+  Renderer.prototype._jewel = function (c, x, y, w, s, pal) {
+    var r = w * 0.78, k = r * 0.42;
+    var body = c.createLinearGradient(0, y - r, 0, y + r);
+    body.addColorStop(0, pal.glow);
+    body.addColorStop(0.55, pal.gem);
+    body.addColorStop(1, pal.rim);
+    c.fillStyle = body;
+    c.beginPath();
+    c.moveTo(x - k, y - r * 0.62); c.lineTo(x + k, y - r * 0.62);
+    c.lineTo(x + r, y); c.lineTo(x + k, y + r * 0.62);
+    c.lineTo(x - k, y + r * 0.62); c.lineTo(x - r, y);
+    c.closePath(); c.fill();
+
+    c.strokeStyle = 'rgba(255, 246, 221, 0.85)';
+    c.lineWidth = Math.max(0.8, 1.6 * s);
+    c.stroke();
+
+    c.fillStyle = 'rgba(255,255,255,0.55)';
+    c.beginPath();
+    c.moveTo(x - k * 0.8, y - r * 0.5); c.lineTo(x + k * 0.8, y - r * 0.5);
+    c.lineTo(x + k * 0.45, y - r * 0.16); c.lineTo(x - k * 0.45, y - r * 0.16);
+    c.closePath(); c.fill();
+  };
+
+  /* A struck coin: milled rim, palm-and-sabres mark in the middle. */
+  Renderer.prototype._coin = function (c, x, y, w, s, pal) {
+    var r = w * 0.72;
+    var face = c.createLinearGradient(x - r, y - r, x + r, y + r);
+    face.addColorStop(0, '#FFFFFF');
+    face.addColorStop(0.45, pal.gem);
+    face.addColorStop(1, pal.rim);
+    c.fillStyle = face;
+    c.beginPath(); c.ellipse(x, y, r, r * 0.82, 0, 0, Math.PI * 2); c.fill();
+
+    c.strokeStyle = 'rgba(255,255,255,0.8)';
+    c.lineWidth = Math.max(0.8, 1.8 * s);
+    c.beginPath(); c.ellipse(x, y, r * 0.82, r * 0.66, 0, 0, Math.PI * 2); c.stroke();
+
+    // Struck mark: a crescent, made of two overlapping discs.
+    c.fillStyle = pal.cap;
+    c.beginPath(); c.arc(x - r * 0.04, y, r * 0.3, 0, Math.PI * 2); c.fill();
+    c.fillStyle = pal.gem;
+    c.beginPath(); c.arc(x + r * 0.14, y - r * 0.06, r * 0.27, 0, Math.PI * 2); c.fill();
   };
 
   Renderer.prototype._holdRibbon = function (c, n, now) {
@@ -396,8 +473,8 @@ window.Ardah = window.Ardah || {};
       var w = Math.min(this.laneW * 0.52, 46), h = 30;
 
       var g = c.createLinearGradient(0, y - h / 2, 0, y + h / 2);
-      g.addColorStop(0, 'rgba(60, 48, 30, 0.95)');
-      g.addColorStop(1, 'rgba(26, 20, 14, 0.95)');
+      g.addColorStop(0, KEYCAP[lane][0]);
+      g.addColorStop(1, KEYCAP[lane][1]);
       c.fillStyle = g;
       this._roundRect(c, x - w / 2, y - h / 2, w, h, 9);
       c.fill();
@@ -422,6 +499,33 @@ window.Ardah = window.Ardah || {};
 
   Renderer.prototype._effects = function (c, decay, dtMs) {
     var i;
+
+    // Radiating flash at the strike point — the thing that sells a clean hit.
+    for (i = this.bursts.length - 1; i >= 0; i--) {
+      var b = this.bursts[i];
+      b.life -= dtMs / 420;
+      if (b.life <= 0) { this.bursts.splice(i, 1); continue; }
+      var grow = 1 - b.life;
+      c.save();
+      c.translate(b.x, b.y);
+      c.rotate(b.rot + grow * 0.5);
+      c.globalAlpha = b.life * 0.85;
+      c.strokeStyle = b.color;
+      c.lineCap = 'round';
+      for (var ray = 0; ray < 8; ray++) {
+        var len = (16 + grow * 46) * (ray % 2 ? 0.55 : 1);
+        c.lineWidth = (ray % 2 ? 1.6 : 3) * b.life;
+        c.rotate(Math.PI / 4);
+        c.beginPath(); c.moveTo(0, 8); c.lineTo(0, 8 + len); c.stroke();
+      }
+      var core = c.createRadialGradient(0, 0, 1, 0, 0, 34 * (0.5 + grow));
+      core.addColorStop(0, 'rgba(255, 252, 240, ' + b.life + ')');
+      core.addColorStop(1, 'rgba(255, 210, 130, 0)');
+      c.fillStyle = core;
+      c.beginPath(); c.arc(0, 0, 34 * (0.5 + grow), 0, Math.PI * 2); c.fill();
+      c.restore();
+      c.globalAlpha = 1;
+    }
     for (i = this.sparks.length - 1; i >= 0; i--) {
       var s = this.sparks[i];
       s.x += s.vx * dtMs; s.y += s.vy * dtMs;
@@ -503,20 +607,40 @@ window.Ardah = window.Ardah || {};
     c.font = '700 10px -apple-system, system-ui, sans-serif';
     c.fillText((A.i18n && A.i18n.t('crowd')) || 'CROWD', mx + 2, my + mh + 13);
 
-    // Score plate
+    // Score plate: dark field, gold frame, label plus value.
+    var label = ((A.i18n && A.i18n.t('score')) || 'SCORE').toUpperCase();
+    var value = formatScore(j.score);
+    c.font = '800 19px -apple-system, system-ui, sans-serif';
+    var vw = c.measureText(value).width;
+    c.font = '700 12px -apple-system, system-ui, sans-serif';
+    var lw = c.measureText(label).width;
+    var pw = Math.min(w * 0.44, vw + lw + 34), ph = 30;
+    var px = w - 16 - pw, py = top;
+
+    c.fillStyle = 'rgba(10, 8, 14, 0.8)';
+    this._roundRect(c, px, py, pw, ph, 9); c.fill();
+    c.strokeStyle = 'rgba(231, 180, 76, 0.7)';
+    c.lineWidth = 1.4;
+    this._roundRect(c, px, py, pw, ph, 9); c.stroke();
+
+    c.textAlign = 'left';
+    c.fillStyle = 'rgba(246, 231, 196, 0.72)';
+    c.font = '700 11px -apple-system, system-ui, sans-serif';
+    c.fillText(label, px + 11, py + 19);
+
     c.textAlign = 'right';
-    c.fillStyle = '#F6E7C4';
-    c.font = '800 22px -apple-system, system-ui, sans-serif';
-    c.fillText(formatScore(j.score), w - 16, top + 18);
+    c.fillStyle = '#FFD978';
+    c.font = '800 19px -apple-system, system-ui, sans-serif';
+    c.fillText(value, px + pw - 11, py + 21);
 
     if (j.combo >= 2) {
       c.fillStyle = '#FFD978';
       c.font = '700 13px -apple-system, system-ui, sans-serif';
-      c.fillText(((A.i18n && A.i18n.t('combo')) || 'COMBO') + ' ×' + j.combo, w - 16, top + 36);
+      c.fillText(((A.i18n && A.i18n.t('combo')) || 'COMBO') + ' ×' + j.combo, w - 16, top + ph + 16);
     } else {
       c.fillStyle = 'rgba(243, 237, 226, 0.6)';
       c.font = '600 12px -apple-system, system-ui, sans-serif';
-      c.fillText((j.accuracy() * 100).toFixed(1) + '%', w - 16, top + 36);
+      c.fillText((j.accuracy() * 100).toFixed(1) + '%', w - 16, top + ph + 16);
     }
   };
 

@@ -11,9 +11,9 @@
      * nothing to preload means nothing to fail on a cold start.
 
    Three voices stand in for the Ardah percussion section:
-     zeer — the big deep drum, the pulse of the row
-     tar  — the mid frame drum answering it
-     clap — the hand-clap accents on the off-beats */
+     tabl   — the big deep drum, the pulse of the row
+     swords — the ring of blades meeting on the accents
+     tar    — the mid frame drum answering the tabl */
 window.Ardah = window.Ardah || {};
 (function (A) {
   'use strict';
@@ -60,7 +60,7 @@ window.Ardah = window.Ardah || {};
   };
 
   /** Deep frame drum. Pitch drops fast, body rings a little. */
-  AudioEngine.prototype.zeer = function (when, gain) {
+  AudioEngine.prototype.tabl = function (when, gain) {
     var ctx = this.ctx, g = ctx.createGain(), osc = ctx.createOscillator();
     var level = (gain === undefined ? 1 : gain) * 0.9;
     osc.type = 'sine';
@@ -102,18 +102,28 @@ window.Ardah = window.Ardah || {};
     n.start(when); n.stop(when + 0.09);
   };
 
-  /** Hand clap — three tight noise bursts, the way a real one smears. */
-  AudioEngine.prototype.clap = function (when, gain) {
-    var ctx = this.ctx, level = (gain === undefined ? 1 : gain) * 0.4;
-    var offsets = [0, 0.011, 0.023];
-    for (var i = 0; i < offsets.length; i++) {
-      var t = when + offsets[i];
-      var n = this._noiseSource(), f = ctx.createBiquadFilter(), g = ctx.createGain();
-      f.type = 'bandpass'; f.frequency.value = 1750; f.Q.value = 1.4;
-      g.gain.setValueAtTime(level * (i === 2 ? 1 : 0.6), t);
-      g.gain.exponentialRampToValueAtTime(0.0001, t + (i === 2 ? 0.16 : 0.045));
-      n.connect(f); f.connect(g); g.connect(this.musicGain);
-      n.start(t); n.stop(t + 0.2);
+  /** Sword clash: a bright strike plus two detuned partials ringing out, which
+      is what gives struck metal its shimmer. */
+  AudioEngine.prototype.swords = function (when, gain) {
+    var ctx = this.ctx, level = (gain === undefined ? 1 : gain) * 0.34;
+
+    var n = this._noiseSource(), f = ctx.createBiquadFilter(), ng = ctx.createGain();
+    f.type = 'highpass'; f.frequency.value = 2600;
+    ng.gain.setValueAtTime(level * 0.9, when);
+    ng.gain.exponentialRampToValueAtTime(0.0001, when + 0.07);
+    n.connect(f); f.connect(ng); ng.connect(this.musicGain);
+    n.start(when); n.stop(when + 0.1);
+
+    var partials = [2410, 3170, 4630];
+    for (var i = 0; i < partials.length; i++) {
+      var osc = ctx.createOscillator(), g = ctx.createGain();
+      osc.type = 'triangle';
+      osc.frequency.value = partials[i] * (1 + (Math.random() - 0.5) * 0.01);
+      g.gain.setValueAtTime(0.0001, when);
+      g.gain.exponentialRampToValueAtTime(level * (i === 0 ? 0.6 : 0.3), when + 0.004);
+      g.gain.exponentialRampToValueAtTime(0.0001, when + 0.55 - i * 0.12);
+      osc.connect(g); g.connect(this.musicGain);
+      osc.start(when); osc.stop(when + 0.6);
     }
   };
 
@@ -131,9 +141,9 @@ window.Ardah = window.Ardah || {};
 
   AudioEngine.prototype.play = function (voice, when, gain) {
     if (!this.ctx) return;
-    if (voice === 'zeer') this.zeer(when, gain);
+    if (voice === 'tabl') this.tabl(when, gain);
     else if (voice === 'tar') this.tar(when, gain);
-    else if (voice === 'clap') this.clap(when, gain);
+    else if (voice === 'swords') this.swords(when, gain);
   };
 
   /** Seconds between "we scheduled it" and "the player hears it", as reported

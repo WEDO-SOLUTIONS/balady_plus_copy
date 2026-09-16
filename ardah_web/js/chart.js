@@ -15,26 +15,26 @@ window.Ardah = window.Ardah || {};
 (function (A) {
   'use strict';
 
-  var LANE_ZEER = 0, LANE_TAR = 1, LANE_CLAP = 2;
-  var VOICE_OF_LANE = ['zeer', 'tar', 'clap'];
+  var LANE_TABL = 0, LANE_SWORDS = 1, LANE_TAR = 2;
+  var VOICE_OF_LANE = ['tabl', 'swords', 'tar'];
 
   /* Groove, written on a 16th-note grid: one entry per bar slot.
      slot 0 = beat 1, slot 4 = beat 2, slot 8 = beat 3, slot 12 = beat 4. */
   var GROOVE = {
     // Stately opening pulse: the big drum carries beats 1 and 3.
-    verse:  [ [0, LANE_ZEER, 1], [4, LANE_TAR, 0.9], [8, LANE_ZEER, 0.95],
-              [12, LANE_TAR, 0.9], [14, LANE_CLAP, 0.7] ],
+    verse:  [ [0, LANE_TABL, 1], [4, LANE_TAR, 0.9], [8, LANE_TABL, 0.95],
+              [12, LANE_TAR, 0.9], [14, LANE_SWORDS, 0.7] ],
     // The row picks up: the drums answer each other twice as often.
-    chorus: [ [0, LANE_ZEER, 1], [3, LANE_CLAP, 0.6], [4, LANE_TAR, 0.95],
-              [6, LANE_CLAP, 0.7], [8, LANE_ZEER, 1], [11, LANE_CLAP, 0.6],
-              [12, LANE_TAR, 0.95], [14, LANE_CLAP, 0.8] ]
+    chorus: [ [0, LANE_TABL, 1], [3, LANE_SWORDS, 0.6], [4, LANE_TAR, 0.95],
+              [6, LANE_SWORDS, 0.7], [8, LANE_TABL, 1], [11, LANE_SWORDS, 0.6],
+              [12, LANE_TAR, 0.95], [14, LANE_SWORDS, 0.8] ]
   };
 
   /* Which groove hits become playable notes, per difficulty. */
   var PLAYABLE = {
-    easy:   { verse: [LANE_ZEER], chorus: [LANE_ZEER, LANE_TAR] },
-    normal: { verse: [LANE_ZEER, LANE_TAR], chorus: [LANE_ZEER, LANE_TAR] },
-    hard:   { verse: [LANE_ZEER, LANE_TAR, LANE_CLAP], chorus: [LANE_ZEER, LANE_TAR, LANE_CLAP] }
+    easy:   { verse: [LANE_TABL], chorus: [LANE_TABL, LANE_TAR] },
+    normal: { verse: [LANE_TABL, LANE_TAR], chorus: [LANE_TABL, LANE_TAR] },
+    hard:   { verse: [LANE_TABL, LANE_SWORDS, LANE_TAR], chorus: [LANE_TABL, LANE_SWORDS, LANE_TAR] }
   };
 
   /* Bar plan. 30 bars at 96 BPM ≈ 75 s — a run you can repeat without fatigue.
@@ -89,19 +89,20 @@ window.Ardah = window.Ardah || {};
           // quiet enough that the zeer hit at the end still reads as the target.
           var holdStart = barStart + 8 * slotMs;
           var holdDur = beatMs * 2;
-          notes.push({ t: Math.round(holdStart), lane: LANE_ZEER, type: 'hold', durMs: Math.round(holdDur) });
+          notes.push({ t: Math.round(holdStart), lane: LANE_TABL, type: 'hold', durMs: Math.round(holdDur) });
           for (var r = 0; r < 4; r++) {
             drums.push({ t: Math.round(holdStart + r * (beatMs / 2)), voice: 'tar', gain: 0.35 });
           }
-          drums.push({ t: Math.round(holdStart + holdDur), voice: 'zeer', gain: 1 });
+          drums.push({ t: Math.round(holdStart + holdDur), voice: 'tabl', gain: 1 });
         }
 
         if (wantsFlourish) {
           var fT = barStart + 8 * slotMs;
-          notes.push({ t: Math.round(fT), lane: LANE_TAR, type: 'flourish' });
-          drums.push({ t: Math.round(fT), voice: 'zeer', gain: 1 });
-          drums.push({ t: Math.round(fT), voice: 'clap', gain: 1 });
-          drums.push({ t: Math.round(fT + beatMs), voice: 'clap', gain: 0.5 });
+          // The flourish rides the middle lane — the swords line.
+          notes.push({ t: Math.round(fT), lane: LANE_SWORDS, type: 'flourish' });
+          drums.push({ t: Math.round(fT), voice: 'tabl', gain: 1 });
+          drums.push({ t: Math.round(fT), voice: 'swords', gain: 1 });
+          drums.push({ t: Math.round(fT + beatMs), voice: 'swords', gain: 0.5 });
         }
       }
     }
@@ -155,7 +156,7 @@ window.Ardah = window.Ardah || {};
   }
 
   A.charts = {
-    LANE_ZEER: LANE_ZEER, LANE_TAR: LANE_TAR, LANE_CLAP: LANE_CLAP,
+    LANE_TABL: LANE_TABL, LANE_SWORDS: LANE_SWORDS, LANE_TAR: LANE_TAR,
     VOICE_OF_LANE: VOICE_OF_LANE,
     build: build,
     validate: validate,
