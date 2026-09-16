@@ -117,6 +117,19 @@ evaluation only. Not cleared for release — and note that the banners in it car
 the state emblem, which is exactly the compliance question raised in the brief's
 §1.
 
+### Redrawn note sprites
+
+`assets/hd/` holds 512 px masters of the three note objects, drawn by
+`deck/make_notes.js` (canvas at 4x, downsampled) rather than cut from the
+concept image. The cut sprites are 60–80 px crops, and the game draws a note at
+~115 pt near the judgment line — 345 device pixels on a 3x screen — so those
+crops are running at a five-fold upscale and show it.
+
+The masters are not wired into the game: swapping them in changes the art
+direction (the cut sprites carry the concept's own lighting), so that is a
+design call, not a technical one. To try them, export to webp at the size the
+lane actually uses and drop them over `assets/note_*.webp`.
+
 ## What is real and what is a placeholder
 
 Real — and intended to survive into production:
