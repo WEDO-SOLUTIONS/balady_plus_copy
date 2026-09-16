@@ -1,0 +1,2047 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no,maximum-scale=1">
+<meta name="theme-color" content="#0b3d2e">
+<meta name="description" content="بلوت — لعبة الورق السعودية داخل بلدي+ | Baloot card game">
+<title>بلوت | Baloot</title>
+<style>
+/* ============================================================
+   Baloot — standalone single-file web game for Balady+ superapp
+   No external dependencies: works offline, inside a WebView,
+   or by opening this file directly in a browser.
+   ============================================================ */
+
+:root{
+  --felt-1:#12684c;
+  --felt-2:#0a3527;
+  --gold:#e2bb64;
+  --gold-dim:#a98b45;
+  --ink:#10241d;
+  --paper:#f7f3e8;
+  --red:#d1384a;
+  --blue:#2f6fb3;
+  --ok:#3fae6d;
+  --warn:#e0913a;
+  --card-w:clamp(56px, 13.4vw, 84px);
+  --card-h:calc(var(--card-w) * 1.42);
+  --radius:14px;
+  --shadow:0 10px 26px rgba(0,0,0,.42);
+  --safe-b:env(safe-area-inset-bottom,0px);
+  --safe-t:env(safe-area-inset-top,0px);
+}
+
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;margin:0;overflow:hidden;overscroll-behavior:none}
+body{
+  font-family:"SF Arabic","Geeza Pro","Noto Kufi Arabic","Segoe UI","Tahoma",system-ui,-apple-system,sans-serif;
+  background:var(--felt-2);
+  color:var(--paper);
+  user-select:none;
+  -webkit-user-select:none;
+  touch-action:manipulation;
+}
+html[dir="ltr"] body{font-family:"SF Pro Display","Segoe UI",system-ui,-apple-system,sans-serif}
+button{font:inherit;color:inherit;border:0;background:none;cursor:pointer}
+
+/* ---------- table ---------- */
+#table{
+  position:fixed;inset:0;
+  background:
+    radial-gradient(ellipse 120% 80% at 50% 42%, var(--felt-1) 0%, #0d4a37 52%, var(--felt-2) 100%);
+  display:flex;flex-direction:column;
+  padding-top:var(--safe-t);
+  padding-bottom:var(--safe-b);
+}
+#table::after{
+  content:"";position:absolute;inset:0;pointer-events:none;
+  background-image:repeating-linear-gradient(45deg,rgba(255,255,255,.012) 0 2px,transparent 2px 4px);
+}
+
+/* ---------- top bar ---------- */
+#topbar{
+  position:relative;z-index:6;
+  display:flex;align-items:center;gap:8px;
+  padding:8px 10px;
+}
+.chip{
+  display:inline-flex;align-items:center;gap:6px;
+  background:rgba(0,0,0,.34);border:1px solid rgba(226,187,100,.28);
+  border-radius:999px;padding:5px 11px;font-size:12.5px;font-weight:700;
+  backdrop-filter:blur(6px);white-space:nowrap;
+}
+.chip b{color:var(--gold);font-variant-numeric:tabular-nums}
+.icon-btn{
+  width:34px;height:34px;border-radius:50%;
+  background:rgba(0,0,0,.34);border:1px solid rgba(226,187,100,.28);
+  display:grid;place-items:center;font-size:15px;line-height:1;
+}
+.icon-btn:active{transform:scale(.92)}
+.spacer{flex:1}
+
+/* ---------- scoreboard ---------- */
+#score{
+  display:flex;gap:6px;align-items:stretch;
+  background:rgba(0,0,0,.34);border:1px solid rgba(226,187,100,.28);
+  border-radius:12px;padding:4px 8px;backdrop-filter:blur(6px);
+}
+.sc{display:flex;flex-direction:column;align-items:center;min-width:44px;line-height:1.15}
+.sc .lbl{font-size:9.5px;opacity:.72;font-weight:700;letter-spacing:.3px}
+.sc .val{font-size:17px;font-weight:800;font-variant-numeric:tabular-nums;color:var(--gold)}
+.sc.them .val{color:#f0e9d8}
+.sc-sep{width:1px;background:rgba(226,187,100,.25);margin:3px 0}
+
+/* ---------- seats ---------- */
+#felt{position:relative;flex:1;min-height:0}
+/* the felt oval: gives the middle of the table some shape */
+#felt::before{
+  content:"";position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
+  width:min(88vw,430px);height:min(88vw,430px);max-height:58vh;
+  border-radius:50%;pointer-events:none;
+  background:radial-gradient(ellipse at 50% 42%,
+    rgba(255,255,255,.055) 0%, rgba(255,255,255,.02) 46%, rgba(0,0,0,.10) 68%, transparent 74%);
+  box-shadow:inset 0 0 0 2px rgba(226,187,100,.10), inset 0 0 40px rgba(0,0,0,.14);
+}
+.seat{
+  position:absolute;display:flex;align-items:center;gap:7px;z-index:5;
+  transition:opacity .2s;
+}
+.seat[data-pos="north"]{top:6px;left:50%;transform:translateX(-50%);flex-direction:column;gap:4px}
+.seat[data-pos="east"]{top:50%;right:6px;transform:translateY(-50%);flex-direction:column;gap:4px}
+.seat[data-pos="west"]{top:50%;left:6px;transform:translateY(-50%);flex-direction:column;gap:4px}
+.avatar{
+  width:42px;height:42px;border-radius:50%;
+  background:linear-gradient(160deg,#1c7a5b,#0b3d2e);
+  border:2px solid rgba(226,187,100,.45);
+  display:grid;place-items:center;font-size:18px;font-weight:800;
+  box-shadow:0 4px 14px rgba(0,0,0,.4);position:relative;
+}
+.avatar.me{border-color:var(--gold)}
+.avatar.turn{
+  border-color:#fff;
+  box-shadow:0 0 0 3px rgba(255,255,255,.22),0 0 20px rgba(226,187,100,.65);
+  animation:pulse 1.5s ease-in-out infinite;
+}
+@keyframes pulse{50%{box-shadow:0 0 0 6px rgba(255,255,255,.1),0 0 26px rgba(226,187,100,.9)}}
+.avatar .badge{
+  position:absolute;bottom:-3px;inset-inline-end:-3px;
+  background:var(--gold);color:var(--ink);font-size:9px;font-weight:900;
+  border-radius:999px;padding:1px 4px;line-height:1.3;
+}
+.avatar .badge.bot{background:#6f8f9e;color:#fff}
+.avatar .badge.wait{background:var(--warn);color:#fff}
+.nm{font-size:11px;font-weight:700;text-align:center;max-width:82px;
+    overflow:hidden;text-overflow:ellipsis;white-space:nowrap;text-shadow:0 1px 3px rgba(0,0,0,.6)}
+.hand-back{display:flex;gap:-6px}
+.cardback{
+  width:16px;height:23px;border-radius:3px;margin-inline-start:-9px;
+  background:repeating-linear-gradient(45deg,#9d2235 0 3px,#7a1a29 3px 6px);
+  border:1px solid rgba(255,255,255,.28);box-shadow:0 1px 3px rgba(0,0,0,.4);
+}
+.cardback:first-child{margin-inline-start:0}
+
+/* ---------- trick area ---------- */
+#trick{
+  position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
+  width:min(62vw,262px);height:min(62vw,262px);
+}
+/* these need to outrank `.card{position:relative}`, which is declared later */
+#trick .tc{
+  position:absolute;width:var(--card-w);height:var(--card-h);
+  transition:transform .28s cubic-bezier(.2,.8,.3,1),opacity .28s;
+}
+#trick .tc.south{bottom:0;left:50%;margin-left:calc(var(--card-w)/-2);transform:rotate(-2deg)}
+#trick .tc.north{top:0;left:50%;margin-left:calc(var(--card-w)/-2);transform:rotate(3deg)}
+#trick .tc.east{right:0;top:50%;margin-top:calc(var(--card-h)/-2);transform:rotate(8deg)}
+#trick .tc.west{left:0;top:50%;margin-top:calc(var(--card-h)/-2);transform:rotate(-8deg)}
+#trick .tc.deal-in{animation:dealIn .3s cubic-bezier(.2,.9,.3,1)}
+@keyframes dealIn{from{opacity:0;transform:scale(.6) translateY(24px)}}
+#trick.collect .tc{opacity:0;transform:scale(.5)}
+
+/* ---------- centre HUD ---------- */
+#centre{
+  position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
+  z-index:4;text-align:center;pointer-events:none;
+}
+#modepill{
+  display:inline-flex;align-items:center;gap:6px;
+  background:rgba(0,0,0,.5);border:1px solid rgba(226,187,100,.4);
+  border-radius:999px;padding:4px 12px;font-size:12px;font-weight:800;
+  backdrop-filter:blur(4px);
+}
+#modepill .suit{font-size:15px}
+
+/* ---------- cards ---------- */
+.card{
+  width:var(--card-w);height:var(--card-h);border-radius:8px;
+  background:linear-gradient(170deg,#fffdf7,#efe9d9);
+  color:var(--ink);box-shadow:var(--shadow);
+  position:relative;overflow:hidden;
+  display:flex;flex-direction:column;justify-content:space-between;
+  padding:4px 5px;border:1px solid rgba(0,0,0,.14);
+  font-family:"SF Pro Display","Segoe UI",system-ui,sans-serif;
+}
+.card .corner{
+  font-size:calc(var(--card-w)*.34);font-weight:800;line-height:1;
+  letter-spacing:-.5px;z-index:2;
+}
+.card .corner .sg{display:block;font-size:calc(var(--card-w)*.30);margin-top:1px}
+.card .pip{
+  position:absolute;bottom:calc(var(--card-w)*-.06);inset-inline-end:calc(var(--card-w)*-.04);
+  font-size:calc(var(--card-w)*.72);opacity:.20;line-height:1;z-index:1;
+}
+.card.r{color:var(--red)}
+.card.k{color:#16181d}
+.card.trump::before{
+  content:"";position:absolute;inset:0;border-radius:8px;
+  box-shadow:inset 0 0 0 2px var(--gold);pointer-events:none;
+}
+
+/* ---------- my hand ---------- */
+#hand{
+  position:relative;z-index:7;height:calc(var(--card-h) + 26px);
+  display:flex;justify-content:center;align-items:flex-end;
+  padding-bottom:6px;
+}
+#hand .slot{
+  width:calc(var(--card-w) * .66);height:var(--card-h);
+  position:relative;transition:transform .2s,margin .2s;
+}
+#hand .slot:last-child{width:var(--card-w)}
+#hand .card{
+  position:absolute;bottom:0;inset-inline-start:0;
+  transition:transform .18s cubic-bezier(.2,.8,.3,1),filter .18s,box-shadow .18s;
+}
+#hand .slot.playable .card{cursor:pointer}
+#hand .slot.playable:active .card,#hand .slot.playable.sel .card{transform:translateY(-16px) scale(1.04)}
+#hand .slot.blocked .card{filter:grayscale(.72) brightness(.66)}
+#hand .slot.blocked{cursor:not-allowed}
+@media (hover:hover){#hand .slot.playable:hover .card{transform:translateY(-14px);box-shadow:0 14px 30px rgba(0,0,0,.5)}}
+
+/* ---------- bubbles / announcements ---------- */
+.bubble{
+  position:absolute;z-index:9;
+  background:var(--paper);color:var(--ink);
+  border-radius:12px;padding:5px 11px;font-size:12.5px;font-weight:800;
+  box-shadow:var(--shadow);white-space:nowrap;
+  animation:pop .22s cubic-bezier(.2,1.4,.5,1);
+}
+@keyframes pop{from{opacity:0;transform:scale(.6)}}
+.bubble.gold{background:linear-gradient(160deg,#f6dfa4,#d9ae56);}
+.bubble::after{
+  content:"";position:absolute;width:9px;height:9px;background:inherit;
+  transform:rotate(45deg);
+}
+.bubble[data-pos="north"]{top:58px;left:50%;transform:translateX(-50%)}
+.bubble[data-pos="north"]::after{top:-4px;left:50%;margin-left:-4px}
+.bubble[data-pos="east"]{top:50%;right:58px;transform:translateY(-50%)}
+.bubble[data-pos="west"]{top:50%;left:58px;transform:translateY(-50%)}
+.bubble[data-pos="south"]{bottom:6px;left:50%;transform:translateX(-50%)}
+
+/* ---------- toast ---------- */
+#toast{
+  position:fixed;top:calc(var(--safe-t) + 54px);left:50%;transform:translateX(-50%);
+  z-index:40;display:flex;flex-direction:column;gap:6px;align-items:center;pointer-events:none;
+}
+.toast{
+  background:rgba(8,32,25,.94);border:1px solid rgba(226,187,100,.38);
+  color:var(--paper);border-radius:999px;padding:7px 16px;font-size:13px;font-weight:700;
+  box-shadow:var(--shadow);animation:toastIn .24s ease, toastOut .3s ease 2.1s forwards;
+}
+@keyframes toastIn{from{opacity:0;transform:translateY(-10px)}}
+@keyframes toastOut{to{opacity:0;transform:translateY(-8px)}}
+
+/* ---------- panels / modals ---------- */
+.scrim{
+  position:fixed;inset:0;z-index:50;background:rgba(3,14,10,.72);
+  backdrop-filter:blur(7px);display:grid;place-items:center;padding:16px;
+  animation:fade .2s ease;
+}
+@keyframes fade{from{opacity:0}}
+.scrim[hidden]{display:none}
+.panel{
+  width:min(440px,100%);max-height:88vh;overflow:auto;
+  background:linear-gradient(170deg,#0f4d3a,#07291e);
+  border:1px solid rgba(226,187,100,.35);border-radius:20px;
+  box-shadow:0 26px 60px rgba(0,0,0,.6);
+  padding:18px;animation:up .26s cubic-bezier(.2,.9,.3,1);
+}
+@keyframes up{from{opacity:0;transform:translateY(22px)}}
+.panel h2{margin:0 0 4px;font-size:19px;color:var(--gold);letter-spacing:.2px}
+.panel p.sub{margin:0 0 14px;font-size:13px;opacity:.78;line-height:1.55}
+.panel h3{margin:16px 0 8px;font-size:14px;color:var(--gold);opacity:.95}
+.row{display:flex;gap:8px;align-items:center}
+.row.wrap{flex-wrap:wrap}
+.btn{
+  flex:1;min-height:46px;border-radius:13px;font-size:15px;font-weight:800;
+  background:linear-gradient(170deg,#1c8a66,#0e5c43);
+  border:1px solid rgba(226,187,100,.3);
+  display:flex;align-items:center;justify-content:center;gap:7px;
+  box-shadow:0 5px 16px rgba(0,0,0,.34);transition:transform .12s,filter .12s;
+}
+.btn:active{transform:translateY(1px) scale(.985)}
+.btn.gold{background:linear-gradient(170deg,#e8c876,#c39a43);color:var(--ink);border-color:rgba(0,0,0,.18)}
+.btn.ghost{background:rgba(255,255,255,.07);border-color:rgba(255,255,255,.16)}
+.btn.sm{min-height:38px;font-size:13.5px;border-radius:11px;flex:0 0 auto;padding:0 14px}
+.btn[disabled]{opacity:.42;pointer-events:none}
+.btn.wide{flex:1 1 100%}
+
+.field{
+  width:100%;min-height:46px;border-radius:13px;padding:0 14px;
+  background:rgba(0,0,0,.3);border:1px solid rgba(226,187,100,.28);
+  color:var(--paper);font-size:15px;font-weight:700;outline:none;
+}
+.field::placeholder{color:rgba(247,243,232,.42);font-weight:600}
+.field:focus{border-color:var(--gold)}
+
+/* bidding */
+#bidcard-wrap{display:flex;flex-direction:column;align-items:center;gap:8px;margin-bottom:6px}
+#bidcard-wrap .card{--card-w:76px}
+.minihand{display:flex;justify-content:center;margin:2px 0 10px;--card-w:46px}
+.minihand .card{margin-inline-start:-13px;box-shadow:0 4px 12px rgba(0,0,0,.35)}
+.minihand .card:first-child{margin-inline-start:0}
+.minilbl{font-size:11px;opacity:.6;text-align:center;margin-bottom:2px}
+.suitbtns{display:flex;gap:8px;margin-top:4px}
+.suitbtn{
+  flex:1;height:52px;border-radius:13px;font-size:24px;
+  background:rgba(255,255,255,.08);border:1px solid rgba(226,187,100,.3);
+  display:grid;place-items:center;
+}
+.suitbtn.r{color:#ff8a96}
+.suitbtn.sel{background:linear-gradient(170deg,#e8c876,#c39a43);color:var(--ink)}
+
+/* friends list */
+.flist{display:flex;flex-direction:column;gap:8px;margin-top:4px}
+.fitem{
+  display:flex;align-items:center;gap:10px;
+  background:rgba(0,0,0,.26);border:1px solid rgba(255,255,255,.09);
+  border-radius:13px;padding:9px 11px;
+}
+.fitem .av{
+  width:34px;height:34px;border-radius:50%;flex:0 0 auto;
+  background:linear-gradient(160deg,#1c7a5b,#0b3d2e);
+  border:1px solid rgba(226,187,100,.4);display:grid;place-items:center;font-weight:800;font-size:14px;
+}
+.fitem .meta{flex:1;min-width:0}
+.fitem .meta .n{font-size:13.5px;font-weight:800;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.fitem .meta .s{font-size:11px;opacity:.65;margin-top:1px}
+.fitem .pick{
+  width:26px;height:26px;border-radius:50%;flex:0 0 auto;
+  border:2px solid rgba(226,187,100,.5);display:grid;place-items:center;font-size:13px;
+}
+.fitem.on .pick{background:var(--gold);color:var(--ink);border-color:var(--gold)}
+.fitem.on{border-color:rgba(226,187,100,.55)}
+.empty{opacity:.6;font-size:13px;text-align:center;padding:14px 4px;line-height:1.6}
+
+/* room code */
+#roomcode{
+  font-size:30px;font-weight:900;letter-spacing:7px;color:var(--gold);
+  text-align:center;padding:12px;margin:4px 0 10px;
+  background:rgba(0,0,0,.3);border:1px dashed rgba(226,187,100,.45);border-radius:14px;
+  font-variant-numeric:tabular-nums;direction:ltr;
+}
+
+/* seats config */
+.seatrow{
+  display:flex;align-items:center;gap:9px;
+  background:rgba(0,0,0,.24);border-radius:12px;padding:8px 10px;margin-bottom:7px;
+}
+.seatrow .pos{font-size:11px;opacity:.7;width:56px;font-weight:700}
+.seatrow .who{flex:1;font-size:13.5px;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.tag{font-size:10px;font-weight:800;border-radius:999px;padding:2px 8px;background:rgba(255,255,255,.12)}
+.tag.me{background:var(--gold);color:var(--ink)}
+.tag.bot{background:#5c7f8e}
+.tag.wait{background:var(--warn);color:#fff}
+.tag.joined{background:var(--ok)}
+
+/* results table */
+.rtab{width:100%;border-collapse:collapse;font-size:13px;margin-top:6px}
+.rtab th,.rtab td{padding:7px 6px;text-align:center;border-bottom:1px solid rgba(255,255,255,.1)}
+.rtab th{font-size:11px;opacity:.7;font-weight:700}
+.rtab td b{color:var(--gold);font-size:15px}
+.rtab .win td{background:rgba(63,174,109,.14)}
+
+/* rules */
+.rules{font-size:13px;line-height:1.85;opacity:.9}
+.rules b{color:var(--gold)}
+.rules ul{padding-inline-start:18px;margin:6px 0}
+.rules table{width:100%;border-collapse:collapse;margin:8px 0;font-size:12.5px}
+.rules th,.rules td{border:1px solid rgba(255,255,255,.14);padding:5px 7px;text-align:center}
+.rules th{background:rgba(226,187,100,.14);color:var(--gold)}
+
+/* misc */
+.hint{font-size:11.5px;opacity:.6;text-align:center;margin-top:10px;line-height:1.6}
+.seg{display:flex;background:rgba(0,0,0,.3);border-radius:11px;padding:3px;gap:3px}
+.seg button{flex:1;padding:8px 6px;border-radius:9px;font-size:13px;font-weight:700;opacity:.65}
+.seg button.on{background:rgba(226,187,100,.9);color:var(--ink);opacity:1}
+.divider{height:1px;background:rgba(255,255,255,.1);margin:14px 0}
+
+@media (max-height:660px){
+  :root{--card-w:clamp(44px,10.5vw,62px)}
+  .avatar{width:36px;height:36px;font-size:15px}
+  #trick{width:min(52vw,196px);height:min(52vw,196px)}
+}
+</style>
+</head>
+<body>
+
+<div id="table">
+  <div id="topbar">
+    <button class="icon-btn" id="btn-menu" aria-label="menu">☰</button>
+    <div id="score">
+      <div class="sc us"><span class="lbl" data-i18n="us">لنا</span><span class="val" id="score-us">0</span></div>
+      <div class="sc-sep"></div>
+      <div class="sc them"><span class="lbl" data-i18n="them">لهم</span><span class="val" id="score-them">0</span></div>
+    </div>
+    <div class="spacer"></div>
+    <div class="chip" id="chip-round"><span data-i18n="round">جولة</span> <b id="round-no">1</b></div>
+    <button class="icon-btn" id="btn-friends" aria-label="friends">👥</button>
+  </div>
+
+  <div id="felt">
+    <div class="seat" data-pos="north" id="seat-n"></div>
+    <div class="seat" data-pos="west"  id="seat-w"></div>
+    <div class="seat" data-pos="east"  id="seat-e"></div>
+    <div id="centre"><div id="modepill" hidden></div></div>
+    <div id="trick"></div>
+  </div>
+
+  <div id="hand"></div>
+</div>
+
+<div id="toast"></div>
+
+<!-- ====================== MODALS ====================== -->
+<div class="scrim" id="m-lobby" hidden><div class="panel" id="lobby-body"></div></div>
+<div class="scrim" id="m-bid"   hidden><div class="panel" id="bid-body"></div></div>
+<div class="scrim" id="m-round" hidden><div class="panel" id="round-body"></div></div>
+<div class="scrim" id="m-menu"  hidden><div class="panel" id="menu-body"></div></div>
+<div class="scrim" id="m-friends" hidden><div class="panel" id="friends-body"></div></div>
+<div class="scrim" id="m-rules" hidden><div class="panel" id="rules-body"></div></div>
+
+<script>
+"use strict";
+/* ============================================================
+   1. i18n  (Arabic first, English fallback)
+   ============================================================ */
+const I18N = {
+  ar:{
+    us:"لنا", them:"لهم", round:"جولة",
+    sun:"صن", hokum:"حكم", pass:"بس", ashkal:"أشكل",
+    you:"أنت", partner:"شريكك", right:"اليمين", left:"اليسار",
+    bot:"بوت", waiting:"بانتظار…", joined:"انضم",
+    yourTurn:"دورك", play:"العب",
+    bidTitle:"المزايدة", bidSub:"اختر نوع اللعب على الورقة المكشوفة",
+    bidSubR2:"الجولة الثانية — اختر أي حكم تريد أو صن",
+    chooseSuit:"اختر نوع الحكم",
+    redeal:"الكل باص — توزيع جديد",
+    trickWon:"أخذها",
+    projSra:"سرا", proj50:"خمسين", proj100:"مية", proj400:"أربعمية", projBaloot:"بلوت",
+    roundOver:"انتهت الجولة", gameOver:"انتهت اللعبة",
+    tricks:"أكلات", projects:"مشاريع", raw:"نقاط خام", final:"النتيجة",
+    weWin:"فزتم! 🎉", theyWin:"خسرتم", kaboot:"كبوت!", losing:"خسارة — كل النقاط للخصم",
+    nextRound:"الجولة التالية", newGame:"لعبة جديدة", playAgain:"العب مرة أخرى",
+    lobbyTitle:"بلوت", lobbySub:"لعبة الورق السعودية — أربعة لاعبين، فريقان، ٨ أوراق لكل لاعب.",
+    startSolo:"العب مع البوتات", inviteFriends:"ادعُ أصدقاءك", rules:"الشرح والقوانين",
+    seats:"المقاعد", seatN:"شريكك", seatE:"اليمين", seatW:"اليسار", seatS:"أنت",
+    friendsTitle:"ادعُ أصدقاءك", 
+    friendsSub:"شارك رمز الغرفة، أو اختر من قائمة أصدقائك في تحدي بلدي. المقاعد الفارغة يملؤها البوت تلقائياً.",
+    roomCode:"رمز الغرفة", copy:"نسخ", copied:"تم النسخ ✓", share:"مشاركة",
+    myFriends:"أصدقائي", addByNumber:"إضافة برقم اللاعب", addHint:"# اكتب رقم صديقك هنا",
+    add:"إضافة", noFriends:"لا يوجد أصدقاء بعد.\nأضف صديقاً برقم اللاعب أو شارك رمز الغرفة.",
+    seatThem:"إجلاسهم وبدء اللعب", inviteSent:"أُرسلت الدعوة إلى {n}",
+    remove:"إزالة", loadingFriends:"جاري تحميل قائمة الأصدقاء…",
+    menuTitle:"الإعدادات", language:"اللغة", speed:"سرعة اللعب",
+    slow:"هادئة", normal:"عادية", fast:"سريعة",
+    sound:"الصوت", on:"تشغيل", off:"إيقاف",
+    sortHand:"ترتيب الأوراق", resign:"إنهاء اللعبة", close:"إغلاق",
+    target:"اللعبة حتى", points:"نقطة",
+    mustFollow:"يجب اتباع نفس النوع", mustTrump:"يجب أن تقطع بالحكم", mustOver:"يجب أن تعلو على الحكم",
+    rulesTitle:"شرح بلوت",
+    doubled:"المشاريع تُضاعف في الصن",
+    bidderIs:"الحكم/الصن على",
+    confirm:"تأكيد", cancel:"إلغاء",
+    waitingJoin:"بانتظار انضمام {n}… سيُستبدل بالبوت عند البدء.",
+    hostInvite:"فتح قائمة الأصدقاء في التطبيق"
+  },
+  en:{
+    us:"Us", them:"Them", round:"Round",
+    sun:"Sun", hokum:"Hokum", pass:"Pass", ashkal:"Ashkal",
+    you:"You", partner:"Partner", right:"Right", left:"Left",
+    bot:"Bot", waiting:"Waiting…", joined:"Joined",
+    yourTurn:"Your turn", play:"Play",
+    bidTitle:"Bidding", bidSub:"Choose the game type on the face-up card",
+    bidSubR2:"Second round — pick any trump suit, or Sun",
+    chooseSuit:"Choose the trump suit",
+    redeal:"Everyone passed — redealing",
+    trickWon:"takes it",
+    projSra:"Sra", proj50:"Fifty", proj100:"Hundred", proj400:"Four Hundred", projBaloot:"Baloot",
+    roundOver:"Round over", gameOver:"Game over",
+    tricks:"Tricks", projects:"Projects", raw:"Raw points", final:"Score",
+    weWin:"You win! 🎉", theyWin:"You lose", kaboot:"Kaboot!", losing:"Failed bid — all points to opponents",
+    nextRound:"Next round", newGame:"New game", playAgain:"Play again",
+    lobbyTitle:"Baloot", lobbySub:"The Saudi card game — four players, two teams, 8 cards each.",
+    startSolo:"Play with bots", inviteFriends:"Invite friends", rules:"How to play",
+    seats:"Seats", seatN:"Partner", seatE:"Right", seatW:"Left", seatS:"You",
+    friendsTitle:"Invite friends",
+    friendsSub:"Share the room code, or pick from your Balady Challenge friends. Empty seats are filled by bots.",
+    roomCode:"Room code", copy:"Copy", copied:"Copied ✓", share:"Share",
+    myFriends:"My friends", addByNumber:"Add by player number", addHint:"# Type your friend's number",
+    add:"Add", noFriends:"No friends yet.\nAdd one by player number or share the room code.",
+    seatThem:"Seat them & start", inviteSent:"Invite sent to {n}",
+    remove:"Remove", loadingFriends:"Loading friends…",
+    menuTitle:"Settings", language:"Language", speed:"Game speed",
+    slow:"Slow", normal:"Normal", fast:"Fast",
+    sound:"Sound", on:"On", off:"Off",
+    sortHand:"Sort hand", resign:"End game", close:"Close",
+    target:"Game to", points:"points",
+    mustFollow:"You must follow suit", mustTrump:"You must trump", mustOver:"You must over-trump",
+    rulesTitle:"How to play Baloot",
+    doubled:"Projects are doubled in Sun",
+    bidderIs:"Bid by",
+    confirm:"Confirm", cancel:"Cancel",
+    waitingJoin:"Waiting for {n} to join… a bot takes the seat at start.",
+    hostInvite:"Open the app's friends list"
+  }
+};
+let LANG = (localStorage.getItem("baloot.lang")) ||
+           ((navigator.language||"ar").toLowerCase().startsWith("ar") ? "ar" : "en");
+const T = (k, vars) => {
+  let s = (I18N[LANG] && I18N[LANG][k]) || I18N.en[k] || k;
+  if (vars) for (const k2 in vars) s = s.replace("{"+k2+"}", vars[k2]);
+  return s;
+};
+
+/* ============================================================
+   2. Rules engine — pure, testable, no DOM
+   ============================================================ */
+const SUITS = ["S","H","D","C"];
+const SUIT_GLYPH = {S:"♠", H:"♥", D:"♦", C:"♣"};
+const SUIT_RED = {S:0, H:1, D:1, C:0};
+const RANKS = ["7","8","9","10","J","Q","K","A"];   // natural / sequence order
+
+// Strength within a trick
+const ORDER_PLAIN = {"7":0,"8":1,"9":2,"J":3,"Q":4,"K":5,"10":6,"A":7};
+const ORDER_TRUMP = {"7":0,"8":1,"Q":2,"K":3,"10":4,"A":5,"9":6,"J":7};
+// Card points
+const PTS_PLAIN = {"7":0,"8":0,"9":0,"J":2,"Q":3,"K":4,"10":10,"A":11};
+const PTS_TRUMP = {"7":0,"8":0,"Q":3,"K":4,"10":10,"A":11,"9":14,"J":20};
+
+const CFG = {
+  target: 152,          // game is played to 152 points
+  kabootSun: 44,        // all 8 tricks in Sun
+  kabootHokum: 25,      // all 8 tricks in Hokum
+  sunTotal: 26,         // converted points available in a Sun round
+  hokumTotal: 16,       // converted points available in a Hokum round
+  fourNines: 100        // value of four 9s (house rule; 400 is four Jacks)
+};
+
+const card = (s,r) => ({s, r, id: s+r});
+const isTrump = (c, st) => st.mode === "hokum" && c.s === st.trump;
+const cardPoints = (c, st) => isTrump(c, st) ? PTS_TRUMP[c.r] : PTS_PLAIN[c.r];
+const cardOrder  = (c, st) => isTrump(c, st) ? ORDER_TRUMP[c.r] : ORDER_PLAIN[c.r];
+
+function makeDeck(){
+  const d = [];
+  for (const s of SUITS) for (const r of RANKS) d.push(card(s,r));
+  return d;
+}
+function shuffle(a, rnd){
+  for (let i=a.length-1;i>0;i--){
+    const j = Math.floor((rnd?rnd():Math.random())*(i+1));
+    [a[i],a[j]] = [a[j],a[i]];
+  }
+  return a;
+}
+
+/* ---- trick evaluation ---- */
+function trickWinner(plays, st){
+  // plays: [{seat, card}] in play order; first is the lead
+  const lead = plays[0].card.s;
+  let best = plays[0], bestKey = -1;
+  for (const p of plays){
+    const t = isTrump(p.card, st);
+    const follows = p.card.s === lead;
+    if (!t && !follows) continue;                 // discard, cannot win
+    const key = (t ? 100 : 0) + cardOrder(p.card, st);
+    if (key > bestKey){ bestKey = key; best = p; }
+  }
+  return best.seat;
+}
+
+/* ---- legal moves ---- */
+function legalCards(hand, trick, st){
+  if (trick.length === 0) return hand.slice();
+  const lead = trick[0].card.s;
+  const sameSuit = hand.filter(c => c.s === lead);
+
+  if (st.mode === "sun"){
+    return sameSuit.length ? sameSuit : hand.slice();
+  }
+
+  // ---- Hokum ----
+  const trumps = hand.filter(c => c.s === st.trump);
+  const trumpsInTrick = trick.filter(p => p.card.s === st.trump);
+  const highestTrumpPlayed = trumpsInTrick.length
+    ? Math.max(...trumpsInTrick.map(p => ORDER_TRUMP[p.card.r])) : -1;
+
+  if (lead === st.trump){
+    // following trump: must over-trump when possible
+    if (sameSuit.length){
+      const higher = sameSuit.filter(c => ORDER_TRUMP[c.r] > highestTrumpPlayed);
+      return higher.length ? higher : sameSuit;
+    }
+    return hand.slice();
+  }
+
+  if (sameSuit.length) return sameSuit;           // follow suit first
+
+  // void in the led suit
+  if (!trumps.length) return hand.slice();
+
+  // partner already winning => free discard
+  const winnerSeat = trickWinner(trick, st);
+  const partnerOfMover = (st.currentSeat + 2) % 4;
+  if (trick.length && winnerSeat === partnerOfMover) return hand.slice();
+
+  const higher = trumps.filter(c => ORDER_TRUMP[c.r] > highestTrumpPlayed);
+  return higher.length ? higher : trumps;
+}
+
+function illegalReason(c, hand, trick, st){
+  if (!trick.length) return null;
+  const lead = trick[0].card.s;
+  if (hand.some(x => x.s === lead) && c.s !== lead) return T("mustFollow");
+  if (st.mode === "hokum" && c.s !== st.trump && !hand.some(x => x.s === lead)
+      && hand.some(x => x.s === st.trump)) return T("mustTrump");
+  return T("mustOver");
+}
+
+/* ---- projects (مشاريع) ---- */
+function findProjects(hand, st){
+  const out = [];
+  // sequences per suit
+  for (const s of SUITS){
+    const idx = hand.filter(c => c.s === s).map(c => RANKS.indexOf(c.r)).sort((a,b)=>a-b);
+    let run = [];
+    const flush = () => {
+      if (run.length >= 5) out.push({kind:"100", value:100, len:run.length, top:run[run.length-1], suit:s});
+      else if (run.length === 4) out.push({kind:"50", value:50, len:4, top:run[3], suit:s});
+      else if (run.length === 3) out.push({kind:"sra", value:20, len:3, top:run[2], suit:s});
+      run = [];
+    };
+    for (const v of idx){
+      if (run.length && v === run[run.length-1] + 1) run.push(v);
+      else { flush(); run = [v]; }
+    }
+    flush();
+  }
+  // four of a kind
+  for (const r of ["J","A","K","Q","10","9"]){
+    const n = hand.filter(c => c.r === r).length;
+    if (n === 4){
+      if (r === "J") out.push({kind:"400", value:400, len:4, top:99, suit:null, four:r});
+      else if (r === "9") out.push({kind:"100", value:CFG.fourNines, len:4, top:90, suit:null, four:r});
+      else out.push({kind:"100", value:100, len:4, top:80 + ORDER_PLAIN[r], suit:null, four:r});
+    }
+  }
+  // baloot: K+Q of trump (Hokum only)
+  if (st.mode === "hokum"
+      && hand.some(c => c.s===st.trump && c.r==="K")
+      && hand.some(c => c.s===st.trump && c.r==="Q")){
+    out.push({kind:"baloot", value:20, len:2, top:-1, suit:st.trump});
+  }
+  return out;
+}
+
+// only the team holding the single highest project scores projects (baloot always scores)
+function resolveProjects(handsAtDeal, st){
+  const per = [0,1,2,3].map(i => findProjects(handsAtDeal[i], st));
+  const balootSeat = per.findIndex(list => list.some(p => p.kind === "baloot"));
+  const rank = p => p.value * 1000 + p.len * 100 + Math.max(p.top,0);
+
+  let bestSeat = -1, best = null;
+  per.forEach((list, seat) => {
+    for (const p of list){
+      if (p.kind === "baloot") continue;
+      if (!best || rank(p) > rank(best)){ best = p; bestSeat = seat; }
+    }
+  });
+
+  const res = { teamPoints:[0,0], announcements:[] };
+  if (best){
+    const team = bestSeat % 2;
+    for (const seat of [team, team+2].map(x => x % 4)){
+      for (const p of per[seat]){
+        if (p.kind === "baloot") continue;
+        res.teamPoints[team] += p.value;
+        res.announcements.push({seat, kind:p.kind, value:p.value});
+      }
+    }
+  }
+  if (balootSeat >= 0){
+    res.teamPoints[balootSeat % 2] += 20;
+    res.announcements.push({seat:balootSeat, kind:"baloot", value:20});
+  }
+  return res;
+}
+
+/* ---- round scoring ---- */
+function convert(raw, mode){
+  // Sun: /5 (remainder >= 3 rounds up). Hokum: /10 (remainder >= 6 rounds up).
+  if (mode === "sun"){
+    const q = Math.floor(raw / 5), rem = raw % 5;
+    return q + (rem >= 3 ? 1 : 0);
+  }
+  const q = Math.floor(raw / 10), rem = raw % 10;
+  return q + (rem >= 6 ? 1 : 0);
+}
+
+function scoreRound(st){
+  const mode = st.mode;
+  const rawTricks = st.rawPoints.slice();          // [team0, team1] from tricks incl. last-trick bonus
+  // Projects are added to the raw points and converted with the round's divisor.
+  // Sun divides by 5 and Hokum by 10, so a project is automatically worth twice
+  // as much in Sun (a 50 is 10 points in Sun, 5 in Hokum). No extra multiplier.
+  const proj = st.projects.teamPoints.slice();
+
+  const kabootTeam = st.tricksWon[0] === 8 ? 0 : (st.tricksWon[1] === 8 ? 1 : -1);
+  const totalConverted = mode === "sun" ? CFG.sunTotal : CFG.hokumTotal;
+
+  let final = [0,0], note = null;
+
+  if (kabootTeam >= 0){
+    const base = mode === "sun" ? CFG.kabootSun : CFG.kabootHokum;
+    final[kabootTeam] = base + convert(proj[0] + proj[1], mode);
+    note = "kaboot";
+  } else {
+    const c0 = convert(rawTricks[0] + proj[0], mode);
+    const c1 = convert(rawTricks[1] + proj[1], mode);
+    final = [c0, c1];
+
+    // failed bid ("خسارة"): bidding team scores less than the defenders
+    const bidTeam = st.bidder % 2, defTeam = 1 - bidTeam;
+    if (final[bidTeam] < final[defTeam]){
+      final[defTeam] = totalConverted + convert(proj[0] + proj[1], mode);
+      final[bidTeam] = 0;
+      note = "losing";
+    } else if (final[bidTeam] === final[defTeam]){
+      // tie: the round is carried over to the next one ("أرض")
+      note = "tie";
+    }
+  }
+  return { final, rawTricks, projRaw: proj, note, kabootTeam };
+}
+
+/* ---- state factory ---- */
+function newGameState(seatsMeta){
+  return {
+    seats: seatsMeta,
+    scores: [0,0],
+    roundNo: 1,
+    dealer: 3,
+    carry: [0,0],           // carried points from a tied round
+    history: [],
+    phase: "idle"
+  };
+}
+
+/* ============================================================
+   3. Host bridge — integration with the Balady+ superapp
+   ------------------------------------------------------------
+   The game is a mini-app: it runs inside the in-app WebView
+   (mini_apps_engine) or standalone in a browser.
+
+   OUT (game -> host), best-effort over every known channel:
+     ready           {}                      mini-app booted
+     getFriends      {}                      ask the host for the friends list
+     invite          {room, deepLink, ids[]} host sends the invitations
+     share           {room, url, text}       host opens the native share sheet
+     matchResult     {scores, winner, round} for leaderboard / points
+     close           {}                      close the mini-app
+
+   IN (host -> game), call any of these from Dart/JS:
+     window.Baloot.onFriends([{id,name,avatar,online}])
+     window.Baloot.onFriendJoined({id,name,seat})
+     window.Baloot.onRoom({room, seats:[...]})
+     window.Baloot.setLang("ar"|"en")
+
+   From Flutter (flutter_inappwebview):
+     controller.evaluateJavascript(source: "window.Baloot.onFriends($json)")
+     controller.addJavaScriptHandler(handlerName: 'baloot', callback: (a){...})
+   ============================================================ */
+const Bridge = (() => {
+  const listeners = [];
+  function send(action, payload){
+    const msg = {source:"baloot", action, payload: payload || {}};
+    let delivered = false;
+    try{
+      const iaw = window.flutter_inappwebview;
+      if (iaw && typeof iaw.callHandler === "function"){
+        iaw.callHandler("baloot", msg); delivered = true;
+      }
+    }catch(e){}
+    try{
+      if (window.BaladyBridge && typeof window.BaladyBridge.postMessage === "function"){
+        window.BaladyBridge.postMessage(JSON.stringify(msg)); delivered = true;
+      }
+    }catch(e){}
+    try{
+      if (window.ReactNativeWebView && window.ReactNativeWebView.postMessage){
+        window.ReactNativeWebView.postMessage(JSON.stringify(msg)); delivered = true;
+      }
+    }catch(e){}
+    try{
+      if (window.parent && window.parent !== window){
+        window.parent.postMessage(msg, "*"); delivered = true;
+      }
+    }catch(e){}
+    return delivered;
+  }
+  const hasHost = () => !!(window.flutter_inappwebview || window.BaladyBridge ||
+                           window.ReactNativeWebView || (window.parent && window.parent !== window));
+  return { send, hasHost, listeners };
+})();
+
+window.Baloot = window.Baloot || {};
+window.Baloot.onFriends = list => Friends.setHostFriends(list);
+window.Baloot.onFriendJoined = f => Lobby.friendJoined(f);
+window.Baloot.onRoom = r => Lobby.applyRoom(r);
+window.Baloot.setLang = l => { setLang(l === "en" ? "en" : "ar"); };
+window.addEventListener("message", ev => {
+  const d = ev.data;
+  if (!d || d.source !== "balady-host") return;
+  if (d.action === "friends") window.Baloot.onFriends(d.payload);
+  if (d.action === "friendJoined") window.Baloot.onFriendJoined(d.payload);
+  if (d.action === "lang") window.Baloot.setLang(d.payload);
+});
+
+/* ============================================================
+   4. Friends store (host list + locally added player numbers)
+   ============================================================ */
+const Friends = (() => {
+  const LS = "baloot.friends";
+  let hostList = null;                 // null = not answered yet
+  let local = [];
+  try{ local = JSON.parse(localStorage.getItem(LS) || "[]"); }catch(e){ local = []; }
+
+  const save = () => { try{ localStorage.setItem(LS, JSON.stringify(local)); }catch(e){} };
+
+  return {
+    requested:false,
+    request(){
+      if (this.requested) return;
+      this.requested = true;
+      const ok = Bridge.send("getFriends");
+      // if no host answers within 1.2s we simply show the local list
+      setTimeout(() => { if (hostList === null){ hostList = []; UI.renderFriends(); } }, ok ? 1500 : 200);
+    },
+    setHostFriends(list){
+      hostList = (Array.isArray(list) ? list : []).map(f => ({
+        id: String(f.id ?? f.playerId ?? f.number ?? ""),
+        name: f.name || f.nickName || f.nickname || ("#" + (f.id ?? "")),
+        online: !!f.online, host:true
+      })).filter(f => f.id);
+      UI.renderFriends();
+    },
+    all(){ return [...(hostList || []), ...local]; },
+    loaded(){ return hostList !== null; },
+    addLocal(num, name){
+      num = String(num || "").trim().replace(/[^\w-]/g, "");
+      if (!num) return null;
+      if (this.all().some(f => f.id === num)) return null;
+      const f = {id:num, name: name || ("#" + num), online:false, host:false};
+      local.push(f); save();
+      return f;
+    },
+    removeLocal(id){ local = local.filter(f => f.id !== id); save(); }
+  };
+})();
+
+/* ============================================================
+   5. Bot AI — heuristic, plays a decent social-level game
+   ============================================================ */
+const AI = {
+  bid(hand, seat, st, round, upcard, isLastSeat){
+    // rough hand strength for each option
+    const suitScore = suit => {
+      let s = 0;
+      for (const c of hand){
+        if (c.s === suit) s += PTS_TRUMP[c.r] * (c.r === "J" ? 1.25 : c.r === "9" ? 1.15 : 1);
+        else s += PTS_PLAIN[c.r] * .55;
+      }
+      s += hand.filter(c => c.s === suit).length * 5;
+      return s;
+    };
+    const sunScore = () => {
+      let s = 0;
+      for (const c of hand) s += PTS_PLAIN[c.r];
+      s += hand.filter(c => c.r === "A").length * 6;
+      s += hand.filter(c => c.r === "10").length * 2;
+      return s;
+    };
+    const proj = findProjects(hand, {mode:"sun"}).reduce((a,p)=>a+p.value, 0);
+
+    // thresholds are calibrated against the score distribution of random hands
+    if (round === 1){
+      const h = suitScore(upcard.s) + proj * .06;
+      const s = sunScore() + proj * .08;
+      if (s >= 42 && s >= h) return {type:"sun"};
+      if (h >= 31) return {type:"hokum", suit:upcard.s};
+      return {type:"pass"};
+    }
+    // second round: free choice of suit, so the bar is lower
+    let bestSuit = null, bestVal = -1;
+    for (const su of SUITS){
+      const v = suitScore(su);
+      if (v > bestVal){ bestVal = v; bestSuit = su; }
+    }
+    const s = sunScore() + proj * .08;
+    if (s >= 38 && s >= bestVal) return {type:"sun"};
+    if (bestVal >= 36) return {type:"hokum", suit:bestSuit};
+    // the dealer is the last to speak: rather than force a redeal, take the best suit
+    if (isLastSeat) return {type:"hokum", suit:bestSuit};
+    return {type:"pass"};
+  },
+
+  play(hand, trick, st, seat){
+    const legal = legalCards(hand, trick, st);
+    if (legal.length === 1) return legal[0];
+
+    const pts = c => cardPoints(c, st);
+    const ord = c => cardOrder(c, st);
+    const byLow = arr => arr.slice().sort((a,b) => (ord(a)-ord(b)) || (pts(a)-pts(b)));
+    const byHigh = arr => byLow(arr).reverse();
+
+    // ---- leading ----
+    if (!trick.length){
+      const unseen = st.unseen || [];
+      // cash a boss card (nothing higher is still out)
+      const boss = legal.filter(c => {
+        if (isTrump(c, st)) return false;
+        return !unseen.some(u => u.s === c.s && ORDER_PLAIN[u.r] > ORDER_PLAIN[c.r]);
+      });
+      if (boss.length) return byHigh(boss)[0];
+      // in hokum, draw trumps early when holding the top ones
+      if (st.mode === "hokum"){
+        const myTr = legal.filter(c => c.s === st.trump);
+        const outTr = unseen.filter(u => u.s === st.trump).length;
+        if (myTr.length >= 3 && outTr > 0 && myTr.some(c => c.r === "J" || c.r === "9")){
+          return byHigh(myTr)[0];
+        }
+      }
+      // otherwise lead a cheap card from the shortest plain suit
+      const plain = legal.filter(c => !isTrump(c, st));
+      return byLow(plain.length ? plain : legal)[0];
+    }
+
+    // ---- following ----
+    const partner = (seat + 2) % 4;
+    const winnerSeat = trickWinner(trick, st);
+    const partnerWinning = winnerSeat === partner;
+    const potValue = trick.reduce((a,p) => a + cardPoints(p.card, st), 0);
+    const isLastToPlay = trick.length === 3;
+
+    // can I win it?
+    const winners = legal.filter(c => {
+      const sim = trick.concat([{seat, card:c}]);
+      return trickWinner(sim, st) === seat;
+    });
+
+    if (partnerWinning){
+      // feed points only when the trick is safely partner's
+      const safe = isLastToPlay || potValue >= 10;
+      if (safe){
+        const nonTrump = legal.filter(c => !isTrump(c, st));
+        const pool = nonTrump.length ? nonTrump : legal;
+        return pool.slice().sort((a,b) => pts(b)-pts(a))[0];
+      }
+      return byLow(legal)[0];
+    }
+
+    if (winners.length){
+      const worthIt = potValue >= 7 || isLastToPlay || winners.some(c => pts(c) === 0);
+      if (worthIt){
+        // win as cheaply as possible
+        return winners.slice().sort((a,b) => (pts(a)-pts(b)) || (ord(a)-ord(b)))[0];
+      }
+    }
+    // cannot / should not win: dump the cheapest card
+    return byLow(legal)[0];
+  }
+};
+
+/* ============================================================
+   6. Small DOM helpers
+   ============================================================ */
+const $  = sel => document.querySelector(sel);
+const el = (tag, cls, html) => {
+  const n = document.createElement(tag);
+  if (cls) n.className = cls;
+  if (html != null) n.innerHTML = html;
+  return n;
+};
+const wait = ms => new Promise(r => setTimeout(r, ms));
+const POSNAME = ["south","east","north","west"];
+
+const Settings = {
+  speed: localStorage.getItem("baloot.speed") || "normal",
+  sound: localStorage.getItem("baloot.sound") !== "off",
+  set(k,v){ this[k]=v; try{ localStorage.setItem("baloot."+k, v===true?"on":v===false?"off":v);}catch(e){} }
+};
+const pace = base => base * ({slow:1.55, normal:1, fast:.55}[Settings.speed] || 1);
+
+function setLang(l){
+  LANG = l;
+  try{ localStorage.setItem("baloot.lang", l); }catch(e){}
+  document.documentElement.lang = l;
+  document.documentElement.dir = l === "ar" ? "rtl" : "ltr";
+  document.querySelectorAll("[data-i18n]").forEach(n => n.textContent = T(n.dataset.i18n));
+  UI.refreshAll();
+}
+
+/* ---- audio: tiny synthesised blips, no asset files ---- */
+const Sound = (() => {
+  let ctx = null;
+  const tone = (f, d, type, vol) => {
+    if (!Settings.sound) return;
+    try{
+      ctx = ctx || new (window.AudioContext || window.webkitAudioContext)();
+      const o = ctx.createOscillator(), g = ctx.createGain();
+      o.type = type || "sine"; o.frequency.value = f;
+      g.gain.setValueAtTime(vol || .06, ctx.currentTime);
+      g.gain.exponentialRampToValueAtTime(.0001, ctx.currentTime + d);
+      o.connect(g); g.connect(ctx.destination);
+      o.start(); o.stop(ctx.currentTime + d);
+    }catch(e){}
+  };
+  return {
+    card(){ tone(320 + Math.random()*90, .07, "triangle", .05); },
+    win(){ tone(660, .12, "sine", .05); setTimeout(()=>tone(880,.16,"sine",.045), 90); },
+    bid(){ tone(520, .1, "square", .035); },
+    round(){ [523,659,784].forEach((f,i)=>setTimeout(()=>tone(f,.2,"sine",.05), i*110)); }
+  };
+})();
+
+function toast(msg){
+  const t = el("div", "toast", msg);
+  $("#toast").appendChild(t);
+  setTimeout(() => t.remove(), 2500);
+}
+
+function cardNode(c, st, extraCls){
+  const red = SUIT_RED[c.s];
+  const n = el("div", "card " + (red ? "r" : "k") + (extraCls ? " " + extraCls : "")
+            + (st && isTrump(c, st) ? " trump" : ""));
+  const g = SUIT_GLYPH[c.s];
+  n.innerHTML =
+    '<div class="corner">' + c.r + '<span class="sg">' + g + '</span></div>' +
+    '<div class="pip">' + g + '</div>';
+  return n;
+}
+
+/* ============================================================
+   7. Game controller
+   ============================================================ */
+const Game = {
+  G:null,        // game-level state
+  R:null,        // round state
+  busy:false,
+
+  start(seatsMeta){
+    this.G = newGameState(seatsMeta);
+    UI.renderSeats();
+    UI.renderScores();
+    this.newRound();
+  },
+
+  async newRound(){
+    const G = this.G;
+    G.dealer = (G.dealer + 1) % 4;
+    const deck = shuffle(makeDeck());
+    const hands = [[],[],[],[]];
+    for (let i=0;i<4;i++) hands[i] = deck.splice(0,5);
+    const upcard = deck.shift();
+
+    this.R = {
+      deck, hands, upcard,
+      mode:null, trump:null, bidder:-1,
+      trick:[], turn:(G.dealer + 1) % 4, currentSeat:0,
+      rawPoints:[0,0], tricksWon:[0,0],
+      handsAtDeal:null, projects:{teamPoints:[0,0], announcements:[]},
+      unseen:[], trickNo:0, lastWinner:-1
+    };
+    UI.clearTrick();
+    UI.setMode(null);
+    UI.renderHand();
+    UI.renderSeats();
+    $("#round-no").textContent = G.roundNo;
+
+    await wait(pace(260));
+    this.bidRound = 1;
+    this.bidsSeen = 0;
+    this.currentBid = null;
+    this.bidTurn = (G.dealer + 1) % 4;
+    this.nextBid();
+  },
+
+  /* ---------------- bidding ---------------- */
+  async nextBid(){
+    const R = this.R, G = this.G;
+    if (this.bidsSeen >= 4){
+      if (this.currentBid){ return this.settleBid(); }
+      if (this.bidRound === 1){
+        this.bidRound = 2; this.bidsSeen = 0; this.bidTurn = (G.dealer + 1) % 4;
+        toast(LANG === "ar" ? "الجولة الثانية من المزايدة" : "Second bidding round");
+        await wait(pace(500));
+      } else {
+        UI.hide("#m-bid");
+        toast(T("redeal"));
+        await wait(pace(900));
+        return this.newRound();
+      }
+    }
+    const seat = this.bidTurn;
+    const meta = G.seats[seat];
+    if (meta.human){
+      UI.showBidPanel(seat);
+    } else {
+      await wait(pace(620));
+      const isLast = this.bidsSeen === 3 && this.bidRound === 2 && !this.currentBid;
+      const b = AI.bid(R.hands[seat], seat, {mode:"sun"}, this.bidRound, R.upcard, isLast);
+      this.applyBid(seat, this.legalBid(b));
+    }
+  },
+
+  legalBid(b){
+    // Sun over-rides a standing Hokum; nothing over-rides a standing Sun.
+    if (!this.currentBid) return b;
+    if (this.currentBid.type === "sun") return {type:"pass"};
+    if (b.type === "hokum") return {type:"pass"};
+    return b;
+  },
+
+  async applyBid(seat, b){
+    UI.hide("#m-bid");
+    Sound.bid();
+    const label = b.type === "pass" ? T("pass")
+                : b.type === "sun"  ? T("sun")
+                : T("hokum") + " " + SUIT_GLYPH[b.suit];
+    UI.bubble(seat, label, b.type !== "pass");
+    if (b.type !== "pass") this.currentBid = {...b, seat};
+    this.bidsSeen++;
+    this.bidTurn = (this.bidTurn + 1) % 4;
+    await wait(pace(480));
+    this.nextBid();
+  },
+
+  async settleBid(){
+    const R = this.R, G = this.G, b = this.currentBid;
+    R.mode   = b.type;
+    R.trump  = b.type === "hokum" ? b.suit : null;
+    R.bidder = b.seat;
+
+    // bidder receives the face-up card + 2, the others 3 each
+    for (let k=0;k<4;k++){
+      const seat = (b.seat + k) % 4;
+      if (seat === b.seat){ R.hands[seat].push(R.upcard, ...R.deck.splice(0,2)); }
+      else { R.hands[seat].push(...R.deck.splice(0,3)); }
+    }
+    R.upcard = null;
+    R.handsAtDeal = R.hands.map(h => h.slice());
+    R.projects = resolveProjects(R.handsAtDeal, R);
+    R.unseen = [].concat(...R.hands.filter((_,i)=>i!==0).map(h=>h.slice()));
+
+    UI.setMode(R);
+    UI.renderHand();
+    UI.renderSeats();
+
+    const who = G.seats[b.seat].name;
+    toast(T("bidderIs") + ": " + who + " — " +
+          (R.mode === "sun" ? T("sun") : T("hokum") + " " + SUIT_GLYPH[R.trump]));
+
+    await wait(pace(700));
+    for (const a of R.projects.announcements){
+      UI.bubble(a.seat, T(a.kind === "sra" ? "projSra" : a.kind === "50" ? "proj50"
+                        : a.kind === "100" ? "proj100" : a.kind === "400" ? "proj400" : "projBaloot"), true);
+      await wait(pace(420));
+    }
+
+    R.turn = (G.dealer + 1) % 4;
+    R.trickNo = 0;
+    this.step();
+  },
+
+  /* ---------------- trick play ---------------- */
+  async step(){
+    const R = this.R, G = this.G;
+    if (R.trickNo >= 8) return this.endRound();
+    const seat = R.turn;
+    R.currentSeat = seat;
+    UI.renderSeats();
+
+    if (G.seats[seat].human){
+      UI.renderHand(legalCards(R.hands[seat], R.trick, R));
+      this.busy = false;
+      return;                      // wait for a tap
+    }
+    this.busy = true;
+    await wait(pace(520 + Math.random()*260));
+    const c = AI.play(R.hands[seat], R.trick, R, seat);
+    this.playCard(seat, c);
+  },
+
+  humanPlay(c){
+    const R = this.R;
+    if (this.busy || !R || R.mode === null) return;
+    if (!this.G.seats[R.turn].human) return;
+    R.currentSeat = R.turn;
+    const legal = legalCards(R.hands[R.turn], R.trick, R);
+    if (!legal.some(x => x.id === c.id)){
+      toast(illegalReason(c, R.hands[R.turn], R.trick, R));
+      return;
+    }
+    this.playCard(R.turn, c);
+  },
+
+  async playCard(seat, c){
+    const R = this.R;
+    R.currentSeat = seat;
+    R.hands[seat] = R.hands[seat].filter(x => x.id !== c.id);
+    R.unseen = R.unseen.filter(x => x.id !== c.id);
+    R.trick.push({seat, card:c});
+    Sound.card();
+    UI.placeCard(seat, c, R);
+    UI.renderHand(null);
+    UI.renderSeats();
+
+    if (R.trick.length < 4){
+      R.turn = (seat + 1) % 4;
+      await wait(pace(180));
+      return this.step();
+    }
+
+    // trick complete
+    this.busy = true;
+    await wait(pace(760));
+    const w = trickWinner(R.trick, R);
+    const team = w % 2;
+    let pts = R.trick.reduce((a,p) => a + cardPoints(p.card, R), 0);
+    R.trickNo++;
+    if (R.trickNo === 8) pts += 10;                 // last-trick bonus
+    R.rawPoints[team] += pts;
+    R.tricksWon[team]++;
+    R.lastWinner = w;
+    Sound.win();
+    UI.bubble(w, "+" + pts);
+    UI.collectTrick(w);
+    await wait(pace(560));
+    UI.clearTrick();
+    R.trick = [];
+    R.turn = w;
+    this.step();
+  },
+
+  /* ---------------- end of round ---------------- */
+  async endRound(){
+    const R = this.R, G = this.G;
+    const res = scoreRound(R);
+
+    let gained = [res.final[0], res.final[1]];
+    if (res.note === "tie"){
+      G.carry = [G.carry[0] + gained[0], G.carry[1] + gained[1]];
+      gained = [0,0];
+    } else {
+      gained = [gained[0] + G.carry[0], gained[1] + G.carry[1]];
+      G.carry = [0,0];
+    }
+    G.scores[0] += gained[0];
+    G.scores[1] += gained[1];
+    G.history.push({round:G.roundNo, mode:R.mode, trump:R.trump, bidder:R.bidder, res, gained});
+
+    UI.renderScores();
+    Sound.round();
+
+    const over = G.scores[0] >= CFG.target || G.scores[1] >= CFG.target;
+    if (over){
+      const winner = G.scores[0] === G.scores[1] ? -1 : (G.scores[0] > G.scores[1] ? 0 : 1);
+      Bridge.send("matchResult", {scores:G.scores, winner, rounds:G.roundNo});
+    }
+    UI.showRoundPanel(res, gained, over);
+    G.roundNo++;
+  }
+};
+
+/* ============================================================
+   8. UI
+   ============================================================ */
+const UI = {
+  show(sel){ $(sel).hidden = false; },
+  hide(sel){ $(sel).hidden = true; },
+
+  refreshAll(){
+    this.renderSeats(); this.renderScores(); this.renderHand();
+    if (!$("#m-lobby").hidden) Lobby.open();
+    if (!$("#m-menu").hidden) this.openMenu();
+    if (!$("#m-friends").hidden) this.openFriends();
+    if (!$("#m-rules").hidden) this.openRules();
+    if (Game.R) this.setMode(Game.R);
+  },
+
+  renderScores(){
+    const G = Game.G; if (!G) return;
+    $("#score-us").textContent   = G.scores[0];
+    $("#score-them").textContent = G.scores[1];
+  },
+
+  renderSeats(){
+    const G = Game.G, R = Game.R; if (!G) return;
+    const map = {2:"#seat-n", 1:"#seat-e", 3:"#seat-w"};
+    for (const seat of [1,2,3]){
+      const node = $(map[seat]); node.innerHTML = "";
+      const m = G.seats[seat];
+      const av = el("div", "avatar" + (R && R.turn === seat && R.mode ? " turn" : ""),
+                    (m.name || "?").trim().charAt(0).toUpperCase());
+      if (m.type === "bot") av.appendChild(el("span", "badge bot", T("bot")));
+      else if (m.type === "friend" && !m.joined) av.appendChild(el("span", "badge wait", "…"));
+      if (R && R.bidder === seat) av.appendChild(el("span", "badge", "★"));
+      node.appendChild(av);
+      node.appendChild(el("div", "nm", m.name));
+      if (R && R.hands){
+        const back = el("div", "hand-back");
+        for (let i=0;i<R.hands[seat].length;i++) back.appendChild(el("div", "cardback"));
+        node.appendChild(back);
+      }
+    }
+  },
+
+  sortHand(hand, R){
+    const order = SUITS.slice().sort((a,b) => {
+      if (R && R.trump){ if (a === R.trump) return -1; if (b === R.trump) return 1; }
+      return SUITS.indexOf(a) - SUITS.indexOf(b);
+    });
+    return hand.slice().sort((a,b) => {
+      const d = order.indexOf(a.s) - order.indexOf(b.s);
+      if (d) return d;
+      const st = R || {mode:"sun"};
+      return cardOrder(b, st) - cardOrder(a, st);
+    });
+  },
+
+  renderHand(legal){
+    const wrap = $("#hand"); wrap.innerHTML = "";
+    const R = Game.R;
+    if (!R || !R.hands) return;
+    const hand = this.sortHand(R.hands[0], R);
+    const myTurn = R.mode && R.turn === 0 && Game.G.seats[0].human;
+    for (const c of hand){
+      const slot = el("div", "slot");
+      const playable = myTurn && (!legal || legal.some(x => x.id === c.id));
+      if (myTurn) slot.classList.add(playable ? "playable" : "blocked");
+      const n = cardNode(c, R);
+      slot.appendChild(n);
+      slot.addEventListener("click", () => Game.humanPlay(c));
+      wrap.appendChild(slot);
+    }
+  },
+
+  setMode(R){
+    const pill = $("#modepill");
+    if (!R || !R.mode){ pill.hidden = true; return; }
+    pill.hidden = false;
+    pill.innerHTML = R.mode === "sun"
+      ? '<span class="suit">☀︎</span>' + T("sun")
+      : '<span class="suit" style="color:' + (SUIT_RED[R.trump] ? "#ff8a96" : "#fff") + '">'
+        + SUIT_GLYPH[R.trump] + '</span>' + T("hokum");
+  },
+
+  placeCard(seat, c, R){
+    const n = cardNode(c, R, "tc " + POSNAME[seat] + " deal-in");
+    $("#trick").appendChild(n);
+  },
+  collectTrick(){ $("#trick").classList.add("collect"); },
+  clearTrick(){ const t = $("#trick"); t.classList.remove("collect"); t.innerHTML = ""; },
+
+  bubble(seat, text, gold){
+    const b = el("div", "bubble" + (gold ? " gold" : ""), text);
+    b.dataset.pos = POSNAME[seat];
+    $("#felt").appendChild(b);
+    setTimeout(() => b.remove(), pace(1300));
+  },
+
+  /* ---------------- bidding panel ---------------- */
+  showBidPanel(seat){
+    const R = Game.R, body = $("#bid-body");
+    let chosenSuit = null;
+    const canSun   = !Game.currentBid || Game.currentBid.type === "hokum";
+    const canHokum = !Game.currentBid;
+
+    body.innerHTML = "";
+    body.appendChild(el("h2", null, T("bidTitle")));
+    body.appendChild(el("p", "sub", Game.bidRound === 1 ? T("bidSub") : T("bidSubR2")));
+
+    if (Game.bidRound === 1 && R.upcard){
+      const w = el("div", null, ""); w.id = "bidcard-wrap";
+      w.appendChild(cardNode(R.upcard, {mode:"sun"}));
+      body.appendChild(w);
+    }
+
+    // you must be able to see your own cards while bidding
+    body.appendChild(el("div", "minilbl", LANG === "ar" ? "أوراقك" : "Your cards"));
+    const mh = el("div", "minihand");
+    for (const c of this.sortHand(R.hands[0], {mode:"sun"})) mh.appendChild(cardNode(c, {mode:"sun"}));
+    body.appendChild(mh);
+
+    const row1 = el("div", "row");
+    if (Game.bidRound === 1){
+      const bh = el("button", "btn gold", T("hokum") + " " + SUIT_GLYPH[R.upcard.s]);
+      bh.disabled = !canHokum;
+      bh.onclick = () => Game.applyBid(seat, {type:"hokum", suit:R.upcard.s});
+      row1.appendChild(bh);
+    }
+    const bs = el("button", "btn gold", "☀︎ " + T("sun"));
+    bs.disabled = !canSun;
+    bs.onclick = () => Game.applyBid(seat, {type:"sun"});
+    row1.appendChild(bs);
+    body.appendChild(row1);
+
+    if (Game.bidRound === 2){
+      body.appendChild(el("h3", null, T("chooseSuit")));
+      const sb = el("div", "suitbtns");
+      for (const s of SUITS){
+        const b = el("button", "suitbtn" + (SUIT_RED[s] ? " r" : ""), SUIT_GLYPH[s]);
+        b.onclick = () => {
+          chosenSuit = s;
+          sb.querySelectorAll(".suitbtn").forEach(x => x.classList.remove("sel"));
+          b.classList.add("sel");
+          $("#bid-confirm").disabled = false;
+        };
+        sb.appendChild(b);
+      }
+      body.appendChild(sb);
+      const bc = el("button", "btn wide", T("hokum"));
+      bc.id = "bid-confirm"; bc.disabled = true;
+      bc.style.marginTop = "8px";
+      bc.onclick = () => chosenSuit && Game.applyBid(seat, {type:"hokum", suit:chosenSuit});
+      body.appendChild(bc);
+    }
+
+    const row2 = el("div", "row"); row2.style.marginTop = "8px";
+    const bp = el("button", "btn ghost", T("pass"));
+    bp.onclick = () => Game.applyBid(seat, {type:"pass"});
+    row2.appendChild(bp);
+    body.appendChild(row2);
+
+    // a short summary of the hand strength, purely informative
+    const proj = findProjects(R.hands[0], {mode:"sun"});
+    if (proj.length){
+      const names = proj.map(p => T(p.kind === "sra" ? "projSra" : p.kind === "50" ? "proj50"
+                                  : p.kind === "100" ? "proj100" : "proj400")).join("، ");
+      body.appendChild(el("div", "hint", "🂠 " + names));
+    }
+    this.show("#m-bid");
+  },
+
+  /* ---------------- round result ---------------- */
+  showRoundPanel(res, gained, over){
+    const G = Game.G, R = Game.R, body = $("#round-body");
+    const modeTxt = R.mode === "sun" ? T("sun") : T("hokum") + " " + SUIT_GLYPH[R.trump];
+    body.innerHTML = "";
+    body.appendChild(el("h2", null, over ? T("gameOver") : T("roundOver")));
+    body.appendChild(el("p", "sub", modeTxt + " — " + G.seats[R.bidder].name));
+
+    if (res.note === "kaboot") body.appendChild(el("div", "hint", "🏆 " + T("kaboot")));
+    if (res.note === "losing") body.appendChild(el("div", "hint", "⚠︎ " + T("losing")));
+    if (res.note === "tie")    body.appendChild(el("div", "hint", "= " + (LANG==="ar"?"أرض — تُضاف للجولة القادمة":"Tie — carried to the next round")));
+
+    const tab = el("table", "rtab");
+    const winTeam = gained[0] === gained[1] ? -1 : (gained[0] > gained[1] ? 0 : 1);
+    tab.innerHTML =
+      "<tr><th></th><th>" + T("us") + "</th><th>" + T("them") + "</th></tr>" +
+      "<tr><td>" + T("tricks") + "</td><td>" + res.rawTricks[0] + "</td><td>" + res.rawTricks[1] + "</td></tr>" +
+      "<tr><td>" + T("projects") + "</td><td>" + res.projRaw[0] + "</td><td>" + res.projRaw[1] + "</td></tr>" +
+      "<tr class='" + (winTeam === 0 ? "win" : "") + "'><td>" + T("final") + "</td><td><b>" + gained[0] +
+        "</b></td><td>" + (winTeam === 1 ? "<b>" + gained[1] + "</b>" : gained[1]) + "</td></tr>" +
+      "<tr><td>" + T("target") + " " + CFG.target + "</td><td>" + G.scores[0] + "</td><td>" + G.scores[1] + "</td></tr>";
+    body.appendChild(tab);
+
+    if (over){
+      const win = G.scores[0] > G.scores[1];
+      body.appendChild(el("h3", null, win ? T("weWin") : T("theyWin")));
+      const r = el("div", "row"); r.style.marginTop = "10px";
+      const b1 = el("button", "btn gold", T("playAgain"));
+      b1.onclick = () => { UI.hide("#m-round"); Game.start(Game.G.seats); };
+      r.appendChild(b1);
+      body.appendChild(r);
+    } else {
+      const r = el("div", "row"); r.style.marginTop = "12px";
+      const b1 = el("button", "btn gold", T("nextRound"));
+      b1.onclick = () => { UI.hide("#m-round"); Game.newRound(); };
+      r.appendChild(b1);
+      body.appendChild(r);
+    }
+    this.show("#m-round");
+  },
+
+  /* ---------------- menu ---------------- */
+  openMenu(){
+    const body = $("#menu-body");
+    body.innerHTML = "";
+    body.appendChild(el("h2", null, T("menuTitle")));
+
+    body.appendChild(el("h3", null, T("language")));
+    body.appendChild(this.seg([["ar","العربية"],["en","English"]], LANG, v => setLang(v)));
+
+    body.appendChild(el("h3", null, T("speed")));
+    body.appendChild(this.seg([["slow",T("slow")],["normal",T("normal")],["fast",T("fast")]],
+      Settings.speed, v => { Settings.set("speed", v); UI.openMenu(); }));
+
+    body.appendChild(el("h3", null, T("sound")));
+    body.appendChild(this.seg([[true,T("on")],[false,T("off")]], Settings.sound,
+      v => { Settings.set("sound", v === "true" || v === true); UI.openMenu(); }));
+
+    body.appendChild(el("div", "divider"));
+    const r = el("div", "row wrap");
+    const b0 = el("button", "btn ghost sm", T("rules"));
+    b0.onclick = () => { UI.hide("#m-menu"); UI.openRules(); };
+    const b1 = el("button", "btn ghost sm", T("newGame"));
+    b1.onclick = () => { UI.hide("#m-menu"); Lobby.open(); };
+    const b2 = el("button", "btn gold sm", T("close"));
+    b2.onclick = () => UI.hide("#m-menu");
+    r.appendChild(b0); r.appendChild(b1); r.appendChild(b2);
+    body.appendChild(r);
+    this.show("#m-menu");
+  },
+
+  seg(options, current, onPick){
+    const s = el("div", "seg");
+    for (const [v, label] of options){
+      const b = el("button", String(v) === String(current) ? "on" : "", label);
+      b.onclick = () => onPick(v);
+      s.appendChild(b);
+    }
+    return s;
+  },
+
+  /* ---------------- rules ---------------- */
+  openRules(){
+    const body = $("#rules-body");
+    const ar = LANG === "ar";
+    body.innerHTML = "<h2>" + T("rulesTitle") + "</h2>" + (ar ? RULES_AR : RULES_EN);
+    const b = el("button", "btn gold", T("close"));
+    b.style.marginTop = "14px";
+    b.onclick = () => UI.hide("#m-rules");
+    body.appendChild(b);
+    this.show("#m-rules");
+  },
+
+  /* ---------------- friends ---------------- */
+  openFriends(){ Lobby.openFriends(); },
+  renderFriends(){ if (!$("#m-friends").hidden) Lobby.renderFriendsList(); }
+};
+
+/* ============================================================
+   9. Lobby, room & invitations
+   ============================================================ */
+const BOT_NAMES = {
+  ar:["فهد","سعود","ناصر","عبدالله","تركي","ماجد","بدر","خالد"],
+  en:["Fahad","Saud","Nasser","Abdullah","Turki","Majed","Badr","Khaled"]
+};
+function botName(i){ const l = BOT_NAMES[LANG] || BOT_NAMES.en; return l[i % l.length]; }
+
+const Lobby = {
+  room: null,
+  selected: [],
+  seats: null,
+
+  init(){
+    const url = new URL(location.href);
+    this.room = (url.searchParams.get("room") || "").toUpperCase() || this.newRoom();
+    this.seats = [
+      {type:"human", human:true, name:T("you"), id:"me"},
+      {type:"bot", human:false, name:botName(0)},
+      {type:"bot", human:false, name:botName(1)},
+      {type:"bot", human:false, name:botName(2)}
+    ];
+  },
+
+  newRoom(){
+    const A = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+    let s = "";
+    for (let i=0;i<6;i++) s += A[Math.floor(Math.random()*A.length)];
+    return s;
+  },
+
+  deepLink(){
+    const base = location.origin && location.origin !== "null"
+      ? location.origin + location.pathname : "https://baladyplus.sa/mini/baloot/";
+    return base + "?room=" + this.room;
+  },
+
+  refreshBotNames(){
+    let i = 0;
+    for (const s of this.seats) if (s.type === "bot") s.name = botName(i++);
+    this.seats[0].name = T("you");
+  },
+
+  /* ---- main lobby ---- */
+  open(){
+    this.refreshBotNames();
+    const body = $("#lobby-body");
+    body.innerHTML = "";
+    body.appendChild(el("h2", null, "🂡 " + T("lobbyTitle")));
+    body.appendChild(el("p", "sub", T("lobbySub")));
+
+    body.appendChild(el("h3", null, T("seats")));
+    body.appendChild(this.seatList());
+
+    const r1 = el("div", "row"); r1.style.marginTop = "12px";
+    const b1 = el("button", "btn gold", "▶︎ " + T("startSolo"));
+    b1.onclick = () => this.startGame();
+    r1.appendChild(b1);
+    body.appendChild(r1);
+
+    const r2 = el("div", "row"); r2.style.marginTop = "8px";
+    const b2 = el("button", "btn", "👥 " + T("inviteFriends"));
+    b2.onclick = () => { UI.hide("#m-lobby"); this.openFriends(); };
+    const b3 = el("button", "btn ghost sm", "📖");
+    b3.onclick = () => { UI.hide("#m-lobby"); UI.openRules(); };
+    r2.appendChild(b2); r2.appendChild(b3);
+    body.appendChild(r2);
+
+    body.appendChild(el("div", "hint", T("target") + " " + CFG.target + " " + T("points")));
+    UI.show("#m-lobby");
+  },
+
+  seatList(){
+    const wrap = el("div", null, "");
+    const labels = {0:T("seatS"), 1:T("seatE"), 2:T("seatN"), 3:T("seatW")};
+    for (const i of [2,1,3]){
+      const s = this.seats[i];
+      const row = el("div", "seatrow");
+      row.appendChild(el("div", "pos", labels[i]));
+      row.appendChild(el("div", "who", s.name));
+      const tag = s.type === "bot" ? el("span", "tag bot", T("bot"))
+                : s.joined ? el("span", "tag joined", T("joined"))
+                : el("span", "tag wait", T("waiting"));
+      row.appendChild(tag);
+      if (s.type === "friend"){
+        const x = el("button", "icon-btn", "✕");
+        x.style.width = x.style.height = "26px";
+        x.onclick = () => {
+          this.seats[i] = {type:"bot", human:false, name:botName(i)};
+          this.selected = this.selected.filter(f => f.id !== s.id);
+          this.open();
+        };
+        row.appendChild(x);
+      }
+      wrap.appendChild(row);
+    }
+    return wrap;
+  },
+
+  /* ---- friends / invite ---- */
+  openFriends(){
+    Friends.request();
+    this.renderFriendsList();
+    UI.show("#m-friends");
+  },
+
+  renderFriendsList(){
+    const body = $("#friends-body");
+    body.innerHTML = "";
+    body.appendChild(el("h2", null, "👥 " + T("friendsTitle")));
+    body.appendChild(el("p", "sub", T("friendsSub")));
+
+    // room code + share
+    body.appendChild(el("h3", null, T("roomCode")));
+    const code = el("div", null, this.room); code.id = "roomcode";
+    body.appendChild(code);
+
+    const rr = el("div", "row");
+    const bCopy = el("button", "btn ghost", "⧉ " + T("copy"));
+    bCopy.onclick = async () => {
+      const txt = this.deepLink();
+      try{
+        if (navigator.clipboard && navigator.clipboard.writeText) await navigator.clipboard.writeText(txt);
+        else { const ta = el("textarea"); ta.value = txt; document.body.appendChild(ta);
+               ta.select(); document.execCommand("copy"); ta.remove(); }
+        toast(T("copied"));
+      }catch(e){ toast(txt); }
+    };
+    const bShare = el("button", "btn gold", "↗ " + T("share"));
+    bShare.onclick = async () => {
+      const text = (LANG === "ar" ? "العب بلوت معي في بلدي+ — رمز الغرفة: " : "Play Baloot with me on Balady+ — room: ") + this.room;
+      const url = this.deepLink();
+      const sentToHost = Bridge.send("share", {room:this.room, url, text});
+      if (navigator.share){ try{ await navigator.share({title:"Baloot", text, url}); return; }catch(e){} }
+      if (!sentToHost) { bCopy.onclick(); }
+    };
+    rr.appendChild(bCopy); rr.appendChild(bShare);
+    body.appendChild(rr);
+
+    // friends list
+    body.appendChild(el("h3", null, T("myFriends")));
+    const list = el("div", "flist");
+    const all = Friends.all();
+    if (!Friends.loaded()){
+      list.appendChild(el("div", "empty", T("loadingFriends")));
+    } else if (!all.length){
+      list.appendChild(el("div", "empty", T("noFriends").replace(/\n/g, "<br>")));
+    } else {
+      for (const f of all){
+        const on = this.selected.some(x => x.id === f.id);
+        const item = el("div", "fitem" + (on ? " on" : ""));
+        item.appendChild(el("div", "av", (f.name || "#").trim().charAt(0).toUpperCase()));
+        const meta = el("div", "meta");
+        meta.appendChild(el("div", "n", f.name));
+        meta.appendChild(el("div", "s", "#" + f.id + (f.online ? " • " + (LANG==="ar"?"متصل":"online") : "")));
+        item.appendChild(meta);
+        item.appendChild(el("div", "pick", on ? "✓" : ""));
+        item.onclick = () => {
+          if (on) this.selected = this.selected.filter(x => x.id !== f.id);
+          else if (this.selected.length < 3) this.selected.push(f);
+          else toast(LANG === "ar" ? "ثلاثة أصدقاء كحد أقصى" : "Three friends maximum");
+          this.renderFriendsList();
+        };
+        list.appendChild(item);
+      }
+    }
+    body.appendChild(list);
+
+    // add by player number — mirrors the in-app "تحدي بلدي" friends flow
+    body.appendChild(el("h3", null, T("addByNumber")));
+    const addRow = el("div", "row");
+    const inp = el("input", "field");
+    inp.placeholder = T("addHint");
+    inp.setAttribute("inputmode", "numeric");
+    const bAdd = el("button", "btn sm gold", T("add"));
+    bAdd.onclick = () => {
+      const f = Friends.addLocal(inp.value);
+      if (f){ inp.value = ""; this.renderFriendsList(); }
+      else toast(LANG === "ar" ? "رقم غير صالح أو مضاف مسبقاً" : "Invalid or already added");
+    };
+    addRow.appendChild(inp); addRow.appendChild(bAdd);
+    body.appendChild(addRow);
+
+    if (Bridge.hasHost()){
+      const bHost = el("button", "btn ghost wide", T("hostInvite"));
+      bHost.style.marginTop = "8px";
+      bHost.onclick = () => Bridge.send("getFriends", {force:true});
+      body.appendChild(bHost);
+    }
+
+    body.appendChild(el("div", "divider"));
+    const rGo = el("div", "row");
+    const bGo = el("button", "btn gold", T("seatThem"));
+    bGo.onclick = () => this.seatSelected();
+    const bBack = el("button", "btn ghost sm", "←");
+    bBack.onclick = () => { UI.hide("#m-friends"); this.open(); };
+    rGo.appendChild(bGo); rGo.appendChild(bBack);
+    body.appendChild(rGo);
+
+    body.appendChild(el("div", "hint", LANG === "ar"
+      ? "الدعوة تُرسل عبر تطبيق بلدي+. حتى انضمام صديقك يلعب البوت مكانه بنفس الاسم."
+      : "Invitations are delivered by the Balady+ app. Until a friend joins, a bot plays that seat under their name."));
+  },
+
+  seatSelected(){
+    // partner first, then right, then left
+    const order = [2,1,3];
+    for (let i=0;i<order.length;i++){
+      const seat = order[i], f = this.selected[i];
+      this.seats[seat] = f
+        ? {type:"friend", human:false, name:f.name, id:f.id, joined:false}
+        : {type:"bot", human:false, name:botName(seat)};
+    }
+    if (this.selected.length){
+      Bridge.send("invite", {
+        room: this.room,
+        deepLink: this.deepLink(),
+        ids: this.selected.map(f => f.id),
+        seats: order.map((s,i) => ({seat:s, id:this.selected[i] ? this.selected[i].id : null}))
+      });
+      toast(T("inviteSent", {n:this.selected.map(f => f.name).join("، ")}));
+    }
+    UI.hide("#m-friends");
+    this.open();
+  },
+
+  friendJoined(f){
+    if (!f) return;
+    const seat = this.seats.findIndex(s => s.type === "friend" && String(s.id) === String(f.id));
+    const i = (typeof f.seat === "number" && f.seat > 0 && f.seat < 4) ? f.seat : seat;
+    if (i > 0){
+      this.seats[i].joined = true;
+      if (f.name) this.seats[i].name = f.name;
+      toast(this.seats[i].name + " — " + T("joined"));
+      UI.renderSeats();
+      if (!$("#m-lobby").hidden) this.open();
+    }
+  },
+
+  applyRoom(r){
+    if (!r) return;
+    if (r.room) this.room = String(r.room).toUpperCase();
+    if (Array.isArray(r.seats)){
+      r.seats.forEach((s, i) => {
+        if (i === 0 || !s) return;
+        this.seats[i] = s.bot
+          ? {type:"bot", human:false, name:s.name || botName(i)}
+          : {type:"friend", human:false, name:s.name || ("#"+s.id), id:s.id, joined:!!s.joined};
+      });
+    }
+    if (!$("#m-friends").hidden) this.renderFriendsList();
+    if (!$("#m-lobby").hidden) this.open();
+    UI.renderSeats();
+  },
+
+  startGame(){
+    UI.hide("#m-lobby");
+    Game.start(this.seats.map(s => ({...s})));
+  }
+};
+
+/* ============================================================
+   10. Rules text
+   ============================================================ */
+const RULES_AR = `
+<div class="rules">
+<p><b>بلوت</b> — أربعة لاعبين، فريقان (أنت وشريكك في المقابل). ٣٢ ورقة (٧ إلى الآكل)، ٨ أوراق لكل لاعب.</p>
+
+<h3>المزايدة</h3>
+<ul>
+<li>تُوزَّع ٥ أوراق لكل لاعب وتُكشف ورقة في الوسط.</li>
+<li>في الجولة الأولى: <b>حكم</b> على نوع الورقة المكشوفة، أو <b>صن</b> (بدون حكم)، أو <b>بس</b>.</li>
+<li><b>الصن يعلى على الحكم</b> في نفس الجولة.</li>
+<li>إذا باص الجميع: جولة ثانية تختار فيها أي نوع للحكم أو الصن. وإذا باص الجميع مرة أخرى يُعاد التوزيع.</li>
+<li>من زايد يأخذ الورقة المكشوفة + ورقتين، والباقون ٣ أوراق لكل منهم.</li>
+</ul>
+
+<h3>ترتيب الأوراق والنقاط</h3>
+<table>
+<tr><th>الورقة</th><th>صن</th><th>حكم (غير الحكم)</th><th>حكم (نوع الحكم)</th></tr>
+<tr><td>الولد (J)</td><td>٢</td><td>٢</td><td><b>٢٠</b></td></tr>
+<tr><td>٩</td><td>٠</td><td>٠</td><td><b>١٤</b></td></tr>
+<tr><td>الآكل (A)</td><td>١١</td><td>١١</td><td>١١</td></tr>
+<tr><td>١٠</td><td>١٠</td><td>١٠</td><td>١٠</td></tr>
+<tr><td>الشايب (K)</td><td>٤</td><td>٤</td><td>٤</td></tr>
+<tr><td>البنت (Q)</td><td>٣</td><td>٣</td><td>٣</td></tr>
+<tr><td>٨ / ٧</td><td>٠</td><td>٠</td><td>٠</td></tr>
+</table>
+<p>الترتيب في الصن: آكل &gt; ١٠ &gt; شايب &gt; بنت &gt; ولد &gt; ٩ &gt; ٨ &gt; ٧.<br>
+في نوع الحكم: ولد &gt; ٩ &gt; آكل &gt; ١٠ &gt; شايب &gt; بنت &gt; ٨ &gt; ٧.</p>
+<p>آخر أكلة تُضيف <b>١٠</b> نقاط. مجموع الصن ١٣٠، ومجموع الحكم ١٦٢.</p>
+
+<h3>قواعد اللعب</h3>
+<ul>
+<li>يجب اتباع نوع الورقة المطروحة إن وُجد لديك.</li>
+<li>في الحكم: إذا لم يكن لديك النوع وجب عليك القطع بالحكم، إلا إذا كانت الأكلة لشريكك.</li>
+<li>يجب أن تعلو على الحكم المطروح إن استطعت.</li>
+</ul>
+
+<h3>المشاريع</h3>
+<ul>
+<li><b>سرا</b> ٣ متتالية من نفس النوع = ٢٠</li>
+<li><b>خمسين</b> ٤ متتالية = ٥٠</li>
+<li><b>مية</b> ٥ متتالية أو ٤ أوراق متشابهة (آكل/شايب/بنت/١٠/٩) = ١٠٠</li>
+<li><b>أربعمية</b> ٤ ولد = ٤٠٠</li>
+<li><b>بلوت</b> شايب وبنت نوع الحكم = ٢٠ (في الحكم فقط)</li>
+</ul>
+<p>يحتسب المشاريع الفريق صاحب أعلى مشروع فقط. تُضاف قيمتها إلى نقاط الأكلات ثم تُقسَّم، ولأن الصن يُقسَّم على ٥ والحكم على ١٠ فإن <b>قيمة المشروع في الصن ضِعف قيمتها في الحكم</b> (الخمسين = ١٠ نقاط في الصن و٥ في الحكم، والأربعمية = ٨٠ في الصن و٤٠ في الحكم).</p>
+
+<h3>الحساب</h3>
+<ul>
+<li>الصن: النقاط ÷ ٥ (الباقي ٣ فأكثر يُقرَّب لأعلى) — ٢٦ نقطة للجولة.</li>
+<li>الحكم: النقاط ÷ ١٠ (الباقي ٦ فأكثر يُقرَّب لأعلى) — ١٦ نقطة للجولة.</li>
+<li><b>خسارة</b>: إذا حصل فريق المزايد على نقاط أقل من الخصم تذهب كل نقاط الجولة للخصم.</li>
+<li><b>كبوت</b>: أخذ الأكلات الثماني = ٤٤ في الصن، ٢٥ في الحكم.</li>
+<li>التعادل = <b>أرض</b>، تُضاف نقاط الجولة إلى الجولة التالية.</li>
+<li>اللعبة حتى <b>١٥٢</b> نقطة.</li>
+</ul>
+</div>`;
+
+const RULES_EN = `
+<div class="rules">
+<p><b>Baloot</b> — four players in two partnerships (you and the player opposite). 32 cards (7 to Ace), 8 cards each.</p>
+
+<h3>Bidding</h3>
+<ul>
+<li>Five cards are dealt to each player and one card is turned face up.</li>
+<li>First round: bid <b>Hokum</b> (that card's suit is trump), <b>Sun</b> (no trump), or <b>Pass</b>.</li>
+<li><b>Sun outbids Hokum</b> within the same round.</li>
+<li>If all pass, a second round lets you pick any trump suit or Sun. All passing again means a redeal.</li>
+<li>The bidder takes the face-up card plus two more; everyone else gets three.</li>
+</ul>
+
+<h3>Card ranking &amp; points</h3>
+<table>
+<tr><th>Card</th><th>Sun</th><th>Hokum (plain)</th><th>Hokum (trump)</th></tr>
+<tr><td>J</td><td>2</td><td>2</td><td><b>20</b></td></tr>
+<tr><td>9</td><td>0</td><td>0</td><td><b>14</b></td></tr>
+<tr><td>A</td><td>11</td><td>11</td><td>11</td></tr>
+<tr><td>10</td><td>10</td><td>10</td><td>10</td></tr>
+<tr><td>K</td><td>4</td><td>4</td><td>4</td></tr>
+<tr><td>Q</td><td>3</td><td>3</td><td>3</td></tr>
+<tr><td>8 / 7</td><td>0</td><td>0</td><td>0</td></tr>
+</table>
+<p>Sun order: A &gt; 10 &gt; K &gt; Q &gt; J &gt; 9 &gt; 8 &gt; 7.<br>
+Trump order: J &gt; 9 &gt; A &gt; 10 &gt; K &gt; Q &gt; 8 &gt; 7.</p>
+<p>The last trick is worth <b>10</b> extra. Sun totals 130 raw points, Hokum 162.</p>
+
+<h3>Playing rules</h3>
+<ul>
+<li>You must follow the led suit if you hold it.</li>
+<li>In Hokum, if you are void you must trump — unless your partner is already winning the trick.</li>
+<li>You must over-trump a trump already played whenever you can.</li>
+</ul>
+
+<h3>Projects</h3>
+<ul>
+<li><b>Sra</b> — 3 in sequence, same suit = 20</li>
+<li><b>Fifty</b> — 4 in sequence = 50</li>
+<li><b>Hundred</b> — 5 in sequence, or four of a kind (A/K/Q/10/9) = 100</li>
+<li><b>Four Hundred</b> — four Jacks = 400</li>
+<li><b>Baloot</b> — K + Q of trump = 20 (Hokum only)</li>
+</ul>
+<p>Only the team holding the single highest project scores projects. Project values are added to the trick points before conversion, so &mdash; because Sun divides by 5 and Hokum by 10 &mdash; <b>a project is worth twice as much in Sun</b> (a Fifty is 10 points in Sun, 5 in Hokum; a Four Hundred is 80 in Sun, 40 in Hokum).</p>
+
+<h3>Scoring</h3>
+<ul>
+<li>Sun: raw ÷ 5 (remainder 3+ rounds up) — 26 points per round.</li>
+<li>Hokum: raw ÷ 10 (remainder 6+ rounds up) — 16 points per round.</li>
+<li><b>Failed bid</b>: if the bidding team scores less than the defenders, the defenders take everything.</li>
+<li><b>Kaboot</b> (all 8 tricks): 44 in Sun, 25 in Hokum.</li>
+<li>A tie carries the round's points over to the next round.</li>
+<li>The game is played to <b>152</b> points.</li>
+</ul>
+</div>`;
+
+/* ============================================================
+   11. Boot
+   ============================================================ */
+$("#btn-menu").onclick = () => UI.openMenu();
+$("#btn-friends").onclick = () => { Lobby.openFriends(); };
+document.querySelectorAll(".scrim").forEach(s => {
+  s.addEventListener("click", ev => {
+    if (ev.target !== s) return;
+    if (s.id === "m-bid" || s.id === "m-round" || s.id === "m-lobby") return;  // must be answered
+    s.hidden = true;
+  });
+});
+window.addEventListener("keydown", e => {
+  if (e.key === "Escape"){
+    ["#m-menu","#m-friends","#m-rules"].forEach(id => UI.hide(id));
+  }
+});
+
+setLang(LANG);
+Lobby.init();
+Lobby.open();
+Bridge.send("ready", {version:1, room:Lobby.room});
+
+/* ---- self-check (open with ?test=1) ---- */
+if (new URL(location.href).searchParams.get("test") === "1"){
+  const out = [];
+  const ok = (name, cond) => out.push((cond ? "PASS " : "FAIL ") + name);
+
+  // deck
+  const d = makeDeck();
+  ok("deck 32 unique", d.length === 32 && new Set(d.map(c=>c.id)).size === 32);
+
+  // point totals
+  const stS = {mode:"sun"}, stH = {mode:"hokum", trump:"S"};
+  ok("sun total 120", d.reduce((a,c)=>a+cardPoints(c,stS),0) === 120);
+  ok("hokum total 152", d.reduce((a,c)=>a+cardPoints(c,stH),0) === 152);
+
+  // conversion
+  ok("convert sun 130 -> 26", convert(130,"sun") === 26);
+  ok("convert hokum 162 -> 16", convert(162,"hokum") === 16);
+  ok("convert sun 62 -> 12", convert(62,"sun") === 12);   // 12 r2 -> down
+  ok("convert sun 63 -> 13", convert(63,"sun") === 13);   // 12 r3 -> up
+  ok("convert hokum 75 -> 7", convert(75,"hokum") === 7);
+  ok("convert hokum 76 -> 8", convert(76,"hokum") === 8);
+
+  // trick winner
+  const t1 = [{seat:0,card:card("H","A")},{seat:1,card:card("H","10")},
+              {seat:2,card:card("S","J")},{seat:3,card:card("H","7")}];
+  ok("plain trick: ace wins", trickWinner(t1, stS) === 0);
+  ok("trump beats ace", trickWinner(t1, stH) === 2);
+
+  // must follow suit
+  const hand = [card("H","7"), card("S","A"), card("C","K")];
+  ok("follow suit forced",
+     legalCards(hand, [{seat:3,card:card("H","K")}], stS).every(c => c.s === "H"));
+
+  // hokum: must trump when void and partner is not winning
+  const h2 = [card("S","8"), card("C","K"), card("D","A")];
+  const st2 = {...stH, currentSeat:1};
+  const lg = legalCards(h2, [{seat:0,card:card("H","K")}], st2);
+  ok("must trump when void", lg.length === 1 && lg[0].s === "S");
+
+  // partner winning => free discard
+  const st3 = {...stH, currentSeat:2};
+  const lg3 = legalCards(h2, [{seat:0,card:card("H","A")},{seat:1,card:card("H","7")}], st3);
+  ok("free discard when partner winning", lg3.length === 3);
+
+  // over-trump obligation
+  const h4 = [card("S","7"), card("S","A"), card("D","9")];
+  const st4 = {...stH, currentSeat:2};      // partner (seat 0) is losing to seat 1's trump
+  const lg4 = legalCards(h4, [{seat:0,card:card("H","K")},{seat:1,card:card("S","10")}], st4);
+  ok("must over-trump", lg4.length === 1 && lg4[0].r === "A");
+
+  // projects
+  ok("sra = 20", findProjects([card("H","7"),card("H","8"),card("H","9"),card("C","A")], stS)
+      .some(p => p.kind === "sra"));
+  ok("fifty = 50", findProjects([card("H","7"),card("H","8"),card("H","9"),card("H","10")], stS)
+      .some(p => p.kind === "50"));
+  ok("four jacks = 400", findProjects(SUITS.map(s => card(s,"J")), stS).some(p => p.value === 400));
+  ok("baloot = 20", findProjects([card("S","K"),card("S","Q")], stH).some(p => p.kind === "baloot"));
+
+
+  // ---- round scoring ----
+  const mkRound = (mode, tricks, proj, bidder, won) => ({
+    mode, trump: mode === "hokum" ? "S" : null, bidder,
+    rawPoints: tricks, tricksWon: won || [4,4],
+    projects:{teamPoints: proj, announcements:[]}
+  });
+  // a project is worth twice as much in Sun purely because Sun divides by 5
+  ok("fifty in hokum = 5",  convert(50, "hokum") === 5);
+  ok("fifty in sun = 10",   convert(50, "sun")   === 10);
+  ok("400 in hokum = 40",   convert(400,"hokum") === 40);
+  ok("400 in sun = 80",     convert(400,"sun")   === 80);
+
+  const rNorm = scoreRound(mkRound("hokum", [100,62], [0,0], 0));
+  ok("hokum split 100/62 -> 10/6", rNorm.final[0] === 10 && rNorm.final[1] === 6 && !rNorm.note);
+
+  const rFail = scoreRound(mkRound("sun", [40,90], [0,0], 0));
+  ok("failed bid gives defenders the lot",
+     rFail.note === "losing" && rFail.final[0] === 0 && rFail.final[1] === CFG.sunTotal);
+
+  const rFailP = scoreRound(mkRound("sun", [40,90], [0,50], 0));
+  ok("failed bid adds the projects",
+     rFailP.final[1] === CFG.sunTotal + convert(50,"sun") && rFailP.final[0] === 0);
+
+  const rKab = scoreRound(mkRound("hokum", [162,0], [0,0], 0, [8,0]));
+  ok("kaboot hokum = 25", rKab.note === "kaboot" && rKab.final[0] === CFG.kabootHokum);
+
+  const rTie = scoreRound(mkRound("hokum", [81,81], [0,0], 0));
+  ok("equal scores carry over", rTie.note === "tie" && rTie.final[0] === rTie.final[1]);
+
+  // a big project can flip a round the bidders won on tricks - that is real Baloot
+  const rFlip = scoreRound(mkRound("sun", [106,24], [0,400], 0));
+  ok("a 400 flips the round", rFlip.note === "losing" &&
+     rFlip.final[1] === CFG.sunTotal + convert(400,"sun"));
+  // ...but a mid-sized project must not, which it would if Sun doubled on top of /5
+  const rNoFlip = scoreRound(mkRound("sun", [106,24], [0,70], 0));
+  ok("a 70 project does not flip (no double-counting in Sun)",
+     !rNoFlip.note && rNoFlip.final[0] === convert(106,"sun") && rNoFlip.final[1] === convert(94,"sun"));
+
+  console.log("%cBaloot self-check", "font-weight:bold", "\n" + out.join("\n"));
+  const fails = out.filter(l => l.startsWith("FAIL"));
+  toast(fails.length ? (fails.length + " test(s) failed — see console") : "All " + out.length + " tests passed ✓");
+}
+</script>
+</body>
+</html>
