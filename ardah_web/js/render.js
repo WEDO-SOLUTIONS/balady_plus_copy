@@ -27,6 +27,10 @@ window.Ardah = window.Ardah || {};
   var HUD_RIGHT = 58;      // clearance for the floating sound toggle
   // Keycap faces, matching the lanes: tabl wood, swords steel-blue, tar green.
   var KEY_SPRITE = ['key_tabl', 'key_swords', 'key_tar'];
+  // The traced deck runs a little wider than the lane field, to carry the gold
+  // ornament outside it. Must match X_MAX in deck/make_runway.js.
+  var DECK_X_MAX = 1.165;
+  var FX_SHARDS = 6;
   var KEYCAP = [
     ['#8A5A2B', '#4A2F14'],
     ['#3F6F9E', '#1B355A'],
@@ -43,6 +47,7 @@ window.Ardah = window.Ardah || {};
     this.drumCursor = 0;
     this.sparks = [];
     this.bursts = [];
+    this.shards = [];
     this.floats = [];
     this.flashes = [0, 0, 0];
     this.popup = null;
@@ -85,6 +90,41 @@ window.Ardah = window.Ardah || {};
     // per resize instead of once per frame. Creating a dozen CanvasGradients
     // every frame was costing three to five frames a second on the art path.
     this._grad = {};
+    this._deck = null;          // the warped runway, rebuilt with the layout
+  };
+
+  /* The runway deck, warped into this layout once.
+
+     assets/runway.webp is in runway space -- across by world x, along by depth
+     z -- with its rows spaced uniformly in 1/z, which is uniform in screen y.
+     So putting it on screen is one drawImage per row with no vertical
+     resampling, and because the result depends only on the layout it is done
+     once per resize rather than once per frame, the same way the stage
+     backdrop is. Returns null while the image is still loading, and the caller
+     falls back to the drawn deck. */
+  Renderer.prototype._deckSprite = function () {
+    if (this._deck) return this._deck;
+    var img = A.assets && A.assets.img('runway');
+    if (!img || !img.width) return null;
+
+    var yTop = this.yAt(Z_FAR), yBot = this.yAt(Z_LIP);
+    var cv = document.createElement('canvas');
+    var h = Math.max(1, Math.ceil((yBot - yTop) * this.dpr));
+    var w = Math.max(1, Math.ceil(2 * this.halfAt(Z_LIP) * DECK_X_MAX * this.dpr));
+    cv.width = w; cv.height = h;
+    var g = cv.getContext('2d');
+    var invFar = 1 / Z_FAR, invLip = 1 / Z_LIP;
+    for (var py = 0; py < h; py++) {
+      var z = this.C / (yTop + (py + 0.5) / this.dpr - this.vpY);
+      if (!(z > 0)) continue;
+      var v = (1 / z - invFar) / (invLip - invFar);
+      var row = Math.min(img.height - 1, Math.max(0, Math.floor(v * img.height)));
+      var dw = 2 * (this.halfNear / z) * DECK_X_MAX * this.dpr;
+      g.drawImage(img, 0, row, img.width, 1, (w - dw) / 2, py, dw, 1);
+    }
+    this._deck = { canvas: cv, x: this.w / 2 - w / this.dpr / 2, y: yTop,
+                   w: w / this.dpr, h: h / this.dpr };
+    return this._deck;
   };
 
   /** Layout-scoped gradient cache. */
@@ -140,6 +180,19 @@ window.Ardah = window.Ardah || {};
 
   Renderer.prototype._sparks = function (x, y, color, n) {
     this.bursts.push({ x: x, y: y, life: 1, color: color, rot: Math.random() * Math.PI });
+    // Gold fragments, only on the bigger bursts so a plain hit stays calm.
+    if (n >= 16 && A.assets && A.assets.img('fx_shard_0')) {
+      for (var k = 0; k < 5; k++) {
+        var sa = -Math.PI / 2 + (Math.random() - 0.5) * Math.PI * 1.5;
+        var ss = 0.10 + Math.random() * 0.22;
+        this.shards.push({
+          x: x, y: y, vx: Math.cos(sa) * ss, vy: Math.sin(sa) * ss,
+          rot: Math.random() * Math.PI * 2, spin: (Math.random() - 0.5) * 0.010,
+          size: 14 + Math.random() * 13, life: 1,
+          img: 'fx_shard_' + Math.floor(Math.random() * FX_SHARDS)
+        });
+      }
+    }
     for (var i = 0; i < n; i++) {
       var a = -Math.PI / 2 + (Math.random() - 0.5) * Math.PI * 1.25;
       var sp = 0.12 + Math.random() * 0.34;
@@ -342,6 +395,10 @@ window.Ardah = window.Ardah || {};
     var wBot = this.halfAt(Z_LIP), yBot = this.yAt(Z_LIP);
     var cx = this.w / 2;
 
+    var deck = this._deckSprite();
+    if (deck) {
+      c.drawImage(deck.canvas, deck.x, deck.y, deck.w, deck.h);
+    } else {
     // Deck
     c.fillStyle = this._g('deck', function (cc) {
       var g = cc.createLinearGradient(0, yTop, 0, yBot);
@@ -366,6 +423,7 @@ window.Ardah = window.Ardah || {};
     c.lineTo(cx + wTop * 2.2, yTop + 46); c.lineTo(cx - wTop * 2.2, yTop + 46);
     c.closePath();
     c.fill();
+    }
 
     // Lane flashes, in perspective
     for (var lane = 0; lane < 3; lane++) {
@@ -388,16 +446,17 @@ window.Ardah = window.Ardah || {};
       c.globalAlpha = 1;
     }
 
-    // Lane dividers
-    c.strokeStyle = 'rgba(231, 180, 76, 0.22)';
-    c.lineWidth = 1;
-    for (var d = -1; d <= 1; d += 2) {
-      var oT = (this.halfNear / 3) / Z_FAR * d, oB = (this.halfNear / 3) / Z_LIP * d;
-      c.beginPath(); c.moveTo(cx + oT, yTop); c.lineTo(cx + oB, yBot); c.stroke();
+    // Dividers and rails: carried by the sprite when there is one.
+    if (!deck) {
+      c.strokeStyle = 'rgba(231, 180, 76, 0.22)';
+      c.lineWidth = 1;
+      for (var d = -1; d <= 1; d += 2) {
+        var oT = (this.halfNear / 3) / Z_FAR * d, oB = (this.halfNear / 3) / Z_LIP * d;
+        c.beginPath(); c.moveTo(cx + oT, yTop); c.lineTo(cx + oB, yBot); c.stroke();
+      }
+      this._rail(c, -1, active);
+      this._rail(c, 1, active);
     }
-
-    this._rail(c, -1, active);
-    this._rail(c, 1, active);
   };
 
   /* Ornamented gold rail down one side of the runway. */
@@ -492,7 +551,13 @@ window.Ardah = window.Ardah || {};
 
     var sprite = A.assets && A.assets.img(NOTE_SPRITE[lane]);
     if (sprite) {
-      var dw = w * 2.15, dh = dw * (sprite.height / sprite.width);
+      // 1.60, not the 2.15 the cut-out sprites used: those carried 5-14%
+      // transparent padding, and the traced masters are trimmed to their
+      // content, so the old multiplier drew a note wider than its own lane
+      // (halfNear * 0.731 / z against a lane of halfNear * 0.667 / z) and a
+      // note overlapped its neighbours. This puts it at ~82% of the lane,
+      // which is also where the concept image has it.
+      var dw = w * 1.60, dh = dw * (sprite.height / sprite.width);
       c.save();
       c.shadowColor = pal.glow;
       c.shadowBlur = 14 * s;
@@ -655,8 +720,10 @@ window.Ardah = window.Ardah || {};
 
       var cap = A.assets && A.assets.img(KEY_SPRITE[lane]);
       if (cap) {
-        // The sprite carries its own letter; the label below stays code-drawn
-        // because it has to localise.
+        // The traced pads carry no letter, on purpose: docs/ardah-art-brief.md
+        // forbids text baked into artwork, because the strings localise into
+        // Arabic, the layout flips to RTL, and a player on touch needs a dot
+        // rather than a key name. So the glyph is drawn here, over the sprite.
         var ch = h * 1.5, cw = ch * (cap.width / cap.height);
         if (this.flashes[lane] > 0.05) {
           c.save();
@@ -667,6 +734,13 @@ window.Ardah = window.Ardah || {};
         } else {
           c.drawImage(cap, x - cw / 2, y - ch / 2, cw, ch);
         }
+        c.textAlign = 'center';
+        c.font = '700 15px -apple-system, system-ui, sans-serif';
+        c.lineWidth = 3;
+        c.strokeStyle = 'rgba(24, 14, 4, 0.55)';
+        c.strokeText(state.touchUsed ? '\u25CF' : LANE_KEYS[lane], x, y + 5);
+        c.fillStyle = '#FFF3D6';
+        c.fillText(state.touchUsed ? '\u25CF' : LANE_KEYS[lane], x, y + 5);
       } else {
         var g = c.createLinearGradient(0, y - h / 2, 0, y + h / 2);
         g.addColorStop(0, KEYCAP[lane][0]);
@@ -704,6 +778,36 @@ window.Ardah = window.Ardah || {};
       b.life -= dtMs / 420;
       if (b.life <= 0) { this.bursts.splice(i, 1); continue; }
       var grow = 1 - b.life;
+
+      var flare = A.assets && A.assets.img('fx_flare');
+      if (flare) {
+        // Intensity lives in the sprite's alpha, so these are added, never
+        // blended. The flare holds its size and fades; the ring expands past
+        // it, which is what separates the impact from the shockwave.
+        var ring = A.assets.img('fx_ring');
+        var glow = A.assets.img('fx_glow');
+        c.save();
+        c.globalCompositeOperation = 'lighter';
+        if (glow) {
+          var gs = 150 * (0.7 + grow * 0.5);
+          c.globalAlpha = b.life * 0.5;
+          c.drawImage(glow, b.x - gs / 2, b.y - gs / 2, gs, gs);
+        }
+        if (ring) {
+          var rs = 60 + grow * 190;
+          c.globalAlpha = b.life * b.life * 0.85;
+          c.drawImage(ring, b.x - rs / 2, b.y - rs / 2 * 0.62, rs, rs * 0.62);
+        }
+        var fs = 170 * (0.55 + grow * 0.75);
+        c.globalAlpha = Math.min(1, b.life * 1.3);
+        c.translate(b.x, b.y);
+        c.rotate(b.rot * 0.15);
+        c.drawImage(flare, -fs / 2, -fs / 2, fs, fs);
+        c.restore();
+        c.globalAlpha = 1;
+        continue;
+      }
+
       c.save();
       c.translate(b.x, b.y);
       c.rotate(b.rot + grow * 0.5);
@@ -730,9 +834,38 @@ window.Ardah = window.Ardah || {};
       s.vy += 0.0012 * dtMs;
       s.life -= dtMs / 620;
       if (s.life <= 0) { this.sparks.splice(i, 1); continue; }
-      c.globalAlpha = Math.max(0, s.life);
-      c.fillStyle = s.color;
-      c.fillRect(s.x, s.y, s.size, s.size);
+      var ember = A.assets && A.assets.img('fx_spark');
+      if (ember) {
+        var es = s.size * 7;
+        c.globalCompositeOperation = 'lighter';
+        c.globalAlpha = Math.max(0, s.life * s.life);
+        c.drawImage(ember, s.x - es / 2, s.y - es / 2, es, es);
+        c.globalCompositeOperation = 'source-over';
+      } else {
+        c.globalAlpha = Math.max(0, s.life);
+        c.fillStyle = s.color;
+        c.fillRect(s.x, s.y, s.size, s.size);
+      }
+    }
+    c.globalAlpha = 1;
+
+    // Gold fragments: solid objects, so these are drawn normally and fall.
+    for (i = this.shards.length - 1; i >= 0; i--) {
+      var sh = this.shards[i];
+      sh.x += sh.vx * dtMs; sh.y += sh.vy * dtMs;
+      sh.vy += 0.0016 * dtMs;
+      sh.rot += sh.spin * dtMs;
+      sh.life -= dtMs / 780;
+      if (sh.life <= 0) { this.shards.splice(i, 1); continue; }
+      var si = A.assets && A.assets.img(sh.img);
+      if (!si) { this.shards.splice(i, 1); continue; }
+      var sw = sh.size, shh = sw * (si.height / si.width);
+      c.save();
+      c.globalAlpha = Math.min(1, sh.life * 1.8);
+      c.translate(sh.x, sh.y);
+      c.rotate(sh.rot);
+      c.drawImage(si, -sw / 2, -shh / 2, sw, shh);
+      c.restore();
     }
     c.globalAlpha = 1;
 

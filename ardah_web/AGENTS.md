@@ -25,6 +25,29 @@ decision it exists to settle: [`docs/ardah-concept.md`](../docs/ardah-concept.md
   forget; every draw call null-checks the image and falls back to the drawn
   version. Never `await` an asset, never let a missing file break a frame, and
   keep `?art=0` working — it is how the two versions get compared.
+- **The runway deck is warped once.** `assets/runway.webp` is in runway space,
+  not screen space. `Renderer._deckSprite` warps it into the current layout
+  once per resize (one `drawImage` per row, no vertical resampling, because the
+  texture's rows are spaced uniformly in `1/z`) and caches it next to the
+  gradients. Warping it per frame would be hundreds of draw calls a frame.
+- **Effect sprites are added, never blended.** `fx_spark`, `fx_flare`,
+  `fx_ring` and `fx_glow` carry intensity in the alpha channel and chroma in
+  RGB, for `globalCompositeOperation = 'lighter'`. Alpha-blending them is
+  wrong and looks it. The shards are ordinary solid sprites and draw normally.
+- **No text baked into artwork.** `docs/ardah-art-brief.md` §1: every string
+  localises to Arabic and the layout flips to RTL. The keycap sprites carry no
+  letter — `_keycaps` draws the glyph over the sprite, and a dot instead once
+  the player is on touch.
+- **Sprites are trimmed to their content.** `js/render.js` sizes a sprite by
+  the whole PNG — a note by its width, a keycap by its height — so transparent
+  margin is drawn too. `deck/make_notes.js` trims every master; if you add one
+  that is not trimmed, it will render small and the art will look wrong rather
+  than the padding.
+- **Verify in a browser, not by eye.** `node deck/verify.js` serves this
+  directory, plays a run with a robot, screenshots it and reports console
+  errors, failed loads and the fallback path. `node deck/fps.js` measures the
+  frame rate with and without artwork — never take a frame rate measured while
+  screenshotting, capture stalls the compositor and the number is meaningless.
 - **`js/judge.js` stays pure.** No canvas, no audio, no globals: it is the part
   a native rewrite would port line for line, and the part worth unit tests.
 - **Mute is the music bus, never the master.** `AudioEngine.setMuted` ramps

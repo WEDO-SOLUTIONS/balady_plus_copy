@@ -331,11 +331,30 @@ alpha bounding box with 3 px of margin, which is what makes the masters
 drop-in comparable with the cuts. `deck/out/caps_compare.png` is the check:
 both rows are scaled to the same height, the way the game will.
 
-The masters are not wired into the game: swapping them in changes the art
-direction (the cut sprites carry the concept's own lighting), so that is a
-design call, not a technical one. To try them, export to webp and drop them
-over `assets/note_*.webp` and `assets/key_*.webp` — plus the `_keycaps` glyph
-change above.
+**These are now wired in.** `deck/export_assets.py` writes the masters to
+`assets/*.webp` at the sizes the game can actually ask for (`Renderer.resize`
+caps dpr at 2, so the ceiling is twice the point size, not three times); the
+whole set is 0.21 MB against the brief's 4 MB budget. `bg_stage` is still cut
+from the concept image; everything else is rendered.
+
+Three things the wiring needed:
+
+- **The note multiplier.** `_gem` drew a sprite at `w * 2.15`, a number
+  calibrated against the concept cut-outs, which carry 5–14 % transparent
+  padding. The traced masters are trimmed to their content, so the same number
+  drew a note *wider than its own lane* — `halfNear * 0.731 / z` against a lane
+  of `halfNear * 0.667 / z` — and notes overlapped their neighbours. Now 1.60,
+  which puts a note at ~82 % of its lane, where the concept has it.
+- **The keycap glyph**, per the no-baked-text rule above.
+- **Right-sizing the effects.** `fx_spark` is never drawn above ~52 device px
+  and the shards above ~54; exporting them at 128 px was filtering work for
+  nothing.
+
+Verified by running it: `node deck/verify.js` serves this directory, plays a
+run with a robot that presses through `Game._press`, screenshots it, and checks
+console errors, failed loads and the `?art=0` fallback. `node deck/fps.js`
+measures the cost: **60.2 fps drawn, 58.3 fps with the artwork** at 440×956 and
+dpr 2, during real play with effects firing.
 
 ## What is real and what is a placeholder
 
