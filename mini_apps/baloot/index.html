@@ -14,14 +14,23 @@
    ============================================================ */
 
 :root{
-  --felt-1:#12684c;
-  --felt-2:#0a3527;
-  --gold:#e2bb64;
-  --gold-dim:#a98b45;
+  /* taken from the reference mock-up */
+  --felt-1:#1d7a49;
+  --felt-2:#0a2c1c;
+  --plaque-1:#2a894f;
+  --plaque-2:#07301a;
+  --gold:#f0cf72;
+  --gold-hi:#ffe9a4;
+  --gold-dim:#b8863a;
+  --wood-1:#9a5a2c;
+  --wood-2:#5a3116;
+  --room-1:#4a2c14;
+  --room-2:#170d06;
   --ink:#10241d;
-  --paper:#f7f3e8;
-  --red:#d1384a;
-  --blue:#2f6fb3;
+  --paper:#f5efe4;
+  --cream:#f1dfcd;
+  --neon:#35fb7d;
+  --red:#cf2434;
   --ok:#3fae6d;
   --warn:#e0913a;
   --card-w:clamp(64px, 16.4vw, 94px);
@@ -45,114 +54,166 @@ body{
 html[dir="ltr"] body{font-family:"SF Pro Display","Segoe UI",system-ui,-apple-system,sans-serif}
 button{font:inherit;color:inherit;border:0;background:none;cursor:pointer}
 
-/* ---------- table ---------- */
+/* ---------- the room ----------
+   A majlis rendered procedurally: warm walls fading into shadow at the top,
+   two lantern pools, a patterned floor band and the green felt at the bottom.
+   ------------------------------------------------------------------ */
 #table{
   position:fixed;inset:0;
   background:
-    radial-gradient(ellipse 120% 78% at 50% 40%, #17785a 0%, #0f5942 46%, #093122 100%);
+    radial-gradient(ellipse 52% 26% at 14% 26%, rgba(255,176,74,.24), transparent 62%),
+    radial-gradient(ellipse 52% 26% at 86% 26%, rgba(255,176,74,.22), transparent 62%),
+    linear-gradient(180deg,
+      #120a05 0%, var(--room-2) 9%, var(--room-1) 30%, #3a2210 46%,
+      #24160b 58%, #10321f 70%, var(--felt-2) 100%);
   display:flex;flex-direction:column;
   padding-top:var(--safe-t);
   padding-bottom:var(--safe-b);
 }
-/* woven felt + an eight-point star lattice, the way a Najdi pattern tiles */
+/* arabesque lattice over the walls only */
 #table::before{
-  content:"";position:absolute;inset:0;pointer-events:none;opacity:.55;
+  content:"";position:absolute;inset:0;pointer-events:none;
   background-image:
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='46' height='46' viewBox='0 0 46 46'%3E%3Cg fill='none' stroke='%23ffffff' stroke-width='.8' opacity='.055'%3E%3Crect x='13.5' y='13.5' width='19' height='19'/%3E%3Cpath d='M23 9.5 36.5 23 23 36.5 9.5 23Z'/%3E%3C/g%3E%3C/svg%3E"),
-    repeating-linear-gradient(45deg,rgba(255,255,255,.012) 0 2px,transparent 2px 4px);
-  background-size:46px 46px, auto;
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='46' height='46' viewBox='0 0 46 46'%3E%3Cg fill='none' stroke='%23ffd489' stroke-width='.9' opacity='.075'%3E%3Crect x='13.5' y='13.5' width='19' height='19'/%3E%3Cpath d='M23 9.5 36.5 23 23 36.5 9.5 23Z'/%3E%3C/g%3E%3C/svg%3E");
+  background-size:46px 46px;
+  -webkit-mask-image:linear-gradient(180deg,transparent 4%,#000 14%,#000 52%,transparent 66%);
+          mask-image:linear-gradient(180deg,transparent 4%,#000 14%,#000 52%,transparent 66%);
 }
-/* vignette, so the middle of the table reads brighter than the rails */
 #table::after{
   content:"";position:absolute;inset:0;pointer-events:none;
-  background:radial-gradient(ellipse 86% 72% at 50% 44%, transparent 48%, rgba(0,0,0,.22) 100%);
+  background:radial-gradient(ellipse 88% 66% at 50% 52%, transparent 44%, rgba(0,0,0,.42) 100%);
 }
 
-/* ---------- top bar ---------- */
-#topbar{
-  position:relative;z-index:6;
-  display:flex;align-items:center;gap:7px;
-  padding:8px 10px;
+/* ---------- crest: the ornate plaque ---------- */
+#crest{
+  position:relative;z-index:8;
+  display:flex;justify-content:center;
+  padding:6px 12px 0;
 }
-#topbar > *{flex:0 0 auto}
-#topbar .chip{flex:0 1 auto;min-width:0;overflow:hidden}
-#topbar #score{flex:0 1 auto;min-width:0}
-.chip{
-  display:inline-flex;align-items:center;gap:6px;
-  background:linear-gradient(170deg,rgba(0,0,0,.4),rgba(0,0,0,.26));
-  border:1px solid rgba(226,187,100,.32);
-  border-radius:999px;padding:6px 12px;font-size:12.5px;font-weight:700;
-  backdrop-filter:blur(8px);white-space:nowrap;
-  box-shadow:0 2px 8px rgba(0,0,0,.26), inset 0 1px 0 rgba(255,255,255,.06);
+.crest-plaque{
+  position:relative;
+  padding:9px 30px;
+  background:linear-gradient(180deg,#2f9a5a 0%,#1a6238 42%,var(--plaque-2) 100%);
+  border:2px solid var(--gold);
+  border-radius:4px 4px 4px 4px / 50% 50% 50% 50%;
+  box-shadow:
+    0 0 0 1px rgba(0,0,0,.5),
+    0 6px 20px rgba(0,0,0,.55),
+    inset 0 1px 0 rgba(255,255,255,.16);
+  max-width:calc(100% - 24px);
 }
-.chip b{color:var(--gold);font-variant-numeric:tabular-nums}
+/* ogee ends, drawn as gold lozenges on either side */
+.crest-plaque::before,.crest-plaque::after{
+  content:"";position:absolute;top:50%;width:18px;height:18px;
+  transform:translateY(-50%) rotate(45deg);
+  background:linear-gradient(140deg,var(--gold-hi),var(--gold-dim));
+  border-radius:3px;box-shadow:0 2px 6px rgba(0,0,0,.5);
+}
+.crest-plaque::before{inset-inline-start:-11px}
+.crest-plaque::after{inset-inline-end:-11px}
+.crest-title{
+  display:block;position:relative;z-index:2;
+  font-size:clamp(15px,4.4vw,21px);font-weight:900;letter-spacing:.06em;
+  background:linear-gradient(180deg,var(--gold-hi) 0%,var(--gold) 46%,#c79a40 100%);
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+  text-shadow:0 2px 4px rgba(0,0,0,.45);
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+}
+html[dir="ltr"] .crest-title{text-transform:uppercase}
+.crest-badge{
+  position:absolute;top:-2px;left:50%;transform:translateX(-50%);
+  z-index:9;width:26px;height:26px;border-radius:50%;
+  background:linear-gradient(170deg,#2f9a5a,#14512f);
+  border:2px solid var(--gold);
+  display:grid;place-items:center;
+  font-size:12px;font-weight:900;color:var(--gold-hi);
+  box-shadow:0 3px 9px rgba(0,0,0,.6);
+}
+
+/* ---------- status line ---------- */
+#status{
+  position:relative;z-index:7;
+  display:flex;align-items:flex-start;gap:8px;
+  padding:9px 12px 4px;
+}
+.st-side{
+  flex:1 1 0;min-width:0;
+  font-size:10.5px;font-weight:700;letter-spacing:.09em;
+  color:rgba(245,239,228,.72);text-shadow:0 1px 4px rgba(0,0,0,.8);
+  padding-top:5px;
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+}
+html[dir="ltr"] .st-side{text-transform:uppercase}
+.st-side.end{display:flex;justify-content:flex-end;padding-top:0}
+.st-mid{flex:0 0 auto;text-align:center;line-height:1.25}
+.st-deal{
+  font-size:clamp(12px,3.4vw,15px);font-weight:800;letter-spacing:.05em;
+  color:var(--cream);text-shadow:0 2px 6px rgba(0,0,0,.8);
+}
+html[dir="ltr"] .st-deal{text-transform:uppercase}
+.st-deal i{opacity:.55;font-style:normal;margin:0 3px}
+.st-score{
+  font-size:clamp(15px,4.6vw,21px);font-weight:900;margin-top:1px;
+  text-shadow:0 2px 7px rgba(0,0,0,.85);
+  font-variant-numeric:tabular-nums;
+}
+.st-score i{color:var(--gold);opacity:.7;font-style:normal;margin:0 4px}
+.st-score .us{color:var(--neon)}
+.st-score .them{color:var(--gold)}
+
 .icon-btn{
-  width:36px;height:36px;border-radius:50%;
-  background:linear-gradient(170deg,rgba(0,0,0,.4),rgba(0,0,0,.24));
-  border:1px solid rgba(226,187,100,.32);
+  width:34px;height:34px;border-radius:50%;
+  background:linear-gradient(170deg,rgba(0,0,0,.5),rgba(0,0,0,.3));
+  border:1px solid rgba(240,207,114,.42);
   display:grid;place-items:center;font-size:15px;line-height:1;
-  backdrop-filter:blur(8px);
-  box-shadow:0 2px 8px rgba(0,0,0,.28), inset 0 1px 0 rgba(255,255,255,.07);
+  color:var(--gold);
+  box-shadow:0 2px 8px rgba(0,0,0,.4), inset 0 1px 0 rgba(255,255,255,.08);
   transition:transform .12s,border-color .12s;
 }
-.icon-btn:hover{border-color:rgba(226,187,100,.6)}
 .icon-btn:active{transform:scale(.92)}
 .spacer{flex:1}
 
-/* ---------- scoreboard ---------- */
-#score{
-  display:flex;gap:8px;align-items:stretch;
-  background:linear-gradient(170deg,rgba(0,0,0,.42),rgba(0,0,0,.28));
-  border:1px solid rgba(226,187,100,.34);
-  border-radius:13px;padding:5px 10px;backdrop-filter:blur(8px);
-  box-shadow:0 3px 12px rgba(0,0,0,.3), inset 0 1px 0 rgba(255,255,255,.07);
-}
-.sc{display:flex;flex-direction:column;align-items:center;min-width:46px;line-height:1.12}
-.sc .lbl{font-size:9.5px;opacity:.72;font-weight:700;letter-spacing:.3px}
-.sc .val{font-size:18px;font-weight:800;font-variant-numeric:tabular-nums;color:var(--gold);
-         text-shadow:0 1px 6px rgba(226,187,100,.35)}
-.sc.them .val{color:#f0e9d8;text-shadow:none}
-.sc .rail{width:100%;height:3px;border-radius:2px;background:rgba(255,255,255,.14);margin-top:3px;overflow:hidden}
-.sc .rail i{display:block;height:100%;width:0;border-radius:2px;
-            background:linear-gradient(90deg,#e8c876,#f3e0aa);transition:width .5s cubic-bezier(.2,.8,.3,1)}
-.sc.them .rail i{background:linear-gradient(90deg,#8fb7c9,#cfe2ea)}
-.sc-mid{
-  display:flex;flex-direction:column;align-items:center;justify-content:center;
-  padding:0 7px;line-height:1.1;
-  border-inline:1px solid rgba(226,187,100,.22);
-}
-.sc-mid .rnd{font-size:8.5px;opacity:.55;font-weight:700;letter-spacing:.2px}
-.sc-mid b{font-size:13px;color:rgba(247,243,232,.82);font-variant-numeric:tabular-nums}
-
 /* ---------- seats ---------- */
 #felt{position:relative;flex:1;min-height:0}
-/* the felt oval: gives the middle of the table some shape */
-#felt::before{
-  content:"";position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
-  width:min(88vw,430px);height:min(88vw,430px);max-height:58vh;
+
+/* ---------- the table: wooden rim around green felt ---------- */
+#board{
+  position:absolute;top:48%;left:50%;transform:translate(-50%,-50%);
+  width:min(88vw,392px);height:min(88vw,392px);max-height:53vh;
   border-radius:50%;pointer-events:none;
-  background:radial-gradient(ellipse at 50% 40%,
-    rgba(255,255,255,.085) 0%, rgba(255,255,255,.03) 48%, rgba(0,0,0,.07) 70%, transparent 76%);
-  border:1px solid rgba(226,187,100,.22);
+  background:
+    radial-gradient(ellipse 70% 52% at 50% 30%, rgba(255,255,255,.10), transparent 62%),
+    radial-gradient(circle at 50% 46%, #2b8f57 0%, #1b7245 46%, #0f4b2d 100%);
+  border:calc(var(--card-w)*.16) solid transparent;
+  background-origin:border-box;
   box-shadow:
-    inset 0 0 0 5px rgba(226,187,100,.05),
-    inset 0 0 44px rgba(0,0,0,.16),
-    0 0 44px rgba(226,187,100,.05);
+    0 26px 50px rgba(0,0,0,.55),
+    inset 0 0 44px rgba(0,0,0,.30);
 }
-/* a second, thinner ring for the inlay look */
-#felt::after{
-  content:"";position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
-  width:min(80vw,392px);height:min(80vw,392px);max-height:53vh;
-  border-radius:50%;pointer-events:none;
-  border:1px dashed rgba(226,187,100,.13);
+/* the wooden rim is painted as a ring on top of the felt */
+#board::before{
+  content:"";position:absolute;inset:calc(var(--card-w)*-.16);
+  border-radius:50%;
+  border:calc(var(--card-w)*.16) solid;
+  border-color:#a9612f #7d4420 #5f3317 #8e5027;
+  background:conic-gradient(from 210deg,#6b3a1a,#a9612f 18%,#c07a42 30%,#8e5027 48%,#5f3317 66%,#a9612f 84%,#6b3a1a);
+  -webkit-mask:radial-gradient(farthest-side,transparent calc(100% - var(--card-w)*.16),#000 0);
+          mask:radial-gradient(farthest-side,transparent calc(100% - var(--card-w)*.16),#000 0);
+  box-shadow:0 8px 22px rgba(0,0,0,.5);
 }
+/* a thin gold inlay where the rim meets the cloth */
+#board::after{
+  content:"";position:absolute;inset:0;border-radius:50%;
+  box-shadow:inset 0 0 0 1px rgba(240,207,114,.28);
+}
+
 .seat{
   position:absolute;display:flex;align-items:center;gap:7px;z-index:5;
   transition:opacity .2s;
 }
-.seat[data-pos="north"]{top:6px;left:50%;transform:translateX(-50%);flex-direction:column;gap:4px}
-.seat[data-pos="east"]{top:50%;right:6px;transform:translateY(-50%);flex-direction:column;gap:4px}
-.seat[data-pos="west"]{top:50%;left:6px;transform:translateY(-50%);flex-direction:column;gap:4px}
+.seat[data-pos="north"]{top:2px;left:50%;transform:translateX(-50%);flex-direction:column;align-items:center;gap:3px}
+.seat[data-pos="east"]{top:47%;right:6px;transform:translateY(-50%);flex-direction:column;align-items:center;gap:3px}
+.seat[data-pos="west"]{top:47%;left:6px;transform:translateY(-50%);flex-direction:column;align-items:center;gap:3px}
 .avatar{
   width:46px;height:46px;border-radius:50%;
   background:
@@ -194,7 +255,7 @@ button{font:inherit;color:inherit;border:0;background:none;cursor:pointer}
 .wins{display:flex;gap:3px;justify-content:center;height:5px}
 .wins i{width:5px;height:5px;border-radius:50%;background:rgba(255,255,255,.22)}
 .wins i.on{background:var(--gold);box-shadow:0 0 5px rgba(226,187,100,.8)}
-.hand-back{display:flex;gap:-6px}
+.hand-back{display:flex;gap:-6px;max-width:74px;overflow:hidden}
 .cardback{
   width:17px;height:24px;border-radius:3px;margin-inline-start:-9px;
   background:
@@ -207,8 +268,8 @@ button{font:inherit;color:inherit;border:0;background:none;cursor:pointer}
 
 /* ---------- trick area ---------- */
 #trick{
-  position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
-  width:min(62vw,262px);height:min(62vw,262px);
+  position:absolute;top:48%;left:50%;transform:translate(-50%,-50%);
+  width:min(52vw,226px);height:min(52vw,226px);
 }
 /* these need to outrank `.card{position:relative}`, which is declared later */
 #trick .tc{
@@ -240,7 +301,7 @@ button{font:inherit;color:inherit;border:0;background:none;cursor:pointer}
 
 /* ---------- centre HUD ---------- */
 #centre{
-  position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
+  position:absolute;top:48%;left:50%;transform:translate(-50%,-50%);
   z-index:4;text-align:center;pointer-events:none;
 }
 /* the trump (or the sun) breathes faintly in the middle of the felt */
@@ -250,8 +311,7 @@ button{font:inherit;color:inherit;border:0;background:none;cursor:pointer}
   transition:opacity .6s;
 }
 #trumpmark.on{opacity:.04}
-#chip-mode{gap:6px}
-#chip-mode .suit{font-size:15px;line-height:1}
+.st-side .suit{font-size:12px;line-height:1}
 
 /* ---------- cards ----------
    Every measurement is a share of the card box, so the face keeps the same
@@ -329,9 +389,9 @@ button{font:inherit;color:inherit;border:0;background:none;cursor:pointer}
 
 /* ---------- my hand ---------- */
 #hand{
-  position:relative;z-index:7;height:calc(var(--card-h) + 30px);
+  position:relative;z-index:7;height:calc(var(--card-h) + 34px);
   display:flex;justify-content:center;align-items:flex-end;
-  padding-bottom:11px;
+  padding-bottom:6px;
 }
 #hand::before{                     /* warm pool of light while it is your move */
   content:"";position:absolute;bottom:-6px;left:50%;transform:translateX(-50%);
@@ -344,10 +404,12 @@ button{font:inherit;color:inherit;border:0;background:none;cursor:pointer}
 @keyframes handIn{from{opacity:0;transform:translateY(52px) rotate(-7deg) scale(.88)}}
 #hand .slot.deal .card{animation:handIn .4s cubic-bezier(.2,.9,.3,1) backwards}
 #hand .slot{
-  width:calc(var(--card-w) * .66);height:var(--card-h);
+  width:calc(var(--card-w) * .58);height:var(--card-h);
   position:relative;transition:transform .2s,margin .2s;
+  transform-origin:50% 100%;          /* pivot at the card's base: the fan stays inside */
 }
 #hand .slot:last-child{width:var(--card-w)}
+#hand{--fan-pad:0px}
 #hand .card{
   position:absolute;bottom:0;inset-inline-start:0;
   transition:transform .18s cubic-bezier(.2,.8,.3,1),filter .18s,box-shadow .18s;
@@ -358,9 +420,106 @@ button{font:inherit;color:inherit;border:0;background:none;cursor:pointer}
   box-shadow:inset 0 0 0 1.5px rgba(226,187,100,.85), 0 0 14px rgba(226,187,100,.45);
 }
 #hand .slot.playable:active .card,#hand .slot.playable.sel .card{transform:translateY(-20px) scale(1.05)}
-#hand .slot.blocked .card{filter:brightness(.5) saturate(.28) contrast(.9)}
+#hand .slot.blocked .card::after{background:rgba(5,22,14,.30)}
 #hand .slot.blocked{cursor:not-allowed}
 @media (hover:hover){#hand .slot.playable:hover .card{transform:translateY(-18px);box-shadow:0 16px 32px rgba(0,0,0,.5)}}
+
+/* ---------- WINNING marker over the leading card ---------- */
+#winmark{
+  position:absolute;z-index:8;pointer-events:none;
+  transform:translate(-50%,-100%);
+  background:linear-gradient(180deg,#3ddb73,#149b45);
+  border:1px solid rgba(255,255,255,.5);
+  color:#06230f;font-size:11px;font-weight:900;letter-spacing:.09em;
+  padding:4px 12px;border-radius:8px;white-space:nowrap;
+  box-shadow:0 5px 18px rgba(0,0,0,.5), 0 0 22px rgba(53,251,125,.45);
+  animation:pop .22s cubic-bezier(.2,1.4,.5,1);
+}
+html[dir="ltr"] #winmark{text-transform:uppercase}
+#winmark::after{
+  content:"";position:absolute;bottom:-4px;left:50%;margin-left:-4px;
+  width:9px;height:9px;background:#18a44a;transform:rotate(45deg);
+}
+#trick .tc.winning{
+  box-shadow:0 6px 15px rgba(0,0,0,.36), 0 0 0 2.5px #35fb7d,
+             0 0 26px rgba(53,251,125,.7), inset 0 0 0 1px rgba(255,255,255,.92);
+  z-index:3;
+}
+
+/* ---------- turn hint ---------- */
+#hintwrap{position:relative;z-index:41;height:0}
+#hint{
+  position:absolute;bottom:2px;inset-inline-start:14px;
+  background:linear-gradient(180deg,#3ddb73,#12933f);
+  border:1px solid rgba(255,235,170,.55);
+  color:#08260f;font-size:12.5px;font-weight:900;letter-spacing:.03em;
+  padding:7px 14px;border-radius:11px;white-space:nowrap;max-width:calc(100% - 28px);
+  overflow:hidden;text-overflow:ellipsis;
+  box-shadow:0 6px 18px rgba(0,0,0,.5), 0 0 20px rgba(53,251,125,.3);
+  animation:pop .24s cubic-bezier(.2,1.4,.5,1);
+}
+html[dir="ltr"] #hint{text-transform:uppercase}
+#hint::after{
+  content:"";position:absolute;bottom:-5px;inset-inline-start:22px;
+  width:11px;height:11px;background:#12933f;transform:rotate(45deg);
+}
+#hint .sr{color:#c8102e;font-size:14px}
+#hint .sk{color:#0d0f14;font-size:14px}
+
+/* the card the hint points at */
+#hand .slot.tip .card{
+  box-shadow:0 10px 24px rgba(0,0,0,.5), 0 0 0 2.5px var(--gold),
+             0 0 26px rgba(240,207,114,.75);
+}
+
+/* ---------- action rail ---------- */
+#rail{
+  position:relative;z-index:8;
+  display:flex;align-items:center;gap:9px;
+  padding:10px 52px calc(10px + var(--safe-b));
+  background:linear-gradient(180deg,rgba(6,38,24,.86),rgba(4,24,15,.97));
+  border-top:1px solid rgba(240,207,114,.28);
+}
+/* gold arabesque in both bottom corners */
+#rail::before,#rail::after{
+  content:"";position:absolute;bottom:4px;width:54px;height:40px;
+  pointer-events:none;opacity:.85;
+  background:no-repeat center/contain
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 54 40'%3E%3Cg fill='none' stroke='%23f0cf72' stroke-width='1.6' stroke-linecap='round'%3E%3Cpath d='M2 38V12C2 6 6 2 12 2h30'/%3E%3Cpath d='M8 38V16c0-5 3-8 8-8h22'/%3E%3Cpath d='M14 36c0-7 5-12 12-12 5 0 8 3 8 7s-3 6-6 6-5-2-5-4'/%3E%3Cpath d='M40 8c4 0 7 2 7 6s-3 6-6 6'/%3E%3C/g%3E%3C/svg%3E");
+}
+#rail::before{left:3px}
+#rail::after{right:3px;transform:scaleX(-1)}
+.rail-btn{
+  position:relative;z-index:2;
+  min-height:46px;border-radius:11px;
+  font-size:14px;font-weight:900;letter-spacing:.04em;
+  display:flex;align-items:center;justify-content:center;gap:6px;
+  border:1.5px solid var(--gold);
+  background:linear-gradient(180deg,rgba(12,58,36,.9),rgba(5,28,18,.95));
+  color:var(--gold);
+  box-shadow:0 4px 14px rgba(0,0,0,.45), inset 0 1px 0 rgba(255,255,255,.1);
+  transition:transform .12s,filter .12s;
+}
+html[dir="ltr"] .rail-btn{text-transform:uppercase}
+.rail-btn:active{transform:translateY(1px) scale(.985)}
+.rail-btn[disabled]{opacity:.4;pointer-events:none}
+.rail-btn.gold{
+  flex:1 1 auto;min-width:0;
+  background:linear-gradient(180deg,#fff0ae 0%,#f0cf72 38%,#c99a3f 100%);
+  color:#2a1a05;border-color:#8e6a24;
+  text-shadow:0 1px 0 rgba(255,255,255,.4);
+  box-shadow:0 5px 16px rgba(0,0,0,.45), inset 0 1px 0 rgba(255,255,255,.65);
+  padding:0 14px;
+  overflow:hidden;white-space:nowrap;text-overflow:ellipsis;
+}
+.rail-btn.sq{flex:0 0 auto;width:52px;font-size:17px}
+.rail-btn.out{flex:0 0 auto;padding:0 16px;font-size:15px}
+@media (max-width:380px){
+  .rail-btn.sq{width:42px}
+  .rail-btn.out{padding:0 10px}
+  #rail{gap:6px;padding-inline:44px}
+  #rail::before,#rail::after{width:42px;height:32px}
+}
 
 /* ---------- bubbles / announcements ---------- */
 .bubble{
@@ -386,7 +545,7 @@ button{font:inherit;color:inherit;border:0;background:none;cursor:pointer}
 
 /* ---------- toast ---------- */
 #toast{
-  position:fixed;bottom:calc(var(--safe-b) + var(--card-h) + 52px);
+  position:fixed;bottom:calc(var(--safe-b) + var(--card-h) + 158px);
   left:50%;transform:translateX(-50%);max-width:88vw;
   z-index:40;display:flex;flex-direction:column;gap:6px;align-items:center;pointer-events:none;
 }
@@ -545,7 +704,7 @@ button{font:inherit;color:inherit;border:0;background:none;cursor:pointer}
 .rtab td:first-child{text-align:start;opacity:.8;font-size:12.5px}
 .rtab td{font-variant-numeric:tabular-nums}
 .rtab td b{color:var(--gold);font-size:19px;text-shadow:0 2px 10px rgba(226,187,100,.35)}
-.rtab .win td{background:linear-gradient(90deg,rgba(226,187,100,.16),rgba(226,187,100,.04))}
+.rtab .win td{background:rgba(240,207,114,.12)}
 .rtab tr:last-child td{border-bottom:0;opacity:.85}
 
 /* rules */
@@ -566,6 +725,7 @@ button{font:inherit;color:inherit;border:0;background:none;cursor:pointer}
 
 @media (max-height:660px){
   :root{--card-w:clamp(52px,13vw,68px)}
+  #board{width:min(74vw,320px);height:min(74vw,320px);max-height:46vh}
   .avatar{width:36px;height:36px;font-size:15px}
   #trick{width:min(52vw,196px);height:min(52vw,196px)}
 }
@@ -574,27 +734,48 @@ button{font:inherit;color:inherit;border:0;background:none;cursor:pointer}
 <body>
 
 <div id="table">
-  <div id="topbar">
-    <button class="icon-btn" id="btn-menu" aria-label="menu">☰</button>
-    <div id="score">
-      <div class="sc us"><span class="lbl" data-i18n="us">لنا</span><span class="val" id="score-us">0</span><span class="rail"><i id="bar-us"></i></span></div>
-      <div class="sc-mid"><span class="rnd" data-i18n="round">جولة</span><b id="round-no">1</b></div>
-      <div class="sc them"><span class="lbl" data-i18n="them">لهم</span><span class="val" id="score-them">0</span><span class="rail"><i id="bar-them"></i></span></div>
+  <!-- ornate plaque header -->
+  <header id="crest">
+    <div class="crest-badge" id="crest-badge">1</div>
+    <div class="crest-plaque">
+      <span class="crest-title" id="crest-title">تحدي البلوت</span>
     </div>
-    <div class="spacer"></div>
-    <div class="chip" id="chip-mode" hidden></div>
-    <button class="icon-btn" id="btn-friends" aria-label="friends">👥</button>
+  </header>
+
+  <div id="status">
+    <div class="st-side" id="st-side">طاولة مباشرة</div>
+    <div class="st-mid">
+      <div class="st-deal"><span id="st-deal">الجولة ١</span> <i>•</i> <span id="st-target">حتى ١٥٢</span></div>
+      <div class="st-score">
+        <b class="us"><span data-i18n="us">لنا</span> <span id="score-us">0</span></b>
+        <i>•</i>
+        <b class="them"><span data-i18n="them">لهم</span> <span id="score-them">0</span></b>
+      </div>
+    </div>
+    <div class="st-side end">
+      <button class="icon-btn" id="btn-menu" aria-label="menu">☰</button>
+    </div>
   </div>
 
   <div id="felt">
+    <div id="board"></div>
     <div class="seat" data-pos="north" id="seat-n"></div>
     <div class="seat" data-pos="west"  id="seat-w"></div>
     <div class="seat" data-pos="east"  id="seat-e"></div>
     <div id="centre"><div id="trumpmark"></div></div>
     <div id="trick"></div>
+    <div id="winmark" hidden><span data-i18n="winning">الفائزة</span></div>
   </div>
 
+  <div id="hintwrap"><div id="hint" hidden></div></div>
   <div id="hand"></div>
+
+  <!-- gold-ornamented action rail -->
+  <div id="rail">
+    <button class="rail-btn gold" id="rail-main"></button>
+    <button class="rail-btn sq" id="rail-hint" aria-label="hint">💡</button>
+    <button class="rail-btn out" id="rail-friends"><span>👥</span></button>
+  </div>
 </div>
 
 <div id="toast"></div>
@@ -616,6 +797,9 @@ const I18N = {
   ar:{
     us:"لنا", them:"لهم", round:"جولة",
     sun:"صن", hokum:"حكم", pass:"بس", ashkal:"أشكل",
+    liveTable:"طاولة مباشرة", dealNo:"الجولة {n}", toTarget:"حتى {n}",
+    winning:"الفائزة", tryThis:"دورك · جرّب", hintNone:"انتظر دورك",
+    takeStage:"ابدأ اللعب", nextDeal:"الجولة التالية", invite:"أصدقاء",
     you:"أنت", partner:"شريكك", right:"اليمين", left:"اليسار",
     bot:"بوت", waiting:"بانتظار…", joined:"انضم",
     yourTurn:"دورك", play:"العب",
@@ -655,6 +839,9 @@ const I18N = {
   en:{
     us:"Us", them:"Them", round:"Round",
     sun:"Sun", hokum:"Hokum", pass:"Pass", ashkal:"Ashkal",
+    liveTable:"Live table", dealNo:"Deal {n}", toTarget:"To {n}",
+    winning:"Winning", tryThis:"Your turn · try", hintNone:"Wait for your turn",
+    takeStage:"Take the stage", nextDeal:"Next deal", invite:"Friends",
     you:"You", partner:"Partner", right:"Right", left:"Left",
     bot:"Bot", waiting:"Waiting…", joined:"Joined",
     yourTurn:"Your turn", play:"Play",
@@ -1175,6 +1362,7 @@ const POSNAME = ["south","east","north","west"];
 const Settings = {
   speed: localStorage.getItem("baloot.speed") || "normal",
   sound: localStorage.getItem("baloot.sound") !== "off",
+  hints: localStorage.getItem("baloot.hints") !== "off",
   set(k,v){ this[k]=v; try{ localStorage.setItem("baloot."+k, v===true?"on":v===false?"off":v);}catch(e){} }
 };
 const pace = base => base * ({slow:1.55, normal:1, fast:.55}[Settings.speed] || 1);
@@ -1285,7 +1473,7 @@ const Game = {
     UI.setMode(null);
     UI.renderHand();
     UI.renderSeats();
-    $("#round-no").textContent = G.roundNo;
+    UI.renderScores();
 
     await wait(pace(260));
     this.bidRound = 1;
@@ -1391,14 +1579,23 @@ const Game = {
     UI.renderSeats();
 
     if (G.seats[seat].human){
-      UI.renderHand(legalCards(R.hands[seat], R.trick, R));
       this.busy = false;
+      UI.renderHand(legalCards(R.hands[seat], R.trick, R));
       return;                      // wait for a tap
     }
     this.busy = true;
     await wait(pace(520 + Math.random()*260));
     const c = AI.play(R.hands[seat], R.trick, R, seat);
     this.playCard(seat, c);
+  },
+
+  /** The card the bots would play from your seat - used by the hint and the rail. */
+  suggestion(){
+    const R = this.R;
+    if (!R || !R.mode || R.turn !== 0 || this.busy || !this.G.seats[0].human) return null;
+    if (!R.hands[0].length) return null;
+    R.currentSeat = 0;
+    try { return AI.play(R.hands[0], R.trick, R, 0); } catch(e){ return null; }
   },
 
   humanPlay(c){
@@ -1416,6 +1613,7 @@ const Game = {
 
   async playCard(seat, c){
     const R = this.R;
+    this.busy = true;                 // nothing in the hand is playable mid-resolution
     R.currentSeat = seat;
     R.hands[seat] = R.hands[seat].filter(x => x.id !== c.id);
     R.unseen = R.unseen.filter(x => x.id !== c.id);
@@ -1502,8 +1700,9 @@ const UI = {
     const G = Game.G; if (!G) return;
     $("#score-us").textContent   = G.scores[0];
     $("#score-them").textContent = G.scores[1];
-    $("#bar-us").style.width   = Math.min(100, G.scores[0] / CFG.target * 100) + "%";
-    $("#bar-them").style.width = Math.min(100, G.scores[1] / CFG.target * 100) + "%";
+    $("#st-deal").textContent    = T("dealNo", {n:G.roundNo});
+    $("#st-target").textContent  = T("toTarget", {n:CFG.target});
+    $("#crest-badge").textContent = G.roundNo;
   },
 
   renderSeats(){
@@ -1548,14 +1747,26 @@ const UI = {
   renderHand(legal, deal){
     const wrap = $("#hand"); wrap.innerHTML = "";
     const R = Game.R;
-    if (!R || !R.hands){ wrap.classList.remove("active"); return; }
+    if (!R || !R.hands){ wrap.classList.remove("active"); this.setHint(null); return; }
     const hand = this.sortHand(R.hands[0], R);
-    const myTurn = !!(R.mode && R.turn === 0 && Game.G.seats[0].human);
+    const myTurn = !!(R.mode && R.turn === 0 && Game.G.seats[0].human && !Game.busy);
     wrap.classList.toggle("active", myTurn);
+
+    const tip = myTurn ? Game.suggestion() : null;
+    const flip = document.documentElement.dir === "rtl" ? -1 : 1;
+    const count = hand.length;
+    const spread = Math.min(2.7, 20 / Math.max(count, 1));
+
     hand.forEach((c, i) => {
       const slot = el("div", "slot");
       const playable = myTurn && (!legal || legal.some(x => x.id === c.id));
       if (myTurn) slot.classList.add(playable ? "playable" : "blocked");
+      if (tip && c.id === tip.id) slot.classList.add("tip");
+      // a shallow arc, the way a real hand is held
+      const t = count > 1 ? (i - (count - 1) / 2) / ((count - 1) / 2) : 0;
+      const a = t * ((count - 1) / 2) * spread * flip;
+      slot.style.transform =
+        "translateY(" + (t * t * 9).toFixed(1) + "px) rotate(" + a.toFixed(2) + "deg)";
       const n = cardNode(c, R);
       if (deal){
         slot.classList.add("deal");
@@ -1565,36 +1776,107 @@ const UI = {
       slot.addEventListener("click", () => Game.humanPlay(c));
       wrap.appendChild(slot);
     });
+    this.setHint(myTurn ? tip : null);
+    this.renderRail();
+  },
+
+  /* ---- the green "your turn" bubble ---- */
+  setHint(c){
+    const h = $("#hint");
+    if (!c || !Settings.hints){ h.hidden = true; return; }
+    const cls = SUIT_RED[c.s] ? "sr" : "sk";
+    h.innerHTML = T("tryThis") + ' ' + c.r + ' <span class="' + cls + '">' + SUIT_GLYPH[c.s] + '</span>';
+    h.hidden = false;
+    // sit the bubble above the card it names, clamped to the screen
+    const tip = $("#hand .slot.tip");
+    const wrap = $("#hintwrap").getBoundingClientRect();
+    if (tip){
+      const tb = tip.getBoundingClientRect();
+      const w = h.offsetWidth;
+      const x = Math.max(8, Math.min(wrap.width - w - 8, tb.left - wrap.left + tb.width / 2 - 26));
+      h.style.insetInlineStart = "auto";
+      h.style.left = x + "px";
+    }
+  },
+
+  /* ---- bottom action rail ---- */
+  renderRail(){
+    const R = Game.R, G = Game.G;
+    const main = $("#rail-main"), hint = $("#rail-hint");
+    hint.style.opacity = Settings.hints ? 1 : .45;
+    if (!R || !R.mode){
+      main.textContent = T("takeStage");
+      main.disabled = false;
+      main.onclick = () => { if (!Game.R || !Game.R.mode) Lobby.open(); };
+      return;
+    }
+    const myTurn = R.turn === 0 && G.seats[0].human && !Game.busy;
+    if (myTurn){
+      const c = Game.suggestion();
+      main.innerHTML = c
+        ? T("play") + ' ' + c.r + ' <span style="color:' +
+          (SUIT_RED[c.s] ? "#b3202f" : "#20242c") + '">' + SUIT_GLYPH[c.s] + '</span>'
+        : T("play");
+      main.disabled = !c;
+      main.onclick = () => { const x = Game.suggestion(); if (x) Game.humanPlay(x); };
+    } else {
+      main.textContent = G.seats[R.turn] ? G.seats[R.turn].name + " …" : "…";
+      main.disabled = true;
+      main.onclick = null;
+    }
+  },
+
+  /* ---- WINNING marker over the card that currently leads the trick ---- */
+  markWinning(){
+    const R = Game.R, wm = $("#winmark"), t = $("#trick");
+    t.querySelectorAll(".tc.winning").forEach(n => n.classList.remove("winning"));
+    if (!R || R.trick.length < 2 || t.classList.contains("collect")){ wm.hidden = true; return; }
+    const w = trickWinner(R.trick, R);
+    const node = t.querySelector('.tc[data-seat="' + w + '"]');
+    if (!node){ wm.hidden = true; return; }
+    node.classList.add("winning");
+    const fb = $("#felt").getBoundingClientRect(), cb = node.getBoundingClientRect();
+    wm.hidden = false;
+    wm.style.left = "0px"; wm.style.top = "0px";      // measure at a known origin
+    const gutter = 96;                // keep clear of the side seats
+    const half = wm.offsetWidth / 2 + 6;
+    const lo = Math.min(gutter + half, fb.width / 2), hi = Math.max(fb.width - gutter - half, fb.width / 2);
+    const x = Math.max(lo, Math.min(hi, cb.left - fb.left + cb.width / 2));
+    wm.style.left = x + "px";
+    wm.style.top  = Math.max(wm.offsetHeight + 4, cb.top - fb.top - 6) + "px";
   },
 
   setMode(R){
-    const chip = $("#chip-mode"), mark = $("#trumpmark");
+    const side = $("#st-side"), mark = $("#trumpmark");
     if (!R || !R.mode){
-      chip.hidden = true;
+      side.textContent = T("liveTable");
       mark.classList.remove("on"); mark.textContent = "";
       return;
     }
     const glyph = R.mode === "sun" ? "☀︎" : SUIT_GLYPH[R.trump];
     const tint  = R.mode === "sun" ? "#f4d78a" : (SUIT_RED[R.trump] ? "#ff8a96" : "#ffffff");
-    chip.hidden = false;
-    chip.innerHTML = '<span class="suit" style="color:' + tint + '">' + glyph + '</span>' +
-                     (R.mode === "sun" ? T("sun") : T("hokum"));
+    side.innerHTML = (R.mode === "sun" ? T("sun") : T("hokum")) +
+                     ' <span class="suit" style="color:' + tint + '">' + glyph + '</span>';
     mark.textContent = glyph;
     mark.classList.add("on");
   },
 
   placeCard(seat, c, R){
     const n = cardNode(c, R, "tc " + POSNAME[seat] + " deal-in");
+    n.dataset.seat = seat;
     $("#trick").appendChild(n);
+    setTimeout(() => this.markWinning(), 30);
   },
   collectTrick(seat){
     const t = $("#trick");
+    $("#winmark").hidden = true;
     t.classList.add("collect", "w-" + POSNAME[seat]);
   },
   clearTrick(){
     const t = $("#trick");
     t.className = "";
     t.innerHTML = "";
+    $("#winmark").hidden = true;
   },
 
   bubble(seat, text, gold){
@@ -1735,6 +2017,10 @@ const UI = {
     body.appendChild(el("h3", null, T("sound")));
     body.appendChild(this.seg([[true,T("on")],[false,T("off")]], Settings.sound,
       v => { Settings.set("sound", v === "true" || v === true); UI.openMenu(); }));
+
+    body.appendChild(el("h3", null, LANG === "ar" ? "التلميحات" : "Hints"));
+    body.appendChild(this.seg([[true,T("on")],[false,T("off")]], Settings.hints,
+      v => { Settings.set("hints", v === "true" || v === true); UI.openMenu(); UI.renderHand(); }));
 
     body.appendChild(el("div", "divider"));
     const r = el("div", "row wrap");
@@ -2161,7 +2447,12 @@ Trump order: J &gt; 9 &gt; A &gt; 10 &gt; K &gt; Q &gt; 8 &gt; 7.</p>
    11. Boot
    ============================================================ */
 $("#btn-menu").onclick = () => UI.openMenu();
-$("#btn-friends").onclick = () => { Lobby.openFriends(); };
+$("#rail-friends").onclick = () => Lobby.openFriends();
+$("#rail-hint").onclick = () => {
+  Settings.set("hints", !Settings.hints);
+  UI.renderHand(Game.R && Game.R.mode && Game.R.turn === 0
+    ? legalCards(Game.R.hands[0], Game.R.trick, Game.R) : null);
+};
 document.querySelectorAll(".scrim").forEach(s => {
   s.addEventListener("click", ev => {
     if (ev.target !== s) return;

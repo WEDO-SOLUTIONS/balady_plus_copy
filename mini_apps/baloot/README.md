@@ -45,6 +45,22 @@ the initial language follows `navigator.language` and is remembered in `localSto
 House rules that vary by region are collected in the `CFG` object near the top of
 the script (`target`, `kabootSun`, `kabootHokum`, `fourNines`).
 
+## Look
+
+The table follows a supplied mock-up: an ornate gold plaque header with the deal
+counter and `Us / Them` in green and gold, a round wooden-rimmed table with the
+trick laid on the cloth, a `WINNING` marker over whichever card currently leads,
+a green "your turn" bubble naming a card worth playing, an arced hand fan, and a
+gold-ornamented action rail (play the suggested card / toggle hints / invite).
+
+The mock-up's photographic majlis is not reproducible in a dependency-free page,
+so the room is rendered procedurally — warm walls with lantern pools, an
+arabesque lattice and a vignette — keeping its palette and composition.
+
+Hints are a real suggestion: the bubble and the rail button both name the card
+the bots would play from your seat, and the rail button plays it. They can be
+turned off in the settings sheet.
+
 ## Friends & invitations
 
 There is no "friends on map" feature in this repository. The closest existing
