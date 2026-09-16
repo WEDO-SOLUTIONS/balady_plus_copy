@@ -25,6 +25,7 @@ window.Ardah = window.Ardah || {};
   ];
   var LANE_KEYS = ['A', 'S', 'D'];
   // Keycap faces, matching the lanes: tabl wood, swords steel-blue, tar green.
+  var KEY_SPRITE = ['key_tabl', 'key_swords', 'key_tar'];
   var KEYCAP = [
     ['#8A5A2B', '#4A2F14'],
     ['#3F6F9E', '#1B355A'],
@@ -146,7 +147,9 @@ window.Ardah = window.Ardah || {};
     }
 
     this._advanceDrummers(state, dtMs);
-    this.scene.draw(c, this.tMs, dtMs, this.performers, this.drumPulse);
+    var plate = A.assets && A.assets.img('bg_stage');
+    if (plate) this._plate(c, plate);
+    else this.scene.draw(c, this.tMs, dtMs, this.performers, this.drumPulse);
     for (var i = 0; i < PERFORMERS; i++) this.performers[i] = Math.max(0, this.performers[i] - decay * 0.65);
     this.drumPulse[0] = Math.max(0, this.drumPulse[0] - decay * 1.6);
     this.drumPulse[1] = Math.max(0, this.drumPulse[1] - decay * 1.6);
@@ -179,6 +182,62 @@ window.Ardah = window.Ardah || {};
       else this.performers[Math.floor(Math.random() * this.performers.length)] = 0.75;
       this.drumCursor++;
     }
+  };
+
+  /* A rendered stage plate replaces the drawn scene. The performers are baked
+     into it, so the only life left is the light: the braziers flicker and the
+     whole plate breathes a little on the beat. That limitation is the point of
+     the experiment — animation needs the layered delivery, not a flat still. */
+  Renderer.prototype._plate = function (c, img) {
+    var boxH = this.stageY + 6;
+
+    // The drawn scene used to paint the whole canvas; the plate only covers the
+    // stage, so the ground under the runway has to be laid down here — without
+    // it the previous frame smears through (the context is opaque, never
+    // cleared).
+    c.fillStyle = '#0B0A10';
+    c.fillRect(0, 0, this.w, this.h);
+    var ground = c.createLinearGradient(0, boxH - 30, 0, this.h);
+    ground.addColorStop(0, '#6B4C31');
+    ground.addColorStop(0.35, '#3E2C1E');
+    ground.addColorStop(1, '#140F0C');
+    c.fillStyle = ground;
+    c.fillRect(0, boxH - 30, this.w, this.h - boxH + 30);
+    var scale = Math.max(this.w / img.width, boxH / img.height);
+    var dw = img.width * scale, dh = img.height * scale;
+    var dx = (this.w - dw) / 2, dy = boxH - dh;
+
+    var breathe = 1 + Math.sin(this.tMs / 312) * 0.0035;    // ~ one beat at 96 BPM
+    c.save();
+    c.translate(this.w / 2, boxH);
+    c.scale(breathe, breathe);
+    c.translate(-this.w / 2, -boxH);
+    c.drawImage(img, dx, dy, dw, dh);
+    c.restore();
+
+    // Feather the plate's bottom edge into the ground, or the join reads as a
+    // hard horizontal line straight across the screen.
+    var seam = c.createLinearGradient(0, boxH - 34, 0, boxH + 26);
+    seam.addColorStop(0, 'rgba(107, 76, 49, 0)');
+    seam.addColorStop(0.55, 'rgba(96, 68, 44, 0.75)');
+    seam.addColorStop(1, 'rgba(62, 44, 30, 0)');
+    c.fillStyle = seam;
+    c.fillRect(0, boxH - 34, this.w, 60);
+
+    // Firelight over the baked braziers, so the scene is not dead still.
+    var fires = [[0.335, 0.735], [0.715, 0.73], [0.055, 0.70], [0.945, 0.70]];
+    c.globalCompositeOperation = 'lighter';
+    for (var i = 0; i < fires.length; i++) {
+      var fx = dx + dw * fires[i][0], fy = dy + dh * fires[i][1];
+      var flick = 0.5 + 0.5 * Math.abs(Math.sin(this.tMs / 190 + i * 1.7)) * Math.abs(Math.sin(this.tMs / 71 + i));
+      var r = 60 + flick * 26;
+      var g = c.createRadialGradient(fx, fy, 2, fx, fy, r);
+      g.addColorStop(0, 'rgba(255, 170, 80, ' + (0.1 + flick * 0.1).toFixed(3) + ')');
+      g.addColorStop(1, 'rgba(255, 150, 60, 0)');
+      c.fillStyle = g;
+      c.beginPath(); c.arc(fx, fy, r, 0, Math.PI * 2); c.fill();
+    }
+    c.globalCompositeOperation = 'source-over';
   };
 
   /* -------------------------------- runway -------------------------------- */
@@ -319,10 +378,27 @@ window.Ardah = window.Ardah || {};
     }
   };
 
+  var NOTE_SPRITE = ['note_tabl', 'note_swords', 'note_tar'];
+
   Renderer.prototype._gem = function (c, lane, z, isHold) {
     var x = this.xAt(lane, z), y = this.yAt(z), s = 1 / z;
     var pal = LANE[lane];
     var w = this.halfNear * 0.34 * s;
+
+    var sprite = A.assets && A.assets.img(NOTE_SPRITE[lane]);
+    if (sprite) {
+      var dw = w * 2.15, dh = dw * (sprite.height / sprite.width);
+      c.save();
+      c.shadowColor = pal.glow;
+      c.shadowBlur = 14 * s;
+      c.drawImage(sprite, x - dw / 2, y - dh / 2, dw, dh);
+      c.restore();
+      if (isHold) {
+        c.fillStyle = 'rgba(20, 14, 6, 0.4)';
+        c.fillRect(x - w * 0.34, y - 1.5 * s, w * 0.68, 3 * s);
+      }
+      return;
+    }
 
     c.save();
     c.shadowColor = pal.glow;
@@ -472,22 +548,39 @@ window.Ardah = window.Ardah || {};
       var x = this.xAt(lane, 1), y = this.keyY;
       var w = Math.min(this.laneW * 0.52, 46), h = 30;
 
-      var g = c.createLinearGradient(0, y - h / 2, 0, y + h / 2);
-      g.addColorStop(0, KEYCAP[lane][0]);
-      g.addColorStop(1, KEYCAP[lane][1]);
-      c.fillStyle = g;
-      this._roundRect(c, x - w / 2, y - h / 2, w, h, 9);
-      c.fill();
-      c.strokeStyle = this.flashes[lane] > 0.05
-        ? LANE[lane].glow
-        : 'rgba(231, 180, 76, 0.45)';
-      c.lineWidth = 1.4;
-      c.stroke();
+      var cap = A.assets && A.assets.img(KEY_SPRITE[lane]);
+      if (cap) {
+        // The sprite carries its own letter; the label below stays code-drawn
+        // because it has to localise.
+        var ch = h * 1.5, cw = ch * (cap.width / cap.height);
+        if (this.flashes[lane] > 0.05) {
+          c.save();
+          c.shadowColor = LANE[lane].glow;
+          c.shadowBlur = 18 * this.flashes[lane];
+          c.drawImage(cap, x - cw / 2, y - ch / 2, cw, ch);
+          c.restore();
+        } else {
+          c.drawImage(cap, x - cw / 2, y - ch / 2, cw, ch);
+        }
+      } else {
+        var g = c.createLinearGradient(0, y - h / 2, 0, y + h / 2);
+        g.addColorStop(0, KEYCAP[lane][0]);
+        g.addColorStop(1, KEYCAP[lane][1]);
+        c.fillStyle = g;
+        this._roundRect(c, x - w / 2, y - h / 2, w, h, 9);
+        c.fill();
+        c.strokeStyle = this.flashes[lane] > 0.05
+          ? LANE[lane].glow
+          : 'rgba(231, 180, 76, 0.45)';
+        c.lineWidth = 1.4;
+        c.stroke();
 
+        c.textAlign = 'center';
+        c.fillStyle = '#F6E7C4';
+        c.font = '700 15px -apple-system, system-ui, sans-serif';
+        c.fillText(state.touchUsed ? '●' : LANE_KEYS[lane], x, y + 5);
+      }
       c.textAlign = 'center';
-      c.fillStyle = '#F6E7C4';
-      c.font = '700 15px -apple-system, system-ui, sans-serif';
-      c.fillText(state.touchUsed ? '●' : LANE_KEYS[lane], x, y + 5);
 
       c.fillStyle = 'rgba(231, 180, 76, 0.75)';
       c.font = '600 10px -apple-system, system-ui, sans-serif';

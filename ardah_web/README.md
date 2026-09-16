@@ -77,6 +77,38 @@ Run the same measurement in a browser, then in the superapp WebView **with the
 MBC radio playing**, and compare. That comparison is the spike the concept doc
 asks for (§5.4).
 
+## Artwork
+
+`assets/` holds art **cut out of the Ardah concept image** by `assets/extract.py`
+— an experiment in how far a single rendered still gets us. The game runs
+without it; each image swaps in the frame after it decodes, and `?art=0` forces
+the drawn version so the two can be compared side by side.
+
+What the slicing produced, at **180 KB total in WebP**:
+
+| Asset | How it was cut | Works? |
+|---|---|---|
+| `bg_stage` | Rectangular crop of the stage band, title plaque painted out and blurred back into the sky | Yes — this is most of the visual win |
+| `note_tabl/swords/tar` | Keyed against the dark deck: distance-from-background alpha, colour unmultiplied, largest blob kept, ellipse mask to cut the neighbouring coin | Yes |
+| `key_tabl/swords/tar` | Same, with a rounded-rect mask to drop the sparks above the S key | Yes |
+| `ui_plaque` | Keyed against the sky | Cut cleanly, **but unusable**: the title is baked in as English pixels, so it cannot localise. Kept in `assets/` as the exhibit for why the brief bans text in artwork |
+| Performers, musicians, fires | — | **Not cuttable.** They sit against the fort, not a flat background, and they overlap each other. They stay baked into `bg_stage`, which is why the stage no longer animates in art mode |
+
+So the experiment's answer: a flat still gets you the backdrop, the props and
+the UI furniture almost for free, and gets you **no animation at all**. The
+performers' idle sway, the sword raise on a hit, the drummers answering the
+track — all of it needs the layered delivery specified in
+[`../docs/ardah-art-brief.md`](../docs/ardah-art-brief.md) §3.3.
+
+To keep the plate from looking dead, the renderer adds firelight flicker over
+the baked braziers and a slow scale "breath" on the beat. It helps; it is not a
+substitute.
+
+**Provenance and status:** derived from the client's own concept image, for
+evaluation only. Not cleared for release — and note that the banners in it carry
+the state emblem, which is exactly the compliance question raised in the brief's
+§1.
+
 ## What is real and what is a placeholder
 
 Real — and intended to survive into production:
@@ -128,6 +160,7 @@ build-single.sh   inlines everything into one distributable HTML file
 css/ardah.css     menus; WebView hardening (no selection, no overscroll, safe areas)
 js/i18n.js        ar/en strings, RTL flip (gameplay stays LTR by design)
 js/bridge.js      dsBridge adapter, no-op in a browser
+js/assets.js      optional artwork loader; the game never waits on it
 js/audio.js       synthesised tabl / swords / tar + metronome
 js/scene.js       the stage: fort, palms, banners, braziers, rows, musicians
 js/chart.js       chart format, groove generator, validator

@@ -297,7 +297,38 @@ and it is the cheapest point at which to change direction.
 
 ---
 
-## Appendix — if the art is generated rather than drawn
+## Appendix A — what slicing the concept still actually produced
+
+Before commissioning anything we cut the concept image itself into assets
+(`ardah_web/assets/`, script `ardah_web/assets/extract.py`) to see where the
+line falls. The result is the empirical case for §3's layered delivery:
+
+**Cut cleanly, and now running in the prototype** — the stage backdrop
+(rectangular crop, title plaque painted out), the three note objects and the
+three keycaps (keyed against the dark deck: distance-from-background alpha,
+colour unmultiplied so edges keep no halo, largest connected blob kept, a shape
+mask to drop a touching neighbour). **180 KB in WebP for the set**, which is
+2 % of the §6 budget — file size is not the constraint anyone should be
+optimising against here.
+
+**Cut, but unusable** — the title plaque. Its text is baked in as English
+pixels, so it cannot localise. This is §1's "no text in artwork" rule,
+demonstrated rather than asserted.
+
+**Not cuttable at all** — the performers, the musicians and the fires. They sit
+against the fort rather than a flat background and they overlap one another, so
+no keying gets them out; a real segmentation pass would still leave them as
+single frozen poses. They stay baked into the backdrop, and the consequence is
+visible in the running prototype: **in art mode the stage does not move.** No
+idle sway, no sabre raise on a hit, no drummer answering the track.
+
+So the split to insist on when commissioning: the backdrop may arrive as a
+finished still, but **performers and musicians must arrive as separate,
+transparent, animatable elements** (§3.3) — a rig, or at minimum sprite states.
+Everything the game does with the row depends on it, and no amount of
+post-processing recovers it from a flat render.
+
+## Appendix B — if the art is generated rather than drawn
 
 The concept image this brief descends from was produced this way, and it works,
 provided the pipeline is disciplined:

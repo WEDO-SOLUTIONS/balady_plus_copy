@@ -29,6 +29,20 @@ def inline_js(m):
 
 html = re.sub(r'<link rel="stylesheet" href="([^"]+)">', inline_css, html)
 html = re.sub(r'<script src="([^"]+)"></script>', inline_js, html)
+
+# The artwork lives in assets/*.webp. A single distributable file cannot fetch
+# them, so they ride along as data URIs and the loader is handed a lookup table.
+import base64
+assets = sorted(p.name for p in (root / 'assets').glob('*.webp')) if (root / 'assets').exists() else []
+if assets:
+    table = {}
+    for name in assets:
+        raw = (root / 'assets' / name).read_bytes()
+        table[name[:-5]] = 'data:image/webp;base64,' + base64.b64encode(raw).decode()
+    import json
+    inject = '<script>window.ArdahInlineAssets = ' + json.dumps(table) + ';</script>\n'
+    html = html.replace('<script>', inject + '<script>', 1)
+
 out.write_text(html)
 print(out, len(html), 'bytes')
 PY

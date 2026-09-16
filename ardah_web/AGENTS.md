@@ -21,6 +21,10 @@ decision it exists to settle: [`docs/ardah-concept.md`](../docs/ardah-concept.md
   fort, bunting, plaza) into an offscreen canvas on resize; only firelight, the
   performers, the drummers and the notes are per-frame work. Adding per-frame
   drawing to the static half is how this scene stops holding 60 fps.
+- **Artwork is optional, always.** `js/assets.js` loads `assets/*.webp` fire and
+  forget; every draw call null-checks the image and falls back to the drawn
+  version. Never `await` an asset, never let a missing file break a frame, and
+  keep `?art=0` working — it is how the two versions get compared.
 - **`js/judge.js` stays pure.** No canvas, no audio, no globals: it is the part
   a native rewrite would port line for line, and the part worth unit tests.
 - **The bridge surface stays minimal.** Analytics and best-effort haptics. No
