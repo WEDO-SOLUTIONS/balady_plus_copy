@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Ardah — rhythm prototype</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<meta name="color-scheme" content="dark">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link rel="stylesheet" href="css/ardah.css">
+</head>
+<body>
+
+<!-- Gameplay surface. Kept LTR in both locales on purpose: the row of
+     performers is a physical stage, not reading order (same rule the Flutter
+     penalty screen follows). -->
+<canvas id="stage" width="720" height="1280"></canvas>
+
+<!-- ============================ MENU ============================ -->
+<section class="screen" id="screen-menu">
+  <div class="sheet">
+    <p class="eyebrow" data-i18n="eyebrow"></p>
+    <h1 class="title" data-i18n="title"></h1>
+    <p class="lede" data-i18n="lede"></p>
+
+    <div class="chart-list" id="chart-list"></div>
+
+    <button class="btn btn-primary" id="btn-play" data-i18n="play"></button>
+    <div class="row">
+      <button class="btn" id="btn-calibrate" data-i18n="calibrate"></button>
+      <button class="btn" id="btn-howto" data-i18n="howto"></button>
+    </div>
+    <div class="row">
+      <button class="btn btn-ghost" id="btn-lang">العربية / EN</button>
+      <button class="btn btn-ghost" id="btn-debug" data-i18n="debugToggle"></button>
+    </div>
+    <p class="foot" id="offset-readout"></p>
+    <p class="foot" data-i18n="keyboardHint"></p>
+  </div>
+</section>
+
+<!-- ============================ HOW TO ============================ -->
+<section class="screen" id="screen-howto" hidden>
+  <div class="sheet">
+    <h2 class="title sm" data-i18n="howtoTitle"></h2>
+    <div class="howto-item"><span class="glyph glyph-tap"></span><div><b data-i18n="tapName"></b><p data-i18n="tapDesc"></p></div></div>
+    <div class="howto-item"><span class="glyph glyph-hold"></span><div><b data-i18n="holdName"></b><p data-i18n="holdDesc"></p></div></div>
+    <div class="howto-item"><span class="glyph glyph-flourish"></span><div><b data-i18n="flourishName"></b><p data-i18n="flourishDesc"></p></div></div>
+    <p class="lede" data-i18n="syncExplain"></p>
+    <button class="btn btn-primary" data-close="screen-howto" data-i18n="back"></button>
+  </div>
+</section>
+
+<!-- ========================= CALIBRATION ========================= -->
+<section class="screen" id="screen-calib" hidden>
+  <div class="sheet">
+    <h2 class="title sm" data-i18n="calibTitle"></h2>
+    <p class="lede" data-i18n="calibHint"></p>
+    <div class="calib-dots" id="calib-dots"></div>
+    <p class="calib-value" id="calib-value">—</p>
+    <button class="btn btn-primary" id="btn-calib-start" data-i18n="calibStart"></button>
+    <div class="row">
+      <button class="btn" id="btn-offset-minus">− 5 ms</button>
+      <button class="btn" id="btn-offset-plus">+ 5 ms</button>
+    </div>
+    <button class="btn btn-ghost" data-close="screen-calib" data-i18n="back"></button>
+  </div>
+</section>
+
+<!-- ============================ PAUSE ============================ -->
+<section class="screen dim" id="screen-pause" hidden>
+  <div class="sheet">
+    <h2 class="title sm" data-i18n="paused"></h2>
+    <button class="btn btn-primary" id="btn-resume" data-i18n="resume"></button>
+    <button class="btn" id="btn-restart" data-i18n="restart"></button>
+    <button class="btn btn-ghost" id="btn-quit" data-i18n="quit"></button>
+  </div>
+</section>
+
+<!-- ============================ RESULT ============================ -->
+<section class="screen" id="screen-result" hidden>
+  <div class="sheet">
+    <p class="eyebrow" id="result-kicker"></p>
+    <div class="grade" id="result-grade">A</div>
+    <div class="stats">
+      <div><span data-i18n="accuracy"></span><b id="stat-acc">—</b></div>
+      <div><span data-i18n="maxCombo"></span><b id="stat-combo">—</b></div>
+      <div><span data-i18n="score"></span><b id="stat-score">—</b></div>
+      <div><span data-i18n="timing"></span><b id="stat-timing">—</b></div>
+    </div>
+    <p class="judgement-line" id="result-breakdown"></p>
+    <p class="foot" id="result-best"></p>
+    <button class="btn btn-primary" id="btn-retry" data-i18n="retry"></button>
+    <button class="btn btn-ghost" id="btn-menu" data-i18n="menu"></button>
+  </div>
+</section>
+
+<!-- ====================== LATENCY LAB OVERLAY ===================== -->
+<div id="debug" hidden></div>
+
+<script src="js/i18n.js"></script>
+<script src="js/bridge.js"></script>
+<script src="js/audio.js"></script>
+<script src="js/chart.js"></script>
+<script src="js/conductor.js"></script>
+<script src="js/judge.js"></script>
+<script src="js/render.js"></script>
+<script src="js/input.js"></script>
+<script src="js/game.js"></script>
+<script src="js/main.js"></script>
+</body>
+</html>

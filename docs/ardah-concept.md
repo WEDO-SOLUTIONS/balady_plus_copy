@@ -395,6 +395,25 @@ rebuilt game.
 - The audio-session owner (§5.2.2) is still worth doing, both for the §5.1(3)
   TIFO bug and for the `AudioContext` suspend/resume case in §6.3(1).
 
+### 6.6 The prototype in this repo
+
+`ardah_web/` is the HTML path, playable today — the web half of the §5.4 spike
+rather than a mock-up. It runs in any browser and inside the mini-app WebView
+from the same files, with no build step, no dependencies and no network.
+
+What is already the real thing: the conductor (audio-clock master, 180 ms
+schedule-ahead, judge/visual clocks kept separate), the judge (windows, combo,
+accuracy, sync meter — pure logic, no canvas), the chart format and its
+validator, the calibration wizard, and the input path with queueing correction.
+What is placeholder and must not ship: synthesised percussion instead of
+licensed audio, drawn silhouettes instead of reviewed artwork, generated charts
+instead of authored ones.
+
+It carries the latency lab described in §5.3, so the numbers that decide §6.4
+can be collected now: run it in a browser, then in the superapp WebView with
+the radio playing, and compare `mean` (calibratable) against `jitter`
+(not calibratable). See `ardah_web/README.md`.
+
 ---
 
 ## 7. The one hard technical problem: the audio clock
@@ -513,7 +532,7 @@ developers in parallel with the Flutter release train.
 
 | Phase | Content | Estimate |
 |---|---|---|
-| **S — delivery & audio spike** (§5.4) | The same metronome built both ways (Flame package + HTML page), latency median and spread measured on real devices, coexistence with radio and navigation voice verified inside the superapp. Decides path and engine. **Go/no-go gate.** | 3–5 days |
+| **S — delivery & audio spike** (§5.4) | The same metronome built both ways, latency median and spread measured on real devices, coexistence with radio and navigation voice verified inside the superapp. Decides path and engine. **Go/no-go gate.** The HTML half already exists (`ardah_web/`, §6.6) — what remains is the device measurements and, if they are ambiguous, the Flame counterpart. | 1–3 days |
 | **P0 — playable prototype** (debug flag only) | Conductor + one hand-made chart + tap notes + judgment + placeholder art. Answers the only question that matters: does the timing feel right on real devices? | ~1 week |
 | **P1 — vertical slice** | Hold + flourish notes, calibration screen, chart select, result + grade, local best runs, real art for one track, tutorial. | 2–3 weeks |
 | **P2 — event-ready** | Seasonal gate + entry tile, Arabic/English l10n, analytics events, 3 charts × 3 difficulties, low-end device pass, accessibility, optional server leaderboard. | 3–4 weeks |

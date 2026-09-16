@@ -1,0 +1,146 @@
+/* Strings. Two locales, no framework.
+   In the superapp the host will pass the active language down; standalone we
+   read the browser's. Gameplay stays LTR in both (see index.html). */
+window.Ardah = window.Ardah || {};
+(function (A) {
+  'use strict';
+
+  var STRINGS = {
+    en: {
+      eyebrow: 'Balady+ · heritage',
+      title: 'Ardah',
+      lede: 'Keep the row in time with the drums.',
+      play: 'Play',
+      calibrate: 'Calibrate timing',
+      howto: 'How to play',
+      debugToggle: 'Latency lab',
+      back: 'Back',
+      keyboardHint: 'Keyboard: A / S / D or ← ↓ → for the three drums, Space for the flourish, Esc to pause.',
+
+      howtoTitle: 'How to play',
+      tapName: 'Strike',
+      tapDesc: 'Tap the lane as the marker crosses the line.',
+      holdName: 'Raise',
+      holdDesc: 'Press on the beat, hold while the bar runs, release at its end.',
+      flourishName: 'Flourish',
+      flourishDesc: 'Swipe across the lanes on the accent — or press Space.',
+      syncExplain: 'Misses cost the row its sync. Lose it all and the row breaks formation — the run ends there.',
+
+      calibTitle: 'Calibrate timing',
+      calibHint: 'Tap on each beat you hear. Eight beats, then we take the median. Every device delays its audio differently; this measures yours.',
+      calibStart: 'Start',
+      calibAgain: 'Measure again',
+      calibDone: 'Offset saved',
+      offsetLabel: 'Audio offset',
+      notCalibrated: 'not measured yet',
+
+      paused: 'Paused',
+      resume: 'Resume',
+      restart: 'Restart',
+      quit: 'Quit',
+
+      accuracy: 'Accuracy',
+      maxCombo: 'Best combo',
+      score: 'Score',
+      timing: 'Mean timing',
+      retry: 'Play again',
+      menu: 'Back to menu',
+      resultKept: 'The row held together',
+      resultBroke: 'The row lost its sync',
+      best: 'Best so far',
+      newBest: 'New best',
+
+      countIn: 'Listen…',
+      perfect: 'Perfect',
+      good: 'Good',
+      early: 'Early',
+      late: 'Late',
+      miss: 'Missed',
+      difficulty: { easy: 'Easy', normal: 'Normal', hard: 'Hard' }
+    },
+    ar: {
+      eyebrow: 'بلدي+ · التراث',
+      title: 'العرضة',
+      lede: 'حافظ على انسجام الصف مع الطبول.',
+      play: 'ابدأ',
+      calibrate: 'معايرة التوقيت',
+      howto: 'طريقة اللعب',
+      debugToggle: 'مختبر التأخير',
+      back: 'رجوع',
+      keyboardHint: 'لوحة المفاتيح: A / S / D للطبول الثلاثة، مسافة للوقفة، Esc للإيقاف المؤقت.',
+
+      howtoTitle: 'طريقة اللعب',
+      tapName: 'ضربة',
+      tapDesc: 'انقر المسار عند عبور العلامة للخط.',
+      holdName: 'رفع',
+      holdDesc: 'اضغط مع النقرة، واستمر حتى نهاية الشريط ثم ارفع إصبعك.',
+      flourishName: 'وقفة',
+      flourishDesc: 'مرّر إصبعك عبر المسارات عند النبرة — أو اضغط مسافة.',
+      syncExplain: 'كل ضربة ضائعة تُفقد الصف انسجامه. إذا نفد الانسجام ينفرط الصف وتنتهي الجولة.',
+
+      calibTitle: 'معايرة التوقيت',
+      calibHint: 'انقر مع كل نبضة تسمعها. ثماني نبضات ثم نأخذ الوسيط. كل جهاز يؤخّر الصوت بشكل مختلف، وهذه المعايرة تقيس جهازك.',
+      calibStart: 'ابدأ',
+      calibAgain: 'أعد القياس',
+      calibDone: 'تم حفظ التعويض',
+      offsetLabel: 'تعويض الصوت',
+      notCalibrated: 'لم يُقس بعد',
+
+      paused: 'إيقاف مؤقت',
+      resume: 'متابعة',
+      restart: 'إعادة',
+      quit: 'خروج',
+
+      accuracy: 'الدقة',
+      maxCombo: 'أفضل تتابع',
+      score: 'النقاط',
+      timing: 'متوسط التوقيت',
+      retry: 'العب مرة أخرى',
+      menu: 'القائمة',
+      resultKept: 'بقي الصف منسجمًا',
+      resultBroke: 'فقد الصف انسجامه',
+      best: 'أفضل نتيجة',
+      newBest: 'أفضل نتيجة جديدة',
+
+      countIn: 'أنصت…',
+      perfect: 'ممتاز',
+      good: 'جيد',
+      early: 'مبكر',
+      late: 'متأخر',
+      miss: 'ضائعة',
+      difficulty: { easy: 'سهل', normal: 'متوسط', hard: 'صعب' }
+    }
+  };
+
+  var lang = (navigator.language || 'en').toLowerCase().indexOf('ar') === 0 ? 'ar' : 'en';
+  try {
+    var saved = localStorage.getItem('ardah.lang');
+    if (saved && STRINGS[saved]) lang = saved;
+  } catch (e) { /* private mode — fall back to the detected language */ }
+
+  A.i18n = {
+    get lang() { return lang; },
+    get dir() { return lang === 'ar' ? 'rtl' : 'ltr'; },
+    t: function (key) {
+      var v = STRINGS[lang][key];
+      return v === undefined ? key : v;
+    },
+    set: function (next) {
+      if (!STRINGS[next]) return;
+      lang = next;
+      try { localStorage.setItem('ardah.lang', next); } catch (e) { /* ignore */ }
+      A.i18n.apply();
+    },
+    toggle: function () { A.i18n.set(lang === 'ar' ? 'en' : 'ar'); },
+    /** Paints every [data-i18n] node and flips document direction. */
+    apply: function () {
+      document.documentElement.lang = lang;
+      document.documentElement.dir = A.i18n.dir;
+      var nodes = document.querySelectorAll('[data-i18n]');
+      for (var i = 0; i < nodes.length; i++) {
+        nodes[i].textContent = A.i18n.t(nodes[i].getAttribute('data-i18n'));
+      }
+      if (A.game && A.game.onLanguageChanged) A.game.onLanguageChanged();
+    }
+  };
+})(window.Ardah);
