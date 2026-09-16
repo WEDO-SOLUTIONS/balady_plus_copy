@@ -30,6 +30,20 @@ def row_heal(img, off, x0, x1, y0, y1, sl, sr, width=10):
             px[x, y] = c
 
 
+def row_heal_lerp(img, off, x0, x1, y0, y1, sl, sr, width=16):
+    """Like row_heal, but blends across the gap so a wide fill keeps its shading."""
+    px = img.load()
+    for y in range(y0 - off[1], y1 - off[1]):
+        a = [px[x, y] for x in range(sl - off[0], sl - off[0] + width)]
+        b = [px[x, y] for x in range(sr - off[0] - width, sr - off[0])]
+        ca = tuple(int(statistics.median([p[i] for p in a])) for i in range(3))
+        cb = tuple(int(statistics.median([p[i] for p in b])) for i in range(3))
+        span = max((x1 - x0) - 1, 1)
+        for k, x in enumerate(range(x0 - off[0], x1 - off[0])):
+            t = k / span
+            px[x, y] = tuple(int(ca[i] + (cb[i] - ca[i]) * t) for i in range(3))
+
+
 def key_background(rgb, seeds, thresh=58):
     """Flood the backdrop away from the given seeds and make it transparent."""
     KEY = (255, 0, 255)
@@ -114,9 +128,43 @@ crest = key_background(crest, [(0, 0), (w - 1, 0), (0, h - 1), (w - 1, h - 1),
                                (w // 2, 1), (w // 2, h - 2)])
 crest.save(OUT / "crest.webp", quality=92, method=6)
 
-# ---------- 3. the arabesque from the bottom bar ----------
-corner = luma_alpha(src.crop((34, 1488, 140, 1606)).convert("RGBA"), 46, 58)
-corner.save(OUT / "corner.webp", quality=92, method=6)
+# ---------- 3. the two buttons, emptied of their labels ----------
+# Both are saved whole and used as CSS border-image, so they stretch to any
+# size while their corners and bevels stay crisp.
+B = (145, 1485, 459, 1564)
+btn = src.crop(B).copy()
+row_heal_lerp(btn, B, 188, 418, 1500, 1549, 166, 440, width=16)
+btn.filter(ImageFilter.GaussianBlur(0.3)).save(OUT / "btn-gold.webp", quality=93, method=6)
 
-for n in ("room.webp", "crest.webp", "corner.webp"):
+O = (575, 1485, 797, 1564)
+out_btn = src.crop(O).copy()
+row_heal_lerp(out_btn, O, 614, 744, 1500, 1549, 592, 768, width=16)
+out_btn.filter(ImageFilter.GaussianBlur(0.3)).save(OUT / "btn-outline.webp", quality=93, method=6)
+
+# ---------- 4. the arabesque from the bottom bar ----------
+corner = luma_alpha(src.crop((34, 1488, 140, 1606)).convert("RGBA"), 46, 58)
+# the crop also caught a few stray sparkles in the empty quadrant opposite the
+# L of the ornament; fade them out so panels do not get speckled corners
+pc = corner.load()
+cw0, ch0 = corner.size
+for y in range(ch0):
+    for x in range(cw0):
+        fx = (x / cw0 - 0.52) / 0.10
+        fy = (0.50 - y / ch0) / 0.10
+        k = min(max(min(fx, fy), 0.0), 1.0)
+        if k > 0:
+            r, g, b, a = pc[x, y]
+            pc[x, y] = (r, g, b, int(a * (1 - k)))
+
+# ---------- 5. the same arabesque, one file per corner ----------
+# A CSS background layer cannot be cropped to part of a sprite, so each corner
+# ships separately; together they frame a panel on all four sides.
+for name, img in (("corner-tl", corner.transpose(Image.FLIP_TOP_BOTTOM)),
+                  ("corner-tr", corner.transpose(Image.ROTATE_180)),
+                  ("corner-bl", corner),
+                  ("corner-br", corner.transpose(Image.FLIP_LEFT_RIGHT))):
+    img.save(OUT / (name + ".webp"), quality=92, method=6)
+
+for n in ("room.webp", "crest.webp", "corner-tl.webp", "corner-tr.webp", "corner-bl.webp", "corner-br.webp",
+          "btn-gold.webp", "btn-outline.webp"):
     print(n, Image.open(OUT / n).size, (OUT / n).stat().st_size // 1024, "KB")

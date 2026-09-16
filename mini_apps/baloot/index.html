@@ -441,19 +441,21 @@ html[dir="ltr"] #hint{text-transform:uppercase}
 #rail::before,#rail::after{
   content:"";position:absolute;bottom:2px;width:48px;height:54px;
   pointer-events:none;opacity:.95;
-  background:no-repeat left bottom/contain url("corner.webp");
+  background:no-repeat left bottom/contain url("corner-bl.webp");
 }
 #rail::before{left:2px}
-#rail::after{right:2px;transform:scaleX(-1)}
+#rail::after{right:2px;background-image:url("corner-br.webp");background-position:right bottom}
 .rail-btn{
   position:relative;z-index:2;
-  min-height:46px;border-radius:11px;
+  min-height:48px;
   font-size:14px;font-weight:900;letter-spacing:.04em;
   display:flex;align-items:center;justify-content:center;gap:6px;
-  border:1.5px solid var(--gold);
-  background:linear-gradient(180deg,rgba(12,58,36,.9),rgba(5,28,18,.95));
   color:var(--gold);
-  box-shadow:0 4px 14px rgba(0,0,0,.45), inset 0 1px 0 rgba(255,255,255,.1);
+  /* the button faces are cut from the mock-up and stretched as border-image */
+  border:15px solid transparent;
+  border-image:url("btn-outline.webp") 24 fill stretch;
+  background:none;box-shadow:none;border-radius:0;
+  filter:drop-shadow(0 4px 11px rgba(0,0,0,.5));
   transition:transform .12s,filter .12s;
 }
 html[dir="ltr"] .rail-btn{text-transform:uppercase}
@@ -461,15 +463,13 @@ html[dir="ltr"] .rail-btn{text-transform:uppercase}
 .rail-btn[disabled]{opacity:.4;pointer-events:none}
 .rail-btn.gold{
   flex:1 1 auto;min-width:0;
-  background:linear-gradient(180deg,#fff0ae 0%,#f0cf72 38%,#c99a3f 100%);
-  color:#2a1a05;border-color:#8e6a24;
-  text-shadow:0 1px 0 rgba(255,255,255,.4);
-  box-shadow:0 5px 16px rgba(0,0,0,.45), inset 0 1px 0 rgba(255,255,255,.65);
-  padding:0 14px;
-  overflow:hidden;white-space:nowrap;text-overflow:ellipsis;
+  border-image-source:url("btn-gold.webp");
+  border-image-slice:26 fill;
+  color:#2a1a05;text-shadow:0 1px 0 rgba(255,255,255,.4);
+  overflow:hidden;white-space:nowrap;
 }
-.rail-btn.sq{flex:0 0 auto;width:52px;font-size:17px}
-.rail-btn.out{flex:0 0 auto;padding:0 16px;font-size:15px}
+.rail-btn.sq{flex:0 0 auto;width:58px;font-size:17px}
+.rail-btn.out{flex:0 0 auto;min-width:74px;font-size:15px}
 @media (max-width:380px){
   .rail-btn.sq{width:42px}
   .rail-btn.out{padding:0 10px}
@@ -530,11 +530,22 @@ html[dir="ltr"] .rail-btn{text-transform:uppercase}
     linear-gradient(168deg,#14604a 0%,#0c4232 52%,#06251b 100%);
   border:1px solid rgba(226,187,100,.38);border-radius:22px;
   box-shadow:0 28px 70px rgba(0,0,0,.66), inset 0 1px 0 rgba(255,255,255,.09);
-  padding:20px 18px;animation:up .28s cubic-bezier(.2,.9,.3,1);
+  padding:22px 20px 26px;animation:up .28s cubic-bezier(.2,.9,.3,1);
 }
 @keyframes up{from{opacity:0;transform:translateY(26px) scale(.97)}}
+/* the same arabesque as the action rail, framing the panel */
+.panel::before{
+  content:"";position:absolute;inset:0;pointer-events:none;z-index:3;
+  border-radius:inherit;
+  background:
+    url("corner-tl.webp") left  top    / 36px 40px no-repeat,
+    url("corner-tr.webp") right top    / 36px 40px no-repeat,
+    url("corner-bl.webp") left  bottom / 36px 40px no-repeat,
+    url("corner-br.webp") right bottom / 36px 40px no-repeat;
+  opacity:.92;
+}
 .panel h2{
-  margin:0 0 6px;font-size:21px;color:var(--gold);letter-spacing:.2px;
+  margin:0 0 6px;padding-inline:26px;font-size:21px;color:var(--gold);letter-spacing:.2px;
   text-shadow:0 2px 12px rgba(226,187,100,.28);
 }
 .panel p.sub{margin:0 0 14px;font-size:13px;opacity:.76;line-height:1.6}
@@ -548,26 +559,26 @@ html[dir="ltr"] .rail-btn{text-transform:uppercase}
   content:"";flex:1;height:1px;
   background:linear-gradient(90deg,rgba(226,187,100,.45),rgba(226,187,100,.02));
 }
-.row{display:flex;gap:8px;align-items:center}
+.row{display:flex;gap:8px;align-items:center;padding-inline:10px}
 .row.wrap{flex-wrap:wrap}
 .btn{
-  flex:1;min-height:48px;border-radius:14px;font-size:15px;font-weight:800;
-  background:linear-gradient(170deg,#21996f,#0d5b42);
-  border:1px solid rgba(226,187,100,.32);
+  flex:1;min-height:50px;font-size:15px;font-weight:800;
   display:flex;align-items:center;justify-content:center;gap:7px;
-  box-shadow:0 6px 18px rgba(0,0,0,.36), inset 0 1px 0 rgba(255,255,255,.16);
-  transition:transform .12s,filter .12s,box-shadow .12s;
+  color:var(--gold);
+  border:16px solid transparent;
+  border-image:url("btn-outline.webp") 24 fill stretch;
+  background:none;box-shadow:none;border-radius:0;
+  filter:drop-shadow(0 5px 13px rgba(0,0,0,.42));
+  transition:transform .12s,filter .12s;
 }
-.btn:active{transform:translateY(1px) scale(.985);box-shadow:0 3px 10px rgba(0,0,0,.36)}
+.btn:active{transform:translateY(1px) scale(.985)}
 .btn.gold{
-  background:linear-gradient(170deg,#f2d891 0%,#e0bb67 46%,#c49a43 100%);
-  color:var(--ink);border-color:rgba(120,88,20,.35);
-  text-shadow:0 1px 0 rgba(255,255,255,.35);
-  box-shadow:0 6px 20px rgba(0,0,0,.34), inset 0 1px 0 rgba(255,255,255,.55);
+  border-image-source:url("btn-gold.webp");
+  border-image-slice:26 fill;
+  color:var(--ink);text-shadow:0 1px 0 rgba(255,255,255,.35);
 }
-.btn.ghost{background:rgba(255,255,255,.07);border-color:rgba(255,255,255,.17);
-           box-shadow:0 4px 12px rgba(0,0,0,.26)}
-.btn.sm{min-height:38px;font-size:13.5px;border-radius:11px;flex:0 0 auto;padding:0 14px}
+.btn.ghost{opacity:.86}
+.btn.sm{min-height:42px;font-size:13.5px;flex:0 0 auto;border-width:13px;min-width:56px}
 .btn[disabled]{opacity:.42;pointer-events:none}
 .btn.wide{flex:1 1 100%}
 
@@ -1921,7 +1932,7 @@ const UI = {
     if (proj.length){
       const names = proj.map(p => T(p.kind === "sra" ? "projSra" : p.kind === "50" ? "proj50"
                                   : p.kind === "100" ? "proj100" : "proj400")).join("، ");
-      body.appendChild(el("div", "hint", "🂠 " + names));
+      body.appendChild(el("div", "hint", "✦ " + names));
     }
     this.show("#m-bid");
   },
