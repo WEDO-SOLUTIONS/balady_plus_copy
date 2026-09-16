@@ -83,6 +83,7 @@ window.Ardah = window.Ardah || {};
     this.bursts = [];
     this.shards = [];
     this.lands = [];       // notes travelling into their pad
+    this.drops = [];       // notes that were missed and are falling away
     this.floats = [];
     this.flashes = [0, 0, 0];
     this.held = [0, 0, 0];       // key or finger currently down, per lane
@@ -191,7 +192,22 @@ window.Ardah = window.Ardah || {};
     if (lane >= 0 && lane < 3) this.flashes[lane] = judgment === 'stray' ? 0.3 : 1;
     if (judgment === 'stray') return;
 
-    if (judgment === 'miss') { this.shake = 1; return; }
+    if (judgment === 'miss') {
+      this.shake = 1;
+      // A missed note is not deleted, it is dropped: it keeps going past the
+      // line, tumbles and falls away. Nothing else in the frame tells the
+      // player WHICH note they lost, and the shake alone does not.
+      if (lane >= 0) {
+        this.drops.push({
+          lane: lane, t: t || 0, life: 1,
+          x: this.xAt(lane, 1), y: this.judgeY,
+          vx: (Math.random() - 0.5) * 0.11,
+          vy: 0.55,
+          rot: 0, spin: (Math.random() - 0.5) * 0.013
+        });
+      }
+      return;
+    }
 
     // Raise one sword per side, so both rows answer the beat.
     var half = PERFORMERS / 2;
@@ -292,6 +308,7 @@ window.Ardah = window.Ardah || {};
       this._judgeLine(c);
     }
     this._lands(c, dtMs);
+    this._drops(c, dtMs);
     this._keycaps(c, state, dtMs);
     this._effects(c, decay, dtMs);
     if (state.chart) this._hud(c, state);
@@ -828,6 +845,67 @@ window.Ardah = window.Ardah || {};
         c.drawImage(glow, x - gs / 2, this.keyY - gs / 2, gs, gs);
         c.restore();
       }
+    }
+  };
+
+  /* A missed note falling away.
+
+     Drawn with the landing pass, before the pads, so it disappears behind the
+     keycap row rather than over it.
+
+     It is deliberately SLOWER than the note was travelling. A note crosses the
+     judgment line at about 1.1 px/ms (dy/dz = -C/z^2 is -425 at z = 1, and z
+     moves 4 units in APPROACH_MS), and carrying that speed on would take it
+     off the bottom of the screen in a fifth of a second -- a blur, not a
+     miss. Starting at half that and letting gravity take it back up reads as
+     the note losing its footing.
+
+     It is not desaturated. Canvas 2D can only apply a blend mode to the whole
+     destination, not to one sprite, and ctx.filter is not safe to rely on in
+     an older iOS WebView; the alpha fade against the dark deck carries it. */
+  Renderer.prototype._drops = function (c, dtMs) {
+    if (!this.drops.length) return;
+    var base = this.halfNear * 0.34 * 1.60;
+    var R = this.halfNear * 0.52;
+    for (var i = this.drops.length - 1; i >= 0; i--) {
+      var d = this.drops[i];
+      d.life -= dtMs / 430;
+      if (d.life <= 0) { this.drops.splice(i, 1); continue; }
+      d.vy += 0.0014 * dtMs;
+      d.x += d.vx * dtMs;
+      d.y += d.vy * dtMs;
+      d.rot += d.spin * dtMs;
+
+      // A cold bloom where the note was lost. Built once per layout, then
+      // translated, so this stays off the per-frame gradient budget.
+      var u = 1 - d.life;
+      if (u < 0.5) {
+        var f = 1 - u / 0.5;
+        c.save();
+        c.translate(this.xAt(d.lane, 1), this.judgeY);
+        c.globalAlpha = f * f;
+        c.fillStyle = this._g('missGlow', function (cc) {
+          var g = cc.createRadialGradient(0, 0, 1, 0, 0, R);
+          g.addColorStop(0, 'rgba(255, 104, 78, 0.95)');
+          g.addColorStop(0.35, 'rgba(206, 52, 38, 0.60)');
+          g.addColorStop(1, 'rgba(140, 26, 20, 0)');
+          return g;
+        });
+        c.fillRect(-R, -R, R * 2, R * 2);
+        c.restore();
+        c.globalAlpha = 1;
+      }
+
+      var sprite = A.assets && A.assets.img(noteSprite(d.lane, d.t));
+      if (!sprite) { this.drops.splice(i, 1); continue; }
+      var dw = base * (1 - 0.18 * u), dh = dw * (sprite.height / sprite.width);
+      c.save();
+      c.globalAlpha = Math.min(1, d.life * 1.5);
+      c.translate(d.x, d.y);
+      c.rotate(d.rot);
+      c.drawImage(sprite, -dw / 2, -dh / 2, dw, dh);
+      c.restore();
+      c.globalAlpha = 1;
     }
   };
 

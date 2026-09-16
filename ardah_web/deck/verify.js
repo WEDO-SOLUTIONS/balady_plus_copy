@@ -24,6 +24,21 @@ const server = http.createServer((req, res) => {
   });
 });
 
+
+/* Capturing a frame costs 200-300 ms, which is longer than most of these
+   animations last, so asking for a particular moment is a lottery. Scaling the
+   renderer's dt slows everything consistently -- physics included -- and makes
+   the capture deterministic. Restored straight afterwards. */
+async function slowmo(page, factor) {
+  await page.evaluate((f) => {
+    const r = window.Ardah.game.renderer;
+    if (f === 1) { if (r.__origDraw) { r.draw = r.__origDraw; delete r.__origDraw; } return; }
+    if (!r.__origDraw) r.__origDraw = r.draw;
+    const orig = r.__origDraw;
+    r.draw = function (state, dt) { return orig.call(this, state, dt / f); };
+  }, factor);
+}
+
 (async () => {
   await new Promise((r) => server.listen(0, r));
   const port = server.address().port;
@@ -96,24 +111,60 @@ const server = http.createServer((req, res) => {
 
   // The note-into-pad landing is a 165 ms animation, so it is triggered and
   // caught deliberately rather than hoped for in a random frame.
-  // Pushed straight onto the queue rather than through hit(), because hit()
-  // also fires the burst and the shards, and the flash buries the very thing
-  // this frame exists to show.
+  // The robot has to stop first. Slow motion scales the renderer's dt but not
+  // the robot's timer, so it would keep landing hits whose bursts, shards and
+  // score floats then linger ten times as long and bury the frame.
+  await page.evaluate(() => {
+    clearInterval(window.__robot);
+    const g = window.Ardah.game;
+    // Push the chart far into the future rather than emptying it: with the
+    // robot stopped the notes would otherwise pile up past the judgment line,
+    // and a note sitting at Z_LIP is drawn large enough to fill the frame.
+    // Deleting them instead would let the run finish and leave the results
+    // screen.
+    for (const n of g.judge.notes) n.t += 1e6;
+    const r = g.renderer;
+    for (const a of [r.lands, r.drops, r.sparks, r.bursts, r.shards, r.floats]) a.length = 0;
+    r.popup = null;
+    r.shake = 0;
+  });
+  await page.waitForTimeout(120);
+
+  // Both of these are captured in slow motion; see slowmo() above.
   //
-  // The three lanes are staggered by 55 ms so that ONE screenshot catches
-  // three stages of the same 165 ms animation. Screenshotting costs enough
-  // time that asking for a particular stage is a lottery; the lanes' relative
-  // stages are not, so the strip is readable however late the capture lands.
+  // The landing is pushed straight onto the queue rather than through hit(),
+  // because hit() also fires the burst and the shards and the flash buries the
+  // very thing the frame exists to show. The lanes are staggered so one
+  // screenshot carries three stages of the same animation.
+  await slowmo(page, 10);
+
   await page.evaluate(() => {
     const g = window.Ardah.game;
-    for (const a of [g.renderer.lands, g.renderer.sparks, g.renderer.bursts, g.renderer.shards]) a.length = 0;
+    for (const a of [g.renderer.lands, g.renderer.drops, g.renderer.sparks,
+                     g.renderer.bursts, g.renderer.shards, g.renderer.floats]) a.length = 0;
+    g.renderer.popup = null;
     const push = (lane, t) => g.renderer.lands.push({ lane, t, life: 1 });
     push(2, 3000);
-    setTimeout(() => push(1, 2000), 55);
-    setTimeout(() => push(0, 1000), 110);
+    setTimeout(() => push(1, 2000), 550);
+    setTimeout(() => push(0, 1000), 1100);
   });
-  await page.waitForTimeout(115);
+  await page.waitForTimeout(1250);
   await page.screenshot({ path: path.join(OUT, 'live_landing.png') });
+
+  await page.evaluate(() => {
+    const g = window.Ardah.game;
+    for (const a of [g.renderer.lands, g.renderer.drops, g.renderer.sparks,
+                     g.renderer.bursts, g.renderer.shards, g.renderer.floats]) a.length = 0;
+    g.renderer.popup = null;
+    g.renderer.shake = 0;
+    const miss = (lane, t) => g.renderer.hit(lane, 'miss', t);
+    miss(2, 3000);
+    setTimeout(() => miss(1, 2000), 900);
+    setTimeout(() => miss(0, 1000), 1800);
+  });
+  await page.waitForTimeout(1950);
+  await page.evaluate(() => { window.Ardah.game.renderer.shake = 0; });
+  await page.screenshot({ path: path.join(OUT, 'live_miss.png') });
 
   // A frame with two pads actually held, so the press animation is captured
   // rather than assumed.
@@ -122,13 +173,14 @@ const server = http.createServer((req, res) => {
     g.renderer.keyDown(0);
     g.renderer.keyDown(2);
   });
-  await page.waitForTimeout(220);
+  await page.waitForTimeout(600);
   await page.screenshot({ path: path.join(OUT, 'live_pressed.png') });
   await page.evaluate(() => {
     const g = window.Ardah.game;
     g.renderer.keyUp(0);
     g.renderer.keyUp(2);
   });
+  await slowmo(page, 1);
 
   // The fallback has to keep working: AGENTS.md makes ?art=0 a standing rule,
   // and _runway and _keycaps both grew a sprite branch in this change.

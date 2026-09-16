@@ -344,6 +344,24 @@ animation would do nothing on exactly the input it exists to acknowledge.
 tap still moves a key, and `Renderer.keyReset` pairs with `Input.reset` so a
 run that ends with a finger down does not leave a pad depressed into the next.
 
+### The miss
+
+A missed note is dropped, not deleted: it carries on past the line, tumbles and
+falls away behind the keycap row, under a red bloom at the point it was lost.
+Nothing else in the frame tells the player *which* note they lost — the screen
+shake alone does not.
+
+It falls **slower than it was travelling**. A note crosses the judgment line at
+about 1.1 pt/ms (`dy/dz = -C/z²` is −425 at z = 1, and z covers 4 units in
+`APPROACH_MS`), and carrying that speed on would take it off the bottom of the
+screen in a fifth of a second — a blur, not a miss. It starts at half that and
+gravity takes it back up.
+
+It is **not** desaturated, though that was the first instinct. Canvas 2D can
+only apply a blend mode to the whole destination, not to a single sprite, and
+`ctx.filter` is not safe to rely on in an older iOS WebView; the alpha fade
+against the dark deck carries it instead.
+
 ### Traced hit effects
 
 `deck/make_fx.js` renders four effects, and `deck/lib/scene.js` a fifth.

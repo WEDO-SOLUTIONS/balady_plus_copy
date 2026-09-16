@@ -51,6 +51,12 @@ decision it exists to settle: [`docs/ardah-concept.md`](../docs/ardah-concept.md
   margin is drawn too. `deck/make_notes.js` trims every master; if you add one
   that is not trimmed, it will render small and the art will look wrong rather
   than the padding.
+- **Capture animations in slow motion.** Taking a screenshot costs 200–300 ms,
+  which is longer than most of these animations last, so asking for a
+  particular moment is a lottery. `deck/verify.js` scales the renderer's `dt`
+  for the capture — physics included — stops the robot first (slow motion does
+  not slow *its* timer, so its bursts would pile up ten deep) and pushes the
+  chart's notes into the future so nothing else is on screen.
 - **Verify in a browser, not by eye.** `node deck/verify.js` serves this
   directory, plays a run with a robot, screenshots it and reports console
   errors, failed loads and the fallback path. `node deck/fps.js` measures the
