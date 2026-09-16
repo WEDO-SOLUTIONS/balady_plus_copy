@@ -118,9 +118,9 @@ class JeddahBusLayer extends _$JeddahBusLayer {
     for (int i = 0; i < list.length; i++) {
       final line = list[i];
 
-      final geoPoints = dropNearDuplicatePoints(line.polylineCoordinates)
-          .map((c) => GeoPointMessage(latitude: c.latitude, longitude: c.longitude))
-          .toList();
+      final geoPoints = dropNearDuplicatePoints(
+        line.polylineCoordinates,
+      ).map((c) => GeoPointMessage(latitude: c.latitude, longitude: c.longitude)).toList();
 
       if (geoPoints.isEmpty) {
         continue;
