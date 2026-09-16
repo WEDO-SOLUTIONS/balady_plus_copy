@@ -31,7 +31,35 @@ const TILT = 52 * Math.PI / 180;
 /* A six-sided crystal with a tall termination. The lane's object was a
    faceted block to begin with; as a crystal the same silhouette gets to
    refract, which is most of what sells a render. */
-function crystal() {
+/* Colour variants.
+
+   The concept image varies colour WITHIN a lane while keeping the shape
+   constant -- gold ingots on the left, blue and green gems in the middle, gold
+   and silver coins on the right -- so the lane stays identifiable by position
+   and silhouette while the runway still has colour on it. These follow that.
+
+   For the two dielectrics the colour is an absorption coefficient, not a
+   pigment: it is what the stone takes OUT of the light crossing it, so the
+   high numbers are the channels the stone rejects. Amber rejects blue, ruby
+   rejects green and blue, emerald rejects red and blue. */
+const CRYSTAL_TINT = {
+  '':  { absorb: [0.24, 1.25, 4.60], glow: [1.00, 0.44, 0.10] },   // amber
+  _b:  { absorb: [0.32, 3.30, 3.80], glow: [1.00, 0.22, 0.34] },   // ruby
+  _c:  { absorb: [1.70, 3.50, 0.85], glow: [0.72, 0.30, 1.00] },   // amethyst
+};
+const GEM_TINT = {
+  '':  { absorb: [7.60, 1.95, 0.40], glow: [0.22, 0.72, 1.00] },   // sapphire
+  _b:  { absorb: [4.60, 0.85, 3.30], glow: [0.20, 1.00, 0.55] },   // emerald
+  _c:  { absorb: [1.90, 4.40, 1.05], glow: [0.78, 0.34, 1.00] },   // amethyst
+};
+const COIN_TINT = {
+  '':  { f0: [0.96, 0.520, 0.140], glow: [1.00, 0.60, 0.14] },     // gold
+  _b:  { f0: [0.93, 0.945, 0.975], glow: [0.72, 0.82, 1.00] },     // silver
+};
+
+function crystal(v) {
+  v = v || '';
+  const t = CRYSTAL_TINT[v];
   const R = 0.300;
   const planes = [];
   for (let i = 0; i < 6; i++) {
@@ -43,17 +71,17 @@ function crystal() {
   planes.push(...cone(6, R, -0.42, -0.80, -1, 0.26));   // lower point
   planes.push(...cone(6, R, -0.38, -0.64, -1, 0.26 + Math.PI / 6)); // lower bevel
   return {
-    name: 'tabl',
+    name: 'tabl' + v,
     radius: 0.83,
     rot: { rx: TILT, ry: 0.20, rz: Math.PI / 2 },
-    glow: [1.00, 0.44, 0.10],
+    glow: t.glow,
     parts: [{
       planes,
       mat: {
         type: 'glass',
         ior: 1.56,
         // absorbs blue hard and green moderately: what comes through is amber
-        absorb: [0.24, 1.25, 4.60],
+        absorb: t.absorb,
         spec: 900,
       },
     }],
@@ -65,7 +93,9 @@ function crystal() {
    16 crown facets to a table, a girdle band, 16 pavilion facets to a culet,
    with the pavilion rotated half a facet so the light that enters the crown
    leaves through a different face. */
-function gem() {
+function gem(v) {
+  v = v || '';
+  const gt = GEM_TINT[v];
   const R = 0.40, gy = 0.022, crownH = 0.155, Rt = R * 0.54;
   const k = crownH / (R - Rt);
   const planes = [];
@@ -79,10 +109,10 @@ function gem() {
 
   const OUT = 0.462, IN = 0.404, H = 0.052;
   return {
-    name: 'swords',
+    name: 'swords' + v,
     radius: 0.54,
     rot: { rx: TILT, ry: 0.22, rz: 0 },
-    glow: [0.22, 0.72, 1.00],
+    glow: gt.glow,
     parts: [
       {
         planes: prism(64, OUT, H, -H, 0, 1, 0),
@@ -94,7 +124,7 @@ function gem() {
         mat: {
           type: 'glass',
           ior: 1.72,
-          absorb: [7.60, 1.95, 0.40],     // the complement: a cool blue stone
+          absorb: gt.absorb,
           spec: 1400,
         },
       },
@@ -122,16 +152,18 @@ function coinRelief(x, z) {
    back to a true cylinder at shading time, so the rim turns rather than
    banding, and the milling and the relief are both normal perturbations --
    which is how a coin would be rendered for real. */
-function coin() {
+function coin(v) {
+  v = v || '';
+  const ct = COIN_TINT[v];
   return {
-    name: 'tar',
+    name: 'tar' + v,
     radius: 0.65,
     rot: { rx: TILT, ry: 0.30, rz: 0 },
-    glow: [1.00, 0.60, 0.14],
+    glow: ct.glow,
     parts: [{
       planes: prism(128, 0.455, 0.072, -0.072, 0, 1, 2),
       bump: { h: coinRelief },
-      mat: { type: 'metal', f0: [0.96, 0.520, 0.140], rough: 0.26, spec: 260 },
+      mat: { type: 'metal', f0: ct.f0, rough: 0.26, spec: 260 },
     }],
   };
 }
@@ -218,6 +250,10 @@ function keycap(lane) {
   return {
     name: 'key_' + lane,
     group: 'key',
+    // Centre of the coloured face, on the pad's own vertical axis: turning the
+    // pad about that axis leaves it where it is, so cropping the group around
+    // it makes the key glyph land correctly on all three without an offset.
+    anchor: [0, 0.105, 0],
     radius: 0.86,
     rot: { rx: v.elev * DEG, ry: v.azim * DEG, rz: 0 },
     glow: c.glow,

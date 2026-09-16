@@ -22,7 +22,9 @@ OUT = os.path.join(HERE, '..', 'assets')
 
 # name -> (longest side in px, quality); None keeps the master's size
 JOBS = {
-    'note_tabl': (None, 92), 'note_swords': (None, 92), 'note_tar': (None, 92),
+    'note_tabl': (None, 92), 'note_tabl_b': (None, 92), 'note_tabl_c': (None, 92),
+    'note_swords': (None, 92), 'note_swords_b': (None, 92), 'note_swords_c': (None, 92),
+    'note_tar': (None, 92), 'note_tar_b': (None, 92),
     'key_tabl': (200, 92), 'key_swords': (200, 92), 'key_tar': (200, 92),
     'runway': (1280, 90),
     'fx_spark': (64, 92), 'fx_flare': (None, 92),

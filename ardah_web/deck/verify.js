@@ -69,7 +69,9 @@ const server = http.createServer((req, res) => {
         if (n.t - now > 30) break;
         if (Math.abs(n.t - now) < 30) {
           g._press(n.lane, 0);
-          if (n.durMs) setTimeout(() => g._release(n.lane, 0), n.durMs);
+          // Always release, including taps: a real player's finger comes off,
+          // and without this the pads stay depressed for the whole capture.
+          setTimeout(() => g._release(n.lane, 0), n.durMs || 90);
         }
       }
     }, 6);
@@ -91,6 +93,21 @@ const server = http.createServer((req, res) => {
     requestAnimationFrame(tick);
   }));
   console.log('fps:', fps.toFixed(1));
+
+  // A frame with two pads actually held, so the press animation is captured
+  // rather than assumed.
+  await page.evaluate(() => {
+    const g = window.Ardah.game;
+    g.renderer.keyDown(0);
+    g.renderer.keyDown(2);
+  });
+  await page.waitForTimeout(220);
+  await page.screenshot({ path: path.join(OUT, 'live_pressed.png') });
+  await page.evaluate(() => {
+    const g = window.Ardah.game;
+    g.renderer.keyUp(0);
+    g.renderer.keyUp(2);
+  });
 
   // The fallback has to keep working: AGENTS.md makes ?art=0 a standing rule,
   // and _runway and _keycaps both grew a sprite branch in this change.

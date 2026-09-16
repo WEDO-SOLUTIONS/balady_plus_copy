@@ -66,6 +66,22 @@ function perturb(part, kind, px, py, pz, nx, ny, nz, out) {
 
 /* --------------------------------- tracer --------------------------------- */
 
+/* Where an object-space point lands in the rendered frame.
+
+   The camera sits at world (0, 0, dist) looking down -Z, so a world point w
+   projects to screen coordinates w.xy / (dist - w.z), and the frame maps
+   [-tan, tan] across. Used to crop a group around a shared anchor. */
+function project(obj, R, dist, size, tan) {
+  const p = obj.anchor || [0, 0, 0];
+  const w = [0, 0, 0];
+  apply(R.m, p[0], p[1], p[2], w);
+  const d = dist - w[2];
+  return {
+    x: ((w[0] / (d * tan)) + 1) / 2 * size,
+    y: (1 - (w[1] / (d * tan))) / 2 * size,
+  };
+}
+
 function render(obj, size) {
   const W = size * SS;
   const hdr = new Float32Array(W * W * 4);          // premultiplied linear RGB + A
@@ -102,7 +118,7 @@ function render(obj, size) {
       }
     }
   }
-  return { hdr, W };
+  return { hdr, W, anchor: project(obj, R, dist, size, tan) };
 }
 
 /* Returns coverage (0 or 1) and writes linear radiance into acc. */
@@ -392,12 +408,22 @@ function bbox(rgba, size) {
 function trim(rgba, size, pad, box) {
   const b = box || bbox(rgba, size);
   if (!b) return { data: rgba, w: size, h: size };
-  const x0 = Math.max(0, b.x0 - pad), y0 = Math.max(0, b.y0 - pad);
-  const x1 = Math.min(size - 1, b.x1 + pad), y1 = Math.min(size - 1, b.y1 + pad);
+  // A symmetric crop can reach past the frame; those rows and columns are
+  // simply left transparent rather than clamped, because clamping would move
+  // the anchor off centre again.
+  const x0 = b.x0 - pad, y0 = b.y0 - pad, x1 = b.x1 + pad, y1 = b.y1 + pad;
   const w = x1 - x0 + 1, h = y1 - y0 + 1;
   const out = new Uint8Array(w * h * 4);
   for (let y = 0; y < h; y++) {
-    out.set(rgba.subarray(((y + y0) * size + x0) * 4, ((y + y0) * size + x1 + 1) * 4), y * w * 4);
+    const sy = y + y0;
+    if (sy < 0 || sy >= size) continue;
+    for (let x = 0; x < w; x++) {
+      const sx = x + x0;
+      if (sx < 0 || sx >= size) continue;
+      const si = (sy * size + sx) * 4, di = (y * w + x) * 4;
+      out[di] = rgba[si]; out[di + 1] = rgba[si + 1];
+      out[di + 2] = rgba[si + 2]; out[di + 3] = rgba[si + 3];
+    }
   }
   return { data: out, w, h };
 }
@@ -406,7 +432,9 @@ function trim(rgba, size, pad, box) {
 
 fs.mkdirSync(OUT, { recursive: true });
 const objects = [
-  scene.crystal(), scene.gem(), scene.coin(),
+  scene.crystal(), scene.crystal('_b'), scene.crystal('_c'),
+  scene.gem(), scene.gem('_b'), scene.gem('_c'),
+  scene.coin(), scene.coin('_b'),
   scene.keycap('tabl'), scene.keycap('swords'), scene.keycap('tar'),
 ];
 for (let i = 0; i < 6; i++) objects.push(scene.shard(i));
@@ -414,10 +442,10 @@ const done = [];
 for (const obj of objects) {
   const t0 = Date.now();
   const size = obj.size || SIZE;
-  const { hdr, W } = render(obj, size);
+  const { hdr, W, anchor } = render(obj, size);
   const small = downsample(hdr, W, size, SS);
   const rgba = resolve(small, size, obj.glow);
-  done.push({ obj, rgba, size, box: bbox(rgba, size), ms: Date.now() - t0 });
+  done.push({ obj, rgba, size, anchor, box: bbox(rgba, size), ms: Date.now() - t0 });
 }
 
 /* Objects in the same group are cropped to one shared frame.
@@ -428,18 +456,30 @@ for (const obj of objects) {
    degree rotation grows a square's box by about 20% -- so the game would draw
    them smaller and the turn would read as a size difference instead of as a
    turn. A shared frame keeps them the same size and lets the rotation be a
-   rotation. */
+   rotation.
+   The crop is SYMMETRIC about each object's projected `anchor`, which puts the
+   anchor at the centre of every sprite in the group. That is what lets
+   _keycaps draw the key glyph at the sprite's centre and have it land on the
+   pad's face for all three: the face centre sits on the pad's own vertical
+   axis, so turning the pad does not move it, but an independent crop would
+   move the frame around it. No per-sprite offset table, no magic numbers. */
 const groups = {};
 for (const d of done) {
   if (!d.obj.group || !d.box) continue;
-  const g = groups[d.obj.group] || (groups[d.obj.group] = { x0: 1e9, y0: 1e9, x1: -1, y1: -1 });
-  g.x0 = Math.min(g.x0, d.box.x0); g.y0 = Math.min(g.y0, d.box.y0);
-  g.x1 = Math.max(g.x1, d.box.x1); g.y1 = Math.max(g.y1, d.box.y1);
+  const g = groups[d.obj.group] || (groups[d.obj.group] = { rx: 0, ry: 0 });
+  g.rx = Math.max(g.rx, d.anchor.x - d.box.x0, d.box.x1 - d.anchor.x);
+  g.ry = Math.max(g.ry, d.anchor.y - d.box.y0, d.box.y1 - d.anchor.y);
 }
 
 for (const d of done) {
   const obj = d.obj;
-  const cut = trim(d.rgba, d.size, 3, obj.group ? groups[obj.group] : d.box);
+  let box = d.box;
+  if (obj.group) {
+    const g = groups[obj.group];
+    box = { x0: Math.round(d.anchor.x - g.rx), x1: Math.round(d.anchor.x + g.rx),
+            y0: Math.round(d.anchor.y - g.ry), y1: Math.round(d.anchor.y + g.ry) };
+  }
+  const cut = trim(d.rgba, d.size, 3, box);
   const stem = /^(key|fx)_/.test(obj.name) ? obj.name : 'note_' + obj.name;
   const file = path.join(OUT, `${stem}_hd.png`);
   fs.writeFileSync(file, png.encode(cut.data, cut.w, cut.h));

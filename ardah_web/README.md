@@ -230,6 +230,13 @@ by −φ about its own vertical, so this needs no off-axis camera — it is just
 far less, so this follows the concept at 13°. It is the one place here where
 the drawing beats the arithmetic, deliberately.
 
+The three pads are cropped **symmetrically about their projected anchor** — the
+centre of the coloured face, which sits on the pad's own vertical axis, so
+turning the pad does not move it. That puts the face centre at the exact centre
+of every sprite in the group, which is why `_keycaps` can draw the key glyph
+dead centre and have it land correctly on all three, turned or not. No per-lane
+offset table.
+
 The three pads are cropped to a **shared frame**. They are one object at three
 angles and `_keycaps` scales by the sprite's height; a 13° rotation grows a
 square's bounding box by about 20%, so trimming them independently would draw
@@ -285,6 +292,34 @@ Two things this surfaced:
   fires and the lit fort just above the horizon — which is the warm glow along
   the deck in the concept. `envDeck` adds that on top of the shared
   environment, and it is scoped to the runway for that reason.
+
+### Note colour variants
+
+Each lane keeps one **shape** and varies **colour**: crystal in amber, ruby and
+amethyst; gem in sapphire, emerald and amethyst; coin in gold and silver. This
+is what the concept image does — gold ingots on the left, blue and green gems
+in the middle, gold and silver coins on the right — and it is the only way to
+put colour on the runway without costing readability, because the lane stays
+identifiable by position and silhouette, which is what a player reads at speed.
+
+For the two dielectrics the colour is an **absorption coefficient, not a
+pigment**: it is what the stone takes out of the light crossing it, so the high
+numbers are the channels it rejects. Amber rejects blue; ruby rejects green and
+blue; emerald rejects red and blue.
+
+Which variant a note wears is hashed from its own time, so it is stable across
+frames, retries and pauses without storing anything on the chart.
+
+### Keycap press
+
+`_keycaps` eases each pad towards its held state: it dips 3.4 pt, shrinks 7.5 %
+and pools a little of `fx_glow` underneath. The press **snaps** to 1 and only
+the release is eased — a tap can be 30 ms long, and easing both ends would let
+the pad reach a third of the way down and back before anyone saw it, so the
+animation would do nothing on exactly the input it exists to acknowledge.
+`Game._press` drives it on the input rather than on the judgement, so a stray
+tap still moves a key, and `Renderer.keyReset` pairs with `Input.reset` so a
+run that ends with a finger down does not leave a pad depressed into the next.
 
 ### Traced hit effects
 

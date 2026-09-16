@@ -125,6 +125,7 @@ window.Ardah = window.Ardah || {};
       self.conductor.prepare(chart, self.offsetMs);
       self.conductor.start();
       self.input.reset();
+      self.renderer.keyReset();
       self.phase = 'playing';
       A.ui.showScreen(null);
       A.bridge.track('ardah_run_started', { chart: chart.id, calibrated: self.calibrated });
@@ -134,6 +135,10 @@ window.Ardah = window.Ardah || {};
   };
 
   Game.prototype._press = function (lane, corr) {
+    // The pad depresses on the input itself, not on the judgement: a stray tap
+    // still moved a key, and waiting for the verdict would put the animation
+    // behind the finger.
+    this.renderer.keyDown(lane);
     var t = this.conductor.judgeTimeMs() - corr;
     var ev = this.judge.press(lane, t);
     if (ev) this._reactTo(ev);
@@ -141,6 +146,7 @@ window.Ardah = window.Ardah || {};
   };
 
   Game.prototype._release = function (lane, corr) {
+    this.renderer.keyUp(lane);
     var ev = this.judge.release(lane, this.conductor.judgeTimeMs() - corr);
     if (ev) this._reactTo(ev);
   };
@@ -165,6 +171,7 @@ window.Ardah = window.Ardah || {};
     if (this.phase !== 'playing') return;
     this.phase = 'paused';
     this.input.reset();
+    this.renderer.keyReset();
     this.conductor.pause();
     A.ui.showScreen('screen-pause');
   };
@@ -190,6 +197,7 @@ window.Ardah = window.Ardah || {};
     this.conductor.stop();
     this.phase = 'menu';
     this.input.reset();
+    this.renderer.keyReset();
     A.ui.showScreen('screen-menu');
   };
 
@@ -197,6 +205,7 @@ window.Ardah = window.Ardah || {};
     this.conductor.stop();
     this.phase = 'result';
     this.input.reset();
+    this.renderer.keyReset();
 
     var chart = this.charts[this.chartIndex];
     var acc = this.judge.accuracy();

@@ -25,7 +25,9 @@ window.Ardah = window.Ardah || {};
 
   var NAMES = [
     'bg_stage', 'runway',
-    'note_tabl', 'note_swords', 'note_tar',
+    'note_tabl', 'note_tabl_b', 'note_tabl_c',
+    'note_swords', 'note_swords_b', 'note_swords_c',
+    'note_tar', 'note_tar_b',
     'key_tabl', 'key_swords', 'key_tar',
     'fx_spark', 'fx_flare', 'fx_ring', 'fx_glow',
     'fx_shard_0', 'fx_shard_1', 'fx_shard_2',

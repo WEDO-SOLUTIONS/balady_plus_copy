@@ -54,6 +54,8 @@ window.Ardah = window.Ardah || {};
     this.shards = [];
     this.floats = [];
     this.flashes = [0, 0, 0];
+    this.held = [0, 0, 0];       // key or finger currently down, per lane
+    this.pressA = [0, 0, 0];     // the animated depression, 0..1
     this.popup = null;
     this.shake = 0;
     this.tMs = 0;
@@ -168,6 +170,28 @@ window.Ardah = window.Ardah || {};
     if (lane >= 0) this._sparks(this.xAt(lane, 1), this.judgeY, LANE[lane].glow, judgment === 'perfect' ? 18 : 10);
   };
 
+  /* Key state, so the pads can depress under the finger.
+
+     The press SNAPS to 1 and only the release is eased. A tap can be 30 ms
+     long, and easing both ends would let the pad reach a third of the way down
+     and back before anyone saw it -- the animation would silently do nothing
+     on exactly the input it exists to acknowledge. */
+  Renderer.prototype.keyDown = function (lane) {
+    if (lane < 0 || lane > 2) return;
+    this.held[lane] = 1;
+    this.pressA[lane] = 1;
+  };
+
+  Renderer.prototype.keyUp = function (lane) {
+    if (lane >= 0 && lane <= 2) this.held[lane] = 0;
+  };
+
+  /** Lift every pad. Pairs with Input.reset: a run that ends with a finger
+      down must not leave that pad depressed into the next one. */
+  Renderer.prototype.keyReset = function () {
+    this.held[0] = this.held[1] = this.held[2] = 0;
+  };
+
   Renderer.prototype.score = function (lane, amount) {
     this.floats.push({ x: this.xAt(Math.max(0, lane), 1), y: this.judgeY - 44, text: '+' + amount, life: 1 });
   };
@@ -234,7 +258,7 @@ window.Ardah = window.Ardah || {};
       this._notes(c, state);
       this._judgeLine(c);
     }
-    this._keycaps(c, state);
+    this._keycaps(c, state, dtMs);
     this._effects(c, decay, dtMs);
     if (state.chart) this._hud(c, state);
 
@@ -542,18 +566,37 @@ window.Ardah = window.Ardah || {};
       var z = this.zAt(lead);
       if (n.type === 'flourish') { this._flourishNote(c, z, lead); continue; }
       if (n.type === 'hold') this._holdRibbon(c, n, now);
-      this._gem(c, n.lane, z, n.type === 'hold');
+      this._gem(c, n.lane, z, n.type === 'hold', n.t);
     }
   };
 
-  var NOTE_SPRITE = ['note_tabl', 'note_swords', 'note_tar'];
+  /* One shape per lane, several colours within it.
 
-  Renderer.prototype._gem = function (c, lane, z, isHold) {
+     This is what the concept image does -- gold ingots on the left, blue and
+     green gems in the middle, gold and silver coins on the right -- and it is
+     the only way to put colour on the runway without costing readability: the
+     lane stays identifiable by position and silhouette, which is what the
+     player actually reads at speed, so the colour is free to vary. */
+  var NOTE_SPRITE = [
+    ['note_tabl', 'note_tabl_b', 'note_tabl_c'],
+    ['note_swords', 'note_swords_b', 'note_swords_c'],
+    ['note_tar', 'note_tar_b']
+  ];
+
+  /* Which colour a note wears, hashed from its own time so it is stable: the
+     same note is the same colour on every frame, on a retry, and after a
+     pause, without storing anything on the chart. */
+  function noteSprite(lane, t) {
+    var pal = NOTE_SPRITE[lane];
+    return pal[(Math.imul(t | 0, 2654435761) >>> 0) % pal.length];
+  }
+
+  Renderer.prototype._gem = function (c, lane, z, isHold, t) {
     var x = this.xAt(lane, z), y = this.yAt(z), s = 1 / z;
     var pal = LANE[lane];
     var w = this.halfNear * 0.34 * s;
 
-    var sprite = A.assets && A.assets.img(NOTE_SPRITE[lane]);
+    var sprite = A.assets && A.assets.img(noteSprite(lane, t || 0));
     if (sprite) {
       // 1.60, not the 2.15 the cut-out sprites used: those carried 5-14%
       // transparent padding, and the traced masters are trimmed to their
@@ -716,50 +759,76 @@ window.Ardah = window.Ardah || {};
 
   /* -------------------------------- keycaps -------------------------------- */
 
-  Renderer.prototype._keycaps = function (c, state) {
+  Renderer.prototype._keycaps = function (c, state, dtMs) {
     var labels = (A.i18n && A.i18n.t('laneNames')) || ['ZEER', 'TAR', 'CLAP'];
+    // Exponential ease towards the held state, frame-rate independent.
+    var k = 1 - Math.pow(0.0015, Math.min(64, dtMs || 16) / 130);
+
     for (var lane = 0; lane < 3; lane++) {
       var x = this.xAt(lane, 1), y = this.keyY;
       var w = Math.min(this.laneW * 0.52, 46), h = 30;
 
+      this.pressA[lane] += (this.held[lane] - this.pressA[lane]) * k;
+      var p = this.pressA[lane];
+      if (p < 0.002) { this.pressA[lane] = 0; p = 0; }
+
+      // A real key goes down and gets a little smaller as it does; the travel
+      // is small on purpose, because at 45 pt a big dip reads as the pad
+      // falling off the deck rather than being pressed.
+      var dip = 3.4 * p, sc = 1 - 0.075 * p;
+
+      c.save();
+      c.translate(x, y + dip);
+      c.scale(sc, sc);
+
       var cap = A.assets && A.assets.img(KEY_SPRITE[lane]);
       if (cap) {
-        // The traced pads carry no letter, on purpose: docs/ardah-art-brief.md
-        // forbids text baked into artwork, because the strings localise into
-        // Arabic, the layout flips to RTL, and a player on touch needs a dot
-        // rather than a key name. So the glyph is drawn here, over the sprite.
         var ch = h * 1.5, cw = ch * (cap.width / cap.height);
+
+        // Light pooling under a pressed pad, from the lane's own glow.
+        var pool = p > 0.01 && A.assets.img('fx_glow');
+        if (pool) {
+          var ps = cw * 1.5;
+          c.save();
+          c.globalCompositeOperation = 'lighter';
+          c.globalAlpha = p * 0.45;
+          c.drawImage(pool, -ps / 2, -ps / 2, ps, ps);
+          c.restore();
+        }
+
         if (this.flashes[lane] > 0.05) {
           c.save();
           c.shadowColor = LANE[lane].glow;
           c.shadowBlur = 18 * this.flashes[lane];
-          c.drawImage(cap, x - cw / 2, y - ch / 2, cw, ch);
+          c.drawImage(cap, -cw / 2, -ch / 2, cw, ch);
           c.restore();
         } else {
-          c.drawImage(cap, x - cw / 2, y - ch / 2, cw, ch);
+          c.drawImage(cap, -cw / 2, -ch / 2, cw, ch);
         }
+
         var glyph = A.assets.img(state.touchUsed ? 'glyph_dot' : GLYPH_SPRITE[lane]);
         if (glyph) {
-          // Sits a little above the sprite's centre: the pad is seen from
-          // above, so its face is in the upper part of the sprite and its
-          // front edge takes the lower part.
+          // Dead centre, and that is not a coincidence: deck/make_notes.js
+          // crops the three pads symmetrically about the centre of their
+          // coloured face, so the sprite's centre IS the face's centre on all
+          // three, turned or not. No per-lane offset table.
           var gh = ch * 0.42, gw = gh * (glyph.width / glyph.height);
-          c.drawImage(glyph, x - gw / 2, y - ch * 0.015 - gh / 2, gw, gh);
+          c.drawImage(glyph, -gw / 2, -gh / 2, gw, gh);
         } else {
           c.textAlign = 'center';
           c.font = '700 15px -apple-system, system-ui, sans-serif';
           c.lineWidth = 3;
           c.strokeStyle = 'rgba(24, 14, 4, 0.55)';
-          c.strokeText(state.touchUsed ? '\u25CF' : LANE_KEYS[lane], x, y + 5);
+          c.strokeText(state.touchUsed ? '\u25CF' : LANE_KEYS[lane], 0, 5);
           c.fillStyle = '#FFF3D6';
-          c.fillText(state.touchUsed ? '\u25CF' : LANE_KEYS[lane], x, y + 5);
+          c.fillText(state.touchUsed ? '\u25CF' : LANE_KEYS[lane], 0, 5);
         }
       } else {
-        var g = c.createLinearGradient(0, y - h / 2, 0, y + h / 2);
+        var g = c.createLinearGradient(0, -h / 2, 0, h / 2);
         g.addColorStop(0, KEYCAP[lane][0]);
         g.addColorStop(1, KEYCAP[lane][1]);
         c.fillStyle = g;
-        this._roundRect(c, x - w / 2, y - h / 2, w, h, 9);
+        this._roundRect(c, -w / 2, -h / 2, w, h, 9);
         c.fill();
         c.strokeStyle = this.flashes[lane] > 0.05
           ? LANE[lane].glow
@@ -770,17 +839,17 @@ window.Ardah = window.Ardah || {};
         c.textAlign = 'center';
         c.fillStyle = '#F6E7C4';
         c.font = '700 15px -apple-system, system-ui, sans-serif';
-        c.fillText(state.touchUsed ? '●' : LANE_KEYS[lane], x, y + 5);
+        c.fillText(state.touchUsed ? '\u25CF' : LANE_KEYS[lane], 0, 5);
       }
-      c.textAlign = 'center';
+      c.restore();
 
+      // The label stays put: it names the lane, it is not part of the key.
+      c.textAlign = 'center';
       c.fillStyle = 'rgba(231, 180, 76, 0.75)';
       c.font = '600 10px -apple-system, system-ui, sans-serif';
       c.fillText(labels[lane], x, y + h / 2 + 13);
     }
   };
-
-  /* -------------------------------- effects -------------------------------- */
 
   Renderer.prototype._effects = function (c, decay, dtMs) {
     var i;
