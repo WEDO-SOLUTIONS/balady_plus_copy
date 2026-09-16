@@ -189,40 +189,61 @@ window.Ardah = window.Ardah || {};
      whole plate breathes a little on the beat. That limitation is the point of
      the experiment — animation needs the layered delivery, not a flat still. */
   Renderer.prototype._plate = function (c, img) {
-    var boxH = this.stageY + 6;
+    // The plate's floor must meet the runway's FAR EDGE, not the nominal stage
+    // line — otherwise a strip of invented ground sits between the performers'
+    // feet and the deck, and the two perspectives visibly disagree.
+    var joinY = this.yAt(Z_FAR);
+    var scale = Math.max(this.w / img.width, joinY / img.height);
+    var dw = img.width * scale, dh = img.height * scale;
+    var dx = (this.w - dw) / 2, dy = joinY - dh;
 
-    // The drawn scene used to paint the whole canvas; the plate only covers the
-    // stage, so the ground under the runway has to be laid down here — without
-    // it the previous frame smears through (the context is opaque, never
-    // cleared).
     c.fillStyle = '#0B0A10';
     c.fillRect(0, 0, this.w, this.h);
-    var ground = c.createLinearGradient(0, boxH - 30, 0, this.h);
-    ground.addColorStop(0, '#6B4C31');
-    ground.addColorStop(0.35, '#3E2C1E');
-    ground.addColorStop(1, '#140F0C');
-    c.fillStyle = ground;
-    c.fillRect(0, boxH - 30, this.w, this.h - boxH + 30);
-    var scale = Math.max(this.w / img.width, boxH / img.height);
-    var dw = img.width * scale, dh = img.height * scale;
-    var dx = (this.w - dw) / 2, dy = boxH - dh;
 
     var breathe = 1 + Math.sin(this.tMs / 312) * 0.0035;    // ~ one beat at 96 BPM
     c.save();
-    c.translate(this.w / 2, boxH);
+    c.translate(this.w / 2, joinY);
     c.scale(breathe, breathe);
-    c.translate(-this.w / 2, -boxH);
+    c.translate(-this.w / 2, -joinY);
+
     c.drawImage(img, dx, dy, dw, dh);
+
     c.restore();
 
-    // Feather the plate's bottom edge into the ground, or the join reads as a
-    // hard horizontal line straight across the screen.
-    var seam = c.createLinearGradient(0, boxH - 34, 0, boxH + 26);
-    seam.addColorStop(0, 'rgba(107, 76, 49, 0)');
-    seam.addColorStop(0.55, 'rgba(96, 68, 44, 0.75)');
-    seam.addColorStop(1, 'rgba(62, 44, 30, 0)');
+    // Ground beyond the join: the plate's own floor, taken from its cleanest
+    // band (just above the bottom, before the carpet and the shoes) and blurred
+    // by a round trip through a tiny canvas. Stretching the raw strip smeared
+    // the carpet and the feet down the screen; blurring it leaves the tone,
+    // which is the only part that has to match.
+    var tex = this._groundTex(img);
+    c.drawImage(tex, 0, 0, tex.width, tex.height, 0, joinY - 2, this.w, this.h - joinY + 2);
+
+    // A short feather over the join itself: the plate's last rows carry a dark
+    // edge from the original render, which otherwise reads as a hairline.
+    var seam = c.createLinearGradient(0, joinY - 14, 0, joinY + 14);
+    seam.addColorStop(0, 'rgba(161, 95, 64, 0)');
+    seam.addColorStop(0.5, 'rgba(161, 95, 64, 0.6)');
+    seam.addColorStop(1, 'rgba(161, 95, 64, 0)');
     c.fillStyle = seam;
-    c.fillRect(0, boxH - 34, this.w, 60);
+    c.fillRect(0, joinY - 14, this.w, 28);
+
+    // Darken with distance so the deck stays readable over it, and keep the
+    // plate's brighter middle.
+    var shade = c.createLinearGradient(0, joinY, 0, this.h);
+    shade.addColorStop(0, 'rgba(10, 7, 6, 0)');
+    shade.addColorStop(0.45, 'rgba(10, 7, 6, 0.35)');
+    shade.addColorStop(1, 'rgba(8, 6, 5, 0.82)');
+    c.fillStyle = shade;
+    c.fillRect(0, joinY, this.w, this.h - joinY);
+
+    var across = c.createLinearGradient(0, 0, this.w, 0);
+    across.addColorStop(0, 'rgba(0, 0, 0, 0.3)');
+    across.addColorStop(0.5, 'rgba(255, 205, 150, 0.04)');
+    across.addColorStop(1, 'rgba(0, 0, 0, 0.3)');
+    c.fillStyle = across;
+    c.fillRect(0, joinY, this.w, this.h - joinY);
+
+    this._floorGrid(c, joinY);
 
     // Firelight over the baked braziers, so the scene is not dead still.
     var fires = [[0.335, 0.735], [0.715, 0.73], [0.055, 0.70], [0.945, 0.70]];
@@ -238,6 +259,55 @@ window.Ardah = window.Ardah || {};
       c.beginPath(); c.arc(fx, fy, r, 0, Math.PI * 2); c.fill();
     }
     c.globalCompositeOperation = 'source-over';
+  };
+
+  /* The blurred floor wash, built once per image. */
+  Renderer.prototype._groundTex = function (img) {
+    if (this._gtex && this._gtexSrc === img.src) return this._gtex;
+
+    var band = Math.max(6, Math.round(img.height * 0.02));
+    var top = img.height - band - Math.round(img.height * 0.012);
+    var small = document.createElement('canvas');
+    small.width = 24; small.height = 6;
+    var sc = small.getContext('2d');
+    sc.drawImage(img, 0, top, img.width, band, 0, 0, 24, 6);
+
+    this._gtex = small;
+    this._gtexSrc = img.src;
+    return small;
+  };
+
+  /* Tiles on the ground either side of the deck, projected with the SAME
+     vanishing point and the same 1/z row spacing as the runway. That shared
+     geometry is what makes the plate's floor and the deck read as one surface
+     rather than two pictures stacked. */
+  Renderer.prototype._floorGrid = function (c, joinY) {
+    var cx = this.w / 2, spacing = this.halfNear * 0.62;
+
+    c.save();
+    c.beginPath();
+    c.rect(0, joinY - 4, this.w, this.h - joinY + 4);
+    c.clip();
+    c.strokeStyle = 'rgba(255, 216, 160, 0.09)';
+    c.lineWidth = 1;
+
+    for (var k = -6; k <= 6; k++) {
+      if (k === 0) continue;
+      c.beginPath();
+      c.moveTo(cx + (k * spacing) / Z_FAR, this.yAt(Z_FAR));
+      c.lineTo(cx + (k * spacing) / 0.45, this.yAt(0.45));
+      c.stroke();
+    }
+
+    var zs = [4.2, 3.4, 2.75, 2.2, 1.75, 1.38, 1.08, 0.84, 0.64];
+    for (var i = 0; i < zs.length; i++) {
+      var y = this.yAt(zs[i]);
+      if (y < joinY - 4) continue;
+      c.globalAlpha = Math.min(1, (y - joinY) / 90 + 0.25);
+      c.beginPath(); c.moveTo(0, y); c.lineTo(this.w, y); c.stroke();
+    }
+    c.globalAlpha = 1;
+    c.restore();
   };
 
   /* -------------------------------- runway -------------------------------- */
