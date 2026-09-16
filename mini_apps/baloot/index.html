@@ -24,7 +24,7 @@
   --blue:#2f6fb3;
   --ok:#3fae6d;
   --warn:#e0913a;
-  --card-w:clamp(56px, 13.4vw, 84px);
+  --card-w:clamp(64px, 16.4vw, 94px);
   --card-h:calc(var(--card-w) * 1.42);
   --radius:14px;
   --shadow:0 10px 26px rgba(0,0,0,.42);
@@ -212,7 +212,7 @@ button{font:inherit;color:inherit;border:0;background:none;cursor:pointer}
 }
 /* these need to outrank `.card{position:relative}`, which is declared later */
 #trick .tc{
-  position:absolute;width:var(--card-w);height:var(--card-h);
+  position:absolute;width:var(--card-w);height:calc(var(--card-w) * 1.42);
   transition:transform .28s cubic-bezier(.2,.8,.3,1),opacity .28s;
 }
 #trick .tc.south{bottom:0;left:50%;margin-left:calc(var(--card-w)/-2);transform:rotate(-2deg)}
@@ -249,15 +249,27 @@ button{font:inherit;color:inherit;border:0;background:none;cursor:pointer}
   color:#fff;text-shadow:0 0 40px rgba(0,0,0,.35);
   transition:opacity .6s;
 }
-#trumpmark.on{opacity:.055}
+#trumpmark.on{opacity:.04}
 #chip-mode{gap:6px}
 #chip-mode .suit{font-size:15px;line-height:1}
 
-/* ---------- cards ---------- */
+/* ---------- cards ----------
+   Every measurement is a share of the card box, so the face keeps the same
+   proportions from the 56px hand card up to the 150px one in a panel.
+   Geometry follows a real deck: indices in two opposite corners, the pip
+   field centred between them in three columns.
+   ------------------------------------------------------------------ */
 .card{
-  width:var(--card-w);height:var(--card-h);
-  border-radius:calc(var(--card-w)*.115);
-  background:linear-gradient(157deg,#fffefc 0%,#fdfaf2 44%,#f1ead9 100%);
+  --rank:  calc(var(--card-w) * .150);
+  --isuit: calc(var(--card-w) * .112);
+  --pip:   calc(var(--card-w) * .155);
+  /* height comes from this element's own --card-w: a custom property that
+     references another one is substituted where it is declared, so the shared
+     --card-h on :root would ignore any local size override. */
+  width:var(--card-w);height:calc(var(--card-w) * 1.42);
+  flex:0 0 auto;
+  border-radius:calc(var(--card-w)*.085);
+  background:linear-gradient(157deg,#fffefc 0%,#fdfbf5 46%,#f3ecdd 100%);
   color:var(--ink);
   box-shadow:0 6px 15px rgba(0,0,0,.36), 0 1px 3px rgba(0,0,0,.3),
              inset 0 0 0 1px rgba(255,255,255,.92);
@@ -266,57 +278,54 @@ button{font:inherit;color:inherit;border:0;background:none;cursor:pointer}
   font-variant-numeric:lining-nums;
 }
 .card::after{                      /* glossy sheen */
-  content:"";position:absolute;inset:0;pointer-events:none;z-index:3;
-  background:linear-gradient(122deg,rgba(255,255,255,.5) 0%,rgba(255,255,255,.12) 26%,rgba(255,255,255,0) 44%);
+  content:"";position:absolute;inset:0;pointer-events:none;z-index:4;
+  background:linear-gradient(124deg,rgba(255,255,255,.30) 0%,rgba(255,255,255,.07) 30%,rgba(255,255,255,0) 52%);
 }
-.card .idx{
-  position:absolute;top:calc(var(--card-w)*.045);inset-inline-start:calc(var(--card-w)*.085);
-  display:flex;flex-direction:column;align-items:center;line-height:.9;z-index:2;
-}
-.card .idx .rk{font-size:calc(var(--card-w)*.335);font-weight:700;letter-spacing:-.03em}
-.card .idx .su{font-size:calc(var(--card-w)*.215);margin-top:calc(var(--card-w)*.01)}
 
-/* pip field for 7-10 */
-.card .pips{position:absolute;inset:calc(var(--card-w)*.50) 13% 6% 13%;z-index:1}
+/* corner indices, the second one rotated like a real card */
+.card .idx{
+  position:absolute;z-index:3;
+  display:flex;flex-direction:column;align-items:center;
+  line-height:1;
+}
+.card .idx .rk{font-size:var(--rank);font-weight:700;letter-spacing:-.04em;line-height:1}
+.card .idx .su{font-size:var(--isuit);margin-top:calc(var(--card-w)*.024);line-height:1}
+.card .idx.tl{top:4%;inset-inline-start:4%}
+.card .idx.br{bottom:4%;inset-inline-end:4%;transform:rotate(180deg)}
+
+/* pip field: columns land at 28% / 50% / 72% of the card, clear of the indices */
+.card .pips{position:absolute;inset:13% 31%;z-index:1}
 .card .pips i{
-  position:absolute;transform:translate(-50%,-50%);
-  font-size:calc(var(--card-w)*.21);font-style:normal;line-height:1;
+  position:absolute;left:var(--x);top:var(--y);
+  transform:translate(-50%,-50%);
+  font-size:var(--pip);font-style:normal;line-height:1;
 }
 .card .pips i.f{transform:translate(-50%,-50%) rotate(180deg)}
 
-/* ace */
+/* ace: one large pip, centred */
 .card .ace{
-  position:absolute;top:61%;left:50%;transform:translate(-50%,-50%);
-  font-size:calc(var(--card-w)*.60);line-height:1;z-index:1;
-}
-.card .ace::before{
-  content:"";position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
-  width:calc(var(--card-w)*.74);height:calc(var(--card-w)*.74);border-radius:50%;
-  border:1px solid currentColor;opacity:.22;
+  position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
+  font-size:calc(var(--card-w)*.48);line-height:1;z-index:1;
 }
 
-/* court cards */
+/* court cards: a monogram, treated like the ace's single large mark so the
+   whole deck reads as one set. Suits stay upright - a heart turned 180 degrees
+   reads as a spade. */
 .card .court{
-  position:absolute;inset:calc(var(--card-w)*.46) 11% 6% 11%;z-index:1;
-  border:1px solid currentColor;border-radius:calc(var(--card-w)*.06);
-  display:flex;flex-direction:column;align-items:center;justify-content:center;
-  gap:calc(var(--card-w)*.02);
+  position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);z-index:1;
+  display:flex;flex-direction:column;align-items:center;
+  gap:calc(var(--card-w)*.03);
 }
-.card .court::before{
-  content:"";position:absolute;inset:calc(var(--card-w)*.035);
-  border:1px solid currentColor;border-radius:calc(var(--card-w)*.04);opacity:.4;
+.card .court .cl{
+  font-size:calc(var(--card-w)*.40);font-weight:700;line-height:.92;
+  letter-spacing:-.02em;
 }
-.card .court .cl{font-size:calc(var(--card-w)*.40);font-weight:700;line-height:.86}
-.card .court .cs{font-size:calc(var(--card-w)*.20);font-style:normal;opacity:.85;line-height:1}
+.card .court .cs{font-size:calc(var(--card-w)*.20);font-style:normal;line-height:1}
 
 .card.r{color:var(--red)}
 .card.k{color:#191b20}
 .card.trump{box-shadow:0 6px 15px rgba(0,0,0,.36),0 0 0 2px var(--gold),
             inset 0 0 0 1px rgba(255,255,255,.92)}
-.card.trump .idx::after{
-  content:"";position:absolute;inset:calc(var(--card-w)*-.05);border-radius:50%;
-  background:radial-gradient(circle,rgba(226,187,100,.35),transparent 70%);z-index:-1;
-}
 
 /* ---------- my hand ---------- */
 #hand{
@@ -556,7 +565,7 @@ button{font:inherit;color:inherit;border:0;background:none;cursor:pointer}
   background:linear-gradient(90deg,transparent,rgba(226,187,100,.35),transparent)}
 
 @media (max-height:660px){
-  :root{--card-w:clamp(44px,10.5vw,62px)}
+  :root{--card-w:clamp(52px,13vw,68px)}
   .avatar{width:36px;height:36px;font-size:15px}
   #trick{width:min(52vw,196px);height:min(52vw,196px)}
 }
@@ -1208,13 +1217,14 @@ function toast(msg){
   setTimeout(() => t.remove(), 2500);
 }
 
-// Traditional pip layouts, as percentages of the pip field. A pip in the lower
-// half is drawn upside down, the way a real deck prints it.
+// Classic French pip layouts, given as percentages inside the pip field.
+// Two outer columns plus a middle column, exactly as a printed deck sets them.
+// A pip below the middle is drawn upside down, the way a real card prints it.
 const PIP_LAYOUT = {
-  "7" :[[25,4],[75,4],[25,50],[75,50],[25,96],[75,96],[50,27]],
-  "8" :[[25,4],[75,4],[25,50],[75,50],[25,96],[75,96],[50,27],[50,73]],
-  "9" :[[25,3],[75,3],[25,35],[75,35],[25,65],[75,65],[25,97],[75,97],[50,50]],
-  "10":[[25,3],[75,3],[25,35],[75,35],[25,65],[75,65],[25,97],[75,97],[50,19],[50,81]]
+  "7" :[[0,0],[100,0],[0,50],[100,50],[0,100],[100,100],[50,25]],
+  "8" :[[0,0],[100,0],[0,50],[100,50],[0,100],[100,100],[50,25],[50,75]],
+  "9" :[[0,0],[100,0],[0,33.3],[100,33.3],[0,66.7],[100,66.7],[0,100],[100,100],[50,50]],
+  "10":[[0,0],[100,0],[0,33.3],[100,33.3],[0,66.7],[100,66.7],[0,100],[100,100],[50,16.7],[50,83.3]]
 };
 
 function cardNode(c, st, extraCls){
@@ -1227,14 +1237,16 @@ function cardNode(c, st, extraCls){
     body = '<div class="ace">' + g + '</div>';
   } else if (PIP_LAYOUT[c.r]){
     body = '<div class="pips">' + PIP_LAYOUT[c.r].map(([x,y]) =>
-      '<i class="' + (y > 55 ? "f" : "") + '" style="left:' + x + '%;top:' + y + '%">' + g + '</i>'
+      '<i class="' + (y > 50 ? "f" : "") + '" style="--x:' + x + '%;--y:' + y + '%">' + g + '</i>'
     ).join("") + '</div>';
   } else {
-    body = '<div class="court"><span class="cl">' + c.r + '</span>' +
+    body = '<div class="court"><i class="cs">' + g + '</i>' +
+           '<span class="cl">' + c.r + '</span>' +
            '<i class="cs">' + g + '</i></div>';
   }
-  n.innerHTML = '<div class="idx"><span class="rk">' + c.r + '</span>' +
-                '<span class="su">' + g + '</span></div>' + body;
+  const idx = '<span class="rk">' + c.r + '</span><span class="su">' + g + '</span>';
+  n.innerHTML = '<div class="idx tl">' + idx + '</div>' + body +
+                '<div class="idx br">' + idx + '</div>';
   return n;
 }
 
