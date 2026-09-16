@@ -58,6 +58,16 @@
         });
         list.appendChild(card);
       });
+      A.ui.refreshMeta();
+    },
+
+    refreshMeta: function () {
+      var chart = A.game.charts[A.game.chartIndex];
+      var el = $('chip-meta');
+      if (!chart || !el) return;
+      el.textContent = chart.bars + ' ' + A.i18n.t('bars') + ' · ' +
+        Math.round(chart.durationMs / 1000) + ' s · ' +
+        A.i18n.t('difficulty')[chart.difficulty];
     },
 
     showResult: function (r) {

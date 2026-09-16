@@ -18,25 +18,32 @@
 <canvas id="stage" width="720" height="1280"></canvas>
 
 <!-- ============================ MENU ============================ -->
-<section class="screen" id="screen-menu">
-  <div class="sheet">
-    <p class="eyebrow" data-i18n="eyebrow"></p>
-    <h1 class="title" data-i18n="title"></h1>
-    <p class="lede" data-i18n="lede"></p>
-
-    <div class="chart-list" id="chart-list"></div>
-
-    <button class="btn btn-primary" id="btn-play" data-i18n="play"></button>
-    <div class="row">
-      <button class="btn" id="btn-calibrate" data-i18n="calibrate"></button>
-      <button class="btn" id="btn-howto" data-i18n="howto"></button>
+<section class="screen screen-stage" id="screen-menu">
+  <div class="sheet sheet-split">
+    <div class="menu-top">
+      <p class="eyebrow" data-i18n="eyebrow"></p>
+      <div class="plaque">
+        <h1 class="title" data-i18n="title"></h1>
+        <span class="plaque-sub" data-i18n="titleSub"></span>
+      </div>
     </div>
-    <div class="row">
-      <button class="btn btn-ghost" id="btn-lang">العربية / EN</button>
-      <button class="btn btn-ghost" id="btn-debug" data-i18n="debugToggle"></button>
+
+    <div class="menu-bottom">
+      <p class="lede" data-i18n="lede"></p>
+      <div class="chart-list" id="chart-list"></div>
+      <button class="btn btn-stage" id="btn-play" data-i18n="play"></button>
+      <div class="chips"><span class="chip" id="chip-meta"></span></div>
+      <div class="row">
+        <button class="btn" id="btn-calibrate" data-i18n="calibrate"></button>
+        <button class="btn" id="btn-howto" data-i18n="howto"></button>
+      </div>
+      <div class="row">
+        <button class="btn btn-ghost" id="btn-lang">العربية / EN</button>
+        <button class="btn btn-ghost" id="btn-debug" data-i18n="debugToggle"></button>
+      </div>
+      <p class="foot" id="offset-readout"></p>
+      <p class="foot" data-i18n="keyboardHint"></p>
     </div>
-    <p class="foot" id="offset-readout"></p>
-    <p class="foot" data-i18n="keyboardHint"></p>
   </div>
 </section>
 
@@ -102,6 +109,7 @@
 <script src="js/i18n.js"></script>
 <script src="js/bridge.js"></script>
 <script src="js/audio.js"></script>
+<script src="js/scene.js"></script>
 <script src="js/chart.js"></script>
 <script src="js/conductor.js"></script>
 <script src="js/judge.js"></script>

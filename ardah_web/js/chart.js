@@ -115,6 +115,7 @@ window.Ardah = window.Ardah || {};
       bpm: bpm,
       offsetMs: 0,          // synthesised percussion starts exactly on time
       difficulty: difficulty,
+      bars: bar,
       durationMs: bar * barMs + 1500,
       titleEn: 'Najdi groove',
       titleAr: 'إيقاع نجدي',

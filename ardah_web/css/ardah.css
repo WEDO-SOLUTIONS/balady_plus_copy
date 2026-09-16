@@ -51,11 +51,10 @@ html, body {
   align-items: center;
   justify-content: center;
   padding: max(20px, env(safe-area-inset-top)) 20px max(20px, env(safe-area-inset-bottom));
-  /* Translucent on purpose: the idle stage keeps breathing behind the menus,
-     so the app never looks frozen while audio is still being unlocked. */
-  background:
-    radial-gradient(120% 80% at 50% 0%, rgba(30, 138, 85, 0.18) 0%, transparent 60%),
-    linear-gradient(180deg, rgba(16, 26, 49, 0.93) 0%, rgba(7, 11, 22, 0.88) 70%);
+  /* Translucent on purpose: the stage keeps burning behind the menus, so the
+     app never looks frozen while audio is still being unlocked. */
+  background: linear-gradient(180deg, rgba(7, 11, 22, 0.86) 0%, rgba(7, 11, 22, 0.55) 26%,
+              rgba(7, 11, 22, 0.72) 60%, rgba(7, 11, 22, 0.95) 100%);
   overflow-y: auto;
   z-index: 10;
 }
@@ -99,11 +98,13 @@ html, body {
   transition: transform 0.06s ease, background 0.15s ease;
 }
 .btn:active { transform: scale(0.98); }
-.btn-primary {
-  background: linear-gradient(180deg, #26A167 0%, var(--green) 100%);
-  border-color: transparent;
-  box-shadow: 0 6px 18px rgba(30, 138, 85, 0.35);
+.btn-primary, .btn-stage {
+  background: linear-gradient(180deg, #FFE7AE 0%, #E7B44C 45%, #B98A2C 100%);
+  color: #22180A;
+  border: 2px solid rgba(255, 246, 221, 0.55);
+  box-shadow: 0 8px 22px rgba(199, 154, 62, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.6);
 }
+.btn-stage { letter-spacing: 0.06em; text-transform: uppercase; }
 .btn-ghost { background: transparent; border-color: transparent; color: var(--muted); }
 .row { display: flex; gap: 10px; }
 .row .btn { flex: 1; }
@@ -198,3 +199,121 @@ html, body {
   pointer-events: none;
 }
 #debug[hidden] { display: none; }
+
+
+/* ======================= stage-dressed menu ======================= */
+
+/* The menu is an overlay on the live scene, not a page on top of it: a scrim
+   at the top and bottom keeps the text readable and leaves the middle clear. */
+.screen-stage {
+  background: linear-gradient(180deg,
+    rgba(7, 11, 22, 0.78) 0%,
+    rgba(7, 11, 22, 0.22) 20%,
+    rgba(7, 11, 22, 0.06) 40%,
+    rgba(7, 11, 22, 0.20) 58%,
+    rgba(7, 11, 22, 0.55) 72%);
+  align-items: stretch;
+}
+.sheet-split {
+  justify-content: space-between;
+  min-height: 100%;
+}
+.menu-top, .menu-bottom { display: flex; flex-direction: column; gap: 10px; }
+.menu-top { padding-top: 4px; }
+
+/* The controls sit on their own panel rather than floating over the row —
+   cards with performers showing through them read as a rendering bug. */
+.menu-bottom {
+  gap: 8px;
+  margin: 0 -20px calc(-1 * max(20px, env(safe-area-inset-bottom)));
+  padding: 14px 20px calc(12px + env(safe-area-inset-bottom));
+  border-top: 1px solid rgba(231, 180, 76, 0.32);
+  border-radius: 26px 26px 0 0;
+  background: linear-gradient(180deg, rgba(6, 26, 18, 0.93) 0%, rgba(4, 12, 9, 0.97) 100%);
+  box-shadow: 0 -18px 40px rgba(0, 0, 0, 0.45);
+}
+
+/* The signboard over the stage: gold frame, deep-green field, and a diamond
+   at each end — the Najdi motif that runs down the runway rails too. */
+.plaque {
+  position: relative;
+  align-self: center;
+  padding: 12px 42px 14px;
+  border: 3px solid transparent;
+  border-radius: 20px;
+  background-image:
+    linear-gradient(180deg, #11402A 0%, #07281A 100%),
+    linear-gradient(180deg, #F6E2A6 0%, #C79A3E 38%, #8A6A22 62%, #F3D98A 100%);
+  background-origin: border-box;
+  background-clip: padding-box, border-box;
+  box-shadow: 0 14px 34px rgba(0, 0, 0, 0.55), inset 0 1px 0 rgba(255, 255, 255, 0.12);
+}
+.plaque::before, .plaque::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  width: 11px; height: 11px;
+  margin-top: -5.5px;
+  transform: rotate(45deg);
+  background: linear-gradient(135deg, #F6E2A6, #A87C2C);
+  box-shadow: 0 0 0 2px rgba(7, 40, 26, 0.9);
+}
+.plaque::before { left: 12px; }
+.plaque::after  { right: 12px; }
+
+.plaque .title {
+  font-size: clamp(30px, 9vw, 44px);
+  font-weight: 800;
+  letter-spacing: 0.02em;
+  background: linear-gradient(180deg, #FFF6DD 0%, #F3D98A 45%, #C79A3E 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  text-shadow: 0 2px 0 rgba(0, 0, 0, 0.35);
+}
+.plaque-sub {
+  display: block;
+  margin-top: 2px;
+  font-size: 12px;
+  letter-spacing: 0.42em;
+  text-indent: 0.42em;
+  color: rgba(246, 226, 166, 0.75);
+}
+
+.chips { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; }
+.chip {
+  padding: 7px 14px;
+  border-radius: 999px;
+  border: 1px solid rgba(231, 180, 76, 0.5);
+  background: rgba(7, 40, 26, 0.72);
+  color: rgba(246, 231, 196, 0.9);
+  font-size: 12px;
+  font-weight: 600;
+}
+
+/* Cards pick up the same frame language. */
+.chart-card {
+  border-color: rgba(231, 180, 76, 0.28);
+  background: rgba(9, 30, 22, 0.72);
+}
+.chart-card[aria-selected="true"] {
+  border-color: #E7B44C;
+  background: rgba(17, 64, 42, 0.85);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.4);
+}
+.chart-card em { color: #FFD978; }
+
+.screen-stage .btn:not(.btn-stage) {
+  background: rgba(9, 30, 22, 0.7);
+  border-color: rgba(231, 180, 76, 0.28);
+}
+.screen-stage .btn-ghost { background: transparent; border-color: transparent; }
+
+
+/* The menu panel runs compact: every pixel it does not take is stage. */
+.menu-bottom .btn { padding: 12px 14px; font-size: 15px; }
+.menu-bottom .btn-stage { padding: 15px 18px; font-size: 16px; }
+.menu-bottom .lede { font-size: 13px; margin: 0; }
+.menu-bottom .chart-card { padding: 10px 14px; }
+.menu-bottom .chart-card b { font-size: 15px; }
+.menu-bottom .foot { font-size: 11px; }

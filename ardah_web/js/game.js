@@ -152,6 +152,7 @@ window.Ardah = window.Ardah || {};
     if (!ev) return;
     var lane = ev.note ? ev.note.lane : -1;
     this.renderer.hit(lane, ev.judgment);
+    if (ev.points) this.renderer.score(lane, ev.points);
     this.renderer.say(A.i18n.t(ev.judgment), ev.judgment === 'perfect' ? '#E7B44C'
       : ev.judgment === 'miss' ? '#C8553D' : '#6FD3A0');
     if (ev.judgment === 'perfect') A.bridge.vibrate(12);

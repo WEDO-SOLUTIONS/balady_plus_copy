@@ -17,6 +17,10 @@ decision it exists to settle: [`docs/ardah-concept.md`](../docs/ardah-concept.md
   latency. Do not collapse them into one.
 - **Nothing DOM-shaped during a run.** Menus are DOM, the run is canvas only —
   a layout pass mid-run costs frames in a composited WebView.
+- **The backdrop is painted once.** `scene.js` renders the static half (sky,
+  fort, bunting, plaza) into an offscreen canvas on resize; only firelight, the
+  performers, the drummers and the notes are per-frame work. Adding per-frame
+  drawing to the static half is how this scene stops holding 60 fps.
 - **`js/judge.js` stays pure.** No canvas, no audio, no globals: it is the part
   a native rewrite would port line for line, and the part worth unit tests.
 - **The bridge surface stays minimal.** Analytics and best-effort haptics. No

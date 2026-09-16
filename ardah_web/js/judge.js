@@ -55,18 +55,20 @@ window.Ardah = window.Ardah || {};
     this.counts[judgment]++;
     this.judgments++;
     this.weighted += WEIGHT[judgment];
+    var gained = 0;
     if (judgment !== 'miss') {
       this.deltas.push(deltaMs);
       this.combo++;
       if (this.combo > this.maxCombo) this.maxCombo = this.combo;
       var base = BASE[judgment] * (note && note.type === 'flourish' ? 2 : 1);
-      this.score += base * this.multiplier();
+      gained = base * this.multiplier();
+      this.score += gained;
     } else {
       this.combo = 0;
     }
     this.sync = Math.max(0, Math.min(SYNC_MAX, this.sync + SYNC[judgment]));
     if (this.sync <= 0) this.broken = true;
-    return { judgment: judgment, deltaMs: deltaMs, note: note, combo: this.combo, sync: this.sync };
+    return { judgment: judgment, deltaMs: deltaMs, note: note, combo: this.combo, sync: this.sync, points: gained };
   };
 
   /** Nearest still-playable note in a lane, within the widest window. */

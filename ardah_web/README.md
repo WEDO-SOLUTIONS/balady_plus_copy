@@ -95,8 +95,10 @@ Placeholder — replace before anything ships:
 
 - **All percussion is synthesised** in `js/audio.js` (oscillators and filtered
   noise). Real Ardah percussion and chant must be licensed or commissioned.
-- **The performers are drawn silhouettes.** Stylised on purpose, dignified
-  posture, no caricature — but real artwork goes through cultural review first.
+- **The stage is drawn with canvas paths** — fort, fires, bunting, two facing
+  rows, drummers on a carpet. Stylised on purpose, dignified posture, no
+  caricature. It follows the concept art's composition, but real artwork is
+  commissioned and goes through cultural review first.
 - **Charts are generated** from a groove table rather than authored against a
   recording.
 - No backend, no leaderboard, no tutorial gate, no seasonal gating. Scores live
@@ -125,14 +127,29 @@ css/ardah.css     menus; WebView hardening (no selection, no overscroll, safe ar
 js/i18n.js        ar/en strings, RTL flip (gameplay stays LTR by design)
 js/bridge.js      dsBridge adapter, no-op in a browser
 js/audio.js       synthesised zeer / tar / clap + metronome
+js/scene.js       the stage: fort, fires, bunting, two rows, drummers
 js/chart.js       chart format, groove generator, validator
 js/conductor.js   the audio clock and schedule-ahead loop
 js/judge.js       windows, scoring, combo, sync meter  ← port this as-is
-js/render.js      canvas: sky, lanes, notes, the row, HUD
+js/render.js      canvas: perspective runway, notes, effects, HUD
 js/input.js       pointer + keyboard, queueing correction, swipe detection
 js/game.js        flow, calibration, storage, latency lab
 js/main.js        DOM wiring and bootstrap
 ```
+
+## How the scene stays cheap
+
+The backdrop — sky, stars, the fort, bunting, the plaza — never changes, so it
+is painted **once** into an offscreen canvas on resize and blitted every frame.
+Only firelight, the performers, the drummers, the notes and the effects are
+redrawn. Without that split a scene this busy would not hold 60 fps inside a
+WebView, where the page is a composited platform view.
+
+The runway is a real projection: distance `z` shrinks linearly with time and
+the screen position is `y = vp + C/z`, `x = centre + laneOffset/z`. One division
+buys the drift-then-rush approach a rhythm player reads without thinking. The
+vanishing point sits *behind* the row, so markers rise out from between the
+performers.
 
 ## Verified
 
