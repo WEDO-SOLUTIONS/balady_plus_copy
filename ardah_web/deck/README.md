@@ -1,7 +1,8 @@
 # Management deck
 
-`ardah-overview.pptx` — 20 slides for a management review: what the game is,
-how it plays, how it ships, what it costs, what is still open.
+`ardah-overview.pptx` — 18 slides in English for a management review: what the
+game is, how it plays, how it ships, what is still open. Only the artwork build
+is shown; there is no code-vs-art comparison and no engine benchmarks.
 
 The deck is **generated**, not hand-built, and it is git-ignored — rebuild it
 instead of editing the binary, unless you are doing a final polish pass in
@@ -17,8 +18,20 @@ python3 deck/mockup_all.py                        # wrap each frame in a device 
 node deck/deck.js                                 # -> deck/ardah-overview.pptx
 ```
 
-`deck.js` needs `pptxgenjs` (`npm install pptxgenjs`), the capture scripts need
-Playwright's Chromium.
+`deck.js` needs `pptxgenjs` (`npm install --no-save pptxgenjs` from `ardah_web/`),
+the capture scripts need Playwright's Chromium.
+
+## The notch
+
+Playwright cannot emulate a safe area, so `capture.js` sets `--ardah-safe-top`
+to 62 px — what an iPhone 17 Pro Max reports — and the game lays its HUD out
+below it through the same code path a real device takes. The artwork still runs
+full-bleed behind the island; only the numbers move down.
+
+`mockup.py` can draw either cutout: `cutout='island'` (default, iPhone) or
+`cutout='punch'` (a centred hole, the Galaxy shape). Since the HUD respects the
+inset, either shell clears the meters — the shape is a styling choice, not a
+workaround.
 
 ## What the frames are
 

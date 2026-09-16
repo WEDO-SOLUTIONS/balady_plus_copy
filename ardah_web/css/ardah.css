@@ -3,6 +3,11 @@
    (see the concept doc §6.1), so everything here must be self-contained. */
 
 :root {
+  /* The notch / Dynamic Island inset. Real devices report it through env();
+     a device-frame preview (deck/capture.js) overrides the variable to
+     simulate one, so the HUD is laid out by the same code either way. */
+  --ardah-safe-top: env(safe-area-inset-top, 0px);
+
   --night-0: #070B16;
   --night-1: #101A31;
   --sand:    #D9BF9A;
@@ -33,6 +38,18 @@ html, body {
   touch-action: none;
 }
 
+/* Zero-size probe: JS reads its height to learn the inset, because a custom
+   property holding env() cannot be resolved from getComputedStyle. */
+#safe-probe {
+  position: fixed;
+  top: 0;
+  inset-inline-start: 0;
+  width: 1px;
+  height: var(--ardah-safe-top);
+  pointer-events: none;
+  opacity: 0;
+}
+
 #stage {
   position: fixed;
   inset: 0;
@@ -50,7 +67,7 @@ html, body {
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: max(20px, env(safe-area-inset-top)) 20px max(20px, env(safe-area-inset-bottom));
+  padding: max(20px, var(--ardah-safe-top)) 20px max(20px, env(safe-area-inset-bottom));
   /* Translucent on purpose: the stage keeps burning behind the menus, so the
      app never looks frozen while audio is still being unlocked. */
   background: linear-gradient(180deg, rgba(7, 11, 22, 0.86) 0%, rgba(7, 11, 22, 0.55) 26%,
@@ -325,7 +342,7 @@ html, body {
    canvas, so a tap on it can never reach the lane hit-testing underneath. */
 .icon-btn {
   position: fixed;
-  top: calc(12px + env(safe-area-inset-top));
+  top: calc(12px + var(--ardah-safe-top));
   inset-inline-end: 12px;
   z-index: 30;
   width: 40px;

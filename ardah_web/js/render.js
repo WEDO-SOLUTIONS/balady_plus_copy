@@ -74,6 +74,11 @@ window.Ardah = window.Ardah || {};
     this.fieldX = this.w / 2 - this.halfNear;
     this.laneW = (this.halfNear * 2) / 3;
 
+    // Read the notch inset once per layout. The HUD sits below it; the artwork
+    // still runs full-bleed behind it, which is what a phone should look like.
+    var probe = document.getElementById('safe-probe');
+    this.safeTop = probe ? Math.round(probe.getBoundingClientRect().height) : 0;
+
     this.scene.build(this.w, this.h, this.dpr, this.stageY);
 
     // Every gradient below depends only on the layout, so they are built once
@@ -767,16 +772,19 @@ window.Ardah = window.Ardah || {};
 
   Renderer.prototype._hud = function (c, state) {
     var j = state.judge, w = this.w;
-    var top = 16;
+    // Below the notch: the artwork runs full-bleed behind it, the numbers do not.
+    var top = 16 + (this.safeTop || 0);
 
     var self = this;
+    var scrimH = 92 + (this.safeTop || 0);
     c.fillStyle = this._g('hudScrim', function (cc) {
-      var g = cc.createLinearGradient(0, 0, 0, 92);
-      g.addColorStop(0, 'rgba(7, 11, 22, 0.75)');
+      var g = cc.createLinearGradient(0, 0, 0, scrimH);
+      g.addColorStop(0, 'rgba(7, 11, 22, 0.8)');
+      g.addColorStop(0.55, 'rgba(7, 11, 22, 0.55)');
       g.addColorStop(1, 'rgba(7, 11, 22, 0)');
       return g;
     });
-    c.fillRect(0, 0, w, 92);
+    c.fillRect(0, 0, w, scrimH);
 
     // Score plate first: it is fixed-width content, and the meter has to fit
     // in whatever is left. On a 440pt-wide phone the two used to overlap.

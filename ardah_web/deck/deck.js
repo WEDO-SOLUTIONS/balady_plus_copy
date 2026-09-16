@@ -1,5 +1,7 @@
-/* Ardah — management deck. Frames are real screenshots of the running
-   prototype at iPhone 17 Pro Max size, wrapped in a drawn device shell. */
+/* Ardah — management deck (English).
+
+   Frames are real screenshots of the running prototype at iPhone 17 Pro Max
+   size, wrapped in a drawn device shell. Nothing here is a design mockup. */
 const pptxgen = require('pptxgenjs');
 const path = require('path');
 
@@ -15,8 +17,7 @@ const C = {
   goldL:  'FFD978',
   sand:   'F6E7C4',
   ink:    'FFFFFF',
-  muted:  '9FB0C4',
-  red:    'E06B4E'
+  muted:  '9FB0C4'
 };
 const HEAD = 'Cambria';
 const BODY = 'Calibri';
@@ -26,20 +27,12 @@ pres.layout = 'LAYOUT_WIDE';            // 13.3 x 7.5 in — set before any slid
 pres.author = 'Balady+';
 pres.title = 'Ardah — rhythm game overview';
 
-const W = 13.3, H = 7.5;
 const phone = (h) => ({ h, w: +(h * 842 / 1598).toFixed(2) });
 
 function slide(bg) {
   const s = pres.addSlide();
   s.background = { color: bg || C.night };
   return s;
-}
-
-function title(s, text, opts = {}) {
-  s.addText(text, Object.assign({
-    x: 0.7, y: 0.52, w: 6.6, h: 1.7, fontSize: 36, bold: true,
-    fontFace: HEAD, color: C.ink, isTextBox: true, margin: 0
-  }, opts));
 }
 
 function kicker(s, text, opts = {}) {
@@ -49,9 +42,16 @@ function kicker(s, text, opts = {}) {
   }, opts));
 }
 
+function title(s, text, opts = {}) {
+  s.addText(text, Object.assign({
+    x: 0.7, y: 0.52, w: 6.6, h: 1.7, fontSize: 36, bold: true,
+    fontFace: HEAD, color: C.ink, isTextBox: true, margin: 0
+  }, opts));
+}
+
 function body(s, text, opts = {}) {
   s.addText(text, Object.assign({
-    x: 0.7, y: 1.6, w: 6.2, h: 2.2, fontSize: 16, fontFace: BODY,
+    x: 0.7, y: 2.4, w: 6.0, h: 2.2, fontSize: 16, fontFace: BODY,
     color: C.sand, lineSpacing: 24, isTextBox: true, margin: 0
   }, opts));
 }
@@ -80,7 +80,7 @@ function bullets(s, items, opts = {}) {
   s.addText(items.map((t, i) => ({
     text: t, options: { bullet: true, breakLine: i !== items.length - 1 }
   })), Object.assign({
-    x: 0.7, y: 2.2, w: 6.0, h: 3.2, fontSize: 15, fontFace: BODY,
+    x: 0.7, y: 2.5, w: 6.0, h: 3.2, fontSize: 15, fontFace: BODY,
     color: C.sand, paraSpaceAfter: 10, isTextBox: true, margin: 0
   }, opts));
 }
@@ -98,72 +98,71 @@ function caption(s, text, x, y, w) {
   });
 }
 
-/* ============================== 1. title ============================== */
+/* ================================ 1. title ================================ */
 {
   const s = slide(C.deep);
   device(s, '08-play-chorus', 8.4, 0.35, 6.8);
   s.addText('ARDAH', { x: 0.9, y: 2.0, w: 7.2, h: 1.5, fontSize: 84, bold: true,
     fontFace: HEAD, color: C.goldL, charSpacing: 6, isTextBox: true, margin: 0 });
-  s.addText('Ритм-игра для Balady+', { x: 0.95, y: 3.4, w: 7, h: 0.6, fontSize: 26,
+  s.addText('A rhythm game for Balady+', { x: 0.95, y: 3.4, w: 7, h: 0.6, fontSize: 26,
     fontFace: BODY, color: C.ink, isTextBox: true, margin: 0 });
-  s.addText('Играющий прототип · кадры сняты с работающей сборки на iPhone 17 Pro Max',
+  s.addText('Playable prototype · every frame captured from the running build on iPhone 17 Pro Max',
     { x: 0.95, y: 4.1, w: 7, h: 0.6, fontSize: 14, fontFace: BODY, color: C.muted,
       isTextBox: true, margin: 0 });
   card(s, 0.95, 5.1, 6.6, 1.2, C.greenD);
-  s.addText('60–120 секунд на раунд  ·  0 установок  ·  работает офлайн  ·  AR / EN',
+  s.addText('60–120 second rounds  ·  no install  ·  works offline  ·  Arabic & English',
     { x: 1.15, y: 5.45, w: 6.2, h: 0.5, fontSize: 14, bold: true, fontFace: BODY,
       color: C.sand, isTextBox: true, margin: 0 });
-  s.addNotes('Все кадры в колоде — реальные скриншоты работающего прототипа, не мокапы дизайнера.');
+  s.addNotes('Every screen in this deck is a real screenshot of the working prototype, not a design mockup.');
 }
 
-/* ============================== 2. what ============================== */
+/* ================================ 2. what ================================ */
 {
   const s = slide();
-  kicker(s, 'ЧТО ЭТО');
-  title(s, 'Наследие,\nв которое играют');
-  body(s, 'Аль-Арда — церемониальный танец с саблями. Игрок держит ряд в такт барабанам: попадает по долям, поднимает саблю на удержании, отвечает вокфой на припеве.\n\nРаунд — минута-две. Заходит без обучения, без регистрации и без установки.',
+  kicker(s, 'WHAT IT IS');
+  title(s, 'Heritage you can\nactually play');
+  body(s, 'Al-Ardah is the ceremonial sword dance. The player keeps the row in time with the drums: strike on the beat, raise the sabre through a hold, answer the chorus with a flourish.\n\nA round lasts a minute or two. No tutorial needed, no sign-up, no install.',
     { y: 2.45, h: 2.4 });
-  stat(s, 0.7, 5.15, 2.2, '77 с', 'длина раунда');
-  stat(s, 3.0, 5.15, 2.2, '122', 'ноты за раунд');
-  stat(s, 5.3, 5.15, 2.2, '3', 'сложности');
+  stat(s, 0.7, 5.15, 2.2, '77 sec', 'per round');
+  stat(s, 3.0, 5.15, 2.2, '122', 'notes per round');
+  stat(s, 5.3, 5.15, 2.2, '3', 'difficulties');
   device(s, '01-menu', 8.6, 0.6, 6.3);
-  caption(s, 'Экран входа', 8.6, 6.95, 3.3);
+  caption(s, 'Entry screen', 8.6, 6.95, 3.3);
 }
 
-/* ============================== 3. loop ============================== */
+/* ================================ 3. loop ================================ */
 {
   const s = slide();
-  kicker(s, 'ЦИКЛ');
-  title(s, 'Понятно с первого такта');
+  kicker(s, 'THE LOOP');
+  title(s, 'Clear from the first bar');
   const steps = [
-    ['1', 'Слушай', 'Первые такты играют только барабаны — ряд задаёт темп.'],
-    ['2', 'Бей по доле', 'Маркер доходит до золотой линии — тап по дорожке.'],
-    ['3', 'Держи ряд', 'Комбо растёт, толпа заводится, множитель до ×4.'],
-    ['4', 'Финал', 'Точность, лучшее комбо, оценка от C до S.']
+    ['1', 'Listen', 'The opening bars are drums only — the row sets the tempo.'],
+    ['2', 'Strike on the beat', 'The marker reaches the gold line, you tap the lane.'],
+    ['3', 'Hold the row', 'Combo climbs, the crowd lifts, the multiplier runs to ×4.'],
+    ['4', 'Finish', 'Accuracy, best combo, and a grade from C to S.']
   ];
   steps.forEach(([n, h, t], i) => {
     const y = 2.25 + i * 1.22;
-    s.addShape(pres.ShapeType.ellipse, { x: 0.7, y, w: 0.62, h: 0.62,
-      fill: { color: C.gold } });
-    s.addText(n, { x: 0.7, y, w: 0.62, h: 0.62, fontSize: 20, bold: true,
-      fontFace: HEAD, color: C.deep, align: 'center', valign: 'middle', isTextBox: true, margin: 0 });
+    s.addShape(pres.ShapeType.ellipse, { x: 0.7, y, w: 0.62, h: 0.62, fill: { color: C.gold } });
+    s.addText(n, { x: 0.7, y, w: 0.62, h: 0.62, fontSize: 20, bold: true, fontFace: HEAD,
+      color: C.deep, align: 'center', valign: 'middle', isTextBox: true, margin: 0 });
     s.addText(h, { x: 1.55, y: y - 0.02, w: 5.6, h: 0.4, fontSize: 18, bold: true,
       fontFace: BODY, color: C.ink, isTextBox: true, margin: 0 });
-    s.addText(t, { x: 1.55, y: y + 0.36, w: 5.6, h: 0.5, fontSize: 13,
+    s.addText(t, { x: 1.55, y: y + 0.36, w: 5.9, h: 0.5, fontSize: 13,
       fontFace: BODY, color: C.muted, isTextBox: true, margin: 0 });
   });
   device(s, '06-play-early', 8.9, 0.55, 6.4);
 }
 
-/* ============================== 4. lanes ============================== */
+/* ================================ 4. lanes ================================ */
 {
   const s = slide();
-  kicker(s, 'УПРАВЛЕНИЕ');
-  title(s, 'Три дорожки — три голоса');
+  kicker(s, 'CONTROLS');
+  title(s, 'Three lanes, three voices');
   const lanes = [
-    ['TABL', 'Большой барабан — пульс ряда', 'F2B33D'],
-    ['SWORDS', 'Звон клинков на акцентах', '3AA3E8'],
-    ['TAR', 'Рамочный барабан в ответ', 'F5D779']
+    ['TABL', 'The deep drum — the pulse of the row', 'F2B33D'],
+    ['SWORDS', 'Blades meeting on the accents', '3AA3E8'],
+    ['TAR', 'The frame drum answering back', 'F5D779']
   ];
   lanes.forEach(([n, t, col], i) => {
     const y = 2.35 + i * 1.3;
@@ -175,86 +174,73 @@ function caption(s, text, x, y, w) {
     s.addText(t, { x: 1.75, y: y + 0.56, w: 4.9, h: 0.4, fontSize: 12.5,
       fontFace: BODY, color: C.muted, isTextBox: true, margin: 0 });
   });
-  s.addText('Каждая нота — предмет своей дорожки: слиток, самоцвет, чеканная монета.',
+  s.addText('Each note is an object of its own lane: a gold ingot, a cut jewel, a struck coin.',
     { x: 0.7, y: 6.45, w: 6.4, h: 0.5, fontSize: 13, italic: true, fontFace: BODY,
       color: C.gold, isTextBox: true, margin: 0 });
   device(s, '07-play-three-lanes', 8.9, 0.55, 6.4);
 }
 
-/* ============================== 5. perfect ============================== */
+/* ================================ 5. the hit ================================ */
 {
   const s = slide(C.deep);
   device(s, '11-combo', 0.8, 0.5, 6.6);
-  kicker(s, 'МОМЕНТ', { x: 7.9, w: 4.9 });
-  title(s, 'Чистое попадание\nвидно и слышно', { x: 7.9, w: 4.9, y: 0.75 });
-  body(s, 'Удар в доле даёт вспышку по линии, искры, всплывающие очки и подъём сабель в ряду. Барабанщики на сцене бьют ровно ту партию, которую слышит игрок.',
+  kicker(s, 'THE MOMENT', { x: 7.9, w: 4.9 });
+  title(s, 'A clean hit is\nseen and heard', { x: 7.9, w: 4.9, y: 0.75 });
+  body(s, 'Striking on the beat flashes the lane, throws sparks, floats the points and lifts sabres in the row. The drummers on stage play exactly the part the player is hearing.',
     { x: 7.9, y: 2.75, w: 4.8, h: 2.1 });
-  stat(s, 7.9, 5.15, 2.3, '±45 мс', 'окно Perfect');
-  stat(s, 10.4, 5.15, 2.3, '×4', 'множитель комбо');
+  stat(s, 7.9, 5.15, 2.3, '±45 ms', 'Perfect window');
+  stat(s, 10.4, 5.15, 2.3, '×4', 'combo multiplier');
 }
 
-/* ============================== 6. flourish ============================== */
+/* ================================ 6. flourish ================================ */
 {
   const s = slide();
-  kicker(s, 'КУЛЬМИНАЦИЯ');
-  title(s, 'Вокфа — общий момент', { w: 5.0 });
-  body(s, 'На припеве через все дорожки идёт знамя со скрещёнными саблями. Свайп поперёк — и весь ряд поднимает клинки разом.',
-    { y: 2.35, w: 4.5, h: 2.2 });
+  kicker(s, 'THE PEAK');
+  title(s, 'The flourish —\none shared moment', { w: 5.0 });
+  body(s, 'On the chorus a banner of crossed sabres crosses every lane. Swipe across it and the whole row raises their blades at once.',
+    { y: 2.55, w: 4.5, h: 2.2 });
   device(s, '09-flourish-incoming', 6.0, 0.55, 6.5);
   device(s, '12-hold', 9.7, 0.55, 6.5);
-  caption(s, 'Знамя идёт через все дорожки', 6.0, 7.05, 3.4);
-  caption(s, 'Удержание — подъём сабли', 9.7, 7.05, 3.4);
+  caption(s, 'The banner crosses every lane', 6.0, 7.05, 3.4);
+  caption(s, 'A hold raises the sabre', 9.7, 7.05, 3.4);
 }
 
-/* ============================== 7. hold ============================== */
-{
-  const s = slide();
-  kicker(s, 'РИТМ');
-  title(s, 'Удержание: подъём сабли');
-  bullets(s, [
-    'Нажать на долю, держать, отпустить на последнем ударе такта',
-    'Под удержанием барабаны идут дробью — игрок слышит, сколько держать',
-    'Отпустил рано — ряд сбился, шкала толпы проседает'
-  ], { y: 2.5, w: 6.0 });
-  device(s, '13-late-run', 8.9, 0.55, 6.4);
-}
-
-/* ============================== 8. crowd ============================== */
+/* ================================ 7. crowd ================================ */
 {
   const s = slide(C.deep);
-  kicker(s, 'СТАВКА');
-  title(s, 'Толпа — это ставка', { w: 4.5 });
-  body(s, 'Шкала наверху — не «здоровье игрока», а синхрон ряда. Промахи его тратят, чистые попадания возвращают. Если ряд потеряет синхрон — раунд заканчивается досрочно.',
+  kicker(s, 'THE STAKE');
+  title(s, 'The crowd is the stake', { w: 4.5 });
+  body(s, 'The bar at the top is not a health meter — it is the row\'s sync. Missed beats spend it, clean hits return it. Lose it all and the row breaks formation, and the run ends there.',
     { y: 2.4, w: 4.3, h: 2.0 });
-  s.addText('Формулировка намеренная: проигрывает не человек, а ряд теряет строй. Ардха — церемония, а не аркада.',
+  s.addText('The framing is deliberate: the player does not fail, the row loses its step. Ardah is a ceremony, not an arcade.',
     { x: 0.7, y: 4.7, w: 4.3, h: 1.4, fontSize: 13, italic: true, fontFace: BODY,
       color: C.gold, isTextBox: true, margin: 0 });
   device(s, '11-combo', 5.5, 0.6, 6.2);
   device(s, '16-crowd-low', 9.2, 0.6, 6.2);
-  caption(s, 'Ряд держит строй', 5.5, 6.9, 3.3);
-  caption(s, 'Синхрон на исходе', 9.2, 6.9, 3.3);
+  caption(s, 'The row holds', 5.5, 6.9, 3.3);
+  caption(s, 'Sync running out', 9.2, 6.9, 3.3);
 }
 
-/* ============================== 9. result ============================== */
+/* ================================ 8. result ================================ */
 {
   const s = slide();
-  kicker(s, 'ФИНАЛ');
-  title(s, 'Результат, который\nхочется побить');
+  kicker(s, 'THE FINISH');
+  title(s, 'A result worth\nbeating');
   bullets(s, [
-    'Оценка S / A / B / C по точности, а не по очкам',
-    'Точность, лучшее комбо, среднее отклонение в миллисекундах',
-    'Личный рекорд по каждому чарту — локально, без аккаунта',
-    'Кнопка «Играть снова» — сразу, без возврата в меню'
+    'Graded S / A / B / C on accuracy, not on raw score',
+    'Accuracy, best combo, and mean timing in milliseconds',
+    'A personal best per chart, kept on the device, no account',
+    'Play again is one tap — no trip back to the menu'
   ], { y: 2.7, w: 6.0 });
   device(s, '14-result', 8.9, 0.55, 6.4);
 }
 
-/* ============================== 10. languages ============================== */
+/* ================================ 9. languages ================================ */
 {
   const s = slide();
-  kicker(s, 'ЛОКАЛИЗАЦИЯ');
-  title(s, 'Арабский и английский,\nс RTL', { w: 4.5 });
-  body(s, 'Интерфейс переворачивается целиком. Игровое поле остаётся LTR намеренно: ряд исполнителей — это физическая сцена, а не порядок чтения.',
+  kicker(s, 'LOCALISATION');
+  title(s, 'Arabic and English,\nRTL included', { w: 4.5 });
+  body(s, 'The interface flips completely. The playfield stays LTR on purpose: a row of performers is a physical stage, not reading order.',
     { y: 2.5, w: 4.2, h: 2.2 });
   device(s, '03-menu-ar', 5.5, 0.6, 6.2);
   device(s, '01-menu', 9.2, 0.6, 6.2);
@@ -262,143 +248,123 @@ function caption(s, text, x, y, w) {
   caption(s, 'English', 9.2, 6.9, 3.3);
 }
 
-/* ============================== 11. onboarding ============================== */
+/* ================================ 10. onboarding ================================ */
 {
   const s = slide();
-  kicker(s, 'ВХОД');
-  title(s, 'Обучение — три экрана', { w: 5.1 });
+  kicker(s, 'GETTING IN');
+  title(s, 'Onboarding is three screens', { w: 5.1 });
   bullets(s, [
-    'Удар, подъём, вокфа — по одному экрану на механику',
-    'Показывается один раз, дальше не мешает',
-    'До первой ноты — один тап от главного экрана'
+    'Strike, raise, flourish — one screen per mechanic',
+    'Shown once, then it stays out of the way',
+    'One tap from the entry screen to the first note'
   ], { y: 2.4, w: 5.2 });
   device(s, '02-howto', 6.0, 0.55, 6.4);
   device(s, '05-countin', 9.6, 0.55, 6.4);
-  caption(s, 'Как играть', 6.0, 7.0, 3.3);
-  caption(s, 'Отсчёт: сначала слушаем', 9.6, 7.0, 3.3);
+  caption(s, 'How to play', 6.0, 7.0, 3.3);
+  caption(s, 'Count-in: listen first', 9.6, 7.0, 3.3);
 }
 
-/* ============================== 12. calibration ============================== */
+/* ================================ 11. calibration ================================ */
 {
   const s = slide(C.deep);
-  kicker(s, 'ЧЕСТНОСТЬ');
-  title(s, 'Игра честная\nна любом телефоне');
-  body(s, 'Каждое устройство задерживает звук по-своему — от 20 до 200 мс. Восемь кликов, игрок тапает в такт, медиана становится поправкой устройства.\n\nБез этого игра ощущается сломанной не по вине игрока.',
+  kicker(s, 'FAIRNESS');
+  title(s, 'Fair on any\nhandset');
+  body(s, 'Every device delays its audio differently — anywhere from 20 to 200 ms. Eight clicks, the player taps along, and the median becomes that device\'s offset.\n\nWithout it the game feels broken through no fault of the player.',
     { y: 2.5, w: 5.4, h: 2.4 });
-  stat(s, 0.7, 5.35, 2.6, '8 кликов', 'вся калибровка');
-  stat(s, 3.6, 5.35, 2.8, 'медиана', 'устойчива к промаху');
+  stat(s, 0.7, 5.35, 2.6, '8 clicks', 'the whole calibration');
+  stat(s, 3.6, 5.35, 2.8, 'median', 'robust to a stray tap');
   device(s, '04-calibration', 8.9, 0.55, 6.4);
 }
 
-/* ============================== 13. interruptions ============================== */
+/* ================================ 12. interruptions ================================ */
 {
   const s = slide();
-  kicker(s, 'НАДЁЖНОСТЬ');
-  title(s, 'Звонок, сворачивание,\nбез звука', { w: 5.2 });
+  kicker(s, 'ROBUSTNESS');
+  title(s, 'Calls, backgrounding,\nsilent mode', { w: 5.2 });
   bullets(s, [
-    'Сворачивание — авто-пауза, раунд не теряется',
-    'Возврат — звук поднимается заново, время не уплывает',
-    'Кнопка звука на всех экранах; тайминг от неё не зависит',
-    'Клики калибровки не глушатся: этот экран измеряет устройство'
+    'Backgrounding auto-pauses — the run is not lost',
+    'Coming back re-opens the audio; the clock does not drift',
+    'A sound toggle on every screen; timing never depends on it',
+    'Calibration clicks stay audible: that screen measures the device'
   ], { y: 2.6, w: 5.3 });
   device(s, '15-pause', 6.1, 0.55, 6.4);
   device(s, '17-muted', 9.7, 0.55, 6.4);
-  caption(s, 'Пауза', 6.1, 7.0, 3.3);
-  caption(s, 'Звук выключен', 9.7, 7.0, 3.3);
+  caption(s, 'Paused', 6.1, 7.0, 3.3);
+  caption(s, 'Sound off', 9.7, 7.0, 3.3);
 }
 
-/* ============================== 14. delivery ============================== */
+/* ================================ 13. delivery ================================ */
 {
   const s = slide(C.deep);
-  kicker(s, 'ДОСТАВКА');
-  title(s, 'Канал уже есть в проде');
-  body(s, 'Игра собирается как мини-приложение Balady+: архив скачивается, распаковывается и отдаётся локальным сервером внутри приложения. Тот же движок мини-апп, что работает сегодня.',
+  kicker(s, 'DELIVERY');
+  title(s, 'The channel is already\nin production');
+  body(s, 'The game ships as a Balady+ mini-app: an archive downloads, unpacks and is served by a local server inside the app. The same mini-app engine that runs today.',
     { y: 2.4, w: 6.4, h: 1.5 });
   const items = [
-    ['180 КБ', 'весь арт игры'],
-    ['345 КБ', 'игра одним файлом'],
-    ['0', 'установок для игрока'],
-    ['офлайн', 'после первой загрузки']
+    ['180 KB', 'all of the artwork'],
+    ['345 KB', 'the game as one file'],
+    ['0', 'installs for the player'],
+    ['offline', 'after the first download']
   ];
   items.forEach(([v, l], i) => {
     const x = 0.7 + (i % 2) * 3.5, y = 4.1 + Math.floor(i / 2) * 1.55;
     card(s, x, y, 3.2, 1.35);
     stat(s, x + 0.25, y + 0.2, 2.7, v, l);
   });
-  s.addText('Обновления без релиза в сторы: чарты, звук и тюнинг меняются в день события.',
+  s.addText('Updates without a store release: charts, audio and tuning can change on the day of the event.',
     { x: 7.4, y: 5.6, w: 5.2, h: 1.0, fontSize: 14, bold: true, fontFace: BODY,
       color: C.goldL, isTextBox: true, margin: 0 });
-  device(s, '19-drawn-menu', 7.6, 0.5, 4.9);
+  device(s, '13-late-run', 7.6, 0.5, 4.9);
 }
 
-/* ============================== 15. performance ============================== */
+/* ================================ 14. art ================================ */
 {
   const s = slide();
-  kicker(s, 'ИНЖЕНЕРИЯ');
-  title(s, 'Замерено, а не обещано');
-  const stats = [
-    ['60 fps', 'с артом и без', C.goldL],
-    ['0,31 мс', 'работа рендера на кадр', C.goldL],
-    ['±45 мс', 'окно Perfect', C.goldL],
-    ['96 BPM', 'вся анимация привязана к доле', C.goldL]
-  ];
-  stats.forEach(([v, l, col], i) => {
-    const x = 0.7 + (i % 2) * 3.4, y = 2.0 + Math.floor(i / 2) * 1.9;
-    card(s, x, y, 3.1, 1.5);
-    stat(s, x + 0.25, y + 0.2, 2.7, v, l, col);
-  });
-  s.addText('Часы игры — аудиоклок, а не кадры: барабаны планируются на 180 мс вперёд, поэтому ритм не уплывает даже при подвисании интерфейса.',
-    { x: 0.7, y: 6.15, w: 6.5, h: 1.0, fontSize: 13, italic: true, fontFace: BODY,
-      color: C.sand, isTextBox: true, margin: 0 });
-  device(s, '18-latency-lab', 8.9, 0.55, 6.4);
-  caption(s, 'Встроенная лаборатория задержки', 8.9, 7.0, 3.4);
+  kicker(s, 'ART DIRECTION');
+  title(s, 'Built on the concept art', { w: 5.6 });
+  body(s, 'The stage you see is cut from the approved concept image and wired into the engine — the fort, the banners, the braziers, the row, the musicians.',
+    { y: 2.4, w: 5.6, h: 1.6 });
+  bullets(s, [
+    'Production art is commissioned in layers, not as one flat render',
+    'Backdrop can arrive as a finished frame; performers must be animatable',
+    'Cultural review signs off performers, banners and the fort before production',
+    'No text is ever baked into artwork — every string localises at runtime'
+  ], { y: 4.2, w: 5.8 });
+  device(s, '08-play-chorus', 8.9, 0.55, 6.4);
 }
 
-/* ============================== 16. art ============================== */
-{
-  const s = slide(C.deep);
-  kicker(s, 'ГРАФИКА');
-  title(s, 'Два режима одной игры', { w: 4.5 });
-  body(s, 'Слева — всё нарисовано кодом: ни одной картинки, мгновенный запуск. Справа — та же игра на вырезанных из концепта ассетах.\n\nБоевой арт заказывается слоями: фон готовым кадром, исполнители — отдельными анимируемыми элементами.',
-    { y: 2.4, w: 4.2, h: 3.0 });
-  device(s, '20-drawn-play', 5.5, 0.6, 6.2);
-  device(s, '08-play-chorus', 9.2, 0.6, 6.2);
-  caption(s, 'Код, 0 ассетов', 5.5, 6.9, 3.3);
-  caption(s, 'С артом, 180 КБ', 9.2, 6.9, 3.3);
-}
-
-/* ============================== 17. status ============================== */
+/* ================================ 15. status ================================ */
 {
   const s = slide();
-  kicker(s, 'СТАТУС');
-  title(s, 'Где мы сейчас');
+  kicker(s, 'STATUS');
+  title(s, 'Where we are');
   const rows = [
-    ['Готово', 'Играбельный прототип: кондуктор, судья, чарты, калибровка, два языка, звук, результат', C.gold],
-    ['Готово', 'Канал доставки подтверждён — мини-апп движок Balady+ уже в проде', C.gold],
-    ['Осталось', 'Замеры задержки на живых устройствах: слабый Android и iPhone, с играющим радио', C.sand],
-    ['Осталось', 'Боевой арт и лицензированное аудио — по брифу, через культурное ревью', C.sand],
-    ['Осталось', 'Продакшен-контур: лидерборд, сезонное окно, аналитика', C.sand]
+    ['Done', 'Playable prototype: conductor, judging, charts, calibration, two languages, sound, results', C.gold],
+    ['Done', 'Delivery channel confirmed — the Balady+ mini-app engine is already in production', C.gold],
+    ['Next', 'Latency measured on live devices: a low-end Android and an iPhone, with the radio playing', C.sand],
+    ['Next', 'Production art and licensed audio — per the brief, through cultural review', C.sand],
+    ['Next', 'Production scope: leaderboard, seasonal window, analytics', C.sand]
   ];
   rows.forEach(([tag, text, col], i) => {
     const y = 2.35 + i * 0.98;
     card(s, 0.7, y, 11.9, 0.86, i < 2 ? C.green : C.greenD);
-    s.addText(tag, { x: 0.95, y: y + 0.22, w: 1.4, h: 0.42, fontSize: 13, bold: true,
+    s.addText(tag, { x: 0.95, y: y + 0.22, w: 1.2, h: 0.42, fontSize: 13, bold: true,
       fontFace: BODY, color: col, isTextBox: true, margin: 0 });
-    s.addText(text, { x: 2.5, y: y + 0.2, w: 9.8, h: 0.5, fontSize: 14,
+    s.addText(text, { x: 2.3, y: y + 0.2, w: 10.0, h: 0.5, fontSize: 14,
       fontFace: BODY, color: C.sand, isTextBox: true, margin: 0 });
   });
 }
 
-/* ============================== 18. risks ============================== */
+/* ================================ 16. risks ================================ */
 {
   const s = slide(C.deep);
-  kicker(s, 'РИСКИ');
-  title(s, 'Что уже учтено');
+  kicker(s, 'RISKS');
+  title(s, 'Already accounted for');
   const risks = [
-    ['Культурная рамка', 'Ардха — наследие. Формулировки, позы и знамёна проходят ревью до продакшена арта.'],
-    ['Лицензия аудио', 'Сейчас перкуссия синтезируется в браузере. Боевой трек лицензируется или заказывается.'],
-    ['Задержка Android', 'Калибровка снимает постоянное смещение. Джиттер меряем на устройствах до старта работ.'],
-    ['Вес и сеть', 'Событие — плохая связь. Потолок загрузки 4 МБ, сейчас укладываемся в 0,2.']
+    ['Cultural framing', 'Ardah is heritage. Wording, posture and banners go through review before art production starts.'],
+    ['Audio licensing', 'Percussion is synthesised in the browser today. The shipping track is licensed or commissioned.'],
+    ['Android latency', 'Calibration removes the constant offset. Jitter is measured on devices before the work starts.'],
+    ['Weight and network', 'Events mean poor connectivity. The ceiling is 4 MB; we are at 0.2 today.']
   ];
   risks.forEach(([h, t], i) => {
     const x = 0.7 + (i % 2) * 6.2, y = 2.4 + Math.floor(i / 2) * 2.3;
@@ -410,11 +376,11 @@ function caption(s, text, x, y, w) {
   });
 }
 
-/* ============================== 19. gallery ============================== */
+/* ================================ 17. gallery ================================ */
 {
   const s = slide();
-  kicker(s, 'ГАЛЕРЕЯ');
-  title(s, 'Ещё кадры с устройства', { w: 10, h: 1.0 });
+  kicker(s, 'GALLERY');
+  title(s, 'More frames from the device', { w: 10, h: 1.0 });
   const names = ['01-menu', '05-countin', '07-play-three-lanes', '08-play-chorus',
                  '11-combo', '09-flourish-incoming', '17-muted', '14-result'];
   names.forEach((n, i) => {
@@ -423,15 +389,15 @@ function caption(s, text, x, y, w) {
   });
 }
 
-/* ============================== 20. ask ============================== */
+/* ================================ 18. ask ================================ */
 {
   const s = slide(C.deep);
-  kicker(s, 'ЧТО НУЖНО ОТ ВАС');
-  title(s, 'Три решения —\nи игра в событии');
+  kicker(s, 'WHAT WE NEED FROM YOU');
+  title(s, 'Three decisions and\nthe game is in the event');
   const asks = [
-    ['1', 'Канал', 'Подтвердить мини-апп: serviceKey, хостинг архива, релиз-процесс.'],
-    ['2', 'Арт', 'Бюджет и подрядчик по брифу: фон кадром, исполнители — слоями.'],
-    ['3', 'Дата', 'Событие и окно показа: Founding Day, National Day или оба.']
+    ['1', 'Channel', 'Confirm the mini-app: serviceKey, archive hosting, release process.'],
+    ['2', 'Art', 'Budget and vendor per the brief: backdrop as a frame, performers in layers.'],
+    ['3', 'Date', 'The event and the window: Founding Day, National Day, or both.']
   ];
   asks.forEach(([n, h, t], i) => {
     const y = 2.6 + i * 1.35;
@@ -440,7 +406,7 @@ function caption(s, text, x, y, w) {
       color: C.deep, align: 'center', valign: 'middle', isTextBox: true, margin: 0 });
     s.addText(h, { x: 1.8, y: y - 0.02, w: 5.6, h: 0.45, fontSize: 20, bold: true,
       fontFace: HEAD, color: C.ink, isTextBox: true, margin: 0 });
-    s.addText(t, { x: 1.8, y: y + 0.45, w: 6.0, h: 0.6, fontSize: 13.5,
+    s.addText(t, { x: 1.8, y: y + 0.45, w: 6.2, h: 0.6, fontSize: 13.5,
       fontFace: BODY, color: C.muted, isTextBox: true, margin: 0 });
   });
   device(s, '08-play-chorus', 9.0, 0.5, 6.5);

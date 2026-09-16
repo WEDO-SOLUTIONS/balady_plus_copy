@@ -18,7 +18,10 @@ def rounded_mask(size, radius, supersample=4):
     return m.resize((w, h), Image.LANCZOS)
 
 
-def device(frame_path, height=1400, bezel=None, shadow=True):
+def device(frame_path, height=1400, bezel=None, shadow=True, cutout='island'):
+    """`cutout` is 'island' (iPhone-style pill) or 'punch' (a centred hole, the
+    Galaxy shape). The game keeps its HUD below the reported safe-area inset, so
+    either shell clears the meters — the shape is only a styling choice."""
     shot = Image.open(frame_path).convert('RGB')
     sw = int(round(height * SCREEN_RATIO))
     shot = shot.resize((sw, height), Image.LANCZOS)
@@ -50,12 +53,20 @@ def device(frame_path, height=1400, bezel=None, shadow=True):
     screen.putalpha(rounded_mask((sw, height), radius))
     canvas.alpha_composite(screen, (pad + b, pad + b))
 
-    # Dynamic Island
-    iw, ih = int(sw * 0.27), int(height * 0.026)
-    ix, iy = pad + b + (sw - iw) // 2, pad + b + int(height * 0.012)
-    island = Image.new('RGBA', (iw, ih), (0, 0, 0, 0))
-    ImageDraw.Draw(island).rounded_rectangle([0, 0, iw - 1, ih - 1], radius=ih // 2, fill=(8, 8, 10, 255))
-    canvas.alpha_composite(island, (ix, iy))
+    # Camera cutout, drawn to the proportions the device actually reports.
+    if cutout == 'punch':
+        d = int(height * 0.026)
+        cx = pad + b + sw // 2 - d // 2
+        cy = pad + b + int(height * 0.014)
+        hole = Image.new('RGBA', (d, d), (0, 0, 0, 0))
+        ImageDraw.Draw(hole).ellipse([0, 0, d - 1, d - 1], fill=(8, 8, 10, 255))
+        canvas.alpha_composite(hole, (cx, cy))
+    elif cutout == 'island':
+        iw, ih = int(sw * 0.30), int(height * 0.037)
+        ix, iy = pad + b + (sw - iw) // 2, pad + b + int(height * 0.0115)
+        island = Image.new('RGBA', (iw, ih), (0, 0, 0, 0))
+        ImageDraw.Draw(island).rounded_rectangle([0, 0, iw - 1, ih - 1], radius=ih // 2, fill=(8, 8, 10, 255))
+        canvas.alpha_composite(island, (ix, iy))
 
     return canvas
 
