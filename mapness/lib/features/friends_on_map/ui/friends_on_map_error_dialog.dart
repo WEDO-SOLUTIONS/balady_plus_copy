@@ -48,6 +48,18 @@ Future<void> showFriendsOnMapLimitDialog(BuildContext context, FriendsOnMapApiEx
       l10n.friendsOnMapLimitInviteResolutionTitle,
       l10n.friendsOnMapLimitInviteResolutionBody(_retryLabel(l10n, e)),
     ),
+    FriendsOnMapLimitCode.listLimitReached => (
+      l10n.friendsOnMapLimitListCountTitle,
+      l10n.friendsOnMapLimitListCountBody(e.limit ?? 0),
+    ),
+    FriendsOnMapLimitCode.listMemberLimitReached => (
+      l10n.friendsOnMapLimitListMemberCountTitle,
+      l10n.friendsOnMapLimitListMemberCountBody(e.limit ?? 0),
+    ),
+    FriendsOnMapLimitCode.listItemLimitReached => (
+      l10n.friendsOnMapLimitListItemCountTitle,
+      l10n.friendsOnMapLimitListItemCountBody(e.limit ?? 0),
+    ),
     // Not a recognized Appendix-B limit (network error, unrelated 4xx/5xx) —
     // this feature's dialogs never show raw backend text (server-side
     // English debug strings), so fall back to the app-wide generic copy

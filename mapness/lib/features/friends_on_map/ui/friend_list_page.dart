@@ -98,6 +98,11 @@ class FriendListPage extends ConsumerWidget {
                       onTap: () => context.router.push(const MeetupListRoute()),
                       text: ContentRowTextOptions(title: context.l10n.friendListMeetupsRow),
                     ),
+                    // S-18: always visible, same reasoning as the meetup rows above.
+                    ContentRow(
+                      onTap: () => context.router.push(const SharedListsRoute()),
+                      text: ContentRowTextOptions(title: context.l10n.friendListSharedListsRow),
+                    ),
                   ],
                 ),
                 Expanded(

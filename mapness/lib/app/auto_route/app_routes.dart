@@ -344,6 +344,16 @@ class AppRouter extends RootStackRouter {
           customRouteBuilder: RouteBuilders.cupertinoRouteBuilder,
         ),
         CustomRoute(
+          path: 'shared_lists',
+          page: SharedListsRoute.page,
+          customRouteBuilder: RouteBuilders.cupertinoRouteBuilder,
+        ),
+        CustomRoute(
+          path: 'shared_list_detail/:listId',
+          page: SharedListDetailRoute.page,
+          customRouteBuilder: RouteBuilders.cupertinoRouteBuilder,
+        ),
+        CustomRoute(
           path: 'help_center',
           page: HelpCenterRoute.page,
           customRouteBuilder: RouteBuilders.cupertinoRouteBuilder,

@@ -25,7 +25,19 @@ enum FriendsOnMapLimitCode {
   /// R-40, Appendix B: invite link resolution attempts per rolling hour =
   /// 60 (counts failed attempts too). `POST /v1/invites/{token}/resolve`,
   /// HTTP 429 + Retry-After.
-  inviteResolutionRateLimited;
+  inviteResolutionRateLimited,
+
+  /// S-18, Appendix B: shared lists owned per user = 20. `POST /v1/lists`,
+  /// HTTP 409.
+  listLimitReached,
+
+  /// S-18, Appendix B: members per shared list = 50. `POST
+  /// /v1/lists/{id}/members`, HTTP 409.
+  listMemberLimitReached,
+
+  /// S-18, Appendix B: entries per shared list = 200. `POST
+  /// /v1/lists/{id}/places`, HTTP 409.
+  listItemLimitReached;
 
   static FriendsOnMapLimitCode? fromWire(String? value) => switch (value) {
     'friend_limit_reached' => friendLimitReached,
@@ -33,6 +45,9 @@ enum FriendsOnMapLimitCode {
     'request_creation_limit_reached' => requestCreationLimitReached,
     'invite_reset_limit_reached' => inviteResetLimitReached,
     'invite_resolution_rate_limited' => inviteResolutionRateLimited,
+    'list_limit_reached' => listLimitReached,
+    'list_member_limit_reached' => listMemberLimitReached,
+    'list_item_limit_reached' => listItemLimitReached,
     _ => null,
   };
 }
