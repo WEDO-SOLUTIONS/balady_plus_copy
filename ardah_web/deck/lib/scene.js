@@ -161,7 +161,29 @@ function smooth(e0, e1, x) {
 
    Seen from a little steeper than the notes: the pads sit below the judgment
    line, so the camera is looking further down onto them. */
-const CAP_TILT = 62 * Math.PI / 180;
+/* Each pad is rendered from the angle the game's camera really has to it, so
+   the side pads come out turned the way they are in the concept image. That
+   turn is geometry, not styling: with the camera 2.10 field-half-widths up and
+   the keycap row at z = 0.856, the centre pad is seen at 67.8 degrees
+   elevation straight on, and a side pad at 62.7 degrees and 37.9 degrees round
+   to the side.
+
+   Viewing an object from azimuth phi is the same as spinning it by -phi about
+   its own vertical and viewing it head on, which is exactly what ry does here,
+   so this needs no off-axis camera.
+
+   The elevations below are those real numbers. The azimuth is NOT: at the true
+   37.9 degrees a pad reads as a diamond rather than as a key, and the concept
+   image turns them far less than the geometry would. This follows the concept
+   at 13 degrees, which keeps the pads facing the player while still fanning
+   them out with the lanes. It is the one place here where the drawing wins
+   over the arithmetic, on purpose. */
+const CAP_VIEW = {
+  tabl:   { elev: 62.7, azim: -13 },
+  swords: { elev: 67.8, azim: 0 },
+  tar:    { elev: 62.7, azim: 13 },
+};
+const DEG = Math.PI / 180;
 
 /* Lane colours for the pads come from KEYCAP in js/render.js -- copper, steel
    blue, green -- and not from LANE.glow, where tabl and tar are both warm gold
@@ -192,11 +214,12 @@ function keycap(lane) {
   const inset = roundRect(64, iA, iB, iR, 0.105, -0.02, 0, 2);
   inset.push(...roundChamfer(64, iA, iB, iR, 0.045, 0.105, 1));
 
-  const c = CAP[lane];
+  const c = CAP[lane], v = CAP_VIEW[lane];
   return {
     name: 'key_' + lane,
-    radius: 0.80,
-    rot: { rx: CAP_TILT, ry: 0, rz: 0 },
+    group: 'key',
+    radius: 0.86,
+    rot: { rx: v.elev * DEG, ry: v.azim * DEG, rz: 0 },
     glow: c.glow,
     parts: [
       { planes: body, sub: recess,

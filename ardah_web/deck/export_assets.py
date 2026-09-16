@@ -30,6 +30,10 @@ JOBS = {
 }
 for i in range(6):
     JOBS['fx_shard_%d' % i] = (80, 92)
+# Key glyphs are drawn at ~34% of a 45 pt cap, so ~31 device px; 72 is already
+# generous headroom.
+for g in ('a', 's', 'd', 'dot'):
+    JOBS['glyph_%s' % g] = (72, 94)
 
 total = 0
 for name, (longest, q) in sorted(JOBS.items()):

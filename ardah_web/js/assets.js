@@ -29,7 +29,8 @@ window.Ardah = window.Ardah || {};
     'key_tabl', 'key_swords', 'key_tar',
     'fx_spark', 'fx_flare', 'fx_ring', 'fx_glow',
     'fx_shard_0', 'fx_shard_1', 'fx_shard_2',
-    'fx_shard_3', 'fx_shard_4', 'fx_shard_5'
+    'fx_shard_3', 'fx_shard_4', 'fx_shard_5',
+    'glyph_a', 'glyph_s', 'glyph_d', 'glyph_dot'
   ];
 
   var images = {};

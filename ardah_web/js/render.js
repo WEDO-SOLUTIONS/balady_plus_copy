@@ -31,6 +31,10 @@ window.Ardah = window.Ardah || {};
   // ornament outside it. Must match X_MAX in deck/make_runway.js.
   var DECK_X_MAX = 1.165;
   var FX_SHARDS = 6;
+  // Key glyphs are their own sprites rather than pixels baked into the pads:
+  // that is what keeps them localisable (see docs/ardah-art-brief.md §1) while
+  // still being modelled rather than flat canvas text.
+  var GLYPH_SPRITE = ['glyph_a', 'glyph_s', 'glyph_d'];
   var KEYCAP = [
     ['#8A5A2B', '#4A2F14'],
     ['#3F6F9E', '#1B355A'],
@@ -734,13 +738,22 @@ window.Ardah = window.Ardah || {};
         } else {
           c.drawImage(cap, x - cw / 2, y - ch / 2, cw, ch);
         }
-        c.textAlign = 'center';
-        c.font = '700 15px -apple-system, system-ui, sans-serif';
-        c.lineWidth = 3;
-        c.strokeStyle = 'rgba(24, 14, 4, 0.55)';
-        c.strokeText(state.touchUsed ? '\u25CF' : LANE_KEYS[lane], x, y + 5);
-        c.fillStyle = '#FFF3D6';
-        c.fillText(state.touchUsed ? '\u25CF' : LANE_KEYS[lane], x, y + 5);
+        var glyph = A.assets.img(state.touchUsed ? 'glyph_dot' : GLYPH_SPRITE[lane]);
+        if (glyph) {
+          // Sits a little above the sprite's centre: the pad is seen from
+          // above, so its face is in the upper part of the sprite and its
+          // front edge takes the lower part.
+          var gh = ch * 0.42, gw = gh * (glyph.width / glyph.height);
+          c.drawImage(glyph, x - gw / 2, y - ch * 0.015 - gh / 2, gw, gh);
+        } else {
+          c.textAlign = 'center';
+          c.font = '700 15px -apple-system, system-ui, sans-serif';
+          c.lineWidth = 3;
+          c.strokeStyle = 'rgba(24, 14, 4, 0.55)';
+          c.strokeText(state.touchUsed ? '\u25CF' : LANE_KEYS[lane], x, y + 5);
+          c.fillStyle = '#FFF3D6';
+          c.fillText(state.touchUsed ? '\u25CF' : LANE_KEYS[lane], x, y + 5);
+        }
       } else {
         var g = c.createLinearGradient(0, y - h / 2, 0, y + h / 2);
         g.addColorStop(0, KEYCAP[lane][0]);

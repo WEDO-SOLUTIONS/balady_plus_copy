@@ -374,7 +374,7 @@ function resolve(img, size, glowTint) {
    concept, which is exactly the kind of difference that looks like the art is
    wrong rather than the padding. A few pixels of margin are kept so the glow
    is not clipped and so bilinear sampling has an edge to work with. */
-function trim(rgba, size, pad) {
+function bbox(rgba, size) {
   let x0 = size, y0 = size, x1 = -1, y1 = -1;
   for (let y = 0; y < size; y++) {
     for (let x = 0; x < size; x++) {
@@ -386,9 +386,14 @@ function trim(rgba, size, pad) {
       }
     }
   }
-  if (x1 < 0) return { data: rgba, w: size, h: size };
-  x0 = Math.max(0, x0 - pad); y0 = Math.max(0, y0 - pad);
-  x1 = Math.min(size - 1, x1 + pad); y1 = Math.min(size - 1, y1 + pad);
+  return x1 < 0 ? null : { x0, y0, x1, y1 };
+}
+
+function trim(rgba, size, pad, box) {
+  const b = box || bbox(rgba, size);
+  if (!b) return { data: rgba, w: size, h: size };
+  const x0 = Math.max(0, b.x0 - pad), y0 = Math.max(0, b.y0 - pad);
+  const x1 = Math.min(size - 1, b.x1 + pad), y1 = Math.min(size - 1, b.y1 + pad);
   const w = x1 - x0 + 1, h = y1 - y0 + 1;
   const out = new Uint8Array(w * h * 4);
   for (let y = 0; y < h; y++) {
@@ -405,17 +410,40 @@ const objects = [
   scene.keycap('tabl'), scene.keycap('swords'), scene.keycap('tar'),
 ];
 for (let i = 0; i < 6; i++) objects.push(scene.shard(i));
+const done = [];
 for (const obj of objects) {
   const t0 = Date.now();
   const size = obj.size || SIZE;
   const { hdr, W } = render(obj, size);
   const small = downsample(hdr, W, size, SS);
   const rgba = resolve(small, size, obj.glow);
-  const cut = trim(rgba, size, 3);
+  done.push({ obj, rgba, size, box: bbox(rgba, size), ms: Date.now() - t0 });
+}
+
+/* Objects in the same group are cropped to one shared frame.
+
+   The three keycaps are the same pad seen from three angles, and js/render.js
+   scales a keycap by the sprite's HEIGHT. Trimmed independently, the turned
+   side pads get a taller bounding box than the square-on centre one -- a 13
+   degree rotation grows a square's box by about 20% -- so the game would draw
+   them smaller and the turn would read as a size difference instead of as a
+   turn. A shared frame keeps them the same size and lets the rotation be a
+   rotation. */
+const groups = {};
+for (const d of done) {
+  if (!d.obj.group || !d.box) continue;
+  const g = groups[d.obj.group] || (groups[d.obj.group] = { x0: 1e9, y0: 1e9, x1: -1, y1: -1 });
+  g.x0 = Math.min(g.x0, d.box.x0); g.y0 = Math.min(g.y0, d.box.y0);
+  g.x1 = Math.max(g.x1, d.box.x1); g.y1 = Math.max(g.y1, d.box.y1);
+}
+
+for (const d of done) {
+  const obj = d.obj;
+  const cut = trim(d.rgba, d.size, 3, obj.group ? groups[obj.group] : d.box);
   const stem = /^(key|fx)_/.test(obj.name) ? obj.name : 'note_' + obj.name;
   const file = path.join(OUT, `${stem}_hd.png`);
   fs.writeFileSync(file, png.encode(cut.data, cut.w, cut.h));
   console.log(`${stem}_hd.png  ${cut.w}x${cut.h}  ` +
               `${(fs.statSync(file).size / 1024).toFixed(1)} KB` +
-              `  ${((Date.now() - t0) / 1000).toFixed(1)}s`);
+              `  ${(d.ms / 1000).toFixed(1)}s`);
 }

@@ -36,8 +36,16 @@ decision it exists to settle: [`docs/ardah-concept.md`](../docs/ardah-concept.md
   wrong and looks it. The shards are ordinary solid sprites and draw normally.
 - **No text baked into artwork.** `docs/ardah-art-brief.md` §1: every string
   localises to Arabic and the layout flips to RTL. The keycap sprites carry no
-  letter — `_keycaps` draws the glyph over the sprite, and a dot instead once
-  the player is on touch.
+  letter. The glyph is its own rendered sprite (`glyph_a/s/d/dot`, from
+  `deck/make_glyphs.js`) that `_keycaps` draws over the pad — modelled rather
+  than flat canvas text, but still swappable, which is the whole reason for
+  keeping it off the cap. Localising is re-running that script with a different
+  `GLYPHS` list.
+- **Objects in a `group` share one crop.** The three keycaps are one pad seen
+  from three angles and `_keycaps` scales by the sprite's *height*, so cropping
+  them independently would make the turned side pads draw smaller and the
+  rotation would read as a size change. `deck/make_notes.js` crops a group to a
+  common frame.
 - **Sprites are trimmed to their content.** `js/render.js` sizes a sprite by
   the whole PNG — a note by its width, a keycap by its height — so transparent
   margin is drawn too. `deck/make_notes.js` trims every master; if you add one

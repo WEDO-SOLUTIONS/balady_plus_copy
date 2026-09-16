@@ -220,6 +220,21 @@ green — and not from `LANE.glow`, where tabl and tar are both warm gold and th
 two pads would be hard to tell apart at 45 pt. The concept's own keycaps use
 the same three hues.
 
+**Each pad is rendered from the angle the camera really has to it.** With the
+camera 2.10 field-half-widths up and the keycap row at z = 0.856, the centre
+pad is seen at 67.8° elevation straight on and a side pad at 62.7° and **37.9°
+round to the side**. Viewing from azimuth φ is the same as spinning the object
+by −φ about its own vertical, so this needs no off-axis camera — it is just
+`ry`. The elevations are those real numbers; the azimuth is **not**. At a true
+37.9° a pad reads as a diamond rather than as a key, and the concept turns them
+far less, so this follows the concept at 13°. It is the one place here where
+the drawing beats the arithmetic, deliberately.
+
+The three pads are cropped to a **shared frame**. They are one object at three
+angles and `_keycaps` scales by the sprite's height; a 13° rotation grows a
+square's bounding box by about 20%, so trimming them independently would draw
+the side pads smaller and the turn would read as a size difference.
+
 **They carry no letter, and that is the point.** The cut keycaps have `A`/`S`/`D`
 baked in as pixels, which is exactly what `docs/ardah-art-brief.md` §1 rules
 out: the strings localise to Arabic, the layout flips to RTL, and the pads have
@@ -345,7 +360,13 @@ Three things the wiring needed:
   drew a note *wider than its own lane* — `halfNear * 0.731 / z` against a lane
   of `halfNear * 0.667 / z` — and notes overlapped their neighbours. Now 1.60,
   which puts a note at ~82 % of its lane, where the concept has it.
-- **The keycap glyph**, per the no-baked-text rule above.
+- **The keycap glyph.** `deck/make_glyphs.js` renders it as its own sprite:
+  rasterise the character, take the exact Euclidean distance from its edge
+  (Felzenszwalb–Huttenlocher — a chamfer approximation's error is anisotropic
+  and turns into visible striations on an S once the bevel differentiates it),
+  raise that into a rounded bevel and light it with the same sources. The bevel
+  is deliberately narrow (12 px against a ~40 px stroke): wider and the profile
+  never plateaus, so the whole stroke creases along the letter's medial axis.
 - **Right-sizing the effects.** `fx_spark` is never drawn above ~52 device px
   and the shards above ~54; exporting them at 128 px was filtering work for
   nothing.
