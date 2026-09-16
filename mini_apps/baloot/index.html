@@ -99,8 +99,8 @@ button{font:inherit;color:inherit;border:0;background:none;cursor:pointer}
 }
 .crest-title{
   position:absolute;top:62%;left:50%;transform:translate(-50%,-50%);
-  width:66%;text-align:center;
-  font-size:clamp(14px,4vw,20px);font-weight:900;letter-spacing:.05em;
+  width:71%;text-align:center;
+  font-size:clamp(13px,3.8vw,19px);font-weight:900;letter-spacing:.04em;
   background:linear-gradient(180deg,var(--gold-hi) 0%,var(--gold) 46%,#c79a40 100%);
   -webkit-background-clip:text;background-clip:text;color:transparent;
   text-shadow:0 2px 4px rgba(0,0,0,.4);
@@ -770,7 +770,7 @@ html[dir="ltr"] .rail-btn{text-transform:uppercase}
   <header id="crest">
     <div class="crest-badge" id="crest-badge">1</div>
     <div class="crest-plaque">
-      <span class="crest-title" id="crest-title">تحدي البلوت</span>
+      <span class="crest-title" id="crest-title" data-i18n="crestTitle">تحدي البلوت</span>
     </div>
   </header>
 
@@ -831,6 +831,7 @@ const I18N = {
     us:"لنا", them:"لهم", round:"جولة",
     sun:"صن", hokum:"حكم", pass:"بس", ashkal:"أشكل",
     liveTable:"طاولة مباشرة", dealNo:"الجولة {n}", toTarget:"حتى {n}",
+    crestTitle:"تحدي البلوت",
     winning:"الفائزة", tryThis:"دورك · جرّب", hintNone:"انتظر دورك",
     takeStage:"ابدأ اللعب", nextDeal:"الجولة التالية", invite:"أصدقاء",
     you:"أنت", partner:"شريكك", right:"اليمين", left:"اليسار",
@@ -873,6 +874,7 @@ const I18N = {
     us:"Us", them:"Them", round:"Round",
     sun:"Sun", hokum:"Hokum", pass:"Pass", ashkal:"Ashkal",
     liveTable:"Live table", dealNo:"Deal {n}", toTarget:"To {n}",
+    crestTitle:"Baloot Challenge",
     winning:"Winning", tryThis:"Your turn · try", hintNone:"Wait for your turn",
     takeStage:"Take the stage", nextDeal:"Next deal", invite:"Friends",
     you:"You", partner:"Partner", right:"Right", left:"Left",
