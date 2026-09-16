@@ -11,7 +11,7 @@
 
 'use strict';
 
-const { prism, cone } = require('./trace');
+const { prism, roundRect, roundChamfer, cone, sdStar } = require('./trace');
 
 const TAU = Math.PI * 2;
 
@@ -102,6 +102,21 @@ function gem() {
   };
 }
 
+/* The coin's face. An eight-point rosette: deliberately NOT the crossed sabres
+   under a palm an earlier pass struck here, which is the arrangement of the
+   Saudi state emblem and is ruled out as decoration by docs/ardah-art-brief.md.
+   A struck coin is also slightly domed -- without it the face is perfectly
+   flat, every pixel reflects the same direction of a distant environment, and
+   the gold comes out as one even tone. */
+function coinRelief(x, z) {
+  const r = Math.hypot(x, z);
+  let h = 0.052 * (1 - Math.min(1, (r / 0.455) * (r / 0.455)));
+  h -= 0.034 * smooth(0.012, -0.005, sdStar(x, z, 0.245, 8, 3.0));
+  if (r < 0.080) h += 0.018 * smooth(0.080, 0.056, r);
+  h -= 0.013 * Math.exp(-Math.pow((r - 0.368) / 0.015, 2));
+  return h;
+}
+
 /* ------------------------------ tar: coin --------------------------------- */
 /* A struck gold disc. The body is a 128-gon whose side normals are smoothed
    back to a true cylinder at shading time, so the rim turns rather than
@@ -115,9 +130,88 @@ function coin() {
     glow: [1.00, 0.60, 0.14],
     parts: [{
       planes: prism(128, 0.455, 0.072, -0.072, 0, 1, 2),
+      bump: { h: coinRelief },
       mat: { type: 'metal', f0: [0.96, 0.520, 0.140], rough: 0.26, spec: 260 },
     }],
   };
 }
 
-module.exports = { crystal, gem, coin };
+/* sRGB hex to linear, so albedos can be written the way the palette is. */
+function lin(hex) {
+  const v = [0, 2, 4].map((i) => parseInt(hex.substr(i + 1, 2), 16) / 255);
+  return v.map((c) => (c <= 0.04045 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4)));
+}
+
+function smooth(e0, e1, x) {
+  const t = Math.max(0, Math.min(1, (x - e0) / (e1 - e0)));
+  return t * t * (3 - 2 * t);
+}
+
+/* ------------------------------- keycaps ---------------------------------- */
+/* The three strike pads at the foot of the lanes: a dark bronze plinth with a
+   chamfered top, a recess milled into it, and the lane's own material set into
+   the recess -- amber, sapphire, gold -- so a pad reads as belonging to its
+   lane before any colour-blind player has to tell the glows apart.
+
+   They carry NO letter. The cut keycaps have their letters baked in as pixels,
+   which is the thing docs/ardah-art-brief.md §1 forbids: the strings localise
+   into Arabic and the layout flips to RTL, and the caps also have to show a
+   dot rather than a letter once the player is on touch. The glyph belongs to
+   `_keycaps` in js/render.js, drawn over the sprite.
+
+   Seen from a little steeper than the notes: the pads sit below the judgment
+   line, so the camera is looking further down onto them. */
+const CAP_TILT = 62 * Math.PI / 180;
+
+/* Lane colours for the pads come from KEYCAP in js/render.js -- copper, steel
+   blue, green -- and not from LANE.glow, where tabl and tar are both warm gold
+   and the two pads would be hard to tell apart at 45 px. The concept's own
+   keycaps use the same three hues. */
+const CAP = {
+  tabl:   { top: lin('#A2603A'), bezel: [0.86, 0.495, 0.155], glow: [1.00, 0.52, 0.18] },
+  swords: { top: lin('#42629E'), bezel: [0.60, 0.62, 0.66],   glow: [0.32, 0.62, 1.00] },
+  tar:    { top: lin('#3A7A48'), bezel: [0.86, 0.495, 0.155], glow: [0.34, 0.86, 0.46] },
+};
+
+function keycap(lane) {
+  const A = 0.60, B = 0.52, Rr = 0.16;      // plinth half-extents and corner
+  const TOP = 0.10, BOT = -0.24;
+  const body = roundRect(96, A, B, Rr, TOP, BOT, 0, 0);
+  body.push(...roundChamfer(96, A, B, Rr, 0.075, TOP, 1));
+  body.push(...roundChamfer(96, A, B, Rr, 0.055, BOT, -1));
+
+  // The recess is open at the top, so the solid that cuts it runs past the cap.
+  const hA = A - 0.115, hB = B - 0.115, hR = Rr - 0.03;
+  const recess = roundRect(64, hA, hB, hR, 1.0, -0.005, 0, 0);
+
+  // The coloured top sits in the recess and stands slightly proud of it, with
+  // a chamfer and a shallow dome. The dome is what the cut keycaps have and a
+  // flat panel does not: it bends the reflection across the face instead of
+  // returning one even tone.
+  const iA = hA - 0.012, iB = hB - 0.012, iR = hR - 0.03;
+  const inset = roundRect(64, iA, iB, iR, 0.105, -0.02, 0, 2);
+  inset.push(...roundChamfer(64, iA, iB, iR, 0.045, 0.105, 1));
+
+  const c = CAP[lane];
+  return {
+    name: 'key_' + lane,
+    radius: 0.80,
+    rot: { rx: CAP_TILT, ry: 0, rz: 0 },
+    glow: c.glow,
+    parts: [
+      { planes: body, sub: recess,
+        mat: { type: 'metal', f0: c.bezel, rough: 0.42, spec: 170 } },
+      { planes: inset,
+        bump: {
+          h: (x, z) => {
+            const u = Math.max(-1, Math.min(1, x / iA));
+            const v = Math.max(-1, Math.min(1, z / iB));
+            return 0.048 * (1 - u * u) * (1 - v * v);
+          },
+        },
+        mat: { type: 'enamel', albedo: c.top, f0: 0.055, spec: 260 } },
+    ],
+  };
+}
+
+module.exports = { crystal, gem, coin, keycap };

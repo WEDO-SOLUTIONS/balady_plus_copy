@@ -64,6 +64,38 @@ function prism(sides, r, yTop, yBot, phase, sideKind, capKind) {
   return planes;
 }
 
+/* A rounded rectangle, swept into a prism about +Y.
+
+   The support function of a rounded rectangle is exact and cheap -- it is the
+   Minkowski sum of a box and a disc, so h(n) = a|nx| + b|nz| + r -- which
+   means a ring of planes at h(n) gives the shape directly, and it stays
+   convex, so the slab test still applies. */
+function roundRect(sides, a, b, r, yTop, yBot, sideKind, capKind) {
+  const planes = [];
+  for (let i = 0; i < sides; i++) {
+    const t = (i / sides) * Math.PI * 2;
+    const nx = Math.cos(t), nz = Math.sin(t);
+    planes.push([nx, 0, nz, a * Math.abs(nx) + b * Math.abs(nz) + r, sideKind | 0]);
+  }
+  planes.push([0, 1, 0, yTop, capKind | 0]);
+  planes.push([0, -1, 0, -yBot, capKind | 0]);
+  return planes;
+}
+
+/* A 45-degree chamfer around one face of a rounded rectangle, cutting `c` off
+   the edge. dir +1 chamfers the top face, -1 the bottom. */
+function roundChamfer(sides, a, b, r, c, y, dir) {
+  const planes = [];
+  const L = Math.SQRT2;
+  for (let i = 0; i < sides; i++) {
+    const t = (i / sides) * Math.PI * 2;
+    const nx = Math.cos(t), nz = Math.sin(t);
+    const h = a * Math.abs(nx) + b * Math.abs(nz) + r;
+    planes.push([nx / L, dir / L, nz / L, (h - c + dir * y) / L, 0]);
+  }
+  return planes;
+}
+
 /* A ring of planes from a ring of radius r at height y0 to an apex at yApex.
    dir +1 points the apex up, -1 points it down. */
 function cone(sides, r, y0, yApex, dir, phase) {
@@ -132,4 +164,4 @@ function sdStar(px, pz, r, n, m) {
   return Math.hypot(qx, qy) * (qx < 0 ? -1 : 1);
 }
 
-module.exports = { V, hitConvex, prism, cone, rot, apply, sdStar };
+module.exports = { V, hitConvex, prism, roundRect, roundChamfer, cone, rot, apply, sdStar };

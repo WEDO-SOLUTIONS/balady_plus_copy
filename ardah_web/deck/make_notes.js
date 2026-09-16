@@ -22,7 +22,7 @@
 const fs = require('fs');
 const path = require('path');
 const { hitConvex, rot, apply, sdStar } = require('./lib/trace');
-const { env, schlick, reflect, refract, directSpec, toSRGB } = require('./lib/shade');
+const { LIGHTS, env, schlick, reflect, refract, directSpec, toSRGB } = require('./lib/shade');
 const scene = require('./lib/scene');
 const png = require('./lib/png');
 
@@ -40,48 +40,22 @@ const GLOW_GAIN = 0.32;
 
 /* --------------------------- surface perturbation -------------------------- */
 
-/* The coin's relief, as a height field on the face. An eight-point rosette:
-   deliberately NOT the crossed sabres under a palm an earlier pass struck
-   here, which is the arrangement of the Saudi state emblem and is ruled out
-   as decoration by docs/ardah-art-brief.md. */
-function relief(x, z) {
-  const r = Math.hypot(x, z);
-  // A struck coin is slightly domed. Without it the face is perfectly flat,
-  // every pixel reflects the same direction of a distant environment, and the
-  // gold comes out as one even tone -- the giveaway of a render that has not
-  // been thought about.
-  let h = 0.052 * (1 - Math.min(1, (r / 0.455) * (r / 0.455)));
-  const sd = sdStar(x, z, 0.245, 8, 3.0);
-  h -= 0.034 * smooth(0.012, -0.005, sd);          // the star, cut in
-  if (r < 0.080) h += 0.018 * smooth(0.080, 0.056, r);   // raised centre boss
-  h -= 0.013 * Math.exp(-Math.pow((r - 0.368) / 0.015, 2));  // rim groove
-  return h;
-}
-
-function smooth(e0, e1, x) {
-  const t = Math.max(0, Math.min(1, (x - e0) / (e1 - e0)));
-  return t * t * (3 - 2 * t);
-}
-
-/* Replace a facet normal where the geometry is a stand-in for something
-   smoother or finer than the polygon count. */
-function perturb(kind, px, py, pz, nx, ny, nz, out) {
+/* Replace a facet normal where the geometry stands in for something smoother
+   or finer than the polygon count can carry. */
+function perturb(part, kind, px, py, pz, nx, ny, nz, out) {
   if (kind === 1) {
     // A 128-gon side is really a cylinder; recover the true normal, then cut
     // the milling into it as a tangential ripple.
     const r = Math.hypot(px, pz) || 1;
-    let ex = px / r, ez = pz / r;
-    const th = Math.atan2(pz, px);
-    const ripple = 0.30 * Math.cos(th * 72);
-    let tx = -ez, tz = ex;
-    out[0] = ex + tx * ripple; out[1] = 0; out[2] = ez + tz * ripple;
-  } else if (kind === 2) {
+    const ex = px / r, ez = pz / r;
+    const ripple = 0.30 * Math.cos(Math.atan2(pz, px) * 72);
+    out[0] = ex - ez * ripple; out[1] = 0; out[2] = ez + ex * ripple;
+  } else if (kind === 2 && part.bump) {
     const e = 0.0016;
-    const h0 = relief(px, pz);
-    const hx = (relief(px + e, pz) - h0) / e;
-    const hz = (relief(px, pz + e) - h0) / e;
-    const s = ny >= 0 ? 1 : -1;
-    out[0] = -hx; out[1] = s; out[2] = -hz;
+    const h0 = part.bump.h(px, pz);
+    const hx = (part.bump.h(px + e, pz) - h0) / e;
+    const hz = (part.bump.h(px, pz + e) - h0) / e;
+    out[0] = -hx; out[1] = ny >= 0 ? 1 : -1; out[2] = -hz;
   } else {
     out[0] = nx; out[1] = ny; out[2] = nz;
     return;
@@ -152,10 +126,12 @@ function shadeRay(obj, ox, oy, oz, dx, dy, dz, R, hit, sub, inner, w3, e3, acc) 
   if (!bp) return 0;
 
   const hx = ox + dx * best, hy = oy + dy * best, hz = oz + dz * best;
-  perturb(bk, hx, hy, hz, bnx, bny, bnz, w3);
+  perturb(bp, bk, hx, hy, hz, bnx, bny, bnz, w3);
   const nx = w3[0], ny = w3[1], nz = w3[2];
 
   if (bp.mat.type === 'metal') shadeMetal(bp.mat, nx, ny, nz, dx, dy, dz, R, e3, acc);
+  else if (bp.mat.type === 'enamel') shadeEnamel(bp.mat, nx, ny, nz, dx, dy, dz, R, w3, e3, acc);
+  else if (bp.mat.type === 'lit') shadeLit(bp.mat, nx, ny, nz, dx, dy, dz, R, w3, e3, acc);
   else shadeGlass(bp, hx, hy, hz, nx, ny, nz, dx, dy, dz, R, hit, inner, w3, e3, acc);
   return 1;
 }
@@ -185,6 +161,57 @@ function shadeMetal(mat, nx, ny, nz, dx, dy, dz, R, tmp, acc) {
   const wn = [tmp[0], tmp[1], tmp[2]];
   apply(R.m, -dx, -dy, -dz, tmp);
   directSpec(wn[0], wn[1], wn[2], tmp[0], tmp[1], tmp[2], mat.spec, f0, acc);
+}
+
+function shadeEnamel(mat, nx, ny, nz, dx, dy, dz, R, tmp, e, acc) {
+  apply(R.m, nx, ny, nz, tmp);
+  const wx = tmp[0], wy = tmp[1], wz = tmp[2];
+
+  // Diffuse: the three sources plus the environment sampled along the normal
+  // as a stand-in for everything else in the room.
+  env(wx, wy, wz, e);
+  let dr = e[0] * 0.75, dg = e[1] * 0.75, db = e[2] * 0.75;
+  for (let i = 0; i < LIGHTS.length; i++) {
+    const L = LIGHTS[i];
+    const nl = wx * L.d[0] + wy * L.d[1] + wz * L.d[2];
+    if (nl <= 0) continue;
+    dr += nl * L.c[0]; dg += nl * L.c[1]; db += nl * L.c[2];
+  }
+  acc[0] += mat.albedo[0] * dr;
+  acc[1] += mat.albedo[1] * dg;
+  acc[2] += mat.albedo[2] * db;
+
+  // Clear coat on top: a weak Fresnel reflection and a tight highlight.
+  const nv = Math.max(0, -(dx * nx + dy * ny + dz * nz));
+  const F = schlick(mat.f0, nv);
+  const rf = [0, 0, 0];
+  reflect(dx, dy, dz, nx, ny, nz, rf);
+  envWorld(R, rf[0], rf[1], rf[2], tmp, e);
+  acc[0] += F * e[0]; acc[1] += F * e[1]; acc[2] += F * e[2];
+  apply(R.m, -dx, -dy, -dz, tmp);
+  directSpec(wx, wy, wz, tmp[0], tmp[1], tmp[2], mat.spec, [F * 5, F * 5, F * 5], acc);
+}
+
+/* A lit panel: an emitter under a polished surface. The emission is scaled by
+   the facing ratio so the pad is brightest looking straight into it and falls
+   off across the chamfer, which is what keeps it from reading as a flat
+   sticker of colour. */
+function shadeLit(mat, nx, ny, nz, dx, dy, dz, R, tmp, e, acc) {
+  const nv = Math.max(0, -(dx * nx + dy * ny + dz * nz));
+  acc[0] += mat.emit[0] * (0.42 + 0.58 * nv);
+  acc[1] += mat.emit[1] * (0.42 + 0.58 * nv);
+  acc[2] += mat.emit[2] * (0.42 + 0.58 * nv);
+
+  const F = schlick(mat.f0, nv);
+  const rf = [0, 0, 0];
+  reflect(dx, dy, dz, nx, ny, nz, rf);
+  envWorld(R, rf[0], rf[1], rf[2], tmp, e);
+  acc[0] += F * e[0]; acc[1] += F * e[1]; acc[2] += F * e[2];
+
+  apply(R.m, nx, ny, nz, tmp);
+  const wn = [tmp[0], tmp[1], tmp[2]];
+  apply(R.m, -dx, -dy, -dz, tmp);
+  directSpec(wn[0], wn[1], wn[2], tmp[0], tmp[1], tmp[2], 220, [F * 6, F * 6, F * 6], acc);
 }
 
 function shadeGlass(part, hx, hy, hz, nx, ny, nz, dx, dy, dz, R, hit, inner, tmp, e3, acc) {
@@ -217,7 +244,7 @@ function shadeGlass(part, hx, hy, hz, nx, ny, nz, dx, dy, dz, R, hit, inner, tmp
     ab *= Math.exp(-mat.absorb[2] * d);
     px += vx * d; py += vy * d; pz += vz * d;
     let ex = inner.fx, ey = inner.fy, ez = inner.fz;
-    if (inner.fk) { perturb(inner.fk, px, py, pz, ex, ey, ez, tmp); ex = tmp[0]; ey = tmp[1]; ez = tmp[2]; }
+    if (inner.fk) { perturb(part, inner.fk, px, py, pz, ex, ey, ez, tmp); ex = tmp[0]; ey = tmp[1]; ez = tmp[2]; }
 
     // Facing normal for a ray on its way out: the stored plane normal points
     // out of the solid, which is the same way the ray is travelling, and
@@ -338,17 +365,55 @@ function resolve(img, size, glowTint) {
   return rgba;
 }
 
+/* Crop to the alpha bounding box.
+
+   This is not cosmetic. js/render.js sizes a sprite by the whole PNG -- a note
+   by its width (dw), a keycap by its height (ch) -- so transparent margin is
+   drawn too. A 512 px master whose object covers 340 px would render its
+   content at two thirds the size of the tightly cropped sprites cut from the
+   concept, which is exactly the kind of difference that looks like the art is
+   wrong rather than the padding. A few pixels of margin are kept so the glow
+   is not clipped and so bilinear sampling has an edge to work with. */
+function trim(rgba, size, pad) {
+  let x0 = size, y0 = size, x1 = -1, y1 = -1;
+  for (let y = 0; y < size; y++) {
+    for (let x = 0; x < size; x++) {
+      if (rgba[(y * size + x) * 4 + 3] > 2) {
+        if (x < x0) x0 = x;
+        if (x > x1) x1 = x;
+        if (y < y0) y0 = y;
+        if (y > y1) y1 = y;
+      }
+    }
+  }
+  if (x1 < 0) return { data: rgba, w: size, h: size };
+  x0 = Math.max(0, x0 - pad); y0 = Math.max(0, y0 - pad);
+  x1 = Math.min(size - 1, x1 + pad); y1 = Math.min(size - 1, y1 + pad);
+  const w = x1 - x0 + 1, h = y1 - y0 + 1;
+  const out = new Uint8Array(w * h * 4);
+  for (let y = 0; y < h; y++) {
+    out.set(rgba.subarray(((y + y0) * size + x0) * 4, ((y + y0) * size + x1 + 1) * 4), y * w * 4);
+  }
+  return { data: out, w, h };
+}
+
 /* ----------------------------------- go ----------------------------------- */
 
 fs.mkdirSync(OUT, { recursive: true });
-const objects = [scene.crystal(), scene.gem(), scene.coin()];
+const objects = [
+  scene.crystal(), scene.gem(), scene.coin(),
+  scene.keycap('tabl'), scene.keycap('swords'), scene.keycap('tar'),
+];
 for (const obj of objects) {
   const t0 = Date.now();
   const { hdr, W } = render(obj);
   const small = downsample(hdr, W, SIZE, SS);
   const rgba = resolve(small, SIZE, obj.glow);
-  const file = path.join(OUT, `note_${obj.name}_hd.png`);
-  fs.writeFileSync(file, png.encode(rgba, SIZE, SIZE));
-  console.log(`note_${obj.name}_hd.png  ${(fs.statSync(file).size / 1024).toFixed(1)} KB` +
+  const cut = trim(rgba, SIZE, 3);
+  const stem = obj.name.startsWith('key_') ? obj.name : 'note_' + obj.name;
+  const file = path.join(OUT, `${stem}_hd.png`);
+  fs.writeFileSync(file, png.encode(cut.data, cut.w, cut.h));
+  console.log(`${stem}_hd.png  ${cut.w}x${cut.h}  ` +
+              `${(fs.statSync(file).size / 1024).toFixed(1)} KB` +
               `  ${((Date.now() - t0) / 1000).toFixed(1)}s`);
 }

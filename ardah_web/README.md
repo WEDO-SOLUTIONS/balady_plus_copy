@@ -205,10 +205,46 @@ at 512 px — a note is never seen that large. Judge by eye, too: the cuts'
 luminance statistics include baked-in dark fringe from the crop that a traced
 sprite has no reason to reproduce, so matching their mean is the wrong target.
 
+### Traced keycaps
+
+`deck/lib/scene.js` also builds the three strike pads: a metal plinth with a
+chamfered top, a recess milled into it, and a domed coloured face set in the
+recess. The plinth is a rounded rectangle, which stays convex — its support
+function is exact (`h(n) = a|nx| + b|nz| + r`, the Minkowski sum of a box and a
+disc), so a ring of planes at `h(n)` gives the shape and the slab test still
+applies. A new `enamel` material does the faces: a diffuse body under a clear
+coat, which metals cannot stand in for because they have no diffuse term.
+
+Lane colours come from **`KEYCAP`** in `js/render.js` — copper, steel blue,
+green — and not from `LANE.glow`, where tabl and tar are both warm gold and the
+two pads would be hard to tell apart at 45 pt. The concept's own keycaps use
+the same three hues.
+
+**They carry no letter, and that is the point.** The cut keycaps have `A`/`S`/`D`
+baked in as pixels, which is exactly what `docs/ardah-art-brief.md` §1 rules
+out: the strings localise to Arabic, the layout flips to RTL, and the pads have
+to show a dot instead of a letter once the player is on touch. That is why
+`_keycaps` currently skips its glyph when a sprite is present. Wiring the
+traced pads in therefore needs one change in `js/render.js`: draw
+`state.touchUsed ? '●' : LANE_KEYS[lane]` over the sprite as well as under the
+fallback. Until then the traced pads would render without a key hint.
+
+### Sizing: the sprites are trimmed
+
+`js/render.js` sizes a sprite by the **whole PNG** — a note by its width
+(`dw`), a keycap by its height (`ch`) — so transparent margin is drawn too. A
+512 px master whose object covers 340 px renders its content at two thirds the
+size of the tightly cropped concept sprites, which reads as the art being wrong
+rather than the padding. `make_notes.js` therefore trims every output to its
+alpha bounding box with 3 px of margin, which is what makes the masters
+drop-in comparable with the cuts. `deck/out/caps_compare.png` is the check:
+both rows are scaled to the same height, the way the game will.
+
 The masters are not wired into the game: swapping them in changes the art
 direction (the cut sprites carry the concept's own lighting), so that is a
-design call, not a technical one. To try them, export to webp at the size the
-lane actually uses and drop them over `assets/note_*.webp`.
+design call, not a technical one. To try them, export to webp and drop them
+over `assets/note_*.webp` and `assets/key_*.webp` — plus the `_keycaps` glyph
+change above.
 
 ## What is real and what is a placeholder
 
