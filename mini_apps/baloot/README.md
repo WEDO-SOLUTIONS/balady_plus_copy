@@ -93,6 +93,12 @@ Hints are a real suggestion: the bubble and the rail button both name the card
 the bots would play from your seat, and the rail button plays it. They can be
 turned off in the settings sheet.
 
+The scene is a still photograph, so the light is added over it: one warm pool
+per lamp in the picture, each breathing on its own cycle, a handful of embers
+rising through them, and a slow highlight wandering across the cloth. The lamp
+positions are percentages of the picture, measured off `room.webp`, so they
+follow it as it scales. All of it honours `prefers-reduced-motion`.
+
 ## Friends & invitations
 
 There is no "friends on map" feature in this repository. The closest existing
