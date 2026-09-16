@@ -49,48 +49,80 @@ button{font:inherit;color:inherit;border:0;background:none;cursor:pointer}
 #table{
   position:fixed;inset:0;
   background:
-    radial-gradient(ellipse 120% 80% at 50% 42%, var(--felt-1) 0%, #0d4a37 52%, var(--felt-2) 100%);
+    radial-gradient(ellipse 120% 78% at 50% 40%, #17785a 0%, #0f5942 46%, #093122 100%);
   display:flex;flex-direction:column;
   padding-top:var(--safe-t);
   padding-bottom:var(--safe-b);
 }
+/* woven felt + an eight-point star lattice, the way a Najdi pattern tiles */
+#table::before{
+  content:"";position:absolute;inset:0;pointer-events:none;opacity:.55;
+  background-image:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='46' height='46' viewBox='0 0 46 46'%3E%3Cg fill='none' stroke='%23ffffff' stroke-width='.8' opacity='.055'%3E%3Crect x='13.5' y='13.5' width='19' height='19'/%3E%3Cpath d='M23 9.5 36.5 23 23 36.5 9.5 23Z'/%3E%3C/g%3E%3C/svg%3E"),
+    repeating-linear-gradient(45deg,rgba(255,255,255,.012) 0 2px,transparent 2px 4px);
+  background-size:46px 46px, auto;
+}
+/* vignette, so the middle of the table reads brighter than the rails */
 #table::after{
   content:"";position:absolute;inset:0;pointer-events:none;
-  background-image:repeating-linear-gradient(45deg,rgba(255,255,255,.012) 0 2px,transparent 2px 4px);
+  background:radial-gradient(ellipse 86% 72% at 50% 44%, transparent 48%, rgba(0,0,0,.22) 100%);
 }
 
 /* ---------- top bar ---------- */
 #topbar{
   position:relative;z-index:6;
-  display:flex;align-items:center;gap:8px;
+  display:flex;align-items:center;gap:7px;
   padding:8px 10px;
 }
+#topbar > *{flex:0 0 auto}
+#topbar .chip{flex:0 1 auto;min-width:0;overflow:hidden}
+#topbar #score{flex:0 1 auto;min-width:0}
 .chip{
   display:inline-flex;align-items:center;gap:6px;
-  background:rgba(0,0,0,.34);border:1px solid rgba(226,187,100,.28);
-  border-radius:999px;padding:5px 11px;font-size:12.5px;font-weight:700;
-  backdrop-filter:blur(6px);white-space:nowrap;
+  background:linear-gradient(170deg,rgba(0,0,0,.4),rgba(0,0,0,.26));
+  border:1px solid rgba(226,187,100,.32);
+  border-radius:999px;padding:6px 12px;font-size:12.5px;font-weight:700;
+  backdrop-filter:blur(8px);white-space:nowrap;
+  box-shadow:0 2px 8px rgba(0,0,0,.26), inset 0 1px 0 rgba(255,255,255,.06);
 }
 .chip b{color:var(--gold);font-variant-numeric:tabular-nums}
 .icon-btn{
-  width:34px;height:34px;border-radius:50%;
-  background:rgba(0,0,0,.34);border:1px solid rgba(226,187,100,.28);
+  width:36px;height:36px;border-radius:50%;
+  background:linear-gradient(170deg,rgba(0,0,0,.4),rgba(0,0,0,.24));
+  border:1px solid rgba(226,187,100,.32);
   display:grid;place-items:center;font-size:15px;line-height:1;
+  backdrop-filter:blur(8px);
+  box-shadow:0 2px 8px rgba(0,0,0,.28), inset 0 1px 0 rgba(255,255,255,.07);
+  transition:transform .12s,border-color .12s;
 }
+.icon-btn:hover{border-color:rgba(226,187,100,.6)}
 .icon-btn:active{transform:scale(.92)}
 .spacer{flex:1}
 
 /* ---------- scoreboard ---------- */
 #score{
-  display:flex;gap:6px;align-items:stretch;
-  background:rgba(0,0,0,.34);border:1px solid rgba(226,187,100,.28);
-  border-radius:12px;padding:4px 8px;backdrop-filter:blur(6px);
+  display:flex;gap:8px;align-items:stretch;
+  background:linear-gradient(170deg,rgba(0,0,0,.42),rgba(0,0,0,.28));
+  border:1px solid rgba(226,187,100,.34);
+  border-radius:13px;padding:5px 10px;backdrop-filter:blur(8px);
+  box-shadow:0 3px 12px rgba(0,0,0,.3), inset 0 1px 0 rgba(255,255,255,.07);
 }
-.sc{display:flex;flex-direction:column;align-items:center;min-width:44px;line-height:1.15}
+.sc{display:flex;flex-direction:column;align-items:center;min-width:46px;line-height:1.12}
 .sc .lbl{font-size:9.5px;opacity:.72;font-weight:700;letter-spacing:.3px}
-.sc .val{font-size:17px;font-weight:800;font-variant-numeric:tabular-nums;color:var(--gold)}
-.sc.them .val{color:#f0e9d8}
-.sc-sep{width:1px;background:rgba(226,187,100,.25);margin:3px 0}
+.sc .val{font-size:18px;font-weight:800;font-variant-numeric:tabular-nums;color:var(--gold);
+         text-shadow:0 1px 6px rgba(226,187,100,.35)}
+.sc.them .val{color:#f0e9d8;text-shadow:none}
+.sc .rail{width:100%;height:3px;border-radius:2px;background:rgba(255,255,255,.14);margin-top:3px;overflow:hidden}
+.sc .rail i{display:block;height:100%;width:0;border-radius:2px;
+            background:linear-gradient(90deg,#e8c876,#f3e0aa);transition:width .5s cubic-bezier(.2,.8,.3,1)}
+.sc.them .rail i{background:linear-gradient(90deg,#8fb7c9,#cfe2ea)}
+.sc-mid{
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  padding:0 7px;line-height:1.1;
+  border-inline:1px solid rgba(226,187,100,.22);
+}
+.sc-mid .rnd{font-size:8.5px;opacity:.55;font-weight:700;letter-spacing:.2px}
+.sc-mid b{font-size:13px;color:rgba(247,243,232,.82);font-variant-numeric:tabular-nums}
 
 /* ---------- seats ---------- */
 #felt{position:relative;flex:1;min-height:0}
@@ -99,9 +131,20 @@ button{font:inherit;color:inherit;border:0;background:none;cursor:pointer}
   content:"";position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
   width:min(88vw,430px);height:min(88vw,430px);max-height:58vh;
   border-radius:50%;pointer-events:none;
-  background:radial-gradient(ellipse at 50% 42%,
-    rgba(255,255,255,.055) 0%, rgba(255,255,255,.02) 46%, rgba(0,0,0,.10) 68%, transparent 74%);
-  box-shadow:inset 0 0 0 2px rgba(226,187,100,.10), inset 0 0 40px rgba(0,0,0,.14);
+  background:radial-gradient(ellipse at 50% 40%,
+    rgba(255,255,255,.085) 0%, rgba(255,255,255,.03) 48%, rgba(0,0,0,.07) 70%, transparent 76%);
+  border:1px solid rgba(226,187,100,.22);
+  box-shadow:
+    inset 0 0 0 5px rgba(226,187,100,.05),
+    inset 0 0 44px rgba(0,0,0,.16),
+    0 0 44px rgba(226,187,100,.05);
+}
+/* a second, thinner ring for the inlay look */
+#felt::after{
+  content:"";position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
+  width:min(80vw,392px);height:min(80vw,392px);max-height:53vh;
+  border-radius:50%;pointer-events:none;
+  border:1px dashed rgba(226,187,100,.13);
 }
 .seat{
   position:absolute;display:flex;align-items:center;gap:7px;z-index:5;
@@ -111,33 +154,54 @@ button{font:inherit;color:inherit;border:0;background:none;cursor:pointer}
 .seat[data-pos="east"]{top:50%;right:6px;transform:translateY(-50%);flex-direction:column;gap:4px}
 .seat[data-pos="west"]{top:50%;left:6px;transform:translateY(-50%);flex-direction:column;gap:4px}
 .avatar{
-  width:42px;height:42px;border-radius:50%;
-  background:linear-gradient(160deg,#1c7a5b,#0b3d2e);
-  border:2px solid rgba(226,187,100,.45);
-  display:grid;place-items:center;font-size:18px;font-weight:800;
-  box-shadow:0 4px 14px rgba(0,0,0,.4);position:relative;
+  width:46px;height:46px;border-radius:50%;
+  background:
+    radial-gradient(circle at 34% 26%, rgba(255,255,255,.22), transparent 58%),
+    linear-gradient(160deg,#1e8562,#0a3a2b);
+  border:2px solid rgba(226,187,100,.4);
+  display:grid;place-items:center;font-size:19px;font-weight:800;
+  box-shadow:0 5px 16px rgba(0,0,0,.45), inset 0 -3px 8px rgba(0,0,0,.28);
+  position:relative;
 }
-.avatar.me{border-color:var(--gold)}
-.avatar.turn{
-  border-color:#fff;
-  box-shadow:0 0 0 3px rgba(255,255,255,.22),0 0 20px rgba(226,187,100,.65);
-  animation:pulse 1.5s ease-in-out infinite;
+.avatar.mate{                      /* your partner, across the table */
+  background:
+    radial-gradient(circle at 34% 26%, rgba(255,255,255,.24), transparent 58%),
+    linear-gradient(160deg,#2a8f6b,#13543d);
+  border-color:rgba(226,187,100,.62);
 }
-@keyframes pulse{50%{box-shadow:0 0 0 6px rgba(255,255,255,.1),0 0 26px rgba(226,187,100,.9)}}
+/* the ring sweeps while that seat is thinking */
+.avatar.turn::after{
+  content:"";position:absolute;inset:-5px;border-radius:50%;
+  background:conic-gradient(from 0deg, var(--gold), rgba(226,187,100,.05) 45%, var(--gold) 100%);
+  -webkit-mask:radial-gradient(farthest-side,transparent calc(100% - 3px),#000 calc(100% - 3px));
+          mask:radial-gradient(farthest-side,transparent calc(100% - 3px),#000 calc(100% - 3px));
+  animation:spin 1.7s linear infinite;
+}
+.avatar.turn{box-shadow:0 5px 18px rgba(0,0,0,.45),0 0 22px rgba(226,187,100,.5),
+             inset 0 -3px 8px rgba(0,0,0,.28)}
+@keyframes spin{to{transform:rotate(360deg)}}
 .avatar .badge{
-  position:absolute;bottom:-3px;inset-inline-end:-3px;
-  background:var(--gold);color:var(--ink);font-size:9px;font-weight:900;
-  border-radius:999px;padding:1px 4px;line-height:1.3;
+  position:absolute;top:-5px;inset-inline-end:-7px;z-index:3;
+  background:linear-gradient(170deg,#f0d491,#cda45c);color:var(--ink);
+  font-size:9px;font-weight:900;border-radius:999px;padding:1px 5px;line-height:1.35;
+  box-shadow:0 2px 5px rgba(0,0,0,.4);
 }
 .avatar .badge.bot{background:#6f8f9e;color:#fff}
 .avatar .badge.wait{background:var(--warn);color:#fff}
-.nm{font-size:11px;font-weight:700;text-align:center;max-width:82px;
-    overflow:hidden;text-overflow:ellipsis;white-space:nowrap;text-shadow:0 1px 3px rgba(0,0,0,.6)}
+.nm{font-size:11.5px;font-weight:700;text-align:center;max-width:86px;
+    overflow:hidden;text-overflow:ellipsis;white-space:nowrap;text-shadow:0 1px 4px rgba(0,0,0,.75)}
+/* one dot per trick that seat's team has taken */
+.wins{display:flex;gap:3px;justify-content:center;height:5px}
+.wins i{width:5px;height:5px;border-radius:50%;background:rgba(255,255,255,.22)}
+.wins i.on{background:var(--gold);box-shadow:0 0 5px rgba(226,187,100,.8)}
 .hand-back{display:flex;gap:-6px}
 .cardback{
-  width:16px;height:23px;border-radius:3px;margin-inline-start:-9px;
-  background:repeating-linear-gradient(45deg,#9d2235 0 3px,#7a1a29 3px 6px);
-  border:1px solid rgba(255,255,255,.28);box-shadow:0 1px 3px rgba(0,0,0,.4);
+  width:17px;height:24px;border-radius:3px;margin-inline-start:-9px;
+  background:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cg fill='none' stroke='%23f0d79a' stroke-width='1' opacity='.55'%3E%3Crect x='3.2' y='3.2' width='5.6' height='5.6'/%3E%3Cpath d='M6 2 10 6 6 10 2 6Z'/%3E%3C/g%3E%3C/svg%3E") center/9px 9px,
+    linear-gradient(150deg,#b02a40 0%,#8c1c30 55%,#6d1224 100%);
+  border:1px solid rgba(255,235,200,.45);
+  box-shadow:0 2px 5px rgba(0,0,0,.45), inset 0 0 0 1px rgba(0,0,0,.18);
 }
 .cardback:first-child{margin-inline-start:0}
 
@@ -155,55 +219,121 @@ button{font:inherit;color:inherit;border:0;background:none;cursor:pointer}
 #trick .tc.north{top:0;left:50%;margin-left:calc(var(--card-w)/-2);transform:rotate(3deg)}
 #trick .tc.east{right:0;top:50%;margin-top:calc(var(--card-h)/-2);transform:rotate(8deg)}
 #trick .tc.west{left:0;top:50%;margin-top:calc(var(--card-h)/-2);transform:rotate(-8deg)}
-#trick .tc.deal-in{animation:dealIn .3s cubic-bezier(.2,.9,.3,1)}
-@keyframes dealIn{from{opacity:0;transform:scale(.6) translateY(24px)}}
-#trick.collect .tc{opacity:0;transform:scale(.5)}
+/* a played card flies in from its owner's side of the table */
+#trick .tc.deal-in{animation:inCard .30s cubic-bezier(.2,.9,.3,1)}
+#trick .tc.north.deal-in{animation-name:inN}
+#trick .tc.south.deal-in{animation-name:inS}
+#trick .tc.east.deal-in {animation-name:inE}
+#trick .tc.west.deal-in {animation-name:inW}
+@keyframes inCard{from{opacity:0;transform:scale(.7)}}
+@keyframes inN{from{opacity:0;transform:translateY(-84px) scale(.72) rotate(3deg)}}
+@keyframes inS{from{opacity:0;transform:translateY( 84px) scale(.72) rotate(-2deg)}}
+@keyframes inE{from{opacity:0;transform:translateX( 92px) scale(.72) rotate(8deg)}}
+@keyframes inW{from{opacity:0;transform:translateX(-92px) scale(.72) rotate(-8deg)}}
+
+/* the finished trick is swept towards whoever won it */
+#trick.collect .tc{opacity:0;transform:scale(.55)}
+#trick.collect.w-north .tc{transform:translateY(-150px) scale(.5) rotate(8deg)}
+#trick.collect.w-south .tc{transform:translateY( 150px) scale(.5) rotate(-8deg)}
+#trick.collect.w-east  .tc{transform:translateX( 170px) scale(.5) rotate(14deg)}
+#trick.collect.w-west  .tc{transform:translateX(-170px) scale(.5) rotate(-14deg)}
 
 /* ---------- centre HUD ---------- */
 #centre{
   position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
   z-index:4;text-align:center;pointer-events:none;
 }
-#modepill{
-  display:inline-flex;align-items:center;gap:6px;
-  background:rgba(0,0,0,.5);border:1px solid rgba(226,187,100,.4);
-  border-radius:999px;padding:4px 12px;font-size:12px;font-weight:800;
-  backdrop-filter:blur(4px);
+/* the trump (or the sun) breathes faintly in the middle of the felt */
+#trumpmark{
+  font-size:min(38vw,168px);line-height:1;opacity:0;
+  color:#fff;text-shadow:0 0 40px rgba(0,0,0,.35);
+  transition:opacity .6s;
 }
-#modepill .suit{font-size:15px}
+#trumpmark.on{opacity:.055}
+#chip-mode{gap:6px}
+#chip-mode .suit{font-size:15px;line-height:1}
 
 /* ---------- cards ---------- */
 .card{
-  width:var(--card-w);height:var(--card-h);border-radius:8px;
-  background:linear-gradient(170deg,#fffdf7,#efe9d9);
-  color:var(--ink);box-shadow:var(--shadow);
+  width:var(--card-w);height:var(--card-h);
+  border-radius:calc(var(--card-w)*.115);
+  background:linear-gradient(157deg,#fffefc 0%,#fdfaf2 44%,#f1ead9 100%);
+  color:var(--ink);
+  box-shadow:0 6px 15px rgba(0,0,0,.36), 0 1px 3px rgba(0,0,0,.3),
+             inset 0 0 0 1px rgba(255,255,255,.92);
   position:relative;overflow:hidden;
-  display:flex;flex-direction:column;justify-content:space-between;
-  padding:4px 5px;border:1px solid rgba(0,0,0,.14);
-  font-family:"SF Pro Display","Segoe UI",system-ui,sans-serif;
+  font-family:"Georgia","Times New Roman","Iowan Old Style",serif;
+  font-variant-numeric:lining-nums;
 }
-.card .corner{
-  font-size:calc(var(--card-w)*.34);font-weight:800;line-height:1;
-  letter-spacing:-.5px;z-index:2;
+.card::after{                      /* glossy sheen */
+  content:"";position:absolute;inset:0;pointer-events:none;z-index:3;
+  background:linear-gradient(122deg,rgba(255,255,255,.5) 0%,rgba(255,255,255,.12) 26%,rgba(255,255,255,0) 44%);
 }
-.card .corner .sg{display:block;font-size:calc(var(--card-w)*.30);margin-top:1px}
-.card .pip{
-  position:absolute;bottom:calc(var(--card-w)*-.06);inset-inline-end:calc(var(--card-w)*-.04);
-  font-size:calc(var(--card-w)*.72);opacity:.20;line-height:1;z-index:1;
+.card .idx{
+  position:absolute;top:calc(var(--card-w)*.045);inset-inline-start:calc(var(--card-w)*.085);
+  display:flex;flex-direction:column;align-items:center;line-height:.9;z-index:2;
 }
+.card .idx .rk{font-size:calc(var(--card-w)*.335);font-weight:700;letter-spacing:-.03em}
+.card .idx .su{font-size:calc(var(--card-w)*.215);margin-top:calc(var(--card-w)*.01)}
+
+/* pip field for 7-10 */
+.card .pips{position:absolute;inset:calc(var(--card-w)*.50) 13% 6% 13%;z-index:1}
+.card .pips i{
+  position:absolute;transform:translate(-50%,-50%);
+  font-size:calc(var(--card-w)*.21);font-style:normal;line-height:1;
+}
+.card .pips i.f{transform:translate(-50%,-50%) rotate(180deg)}
+
+/* ace */
+.card .ace{
+  position:absolute;top:61%;left:50%;transform:translate(-50%,-50%);
+  font-size:calc(var(--card-w)*.60);line-height:1;z-index:1;
+}
+.card .ace::before{
+  content:"";position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
+  width:calc(var(--card-w)*.74);height:calc(var(--card-w)*.74);border-radius:50%;
+  border:1px solid currentColor;opacity:.22;
+}
+
+/* court cards */
+.card .court{
+  position:absolute;inset:calc(var(--card-w)*.46) 11% 6% 11%;z-index:1;
+  border:1px solid currentColor;border-radius:calc(var(--card-w)*.06);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:calc(var(--card-w)*.02);
+}
+.card .court::before{
+  content:"";position:absolute;inset:calc(var(--card-w)*.035);
+  border:1px solid currentColor;border-radius:calc(var(--card-w)*.04);opacity:.4;
+}
+.card .court .cl{font-size:calc(var(--card-w)*.40);font-weight:700;line-height:.86}
+.card .court .cs{font-size:calc(var(--card-w)*.20);font-style:normal;opacity:.85;line-height:1}
+
 .card.r{color:var(--red)}
-.card.k{color:#16181d}
-.card.trump::before{
-  content:"";position:absolute;inset:0;border-radius:8px;
-  box-shadow:inset 0 0 0 2px var(--gold);pointer-events:none;
+.card.k{color:#191b20}
+.card.trump{box-shadow:0 6px 15px rgba(0,0,0,.36),0 0 0 2px var(--gold),
+            inset 0 0 0 1px rgba(255,255,255,.92)}
+.card.trump .idx::after{
+  content:"";position:absolute;inset:calc(var(--card-w)*-.05);border-radius:50%;
+  background:radial-gradient(circle,rgba(226,187,100,.35),transparent 70%);z-index:-1;
 }
 
 /* ---------- my hand ---------- */
 #hand{
-  position:relative;z-index:7;height:calc(var(--card-h) + 26px);
+  position:relative;z-index:7;height:calc(var(--card-h) + 30px);
   display:flex;justify-content:center;align-items:flex-end;
-  padding-bottom:6px;
+  padding-bottom:11px;
 }
+#hand::before{                     /* warm pool of light while it is your move */
+  content:"";position:absolute;bottom:-6px;left:50%;transform:translateX(-50%);
+  width:76%;height:46px;border-radius:50%;pointer-events:none;
+  background:radial-gradient(ellipse,rgba(226,187,100,.30),transparent 70%);
+  filter:blur(8px);opacity:0;transition:opacity .35s;
+}
+#hand.active::before{opacity:1;animation:breathe 2.4s ease-in-out infinite}
+@keyframes breathe{50%{opacity:.5}}
+@keyframes handIn{from{opacity:0;transform:translateY(52px) rotate(-7deg) scale(.88)}}
+#hand .slot.deal .card{animation:handIn .4s cubic-bezier(.2,.9,.3,1) backwards}
 #hand .slot{
   width:calc(var(--card-w) * .66);height:var(--card-h);
   position:relative;transition:transform .2s,margin .2s;
@@ -213,11 +343,15 @@ button{font:inherit;color:inherit;border:0;background:none;cursor:pointer}
   position:absolute;bottom:0;inset-inline-start:0;
   transition:transform .18s cubic-bezier(.2,.8,.3,1),filter .18s,box-shadow .18s;
 }
-#hand .slot.playable .card{cursor:pointer}
-#hand .slot.playable:active .card,#hand .slot.playable.sel .card{transform:translateY(-16px) scale(1.04)}
-#hand .slot.blocked .card{filter:grayscale(.72) brightness(.66)}
+#hand .slot.playable .card{cursor:pointer;transform:translateY(-7px)}
+#hand .slot.playable .card::before{        /* warm edge on the cards you may play */
+  content:"";position:absolute;inset:0;border-radius:inherit;z-index:2;pointer-events:none;
+  box-shadow:inset 0 0 0 1.5px rgba(226,187,100,.85), 0 0 14px rgba(226,187,100,.45);
+}
+#hand .slot.playable:active .card,#hand .slot.playable.sel .card{transform:translateY(-20px) scale(1.05)}
+#hand .slot.blocked .card{filter:brightness(.5) saturate(.28) contrast(.9)}
 #hand .slot.blocked{cursor:not-allowed}
-@media (hover:hover){#hand .slot.playable:hover .card{transform:translateY(-14px);box-shadow:0 14px 30px rgba(0,0,0,.5)}}
+@media (hover:hover){#hand .slot.playable:hover .card{transform:translateY(-18px);box-shadow:0 16px 32px rgba(0,0,0,.5)}}
 
 /* ---------- bubbles / announcements ---------- */
 .bubble{
@@ -228,7 +362,9 @@ button{font:inherit;color:inherit;border:0;background:none;cursor:pointer}
   animation:pop .22s cubic-bezier(.2,1.4,.5,1);
 }
 @keyframes pop{from{opacity:0;transform:scale(.6)}}
-.bubble.gold{background:linear-gradient(160deg,#f6dfa4,#d9ae56);}
+.bubble{box-shadow:0 8px 22px rgba(0,0,0,.5)}
+.bubble.gold{background:linear-gradient(160deg,#f8e4ae,#d6a94e);
+             box-shadow:0 8px 24px rgba(0,0,0,.5),0 0 20px rgba(226,187,100,.4)}
 .bubble::after{
   content:"";position:absolute;width:9px;height:9px;background:inherit;
   transform:rotate(45deg);
@@ -241,48 +377,72 @@ button{font:inherit;color:inherit;border:0;background:none;cursor:pointer}
 
 /* ---------- toast ---------- */
 #toast{
-  position:fixed;top:calc(var(--safe-t) + 54px);left:50%;transform:translateX(-50%);
+  position:fixed;bottom:calc(var(--safe-b) + var(--card-h) + 52px);
+  left:50%;transform:translateX(-50%);max-width:88vw;
   z-index:40;display:flex;flex-direction:column;gap:6px;align-items:center;pointer-events:none;
 }
 .toast{
   background:rgba(8,32,25,.94);border:1px solid rgba(226,187,100,.38);
-  color:var(--paper);border-radius:999px;padding:7px 16px;font-size:13px;font-weight:700;
+  color:var(--paper);border-radius:999px;padding:8px 17px;font-size:13px;font-weight:700;
+  text-align:center;
   box-shadow:var(--shadow);animation:toastIn .24s ease, toastOut .3s ease 2.1s forwards;
 }
-@keyframes toastIn{from{opacity:0;transform:translateY(-10px)}}
-@keyframes toastOut{to{opacity:0;transform:translateY(-8px)}}
+@keyframes toastIn{from{opacity:0;transform:translateY(12px)}}
+@keyframes toastOut{to{opacity:0;transform:translateY(-6px)}}
 
 /* ---------- panels / modals ---------- */
 .scrim{
-  position:fixed;inset:0;z-index:50;background:rgba(3,14,10,.72);
+  position:fixed;inset:0;z-index:50;background:rgba(3,14,10,.76);
   backdrop-filter:blur(7px);display:grid;place-items:center;padding:16px;
   animation:fade .2s ease;
 }
 @keyframes fade{from{opacity:0}}
 .scrim[hidden]{display:none}
 .panel{
+  position:relative;
   width:min(440px,100%);max-height:88vh;overflow:auto;
-  background:linear-gradient(170deg,#0f4d3a,#07291e);
-  border:1px solid rgba(226,187,100,.35);border-radius:20px;
-  box-shadow:0 26px 60px rgba(0,0,0,.6);
-  padding:18px;animation:up .26s cubic-bezier(.2,.9,.3,1);
+  background:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='46' height='46' viewBox='0 0 46 46'%3E%3Cg fill='none' stroke='%23ffffff' stroke-width='.8' opacity='.022'%3E%3Crect x='13.5' y='13.5' width='19' height='19'/%3E%3Cpath d='M23 9.5 36.5 23 23 36.5 9.5 23Z'/%3E%3C/g%3E%3C/svg%3E") 0 0/46px 46px,
+    linear-gradient(168deg,#14604a 0%,#0c4232 52%,#06251b 100%);
+  border:1px solid rgba(226,187,100,.38);border-radius:22px;
+  box-shadow:0 28px 70px rgba(0,0,0,.66), inset 0 1px 0 rgba(255,255,255,.09);
+  padding:20px 18px;animation:up .28s cubic-bezier(.2,.9,.3,1);
 }
-@keyframes up{from{opacity:0;transform:translateY(22px)}}
-.panel h2{margin:0 0 4px;font-size:19px;color:var(--gold);letter-spacing:.2px}
-.panel p.sub{margin:0 0 14px;font-size:13px;opacity:.78;line-height:1.55}
-.panel h3{margin:16px 0 8px;font-size:14px;color:var(--gold);opacity:.95}
+@keyframes up{from{opacity:0;transform:translateY(26px) scale(.97)}}
+.panel h2{
+  margin:0 0 6px;font-size:21px;color:var(--gold);letter-spacing:.2px;
+  text-shadow:0 2px 12px rgba(226,187,100,.28);
+}
+.panel p.sub{margin:0 0 14px;font-size:13px;opacity:.76;line-height:1.6}
+/* gold rule with a lozenge in the middle, like a deck's border print */
+.panel h3{
+  margin:18px 0 9px;font-size:13px;color:var(--gold);opacity:.95;
+  font-weight:800;letter-spacing:.4px;
+  display:flex;align-items:center;gap:9px;
+}
+.panel h3::after{
+  content:"";flex:1;height:1px;
+  background:linear-gradient(90deg,rgba(226,187,100,.45),rgba(226,187,100,.02));
+}
 .row{display:flex;gap:8px;align-items:center}
 .row.wrap{flex-wrap:wrap}
 .btn{
-  flex:1;min-height:46px;border-radius:13px;font-size:15px;font-weight:800;
-  background:linear-gradient(170deg,#1c8a66,#0e5c43);
-  border:1px solid rgba(226,187,100,.3);
+  flex:1;min-height:48px;border-radius:14px;font-size:15px;font-weight:800;
+  background:linear-gradient(170deg,#21996f,#0d5b42);
+  border:1px solid rgba(226,187,100,.32);
   display:flex;align-items:center;justify-content:center;gap:7px;
-  box-shadow:0 5px 16px rgba(0,0,0,.34);transition:transform .12s,filter .12s;
+  box-shadow:0 6px 18px rgba(0,0,0,.36), inset 0 1px 0 rgba(255,255,255,.16);
+  transition:transform .12s,filter .12s,box-shadow .12s;
 }
-.btn:active{transform:translateY(1px) scale(.985)}
-.btn.gold{background:linear-gradient(170deg,#e8c876,#c39a43);color:var(--ink);border-color:rgba(0,0,0,.18)}
-.btn.ghost{background:rgba(255,255,255,.07);border-color:rgba(255,255,255,.16)}
+.btn:active{transform:translateY(1px) scale(.985);box-shadow:0 3px 10px rgba(0,0,0,.36)}
+.btn.gold{
+  background:linear-gradient(170deg,#f2d891 0%,#e0bb67 46%,#c49a43 100%);
+  color:var(--ink);border-color:rgba(120,88,20,.35);
+  text-shadow:0 1px 0 rgba(255,255,255,.35);
+  box-shadow:0 6px 20px rgba(0,0,0,.34), inset 0 1px 0 rgba(255,255,255,.55);
+}
+.btn.ghost{background:rgba(255,255,255,.07);border-color:rgba(255,255,255,.17);
+           box-shadow:0 4px 12px rgba(0,0,0,.26)}
 .btn.sm{min-height:38px;font-size:13.5px;border-radius:11px;flex:0 0 auto;padding:0 14px}
 .btn[disabled]{opacity:.42;pointer-events:none}
 .btn.wide{flex:1 1 100%}
@@ -298,8 +458,8 @@ button{font:inherit;color:inherit;border:0;background:none;cursor:pointer}
 /* bidding */
 #bidcard-wrap{display:flex;flex-direction:column;align-items:center;gap:8px;margin-bottom:6px}
 #bidcard-wrap .card{--card-w:76px}
-.minihand{display:flex;justify-content:center;margin:2px 0 10px;--card-w:46px}
-.minihand .card{margin-inline-start:-13px;box-shadow:0 4px 12px rgba(0,0,0,.35)}
+.minihand{display:flex;justify-content:center;margin:2px 0 10px;--card-w:48px}
+.minihand .card{margin-inline-start:-10px;box-shadow:0 4px 12px rgba(0,0,0,.35)}
 .minihand .card:first-child{margin-inline-start:0}
 .minilbl{font-size:11px;opacity:.6;text-align:center;margin-bottom:2px}
 .suitbtns{display:flex;gap:8px;margin-top:4px}
@@ -310,6 +470,20 @@ button{font:inherit;color:inherit;border:0;background:none;cursor:pointer}
 }
 .suitbtn.r{color:#ff8a96}
 .suitbtn.sel{background:linear-gradient(170deg,#e8c876,#c39a43);color:var(--ink)}
+
+/* lobby hero: a small fan of real cards */
+.hero{
+  display:flex;justify-content:center;align-items:flex-end;
+  height:calc(var(--card-h) + 20px);margin:0 0 12px;--card-w:64px;gap:2px;
+}
+.hero .card{margin-inline-start:-12px;transform-origin:bottom center;
+            animation:fanIn .5s cubic-bezier(.2,.9,.3,1) backwards}
+.hero .card:first-child{margin-inline-start:0}
+.hero .card:nth-child(1){transform:rotate(-17deg) translateY(9px);animation-delay:.02s}
+.hero .card:nth-child(2){transform:translateY(-9px);z-index:2;animation-delay:.09s}
+.hero .card:nth-child(3){transform:rotate(17deg) translateY(9px);animation-delay:.16s}
+@keyframes fanIn{from{opacity:0;transform:translateY(40px) rotate(0) scale(.8)}}
+.panel.centered h2,.panel.centered p.sub{text-align:center}
 
 /* friends list */
 .flist{display:flex;flex-direction:column;gap:8px;margin-top:4px}
@@ -356,11 +530,14 @@ button{font:inherit;color:inherit;border:0;background:none;cursor:pointer}
 .tag.joined{background:var(--ok)}
 
 /* results table */
-.rtab{width:100%;border-collapse:collapse;font-size:13px;margin-top:6px}
-.rtab th,.rtab td{padding:7px 6px;text-align:center;border-bottom:1px solid rgba(255,255,255,.1)}
-.rtab th{font-size:11px;opacity:.7;font-weight:700}
-.rtab td b{color:var(--gold);font-size:15px}
-.rtab .win td{background:rgba(63,174,109,.14)}
+.rtab{width:100%;border-collapse:collapse;font-size:13.5px;margin-top:10px}
+.rtab th,.rtab td{padding:9px 6px;text-align:center;border-bottom:1px solid rgba(255,255,255,.09)}
+.rtab th{font-size:11px;opacity:.68;font-weight:800;letter-spacing:.4px}
+.rtab td:first-child{text-align:start;opacity:.8;font-size:12.5px}
+.rtab td{font-variant-numeric:tabular-nums}
+.rtab td b{color:var(--gold);font-size:19px;text-shadow:0 2px 10px rgba(226,187,100,.35)}
+.rtab .win td{background:linear-gradient(90deg,rgba(226,187,100,.16),rgba(226,187,100,.04))}
+.rtab tr:last-child td{border-bottom:0;opacity:.85}
 
 /* rules */
 .rules{font-size:13px;line-height:1.85;opacity:.9}
@@ -375,7 +552,8 @@ button{font:inherit;color:inherit;border:0;background:none;cursor:pointer}
 .seg{display:flex;background:rgba(0,0,0,.3);border-radius:11px;padding:3px;gap:3px}
 .seg button{flex:1;padding:8px 6px;border-radius:9px;font-size:13px;font-weight:700;opacity:.65}
 .seg button.on{background:rgba(226,187,100,.9);color:var(--ink);opacity:1}
-.divider{height:1px;background:rgba(255,255,255,.1);margin:14px 0}
+.divider{height:1px;margin:16px 0;
+  background:linear-gradient(90deg,transparent,rgba(226,187,100,.35),transparent)}
 
 @media (max-height:660px){
   :root{--card-w:clamp(44px,10.5vw,62px)}
@@ -390,12 +568,12 @@ button{font:inherit;color:inherit;border:0;background:none;cursor:pointer}
   <div id="topbar">
     <button class="icon-btn" id="btn-menu" aria-label="menu">☰</button>
     <div id="score">
-      <div class="sc us"><span class="lbl" data-i18n="us">لنا</span><span class="val" id="score-us">0</span></div>
-      <div class="sc-sep"></div>
-      <div class="sc them"><span class="lbl" data-i18n="them">لهم</span><span class="val" id="score-them">0</span></div>
+      <div class="sc us"><span class="lbl" data-i18n="us">لنا</span><span class="val" id="score-us">0</span><span class="rail"><i id="bar-us"></i></span></div>
+      <div class="sc-mid"><span class="rnd" data-i18n="round">جولة</span><b id="round-no">1</b></div>
+      <div class="sc them"><span class="lbl" data-i18n="them">لهم</span><span class="val" id="score-them">0</span><span class="rail"><i id="bar-them"></i></span></div>
     </div>
     <div class="spacer"></div>
-    <div class="chip" id="chip-round"><span data-i18n="round">جولة</span> <b id="round-no">1</b></div>
+    <div class="chip" id="chip-mode" hidden></div>
     <button class="icon-btn" id="btn-friends" aria-label="friends">👥</button>
   </div>
 
@@ -403,7 +581,7 @@ button{font:inherit;color:inherit;border:0;background:none;cursor:pointer}
     <div class="seat" data-pos="north" id="seat-n"></div>
     <div class="seat" data-pos="west"  id="seat-w"></div>
     <div class="seat" data-pos="east"  id="seat-e"></div>
-    <div id="centre"><div id="modepill" hidden></div></div>
+    <div id="centre"><div id="trumpmark"></div></div>
     <div id="trick"></div>
   </div>
 
@@ -1030,14 +1208,33 @@ function toast(msg){
   setTimeout(() => t.remove(), 2500);
 }
 
+// Traditional pip layouts, as percentages of the pip field. A pip in the lower
+// half is drawn upside down, the way a real deck prints it.
+const PIP_LAYOUT = {
+  "7" :[[25,4],[75,4],[25,50],[75,50],[25,96],[75,96],[50,27]],
+  "8" :[[25,4],[75,4],[25,50],[75,50],[25,96],[75,96],[50,27],[50,73]],
+  "9" :[[25,3],[75,3],[25,35],[75,35],[25,65],[75,65],[25,97],[75,97],[50,50]],
+  "10":[[25,3],[75,3],[25,35],[75,35],[25,65],[75,65],[25,97],[75,97],[50,19],[50,81]]
+};
+
 function cardNode(c, st, extraCls){
   const red = SUIT_RED[c.s];
   const n = el("div", "card " + (red ? "r" : "k") + (extraCls ? " " + extraCls : "")
             + (st && isTrump(c, st) ? " trump" : ""));
   const g = SUIT_GLYPH[c.s];
-  n.innerHTML =
-    '<div class="corner">' + c.r + '<span class="sg">' + g + '</span></div>' +
-    '<div class="pip">' + g + '</div>';
+  let body;
+  if (c.r === "A"){
+    body = '<div class="ace">' + g + '</div>';
+  } else if (PIP_LAYOUT[c.r]){
+    body = '<div class="pips">' + PIP_LAYOUT[c.r].map(([x,y]) =>
+      '<i class="' + (y > 55 ? "f" : "") + '" style="left:' + x + '%;top:' + y + '%">' + g + '</i>'
+    ).join("") + '</div>';
+  } else {
+    body = '<div class="court"><span class="cl">' + c.r + '</span>' +
+           '<i class="cs">' + g + '</i></div>';
+  }
+  n.innerHTML = '<div class="idx"><span class="rk">' + c.r + '</span>' +
+                '<span class="su">' + g + '</span></div>' + body;
   return n;
 }
 
@@ -1154,7 +1351,7 @@ const Game = {
     R.unseen = [].concat(...R.hands.filter((_,i)=>i!==0).map(h=>h.slice()));
 
     UI.setMode(R);
-    UI.renderHand();
+    UI.renderHand(null, true);
     UI.renderSeats();
 
     const who = G.seats[b.seat].name;
@@ -1293,6 +1490,8 @@ const UI = {
     const G = Game.G; if (!G) return;
     $("#score-us").textContent   = G.scores[0];
     $("#score-them").textContent = G.scores[1];
+    $("#bar-us").style.width   = Math.min(100, G.scores[0] / CFG.target * 100) + "%";
+    $("#bar-them").style.width = Math.min(100, G.scores[1] / CFG.target * 100) + "%";
   },
 
   renderSeats(){
@@ -1301,17 +1500,22 @@ const UI = {
     for (const seat of [1,2,3]){
       const node = $(map[seat]); node.innerHTML = "";
       const m = G.seats[seat];
-      const av = el("div", "avatar" + (R && R.turn === seat && R.mode ? " turn" : ""),
+      const av = el("div", "avatar" + (seat === 2 ? " mate" : "")
+                    + (R && R.turn === seat && R.mode ? " turn" : ""),
                     (m.name || "?").trim().charAt(0).toUpperCase());
-      if (m.type === "bot") av.appendChild(el("span", "badge bot", T("bot")));
-      else if (m.type === "friend" && !m.joined) av.appendChild(el("span", "badge wait", "…"));
       if (R && R.bidder === seat) av.appendChild(el("span", "badge", "★"));
+      else if (m.type === "bot") av.appendChild(el("span", "badge bot", T("bot")));
+      else if (m.type === "friend" && !m.joined) av.appendChild(el("span", "badge wait", "…"));
       node.appendChild(av);
       node.appendChild(el("div", "nm", m.name));
       if (R && R.hands){
         const back = el("div", "hand-back");
         for (let i=0;i<R.hands[seat].length;i++) back.appendChild(el("div", "cardback"));
         node.appendChild(back);
+        // how many tricks this seat's team has taken so far
+        const wins = el("div", "wins");
+        for (let i=0;i<8;i++) wins.appendChild(el("i", i < R.tricksWon[seat % 2] ? "on" : ""));
+        node.appendChild(wins);
       }
     }
   },
@@ -1329,39 +1533,57 @@ const UI = {
     });
   },
 
-  renderHand(legal){
+  renderHand(legal, deal){
     const wrap = $("#hand"); wrap.innerHTML = "";
     const R = Game.R;
-    if (!R || !R.hands) return;
+    if (!R || !R.hands){ wrap.classList.remove("active"); return; }
     const hand = this.sortHand(R.hands[0], R);
-    const myTurn = R.mode && R.turn === 0 && Game.G.seats[0].human;
-    for (const c of hand){
+    const myTurn = !!(R.mode && R.turn === 0 && Game.G.seats[0].human);
+    wrap.classList.toggle("active", myTurn);
+    hand.forEach((c, i) => {
       const slot = el("div", "slot");
       const playable = myTurn && (!legal || legal.some(x => x.id === c.id));
       if (myTurn) slot.classList.add(playable ? "playable" : "blocked");
       const n = cardNode(c, R);
+      if (deal){
+        slot.classList.add("deal");
+        n.style.animationDelay = (i * 55) + "ms";
+      }
       slot.appendChild(n);
       slot.addEventListener("click", () => Game.humanPlay(c));
       wrap.appendChild(slot);
-    }
+    });
   },
 
   setMode(R){
-    const pill = $("#modepill");
-    if (!R || !R.mode){ pill.hidden = true; return; }
-    pill.hidden = false;
-    pill.innerHTML = R.mode === "sun"
-      ? '<span class="suit">☀︎</span>' + T("sun")
-      : '<span class="suit" style="color:' + (SUIT_RED[R.trump] ? "#ff8a96" : "#fff") + '">'
-        + SUIT_GLYPH[R.trump] + '</span>' + T("hokum");
+    const chip = $("#chip-mode"), mark = $("#trumpmark");
+    if (!R || !R.mode){
+      chip.hidden = true;
+      mark.classList.remove("on"); mark.textContent = "";
+      return;
+    }
+    const glyph = R.mode === "sun" ? "☀︎" : SUIT_GLYPH[R.trump];
+    const tint  = R.mode === "sun" ? "#f4d78a" : (SUIT_RED[R.trump] ? "#ff8a96" : "#ffffff");
+    chip.hidden = false;
+    chip.innerHTML = '<span class="suit" style="color:' + tint + '">' + glyph + '</span>' +
+                     (R.mode === "sun" ? T("sun") : T("hokum"));
+    mark.textContent = glyph;
+    mark.classList.add("on");
   },
 
   placeCard(seat, c, R){
     const n = cardNode(c, R, "tc " + POSNAME[seat] + " deal-in");
     $("#trick").appendChild(n);
   },
-  collectTrick(){ $("#trick").classList.add("collect"); },
-  clearTrick(){ const t = $("#trick"); t.classList.remove("collect"); t.innerHTML = ""; },
+  collectTrick(seat){
+    const t = $("#trick");
+    t.classList.add("collect", "w-" + POSNAME[seat]);
+  },
+  clearTrick(){
+    const t = $("#trick");
+    t.className = "";
+    t.innerHTML = "";
+  },
 
   bubble(seat, text, gold){
     const b = el("div", "bubble" + (gold ? " gold" : ""), text);
@@ -1461,8 +1683,9 @@ const UI = {
       "<tr><th></th><th>" + T("us") + "</th><th>" + T("them") + "</th></tr>" +
       "<tr><td>" + T("tricks") + "</td><td>" + res.rawTricks[0] + "</td><td>" + res.rawTricks[1] + "</td></tr>" +
       "<tr><td>" + T("projects") + "</td><td>" + res.projRaw[0] + "</td><td>" + res.projRaw[1] + "</td></tr>" +
-      "<tr class='" + (winTeam === 0 ? "win" : "") + "'><td>" + T("final") + "</td><td><b>" + gained[0] +
-        "</b></td><td>" + (winTeam === 1 ? "<b>" + gained[1] + "</b>" : gained[1]) + "</td></tr>" +
+      "<tr class='" + (winTeam >= 0 ? "win" : "") + "'><td>" + T("final") + "</td>" +
+        "<td>" + (winTeam === 0 ? "<b>" + gained[0] + "</b>" : gained[0]) + "</td>" +
+        "<td>" + (winTeam === 1 ? "<b>" + gained[1] + "</b>" : gained[1]) + "</td></tr>" +
       "<tr><td>" + T("target") + " " + CFG.target + "</td><td>" + G.scores[0] + "</td><td>" + G.scores[1] + "</td></tr>";
     body.appendChild(tab);
 
@@ -1589,8 +1812,12 @@ const Lobby = {
   open(){
     this.refreshBotNames();
     const body = $("#lobby-body");
+    body.className = "panel centered";
     body.innerHTML = "";
-    body.appendChild(el("h2", null, "🂡 " + T("lobbyTitle")));
+    const hero = el("div", "hero");
+    for (const c of [card("D","J"), card("S","A"), card("H","K")]) hero.appendChild(cardNode(c));
+    body.appendChild(hero);
+    body.appendChild(el("h2", null, T("lobbyTitle")));
     body.appendChild(el("p", "sub", T("lobbySub")));
 
     body.appendChild(el("h3", null, T("seats")));
