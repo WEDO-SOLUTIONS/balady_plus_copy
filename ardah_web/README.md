@@ -229,6 +229,48 @@ traced pads in therefore needs one change in `js/render.js`: draw
 `state.touchUsed ? '●' : LANE_KEYS[lane]` over the sprite as well as under the
 fallback. Until then the traced pads would render without a key hint.
 
+### Traced runway
+
+`deck/make_runway.js` renders the deck: dark glass with a gold Najdi lozenge
+lattice down both edges and thin gold lane dividers, from the concept image.
+
+**It is not a perspective image, deliberately.** Rendering the runway as it
+appears on screen bakes in one layout — `js/render.js` derives `vpY`, `C` and
+`halfNear` from the window, so the trapezoid is a different shape on every
+device. Instead the deck is rendered in *runway space* (across by world x,
+along by depth z) while each texel is shaded from the view ray the game's
+camera would actually have to that world point. The texture is therefore
+layout-independent, but the glass keeps its correct grazing-angle reflection —
+the whole character of the material, and the one thing a flat top-down bake
+would lose.
+
+Rows are spaced uniformly in `1/z`, which is uniform in screen y, so putting it
+on screen is a row-for-row blit with no vertical resampling:
+
+```
+z   = C / (y - vpY)                       // invert yAt
+row = (1/z - 1/Z_FAR) / (1/Z_LIP - 1/Z_FAR)
+draw that row across 2 * halfAt(z) * 1.165, centred on w/2
+```
+
+`deck/runway_preview.py` does exactly that and writes
+`deck/out/runway_preview.png`, which is how to check it.
+
+Two things this surfaced:
+
+- **The ornament's period is set by how the deck is seen, not by world
+  proportion.** `dy/dz = -C/z²`, so at the judgment line one world unit of
+  depth is ~425 px while the band is only ~40 px across. A lozenge period
+  chosen to look square in world space came out four times too long on screen.
+- **The deck needs a light the note objects do not.** `shade.js` puts its
+  sources on the camera's side, which is right for a small object near the
+  judgment line but wrong for a mirror lying down the runway: reflected off a
+  floor those directions point away from the light and the deck came back dead
+  black. What a floor aimed at the stage actually reflects is the stage — the
+  fires and the lit fort just above the horizon — which is the warm glow along
+  the deck in the concept. `envDeck` adds that on top of the shared
+  environment, and it is scoped to the runway for that reason.
+
 ### Sizing: the sprites are trimmed
 
 `js/render.js` sizes a sprite by the **whole PNG** — a note by its width
