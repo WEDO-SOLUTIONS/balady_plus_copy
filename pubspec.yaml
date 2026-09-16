@@ -16,7 +16,7 @@ publish_to: "none" # Remove this line if you wish to publish to pub.dev
 # Read more about iOS versioning at
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
 
-version: 3.30.3+892
+version: 3.30.3+893
 # version: 3.13.5+466
 
 environment:
@@ -208,7 +208,7 @@ dependencies:
   #      ref: master
   #      path: packages/firebase_messaging/firebase_messaging
 
-
+  html: 0.15.6
   ############################################################
   balady_design_system:
 #    path: /Users/hashemalkhateeb/Development/flutter_projects/nhc_projects/packages/balady_design_system
