@@ -66,8 +66,8 @@ function perturb(part, kind, px, py, pz, nx, ny, nz, out) {
 
 /* --------------------------------- tracer --------------------------------- */
 
-function render(obj) {
-  const W = SIZE * SS;
+function render(obj, size) {
+  const W = size * SS;
   const hdr = new Float32Array(W * W * 4);          // premultiplied linear RGB + A
   const R = rot(obj.rot.rx, obj.rot.ry, obj.rot.rz);
   const dist = obj.radius / Math.tan(FOV / 2) * 1.30;
@@ -404,13 +404,15 @@ const objects = [
   scene.crystal(), scene.gem(), scene.coin(),
   scene.keycap('tabl'), scene.keycap('swords'), scene.keycap('tar'),
 ];
+for (let i = 0; i < 6; i++) objects.push(scene.shard(i));
 for (const obj of objects) {
   const t0 = Date.now();
-  const { hdr, W } = render(obj);
-  const small = downsample(hdr, W, SIZE, SS);
-  const rgba = resolve(small, SIZE, obj.glow);
-  const cut = trim(rgba, SIZE, 3);
-  const stem = obj.name.startsWith('key_') ? obj.name : 'note_' + obj.name;
+  const size = obj.size || SIZE;
+  const { hdr, W } = render(obj, size);
+  const small = downsample(hdr, W, size, SS);
+  const rgba = resolve(small, size, obj.glow);
+  const cut = trim(rgba, size, 3);
+  const stem = /^(key|fx)_/.test(obj.name) ? obj.name : 'note_' + obj.name;
   const file = path.join(OUT, `${stem}_hd.png`);
   fs.writeFileSync(file, png.encode(cut.data, cut.w, cut.h));
   console.log(`${stem}_hd.png  ${cut.w}x${cut.h}  ` +

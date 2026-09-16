@@ -214,4 +214,45 @@ function keycap(lane) {
   };
 }
 
-module.exports = { crystal, gem, coin, keycap };
+/* -------------------------------- shards ---------------------------------- */
+/* Gold fragments thrown off a perfect hit -- the one effect here that really
+   is geometry rather than light, so it is traced with the notes.
+
+   An irregular convex solid is free in this engine: the intersection of a set
+   of half-spaces is convex by construction, so a handful of planes at pseudo
+   random orientations is already a shard, and the slab test still gives exact
+   facet edges. Six axis planes keep it bounded, which a random set alone would
+   not guarantee. The seed is fixed so a given index always renders the same
+   fragment. */
+function rng(seed) {
+  let a = seed >>> 0;
+  return () => {
+    a = (a + 0x6D2B79F5) >>> 0;
+    let t = Math.imul(a ^ (a >>> 15), 1 | a);
+    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+}
+
+function shard(i) {
+  const r = rng(i * 7919 + 17);
+  const planes = [];
+  for (const ax of [[1, 0, 0], [-1, 0, 0], [0, 1, 0], [0, -1, 0], [0, 0, 1], [0, 0, -1]]) {
+    planes.push([ax[0], ax[1], ax[2], 0.34 + r() * 0.30, 0]);
+  }
+  for (let k = 0; k < 7; k++) {
+    const u = r() * 2 - 1, th = r() * Math.PI * 2;
+    const sxy = Math.sqrt(Math.max(0, 1 - u * u));
+    planes.push([sxy * Math.cos(th), u, sxy * Math.sin(th), 0.22 + r() * 0.20, 0]);
+  }
+  return {
+    name: 'fx_shard_' + i,
+    size: 192,
+    radius: 0.62,
+    rot: { rx: r() * 2 - 1, ry: r() * Math.PI * 2, rz: r() * 2 - 1 },
+    glow: [1.00, 0.56, 0.16],
+    parts: [{ planes, mat: { type: 'metal', f0: [0.96, 0.520, 0.140], rough: 0.24, spec: 300 } }],
+  };
+}
+
+module.exports = { crystal, gem, coin, keycap, shard };

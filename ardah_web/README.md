@@ -271,6 +271,55 @@ Two things this surfaced:
   the deck in the concept. `envDeck` adds that on top of the shared
   environment, and it is scoped to the runway for that reason.
 
+### Traced hit effects
+
+`deck/make_fx.js` renders four effects, and `deck/lib/scene.js` a fifth.
+
+Most of them are **light, not surfaces**, so the ray tracer is the wrong tool:
+a spark has no normal, and what makes it read is the shape of its falloff and
+the colour shift from white-hot core to deep ember rim. They are radiance
+fields, integrated per pixel through the same linear pipeline and the same ACES
+curve as everything else, which is what keeps them in the game's atmosphere
+rather than looking like stock glows.
+
+| asset | what it is |
+| --- | --- |
+| `fx_spark` | an ember: hot core plus a wide Lorentzian halo — a gaussian alone dies too fast and reads as a dot |
+| `fx_flare` | the hit flash: core, halo, a long horizontal streak and a four-point star |
+| `fx_ring` | a shockwave |
+| `fx_glow` | a soft glow for the lane flash and behind the judgment line |
+| `fx_shard_0..5` | gold fragments — the one effect that really is geometry, so it is traced with the notes |
+
+The shards are free in this engine: an intersection of half-spaces is convex by
+construction, so a handful of planes at pseudo-random orientations is already
+an irregular fragment with exact facet edges. Six axis planes keep it bounded,
+which a random set alone would not guarantee.
+
+**The shockwave is in screen space on purpose.** A ring lying on the deck is
+the tempting version, but the geometry says no: at the judgment line the camera
+is 64° above the floor, and a ring of any useful radius spans a large slice of
+depth, so its near edge projects far larger than its far edge. Concretely, at
+z = 1 a ring of world radius 0.3 comes out 121 px wide and 280 px tall. That is
+not an ellipse, it is an egg, and it reads as a bug rather than as a shockwave.
+
+**Storage: intensity is in the alpha channel.** These are drawn with
+`globalCompositeOperation = 'lighter'`, where canvas adds source RGB scaled by
+source alpha. So alpha carries intensity and RGB carries chroma normalised to
+its brightest component — the core comes out white because all three channels
+saturate together there, the rim stays orange, and the game scales the whole
+effect with one `globalAlpha` over its life. **Anything judging these has to
+add them, not alpha-blend them**, or the result is wrong;
+`deck/fx_preview.py` follows the same rule and writes `deck/out/fx_sheet.png`
+and `deck/out/fx_hit.png`, a hit composited onto the runway with notes and
+keycaps at the sizes `_gem` and `_keycaps` would give them.
+
+One thing that composite shows: a note is drawn `halfNear * 0.731 / z` wide
+while a lane is `halfNear * 0.667 / z`, so **a note is about 10 % wider than
+its own lane** at every depth. In the concept image the notes are roughly a
+third of the lane. With flat cut-out sprites this passed unnoticed; with the
+traced ones it is obvious. That is a tuning constant (`0.34` in `_gem`), not an
+art problem, and it is left alone here.
+
 ### Sizing: the sprites are trimmed
 
 `js/render.js` sizes a sprite by the **whole PNG** — a note by its width
