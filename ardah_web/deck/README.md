@@ -44,6 +44,23 @@ The song is 77 s, so `capture.js` takes about two minutes: it waits on the
 conductor's own clock (`judgeTimeMs`) to hit each mark, which is why the
 flourish and hold frames land on the right beat every time.
 
+## Asset sheets
+
+`asset_sheet.py`, `motion.js` and `drawn.js` produce the reference images for
+"what art does this game actually use":
+
+```bash
+python3 deck/asset_sheet.py     # every file on a checkerboard, with size and weight
+node deck/motion.js             # a note travelling the runway + the keycap strip
+node deck/drawn.js              # the flourish banner and hold ribbon, exported
+```
+
+`drawn.js` draws onto a canvas of its own rather than the game's: the game
+repaints every frame, so anything drawn into its canvas is gone before a
+screenshot lands. `motion.js` pins the sync meter *and* clears `judge.broken`
+— screenshots starve requestAnimationFrame, the robot player drops notes, and
+an unattended run would otherwise end mid-capture.
+
 ## Verifying the deck without PowerPoint
 
 LibreOffice cannot load any file in this sandbox, so `preview.py` renders the
