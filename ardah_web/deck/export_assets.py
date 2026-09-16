@@ -36,6 +36,12 @@ for i in range(6):
 # generous headroom.
 for g in ('a', 's', 'd', 'dot'):
     JOBS['glyph_%s' % g] = (72, 94)
+# Debris is never drawn above ~60 device px.
+for v in ('a', 'b', 'c'):
+    for i in range(3):
+        JOBS['fx_chip_%s%d' % (v, i)] = (80, 92)
+for i in range(3):
+    JOBS['fx_flake_%d' % i] = (80, 92)
 
 total = 0
 for name, (longest, q) in sorted(JOBS.items()):

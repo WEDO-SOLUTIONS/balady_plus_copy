@@ -344,6 +344,37 @@ animation would do nothing on exactly the input it exists to acknowledge.
 tap still moves a key, and `Renderer.keyReset` pairs with `Input.reset` so a
 run that ends with a finger down does not leave a pad depressed into the next.
 
+### Holds, and breaking by material
+
+**A held note has to look like work.** The ribbon was already shrinking towards
+the line, but a shrinking shape alone is a weak signal: it looks the same
+whether the player is holding or has let go and the note is expiring. While the
+key is down the ribbon's body goes **darker**, not brighter — a dark channel
+with a bright core — so that the highlight running up it and the ember trickle
+at the line have something to be bright against. The trickle is accumulated in
+milliseconds, so its rate does not follow the frame rate.
+
+Building it surfaced a real bug: `_holdRibbon` clamped the consumed end with
+`Math.min(z0, 1)`, which is the wrong direction. It only bit once the note had
+passed the line — which is precisely when a hold is held — so the ribbon grew
+*down past* the judgment line towards the keycaps instead of being eaten at it.
+
+**Breaking is per material, in the note's own colour.** Gold shards for
+everything read as one generic effect: an amethyst crystal that shatters into
+gold is not shattering, it is emitting confetti.
+
+| lane | breaks by | debris |
+| --- | --- | --- |
+| tabl | shattering — hard, wide, a short sharp flare | 8 crystal chips in its own colour |
+| swords | flashing — a wide ring and a colour bloom | none; a cut stone should flash, not leave rubble |
+| tar | scattering — fewer, heavier, slower pieces | 5 gold or silver flakes |
+
+The chips are the same irregular-convex trick as the shards but carry the
+parent's material. Their **absorption is scaled up 2.6×**, not copied: a chip is
+a fraction of a crystal's size so the path through it is a fraction as long,
+and at the parent's coefficients it would come out nearly clear. Beer-Lambert
+cuts both ways, so matching the *look* means raising the coefficient.
+
 ### The miss
 
 A missed note is dropped, not deleted: it carries on past the line, tumbles and

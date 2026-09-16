@@ -438,6 +438,8 @@ const objects = [
   scene.keycap('tabl'), scene.keycap('swords'), scene.keycap('tar'),
 ];
 for (let i = 0; i < 6; i++) objects.push(scene.shard(i));
+for (const v of ['', '_b', '_c']) for (let i = 0; i < 3; i++) objects.push(scene.chip(v, i));
+for (let i = 0; i < 3; i++) objects.push(scene.flake(i));
 const done = [];
 for (const obj of objects) {
   const t0 = Date.now();

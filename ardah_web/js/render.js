@@ -84,6 +84,7 @@ window.Ardah = window.Ardah || {};
     this.shards = [];
     this.lands = [];       // notes travelling into their pad
     this.drops = [];       // notes that were missed and are falling away
+    this.holdEmit = [0, 0, 0];   // ember accumulator per lane while holding
     this.floats = [];
     this.flashes = [0, 0, 0];
     this.held = [0, 0, 0];       // key or finger currently down, per lane
@@ -214,7 +215,7 @@ window.Ardah = window.Ardah || {};
     this.performers[Math.floor(Math.random() * half)] = 1;
     this.performers[half + Math.floor(Math.random() * half)] = 1;
 
-    if (lane >= 0) this._sparks(this.xAt(lane, 1), this.judgeY, LANE[lane].glow, judgment === 'perfect' ? 18 : 10);
+    if (lane >= 0) this._break(lane, t, judgment === 'perfect');
     // The note itself goes on to the pad it was hit with.
     if (lane >= 0) this.lands.push({ lane: lane, t: t || 0, life: 1 });
   };
@@ -255,21 +256,45 @@ window.Ardah = window.Ardah || {};
     for (var k = 0; k < 3; k++) this._sparks(this.xAt(k, 1), this.judgeY, '#FFD978', 16);
   };
 
-  Renderer.prototype._sparks = function (x, y, color, n) {
-    this.bursts.push({ x: x, y: y, life: 1, color: color, rot: Math.random() * Math.PI });
-    // Gold fragments, only on the bigger bursts so a plain hit stays calm.
-    if (n >= 16 && A.assets && A.assets.img('fx_shard_0')) {
-      for (var k = 0; k < 5; k++) {
-        var sa = -Math.PI / 2 + (Math.random() - 0.5) * Math.PI * 1.5;
-        var ss = 0.10 + Math.random() * 0.22;
+  /* Three ways to break, one per lane, in the colour the note happened to be.
+
+       crystal  shatters -- hard, wide, many chips, a short sharp flare
+       gem      flashes  -- no rubble at all, a big ring and a colour bloom
+       coin     scatters -- fewer, heavier, slower pieces that tumble further
+
+     `style` rides on the burst so the flare and ring can differ too; without
+     that the three would still open with an identical white star. */
+  Renderer.prototype._break = function (lane, t, strong) {
+    var x = this.xAt(lane, 1), y = this.judgeY;
+    var v = noteVariant(lane, t || 0);
+    this.bursts.push({
+      x: x, y: y, life: 1, style: lane, tone: NOTE_GLOW[lane][v],
+      color: LANE[lane].glow, rot: Math.random() * Math.PI
+    });
+
+    var fam = strong && DEBRIS[lane] && DEBRIS[lane][v];
+    if (fam && A.assets && A.assets.img(fam[0])) {
+      var cfg = lane === 0
+        ? { n: 8, sp: [0.16, 0.42], size: [9, 18], spin: 0.020, spread: 1.9 }
+        : { n: 5, sp: [0.08, 0.20], size: [15, 27], spin: 0.008, spread: 1.4 };
+      for (var k = 0; k < cfg.n; k++) {
+        var sa = -Math.PI / 2 + (Math.random() - 0.5) * Math.PI * cfg.spread;
+        var ss = cfg.sp[0] + Math.random() * (cfg.sp[1] - cfg.sp[0]);
         this.shards.push({
           x: x, y: y, vx: Math.cos(sa) * ss, vy: Math.sin(sa) * ss,
-          rot: Math.random() * Math.PI * 2, spin: (Math.random() - 0.5) * 0.010,
-          size: 14 + Math.random() * 13, life: 1,
-          img: 'fx_shard_' + Math.floor(Math.random() * FX_SHARDS)
+          rot: Math.random() * Math.PI * 2, spin: (Math.random() - 0.5) * cfg.spin,
+          size: cfg.size[0] + Math.random() * (cfg.size[1] - cfg.size[0]), life: 1,
+          img: fam[Math.floor(Math.random() * fam.length)]
         });
       }
     }
+    // A stone that leaves no rubble gets the embers instead.
+    this._sparks(x, y, LANE[lane].glow, lane === 1 ? (strong ? 26 : 16) : (strong ? 14 : 9), true);
+  };
+
+  Renderer.prototype._sparks = function (x, y, color, n, noBurst) {
+    if (!noBurst) this.bursts.push({ x: x, y: y, life: 1, color: color, style: -1,
+                                     rot: Math.random() * Math.PI });
     for (var i = 0; i < n; i++) {
       var a = -Math.PI / 2 + (Math.random() - 0.5) * Math.PI * 1.25;
       var sp = 0.12 + Math.random() * 0.34;
@@ -304,7 +329,7 @@ window.Ardah = window.Ardah || {};
 
     this._runway(c, !!state.chart);
     if (state.chart) {
-      this._notes(c, state);
+      this._notes(c, state, dtMs);
       this._judgeLine(c);
     }
     this._lands(c, dtMs);
@@ -605,7 +630,7 @@ window.Ardah = window.Ardah || {};
 
   /* --------------------------------- notes --------------------------------- */
 
-  Renderer.prototype._notes = function (c, state) {
+  Renderer.prototype._notes = function (c, state, dtMs) {
     var now = state.visualTimeMs, notes = state.judge.notes;
     for (var i = 0; i < notes.length; i++) {
       var n = notes[i];
@@ -616,7 +641,7 @@ window.Ardah = window.Ardah || {};
 
       var z = this.zAt(lead);
       if (n.type === 'flourish') { this._flourishNote(c, z, lead); continue; }
-      if (n.type === 'hold') this._holdRibbon(c, n, now);
+      if (n.type === 'hold') this._holdRibbon(c, n, now, dtMs || 16);
       this._gem(c, n.lane, z, n.type === 'hold', n.t);
     }
   };
@@ -637,10 +662,35 @@ window.Ardah = window.Ardah || {};
   /* Which colour a note wears, hashed from its own time so it is stable: the
      same note is the same colour on every frame, on a retry, and after a
      pause, without storing anything on the chart. */
-  function noteSprite(lane, t) {
-    var pal = NOTE_SPRITE[lane];
-    return pal[(Math.imul(t | 0, 2654435761) >>> 0) % pal.length];
+  function noteVariant(lane, t) {
+    return (Math.imul(t | 0, 2654435761) >>> 0) % NOTE_SPRITE[lane].length;
   }
+
+  function noteSprite(lane, t) {
+    return NOTE_SPRITE[lane][noteVariant(lane, t)];
+  }
+
+  /* What a note throws when it breaks, and in what colour.
+
+     Gold shards for everything read as one generic effect: an amethyst crystal
+     that shatters into gold is not shattering, it is emitting confetti. Each
+     note now throws pieces of ITSELF -- and the gem throws none at all, because
+     a cut stone that breaks should flash, not leave rubble. */
+  var DEBRIS = [
+    [['fx_chip_a0', 'fx_chip_a1', 'fx_chip_a2'],
+     ['fx_chip_b0', 'fx_chip_b1', 'fx_chip_b2'],
+     ['fx_chip_c0', 'fx_chip_c1', 'fx_chip_c2']],
+    [null, null, null],
+    [['fx_shard_0', 'fx_shard_1', 'fx_shard_2', 'fx_shard_3', 'fx_shard_4', 'fx_shard_5'],
+     ['fx_flake_0', 'fx_flake_1', 'fx_flake_2']]
+  ];
+
+  // Matches the `glow` of each variant in deck/lib/scene.js.
+  var NOTE_GLOW = [
+    ['#FF7B1A', '#FF394F', '#B44DFF'],
+    ['#38B8FF', '#33FF8C', '#C757FF'],
+    ['#FF9A24', '#B8D1FF']
+  ];
 
   Renderer.prototype._gem = function (c, lane, z, isHold, t) {
     var x = this.xAt(lane, z), y = this.yAt(z), s = 1 / z;
@@ -754,19 +804,33 @@ window.Ardah = window.Ardah || {};
     c.beginPath(); c.arc(x + r * 0.14, y - r * 0.06, r * 0.27, 0, Math.PI * 2); c.fill();
   };
 
-  Renderer.prototype._holdRibbon = function (c, n, now) {
+  Renderer.prototype._holdRibbon = function (c, n, now, dtMs) {
     var z0 = this.zAt(n.t - now);
     var z1 = this.zAt((n.t + n.durMs) - now);
-    if (n.state === 'holding') z0 = Math.min(z0, 1);
+    // Pin the consumed end AT the judgment line while the note is held.
+    // This was Math.min, which is the wrong direction and only bit once the
+    // note had passed the line -- which is precisely when a hold is held, so
+    // the ribbon grew DOWN past the line towards the keycaps instead of being
+    // eaten at it.
+    if (n.state === 'holding') z0 = Math.max(z0, 1);
     var y0 = this.yAt(z0), y1 = this.yAt(z1);
     var x0 = this.xAt(n.lane, z0), x1 = this.xAt(n.lane, z1);
     var w0 = this.halfNear * 0.2 / z0, w1 = this.halfNear * 0.2 / z1;
     var pal = LANE[n.lane];
 
+    var holding = n.state === 'holding';
+
+    /* While held, the body of the ribbon goes DARKER, not brighter.
+
+       The first version lit the whole band, and everything meant to read on
+       top of it -- the travelling highlight, the ember trickle -- landed on a
+       pale slab and vanished. A dark channel with a bright core gives those
+       something to be bright against, which is the whole job of the ribbon
+       once the note is being held rather than approached. */
     var g = c.createLinearGradient(0, y1, 0, y0);
-    g.addColorStop(0, 'rgba(255,255,255,0.12)');
-    g.addColorStop(1, pal.gem);
-    c.globalAlpha = n.state === 'holding' ? 0.95 : 0.6;
+    g.addColorStop(0, 'rgba(255,255,255,' + (holding ? 0.03 : 0.12) + ')');
+    g.addColorStop(1, holding ? pal.rim : pal.gem);
+    c.globalAlpha = holding ? 0.62 : 0.6;
     c.fillStyle = g;
     c.beginPath();
     c.moveTo(x1 - w1, y1); c.lineTo(x1 + w1, y1);
@@ -774,6 +838,69 @@ window.Ardah = window.Ardah || {};
     c.closePath();
     c.fill();
     c.globalAlpha = 1;
+
+    if (!holding) { this.holdEmit[n.lane] = 0; return; }
+
+    // The core: a narrow bright line down the middle of the dark channel.
+    c.globalAlpha = 0.85;
+    c.fillStyle = pal.gem;
+    c.beginPath();
+    c.moveTo(x1 - w1 * 0.32, y1); c.lineTo(x1 + w1 * 0.32, y1);
+    c.lineTo(x0 + w0 * 0.32, y0); c.lineTo(x0 - w0 * 0.32, y0);
+    c.closePath();
+    c.fill();
+    c.globalAlpha = 1;
+
+    /* Being held has to look like work.
+
+       The ribbon is already shrinking towards the line, but a shrinking shape
+       is a weak signal on its own: it looks the same whether the player is
+       holding or has let go and the note is expiring. So while the key is
+       down the ribbon carries a highlight running UP it, away from the player,
+       and the line throws a steady trickle of embers. Both stop the instant
+       the hold does. */
+    var glow = A.assets && A.assets.img('fx_glow');
+    if (glow) {
+      var pulse = 0.62 + 0.38 * Math.sin(this.tMs * 0.013);
+      var gs = this.halfNear * 0.46 * (0.88 + 0.12 * pulse);
+      c.save();
+      c.globalCompositeOperation = 'lighter';
+      c.globalAlpha = 0.42 * pulse;
+      c.drawImage(glow, x0 - gs / 2, y0 - gs / 2, gs, gs);
+      c.restore();
+    }
+
+    // A highlight travelling up the ribbon. Drawn as a slice of the same
+    // trapezoid, so it sits in perspective instead of on top of it.
+    var q = ((this.tMs % 620) / 620);
+    var qa = Math.max(0, q - 0.05), qb = Math.min(1, q + 0.05);
+    var ya = y0 + (y1 - y0) * qa, yb = y0 + (y1 - y0) * qb;
+    var xa = x0 + (x1 - x0) * qa, xb = x0 + (x1 - x0) * qb;
+    var wa = w0 + (w1 - w0) * qa, wb = w0 + (w1 - w0) * qb;
+    c.save();
+    c.globalCompositeOperation = 'lighter';
+    c.globalAlpha = 0.40 * (1 - Math.abs(q - 0.5) * 0.7);
+    c.fillStyle = 'rgba(255, 236, 190, 0.9)';
+    c.beginPath();
+    c.moveTo(xa - wa, ya); c.lineTo(xa + wa, ya);
+    c.lineTo(xb + wb, yb); c.lineTo(xb - wb, yb);
+    c.closePath();
+    c.fill();
+    c.restore();
+
+    // Ember trickle, accumulated in milliseconds so the rate does not follow
+    // the frame rate.
+    this.holdEmit[n.lane] += dtMs;
+    while (this.holdEmit[n.lane] > 46) {
+      this.holdEmit[n.lane] -= 46;
+      var a = -Math.PI / 2 + (Math.random() - 0.5) * 1.5;
+      var sp = 0.05 + Math.random() * 0.14;
+      this.sparks.push({
+        x: x0 + (Math.random() - 0.5) * w0 * 1.4, y: y0,
+        vx: Math.cos(a) * sp, vy: Math.sin(a) * sp,
+        life: 0.75, color: pal.glow, size: 1.1 + Math.random() * 1.4
+      });
+    }
   };
 
   /* The flourish spans the whole runway: a banner with crossed sabres. */
@@ -1023,6 +1150,14 @@ window.Ardah = window.Ardah || {};
         // Intensity lives in the sprite's alpha, so these are added, never
         // blended. The flare holds its size and fades; the ring expands past
         // it, which is what separates the impact from the shockwave.
+        //
+        // The three break styles differ here as well as in their debris: a
+        // shatter is a short hard flare with a tight ring, a gem's flash is a
+        // wide ring and a bloom in the stone's own colour, a coin is in
+        // between. Identical white stars on all three would undo the point.
+        var st = b.style;
+        var ringMul = st === 1 ? 1.45 : st === 0 ? 0.85 : 1.1;
+        var flareMul = st === 1 ? 1.15 : st === 0 ? 1.0 : 0.95;
         var ring = A.assets.img('fx_ring');
         var glow = A.assets.img('fx_glow');
         c.save();
@@ -1033,11 +1168,36 @@ window.Ardah = window.Ardah || {};
           c.drawImage(glow, b.x - gs / 2, b.y - gs / 2, gs, gs);
         }
         if (ring) {
-          var rs = 60 + grow * 190;
+          var rs = (60 + grow * 190) * ringMul;
           c.globalAlpha = b.life * b.life * 0.85;
           c.drawImage(ring, b.x - rs / 2, b.y - rs / 2 * 0.62, rs, rs * 0.62);
         }
-        var fs = 170 * (0.55 + grow * 0.75);
+        // The stone's own colour, over the white core. The effect sprites are
+        // warm gold by construction, so a blue gem breaking looked gold
+        // without this.
+        if (b.tone) {
+          // A radial falloff, not a flat ellipse: added at full opacity a
+          // solid shape has a hard rim and reads as an overlay laid on the
+          // deck rather than as light coming off the break. Cached at a fixed
+          // radius and scaled, so this stays off the per-frame gradient
+          // budget however many notes break at once.
+          var bs = (70 + grow * 80) * ringMul;
+          var tone = b.tone;
+          c.save();
+          c.globalAlpha = b.life * b.life * (st === 1 ? 0.5 : 0.3);
+          c.fillStyle = this._g('tone' + tone, function (cc) {
+            var tg = cc.createRadialGradient(0, 0, 1, 0, 0, 100);
+            tg.addColorStop(0, tone);
+            tg.addColorStop(0.45, tone);
+            tg.addColorStop(1, 'rgba(0, 0, 0, 0)');
+            return tg;
+          });
+          c.translate(b.x, b.y);
+          c.scale(bs / 100, (bs / 100) * 0.6);
+          c.fillRect(-100, -100, 200, 200);
+          c.restore();
+        }
+        var fs = 170 * (0.55 + grow * 0.75) * flareMul;
         c.globalAlpha = Math.min(1, b.life * 1.3);
         c.translate(b.x, b.y);
         c.rotate(b.rot * 0.15);

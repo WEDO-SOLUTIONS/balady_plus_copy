@@ -314,4 +314,64 @@ function shard(i) {
   };
 }
 
-module.exports = { crystal, gem, coin, keycap, shard };
+/* Debris, so a broken note throws pieces of ITSELF.
+
+   Gold shards for everything was the cheap answer and it read as one generic
+   effect: an amethyst crystal that shatters into gold is not shattering, it is
+   emitting confetti. These are the same irregular-convex trick as `shard`, but
+   carrying the note's own material -- the crystal's dielectric in its own
+   colour, and a silver metal for the silver coin.
+
+   The absorption is scaled up hard. A chip is a fraction of a crystal's size,
+   so the path through it is a fraction as long, and at the parent's
+   coefficients it would come out nearly clear -- Beer-Lambert cuts both ways.
+   Matching the LOOK of the parent means raising the coefficient, not copying
+   it. */
+function chip(v, i) {
+  v = v || '';
+  const t = CRYSTAL_TINT[v];
+  const r = rng(i * 104729 + (v.charCodeAt(1) || 97) * 31 + 7);
+  const planes = [];
+  for (const ax of [[1, 0, 0], [-1, 0, 0], [0, 1, 0], [0, -1, 0], [0, 0, 1], [0, 0, -1]]) {
+    planes.push([ax[0], ax[1], ax[2], 0.30 + r() * 0.34, 0]);
+  }
+  for (let k = 0; k < 5; k++) {           // fewer cuts than a shard: chips are blockier
+    const u = r() * 2 - 1, th = r() * Math.PI * 2;
+    const sxy = Math.sqrt(Math.max(0, 1 - u * u));
+    planes.push([sxy * Math.cos(th), u, sxy * Math.sin(th), 0.20 + r() * 0.22, 0]);
+  }
+  return {
+    name: 'fx_chip_' + ({ '': 'a', _b: 'b', _c: 'c' }[v]) + i,
+    size: 160,
+    radius: 0.58,
+    rot: { rx: r() * 2 - 1, ry: r() * Math.PI * 2, rz: r() * 2 - 1 },
+    glow: t.glow,
+    parts: [{
+      planes,
+      mat: { type: 'glass', ior: 1.56, absorb: t.absorb.map((x) => x * 2.6), spec: 900 },
+    }],
+  };
+}
+
+function flake(i) {
+  const r = rng(i * 15485863 + 29);
+  const planes = [];
+  for (const ax of [[1, 0, 0], [-1, 0, 0], [0, 1, 0], [0, -1, 0], [0, 0, 1], [0, 0, -1]]) {
+    planes.push([ax[0], ax[1], ax[2], 0.32 + r() * 0.26, 0]);
+  }
+  for (let k = 0; k < 6; k++) {
+    const u = r() * 2 - 1, th = r() * Math.PI * 2;
+    const sxy = Math.sqrt(Math.max(0, 1 - u * u));
+    planes.push([sxy * Math.cos(th), u, sxy * Math.sin(th), 0.19 + r() * 0.18, 0]);
+  }
+  return {
+    name: 'fx_flake_' + i,
+    size: 160,
+    radius: 0.56,
+    rot: { rx: r() * 2 - 1, ry: r() * Math.PI * 2, rz: r() * 2 - 1 },
+    glow: COIN_TINT._b.glow,
+    parts: [{ planes, mat: { type: 'metal', f0: COIN_TINT._b.f0, rough: 0.22, spec: 320 } }],
+  };
+}
+
+module.exports = { crystal, gem, coin, keycap, shard, chip, flake };

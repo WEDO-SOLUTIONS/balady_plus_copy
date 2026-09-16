@@ -166,6 +166,50 @@ async function slowmo(page, factor) {
   await page.evaluate(() => { window.Ardah.game.renderer.shake = 0; });
   await page.screenshot({ path: path.join(OUT, 'live_miss.png') });
 
+  // The three break styles, side by side: crystal shatters, gem flashes, coin
+  // scatters. Triggered on all three lanes at once so one frame compares them.
+  await page.evaluate(() => {
+    const g = window.Ardah.game;
+    const r = g.renderer;
+    for (const a of [r.lands, r.drops, r.sparks, r.bursts, r.shards, r.floats]) a.length = 0;
+    r.popup = null; r.shake = 0;
+    r._break(0, 1000, true);
+    r._break(1, 2000, true);
+    r._break(2, 7000, true);
+  });
+  await page.waitForTimeout(1400);
+  await page.screenshot({ path: path.join(OUT, 'live_break.png') });
+
+  // Back to real time for the two SUSTAINED states below. Slow motion exists
+  // for transients that finish before a screenshot does; a hold and a held pad
+  // are states, not moments, so capture latency does not matter -- and slowing
+  // dt would throttle the ember trickle to nothing while the judge, which runs
+  // off the conductor rather than dt, expired the hold in real time anyway.
+  await slowmo(page, 1);
+
+  // A hold in progress in every lane. The chart's notes were pushed into the
+  // future above, so three of them are pulled back and put into the state the
+  // judge would have left them in mid-hold.
+  await page.evaluate(() => {
+    const g = window.Ardah.game;
+    const r = g.renderer;
+    for (const a of [r.lands, r.drops, r.sparks, r.bursts, r.shards, r.floats]) a.length = 0;
+    r.popup = null; r.shake = 0;
+    const now = g.conductor.judgeTimeMs();
+    for (let i = 0; i < 3; i++) {
+      const n = g.judge.notes[i];
+      if (!n) continue;
+      n.lane = i; n.type = 'hold'; n.durMs = 1600;
+      n.t = now - 150; n.state = 'holding';
+      r.keyDown(i);
+    }
+  });
+  await page.waitForTimeout(420);
+  await page.screenshot({ path: path.join(OUT, 'live_hold.png') });
+  await page.evaluate(() => {
+    for (let i = 0; i < 3; i++) window.Ardah.game.renderer.keyUp(i);
+  });
+
   // A frame with two pads actually held, so the press animation is captured
   // rather than assumed.
   await page.evaluate(() => {
@@ -173,7 +217,7 @@ async function slowmo(page, factor) {
     g.renderer.keyDown(0);
     g.renderer.keyDown(2);
   });
-  await page.waitForTimeout(600);
+  await page.waitForTimeout(260);
   await page.screenshot({ path: path.join(OUT, 'live_pressed.png') });
   await page.evaluate(() => {
     const g = window.Ardah.game;
