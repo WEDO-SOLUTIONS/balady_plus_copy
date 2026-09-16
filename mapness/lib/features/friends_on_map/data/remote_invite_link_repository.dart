@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:mapness/features/friends_on_map/data/friends_on_map_api_exception.dart';
 import 'package:mapness/features/friends_on_map/data/invite_link_repository.dart';
 import 'package:mapness/shared/lib/deeplink_functions.dart';
 
@@ -20,10 +21,16 @@ class RemoteInviteLinkRepository implements InviteLinkRepository {
     return _toLink(response.data!);
   }
 
+  /// S-10: also where `inviteResetLimitReached` (Appendix B's 10-resets-per-
+  /// 24h cap) surfaces — see `data/friends_on_map_api_exception.dart`.
   @override
   Future<String> resetInviteLink() async {
-    final response = await _dio.post<Map<String, dynamic>>('/v1/me/invite-link/reset');
-    return _toLink(response.data!);
+    try {
+      final response = await _dio.post<Map<String, dynamic>>('/v1/me/invite-link/reset');
+      return _toLink(response.data!);
+    } on DioException catch (e) {
+      throw mapFriendsOnMapError(e);
+    }
   }
 
   String _toLink(Map<String, dynamic> json) =>

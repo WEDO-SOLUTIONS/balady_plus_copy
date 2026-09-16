@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:mapness/features/friends_on_map/data/blocked_users_repository.dart';
+import 'package:mapness/features/friends_on_map/data/friends_on_map_api_exception.dart';
 import 'package:mapness/features/friends_on_map/data/friends_on_map_json.dart';
 import 'package:mapness/features/friends_on_map/models/blocked_user.dart';
 
@@ -22,7 +23,11 @@ class RemoteBlockedUsersRepository implements BlockedUsersRepository {
   /// removes any existing friendship/pending requests as part of blocking.
   @override
   Future<void> blockUser(BlockedUser user) async {
-    await _dio.post<void>('/v1/blocks', data: {'id': user.id});
+    try {
+      await _dio.post<void>('/v1/blocks', data: {'id': user.id});
+    } on DioException catch (e) {
+      throw mapFriendsOnMapError(e);
+    }
   }
 
   @override

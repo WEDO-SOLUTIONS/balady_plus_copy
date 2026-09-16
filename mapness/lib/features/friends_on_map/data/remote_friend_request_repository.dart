@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:mapness/features/friends_on_map/data/friend_request_repository.dart';
+import 'package:mapness/features/friends_on_map/data/friends_on_map_api_exception.dart';
 import 'package:mapness/features/friends_on_map/data/friends_on_map_json.dart';
 import 'package:mapness/features/friends_on_map/models/friend.dart';
 import 'package:mapness/features/friends_on_map/models/friend_request.dart';
@@ -19,11 +20,19 @@ class RemoteFriendRequestRepository implements FriendRequestRepository {
   /// (`handleResolveInvite`), unlike the mock this replaces which had no
   /// caller identity to check against. Kept in the signature only because
   /// `FriendRequestRepository` is shared with the mock implementation.
+  /// S-10: this endpoint is also where 3 of the 5 Appendix B limit codes
+  /// surface (`pendingRequestLimitReached`, `requestCreationLimitReached`,
+  /// `inviteResolutionRateLimited`) — see
+  /// `data/friends_on_map_api_exception.dart` for the wire contract.
   @override
   Future<InviteResolution> resolveInvite({required String token, required String ownToken}) async {
-    final response = await _dio.post<Map<String, dynamic>>('/v1/invites/$token/resolve');
-    final result = response.data!['result'] as String;
-    return InviteResolution.values.firstWhere((r) => r.name == result);
+    try {
+      final response = await _dio.post<Map<String, dynamic>>('/v1/invites/$token/resolve');
+      final result = response.data!['result'] as String;
+      return InviteResolution.values.firstWhere((r) => r.name == result);
+    } on DioException catch (e) {
+      throw mapFriendsOnMapError(e);
+    }
   }
 
   @override
@@ -37,10 +46,16 @@ class RemoteFriendRequestRepository implements FriendRequestRepository {
     return (response.data ?? []).map((e) => friendRequestFromJson(e as Map<String, dynamic>)).toList();
   }
 
+  /// S-10: also where `friendLimitReached` (Appendix B's 200-friend cap)
+  /// surfaces — see `data/friends_on_map_api_exception.dart`.
   @override
   Future<Friend> acceptRequest(String id) async {
-    final response = await _dio.post<Map<String, dynamic>>('/v1/friend-requests/$id/accept');
-    return friendFromJson(response.data!);
+    try {
+      final response = await _dio.post<Map<String, dynamic>>('/v1/friend-requests/$id/accept');
+      return friendFromJson(response.data!);
+    } on DioException catch (e) {
+      throw mapFriendsOnMapError(e);
+    }
   }
 
   /// Tolerates a 404: `FriendRequestsController.blockIncoming` calls
@@ -55,13 +70,17 @@ class RemoteFriendRequestRepository implements FriendRequestRepository {
       await _dio.post<void>('/v1/friend-requests/$id/decline');
     } on DioException catch (e) {
       if (e.response?.statusCode != 404) {
-        rethrow;
+        throw mapFriendsOnMapError(e);
       }
     }
   }
 
   @override
   Future<void> cancelRequest(String id) async {
-    await _dio.post<void>('/v1/friend-requests/$id/cancel');
+    try {
+      await _dio.post<void>('/v1/friend-requests/$id/cancel');
+    } on DioException catch (e) {
+      throw mapFriendsOnMapError(e);
+    }
   }
 }

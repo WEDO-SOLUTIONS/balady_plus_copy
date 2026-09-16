@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:mapness/features/friends_on_map/data/friends_on_map_api_exception.dart';
 import 'package:mapness/features/friends_on_map/data/friends_on_map_json.dart';
 import 'package:mapness/features/friends_on_map/data/friends_repository.dart';
 import 'package:mapness/features/friends_on_map/models/friend.dart';
@@ -27,6 +28,10 @@ class RemoteFriendsRepository implements FriendsRepository {
 
   @override
   Future<void> removeFriend(String id) async {
-    await _dio.delete<void>('/v1/friends/$id');
+    try {
+      await _dio.delete<void>('/v1/friends/$id');
+    } on DioException catch (e) {
+      throw mapFriendsOnMapError(e);
+    }
   }
 }

@@ -4,6 +4,7 @@ import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/features/friends_on_map/providers/friends_on_map_invite_link.dart';
+import 'package:mapness/features/friends_on_map/ui/friends_on_map_error_dialog.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/widgets/profile/profile_image/profile_image_widget.dart';
 import 'package:qr_flutter/qr_flutter.dart';
@@ -78,7 +79,7 @@ class _LinkContent extends ConsumerWidget {
         buttonType: ButtonType.secondary,
         size: ButtonSize.large,
         primaryLabel: context.l10n.addFriendResetCta,
-        onTap: () => ref.read(friendsOnMapInviteLinkProvider.notifier).reset(),
+        onTap: () => runFriendsOnMapAction(context, () => ref.read(friendsOnMapInviteLinkProvider.notifier).reset()),
       ),
     ],
   );

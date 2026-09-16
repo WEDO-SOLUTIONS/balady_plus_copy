@@ -1,10 +1,12 @@
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mapness/features/friends_on_map/data/friends_on_map_api_exception.dart';
 import 'package:mapness/features/friends_on_map/models/invite_resolution.dart';
 import 'package:mapness/features/friends_on_map/providers/blocked_users.dart';
 import 'package:mapness/features/friends_on_map/providers/friend_request_repository.dart';
 import 'package:mapness/features/friends_on_map/providers/friends_on_map_invite_link.dart';
+import 'package:mapness/features/friends_on_map/ui/friends_on_map_error_dialog.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/lib/deeplink_functions.dart';
 
@@ -38,9 +40,20 @@ Future<void> resolveInviteAndShowResult(BuildContext context, WidgetRef ref, Str
   }
 
   final ownToken = _extractInviteToken(await ref.read(friendsOnMapInviteLinkProvider.future));
-  final resolution = await ref
-      .read(friendRequestRepositoryProvider)
-      .resolveInvite(token: token, ownToken: ownToken ?? '');
+
+  // S-10: `resolveInvite` is where 3 of the 5 Appendix B limit codes can
+  // surface (pending-outgoing cap, rolling-24h request-creation cap, R-40's
+  // rolling-hourly resolution-attempt cap) — shown via the shared limit
+  // dialog instead of this flow's own business-outcome dialog below.
+  final InviteResolution resolution;
+  try {
+    resolution = await ref.read(friendRequestRepositoryProvider).resolveInvite(token: token, ownToken: ownToken ?? '');
+  } on FriendsOnMapApiException catch (e) {
+    if (context.mounted) {
+      await showFriendsOnMapLimitDialog(context, e);
+    }
+    return;
+  }
 
   if (!context.mounted) {
     return;

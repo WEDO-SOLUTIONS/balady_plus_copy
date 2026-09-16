@@ -7,6 +7,7 @@ import 'package:mapness/_features/common/providers/ui_direction.dart';
 import 'package:mapness/app/auto_route/app_routes.dart';
 import 'package:mapness/features/friends_on_map/models/friend_request.dart';
 import 'package:mapness/features/friends_on_map/providers/friend_requests.dart';
+import 'package:mapness/features/friends_on_map/ui/friends_on_map_error_dialog.dart';
 import 'package:mapness/features/friends_on_map/ui/widgets/friend_confirm_sheet.dart';
 import 'package:mapness/features/friends_on_map/ui/widgets/friend_request_item.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
@@ -42,8 +43,14 @@ class FriendRequestsPage extends ConsumerWidget {
                   requestsAsync: incomingAsync,
                   itemBuilder: (request) => FriendRequestItem(
                     request: request,
-                    onAccept: () => ref.read(friendRequestsControllerProvider.notifier).accept(request.id),
-                    onDecline: () => ref.read(friendRequestsControllerProvider.notifier).decline(request.id),
+                    onAccept: () => runFriendsOnMapAction(
+                      context,
+                      () => ref.read(friendRequestsControllerProvider.notifier).accept(request.id),
+                    ),
+                    onDecline: () => runFriendsOnMapAction(
+                      context,
+                      () => ref.read(friendRequestsControllerProvider.notifier).decline(request.id),
+                    ),
                     onBlock: () => showFriendConfirmSheet(
                       context,
                       title: context.l10n.friendRequestBlockConfirmTitle,
@@ -54,10 +61,13 @@ class FriendRequestsPage extends ConsumerWidget {
                       // the page is ever navigated away from while the
                       // confirm sheet is still pending — see the fix note
                       // in friend_card_sheet.dart for the bug this avoids.
-                      onConfirm: () => ProviderScope.containerOf(
+                      onConfirm: () => runFriendsOnMapAction(
                         rootNavigatorKey.currentContext!,
-                        listen: false,
-                      ).read(friendRequestsControllerProvider.notifier).blockIncoming(request),
+                        () => ProviderScope.containerOf(
+                          rootNavigatorKey.currentContext!,
+                          listen: false,
+                        ).read(friendRequestsControllerProvider.notifier).blockIncoming(request),
+                      ),
                     ),
                   ),
                 ),
@@ -68,7 +78,10 @@ class FriendRequestsPage extends ConsumerWidget {
                   requestsAsync: outgoingAsync,
                   itemBuilder: (request) => FriendRequestItem(
                     request: request,
-                    onCancel: () => ref.read(friendRequestsControllerProvider.notifier).cancel(request.id),
+                    onCancel: () => runFriendsOnMapAction(
+                      context,
+                      () => ref.read(friendRequestsControllerProvider.notifier).cancel(request.id),
+                    ),
                   ),
                 ),
               ],

@@ -7,6 +7,7 @@ import 'package:mapness/app/auto_route/app_routes.dart';
 import 'package:mapness/features/friends_on_map/friend_elapsed_time.dart';
 import 'package:mapness/features/friends_on_map/models/friend.dart';
 import 'package:mapness/features/friends_on_map/providers/friends_controller.dart';
+import 'package:mapness/features/friends_on_map/ui/friends_on_map_error_dialog.dart';
 import 'package:mapness/features/friends_on_map/ui/widgets/friend_avatar.dart';
 import 'package:mapness/features/friends_on_map/ui/widgets/friend_confirm_sheet.dart';
 import 'package:mapness/features/share_eta/ui/eta_share_control_sheet/eta_share_sheet.dart';
@@ -156,10 +157,13 @@ class FriendCardSheet extends ConsumerWidget {
       title: title,
       body: body,
       confirmLabel: confirmLabel,
-      onConfirm: () => ProviderScope.containerOf(
+      onConfirm: () => runFriendsOnMapAction(
         rootNavigatorKey.currentContext!,
-        listen: false,
-      ).read(friendsControllerProvider.notifier).removeFriend(friend.id),
+        () => ProviderScope.containerOf(
+          rootNavigatorKey.currentContext!,
+          listen: false,
+        ).read(friendsControllerProvider.notifier).removeFriend(friend.id),
+      ),
     );
   }
 
@@ -173,10 +177,13 @@ class FriendCardSheet extends ConsumerWidget {
       title: title,
       body: body,
       confirmLabel: confirmLabel,
-      onConfirm: () => ProviderScope.containerOf(
+      onConfirm: () => runFriendsOnMapAction(
         rootNavigatorKey.currentContext!,
-        listen: false,
-      ).read(friendsControllerProvider.notifier).blockFriend(friend),
+        () => ProviderScope.containerOf(
+          rootNavigatorKey.currentContext!,
+          listen: false,
+        ).read(friendsControllerProvider.notifier).blockFriend(friend),
+      ),
     );
   }
 }

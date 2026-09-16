@@ -49,6 +49,12 @@ Dio friendsOnMapNetwork(Ref ref) {
       // retries: 3 is RetryInterceptor's own default — left implicit rather
       // than restated.
       retryDelays: const [Duration(seconds: 1), Duration(seconds: 2), Duration(seconds: 3)],
+      // S-10: `defaultRetryableStatuses` includes 429. Left as-is, a limit
+      // response would get silently auto-retried 3x before ever reaching
+      // the repository/mapper — defeating Retry-After, and (for
+      // `inviteResolutionRateLimited`) burning extra attempts against the
+      // very rolling-hour counter R-40 requires counting failures towards.
+      retryEvaluator: DefaultRetryEvaluator({...defaultRetryableStatuses}..remove(status429TooManyRequests)).evaluate,
     ),
   );
   return dio;
