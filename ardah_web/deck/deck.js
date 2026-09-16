@@ -192,6 +192,23 @@ function caption(s, text, x, y, w) {
   stat(s, 10.4, 5.15, 2.3, '×4', 'combo multiplier');
 }
 
+/* ========================= 5b. every outcome reads ========================= */
+{
+  const s = slide();
+  kicker(s, 'FEEDBACK');
+  title(s, 'Hit, hold and miss\nall read differently', { w: 5.4 });
+  body(s, 'Every outcome has its own animation, and the note tells you which one it was without reading a word.',
+    { y: 2.5, w: 5.4, h: 1.2 });
+  bullets(s, [
+    'Break: a crystal shatters into chips of its own colour, a gem flashes and leaves nothing, a coin scatters flakes',
+    'Hold: the ribbon darkens to a lit channel, a highlight runs up it and the line throws embers while the key is down',
+    'Miss: the note is dropped, not deleted — it tumbles past the line and falls away under a red bloom'
+  ], { y: 3.9, w: 5.6 });
+  device(s, '21-break-styles', 6.5, 0.5, 6.4);
+  device(s, '23-hold', 9.6, 0.5, 6.4);
+  caption(s, 'Left: three break styles at once. Right: a hold running in every lane.', 6.5, 7.05, 6.2);
+}
+
 /* ================================ 6. flourish ================================ */
 {
   const s = slide();
@@ -301,8 +318,8 @@ function caption(s, text, x, y, w) {
   body(s, 'The game ships as a Balady+ mini-app: an archive downloads, unpacks and is served by a local server inside the app. The same mini-app engine that runs today.',
     { y: 2.4, w: 6.4, h: 1.5 });
   const items = [
-    ['180 KB', 'all of the artwork'],
-    ['345 KB', 'the game as one file'],
+    ['338 KB', 'all of the artwork'],
+    ['811 KB', 'the game as one file'],
     ['0', 'installs for the player'],
     ['offline', 'after the first download']
   ];
@@ -322,14 +339,14 @@ function caption(s, text, x, y, w) {
   const s = slide();
   kicker(s, 'ART DIRECTION');
   title(s, 'Built on the concept art', { w: 5.6 });
-  body(s, 'The stage you see is cut from the approved concept image and wired into the engine — the fort, the banners, the braziers, the row, the musicians.',
-    { y: 2.4, w: 5.6, h: 1.6 });
+  body(s, 'The stage is cut from the approved concept image. Everything that moves — notes, pads, the runway deck, the effects — is rendered from geometry against the same lighting.',
+    { y: 2.4, w: 5.6, h: 1.5 });
   bullets(s, [
-    'Production art is commissioned in layers, not as one flat render',
-    'Backdrop can arrive as a finished frame; performers must be animatable',
-    'Cultural review signs off performers, banners and the fort before production',
-    'No text is ever baked into artwork — every string localises at runtime'
-  ], { y: 4.2, w: 5.8 });
+    'Colour comes from physics: a stone\'s hue is what it absorbs',
+    'Production art is commissioned in layers, not one flat render',
+    'Cultural review signs off performers, banners and the fort',
+    'No text is baked into artwork — every string localises at runtime'
+  ], { y: 4.1, w: 5.8, h: 2.9 });
   device(s, '08-play-chorus', 8.9, 0.55, 6.4);
 }
 
@@ -364,7 +381,7 @@ function caption(s, text, x, y, w) {
     ['Cultural framing', 'Ardah is heritage. Wording, posture and banners go through review before art production starts.'],
     ['Audio licensing', 'Percussion is synthesised in the browser today. The shipping track is licensed or commissioned.'],
     ['Android latency', 'Calibration removes the constant offset. Jitter is measured on devices before the work starts.'],
-    ['Weight and network', 'Events mean poor connectivity. The ceiling is 4 MB; we are at 0.2 today.']
+    ['Weight and network', 'Events mean poor connectivity. The ceiling is 4 MB; we are at 0.33 today.']
   ];
   risks.forEach(([h, t], i) => {
     const x = 0.7 + (i % 2) * 6.2, y = 2.4 + Math.floor(i / 2) * 2.3;

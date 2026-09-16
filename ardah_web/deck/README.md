@@ -1,6 +1,6 @@
 # Management deck
 
-`ardah-overview.pptx` — 18 slides in English for a management review: what the
+`ardah-overview.pptx` — 19 slides in English for a management review: what the
 game is, how it plays, how it ships, what is still open. Only the artwork build
 is shown; there is no code-vs-art comparison and no engine benchmarks.
 
@@ -14,6 +14,7 @@ PowerPoint (in which case save under a new name).
 cd ardah_web && npx http-server -p 8123 -s .     # the game has to be served
 node deck/capture.js                              # frames, iPhone 17 Pro Max (440x956 @3x)
 node deck/capture2.js                             # muted / latency lab / pause states
+node deck/capture3.js                             # break styles, miss, hold
 python3 deck/mockup_all.py                        # wrap each frame in a device shell
 node deck/deck.js                                 # -> deck/ardah-overview.pptx
 ```
@@ -36,9 +37,25 @@ workaround.
 ## What the frames are
 
 Real screenshots of the running build, driven by a robot player that hits the
-chart — not mockups, not renders. The only staged frame is the "crowd on the
-edge" one, where the sync meter is set low so the slide can show the fail state;
-everything else is the game playing itself.
+chart — not mockups, not renders. The only staged frames are the "crowd on the
+edge" one, where the sync meter is set low so the slide can show the fail
+state, and the three from `capture3.js`; everything else is the game playing
+itself.
+
+`capture3.js` has to stage its frames, and it is worth knowing why. A break
+lasts about 400 ms and taking a screenshot costs 200–300 ms, so waiting for the
+robot to happen to produce one is a lottery — the first attempts caught nothing
+but the aftermath. It slows the renderer's `dt` for the transients and triggers
+them deliberately. The staging decides only *when*: the renderer, the effects
+and the assets are the real ones, and for the sustained states (a hold, a held
+pad) it drops back to real time and decides nothing at all — slowing `dt` there
+would throttle the ember trickle while the judge, which runs off the conductor
+rather than `dt`, expired the hold in real time anyway.
+
+It also leaves one spent note behind when it quiets the chart: `game.js` shows
+its "Listen…" lead-in hint whenever the visual clock is more than 900 ms before
+`notes[0].t`, so pushing the whole chart into the future puts that hint back on
+screen.
 
 The song is 77 s, so `capture.js` takes about two minutes: it waits on the
 conductor's own clock (`judgeTimeMs`) to hit each mark, which is why the

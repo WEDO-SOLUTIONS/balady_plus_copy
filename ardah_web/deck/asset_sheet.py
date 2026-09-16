@@ -71,18 +71,52 @@ def sheet(files, title, cols, box, scale, out_name, note=None):
     print(out_name, sh.size)
 
 
-notes = [f'{SRC}/note_tabl.webp', f'{SRC}/note_swords.webp', f'{SRC}/note_tar.webp']
-keys = [f'{SRC}/key_tabl.webp', f'{SRC}/key_swords.webp', f'{SRC}/key_tar.webp']
+def g(*names):
+    return [f'{SRC}/{n}.webp' for n in names]
 
-sheet(notes, 'Note sprites — the objects that travel down the lanes', 3, (260, 220), 3.0,
+
+sheet(g('note_tabl', 'note_tabl_b', 'note_tabl_c',
+        'note_swords', 'note_swords_b', 'note_swords_c',
+        'note_tar', 'note_tar_b'),
+      'Note sprites — the objects that travel down the lanes', 3, (250, 200), 2.4,
       'assets_notes.png',
-      'Shown at 3x. In game they are scaled by distance: ~16 px far, ~120 px at the judgment line.')
-sheet(keys, 'Lane keycaps — the row under the runway', 3, (260, 240), 2.6,
+      'One shape per lane, several colours within it — the lane stays readable by position '
+      'and silhouette. Ray traced, not drawn: the stones are dielectrics, so their colour is '
+      'an absorption coefficient rather than a fill.')
+
+sheet(g('key_tabl', 'key_swords', 'key_tar', 'glyph_a', 'glyph_s', 'glyph_d'),
+      'Lane keycaps and their key glyphs', 3, (250, 220), 2.4,
       'assets_keys.png',
-      'Static. The label under each cap (TABL / SWORDS / TAR) is drawn in code so it can localise.')
+      'Each pad is rendered from the angle the camera really has to it. The letters are '
+      'SEPARATE sprites, not pixels on the pad: that is what keeps them localisable into '
+      'Arabic, and lets a touch player get a dot instead of a key name.')
+
+sheet(g('fx_flare', 'fx_ring', 'fx_glow', 'fx_spark'),
+      'Hit effects — light, not surfaces', 4, (240, 240), 1.6,
+      'assets_fx.png',
+      'These carry INTENSITY IN THE ALPHA CHANNEL and chroma in RGB, because the game adds '
+      'them rather than blending them. On this sheet they are shown blended, so they read '
+      'darker here than in the game.')
+
+sheet(g('fx_chip_a0', 'fx_chip_a1', 'fx_chip_b0', 'fx_chip_b1',
+        'fx_chip_c0', 'fx_chip_c1', 'fx_shard_0', 'fx_shard_2',
+        'fx_flake_0', 'fx_flake_1'),
+      'Debris — a broken note throws pieces of itself', 5, (180, 180), 2.0,
+      'assets_debris.png',
+      'Crystal chips in the note\'s own colour, gold shards, silver flakes. A gem throws '
+      'nothing: a cut stone that breaks should flash, not leave rubble.')
+
+sheet(g('runway'),
+      'The runway deck — dark glass with a gold Najdi lattice', 1, (900, 660), None,
+      'assets_runway.png',
+      'Stored in RUNWAY SPACE, not screen space: across by world x, along by depth z, with '
+      'rows spaced uniformly in 1/z. The game warps it into whatever layout the handset has, '
+      'once per resize.')
+
 sheet([f'{SRC}/bg_stage.webp'], 'Stage backdrop — one plate behind the runway', 1, (760, 820), None,
       'assets_stage.png',
       'Cut from the concept art. Performers, musicians and fires are baked in, so this layer does not animate.')
+
 sheet([f'{SRC}/ui_plaque.webp'], 'Title plaque — extracted but NOT used', 1, (700, 260), None,
       'assets_unused.png',
       'Its title is baked in as English pixels, so it cannot localise. The menu draws its own plaque instead.')
