@@ -96,41 +96,11 @@ button{font:inherit;color:inherit;border:0;background:none;cursor:pointer}
     transparent 44%, rgba(0,0,0,.28) 100%);
 }
 
-/* ---------- crest: the plaque lifted from the mock-up ---------- */
-#crest{
-  position:relative;z-index:8;
-  display:flex;justify-content:center;
-  padding:2px 10px 0;
-}
-.crest-plaque{
-  position:relative;
-  width:min(50%, 208px, calc(32 * var(--vh)));aspect-ratio:424/138;
-  background:center/100% 100% no-repeat url("crest.webp");
-  display:grid;place-items:center;
-  filter:drop-shadow(0 6px 14px rgba(0,0,0,.6));
-}
-.crest-title{
-  position:absolute;top:62%;left:50%;transform:translate(-50%,-50%);
-  width:80%;text-align:center;
-  font-size:min(13px, calc(2.9 * var(--vw)));font-weight:900;letter-spacing:.02em;
-  background:linear-gradient(180deg,var(--gold-hi) 0%,var(--gold) 46%,#c79a40 100%);
-  -webkit-background-clip:text;background-clip:text;color:transparent;
-  text-shadow:0 2px 4px rgba(0,0,0,.4);
-  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
-}
-html[dir="ltr"] .crest-title{text-transform:uppercase}
-/* the deal number rides the shield in the scrollwork */
-.crest-badge{
-  position:absolute;top:19%;left:50%;transform:translate(-50%,-50%);
-  z-index:9;font-size:min(8px, calc(1.9 * var(--vw)));font-weight:900;line-height:1;
-  color:#0a3f22;text-shadow:0 1px 0 rgba(255,255,255,.45);
-}
-
 /* ---------- status line ---------- */
 #status{
   position:relative;z-index:7;
   display:flex;align-items:flex-start;gap:8px;
-  padding:clamp(2px, calc(.6 * var(--vh)), 5px) 12px clamp(2px, calc(.4 * var(--vh)), 4px);
+  padding:clamp(6px, calc(1.1 * var(--vh)), 12px) 12px clamp(4px, calc(.7 * var(--vh)), 8px);
 }
 .st-side{
   flex:1 1 0;min-width:0;
@@ -635,7 +605,7 @@ html[dir="ltr"] .rail-btn{text-transform:uppercase}
 
 /* ---------- toast ---------- */
 #toast{
-  position:fixed;top:calc(var(--safe-t) + 27vh);
+  position:fixed;top:calc(var(--safe-t) + 27 * var(--vh));
   left:50%;transform:translateX(-50%);max-width:calc(88 * var(--vw));
   z-index:40;display:flex;flex-direction:column;gap:6px;align-items:center;pointer-events:none;
 }
@@ -884,14 +854,6 @@ body::after{
 <body>
 
 <div id="table">
-  <!-- ornate plaque header -->
-  <header id="crest">
-    <div class="crest-badge" id="crest-badge">1</div>
-    <div class="crest-plaque">
-      <span class="crest-title" id="crest-title" data-i18n="crestTitle">تحدي البلوت</span>
-    </div>
-  </header>
-
   <div id="status">
     <div class="st-side" id="st-side">طاولة مباشرة</div>
     <div class="st-mid">
@@ -950,7 +912,6 @@ const I18N = {
     us:"لنا", them:"لهم", round:"جولة",
     sun:"صن", hokum:"حكم", pass:"بس", ashkal:"أشكل",
     liveTable:"طاولة مباشرة", dealNo:"الجولة {n}", toTarget:"حتى {n}",
-    crestTitle:"تحدي البلوت",
     winning:"الفائزة", tryThis:"دورك · جرّب", hintNone:"انتظر دورك",
     takeStage:"ابدأ اللعب", nextDeal:"الجولة التالية", invite:"أصدقاء",
     you:"أنت", partner:"شريكك", right:"اليمين", left:"اليسار",
@@ -1004,7 +965,6 @@ const I18N = {
     us:"Us", them:"Them", round:"Round",
     sun:"Sun", hokum:"Hokum", pass:"Pass", ashkal:"Ashkal",
     liveTable:"Live table", dealNo:"Deal {n}", toTarget:"To {n}",
-    crestTitle:"Baloot Challenge",
     winning:"Winning", tryThis:"Your turn · try", hintNone:"Wait for your turn",
     takeStage:"Take the stage", nextDeal:"Next deal", invite:"Friends",
     you:"You", partner:"Partner", right:"Right", left:"Left",
@@ -2257,7 +2217,6 @@ const UI = {
     const R = Game.R;
     $("#st-target").textContent  = T("toTarget", {n:CFG.target})
       + (R && R.mult > 1 ? " • ×" + R.mult + (R.locked ? " " + T("lockedTag") : "") : "");
-    $("#crest-badge").textContent = G.roundNo;
   },
 
   renderSeats(){
