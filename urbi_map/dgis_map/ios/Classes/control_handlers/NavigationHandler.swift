@@ -324,20 +324,22 @@ class NavigationHandler {
             return
         }
         
-        self.oldSource = map.sources.first(where: { $0 is MyLocationMapObjectSource })!
-        
-        map.removeSource(source: self.oldSource!)
-        
-        // BALADY-3744: bearingThreshold 90° blocked the vehicle icon from
-        // rotating until the course drifted by a full 90°, making it look
-        // like driving sideways. Lowered to 10° to keep GPS noise smoothing.
-        map.addSource(source: MyLocationMapObjectSource(
-            context: context,
-            controllerSettings:  MyLocationControllerSettings(
-                coordinatesThreshold: Meter(value: 10),
-                bearingThreshold: Bearing(value: 10)
-            )
-        ))
+        let currentSource = map.sources.first(where: { $0 is MyLocationMapObjectSource })
+        if self.oldSource == nil, let currentSource = currentSource {
+            self.oldSource = currentSource
+            map.removeSource(source: currentSource)
+
+            // BALADY-3744: bearingThreshold 90° blocked the vehicle icon from
+            // rotating until the course drifted by a full 90°, making it look
+            // like driving sideways. Lowered to 10° to keep GPS noise smoothing.
+            map.addSource(source: MyLocationMapObjectSource(
+                context: context,
+                controllerSettings:  MyLocationControllerSettings(
+                    coordinatesThreshold: Meter(value: 10),
+                    bearingThreshold: Bearing(value: 10)
+                )
+            ))
+        }
         
         completion(Result.success(()))
     }
