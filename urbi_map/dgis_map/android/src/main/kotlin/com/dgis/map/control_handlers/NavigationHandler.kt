@@ -15,7 +15,6 @@ import com.dgis.map.map_api.SoundToggleType
 import io.flutter.plugin.common.EventChannel
 import ru.dgis.sdk.Context as SdkContext
 import ru.dgis.sdk.Duration
-import ru.dgis.sdk.Meter
 import ru.dgis.sdk.ScreenSize
 import ru.dgis.sdk.coordinates.Bearing
 import ru.dgis.sdk.geometry.ComplexGeometry
@@ -303,17 +302,13 @@ class NavigationHandler(
                 if (oldSource == null && map.sources.isNotEmpty()) {
                         oldSource = map.sources.first { it is MyLocationMapObjectSource }
                         map.removeSource(oldSource!!)
-                        // BALADY-3744: bearingThreshold 90° blocked the vehicle icon from
-                        // rotating until the course drifted by a full 90°, making it look
-                        // like driving sideways. Lowered to 10° to keep GPS noise smoothing.
+                        // BALADY-3744: bearingThreshold 90° held a stale heading until course
+                        // drift exceeded it, reading as "driving sideways". Matches HB-113
+                        // (verified on device) - use SDK defaults (0.1m/1°), core already has this.
                         map.addSource(
                                 MyLocationMapObjectSource(
                                         context = this.context,
-                                        controllerSettings =
-                                                MyLocationControllerSettings(
-                                                        coordinatesThreshold = Meter(10.0f),
-                                                        bearingThreshold = Bearing(10.0)
-                                                )
+                                        controllerSettings = MyLocationControllerSettings()
                                 )
                         )
                 }

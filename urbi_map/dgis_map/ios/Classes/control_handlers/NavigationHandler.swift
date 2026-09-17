@@ -329,15 +329,12 @@ class NavigationHandler {
             self.oldSource = currentSource
             map.removeSource(source: currentSource)
 
-            // BALADY-3744: bearingThreshold 90° blocked the vehicle icon from
-            // rotating until the course drifted by a full 90°, making it look
-            // like driving sideways. Lowered to 10° to keep GPS noise smoothing.
+            // BALADY-3744: bearingThreshold 90° held a stale heading until course
+            // drift exceeded it, reading as "driving sideways". iOS twin of
+            // HB-113 (Android, verified on device) - use SDK defaults (0.1m/1°).
             map.addSource(source: MyLocationMapObjectSource(
                 context: context,
-                controllerSettings:  MyLocationControllerSettings(
-                    coordinatesThreshold: Meter(value: 10),
-                    bearingThreshold: Bearing(value: 10)
-                )
+                controllerSettings: MyLocationControllerSettings()
             ))
         }
         
