@@ -101,7 +101,10 @@ distance, and the header drifts least. On a phone a `deviceorientation` reading
 drives it — Android starts listening straight away, iOS asks for permission on
 the first press of the tilt pad. On a desktop the two arrows in the corner of
 the table, or the `1` and `2` keys, stand in: hold to tilt, release and it
-springs back.
+springs back. Under the arrows a hairline slider holds the camera at one angle,
+so a demo can be aimed and left there; pressing either arrow, or double-clicking
+the track, lets it go and recentres. A held arrow wins over the lock, and the
+lock wins over the gyroscope.
 
 The travel is a pixel budget, not a share of the crop: a tall narrow screen
 crops the picture hard, and a percentage of that crop swings the scene right

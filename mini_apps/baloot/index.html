@@ -291,6 +291,43 @@ html[dir="ltr"] .st-deal{text-transform:uppercase}
   border-color:var(--gold-hi);transform:scale(.94);
 }
 #tiltpad.gyro{border-color:rgba(53,251,125,.5)}
+
+/* Holds the camera at one angle. Long enough to aim with, quiet enough to
+   disappear into the wall behind it: a hairline track with a small knob, and
+   a generous invisible grab area around them. */
+#tiltrange{
+  position:absolute;top:49px;inset-inline:14px;z-index:9;
+  -webkit-appearance:none;appearance:none;
+  height:22px;background:transparent;cursor:ew-resize;
+}
+#tiltrange::-webkit-slider-runnable-track{
+  height:2px;border-radius:2px;
+  background:
+    radial-gradient(circle 1.6px at 50% 50%, rgba(240,207,114,.42), transparent 100%),
+    linear-gradient(90deg, rgba(240,207,114,.03), rgba(240,207,114,.15) 30%,
+      rgba(240,207,114,.15) 70%, rgba(240,207,114,.03));
+}
+#tiltrange::-webkit-slider-thumb{
+  -webkit-appearance:none;appearance:none;
+  width:11px;height:11px;border-radius:50%;margin-top:-4.5px;
+  background:rgba(240,207,114,.42);
+  border:1px solid rgba(255,233,164,.4);
+  box-shadow:0 1px 4px rgba(0,0,0,.55);
+  transition:background .15s,transform .15s,border-color .15s;
+}
+#tiltrange::-moz-range-track{
+  height:2px;border-radius:2px;background:rgba(240,207,114,.2);
+}
+#tiltrange::-moz-range-thumb{
+  width:11px;height:11px;border-radius:50%;border:1px solid rgba(255,233,164,.45);
+  background:rgba(240,207,114,.5);box-shadow:0 1px 4px rgba(0,0,0,.55);
+}
+#tiltrange.locked::-webkit-slider-thumb{
+  background:var(--gold);border-color:var(--gold-hi);transform:scale(1.2);
+  box-shadow:0 1px 6px rgba(0,0,0,.6),0 0 10px rgba(240,207,114,.6);
+}
+#tiltrange.locked::-moz-range-thumb{background:var(--gold);border-color:var(--gold-hi)}
+@media (prefers-reduced-motion:reduce){ #tiltrange{display:none} }
 @media (prefers-reduced-motion:reduce){ #tiltpad{display:none} }
 
 /* ---------- seat plates, pinned to the painted players ---------- */
@@ -843,6 +880,8 @@ html[dir="ltr"] .rail-btn{text-transform:uppercase}
       <button class="tilt-btn" id="tilt-l" aria-label="tilt left">‹</button>
       <button class="tilt-btn" id="tilt-r" aria-label="tilt right">›</button>
     </div>
+    <input type="range" id="tiltrange" min="-100" max="100" value="0" step="1"
+           aria-label="hold the camera at an angle">
     <div id="board">
       <div class="seat" data-pos="north" id="seat-n"></div>
       <div class="seat" data-pos="west"  id="seat-w"></div>
@@ -2579,7 +2618,8 @@ window.addEventListener("keydown", e => {
 const Tilt = (() => {
   const root = document.documentElement;
   const reduced = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-  let target = 0, current = 0, manual = 0, gyro = 0, live = false, raf = 0;
+  let target = 0, current = 0, manual = 0, gyro = 0, lock = 0, locked = false,
+      live = false, raf = 0;
 
   const PAN_SHARE = 0.26;           // of the hidden part of the picture...
   const PAN_MAX = 40;               // ...capped here, and never less than
@@ -2604,7 +2644,7 @@ const Tilt = (() => {
   requestAnimationFrame(measure);       // size the scene before the first tilt
 
   function frame(){
-    const want = manual !== 0 ? manual : gyro;
+    const want = manual !== 0 ? manual : (locked ? lock : gyro);
     target = Math.max(-1, Math.min(1, want));
     current += (target - current) * 0.12;
     if (Math.abs(current - target) < 0.0015) current = target;
@@ -2616,9 +2656,25 @@ const Tilt = (() => {
 
   /* ---- the desktop stand-in ---- */
   function hold(dir, on){
+    if (on) release();                     // an arrow always lets the camera go
     manual = on ? dir : (manual === dir ? 0 : manual);
     $("#tilt-l").classList.toggle("held", manual < 0);
     $("#tilt-r").classList.toggle("held", manual > 0);
+    kick();
+  }
+
+  /* ---- holding the camera at one angle ---- */
+  function setLock(v){
+    lock = Math.max(-1, Math.min(1, v));
+    locked = true;
+    $("#tiltrange").classList.add("locked");
+    kick();
+  }
+  function release(){
+    if (!locked && lock === 0) return;
+    lock = 0; locked = false;
+    const r = $("#tiltrange");
+    r.value = 0; r.classList.remove("locked");
     kick();
   }
 
@@ -2644,7 +2700,7 @@ const Tilt = (() => {
     }
   }
 
-  return { hold, enableGyro, measure, get live(){ return live; } };
+  return { hold, setLock, release, enableGyro, measure, get live(){ return live; } };
 })();
 
 (function bindTilt(){
@@ -2655,6 +2711,11 @@ const Tilt = (() => {
     for (const ev of ["pointerup", "pointerleave", "pointercancel"])
       b.addEventListener(ev, () => Tilt.hold(dir, false));
   }
+  const range = $("#tiltrange");
+  range.addEventListener("input", () => { Tilt.enableGyro(); Tilt.setLock(range.value / 100); });
+  // a double click on the track is the quickest way back to centre
+  range.addEventListener("dblclick", () => Tilt.release());
+
   const KEY = { "1": -1, "2": 1 };
   window.addEventListener("keydown", e => {
     if (e.repeat || !(e.key in KEY)) return;
