@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="utf-8" />
+<title>Drift the Desert — Balady+ Maps</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
+<meta name="theme-color" content="#06201700" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="mobile-web-app-capable" content="yes" />
+<link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+
+<div id="app" class="app">
+  <!-- Live game scene (sky, dunes, track, car, coins) -->
+  <canvas id="scene" class="scene"></canvas>
+  <div class="scene-tint" id="sceneTint"></div>
+
+  <!-- ============================ SPLASH ============================ -->
+  <section class="screen screen--splash is-active" data-screen="splash">
+    <div class="brand brand--lg">
+      <span class="brand__palm">🌴</span>
+      <span class="brand__name">BALADY<span class="brand__plus">+</span></span>
+      <span class="brand__sub">MAPS</span>
+    </div>
+
+    <div class="splash__title">
+      <span class="splash__line1" data-i18n="splash.line1">DRIFT</span>
+      <span class="splash__line2" data-i18n="splash.line2">THE DESERT</span>
+      <span class="splash__rule"></span>
+    </div>
+
+    <div class="splash__tags">
+      <span data-i18n="splash.tag1">BALANCE</span><i>•</i>
+      <span data-i18n="splash.tag2">EXPLORE</span><i>•</i>
+      <span data-i18n="splash.tag3">EARN</span>
+    </div>
+
+    <div class="loader">
+      <div class="loader__track"><div class="loader__fill" id="loaderFill"></div></div>
+      <div class="loader__label" data-i18n="splash.loading">LOADING…</div>
+    </div>
+
+    <button class="lang-toggle" id="langToggle" type="button" aria-label="Change language">
+      <span id="langToggleLabel">العربية</span>
+    </button>
+  </section>
+
+  <!-- ============================ HOW TO PLAY ============================ -->
+  <section class="screen screen--sheet" data-screen="howto">
+    <div class="brand"><span class="brand__palm">🌴</span><span class="brand__name">BALADY<span class="brand__plus">+</span></span><span class="brand__sub">MAPS</span></div>
+
+    <h1 class="title" data-i18n="howto.title">HOW TO PLAY</h1>
+    <p class="subtitle" data-i18n="howto.subtitle">Keep the car on two wheels for as long as you can!</p>
+
+    <div class="howto__art" id="howtoArt"></div>
+
+    <div class="howto__cards">
+      <div class="card card--howto">
+        <span class="circle-btn circle-btn--static">
+          <svg viewBox="0 0 24 24" class="chev chev--left"><path d="M15 5 L8 12 L15 19" /></svg>
+        </span>
+        <strong data-i18n="howto.left">TAP LEFT</strong>
+        <small data-i18n="howto.leftHint">when the car tilts left</small>
+      </div>
+      <div class="card card--howto">
+        <span class="circle-btn circle-btn--static">
+          <svg viewBox="0 0 24 24" class="chev"><path d="M9 5 L16 12 L9 19" /></svg>
+        </span>
+        <strong data-i18n="howto.right">TAP RIGHT</strong>
+        <small data-i18n="howto.rightHint">when the car tilts right</small>
+      </div>
+    </div>
+
+    <button class="btn btn--gold" id="btnStart" type="button" data-i18n="howto.start">START</button>
+    <button class="btn btn--ghost btn--sm" id="btnBackFromHowto" type="button" data-i18n="common.backToMap">BACK TO MAP</button>
+  </section>
+
+  <!-- ============================ COUNTDOWN ============================ -->
+  <section class="screen screen--countdown" data-screen="countdown">
+    <div class="brand"><span class="brand__palm">🌴</span><span class="brand__name">BALADY<span class="brand__plus">+</span></span><span class="brand__sub">MAPS</span></div>
+    <div class="countdown__box">
+      <div class="countdown__label" data-i18n="countdown.ready">GET READY</div>
+      <div class="countdown__num" id="countdownNum">3</div>
+    </div>
+  </section>
+
+  <!-- ============================ PLAY (HUD) ============================ -->
+  <section class="screen screen--play" data-screen="play">
+    <div class="hud-top">
+      <button class="icon-btn" id="btnPause" type="button" aria-label="Pause">
+        <svg viewBox="0 0 24 24"><rect x="6" y="5" width="4" height="14" rx="1.2"/><rect x="14" y="5" width="4" height="14" rx="1.2"/></svg>
+      </button>
+      <div class="coin-pill"><span class="coin-pill__icon">🪙</span><span id="hudCoins">0</span></div>
+    </div>
+
+    <div class="hud-stats">
+      <div class="hud-col hud-col--left">
+        <div class="stat">
+          <span class="stat__label" data-i18n="hud.score">SCORE</span>
+          <span class="stat__value" id="hudScore">0</span>
+        </div>
+        <div class="stat stat--combo">
+          <span class="stat__label" data-i18n="hud.combo">COMBO</span>
+          <span class="stat__value stat__value--green" id="hudCombo">x0</span>
+        </div>
+      </div>
+      <div class="hud-col hud-col--right">
+        <div class="stat">
+          <span class="stat__label" data-i18n="hud.time">TIME</span>
+          <span class="stat__value" id="hudTime">00:00</span>
+          <span class="stat__bar"><i id="hudTimeBar"></i></span>
+        </div>
+      </div>
+    </div>
+
+    <div class="alert" id="alert">
+      <span class="alert__icon">!</span>
+      <span class="alert__text" id="alertText">TOO FAR LEFT!</span>
+    </div>
+
+    <div class="controls">
+      <button class="circle-btn circle-btn--tap" id="btnLeft" type="button" aria-label="Tap left">
+        <svg viewBox="0 0 24 24" class="chev chev--left"><path d="M15 5 L8 12 L15 19" /></svg>
+        <span class="circle-btn__caption" data-i18n="hud.tapLeft">TAP LEFT</span>
+      </button>
+
+      <div class="gauge" id="gauge">
+        <svg viewBox="0 0 120 120" class="gauge__svg">
+          <path class="gauge__track" d="M14 92 A 52 52 0 1 1 106 92" />
+          <path class="gauge__fill" id="gaugeFill" d="M14 92 A 52 52 0 1 1 106 92" />
+        </svg>
+        <span class="gauge__car" id="gaugeCar">
+          <svg viewBox="0 0 32 20"><path d="M3 14 h26 a1.5 1.5 0 0 0 1.5-1.5 v-2.2 a2 2 0 0 0-1.4-1.9 L26 7.6 L23 3.6 A3 3 0 0 0 20.6 2.4 H11.6 A3 3 0 0 0 9.2 3.6 L6.2 7.6 L3 8.4 A2 2 0 0 0 1.5 10.3 v2.2 A1.5 1.5 0 0 0 3 14 Z M8 14.6 a2.4 2.4 0 1 0 4.8 0 a2.4 2.4 0 1 0-4.8 0 Z M19.2 14.6 a2.4 2.4 0 1 0 4.8 0 a2.4 2.4 0 1 0-4.8 0 Z"/></svg>
+        </span>
+        <span class="gauge__caption" id="gaugeCaption" data-i18n="hud.keepBalance">KEEP BALANCE</span>
+      </div>
+
+      <button class="circle-btn circle-btn--tap" id="btnRight" type="button" aria-label="Tap right">
+        <svg viewBox="0 0 24 24" class="chev"><path d="M9 5 L16 12 L9 19" /></svg>
+        <span class="circle-btn__caption" data-i18n="hud.tapRight">TAP RIGHT</span>
+      </button>
+    </div>
+  </section>
+
+  <!-- ============================ RESULTS ============================ -->
+  <section class="screen screen--sheet screen--results" data-screen="results">
+    <div class="brand"><span class="brand__palm">🌴</span><span class="brand__name">BALADY<span class="brand__plus">+</span></span><span class="brand__sub">MAPS</span></div>
+    <h1 class="title" id="resultsTitle" data-i18n="results.title">GREAT RUN!</h1>
+
+    <div class="grid2">
+      <div class="card card--stat"><span class="card__icon">👑</span><span class="card__label" data-i18n="hud.score">SCORE</span><span class="card__value" id="resScore">0</span></div>
+      <div class="card card--stat"><span class="card__icon">⏱️</span><span class="card__label" data-i18n="hud.time">TIME</span><span class="card__value" id="resTime">00:00</span></div>
+      <div class="card card--stat"><span class="card__icon">🔥</span><span class="card__label" data-i18n="results.maxCombo">MAX COMBO</span><span class="card__value" id="resCombo">x0</span></div>
+      <div class="card card--stat"><span class="card__icon">🪙</span><span class="card__label" data-i18n="results.tokens">TOKENS EARNED</span><span class="card__value card__value--green" id="resTokens">+0</span></div>
+    </div>
+
+    <div class="results__best"><span data-i18n="results.best">BEST</span> <b id="resBest">0</b></div>
+
+    <div class="results__art" id="resultsArt"></div>
+    <div class="results__quote" data-i18n="results.quote">SAUDI DRIFT CULTURE LIVES ON</div>
+
+    <button class="btn btn--gold" id="btnPlayAgain" type="button" data-i18n="results.playAgain">PLAY AGAIN</button>
+    <button class="btn btn--ghost" id="btnRewards" type="button" data-i18n="results.rewards">COLLECT REWARDS</button>
+  </section>
+
+  <!-- ============================ REWARDS ============================ -->
+  <section class="screen screen--sheet screen--rewards" data-screen="rewards">
+    <div class="brand"><span class="brand__palm">🌴</span><span class="brand__name">BALADY<span class="brand__plus">+</span></span><span class="brand__sub">MAPS</span></div>
+    <h1 class="title" data-i18n="rewards.title">REWARDS</h1>
+
+    <div class="results__spacer"></div>
+
+    <div class="grid3">
+      <div class="card card--reward" id="rewardTokens">
+        <span class="card__art">🪙</span>
+        <span class="card__value card__value--gold" id="rewTokens">+0</span>
+        <span class="card__label" data-i18n="rewards.tokens">Tokens</span>
+      </div>
+      <div class="card card--reward" id="rewardBadge">
+        <span class="card__art">🏅</span>
+        <span class="card__value card__value--sm" data-i18n="rewards.newBadge">New Badge</span>
+        <span class="card__label" id="rewBadgeName" data-i18n="rewards.badgeDesertDrifter">Desert Drifter</span>
+      </div>
+      <div class="card card--reward" id="rewardSkin">
+        <span class="card__art">🚙</span>
+        <span class="card__value card__value--sm" data-i18n="rewards.newSkin">New Skin</span>
+        <span class="card__label" id="rewSkinName" data-i18n="rewards.skinSandEdition">Sand Edition</span>
+      </div>
+    </div>
+
+    <div class="progress">
+      <div class="progress__head" data-i18n="rewards.progress">YOUR PROGRESS</div>
+      <div class="progress__row">
+        <span class="progress__level"><span data-i18n="rewards.level">Level</span> <b id="progLevel">1</b></span>
+        <span class="progress__xp"><b id="progXp">0</b> / <span id="progXpMax">500</span></span>
+      </div>
+      <div class="progress__track"><i id="progFill"></i></div>
+    </div>
+
+    <div class="results__spacer"></div>
+
+    <button class="btn btn--gold" id="btnContinue" type="button" data-i18n="rewards.continue">CONTINUE</button>
+    <button class="btn btn--ghost" id="btnViewInMap" type="button" data-i18n="rewards.viewInMap">VIEW IN MAP</button>
+  </section>
+
+  <!-- ============================ PAUSE ============================ -->
+  <div class="modal" id="pauseModal">
+    <div class="modal__box">
+      <h2 class="modal__title" data-i18n="pause.title">PAUSED</h2>
+      <button class="btn btn--gold" id="btnResume" type="button" data-i18n="pause.resume">RESUME</button>
+      <button class="btn btn--ghost" id="btnRestart" type="button" data-i18n="pause.restart">RESTART</button>
+      <button class="btn btn--ghost" id="btnQuit" type="button" data-i18n="common.backToMap">BACK TO MAP</button>
+      <button class="btn btn--ghost btn--sm" id="btnSound" type="button" data-i18n="pause.sound">SOUND: ON</button>
+    </div>
+  </div>
+
+  <!-- Floating score popups + coin bursts live here -->
+  <div class="fx" id="fx"></div>
+</div>
+
+<script src="js/i18n.js"></script>
+<script src="js/bridge.js"></script>
+<script src="js/audio.js"></script>
+<script src="js/scene.js"></script>
+<script src="js/game.js"></script>
+<script src="js/main.js"></script>
+</body>
+</html>

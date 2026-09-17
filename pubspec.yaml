@@ -306,6 +306,9 @@ flutter:
     - assets/icons/msr/
     - assets/icons/tsr/
     - assets/icons/services/
+    - assets/games/drift_the_desert/
+    - assets/games/drift_the_desert/css/
+    - assets/games/drift_the_desert/js/
     - .env.stg
     - .env.dev
     - .env.prod
