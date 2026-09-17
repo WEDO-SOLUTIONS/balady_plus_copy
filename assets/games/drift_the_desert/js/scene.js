@@ -85,6 +85,8 @@
   }
 
   var Backdrop = global.DriftBackdrop || { ready: false, drawSky: noop, drawRanges: noop, drawDunes: noop };
+  var Ground = global.DriftGround || { ready: false, draw: noop };
+  var Sprites = global.DriftSprites || { ready: false, draw: noop };
 
   var Scene = {
     images: IMG,
@@ -347,7 +349,7 @@
 
     /* ------------------------------------------------------------ dunes */
 
-    drawGround: function (dusk) {
+    drawGround: function (dusk, lateral) {
       var ctx = this.ctx;
       var night = clamp(dusk || 0, 0, 1);
 
@@ -373,7 +375,7 @@
         seam.addColorStop(1, rgba(mixHex('#C79463', '#4A322C', night), 1));
         ctx.fillStyle = seam;
         ctx.fillRect(0, end - this.h * 0.085, this.w, this.h * 0.105);
-        this.drawSandField(night);
+        this.drawSandField(night, this.drawFloor(night, lateral));
         return;
       }
 
@@ -402,7 +404,26 @@
         ctx.fill();
       }
 
-      this.drawSandField(night);
+      this.drawSandField(night, this.drawFloor(night, lateral));
+    },
+
+    /** The sand texture itself, mapped onto the ground plane by js/ground.js.
+        Returns true when it drew, which tells the painted pass to step back:
+        with real ripples and real stones in the texture, its own are down to
+        the job of adding the big swells the tile is deliberately without. */
+    drawFloor: function (night, lateral) {
+      this.floorTextured = Ground.draw(this.ctx, {
+        w: this.w,
+        h: this.h,
+        horizon: this.horizon,
+        dpr: this.dpr,
+        scroll: this.scroll,
+        lateral: lateral || 0,
+        blur: this.speedNorm || 0,
+        dusk: night,
+        tint: mixHex('#FFFFFF', '#6E4A52', 1)
+      }) === true;
+      return this.floorTextured;
     },
 
     /** Wind ripples and gravel over the open sand, in perspective.
@@ -412,10 +433,13 @@
         on glass. These bands sweep the whole width, scroll with everything
         else and swell as they come, which gives the floor both texture and
         speed. The track is drawn over the top of them. */
-    drawSandField: function (night) {
+    drawSandField: function (night, textured) {
       var ctx = this.ctx;
       var w = this.w;
       var top = this.horizon + this.h * 0.004;
+      // Over a real texture these are swells, not ripples: the same bands at
+      // a third of the weight, and no gravel, because the tile has its own.
+      var weight = textured ? 0.34 : 1;
 
       ctx.save();
       ctx.beginPath();
@@ -454,7 +478,7 @@
         for (j = 0; j <= SEG; j++) { x = -20 + j * step; ctx.lineTo(x, p.y + wave(x)); }
         for (j = SEG; j >= 0; j--) { x = -20 + j * step; ctx.lineTo(x, p.y + wave(x) + thick); }
         ctx.closePath();
-        ctx.fillStyle = 'rgba(96, 58, 24, ' + (0.13 * fade * (1 - night * 0.45)).toFixed(3) + ')';
+        ctx.fillStyle = 'rgba(96, 58, 24, ' + (0.13 * weight * fade * (1 - night * 0.45)).toFixed(3) + ')';
         ctx.fill();
 
         // Lit windward face just above it.
@@ -462,12 +486,12 @@
         for (j = 0; j <= SEG; j++) { x = -20 + j * step; ctx.lineTo(x, p.y + wave(x) - thick * 0.75); }
         for (j = SEG; j >= 0; j--) { x = -20 + j * step; ctx.lineTo(x, p.y + wave(x)); }
         ctx.closePath();
-        ctx.fillStyle = 'rgba(255, 233, 190, ' + (0.11 * fade * (1 - night * 0.55)).toFixed(3) + ')';
+        ctx.fillStyle = 'rgba(255, 233, 190, ' + (0.11 * weight * fade * (1 - night * 0.55)).toFixed(3) + ')';
         ctx.fill();
       }
 
       // Gravel: enough to break the gradient, not enough to read as noise.
-      var stones = 44;
+      var stones = textured ? 0 : 44;
       for (var k = 0; k < stones; k++) {
         var sseed = k * 1.93 + 0.5;
         var sd = (hash(sseed) + this.scroll * 0.00118) % 1;
@@ -564,7 +588,12 @@
       g.addColorStop(0.45, mixHex('#A87B4B', '#4B3128', night));
       g.addColorStop(1.00, mixHex('#7E552C', '#2E1E18', night));
       ctx.fillStyle = g;
+      // Over the sand texture this is a stain, not a surface: a packed track
+      // is the same sand, darker and smoother, and painting it opaque threw
+      // away the one part of the frame with real grain in it.
+      ctx.globalAlpha = this.floorTextured ? 0.52 : 1;
       ctx.fill();
+      ctx.globalAlpha = 1;
       ctx.clip();
 
       /* Drag marks running down the road. The photographic sand tile was tried
@@ -642,25 +671,86 @@
 
       ctx.restore();
 
-      /* Banks of loose sand piled along the edges — drawn as a soft band that
-         follows the same wobble, rather than a ruled line. */
+      /* The dune flanks either side of the track.
+
+         The reference photograph is not a car on a plain, it is a car in a
+         trough: the sand rises away from the wheel tracks on both sides, lit
+         along one crest and in shadow along the other. Painting that as
+         light rather than as geometry keeps the sand texture underneath,
+         which is the whole reason it is there.
+
+         With the sun up and to the left, the left flank turns towards it and
+         the right flank away, so one is washed with warm light and the other
+         with a cool shadow. */
       ctx.save();
-      for (var sd = -1; sd <= 1; sd += 2) {
-        ctx.beginPath();
-        for (var m = 0; m <= STEPS; m++) {
-          var md = m / STEPS;
-          var mt = this.trackAt(md, lateral);
-          var mx = mt.cx + sd * mt.half * (1 - this.edgeNoise(md, sd) * 0.13 * mt.s);
-          if (m === 0) ctx.moveTo(mx, mt.y); else ctx.lineTo(mx, mt.y);
+      for (var bs = -1; bs <= 1; bs += 2) {
+        var lit = bs < 0;
+        var crest = [];
+        var foot = [];
+        for (var bi = 0; bi <= STEPS; bi++) {
+          var bd = bi / STEPS;
+          var bt = this.trackAt(bd, lateral);
+          var fx = bt.cx + bs * bt.half * (1 - this.edgeNoise(bd, bs) * 0.13 * bt.s);
+          // The crest sits out beyond the shoulder and stands above it, both
+          // by the same perspective scale, and wanders as the sand does.
+          var rise = this.h * (0.26 + this.edgeNoise(bd * 0.42 + 3.1, bs) * 0.075) * bt.s;
+          crest.push([fx + bs * bt.half * 0.62, bt.y - rise]);
+          foot.push([fx, bt.y]);
         }
-        var bank = ctx.createLinearGradient(0, farY, 0, nearY);
-        bank.addColorStop(0.00, 'rgba(255, 226, 180, 0)');
-        bank.addColorStop(0.12, 'rgba(255, 226, 180, 0)');
-        bank.addColorStop(0.45, 'rgba(255, 226, 180, ' + (0.12 * (1 - night * 0.7)).toFixed(3) + ')');
-        bank.addColorStop(1, 'rgba(255, 226, 180, ' + (0.26 * (1 - night * 0.7)).toFixed(3) + ')');
-        ctx.strokeStyle = bank;
-        ctx.lineWidth = 10;
+
+        // Two bands rather than one wash: the upper face of a dune catches
+        // the sun and the trough at its foot is in shadow, and a single
+        // gradient running down the screen instead of down the slope only
+        // ever looked like fog.
+        var upper = lit ? 'rgba(255, 226, 172, ' + (0.26 * (1 - night * 0.55)).toFixed(3) + ')'
+                        : 'rgba(255, 226, 172, ' + (0.10 * (1 - night * 0.55)).toFixed(3) + ')';
+        var lower = lit ? 'rgba(78, 44, 24, ' + (0.10 * (1 - night * 0.4)).toFixed(3) + ')'
+                        : 'rgba(78, 44, 24, ' + (0.24 * (1 - night * 0.4)).toFixed(3) + ')';
+
+        for (var pass = 0; pass < 2; pass++) {
+          var from = pass ? 0.52 : 0.0;
+          var to = pass ? 1.0 : 0.48;
+          ctx.beginPath();
+          for (var bj = 0; bj <= STEPS; bj++) {
+            var pa = crest[bj], pb = foot[bj];
+            var x1 = pa[0] + (pb[0] - pa[0]) * from;
+            var y1 = pa[1] + (pb[1] - pa[1]) * from;
+            if (bj === 0) ctx.moveTo(x1, y1); else ctx.lineTo(x1, y1);
+          }
+          for (var bk = STEPS; bk >= 0; bk--) {
+            var qa = crest[bk], qb = foot[bk];
+            ctx.lineTo(qa[0] + (qb[0] - qa[0]) * to, qa[1] + (qb[1] - qa[1]) * to);
+          }
+          ctx.closePath();
+          ctx.fillStyle = pass ? lower : upper;
+          ctx.fill();
+        }
+
+        // A lit line right along the crest, and shadow pooling at its foot.
+        ctx.beginPath();
+        for (var bm = 0; bm < crest.length; bm++) {
+          if (bm === 0) ctx.moveTo(crest[bm][0], crest[bm][1]);
+          else ctx.lineTo(crest[bm][0], crest[bm][1]);
+        }
+        var rim = ctx.createLinearGradient(0, farY, 0, nearY);
+        rim.addColorStop(0, 'rgba(255, 236, 196, 0)');
+        rim.addColorStop(0.25, 'rgba(255, 236, 196, ' + (0.30 * (1 - night * 0.6)).toFixed(3) + ')');
+        rim.addColorStop(1, 'rgba(255, 240, 205, ' + ((lit ? 0.55 : 0.30) * (1 - night * 0.6)).toFixed(3) + ')');
+        ctx.strokeStyle = rim;
+        ctx.lineWidth = Math.max(1, this.h * 0.006);
         ctx.lineJoin = 'round';
+        ctx.stroke();
+
+        ctx.beginPath();
+        for (var bn = 0; bn < foot.length; bn++) {
+          if (bn === 0) ctx.moveTo(foot[bn][0], foot[bn][1]);
+          else ctx.lineTo(foot[bn][0], foot[bn][1]);
+        }
+        var toe = ctx.createLinearGradient(0, farY, 0, nearY);
+        toe.addColorStop(0, 'rgba(62, 34, 16, 0)');
+        toe.addColorStop(1, 'rgba(62, 34, 16, ' + (0.22 * (1 - night * 0.4)).toFixed(3) + ')');
+        ctx.strokeStyle = toe;
+        ctx.lineWidth = Math.max(1, this.h * 0.010);
         ctx.stroke();
       }
       ctx.restore();
@@ -700,6 +790,8 @@
       return {
         d: d, x: x, y: t.y, s: t.s, seed: seed, side: side,
         kind: r > 0.80 ? 2 : (r > 0.44 ? 1 : 0),   // 0 boulder, 1 scrub, 2 stalks
+        // Which cell of the baked sheet: rocks are 0-3, bushes 4-7.
+        sprite: (r > 0.46 ? 4 : 0) + Math.floor(hash(seed + 12.9) * 4) % 4,
         size: (0.55 + hash(seed + 9.7) * 0.85) * t.s * this.h * 0.20,
         // How far into the haze it still is, measured by apparent size rather
         // than by d: the projection is d^2.35, so equal steps in d are nothing
@@ -719,7 +811,9 @@
       // Back to front, so a near boulder can overlap a far one.
       list.sort(function (a, b) { return a.d - b.d; });
 
-      var haze = mixHex('#E7C592', '#6B4A48', night);
+      // Quantised, because every change of this string rebuilds the haze
+      // sheet: a run walks through about twenty of them, not one a frame.
+      var haze = mixHex('#E7C592', '#6B4A48', Math.round(night * 16) / 16);
       var ctx = this.ctx;
 
       for (var k = 0; k < list.length; k++) {
@@ -729,11 +823,38 @@
         };
         ctx.save();
         ctx.globalAlpha = clamp(o.s / 0.055, 0, 1);
-        if (o.kind === 0) this.drawBoulder(o, night);
-        else if (o.kind === 1) this.drawScrub(o, night);
-        else this.drawStalks(o, night);
+        if (!this.drawSprite(o, night, haze)) {
+          if (o.kind === 0) this.drawBoulder(o, night);
+          else if (o.kind === 1) this.drawScrub(o, night);
+          else this.drawStalks(o, night);
+        }
         ctx.restore();
       }
+    },
+
+    /** The baked version: a contact shadow, then the sprite. Returns false if
+        the sheet has not loaded, and the painted props take over. */
+    drawSprite: function (o, night, haze) {
+      if (!Sprites.ready) return false;
+      var ctx = this.ctx;
+      var rock = o.sprite < 4;
+      var height = o.size * (rock ? 1.15 : 1.55);
+
+      // Shadow first: the sprite is cut off at its waterline, so what beds it
+      // into the sand is drawn here rather than baked into the sheet, where
+      // it could not follow the sun across the run.
+      var sw = height * (rock ? 0.72 : 0.40);
+      ctx.beginPath();
+      ctx.ellipse(o.x + sw * 0.42, o.y - height * 0.012, sw, sw * 0.26, 0, 0, TAU);
+      ctx.fillStyle = 'rgba(58, 34, 14, ' + ((0.34 - night * 0.14) * (1 - o.fog)).toFixed(3) + ')';
+      ctx.fill();
+
+      return Sprites.draw(ctx, o.sprite, o.x, o.y, height, {
+        fog: o.fog,
+        hazeColour: haze,
+        dusk: night,
+        duskColour: '#6B4A54'
+      });
     },
 
     /** A rock: shadow pooled on the sand, dark body, sunlit cap. */
@@ -1221,6 +1342,7 @@
       var dusk = clamp(state.dusk || 0, 0, 1);
       this.lastDusk = dusk;
       var speedNorm = clamp(((state.speed || 0) - 240) / 460, 0, 1);
+      this.speedNorm = speedNorm;
 
       // The camera sits lower as the car picks up speed, so the horizon rises.
       this.horizon = Math.round(this.baseHorizon - speedNorm * this.h * 0.022);
@@ -1239,7 +1361,7 @@
 
       this.drawSky(dusk);
       this.drawMesas(dusk);
-      this.drawGround(dusk);
+      this.drawGround(dusk, state.tilt || 0);
       this.drawTrack(state.tilt || 0, dusk);
       this.drawRoadside(state.tilt || 0, dusk);
 

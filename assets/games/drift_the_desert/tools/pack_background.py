@@ -26,6 +26,13 @@ TIMES = ['gold', 'dusk']
 TERRAIN = ['far', 'near', 'dunes']
 SAMPLES = 1024       # height samples per layer
 
+# JPEG quality. These are deliberately high: the plates are the whole
+# background, they are stretched on screen rather than shown 1:1, and chroma
+# smear along a dune crest is exactly the artefact the eye picks up.
+Q_SKY = 94
+Q_TERRAIN = 94
+Q_SAND = 95
+
 
 def skyline(alpha, samples):
     """First opaque row per column, as a 0..255 fraction of the plate height.
@@ -68,7 +75,7 @@ def main():
             sys.exit(f'missing {src.name}')
         im = Image.open(src).convert('RGB')
         dst = BG / f'sky-{time}.jpg'
-        im.save(dst, quality=82, optimize=True, progressive=True)
+        im.save(dst, quality=Q_SKY, optimize=True, progressive=True, subsampling=0)
         total += dst.stat().st_size
         print(f'  {dst.name:18} {im.width}x{im.height} {dst.stat().st_size / 1024:8.1f} KB')
         manifest['plates'].setdefault('sky', {})['size'] = [im.width, im.height]
@@ -124,7 +131,7 @@ def main():
                         break
 
             dst = BG / f'{layer}-{time}.jpg'
-            rgb.save(dst, quality=80, optimize=True, progressive=True)
+            rgb.save(dst, quality=Q_TERRAIN, optimize=True, progressive=True, subsampling=0)
             total += dst.stat().st_size
             print(f'  {dst.name:18} {im.width}x{im.height} {dst.stat().st_size / 1024:8.1f} KB')
 
@@ -132,6 +139,27 @@ def main():
             'size': [im.width, im.height],
             'heights': base64.b64encode(bytes(heights)).decode('ascii')
         }
+
+    # The ground texture: square, tiled in both axes, no silhouette to store.
+    src = BG / 'sand.png'
+    if src.is_file():
+        im = Image.open(src).convert('RGB')
+        dst = BG / 'sand.jpg'
+        im.save(dst, quality=Q_SAND, optimize=True, progressive=True, subsampling=0)
+        total += dst.stat().st_size
+        print(f'  {dst.name:18} {im.width}x{im.height} {dst.stat().st_size / 1024:8.1f} KB')
+        manifest['plates']['sand'] = {'size': [im.width, im.height]}
+
+    # The roadside sprite sheet keeps its alpha, so it stays a PNG: splitting
+    # it into a JPEG plus a mask would need getImageData to recombine, and a
+    # WebView loading the game off file:// taints that canvas.
+    src = BG / 'props.png'
+    if src.is_file():
+        im = Image.open(src)
+        im.save(src, optimize=True)
+        total += src.stat().st_size
+        print(f'  {src.name:18} {im.width}x{im.height} {src.stat().st_size / 1024:8.1f} KB')
+        manifest['plates']['props'] = {'size': [im.width, im.height], 'grid': [4, 2]}
 
     out = ROOT / 'js' / 'plates.js'
     out.write_text(
@@ -143,7 +171,8 @@ def main():
     print(f'  {out.name:18} {"":9} {out.stat().st_size / 1024:8.1f} KB')
 
     for p in BG.glob('*.png'):
-        p.unlink()
+        if p.name != 'props.png':
+            p.unlink()
     print(f'total {total / 1024:.0f} KB (source PNGs removed)')
 
 

@@ -98,6 +98,8 @@ before load, or append `?lang=ar` to the asset URL.
 | `js/bridge.js`  | Host detection, events out, `localStorage` persistence with a memory fallback |
 | `js/audio.js`   | Procedural engine loop, taps, coins, combo, crash — no audio assets |
 | `js/backdrop.js`| Draws the baked parallax plates |
+| `js/ground.js`  | Maps the baked sand texture onto the ground plane in perspective |
+| `js/sprites.js` | Draws the baked roadside sheet — rocks and bushes — with haze and dusk |
 | `js/plates.js`  | Generated: plate sizes and skyline curves |
 | `js/scene.js`   | Canvas renderer: perspective track, the car, dust, coins, FX |
 | `js/game.js`    | Rules only, no DOM: balance physics, scoring, combo, coins, run lifecycle |
@@ -123,7 +125,6 @@ than as an approximation of it:
 | `coin.png` | a floating token on the danger screen | collectibles and the HUD coin pill |
 | `sky.jpg` | a clean column of the splash sky, mirror-tiled | the scrolling sky |
 | `ridge.png` | the splash mesas, mirror-tiled, both edges feathered | the parallax horizon |
-| `sand.jpg` | the countdown screen's foreground track | the track's perspective texture |
 | `results-art.jpg` | the results screen's sunset strip | the results screen |
 | `logo.png`, `title.png` | the Balady+ mark and the brush wordmark | every screen header, the splash |
 | `tokens.png`, `badge.png`, `skin.jpg` | the three reward cards | the rewards screen |
@@ -223,24 +224,67 @@ Three things make the result cheap to ship and to draw:
   upscaled. Every plate is now downsampled instead. Each pixel is also four
   jittered samples rather than one — the strata, the wind ripples and the
   silhouettes are all high-frequency enough to alias, and supersampling is
-  free when it happens at build time.
+  free when it happens at build time. The JPEGs go out at quality 94 with no
+  chroma subsampling: a plate is the whole background, and colour smear along
+  a dune crest is exactly what the eye picks up.
 - **Two times of day.** A golden-hour and a dusk bake, cross-faded by the same
   `dusk` value that drives the rest of the run, with either draw skipped once
   its weight rounds away.
 
-In front of the plates the desert floor is drawn live, because it has to move
-with the car rather than slide sideways under parallax:
+## The ground
 
-- **Wind ripples** sweeping the full width in perspective, each a shadowed lee
-  side with its lit windward face above it, fading out again in the near field
-  where the ground moves too fast to hold detail.
-- **Roadside props** — boulders, khaki scrub and dry stalks — streaming out of
-  the horizon along both shoulders, swelling as they pass. The plates give
-  depth but no speed; these are what actually sell how fast the car is going.
-  Each fades into the same horizon haze the plates do, weighted by apparent
-  size rather than by depth, since the projection is `d^2.35`.
-- **Blowing sand**, a handful of soft sheets crossing on the wind instead of
-  rushing at the camera.
+The floor is the one surface the player stares at for a whole run, and a
+gradient with lines drawn on it was never going to pass for sand. So the
+bake also produces a square, tileable sand texture — ripples, grain, drift,
+pebbles, all lit from one low sun — and `js/ground.js` maps it onto the
+ground plane in perspective (`tools/bake_background.html`, layer 4).
+
+The mapping is the standard one for a pinhole camera looking at a plane: with
+`t` running 0 at the horizon to 1 at the bottom of the frame, depth goes as
+`1/t`, so a texel is `t` wide and `t²` tall on screen. Both are linear inside
+a band, so the floor goes out as a handful of horizontal bands, each one
+pattern fill under its own transform. Three details carry it:
+
+- **Adaptive bands.** Each band is cut where the depth has grown by a fixed
+  ratio rather than at a fixed height, so the near field is a few tall bands
+  and the far field a stack of thin ones. Thirteen bands cover the floor with
+  the distortion inside each one down in the noise.
+- **Hand-rolled mips.** A pattern fill does not filter minification the way a
+  GPU does, and sand at a fifth of its size crawls and sparkles. The texture
+  is halved into a chain of canvases at load and each band picks the level
+  where a texel lands near a device pixel.
+- **Motion blur.** The nearest bands are drawn a second time, offset back up
+  the frame. A photograph taken from a car at this speed has no sharp pebbles
+  at the bottom of it, and leaving them sharp was the last thing making the
+  floor read as a texture rather than as ground going past.
+
+The texture is baked at golden hour only — a second one would double both the
+download and the fills — so the evening is a multiply over the same sand,
+band by band, fading out with the same ramp so it never spills onto the
+plates above. The track is drawn over it at half opacity: a packed track is
+the same sand, darker and smoother, and painting it opaque threw away the one
+part of the frame with real grain in it.
+
+Three more passes sit on the floor, all of them live because they have to
+move with the car rather than slide sideways under parallax:
+
+- **Dune flanks** either side of the track. The reference photograph is not a
+  car on a plain, it is a car in a trough: the sand rises away from the wheel
+  tracks on both sides, lit along one crest and in shadow along the other.
+  That is painted as light rather than built as geometry, which keeps the
+  texture underneath.
+- **Roadside props** — rocks and dry bushes from a second baked sheet
+  (`img/bg/props.png`, four of each at 512 px) — streaming out of the horizon
+  along both shoulders and swelling as they pass. The plates give depth but no
+  speed; these are what sell how fast the car is going. Each fades into the
+  horizon haze weighted by apparent size rather than by depth, since the
+  projection is `d^2.35`. Haze and dusk are a flat-coloured copy of the sheet
+  drawn over the sprite — source-over for the haze, multiply for the evening —
+  because there is no cheap way to tint a `drawImage`, and the copy is rebuilt
+  only when the quantised time of day moves.
+- **Wind swells and blowing sand**: the painted ripple bands from before, at a
+  third of their weight now that the texture has real ones, plus a handful of
+  soft sheets crossing on the wind instead of rushing at the camera.
 
 The run still walks through the evening: the palette slides into a red-violet
 dusk, the canvas darkens the track, dims its shoulders and the dust, and
@@ -252,9 +296,11 @@ falls back to drawing its own sky, mesas and dunes from the mockup strips —
 the path that shipped before the plates existed. Blocking `img/bg/*.jpg` in
 devtools exercises it.
 
-Baking also made the game faster: under Chromium's software rasteriser the
-plates run at 29–43 fps where the live shader managed 21–39 — and that is with
-the ripples, props and blowing sand on top, which the shader version never had.
+Under Chromium's software rasteriser the whole scene runs at 20–32 fps, where
+the plates alone managed 29–43 and the live shader before them 21–39. The
+textured floor accounts for about five of those frames and the sprite sheet
+for two; both are a fraction of a millisecond of fill on a GPU-composited
+WebView, which is what the game actually runs on.
 
 ## How the game works
 

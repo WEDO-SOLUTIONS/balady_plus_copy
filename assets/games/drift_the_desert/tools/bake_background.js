@@ -38,6 +38,16 @@ const TIMES = [
   { suffix: 'dusk', dusk: 1.0 }
 ];
 
+// The ground plane's own texture: tiled over the sand in perspective by the
+// game, so it wraps in both axes and is square. Only the golden bake ships —
+// two of these would double both the download and the per-band fill cost, and
+// the dusk end of the run is a multiply over the same texture.
+const SQUARE = [
+  { name: 'sand', layer: 4, w: 2048, h: 2048, dusk: 0.0 },
+  // The roadside sprite sheet: four rocks and four dry bushes, 512 px each.
+  { name: 'props', layer: 5, w: 2048, h: 1024, dusk: 0.0 }
+];
+
 (async () => {
   fs.mkdirSync(OUT, { recursive: true });
 
@@ -60,6 +70,17 @@ const TIMES = [
       const kb = (fs.statSync(file).size / 1024).toFixed(1);
       console.log(`  ${path.basename(file).padEnd(18)} ${plate.w}x${plate.h}  ${kb.padStart(7)} KB`);
     }
+  }
+
+  for (const plate of SQUARE) {
+    const dataUrl = await page.evaluate(
+      ([w, h, layer, dusk]) => window.bake(w, h, layer, dusk),
+      [plate.w, plate.h, plate.layer, plate.dusk]
+    );
+    const file = path.join(OUT, `${plate.name}.png`);
+    fs.writeFileSync(file, Buffer.from(dataUrl.split(',')[1], 'base64'));
+    const kb = (fs.statSync(file).size / 1024).toFixed(1);
+    console.log(`  ${path.basename(file).padEnd(18)} ${plate.w}x${plate.h}  ${kb.padStart(7)} KB`);
   }
 
   if (errors.length) {

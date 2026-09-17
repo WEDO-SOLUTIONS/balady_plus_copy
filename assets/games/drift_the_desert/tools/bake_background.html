@@ -133,21 +133,42 @@ vec4 bakeSky(float u, float v, float dusk) {
   col = mix(col, cirCol, cir * 0.40);
 
   // --- cumulus deck: domain-warped, lit from the sun side -----------------
+  // Billow noise, not plain fbm: cumulus is built of stacked cauliflower
+  // heads, and a smooth field gave flat grey smoke.
   float warp = wfbm(u, v * ys(1.8), 1.8, 4);
-  float dens = wfbm(u + warp * 0.03, v * ys(3.0) * 0.85 + warp * 0.8, 3.0, 6);
-  float band = smoothstep(0.28, 0.54, v) * smoothstep(1.03, 0.76, v);
-  float cover = smoothstep(0.44, 0.68, dens) * band;
+  // Flattened on purpose, and warped only a little: cumulus is wider than it
+  // is tall. y advances faster than x here, which squashes the noise into
+  // that shape; slowing it down stretched the deck into stalactites, and a
+  // strong vertical warp hung the whole thing in drips.
+  float yc = v * ys(3.0) * 1.75 + warp * 0.22;
+  float dens = wfbm(u + warp * 0.03, yc, 3.0, 6);
+  dens = mix(dens, 1.0 - abs(dens * 2.0 - 1.0), 0.40);
+  dens += (wfbm(u, v * ys(11.0), 11.0, 3) - 0.5) * 0.08;   // frayed edges
 
-  // Shade from the density gradient towards the sun: cheap, and it gives the
-  // decks a lit crown and a bruised underside.
-  float densUp = wfbm(u + warp * 0.03, v * ys(3.0) * 0.85 + warp * 0.8 - 0.55, 3.0, 5);
-  float lit = smoothstep(-0.06, 0.10, densUp - dens);
+  // Held clear of the horizon: the reference has a clean warm band under the
+  // deck, and clouds running all the way down fought the haze.
+  float band = smoothstep(0.16, 0.40, v) * smoothstep(0.90, 0.64, v);
+  float cover = smoothstep(0.60, 0.74, dens) * band;
 
-  vec3 cloudLit  = mix(vec3(1.0, 0.97, 0.93), vec3(0.86, 0.48, 0.36), dusk);
-  vec3 cloudDark = mix(vec3(0.56, 0.54, 0.58), vec3(0.20, 0.14, 0.22), dusk);
+  // Shade from the density gradient towards the sun. The offset is small on
+  // purpose: a long one smeared every cloud into a column of virga.
+  float densUp = wfbm(u + warp * 0.03, yc - 0.13, 3.0, 5);
+  densUp = mix(densUp, 1.0 - abs(densUp * 2.0 - 1.0), 0.40);
+  float lit = smoothstep(-0.05, 0.08, densUp - dens);
+
+  vec3 cloudLit  = mix(vec3(1.0, 0.98, 0.94), vec3(0.88, 0.50, 0.37), dusk);
+  vec3 cloudDark = mix(vec3(0.62, 0.58, 0.60), vec3(0.22, 0.15, 0.23), dusk);
   vec3 cloudCol = mix(cloudDark, cloudLit, lit);
   cloudCol += sunT * exp(-sunDist * 4.0) * 0.5;
   col = mix(col, cloudCol, cover);
+
+  // --- a low deck, flattened and far off, for depth under the big one -----
+  float lowN = wfbm(u + 4.1, v * ys(6.0) * 2.6 + 9.0, 6.0, 4);
+  float lowBand = smoothstep(0.62, 0.74, v) * smoothstep(0.94, 0.80, v);
+  float lowCover = smoothstep(0.50, 0.66, lowN) * lowBand * 0.75;
+  vec3 lowCol = mix(mix(vec3(0.98, 0.90, 0.78), vec3(0.70, 0.40, 0.34), dusk),
+                    sunT, exp(-sunDist * 3.0) * 0.5);
+  col = mix(col, lowCol, lowCover);
 
   // --- sun: bloom, then a restrained fan of rays through the deck ---------
   col += sunT * (0.38 * exp(-sunDist * 5.0) + 0.85 * exp(-sunDist * 20.0));
@@ -156,7 +177,9 @@ vec4 bakeSky(float u, float v, float dusk) {
   float rays = wfbm(ang / TAU + 0.5, 0.0, 9.0, 3);
   col += sunT * smoothstep(0.52, 0.92, rays) * exp(-sunDist * 5.5) * 0.18 * (1.0 - cover * 0.8);
 
-  col = mix(col, sunT * 1.35, smoothstep(0.030, 0.021, sunDist));
+  // Brighter than the bloom around it, or the disc reads as a dark hole
+  // punched in its own glow.
+  col = mix(col, sunT * 2.1, smoothstep(0.032, 0.020, sunDist));
 
   // Aerial haze piling up at the horizon.
   col = mix(col, skyColour(1.0, dusk), smoothstep(0.72, 1.0, v) * 0.72);
@@ -290,6 +313,331 @@ vec4 bakeDunes(float u, float v, float dusk) {
   return vec4(col, alpha);
 }
 
+/* ----------------------------------------------------------------- sand
+
+   The desert floor, seen from above and tiled across the ground plane by the
+   game. Everything here has to wrap in BOTH axes, so the lattice is wrapped
+   with mod() and every ripple frequency is a whole number of cycles per tile.
+
+   Deliberately no large forms: the texture repeats several times across the
+   near field, and anything bigger than a stride would announce the grid. The
+   big shapes are the game's job; this supplies what a photograph of sand has
+   and a gradient does not — ripples, grain, drift and stones. */
+
+float thash(vec2 c, float n) {
+  c = mod(c, vec2(n));
+  return fract(sin(dot(c, vec2(127.1, 311.7))) * 43758.5453123);
+}
+
+float tnoise(vec2 p, float n) {
+  vec2 i = floor(p), f = fract(p);
+  vec2 w = f * f * (3.0 - 2.0 * f);
+  float a = thash(i, n);
+  float b = thash(i + vec2(1.0, 0.0), n);
+  float c = thash(i + vec2(0.0, 1.0), n);
+  float d = thash(i + vec2(1.0, 1.0), n);
+  return mix(mix(a, b, w.x), mix(c, d, w.x), w.y);
+}
+
+/* uv in 0..1; cells is how many lattice cells the first octave spans. */
+float tfbm(vec2 uv, float cells, int octaves) {
+  float s = 0.0, amp = 0.5, n = cells;
+  for (int i = 0; i < 8; i++) {
+    if (i >= octaves) break;
+    s += amp * tnoise(uv * n, n);
+    n *= 2.0; amp *= 0.5;
+  }
+  return s;
+}
+
+/* Height of the sand surface at uv, in arbitrary units. Sampled three times
+   per pixel so the shading can come from a real gradient rather than from a
+   guess about which way the slope faces. */
+float sandHeight(vec2 uv) {
+  // Meandering drift, the low swells between ripple fields.
+  float drift = tfbm(uv, 3.0, 4);
+
+  // Two ripple trains crossing at a shallow angle, each warped by the drift.
+  // Integer wave vectors keep them tiling; the warp keeps them from ruling
+  // straight lines across the texture.
+  float w1 = tfbm(uv, 5.0, 3) - 0.5;
+  float w2 = tfbm(uv + 0.37, 7.0, 3) - 0.5;
+  float r1 = sin(TAU * (3.0 * uv.x + 26.0 * uv.y) + w1 * 17.0);
+  float r2 = sin(TAU * (11.0 * uv.x + 31.0 * uv.y) + w2 * 14.0);
+
+  // Ripples are not sine waves: the windward side is long, the lee side short.
+  r1 = 1.0 - pow(abs(r1), 0.65);
+  r2 = 1.0 - pow(abs(r2), 0.70);
+
+  // The two trains take turns across the field instead of both running
+  // everywhere. Evenly spaced parallel lines over a whole tile read as wood
+  // grain the moment the tile repeats.
+  float patch = smoothstep(0.32, 0.64, drift);
+  float ripple = r1 * 0.60 * (1.0 - patch * 0.75) + r2 * 0.52 * patch;
+
+  // Grain, right at the limit of what survives the JPEG.
+  float grain = tfbm(uv, 90.0, 2) - 0.5;
+
+  return drift * 1.30 + ripple * 0.26 + grain * 0.045;
+}
+
+vec4 bakeSand(vec2 uv, float dusk) {
+  float e = 1.0 / uRes.x;
+  float h = sandHeight(uv);
+  float hx = sandHeight(uv + vec2(e, 0.0));
+  float hy = sandHeight(uv + vec2(0.0, e));
+
+  // Slope into a normal. The vertical exaggeration is what decides whether
+  // this reads as sand or as crumpled paper.
+  vec3 nrm = normalize(vec3(-(hx - h) / e * 0.055, -(hy - h) / e * 0.055, 1.0));
+
+  // Low sun raking across the tile, away from the camera, so the lee sides
+  // face the player in shadow — the same read as the reference photograph.
+  vec3 L = normalize(vec3(-0.55, -0.78, 0.30));
+  float diff = clamp(dot(nrm, L), 0.0, 1.0);
+  float sky = 0.5 + 0.5 * nrm.z;                      // ambient from above
+
+  vec3 lit  = mix(vec3(0.95, 0.80, 0.55), vec3(0.55, 0.34, 0.33), dusk);
+  vec3 mid  = mix(vec3(0.78, 0.58, 0.35), vec3(0.37, 0.23, 0.24), dusk);
+  vec3 dark = mix(vec3(0.46, 0.30, 0.16), vec3(0.16, 0.10, 0.13), dusk);
+
+  vec3 col = mix(dark, mid, sky);
+  col = mix(col, lit, diff * 0.85);
+
+  // Colour drift: sand is never one hue over a whole field.
+  float tone = tfbm(uv + 0.71, 2.0, 3);
+  col *= 0.93 + 0.16 * tone;
+  col = mix(col, col * vec3(1.06, 0.98, 0.88), tfbm(uv + 1.31, 4.0, 3));
+
+  // Stones. Two sizes, each on its own wrapped lattice. Every pixel tests the
+  // nine cells around it rather than only its own: a stone confined to one
+  // cell had its shadow clipped at the cell border, which tiled the texture
+  // with little grey squares.
+  for (int k = 0; k < 2; k++) {
+    float cells = k == 0 ? 26.0 : 44.0;
+    float base = k == 0 ? 0.24 : 0.13;
+    float thresh = k == 0 ? 0.90 : 0.945;
+    vec2 gp = uv * cells;
+    vec2 home = floor(gp);
+
+    // Shadows first, so no stone is darkened by its neighbour's.
+    for (int oy = -1; oy <= 1; oy++) {
+      for (int ox = -1; ox <= 1; ox++) {
+        vec2 cell = home + vec2(float(ox), float(oy));
+        if (thash(cell + float(k) * 13.0, cells) <= thresh) continue;
+        vec2 at = cell + vec2(thash(cell + 3.0, cells), thash(cell + 9.0, cells));
+        float r = base * (0.55 + thash(cell + 5.0, cells) * 0.85);
+        float sh = smoothstep(r * 2.1, r * 0.7, length(gp - at - vec2(0.55, 0.80) * r));
+        col *= 1.0 - sh * 0.34;
+      }
+    }
+
+    for (int oy = -1; oy <= 1; oy++) {
+      for (int ox = -1; ox <= 1; ox++) {
+        vec2 cell = home + vec2(float(ox), float(oy));
+        if (thash(cell + float(k) * 13.0, cells) <= thresh) continue;
+        vec2 at = cell + vec2(thash(cell + 3.0, cells), thash(cell + 9.0, cells));
+        float r = base * (0.55 + thash(cell + 5.0, cells) * 0.85);
+
+        // Squashed and turned, so they are not a field of identical discs.
+        // Only the silhouette turns: the first version lit the stone from the
+        // rotated frame too, which gave every pebble its own private sun.
+        vec2 raw = gp - at;
+        float rot = thash(cell + 21.0, cells) * TAU;
+        vec2 d = vec2(raw.x * cos(rot) - raw.y * sin(rot), raw.x * sin(rot) + raw.y * cos(rot));
+        d.y /= 0.62 + thash(cell + 27.0, cells) * 0.5;
+        float dist = length(d) / r;
+
+        float stone = smoothstep(1.0, 0.86, dist);
+        if (stone <= 0.0) continue;
+
+        vec3 sc = mix(vec3(0.54, 0.43, 0.31), vec3(0.20, 0.14, 0.16), dusk);
+        sc *= 0.70 + 0.80 * thash(cell + 17.0, cells);
+        // Curvature in the world frame: the upsun shoulder catches the light,
+        // the far side does not, which is all it takes for a disc to read as
+        // a pebble sitting on the sand.
+        float shade = clamp(0.52 - (raw.x * 0.55 + raw.y * 0.78) / r, 0.0, 1.25);
+        sc *= 0.58 + 1.00 * shade;
+        col = mix(col, sc, stone);
+      }
+    }
+  }
+
+  return vec4(col, 1.0);
+}
+
+/* ---------------------------------------------------------------- props
+
+   A sheet of the things that stand beside the track: four rocks and four dry
+   bushes, 512 px each in a 4x2 grid. They used to be drawn as canvas paths,
+   which was fine over a painted floor and stopped being fine the moment the
+   sand under them became a photograph — a flat blob with an ellipse of
+   highlight on it reads as a sticker.
+
+   Both are lit from the upper left, like everything else in the bake, and
+   both are cut off at their waterline so the game can bed them into the sand
+   with its own contact shadow. */
+
+float h21(vec2 p) {
+  return fract(sin(dot(p, vec2(41.7, 289.3))) * 43758.5453123);
+}
+
+/* Height of a rock at p (0..1 inside its cell), 0 outside it. Sampled three
+   times per pixel: the shading is a real gradient, not a guess. */
+float rockHeight(vec2 p, float seed, out float mask) {
+  vec2 q = (p - vec2(0.5, 0.635)) / vec2(0.415, 0.315);
+  float ang = atan(q.y, q.x);
+
+  // A rounded polygon, not a cloud: the radius is constant across each of
+  // seven sectors and eased across the corners, with a little harmonic noise
+  // on top. Sines alone gave blobs that read as dough.
+  float sect = (ang / TAU + 0.5) * 7.0;
+  float si = floor(sect);
+  float sf = smoothstep(0.62, 1.0, fract(sect));
+  float ra = 0.80 + h21(vec2(mod(si, 7.0), seed)) * 0.34;
+  float rb = 0.80 + h21(vec2(mod(si + 1.0, 7.0), seed)) * 0.34;
+  float lump = mix(ra, rb, sf)
+    + 0.055 * sin(ang * 5.0 + seed * 2.1)
+    + 0.030 * sin(ang * 11.0 + seed * 1.9);
+
+  float r = length(q) / lump;
+  mask = 1.0 - smoothstep(0.94, 1.0, r);
+  if (mask <= 0.0) return 0.0;
+
+  // A dome, roughened by two scales of noise and creased by a ridged one.
+  // Heights are in the same units as p, so the gradient below is a real
+  // slope: the first version scaled it down by fifty and shaded every rock
+  // flat.
+  float dome = sqrt(max(0.0, 1.0 - r * r));
+  float bump = tfbm(p * 0.9 + seed, 4.0, 4) - 0.5;
+  float crack = 1.0 - abs(tfbm(p * 1.3 + seed * 2.0, 7.0, 3) * 2.0 - 1.0);
+  return dome * 0.34 + bump * 0.020 - pow(crack, 4.0) * 0.016;
+}
+
+vec4 rockSprite(vec2 p, float id, float dusk) {
+  float seed = 3.1 + id * 7.37;
+  float e = 1.0 / 512.0;
+  float m, mx, my;
+  float h = rockHeight(p, seed, m);
+  if (m <= 0.0) return vec4(0.0);
+  float hx = rockHeight(p + vec2(e, 0.0), seed, mx);
+  float hy = rockHeight(p + vec2(0.0, e), seed, my);
+
+  vec3 nrm = normalize(vec3(-(hx - h) / e, -(hy - h) / e, 1.0));
+  vec3 L = normalize(vec3(-0.58, -0.72, 0.38));
+  float diff = clamp(dot(nrm, L), 0.0, 1.0);
+  float sky = 0.5 + 0.5 * nrm.z;
+
+  vec3 lit  = mix(vec3(0.78, 0.68, 0.54), vec3(0.36, 0.25, 0.27), dusk);
+  vec3 mid  = mix(vec3(0.44, 0.36, 0.28), vec3(0.18, 0.13, 0.15), dusk);
+  vec3 dark = mix(vec3(0.18, 0.14, 0.11), vec3(0.06, 0.05, 0.07), dusk);
+
+  vec3 col = mix(dark, mid, sky);
+  col = mix(col, lit, diff * 0.9);
+
+  // Mineral streaks and a dusting of the sand it sits in.
+  float grain = tfbm(p * 2.0 + seed * 3.0, 14.0, 3);
+  col *= 0.86 + 0.28 * grain;
+  float dust = smoothstep(0.55, 0.95, nrm.z) * smoothstep(0.35, 0.05, p.y);
+  col = mix(col, mix(vec3(0.80, 0.66, 0.45), vec3(0.34, 0.22, 0.24), dusk), dust * 0.28);
+
+  // Bedded into the sand: the last tenth fades out rather than ending on a
+  // line, and darkens where the sand piles against it.
+  float bed = smoothstep(0.96, 0.90, p.y);
+  col *= 1.0 - smoothstep(0.86, 0.94, p.y) * 0.35;
+  return vec4(col, m * bed);
+}
+
+/* Distance from p to the segment ab. */
+float segDist(vec2 p, vec2 a, vec2 b) {
+  vec2 pa = p - a, ba = b - a;
+  float t = clamp(dot(pa, ba) / max(1e-6, dot(ba, ba)), 0.0, 1.0);
+  return length(pa - ba * t);
+}
+
+/* Where stem fi of a bush ends up. Shared so the seed heads can sit on the
+   stems that carry them instead of floating over the clump. */
+vec2 stemTip(float fi, float seed) {
+  float r1 = h21(vec2(fi, seed));
+  float r2 = h21(vec2(fi + 31.0, seed));
+  float r3 = h21(vec2(fi + 67.0, seed));
+  float r4 = h21(vec2(fi + 97.0, seed));
+  vec2 root = vec2(0.5 + (r4 - 0.5) * 0.13, 0.95 - r3 * 0.03);
+  float ang = -1.5708 + (r1 - 0.5) * 1.45;
+  float len = 0.22 + r2 * 0.34 - abs(r1 - 0.5) * 0.14;
+  vec2 dir = vec2(cos(ang), sin(ang));
+  vec2 tip = root + dir * len;
+  vec2 side = vec2(-dir.y, dir.x) * (r1 - 0.5) * len * 0.55;
+  return tip + vec2(side.x * 0.5, len * 0.10 * r2);
+}
+
+vec4 bushSprite(vec2 p, float id, float dusk) {
+  float seed = 17.0 + id * 11.13;
+
+  float alpha = 0.0;
+  vec3 col = vec3(0.0);
+  float best = 1e9;
+
+  for (int i = 0; i < 38; i++) {
+    float fi = float(i);
+    float r1 = h21(vec2(fi, seed));
+    float r2 = h21(vec2(fi + 31.0, seed));
+    float r3 = h21(vec2(fi + 67.0, seed));
+    float r4 = h21(vec2(fi + 97.0, seed));
+
+    // Branches leave a short root line rather than a single point, and lean
+    // out no further than forty degrees: a full fan made a starburst.
+    vec2 root = vec2(0.5 + (r4 - 0.5) * 0.13, 0.95 - r3 * 0.03);
+    float ang = -1.5708 + (r1 - 0.5) * 1.45;
+    float len = 0.22 + r2 * 0.34 - abs(r1 - 0.5) * 0.14;
+    vec2 dir = vec2(cos(ang), sin(ang));
+    vec2 tip = root + dir * len;
+
+    // Arc: the middle bows away from the straight line, and the tip droops,
+    // which is what a dry shrub does under its own weight.
+    vec2 side = vec2(-dir.y, dir.x) * (r1 - 0.5) * len * 0.55;
+    vec2 mid = mix(root, tip, 0.5) + side;
+    tip += vec2(side.x * 0.5, len * 0.10 * r2);
+
+    float d = min(segDist(p, root, mid), segDist(p, mid, tip));
+    float along = clamp((root.y - p.y) / max(0.02, root.y - tip.y), 0.0, 1.0);
+    float wide = mix(0.0065, 0.0012, along) * (0.7 + r2 * 0.7);
+    float a = 1.0 - smoothstep(wide * 0.55, wide * 1.45, d);
+    if (a <= 0.0) continue;
+
+    vec3 tipCol = mix(vec3(0.84, 0.74, 0.46), vec3(0.35, 0.25, 0.27), dusk);
+    vec3 rootCol = mix(vec3(0.31, 0.29, 0.14), vec3(0.11, 0.10, 0.11), dusk);
+    vec3 c = mix(rootCol, tipCol, along * (0.55 + 0.6 * r2));
+    c *= 0.74 + 0.42 * r1 + 0.22 * r4;          // some branches catch the sun
+
+    if (d < best) { best = d; col = c; }
+    alpha = max(alpha, a);
+  }
+
+  // Seed heads, each one on the tip of a stem.
+  for (int k = 0; k < 9; k++) {
+    float fk = float(k);
+    vec2 at = stemTip(fk * 4.0 + 1.0, seed);
+    float rr = 0.011 + h21(vec2(fk + 41.0, seed)) * 0.012;
+    float d = length((p - at) / vec2(1.0, 1.7)) / rr;
+    float a = 1.0 - smoothstep(0.70, 1.0, d);
+    if (a <= 0.0) continue;
+    vec3 c = mix(vec3(0.78, 0.68, 0.40), vec3(0.30, 0.22, 0.23), dusk);
+    c *= 0.78 + 0.45 * clamp(1.0 - d, 0.0, 1.0);
+    col = mix(col, c, a);
+    alpha = max(alpha, a);
+  }
+
+  return vec4(col, alpha);
+}
+
+vec4 bakeProps(vec2 uv, float dusk) {
+  vec2 cell = vec2(floor(uv.x * 4.0), floor(uv.y * 2.0));
+  vec2 p = vec2(fract(uv.x * 4.0), fract(uv.y * 2.0));
+  float id = cell.y * 4.0 + cell.x;
+  return id < 4.0 ? rockSprite(p, id, dusk) : bushSprite(p, id - 4.0, dusk);
+}
+
 /* ------------------------------------------------------------------ main */
 
 /* One sample of whichever layer is being baked, at plate coordinates
@@ -308,8 +656,12 @@ vec4 plate(float u, float v, float dusk) {
     outc = bakeRange(u, v, dusk, 17.0, 1.7, 0.55, 0.10,
                      mix(vec3(0.74, 0.55, 0.38), vec3(0.28, 0.18, 0.22), dusk),
                      mix(vec3(0.38, 0.26, 0.21), vec3(0.10, 0.07, 0.12), dusk));
-  } else {
+  } else if (uLayer == 3) {
     outc = bakeDunes(u, v, dusk);
+  } else if (uLayer == 4) {
+    outc = bakeSand(vec2(u, v), dusk);
+  } else {
+    outc = bakeProps(vec2(u, v), dusk);
   }
   return outc;
 }

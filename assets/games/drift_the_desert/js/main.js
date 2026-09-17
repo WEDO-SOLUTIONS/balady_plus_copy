@@ -529,20 +529,38 @@
     var platesLoaded = 0;
     Backdrop.load(global.DRIFT_PLATES, plateUrls, function (p) { platesLoaded = p; });
 
+    // The ground plane's texture, mapped in perspective by js/ground.js. Also
+    // optional: without it the floor stays painted.
+    var groundLoaded = 0;
+    if (global.DriftGround) {
+      global.DriftGround.load('img/bg/sand.jpg', function () { groundLoaded = 1; });
+    } else {
+      groundLoaded = 1;
+    }
+
+    var spritesLoaded = 0;
+    if (global.DriftSprites) {
+      var meta = (global.DRIFT_PLATES && global.DRIFT_PLATES.plates.props) || {};
+      global.DriftSprites.load('img/bg/props.png', meta.grid, function () { spritesLoaded = 1; });
+    } else {
+      spritesLoaded = 1;
+    }
+
     Scene.loadImages([
       ['car', 'img/car.png'],
       ['driver', 'img/driver.png'],
       ['coin', 'img/coin.png'],
       ['sky', 'img/sky.jpg'],
-      ['ridge', 'img/ridge.png'],
-      ['sand', 'img/sand.jpg']
+      ['ridge', 'img/ridge.png']
     ], function (p) { loaded = p; });
 
     var timer = global.setInterval(function () {
       var elapsed = (Date.now() - t0) / minMs;
-      var progress = 0.10 + (loaded * 0.45 + platesLoaded * 0.45);
+      var progress = 0.10 + (loaded * 0.25 + platesLoaded * 0.30 +
+                             groundLoaded * 0.20 + spritesLoaded * 0.15);
       el.loaderFill.style.width = (Math.min(1, Math.min(elapsed, progress)) * 100) + '%';
-      if ((loaded >= 1 && platesLoaded >= 1 && elapsed >= 1) || elapsed >= 4) {
+      if ((loaded >= 1 && platesLoaded >= 1 && groundLoaded >= 1 &&
+           spritesLoaded >= 1 && elapsed >= 1) || elapsed >= 6) {
         global.clearInterval(timer);
         enter();
       }

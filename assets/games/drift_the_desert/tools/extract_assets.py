@@ -348,9 +348,6 @@ def main():
     # --- results strip: sunset, the car driving off and the script line -----
     save_jpg(s['results'].crop((4, 230, 293, 420)), 'results-art.jpg', 86)
 
-    # --- sand for the scrolling road texture --------------------------------
-    save_jpg(s['ready'].crop((18, 470, 282, 550)), 'sand.jpg', 84)
-
     # --- marks and icons ----------------------------------------------------
     save_png(trim(luma_key(s['rewards'].crop((112, 20, 192, 80)), 40, 170)), 'logo.png')
     save_png(trim(luma_key(s['splash'].crop((28, 310, 268, 452)), 118, 225)), 'title.png')
