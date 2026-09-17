@@ -40,8 +40,8 @@ nine-slice `border-image`, and a border thinner than the slice squeezes the
 corner pieces while the middle band keeps its own gradient, so the seams showed
 as bands across every button and the disabled main button drained to olive. The
 faces are now drawn in CSS from the colours sampled down the middle of those
-same files — a fourteen-stop gradient for the gold one, a dark green face with
-a gold rim for the outline one — which scales to any size without a seam. The
+same files — a fourteen-stop gradient for the gold one, a lit green face with
+a gold rim for the secondary one — which scales to any size without a seam. The
 files stay in the folder as the reference the gradients came from. The
 arabesque ships as four rotations because a background layer cannot be cropped
 to one cell of a sprite; together they frame the panels. Everything else in the

@@ -532,14 +532,15 @@ html[dir="ltr"] #hint{text-transform:uppercase}
    instead, from the colours sampled down the middle of those files, which
    scales to any size without a seam.
    ------------------------------------------------------------------ */
-.rail-btn, .btn{                       /* the dark face, unless gold takes over */
-  border:1px solid rgba(6,14,9,.92);
-  background:linear-gradient(180deg,#1d3527 0%,#15281c 46%,#0f1f16 100%);
+.rail-btn, .btn{            /* the secondary face: lit felt under a gold rim */
+  border:1px solid rgba(10,26,17,.9);
+  background:linear-gradient(180deg,#3c7a5a 0%,#2d6247 44%,#215038 100%);
   box-shadow:
-    inset 0 0 0 1.8px rgba(216,178,100,.92),
-    inset 0 2.6px 0 rgba(255,248,186,.30),
-    inset 0 -2.6px 0 rgba(255,231,160,.22),
-    0 4px 12px rgba(0,0,0,.46);
+    inset 0 0 0 1.8px rgba(240,207,114,.95),
+    inset 0 3px 0 rgba(255,248,196,.34),
+    inset 0 -3px 0 rgba(255,231,160,.22),
+    0 4px 12px rgba(0,0,0,.4);
+  color:var(--gold-hi);text-shadow:0 1px 3px rgba(0,0,0,.45);
 }
 .rail-btn.gold, .btn.gold{
   border:1px solid rgba(74,42,6,.9);
@@ -584,17 +585,19 @@ html[dir="ltr"] #hint{text-transform:uppercase}
 }
 html[dir="ltr"] .rail-btn{text-transform:uppercase}
 .rail-btn:active{transform:translateY(1px) scale(.985)}
-.rail-btn[disabled]{opacity:.9;pointer-events:none}
+.rail-btn[disabled]{opacity:.94;pointer-events:none}
 /* while another seat plays, the main button reads out whose turn it is: the
    dark face says "nothing to press" without draining the gold one */
+/* while another seat plays, the main button reads out whose turn it is: a
+   calmer gold than the one you can press, but gold, not a dark plate */
 .rail-btn.gold.idle{
-  border:1px solid rgba(6,14,9,.92);
-  background:linear-gradient(180deg,#1d3527 0%,#15281c 46%,#0f1f16 100%);
+  background:linear-gradient(180deg,
+    #FFF6D2 0%, #F2DCA4 8%, #EBD196 20%, #E4C68B 34%,
+    #DCBB7E 50%, #D2AE70 68%, #D5B478 82%, #F3DCA8 94%, #FFF0CC 100%);
   box-shadow:
-    inset 0 0 0 1.8px rgba(216,178,100,.55),
-    inset 0 2.6px 0 rgba(255,248,186,.16),
-    0 4px 12px rgba(0,0,0,.4);
-  color:rgba(240,207,114,.82);text-shadow:0 1px 3px rgba(0,0,0,.6);
+    inset 0 0 0 1.5px rgba(255,248,214,.6),
+    0 4px 12px rgba(0,0,0,.38);
+  color:#3a2a0c;text-shadow:0 1px 0 rgba(255,255,255,.4);
   opacity:1;
 }
 .rail-btn.gold{
