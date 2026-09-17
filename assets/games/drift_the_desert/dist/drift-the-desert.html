@@ -1721,7 +1721,13 @@ window.DRIFT_PLATES = {"samples":1024,"plates":{"sky":{"size":[2048,1024]},"far"
 
 
     /** Tile one plate across the viewport at `y`, `height`, wrapping by
-        `offset`. Both time variants are drawn, the second weighted by dusk. */
+        `offset`. Both time variants are drawn, the second weighted by dusk.
+
+        Deliberately NOT snapped to whole pixels. A plate creeps a fraction of
+        a pixel per frame, and snapping it makes it sit still for eight frames
+        and then jump one — which is precisely the shimmer along the skyline
+        that sub-pixel placement avoids. The resampling costs something on a
+        software rasteriser and nothing on a GPU, which is what this runs on. */
     tile: function (ctx, plate, w, y, height, offset, dusk, srcFrac) {
       var frac = srcFrac || 1;
       var srcH = Math.max(1, Math.round(plate.size[1] * frac));
@@ -1783,7 +1789,7 @@ window.DRIFT_PLATES = {"samples":1024,"plates":{"sky":{"size":[2048,1024]},"far"
       if (!this.ready) return false;
       var plate = this.plates.sky;
       var height = s.horizon * 1.06;
-      this.tile(ctx, plate, s.w, 0, height, this.slide(s, 0.004, 0.02), s.dusk);
+      this.tile(ctx, plate, s.w, 0, height, this.slide(s, 0.004, 0.012), s.dusk);
       return true;
     },
 
@@ -1791,8 +1797,8 @@ window.DRIFT_PLATES = {"samples":1024,"plates":{"sky":{"size":[2048,1024]},"far"
     drawRanges: function (ctx, s) {
       if (!this.ready) return false;
       var ranges = [
-        { name: 'far', height: s.h * 0.090, base: s.horizon + 2, speed: 0.010, lean: 0.05 },
-        { name: 'near', height: s.h * 0.065, base: s.horizon + 5, speed: 0.018, lean: 0.09 }
+        { name: 'far', height: s.h * 0.090, base: s.horizon + 2, speed: 0.010, lean: 0.028 },
+        { name: 'near', height: s.h * 0.065, base: s.horizon + 5, speed: 0.018, lean: 0.05 }
       ];
       for (var i = 0; i < ranges.length; i++) {
         var r = ranges[i];
@@ -1817,7 +1823,7 @@ window.DRIFT_PLATES = {"samples":1024,"plates":{"sky":{"size":[2048,1024]},"far"
       var frac = 0.52;
       var height = s.h * 0.20;
       var y = s.horizon - s.h * 0.010;
-      var off = this.slide(s, 0.030, 0.16);
+      var off = this.slide(s, 0.030, 0.09);
       ctx.save();
       if (this.clipToSkyline(ctx, plate, s.w, y, height, off, frac)) {
         this.tile(ctx, plate, s.w, y, height, off, s.dusk, frac);
@@ -1899,6 +1905,18 @@ window.DRIFT_PLATES = {"samples":1024,"plates":{"sky":{"size":[2048,1024]},"far"
   // Anisotropy, which is what stops the far field either aliasing or turning
   // to mush. Past four the cost climbs faster than the picture improves.
   var ANISO = 4;
+
+  /* How much desert the game keeps track of, and how close to the camera a
+     thing can get before it wraps round to the far end again. Both are fixed
+     lengths of world, in texels — about a hundred metres of band.
+
+     They used to be derived from the depth at the bottom of the frame, which
+     is a camera measurement: it moves with the horizon, the horizon moves
+     with speed, and so every rock and cliff in the desert was re-laid-out
+     whenever the car sped up or slowed down. That is what made them appear
+     and disappear without warning. */
+  var BAND = 22;            // in tiles
+  var NEAR = 0.3;
 
   /* The road itself.
 
@@ -2012,14 +2030,21 @@ window.DRIFT_PLATES = {"samples":1024,"plates":{"sky":{"size":[2048,1024]},"far"
     '  // The small negative bias pulls the mip selection back towards sharp:',
     '  // anisotropic filtering already keeps this honest, and without it the',
     '  // grazing angle averages the sand into suede.',
-    '  vec3 sand = texture2D(uSand, vec2(tx, ty) / uTexSize, -0.35).rgb;',
-    '  sand += texture2D(uSand, vec2(tx, ty - uBlur * 0.6) / uTexSize, -0.35).rgb;',
+    '  //',
+    '  // Near the horizon it goes the other way, hard. A few rows below the',
+    '  // skyline one screen pixel covers thousands of texels, and whichever',
+    '  // of them the filter lands on changes fast enough to crawl — which is',
+    '  // what made the horizon shimmer. Biasing up there samples what is',
+    '  // effectively the tile average, and an average does not flicker.',
+    '  float lod = -0.35 + smoothstep(0.14, 0.03, t) * 3.2;',
+    '  vec3 sand = texture2D(uSand, vec2(tx, ty) / uTexSize, lod).rgb;',
+    '  sand += texture2D(uSand, vec2(tx, ty - uBlur * 0.6) / uTexSize, lod).rgb;',
     '  sand *= 0.5;',
     '  // The road has its own lateral scale: its tile spans the road rather',
     '  // than two screen widths, which is twice the texels across the part of',
     '  // the frame the player is actually looking at.',
     '  float rx = tx * uRoadX + uTexSize * 0.5;',
-    '  vec3 road = texture2D(uRoad, vec2(rx, ty - uBlur * 0.3) / uTexSize, -0.35).rgb;',
+    '  vec3 road = texture2D(uRoad, vec2(rx, ty - uBlur * 0.3) / uTexSize, lod).rgb;',
     '',
     '  // The track, with the same wobbling edge the painted one has.',
     '  float side = x > cx ? 1.0 : -1.0;',
@@ -2032,8 +2057,9 @@ window.DRIFT_PLATES = {"samples":1024,"plates":{"sky":{"size":[2048,1024]},"far"
     '  vec3 col = mix(sand, road, onRoad);',
     '  col = mix(col, col * uTint, uDusk);',
     '',
-    '  // Dissolve into the haze the plates end in.',
-    '  float fade = clamp((t - 0.035) / 0.165, 0.0, 1.0);',
+    '  // Dissolve into the haze the plates end in, starting a little lower',
+    '  // than it used to: the last few rows were never more than noise.',
+    '  float fade = clamp((t - 0.045) / 0.165, 0.0, 1.0);',
     '  gl_FragColor = vec4(col * fade, fade);',
     '}'
   ].join('\n');
@@ -2058,6 +2084,8 @@ window.DRIFT_PLATES = {"samples":1024,"plates":{"sky":{"size":[2048,1024]},"far"
         travelPerScroll: TRAVEL,
         halfTexels: TRACK_HALF * this.size,     // the road, in world texels
         size: this.size,
+        band: BAND * this.size,                 // how much desert is tracked
+        near: NEAR * this.size,
         // Reduced into the bend's period, so the sines stay in range and the
         // road does not jump when the number wraps.
         travelCurve: travel % CURVE_WRAP
@@ -2189,8 +2217,11 @@ window.DRIFT_PLATES = {"samples":1024,"plates":{"sky":{"size":[2048,1024]},"far"
       var gl = this.gl;
 
       // Only the ground is drawn, so the canvas starts at the horizon rather
-      // than at the top of the frame: nearly half the pixels, for free.
-      var top = Math.floor(o.horizon);
+      // than at the top of the frame: nearly half the pixels, for free. The
+      // top is where the horizon is at its highest, not where it is now — it
+      // rises with speed, and resizing a GL canvas every time it crossed a
+      // pixel cost a reallocation and showed as a flicker along the skyline.
+      var top = Math.floor(o.top);
       var full = o.w * o.dpr * (o.h - top) * o.dpr;
       var px = o.dpr * Math.min(RES_SCALE,
                                 Math.sqrt(MAX_PIXELS * this.budget / Math.max(1, full)));
@@ -2556,7 +2587,7 @@ window.DRIFT_PLATES = {"samples":1024,"plates":{"sky":{"size":[2048,1024]},"far"
         // offset from the lean now and only a trickle from the distance
         // covered, which is what stopped the whole background sliding along
         // on a clock of its own.
-        lean: this.lastLean || 0,
+        lean: this.leanEase || 0,
         dusk: clamp(dusk || 0, 0, 1)
       };
     },
@@ -2578,7 +2609,6 @@ window.DRIFT_PLATES = {"samples":1024,"plates":{"sky":{"size":[2048,1024]},"far"
         w: this.w, h: this.h, horizon: this.horizon, scroll: this.scroll
       });
       // The furthest we place anything. Past this the haze has it anyway.
-      this.world.far = this.world.TD / 0.045;
       return this.world;
     },
 
@@ -2882,6 +2912,7 @@ window.DRIFT_PLATES = {"samples":1024,"plates":{"sky":{"size":[2048,1024]},"far"
         h: this.h,
         dpr: this.dpr,
         horizon: this.horizon,
+        top: this.baseHorizon - this.h * 0.024 - 2,
         scroll: this.scroll,
         dScroll: this.dScroll || 0,
         speed: (this.lastSpeed || 0) * WORLD_SCALE,
@@ -3271,16 +3302,18 @@ window.DRIFT_PLATES = {"samples":1024,"plates":{"sky":{"size":[2048,1024]},"far"
         the car comes back at the far end as a different rock. */
     propAt: function (i, lean) {
       var W = this.world;
-      var band = W.far - W.TD;
       var seed = i * 2.713;
 
-      var cycles = (hash(seed) * band - W.travel) / band;
-      var depth = W.TD + (cycles - Math.floor(cycles)) * band;
+      // A fixed length of desert, not a camera measurement: the band used to
+      // be derived from the depth at the bottom of the frame, so it breathed
+      // with the horizon and every prop jumped when the car changed speed.
+      var cycles = (hash(seed) * W.band - W.travel) / W.band;
+      var depth = W.near + (cycles - Math.floor(cycles)) * W.band;
       var pass = Math.floor(cycles);          // which time round, for variety
       var r = hash(seed + 6.1 + pass * 0.37);
 
       var p = this.place(depth, 0, lean);
-      if (p.t > 1.25) return null;
+      if (p.t > 1.6 || p.t < 0.036) return null;
 
       // Beyond the shoulder, and further out the closer it is, so they leave
       // at the sides of the frame instead of marching over the car.
@@ -3304,35 +3337,38 @@ window.DRIFT_PLATES = {"samples":1024,"plates":{"sky":{"size":[2048,1024]},"far"
           : Math.floor(hash(seed + 12.9 + pass) * 5) % 5,
         size: (0.55 + hash(seed + 9.7) * 0.85) * p.t * this.h * 0.26,
         // How far into the haze it still is, by apparent size rather than by
-        // depth. The plates fade the same way, so a far rock settles into
-        // them instead of reading as a sticker.
-        fog: clamp(1 - p.t / 0.30, 0, 1) * 0.85
+        // depth. It reaches the haze colour entirely before the band's far
+        // end, so a prop arrives out of the haze rather than appearing in
+        // front of it.
+        fog: clamp(1 - p.t / 0.30, 0, 1) * 0.98
       };
     },
 
     /* The outcrops the track runs between. Same world clock, same wrapping
        band, but they stand well off the road and are some twenty times the
        size, which is what gives the horizon a shape to read. */
-    CLIFFS: 6,
+    CLIFFS: 7,
 
     cliffAt: function (i, lean) {
       var W = this.world;
-      var band = W.far - W.TD;
       var seed = 101.7 + i * 5.317;
 
-      var cycles = (hash(seed) * band - W.travel) / band;
-      var depth = W.TD + (cycles - Math.floor(cycles)) * band;
+      var cycles = (hash(seed) * W.band - W.travel) / W.band;
+      var depth = W.near + (cycles - Math.floor(cycles)) * W.band;
       var pass = Math.floor(cycles);
 
       var p = this.place(depth, 0, lean);
-      if (p.t > 1.4) return null;
+      // Held on far longer than a prop: one of these is half the frame tall
+      // as it goes by, and cutting it at the moment its base leaves the
+      // bottom edge is the most obvious disappearance in the game.
+      if (p.t > 2.6 || p.t < 0.036) return null;
 
       var side = i % 2 ? 1 : -1;
-      // Well off the road — sixteen to eighty metres — so they sweep past the
-      // sides of the frame instead of crowding the vanishing point.
-      var out = 14 + hash(seed + 3.3 + pass) * 20;
+      // Well off the road — twenty-three to fifty-three metres — so they sweep
+      // past the sides of the frame rather than over it.
+      var out = 19 + hash(seed + 3.3 + pass) * 11;
       var x = p.x + side * W.halfTexels * out * p.a;
-      if (x < -this.w * 1.6 || x > this.w * 2.6) return null;
+      if (x < -this.w * 2.4 || x > this.w * 3.4) return null;
 
       return {
         cliff: true,
@@ -3342,7 +3378,7 @@ window.DRIFT_PLATES = {"samples":1024,"plates":{"sky":{"size":[2048,1024]},"far"
         // fractions of the frame: they were three and a half before, which is
         // a boulder, and a row of boulders on the horizon reads as a fence.
         size: (2.6 + hash(seed + 9.7 + pass) * 3.2) * (W.size || 2048) * p.a,
-        fog: clamp(1 - p.t / 0.22, 0, 1) * 0.80
+        fog: clamp(1 - p.t / 0.20, 0, 1) * 0.98
       };
     },
 
@@ -3372,7 +3408,10 @@ window.DRIFT_PLATES = {"samples":1024,"plates":{"sky":{"size":[2048,1024]},"far"
           return mixHex(mixHex(dayHex, nightHex, night), haze, this.fog);
         };
         ctx.save();
-        ctx.globalAlpha = clamp(o.s / 0.055, 0, 1);
+        // A long fade at the far end. Anything that switches on at four fifths
+        // of its weight, as this used to, pops — and the bigger it is the
+        // more it pops.
+        ctx.globalAlpha = clamp((o.s - 0.038) / 0.032, 0, 1);
         if (!this.drawSprite(o, night, haze) && !o.cliff) {
           if (o.kind === 0) this.drawBoulder(o, night);
           else if (o.kind === 1) this.drawScrub(o, night);
@@ -3917,8 +3956,23 @@ window.DRIFT_PLATES = {"samples":1024,"plates":{"sky":{"size":[2048,1024]},"far"
       var speedNorm = clamp(((state.speed || 0) - 240) / 460, 0, 1);
       this.speedNorm = speedNorm;
 
+      // Smoothed, because it drives the horizon and the horizon drives most
+      // of the frame. Followed frame by frame it twitched with every tap.
+      var follow = Math.min(1, dt * 1.5);
+      this.speedEase = this.speedEase == null
+        ? speedNorm : this.speedEase + (speedNorm - this.speedEase) * follow;
+      // A slow follow, on purpose. The car leans back and forth about once a
+      // second while the player balances it, and a ridge a kilometre off has
+      // no business answering that — it answers where the car has drifted to,
+      // which is a much slower thing. At a quarter-second follow the whole
+      // background twitched in time with the tapping.
+      this.leanEase = this.leanEase == null
+        ? 0 : this.leanEase + ((state.tilt || 0) - this.leanEase) * Math.min(1, dt * 0.8);
+
       // The camera sits lower as the car picks up speed, so the horizon rises.
-      this.horizon = Math.round(this.baseHorizon - speedNorm * this.h * 0.022);
+      // Not rounded: a whole-pixel horizon steps, and everything keyed to it —
+      // the plates, the ground's own geometry — steps with it.
+      this.horizon = this.baseHorizon - this.speedEase * this.h * 0.022;
       this.syncWorld();
 
       this.stepParticles(dt);
@@ -4007,7 +4061,6 @@ window.DRIFT_PLATES = {"samples":1024,"plates":{"sky":{"size":[2048,1024]},"far"
 
       ctx.save();
       ctx.globalCompositeOperation = 'lighter';
-      ctx.globalAlpha = intensity * 0.10;
       var warm = dusk > 0.5 ? 'rgba(255, 170, 120, 1)' : 'rgba(255, 224, 176, 1)';
       for (var i = 0; i < 16; i++) {
         var seed = (this.time * (1.6 + (i % 5) * 0.5) + i * 0.13) % 1;
@@ -4015,6 +4068,9 @@ window.DRIFT_PLATES = {"samples":1024,"plates":{"sky":{"size":[2048,1024]},"far"
         var p = this.project(Math.min(d, 1));
         var len = 30 + seed * 150 * intensity;
         var x = this.w * (hash(i * 3.7) * 1.4 - 0.2);
+        // Faded in and out too, for the same reason.
+        ctx.globalAlpha = intensity * 0.10 *
+          clamp(seed / 0.16, 0, 1) * clamp((1 - seed) / 0.2, 0, 1);
         ctx.strokeStyle = warm;
         ctx.lineWidth = 1 + seed * 2.5;
         ctx.beginPath();
@@ -4072,15 +4128,20 @@ window.DRIFT_PLATES = {"samples":1024,"plates":{"sky":{"size":[2048,1024]},"far"
       var intensity = clamp((speed - 240) / 420, 0, 1);
       if (intensity <= 0.01) return;
       ctx.save();
-      ctx.globalAlpha = intensity * 0.28;
       ctx.strokeStyle = '#FFF3DC';
       ctx.lineWidth = 2;
       for (var i = 0; i < 9; i++) {
         var seed = (this.time * 2.2 + i * 0.37) % 1;
-        var y = this.horizon + (this.h - this.horizon) * seed;
+        // Started below the skyline and faded in and out along the way. Each
+        // of these used to switch on at full weight exactly on the horizon
+        // and switch off at the bottom — nine of them, twice a second, which
+        // is what made the horizon flicker.
+        var y = this.horizon + (this.h - this.horizon) * (0.08 + 0.92 * seed);
         var len = 26 + seed * 90;
         var side = i % 2 === 0 ? -1 : 1;
         var x = this.w * 0.5 + side * (this.w * 0.34 + seed * this.w * 0.2);
+        ctx.globalAlpha = intensity * 0.28 *
+          clamp(seed / 0.18, 0, 1) * clamp((1 - seed) / 0.22, 0, 1);
         ctx.beginPath();
         ctx.moveTo(x, y);
         ctx.lineTo(x + side * len * 0.35, y + len * 0.5);

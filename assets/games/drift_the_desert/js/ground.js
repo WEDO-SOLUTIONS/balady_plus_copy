@@ -65,6 +65,18 @@
   // to mush. Past four the cost climbs faster than the picture improves.
   var ANISO = 4;
 
+  /* How much desert the game keeps track of, and how close to the camera a
+     thing can get before it wraps round to the far end again. Both are fixed
+     lengths of world, in texels — about a hundred metres of band.
+
+     They used to be derived from the depth at the bottom of the frame, which
+     is a camera measurement: it moves with the horizon, the horizon moves
+     with speed, and so every rock and cliff in the desert was re-laid-out
+     whenever the car sped up or slowed down. That is what made them appear
+     and disappear without warning. */
+  var BAND = 22;            // in tiles
+  var NEAR = 0.3;
+
   /* The road itself.
 
      Half its width, as a fraction of the texture's size, and constant: a road
@@ -177,14 +189,21 @@
     '  // The small negative bias pulls the mip selection back towards sharp:',
     '  // anisotropic filtering already keeps this honest, and without it the',
     '  // grazing angle averages the sand into suede.',
-    '  vec3 sand = texture2D(uSand, vec2(tx, ty) / uTexSize, -0.35).rgb;',
-    '  sand += texture2D(uSand, vec2(tx, ty - uBlur * 0.6) / uTexSize, -0.35).rgb;',
+    '  //',
+    '  // Near the horizon it goes the other way, hard. A few rows below the',
+    '  // skyline one screen pixel covers thousands of texels, and whichever',
+    '  // of them the filter lands on changes fast enough to crawl — which is',
+    '  // what made the horizon shimmer. Biasing up there samples what is',
+    '  // effectively the tile average, and an average does not flicker.',
+    '  float lod = -0.35 + smoothstep(0.14, 0.03, t) * 3.2;',
+    '  vec3 sand = texture2D(uSand, vec2(tx, ty) / uTexSize, lod).rgb;',
+    '  sand += texture2D(uSand, vec2(tx, ty - uBlur * 0.6) / uTexSize, lod).rgb;',
     '  sand *= 0.5;',
     '  // The road has its own lateral scale: its tile spans the road rather',
     '  // than two screen widths, which is twice the texels across the part of',
     '  // the frame the player is actually looking at.',
     '  float rx = tx * uRoadX + uTexSize * 0.5;',
-    '  vec3 road = texture2D(uRoad, vec2(rx, ty - uBlur * 0.3) / uTexSize, -0.35).rgb;',
+    '  vec3 road = texture2D(uRoad, vec2(rx, ty - uBlur * 0.3) / uTexSize, lod).rgb;',
     '',
     '  // The track, with the same wobbling edge the painted one has.',
     '  float side = x > cx ? 1.0 : -1.0;',
@@ -197,8 +216,9 @@
     '  vec3 col = mix(sand, road, onRoad);',
     '  col = mix(col, col * uTint, uDusk);',
     '',
-    '  // Dissolve into the haze the plates end in.',
-    '  float fade = clamp((t - 0.035) / 0.165, 0.0, 1.0);',
+    '  // Dissolve into the haze the plates end in, starting a little lower',
+    '  // than it used to: the last few rows were never more than noise.',
+    '  float fade = clamp((t - 0.045) / 0.165, 0.0, 1.0);',
     '  gl_FragColor = vec4(col * fade, fade);',
     '}'
   ].join('\n');
@@ -223,6 +243,8 @@
         travelPerScroll: TRAVEL,
         halfTexels: TRACK_HALF * this.size,     // the road, in world texels
         size: this.size,
+        band: BAND * this.size,                 // how much desert is tracked
+        near: NEAR * this.size,
         // Reduced into the bend's period, so the sines stay in range and the
         // road does not jump when the number wraps.
         travelCurve: travel % CURVE_WRAP
@@ -354,8 +376,11 @@
       var gl = this.gl;
 
       // Only the ground is drawn, so the canvas starts at the horizon rather
-      // than at the top of the frame: nearly half the pixels, for free.
-      var top = Math.floor(o.horizon);
+      // than at the top of the frame: nearly half the pixels, for free. The
+      // top is where the horizon is at its highest, not where it is now — it
+      // rises with speed, and resizing a GL canvas every time it crossed a
+      // pixel cost a reallocation and showed as a flicker along the skyline.
+      var top = Math.floor(o.top);
       var full = o.w * o.dpr * (o.h - top) * o.dpr;
       var px = o.dpr * Math.min(RES_SCALE,
                                 Math.sqrt(MAX_PIXELS * this.budget / Math.max(1, full)));

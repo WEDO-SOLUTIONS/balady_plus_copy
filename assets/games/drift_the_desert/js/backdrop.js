@@ -85,7 +85,13 @@
 
 
     /** Tile one plate across the viewport at `y`, `height`, wrapping by
-        `offset`. Both time variants are drawn, the second weighted by dusk. */
+        `offset`. Both time variants are drawn, the second weighted by dusk.
+
+        Deliberately NOT snapped to whole pixels. A plate creeps a fraction of
+        a pixel per frame, and snapping it makes it sit still for eight frames
+        and then jump one — which is precisely the shimmer along the skyline
+        that sub-pixel placement avoids. The resampling costs something on a
+        software rasteriser and nothing on a GPU, which is what this runs on. */
     tile: function (ctx, plate, w, y, height, offset, dusk, srcFrac) {
       var frac = srcFrac || 1;
       var srcH = Math.max(1, Math.round(plate.size[1] * frac));
@@ -147,7 +153,7 @@
       if (!this.ready) return false;
       var plate = this.plates.sky;
       var height = s.horizon * 1.06;
-      this.tile(ctx, plate, s.w, 0, height, this.slide(s, 0.004, 0.02), s.dusk);
+      this.tile(ctx, plate, s.w, 0, height, this.slide(s, 0.004, 0.012), s.dusk);
       return true;
     },
 
@@ -155,8 +161,8 @@
     drawRanges: function (ctx, s) {
       if (!this.ready) return false;
       var ranges = [
-        { name: 'far', height: s.h * 0.090, base: s.horizon + 2, speed: 0.010, lean: 0.05 },
-        { name: 'near', height: s.h * 0.065, base: s.horizon + 5, speed: 0.018, lean: 0.09 }
+        { name: 'far', height: s.h * 0.090, base: s.horizon + 2, speed: 0.010, lean: 0.028 },
+        { name: 'near', height: s.h * 0.065, base: s.horizon + 5, speed: 0.018, lean: 0.05 }
       ];
       for (var i = 0; i < ranges.length; i++) {
         var r = ranges[i];
@@ -181,7 +187,7 @@
       var frac = 0.52;
       var height = s.h * 0.20;
       var y = s.horizon - s.h * 0.010;
-      var off = this.slide(s, 0.030, 0.16);
+      var off = this.slide(s, 0.030, 0.09);
       ctx.save();
       if (this.clipToSkyline(ctx, plate, s.w, y, height, off, frac)) {
         this.tile(ctx, plate, s.w, y, height, off, s.dusk, frac);

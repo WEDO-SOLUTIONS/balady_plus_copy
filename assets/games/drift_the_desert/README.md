@@ -231,6 +231,31 @@ Three things make the result cheap to ship and to draw:
   `dusk` value that drives the rest of the run, with either draw skipped once
   its weight rounds away.
 
+## Holding still
+
+A racing frame is mostly motion, so the things that are *not* supposed to move
+have to be watched carefully. Four of them were not:
+
+- **The horizon** was rounded to a whole pixel and followed the speed frame by
+  frame, so it stepped — and everything hung off it stepped too. It is a
+  smooth fraction now, easing towards the speed over about half a second.
+- **The plates** are deliberately not snapped to whole pixels. One creeps a
+  fraction of a pixel per frame; snapping makes it sit still for eight frames
+  and then jump one, which is the shimmer sub-pixel placement exists to avoid.
+- **The GL canvas** was sized from the current horizon, so it was reallocated
+  every time the horizon crossed a pixel. It is sized from the highest the
+  horizon ever goes, and the horizon is passed in as a uniform.
+- **The speed streaks** switched on at full weight exactly on the horizon line
+  and switched off at the bottom of the frame — nine of them, twice a second.
+  They start below the skyline now and fade in and out along the way.
+
+Anything arriving from the distance fades in over a long ramp, and reaches the
+haze colour entirely before the far end of the band, so it comes out of the
+haze rather than appearing in front of it. The ground's own far field is
+biased several mip levels coarser, because a few rows below the skyline one
+screen pixel covers thousands of texels and whichever of them the filter lands
+on changes fast enough to crawl.
+
 ## The ground
 
 The floor is the one surface the player stares at for a whole run, and a
@@ -336,7 +361,14 @@ immediately even when it cannot name it.
 
 So `js/ground.js` publishes the metrics (the depth at the bottom of the frame,
 the texels-per-pixel at that depth, the distance travelled) and the scene
-places everything through one `place(depth, lateral)`. Props hold a fixed spot
+places everything through one `place(depth, lateral)`. The stretch of desert
+that is tracked is a **fixed length of world** — about a hundred metres — and
+not, as it first was, a multiple of the depth at the bottom of the frame. That
+depth is a camera measurement: it moves with the horizon, the horizon moves
+with speed, and so every rock and cliff in the desert was quietly re-laid-out
+whenever the car sped up. Freezing the world and nudging the horizon ten
+pixels used to shift things by 3.6% of their distance; it now shifts them by
+nothing at all. Props hold a fixed spot
 in the desert and wrap round the band as it passes them. Coins keep the rules'
 own 0…1 progress, but it is mapped onto a depth band picked so its rate equals
 the ground's exactly, and `js/game.js` scales it by speed so the two stay

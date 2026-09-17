@@ -160,7 +160,7 @@
         // offset from the lean now and only a trickle from the distance
         // covered, which is what stopped the whole background sliding along
         // on a clock of its own.
-        lean: this.lastLean || 0,
+        lean: this.leanEase || 0,
         dusk: clamp(dusk || 0, 0, 1)
       };
     },
@@ -182,7 +182,6 @@
         w: this.w, h: this.h, horizon: this.horizon, scroll: this.scroll
       });
       // The furthest we place anything. Past this the haze has it anyway.
-      this.world.far = this.world.TD / 0.045;
       return this.world;
     },
 
@@ -486,6 +485,7 @@
         h: this.h,
         dpr: this.dpr,
         horizon: this.horizon,
+        top: this.baseHorizon - this.h * 0.024 - 2,
         scroll: this.scroll,
         dScroll: this.dScroll || 0,
         speed: (this.lastSpeed || 0) * WORLD_SCALE,
@@ -875,16 +875,18 @@
         the car comes back at the far end as a different rock. */
     propAt: function (i, lean) {
       var W = this.world;
-      var band = W.far - W.TD;
       var seed = i * 2.713;
 
-      var cycles = (hash(seed) * band - W.travel) / band;
-      var depth = W.TD + (cycles - Math.floor(cycles)) * band;
+      // A fixed length of desert, not a camera measurement: the band used to
+      // be derived from the depth at the bottom of the frame, so it breathed
+      // with the horizon and every prop jumped when the car changed speed.
+      var cycles = (hash(seed) * W.band - W.travel) / W.band;
+      var depth = W.near + (cycles - Math.floor(cycles)) * W.band;
       var pass = Math.floor(cycles);          // which time round, for variety
       var r = hash(seed + 6.1 + pass * 0.37);
 
       var p = this.place(depth, 0, lean);
-      if (p.t > 1.25) return null;
+      if (p.t > 1.6 || p.t < 0.036) return null;
 
       // Beyond the shoulder, and further out the closer it is, so they leave
       // at the sides of the frame instead of marching over the car.
@@ -908,35 +910,38 @@
           : Math.floor(hash(seed + 12.9 + pass) * 5) % 5,
         size: (0.55 + hash(seed + 9.7) * 0.85) * p.t * this.h * 0.26,
         // How far into the haze it still is, by apparent size rather than by
-        // depth. The plates fade the same way, so a far rock settles into
-        // them instead of reading as a sticker.
-        fog: clamp(1 - p.t / 0.30, 0, 1) * 0.85
+        // depth. It reaches the haze colour entirely before the band's far
+        // end, so a prop arrives out of the haze rather than appearing in
+        // front of it.
+        fog: clamp(1 - p.t / 0.30, 0, 1) * 0.98
       };
     },
 
     /* The outcrops the track runs between. Same world clock, same wrapping
        band, but they stand well off the road and are some twenty times the
        size, which is what gives the horizon a shape to read. */
-    CLIFFS: 6,
+    CLIFFS: 7,
 
     cliffAt: function (i, lean) {
       var W = this.world;
-      var band = W.far - W.TD;
       var seed = 101.7 + i * 5.317;
 
-      var cycles = (hash(seed) * band - W.travel) / band;
-      var depth = W.TD + (cycles - Math.floor(cycles)) * band;
+      var cycles = (hash(seed) * W.band - W.travel) / W.band;
+      var depth = W.near + (cycles - Math.floor(cycles)) * W.band;
       var pass = Math.floor(cycles);
 
       var p = this.place(depth, 0, lean);
-      if (p.t > 1.4) return null;
+      // Held on far longer than a prop: one of these is half the frame tall
+      // as it goes by, and cutting it at the moment its base leaves the
+      // bottom edge is the most obvious disappearance in the game.
+      if (p.t > 2.6 || p.t < 0.036) return null;
 
       var side = i % 2 ? 1 : -1;
-      // Well off the road — sixteen to eighty metres — so they sweep past the
-      // sides of the frame instead of crowding the vanishing point.
-      var out = 14 + hash(seed + 3.3 + pass) * 20;
+      // Well off the road — twenty-three to fifty-three metres — so they sweep
+      // past the sides of the frame rather than over it.
+      var out = 19 + hash(seed + 3.3 + pass) * 11;
       var x = p.x + side * W.halfTexels * out * p.a;
-      if (x < -this.w * 1.6 || x > this.w * 2.6) return null;
+      if (x < -this.w * 2.4 || x > this.w * 3.4) return null;
 
       return {
         cliff: true,
@@ -946,7 +951,7 @@
         // fractions of the frame: they were three and a half before, which is
         // a boulder, and a row of boulders on the horizon reads as a fence.
         size: (2.6 + hash(seed + 9.7 + pass) * 3.2) * (W.size || 2048) * p.a,
-        fog: clamp(1 - p.t / 0.22, 0, 1) * 0.80
+        fog: clamp(1 - p.t / 0.20, 0, 1) * 0.98
       };
     },
 
@@ -976,7 +981,10 @@
           return mixHex(mixHex(dayHex, nightHex, night), haze, this.fog);
         };
         ctx.save();
-        ctx.globalAlpha = clamp(o.s / 0.055, 0, 1);
+        // A long fade at the far end. Anything that switches on at four fifths
+        // of its weight, as this used to, pops — and the bigger it is the
+        // more it pops.
+        ctx.globalAlpha = clamp((o.s - 0.038) / 0.032, 0, 1);
         if (!this.drawSprite(o, night, haze) && !o.cliff) {
           if (o.kind === 0) this.drawBoulder(o, night);
           else if (o.kind === 1) this.drawScrub(o, night);
@@ -1521,8 +1529,23 @@
       var speedNorm = clamp(((state.speed || 0) - 240) / 460, 0, 1);
       this.speedNorm = speedNorm;
 
+      // Smoothed, because it drives the horizon and the horizon drives most
+      // of the frame. Followed frame by frame it twitched with every tap.
+      var follow = Math.min(1, dt * 1.5);
+      this.speedEase = this.speedEase == null
+        ? speedNorm : this.speedEase + (speedNorm - this.speedEase) * follow;
+      // A slow follow, on purpose. The car leans back and forth about once a
+      // second while the player balances it, and a ridge a kilometre off has
+      // no business answering that — it answers where the car has drifted to,
+      // which is a much slower thing. At a quarter-second follow the whole
+      // background twitched in time with the tapping.
+      this.leanEase = this.leanEase == null
+        ? 0 : this.leanEase + ((state.tilt || 0) - this.leanEase) * Math.min(1, dt * 0.8);
+
       // The camera sits lower as the car picks up speed, so the horizon rises.
-      this.horizon = Math.round(this.baseHorizon - speedNorm * this.h * 0.022);
+      // Not rounded: a whole-pixel horizon steps, and everything keyed to it —
+      // the plates, the ground's own geometry — steps with it.
+      this.horizon = this.baseHorizon - this.speedEase * this.h * 0.022;
       this.syncWorld();
 
       this.stepParticles(dt);
@@ -1611,7 +1634,6 @@
 
       ctx.save();
       ctx.globalCompositeOperation = 'lighter';
-      ctx.globalAlpha = intensity * 0.10;
       var warm = dusk > 0.5 ? 'rgba(255, 170, 120, 1)' : 'rgba(255, 224, 176, 1)';
       for (var i = 0; i < 16; i++) {
         var seed = (this.time * (1.6 + (i % 5) * 0.5) + i * 0.13) % 1;
@@ -1619,6 +1641,9 @@
         var p = this.project(Math.min(d, 1));
         var len = 30 + seed * 150 * intensity;
         var x = this.w * (hash(i * 3.7) * 1.4 - 0.2);
+        // Faded in and out too, for the same reason.
+        ctx.globalAlpha = intensity * 0.10 *
+          clamp(seed / 0.16, 0, 1) * clamp((1 - seed) / 0.2, 0, 1);
         ctx.strokeStyle = warm;
         ctx.lineWidth = 1 + seed * 2.5;
         ctx.beginPath();
@@ -1676,15 +1701,20 @@
       var intensity = clamp((speed - 240) / 420, 0, 1);
       if (intensity <= 0.01) return;
       ctx.save();
-      ctx.globalAlpha = intensity * 0.28;
       ctx.strokeStyle = '#FFF3DC';
       ctx.lineWidth = 2;
       for (var i = 0; i < 9; i++) {
         var seed = (this.time * 2.2 + i * 0.37) % 1;
-        var y = this.horizon + (this.h - this.horizon) * seed;
+        // Started below the skyline and faded in and out along the way. Each
+        // of these used to switch on at full weight exactly on the horizon
+        // and switch off at the bottom — nine of them, twice a second, which
+        // is what made the horizon flicker.
+        var y = this.horizon + (this.h - this.horizon) * (0.08 + 0.92 * seed);
         var len = 26 + seed * 90;
         var side = i % 2 === 0 ? -1 : 1;
         var x = this.w * 0.5 + side * (this.w * 0.34 + seed * this.w * 0.2);
+        ctx.globalAlpha = intensity * 0.28 *
+          clamp(seed / 0.18, 0, 1) * clamp((1 - seed) / 0.22, 0, 1);
         ctx.beginPath();
         ctx.moveTo(x, y);
         ctx.lineTo(x + side * len * 0.35, y + len * 0.5);
