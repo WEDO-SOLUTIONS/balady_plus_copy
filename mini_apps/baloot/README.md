@@ -179,7 +179,8 @@ folds it into the single-file build as a data URI. Nothing else changes.
 ## Look
 
 The table follows a supplied mock-up: an ornate gold plaque header with the deal
-counter and `Us / Them` in green and gold, a round wooden-rimmed table with the
+counter — kept to a compact banner, half the mock-up's width, so the room below
+it gets the height — and `Us / Them` in green and gold, a round wooden-rimmed table with the
 trick laid on the cloth, a `WINNING` marker over whichever card currently leads,
 a green "your turn" bubble naming a card worth playing, an arced hand fan, and a
 gold-ornamented action rail (play the suggested card / toggle hints / invite).

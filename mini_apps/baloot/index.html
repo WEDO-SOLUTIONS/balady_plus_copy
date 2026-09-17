@@ -104,7 +104,7 @@ button{font:inherit;color:inherit;border:0;background:none;cursor:pointer}
 }
 .crest-plaque{
   position:relative;
-  width:min(76%, 330px, calc(52 * var(--vh)));aspect-ratio:424/138;
+  width:min(50%, 208px, calc(32 * var(--vh)));aspect-ratio:424/138;
   background:center/100% 100% no-repeat url("crest.webp");
   display:grid;place-items:center;
   filter:drop-shadow(0 6px 14px rgba(0,0,0,.6));
@@ -112,7 +112,7 @@ button{font:inherit;color:inherit;border:0;background:none;cursor:pointer}
 .crest-title{
   position:absolute;top:62%;left:50%;transform:translate(-50%,-50%);
   width:80%;text-align:center;
-  font-size:min(18px, calc(4 * var(--vw)));font-weight:900;letter-spacing:.02em;
+  font-size:min(13px, calc(2.9 * var(--vw)));font-weight:900;letter-spacing:.02em;
   background:linear-gradient(180deg,var(--gold-hi) 0%,var(--gold) 46%,#c79a40 100%);
   -webkit-background-clip:text;background-clip:text;color:transparent;
   text-shadow:0 2px 4px rgba(0,0,0,.4);
@@ -122,7 +122,7 @@ html[dir="ltr"] .crest-title{text-transform:uppercase}
 /* the deal number rides the shield in the scrollwork */
 .crest-badge{
   position:absolute;top:19%;left:50%;transform:translate(-50%,-50%);
-  z-index:9;font-size:11px;font-weight:900;line-height:1;
+  z-index:9;font-size:min(8px, calc(1.9 * var(--vw)));font-weight:900;line-height:1;
   color:#0a3f22;text-shadow:0 1px 0 rgba(255,255,255,.45);
 }
 
@@ -130,7 +130,7 @@ html[dir="ltr"] .crest-title{text-transform:uppercase}
 #status{
   position:relative;z-index:7;
   display:flex;align-items:flex-start;gap:8px;
-  padding:clamp(3px, calc(1.1 * var(--vh)), 9px) 12px clamp(2px, calc(.5 * var(--vh)), 4px);
+  padding:clamp(2px, calc(.6 * var(--vh)), 5px) 12px clamp(2px, calc(.4 * var(--vh)), 4px);
 }
 .st-side{
   flex:1 1 0;min-width:0;
@@ -141,7 +141,7 @@ html[dir="ltr"] .crest-title{text-transform:uppercase}
 }
 html[dir="ltr"] .st-side{text-transform:uppercase}
 .st-side.end{display:flex;justify-content:flex-end;padding-top:0}
-.st-mid{flex:0 0 auto;text-align:center;line-height:1.25}
+.st-mid{flex:0 0 auto;text-align:center;line-height:1.18}
 .st-deal{
   font-size:min(15px, calc(3.7 * var(--vw)));font-weight:800;letter-spacing:.05em;
   color:var(--cream);text-shadow:0 2px 6px rgba(0,0,0,.8);
