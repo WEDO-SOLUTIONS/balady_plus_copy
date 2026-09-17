@@ -19,21 +19,29 @@
 
 <canvas id="stage" width="720" height="1280"></canvas>
 
-<!-- Look around: two adjacent buttons that swing the view. On a handset this
-     is the gyroscope; the buttons are how it is driven, and demonstrated, on a
-     desktop. Keys 1 and 2 do the same. Shown only during a run, so it cannot
-     sit under the menu panels. -->
+<!-- Look around: two adjacent buttons that swing the view, and under them a
+     slider that parks it. On a handset the swing is the gyroscope; the buttons
+     are how it is driven, and demonstrated, on a desktop. Keys 1 and 2 do the
+     same. The slider is the held-still case: drag it and the view stays at
+     that angle, which is what you want when showing the stage to someone
+     rather than playing. Shown only during a run, so it cannot sit under the
+     menu panels. -->
 <div class="tilt-pad" id="tilt-pad" hidden>
-  <button class="tilt-btn" id="btn-tilt-l" type="button" data-i18n-aria="tiltLeft">
-    <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-      <path d="M15 5l-7 7 7 7"/>
-    </svg>
-  </button>
-  <button class="tilt-btn" id="btn-tilt-r" type="button" data-i18n-aria="tiltRight">
-    <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-      <path d="M9 5l7 7-7 7"/>
-    </svg>
-  </button>
+  <div class="tilt-row">
+    <button class="tilt-btn" id="btn-tilt-l" type="button" data-i18n-aria="tiltLeft">
+      <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+        <path d="M15 5l-7 7 7 7"/>
+      </svg>
+    </button>
+    <button class="tilt-btn" id="btn-tilt-r" type="button" data-i18n-aria="tiltRight">
+      <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+        <path d="M9 5l7 7-7 7"/>
+      </svg>
+    </button>
+  </div>
+  <input class="tilt-lock" id="tilt-lock" type="range"
+         min="-100" max="100" step="1" value="0"
+         data-i18n-aria="tiltLock">
 </div>
 
 <!-- Sound toggle: one control that stays put across the menu and the run, so

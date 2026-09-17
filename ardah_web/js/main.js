@@ -19,6 +19,14 @@
       // pad sits bottom-left, which the menu's own panel occupies.
       var pad = $('tilt-pad');
       if (pad) pad.hidden = id !== null;
+      // A parked camera must not outlive the pad. The stage keeps burning
+      // behind the menus, and a view left locked off centre with the only
+      // control to un-lock it hidden is a skewed stage the player cannot fix
+      // (keys 1 and 2 still work, but a touch device has no keys).
+      if (pad && pad.hidden && A.game && A.game.setTiltLock) {
+        A.game.setTiltLock(0);
+        if (A.game.onTiltLockReset) A.game.onTiltLockReset();
+      }
     },
 
     toast: function (msg) {
@@ -225,6 +233,34 @@
       el.addEventListener('pointerleave', drop);
       el.addEventListener('contextmenu', function (ev) { ev.preventDefault(); });
     });
+
+    /* The lock slider. 'input' rather than 'change' so the view follows the
+       bead while it is being dragged -- aiming a camera you cannot see move is
+       guesswork -- and the game is told in the same -1..1 units as the
+       buttons, so nothing downstream knows which control moved.
+
+       It gives up focus on release because ArrowLeft and ArrowRight are lane
+       keys: a slider left holding focus after a drag would swallow half the
+       keyboard controls for the rest of the run. Arrow keys still nudge it
+       while it is focused on purpose (see input.js), which is how a keyboard
+       sets an angle; Tab and then the arrows is the accessible path. */
+    var lock = $('tilt-lock');
+    if (lock) {
+      var send = function () {
+        var v = Number(lock.value) / 100;
+        A.game.setTiltLock(v);
+        if (v) lock.setAttribute('data-locked', '1');
+        else lock.removeAttribute('data-locked');
+      };
+      lock.addEventListener('input', send);
+      lock.addEventListener('pointerdown', askGyro);
+      lock.addEventListener('pointerup', function () { lock.blur(); });
+      lock.addEventListener('pointercancel', function () { lock.blur(); });
+      A.game.onTiltLockReset = function () {
+        lock.value = '0';
+        lock.removeAttribute('data-locked');
+      };
+    }
 
     if (window.DeviceOrientationEvent &&
         typeof window.DeviceOrientationEvent.requestPermission !== 'function') {

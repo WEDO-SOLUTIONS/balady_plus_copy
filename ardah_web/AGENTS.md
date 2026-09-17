@@ -29,7 +29,14 @@ decision it exists to settle: [`docs/ardah-concept.md`](../docs/ardah-concept.md
   give any layer its own rate: the projection already tells you how far each
   depth goes. The same move is a screen-space shear (`tiltShear`), because
   `(1 - 1/z)` is linear in y — use it for bitmaps and trapezoids, and keep
-  anything positioned through `xAt()` outside it or it swings twice.
+  anything positioned through `xAt()` outside it or it swings twice. Every
+  source of a tilt (buttons, keys 1/2, the lock slider, the gyroscope) goes
+  through `Game._applyTilt` and its precedence; do not call `renderer.setTilt`
+  from a control directly.
+- **The HUD overlay does not mirror, because the canvas does not.** The score
+  plate is drawn at `w - HUD_RIGHT` and the crowd meter at 16 in both locales,
+  so DOM controls that sit against them use `left` / `right`, not the logical
+  insets. `inset-inline-*` here flips them into each other in Arabic.
 - **Frame cost here is overdraw, not code.** The renderer's whole script cost
   is about 0.2 ms/frame, so profiling JS will not find a dropped frame. Count
   full-screen passes instead, and A/B by stubbing one out at a time

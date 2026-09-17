@@ -35,7 +35,9 @@ window.Ardah = window.Ardah || {};
     this.conductor = new A.Conductor(A.audio);
     this.judge = null;
     this.tiltManual = 0;
+    this.tiltLock = 0;
     this.tiltGyro = 0;
+    this.onTiltLockReset = null;
     this.renderer = null;
     this.input = null;
     this.lastFrame = 0;
@@ -137,14 +139,32 @@ window.Ardah = window.Ardah || {};
     });
   };
 
-  /* The view swing has two sources and they must not fight.
+  /* The view swing has three sources and they must not fight.
 
      A held button or key is a deliberate look, so it wins outright while it is
-     held; the gyroscope is the resting state underneath it. Without the
-     precedence a player on a handset could hold the button and watch the view
-     drift back under their thumb. */
+     held; the lock slider is the standing angle below it; the gyroscope is the
+     resting state under that. Without the precedence a player on a handset
+     could hold the button and watch the view drift back under their thumb.
+
+     Zero means "not driving" for the top two, which is what lets a released
+     button fall through to the lock and a centred lock fall through to the
+     wrist. */
   Game.prototype.setTiltManual = function (v) {
     this.tiltManual = v;
+    // Pressing left or right clears the lock rather than suspending it: the
+    // player has just said where they want to look, and restoring a parked
+    // angle on release would swing the stage back to a decision they made
+    // some time ago. The DOM bead follows through the callback -- the game
+    // owns the value, main.js owns the control.
+    if (v !== 0 && this.tiltLock !== 0) {
+      this.tiltLock = 0;
+      if (this.onTiltLockReset) this.onTiltLockReset();
+    }
+    this._applyTilt();
+  };
+
+  Game.prototype.setTiltLock = function (v) {
+    this.tiltLock = v < -1 ? -1 : v > 1 ? 1 : v;
     this._applyTilt();
   };
 
@@ -155,7 +175,7 @@ window.Ardah = window.Ardah || {};
 
   Game.prototype._applyTilt = function () {
     var m = this.tiltManual || 0;
-    this.renderer.setTilt(m !== 0 ? m : (this.tiltGyro || 0));
+    this.renderer.setTilt(m !== 0 ? m : (this.tiltLock || this.tiltGyro || 0));
   };
 
   Game.prototype._press = function (lane, corr) {

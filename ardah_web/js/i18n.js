@@ -23,7 +23,12 @@ window.Ardah = window.Ardah || {};
       howto: 'How to play',
       debugToggle: 'Latency lab',
       back: 'Back',
-      keyboardHint: 'Keys: A S D · Space flourish · Esc pause · M mute',
+      keyboardHint: 'Keys: A S D · Space flourish · 1 2 look · Esc pause · M mute',
+
+      // Icon-only look-around controls: their only name is the aria-label.
+      tiltLeft: 'Look left',
+      tiltRight: 'Look right',
+      tiltLock: 'Hold the view at an angle',
 
       howtoTitle: 'How to play',
       tapName: 'Strike',
@@ -83,7 +88,11 @@ window.Ardah = window.Ardah || {};
       howto: 'طريقة اللعب',
       debugToggle: 'مختبر التأخير',
       back: 'رجوع',
-      keyboardHint: 'المفاتيح: A S D · مسافة للوقفة · Esc إيقاف · M كتم',
+      keyboardHint: 'المفاتيح: A S D · مسافة للوقفة · 1 2 للنظر حولك · Esc إيقاف · M كتم',
+
+      tiltLeft: 'انظر يسارًا',
+      tiltRight: 'انظر يمينًا',
+      tiltLock: 'تثبيت المشهد على زاوية',
 
       howtoTitle: 'طريقة اللعب',
       tapName: 'ضربة',

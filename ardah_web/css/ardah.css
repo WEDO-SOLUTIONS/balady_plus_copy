@@ -343,7 +343,11 @@ html, body {
 .icon-btn {
   position: fixed;
   top: calc(12px + var(--ardah-safe-top));
-  inset-inline-end: 12px;
+  /* right, not inset-inline-end. The canvas HUD reserves the right-hand 58px
+     for this button (HUD_RIGHT in render.js) in both locales, because the
+     stage does not mirror. Mirrored, it crossed to the left in Arabic and sat
+     on the crowd meter, the CROWD label and the look-around pad. */
+  right: 12px;
   z-index: 30;
   width: 40px;
   height: 40px;
@@ -368,11 +372,21 @@ html, body {
 .tilt-pad {
   position: fixed;
   top: calc(58px + var(--ardah-safe-top));
-  inset-inline-start: 12px;
+  /* left, not inset-inline-start: the canvas HUD does not mirror (the score
+     plate is always at w - 58, the crowd meter always at 16), and this pad is
+     anchored under the meter. Mirrored in Arabic it would land on the score.
+     direction: ltr for the same reason one level down -- the left button must
+     be on the left, and a range input in an RTL context puts its minimum on
+     the right, which would invert the drag against the stage. */
+  left: 12px;
+  direction: ltr;
   z-index: 30;
   display: flex;
-  gap: 6px;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 7px;
 }
+.tilt-row { display: flex; gap: 6px; }
 .tilt-btn {
   width: 38px;
   height: 38px;
@@ -393,6 +407,81 @@ html, body {
                 stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
 .tilt-btn[data-held="1"] { transform: scale(0.92); opacity: 0.75; }
 .tilt-pad[data-gyro="1"] { opacity: 0.45; }
+
+/* The camera lock. Long, because its whole job is to be aimable with a mouse,
+   and a short throw would quantise the angle to a few pixels of travel.
+
+   Deliberately plateless: the buttons above it can afford a lid and a border
+   because they are targets, but a 200px panel at this height would read as a
+   second HUD over the backdrop. So the control is a hairline and a bead at
+   half opacity, with a tick at the centre so the rest position is visible
+   without a label. The row it occupies -- under CROWD, well above the
+   vanishing point at 0.48h - 62 -- is empty on every layout, so length here
+   costs nothing.
+
+   The 26px height is the touch target; the 3px line is what you see. */
+.tilt-lock {
+  -webkit-appearance: none;
+  appearance: none;
+  width: min(206px, 46vw);
+  height: 26px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background-color: transparent;
+  background-image:
+    linear-gradient(to right,
+      rgba(246, 231, 196, 0.10),
+      rgba(246, 231, 196, 0.26),
+      rgba(246, 231, 196, 0.10)),
+    linear-gradient(rgba(231, 180, 76, 0.55), rgba(231, 180, 76, 0.55));
+  background-size: 100% 3px, 1px 9px;
+  background-position: center center, center center;
+  background-repeat: no-repeat;
+  border-radius: 3px;
+  cursor: ew-resize;
+  opacity: 0.5;
+  transition: opacity 0.14s ease;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: none;
+}
+.tilt-lock:hover,
+.tilt-lock:active,
+.tilt-lock:focus-visible { opacity: 0.88; }
+/* Parked off centre: the view is being held somewhere the player chose, and a
+   swung stage with no visible cause reads as a bug. Half a step brighter is
+   enough to say "this is doing something" without becoming a badge. */
+.tilt-lock[data-locked="1"] { opacity: 0.74; }
+.tilt-lock:focus { outline: none; }
+.tilt-lock:focus-visible { outline: 1px solid rgba(231, 180, 76, 0.5); outline-offset: 3px; }
+
+.tilt-lock::-webkit-slider-runnable-track { height: 26px; background: transparent; border: 0; }
+.tilt-lock::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 15px;
+  height: 15px;
+  margin-top: 5.5px;             /* centres the bead on a 26px track */
+  border-radius: 50%;
+  border: 1px solid rgba(231, 180, 76, 0.55);
+  background: radial-gradient(circle at 34% 30%,
+              rgba(255, 240, 205, 0.95), rgba(214, 178, 112, 0.72) 62%,
+              rgba(120, 92, 44, 0.72));
+  box-shadow: 0 1px 3px rgba(6, 4, 10, 0.55);
+  cursor: ew-resize;
+}
+.tilt-lock::-moz-range-track { height: 26px; background: transparent; border: 0; }
+.tilt-lock::-moz-range-thumb {
+  width: 15px;
+  height: 15px;
+  border-radius: 50%;
+  border: 1px solid rgba(231, 180, 76, 0.55);
+  background: radial-gradient(circle at 34% 30%,
+              rgba(255, 240, 205, 0.95), rgba(214, 178, 112, 0.72) 62%,
+              rgba(120, 92, 44, 0.72));
+  box-shadow: 0 1px 3px rgba(6, 4, 10, 0.55);
+  cursor: ew-resize;
+}
 
 .icon-btn svg { width: 22px; height: 22px; }
 .icon-btn .ico-body { fill: #F6E7C4; }

@@ -45,6 +45,8 @@ mini-app engine serves a folder.
 | | lanes are **TABL** (deep drum), **SWORDS** (blades) and **TAR** (frame drum) | |
 | Raise (hold) | press and hold, release on the last beat | hold the lane key |
 | Flourish | swipe across the lanes | `Space` |
+| Look around | hold the arrows under the crowd meter, or tilt the handset | hold `1` / `2` |
+| Park the view | drag the slider under those arrows | Tab to it, then `←` `→` |
 | Pause | — | `Esc` |
 | Mute music | the speaker button, top right | `M` |
 
@@ -346,9 +348,9 @@ run that ends with a finger down does not leave a pad depressed into the next.
 
 ### Looking around: parallax
 
-Two adjacent buttons top-left, or keys **1** and **2**, swing the view. On a
-handset the same axis comes from the gyroscope; the buttons are how it is
-driven and demonstrated on a desktop.
+Two adjacent buttons top-left, or keys **1** and **2**, swing the view, and a
+long slider under them parks it. On a handset the same axis comes from the
+gyroscope; the buttons are how it is driven and demonstrated on a desktop.
 
 **It is one camera move, not layers sliding at invented rates.** The runway is
 a real projection — `x = centre + laneOffset/z` — so the camera orbits about
@@ -376,10 +378,58 @@ Two things fall out of the maths and are worth knowing:
   raised until it is `w + 2 * PARALLAX` wide, or a tilt slides its edge in and
   shows the base fill behind.
 
-Sources and precedence: a held button or key wins outright while it is held,
-with the gyroscope as the resting state underneath. Without that, a player on a
-handset could hold the button and watch the view drift back under their thumb.
-`Input.reset` releases the tilt along with everything else.
+Sources and precedence: three of them feed one number, so the order matters. A
+held button or key wins outright while it is held; the **lock slider** is the
+standing angle below that; the gyroscope is the resting state under that again.
+Zero means "not driving" for the top two, which is what lets a released button
+fall through to the lock and a centred lock fall through to the wrist. Without
+the precedence a player on a handset could hold the button and watch the view
+drift back under their thumb. `Input.reset` releases the tilt along with
+everything else.
+
+### The camera lock
+
+The buttons are a *held* look; the slider is the *parked* one — drag it and the
+view stays at that angle, which is what you want when showing the stage to
+someone rather than playing it. It drives the same `shiftAt` through the same
+setter, so everything above still holds: the judgment line and the keycaps do
+not move, whatever angle it is parked at.
+
+Four decisions in it are not obvious:
+
+- **It is long on purpose, and plateless on purpose.** Its whole job is to be
+  aimable with a mouse, and a short throw quantises the angle to a few pixels
+  of travel. But a 200px panel at this height would read as a second HUD over
+  the backdrop, so the control is a hairline, a centre tick and a bead at half
+  opacity — brighter on hover, and a half-step brighter (`data-locked`) while
+  it is parked off centre, because a swung stage with no visible cause reads as
+  a bug. The row it sits in — under `CROWD`, well above the vanishing point at
+  `0.48h - 62` — is empty on every layout, so length there costs nothing.
+- **Pressing left or right clears it** rather than suspending it. The player
+  has just said where they want to look; restoring a parked angle on release
+  would swing the stage back to a decision they made some time ago. The game
+  owns `tiltLock`, `main.js` owns the DOM bead, and `Game.onTiltLockReset` is
+  the one seam between them — the part that can drift, so `deck/verify.js`
+  drags the real input with a real mouse and asserts both halves for the button
+  *and* for key **1**.
+- **A parked camera does not outlive the pad.** The stage keeps burning behind
+  the menus, so `showScreen` clears the lock whenever it hides the pad: a view
+  left locked off centre with the only control to un-lock it hidden is a skewed
+  stage the player cannot fix — keys **1** and **2** still work, but a touch
+  device has no keys.
+- **It gives up focus on release**, because `ArrowLeft` and `ArrowRight` are
+  lane keys (`input.js`). A slider left holding focus after a drag would
+  swallow half the keyboard for the rest of the run. Arrows still nudge it
+  while it *is* focused, which is the accessible path (Tab, then arrows), and
+  `input.js` skips its lane handling for events targeted at it.
+- **The pad is positioned with `left`, not `inset-inline-start`.** The canvas
+  HUD does not mirror — the score plate is always at `w - 58`, the crowd meter
+  always at 16 — and this pad is anchored under the meter, so mirrored in
+  Arabic it landed on the score. `direction: ltr` one level down for the same
+  reason: the left button must be on the left, and a range input in an RTL
+  context puts its minimum on the right, which would invert the drag against
+  the stage. The floating sound toggle had the same latent bug and is now
+  `right: 12px`.
 
 iOS 13+ will not deliver `deviceorientation` without permission and only grants
 it from a user gesture, so the request rides on the first press of a button the

@@ -284,6 +284,93 @@ async function slowmo(page, factor) {
   });
   await slowmo(page, 1);
 
+  /* The camera lock, driven the way a player drives it: a real mouse drag on
+     the real <input type="range">, not a call to setTiltLock.
+
+     Three claims are checked, not just photographed. The tilt must follow the
+     bead; the judgment line and the keycaps must not move, because the lock
+     goes through the same single camera orbit pinned at z = 1; and pressing a
+     parallax button must put the bead back at centre -- which is the one part
+     of this that lives in two places at once (the game owns tiltLock, the DOM
+     owns the slider position) and so is the part that can drift. */
+  const lock = await page.$('#tilt-lock');
+  const box = await lock.boundingBox();
+  const midY = box.y + box.height / 2;
+
+  await page.mouse.move(box.x + box.width / 2, midY);
+  await page.mouse.down();
+  await page.mouse.move(box.x + box.width * 0.9, midY, { steps: 12 });
+  await page.mouse.up();
+  await page.waitForTimeout(500);                 // let the ease settle
+
+  const locked = await page.evaluate(() => {
+    const g = window.Ardah.game, r = g.renderer;
+    return { slider: Number(document.getElementById('tilt-lock').value),
+             lock: g.tiltLock, tilt: r.tilt,
+             judge: r.judgeY, key1: r.xAt(1, 1), key0: r.xAt(0, 1),
+             far: r.shiftAt(1e9) };
+  });
+  await page.screenshot({ path: path.join(OUT, 'live_lock.png') });
+
+  // Released: the drag is over, the finger is off, and the view has to STAY
+  // there. That is the whole point of the control.
+  await page.waitForTimeout(900);
+  const held = await page.evaluate(() => window.Ardah.game.renderer.tilt);
+
+  // A parallax button, pressed and released, has to reset the bead.
+  await page.evaluate(() => {
+    const b = document.getElementById('btn-tilt-l');
+    b.dispatchEvent(new PointerEvent('pointerdown', { bubbles: true }));
+    b.dispatchEvent(new PointerEvent('pointerup', { bubbles: true }));
+  });
+  await page.waitForTimeout(700);
+  const afterBtn = await page.evaluate(() => ({
+    slider: Number(document.getElementById('tilt-lock').value),
+    lock: window.Ardah.game.tiltLock,
+    tilt: window.Ardah.game.renderer.tilt,
+  }));
+
+  const pinned = Math.abs(locked.key1 - 220) < 0.01 && Math.abs(locked.key0 - 220 + 134) < 2;
+  console.log('lock: slider', locked.slider, 'game', locked.lock.toFixed(2),
+              'tilt', locked.tilt.toFixed(3), '| far shift', locked.far.toFixed(1),
+              '| pinned at z=1:', pinned);
+  console.log('lock holds after release:', held.toFixed(3),
+              '| reset by button: slider', afterBtn.slider, 'game', afterBtn.lock,
+              'tilt', afterBtn.tilt.toFixed(3));
+
+  /* And key 1, which reaches the same setter through input.js -- plus the
+     thing that goes wrong if the slider keeps focus: ArrowLeft is lane 0, so
+     a focused slider would eat the keyboard for the rest of the run. */
+  await page.mouse.move(box.x + box.width * 0.25, midY);
+  await page.mouse.down(); await page.mouse.up();
+  await page.waitForTimeout(120);
+  const focus = await page.evaluate(() => document.activeElement.id || document.activeElement.tagName);
+  const preKey = await page.evaluate(() => Number(document.getElementById('tilt-lock').value));
+  await page.keyboard.down('1');
+  await page.waitForTimeout(60);
+  const onKey = await page.evaluate(() => ({
+    slider: Number(document.getElementById('tilt-lock').value),
+    lock: window.Ardah.game.tiltLock,
+  }));
+  await page.keyboard.up('1');
+  console.log('after drag focus:', focus, '| reset by key 1:', preKey, '->',
+              onKey.slider, 'game', onKey.lock);
+
+  // And a parked camera must not survive the pad being hidden: pausing puts a
+  // panel over the stage and takes the slider away with it.
+  await page.mouse.move(box.x + box.width * 0.85, midY);
+  await page.mouse.down(); await page.mouse.up();
+  await page.waitForTimeout(80);
+  const beforePause = await page.evaluate(() => window.Ardah.game.tiltLock);
+  await page.evaluate(() => window.Ardah.ui.showScreen('screen-pause'));
+  await page.waitForTimeout(80);
+  const afterPause = await page.evaluate(() => ({
+    slider: Number(document.getElementById('tilt-lock').value),
+    lock: window.Ardah.game.tiltLock,
+  }));
+  console.log('lock cleared when the pad hides:', beforePause.toFixed(2), '-> slider',
+              afterPause.slider, 'game', afterPause.lock);
+
   // The fallback has to keep working: AGENTS.md makes ?art=0 a standing rule,
   // and _runway and _keycaps both grew a sprite branch in this change.
   const bare = await browser.newPage({ viewport: { width: 440, height: 956 }, deviceScaleFactor: 2 });

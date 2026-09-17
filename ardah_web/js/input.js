@@ -85,6 +85,10 @@ window.Ardah = window.Ardah || {};
         self.api.tilt(dir);
         return;
       }
+      // The camera-lock slider owns the arrow keys while it holds focus: they
+      // are how a keyboard aims it, and they are also lane keys, so a press
+      // here would be a note nobody asked for.
+      if (ev.target && ev.target.id === 'tilt-lock') return;
       if (lane < 0 || self.keys[lane]) return;   // ignore auto-repeat
       self.keys[lane] = true;
       self.api.press(lane, correction(ev));
@@ -100,6 +104,7 @@ window.Ardah = window.Ardah || {};
         self.api.tilt(self.keys['tilt-1'] ? -1 : self.keys['tilt1'] ? 1 : 0);
         return;
       }
+      if (ev.target && ev.target.id === 'tilt-lock') return;
       var lane = keyLane(ev.key);
       if (lane < 0 || !self.keys[lane]) return;
       self.keys[lane] = false;
