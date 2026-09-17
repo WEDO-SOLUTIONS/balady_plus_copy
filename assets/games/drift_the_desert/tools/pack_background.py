@@ -24,7 +24,7 @@ BG = ROOT / 'img' / 'bg'
 
 TIMES = ['gold', 'dusk']
 TERRAIN = ['far', 'near', 'dunes']
-SAMPLES = 640          # height samples per layer
+SAMPLES = 1024       # height samples per layer
 
 
 def skyline(alpha, samples):

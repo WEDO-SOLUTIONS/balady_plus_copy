@@ -21,12 +21,16 @@ const ROOT = path.resolve(__dirname, '..');
 const OUT = path.join(ROOT, 'img', 'bg');
 const PAGE = 'file://' + path.join(__dirname, 'bake_background.html');
 
-// Sized so one tile covers about two phone widths at DPR 2 without upscaling.
+// A plate is stretched to the layer's on-screen height and tiled at whatever
+// width that implies, so the source has to out-resolve the tallest case. On a
+// 412 CSS phone the sky tile lands around 1700 device px wide at DPR 2 and
+// 2500 at DPR 3; 1280 meant a visible 1.3-2x upscale, so every plate is baked
+// at 2048 and is now downsampled rather than blown up.
 const PLATES = [
-  { name: 'sky', layer: 0, w: 1280, h: 640 },
-  { name: 'far', layer: 1, w: 1280, h: 300 },
-  { name: 'near', layer: 2, w: 1280, h: 260 },
-  { name: 'dunes', layer: 3, w: 1280, h: 360 }
+  { name: 'sky', layer: 0, w: 2048, h: 1024 },
+  { name: 'far', layer: 1, w: 2048, h: 480 },
+  { name: 'near', layer: 2, w: 2048, h: 416 },
+  { name: 'dunes', layer: 3, w: 2048, h: 576 }
 ];
 
 const TIMES = [

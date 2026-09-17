@@ -230,12 +230,14 @@ vec4 bakeDunes(float u, float v, float dusk) {
     float fi = float(i);
     float seed = 11.0 + fi * 7.0;
     float radius = 1.3 + fi * 0.7;
-    float crest = wfbm(u, seed, radius, 4);
-    float top = 0.08 + fi * 0.26 + (crest - 0.5) * 0.16;
+    // Two scales of crest: the long sweep of the ridge, plus the scallops
+    // that stop it from ruling a straight line across the plate.
+    float crest = wfbm(u, seed, radius, 4) + (wfbm(u, seed + 31.0, radius * 3.4, 3) - 0.5) * 0.35;
+    float top = 0.08 + fi * 0.26 + (crest - 0.5) * 0.19;
     if (v < top) continue;
 
     float into = (v - top) / max(0.0001, 1.0 - top);   // 0 crest .. 1 base
-    float slope = wfbm(u + 0.0025, seed, radius, 4) - crest;
+    float slope = wfbm(u + 0.0025, seed, radius, 4) - wfbm(u, seed, radius, 4);
 
     vec3 lit  = mix(vec3(0.96, 0.81, 0.56), vec3(0.52, 0.32, 0.31), dusk);
     vec3 dark = mix(vec3(0.55, 0.36, 0.20), vec3(0.17, 0.11, 0.14), dusk);
@@ -244,20 +246,33 @@ vec4 bakeDunes(float u, float v, float dusk) {
     // that depended on u alone painted each column a single flat colour.
     float down = smoothstep(0.0, 0.95, into);
     float aspect = clamp(0.5 - slope * 18.0, 0.0, 1.0);   // which way it turns
-    vec3 c = mix(lit, dark, down * (0.55 + 0.45 * (1.0 - aspect)));
 
-    // Mottling in both axes, so the face never resolves into flat columns.
+    // Relief across the face. Without it the shading term varies in u only,
+    // and the lower half of every plate hung in vertical curtains.
+    float relief = wfbm(u + into * 0.09, v * ys(2.6) * 1.3 + seed * 3.0, 2.6, 4);
+    // Kept clear of 1.0 on purpose: once the shading term clipped, the dark
+    // side of every column flattened to the same value and the face hung in
+    // vertical curtains again.
+    float shade = clamp(down * (0.42 + 0.34 * (1.0 - aspect)) + (relief - 0.5) * 0.34 * down,
+                        0.0, 0.96);
+    vec3 c = mix(lit, dark, shade);
+
+    // Mottling in both axes, centred on 1.0: scaling the sand *up* clipped
+    // the blue channel first and turned the crests chartreuse.
     float mottle = wfbm(u, v * ys(2.2), 2.2, 4);
     float grain = wfbm(u, v * ys(9.0), 9.0, 3);
-    c *= 0.86 + 0.22 * mottle + 0.14 * grain;
+    c *= 0.97 + 0.16 * (mottle - 0.5) + 0.10 * (grain - 0.5);
 
     // Wind ripples follow the crest: wide across the plate, tight up it, and
     // fading out as the slope turns away.
     float ripple = wridge(u, v * 150.0 + seed, 5.0, 2);
     c *= 1.0 + (ripple - 0.5) * 0.14 * (1.0 - down * 0.6);
 
-    // Rim light right on the crest, and a shadow pooling just under it.
-    c += lit * smoothstep(0.05, 0.0, into) * 0.30;
+    // Rim light right on the crest, and a shadow pooling just under it. It
+    // is a blend, not an addition: adding blew the crest past white and the
+    // clipped result read as a pale green ledge along the horizon.
+    vec3 rim = mix(vec3(1.00, 0.95, 0.82), vec3(0.86, 0.56, 0.48), dusk);
+    c = mix(c, rim, smoothstep(0.055, 0.0, into) * 0.52);
     c *= 1.0 - smoothstep(0.02, 0.10, into) * smoothstep(0.30, 0.12, into) * 0.12;
 
     // Scattered scrub and stones, thinning into the distance.
@@ -277,10 +292,10 @@ vec4 bakeDunes(float u, float v, float dusk) {
 
 /* ------------------------------------------------------------------ main */
 
-void main() {
-  float u = gl_FragCoord.x / uRes.x;
-  float v = 1.0 - gl_FragCoord.y / uRes.y;    // 0 top .. 1 bottom
-  float dusk = uDusk;
+/* One sample of whichever layer is being baked, at plate coordinates
+   u (0..1 across) and v (0 top .. 1 bottom). Colour is returned straight,
+   not premultiplied; main() handles the weighting. */
+vec4 plate(float u, float v, float dusk) {
   vec4 outc;
 
   if (uLayer == 0) {
@@ -296,11 +311,40 @@ void main() {
   } else {
     outc = bakeDunes(u, v, dusk);
   }
+  return outc;
+}
+
+/* Rotated-grid supersampling. Everything interesting in this shader is high
+   frequency — strata banded 42 to the plate, wind ripples at 150, the
+   silhouette itself — and at one sample per pixel all of it aliased into
+   moire. Four jittered samples cost nothing offline and are the single
+   cheapest quality win available here. */
+vec3 gAcc;      // coverage-weighted colour
+float gCov;     // summed coverage
+
+void addSample(vec2 px, float dusk) {
+  vec4 c = plate(px.x / uRes.x, 1.0 - px.y / uRes.y, dusk);
+  gAcc += c.rgb * c.a;   // weighted by coverage, so a silhouette edge does
+  gCov += c.a;           // not drag the colour of empty sky into the rock
+}
+
+void main() {
+  float dusk = uDusk;
+  gAcc = vec3(0.0);
+  gCov = 0.0;
+
+  addSample(gl_FragCoord.xy + vec2(-0.375, -0.125), dusk);
+  addSample(gl_FragCoord.xy + vec2( 0.125, -0.375), dusk);
+  addSample(gl_FragCoord.xy + vec2( 0.375,  0.125), dusk);
+  addSample(gl_FragCoord.xy + vec2(-0.125,  0.375), dusk);
+
+  vec3 col = gCov > 0.0001 ? gAcc / gCov : vec3(0.0);
+  float alpha = gCov * 0.25;
 
   // A whisper of grain keeps the big gradients from banding in 8 bits.
-  outc.rgb += (hash3(vec3(gl_FragCoord.xy * 0.37, 1.0)) - 0.5) * 0.012;
+  col += (hash3(vec3(gl_FragCoord.xy * 0.37, 1.0)) - 0.5) * 0.012;
 
-  gl_FragColor = vec4(clamp(outc.rgb, 0.0, 1.0), outc.a);
+  gl_FragColor = vec4(clamp(col, 0.0, 1.0), alpha);
 }`;
 
 const canvas = document.getElementById('c');

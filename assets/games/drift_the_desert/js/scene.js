@@ -31,13 +31,25 @@
     return rgbString.replace('rgb(', 'rgba(').replace(')', ',' + alpha + ')');
   }
 
-  /** Blend two #rrggbb colours — used to walk the palette into dusk. */
+  /** `#rrggbb` or `rgb(r,g,b)` to a triple. */
+  function toRgb(c) {
+    if (c.charAt(0) === '#') {
+      var i = parseInt(c.slice(1), 16);
+      return [(i >> 16) & 255, (i >> 8) & 255, i & 255];
+    }
+    var m = c.match(/\d+/g);
+    return [+m[0], +m[1], +m[2]];
+  }
+
+  /** Blend two colours — used to walk the palette into dusk, and again to
+      push the roadside props into the horizon haze. Either argument may be
+      the `rgb(...)` this returns, so the blends chain. */
   function mixHex(a, b, t) {
-    var ai = parseInt(a.slice(1), 16), bi = parseInt(b.slice(1), 16);
-    var r = Math.round(lerp((ai >> 16) & 255, (bi >> 16) & 255, t));
-    var g = Math.round(lerp((ai >> 8) & 255, (bi >> 8) & 255, t));
-    var bl = Math.round(lerp(ai & 255, bi & 255, t));
-    return 'rgb(' + r + ',' + g + ',' + bl + ')';
+    var x = toRgb(a), y = toRgb(b);
+    return 'rgb(' +
+      Math.round(lerp(x[0], y[0], t)) + ',' +
+      Math.round(lerp(x[1], y[1], t)) + ',' +
+      Math.round(lerp(x[2], y[2], t)) + ')';
   }
 
   /* Deterministic pseudo-random so the terrain silhouette is stable between
@@ -361,6 +373,7 @@
         seam.addColorStop(1, rgba(mixHex('#C79463', '#4A322C', night), 1));
         ctx.fillStyle = seam;
         ctx.fillRect(0, end - this.h * 0.085, this.w, this.h * 0.105);
+        this.drawSandField(night);
         return;
       }
 
@@ -388,6 +401,118 @@
         ctx.closePath();
         ctx.fill();
       }
+
+      this.drawSandField(night);
+    },
+
+    /** Wind ripples and gravel over the open sand, in perspective.
+
+        Below the dune plate the ground was a plain vertical gradient: correct
+        in colour, but with nothing in it to move, so the desert looked painted
+        on glass. These bands sweep the whole width, scroll with everything
+        else and swell as they come, which gives the floor both texture and
+        speed. The track is drawn over the top of them. */
+    drawSandField: function (night) {
+      var ctx = this.ctx;
+      var w = this.w;
+      var top = this.horizon + this.h * 0.004;
+
+      ctx.save();
+      ctx.beginPath();
+      ctx.rect(0, top, w, this.h - top);
+      ctx.clip();
+
+      // Long crescent ripples, as filled bands rather than lines: a hairline
+      // stroke read as a contour on a map, and aliased into a crawling mess
+      // once it started moving. Each band is a shadow with its lit windward
+      // face stacked on top, and both fade out again in the near field, where
+      // the ground is moving too fast to hold detail.
+      var bands = 22;
+      for (var i = 0; i < bands; i++) {
+        var seed = i * 3.77;
+        var d = (hash(seed) + this.scroll * 0.00092) % 1;
+        if (d < 0.05) continue;
+        var p = this.project(d);
+        var fade = clamp((d - 0.05) / 0.22, 0, 1) * clamp((1.02 - d) / 0.25, 0, 1);
+        if (fade <= 0.02) continue;
+
+        var amp = this.h * (0.006 + hash(seed + 2.3) * 0.024) * p.s;
+        var freq = (0.9 + hash(seed + 5.1) * 2.4) / w * TAU;
+        var phase = hash(seed + 8.4) * TAU;
+        var thick = Math.max(1.2, this.h * 0.020 * p.s);
+        var SEG = 20;                     // points across, whatever the depth
+        var step = (w + 40) / SEG;
+
+        function wave(x) {
+          return Math.sin(x * freq + phase) * amp +
+                 Math.sin(x * freq * 2.7 + phase * 1.7) * amp * 0.35;
+        }
+
+        // Shadowed lee side: the band below the crest.
+        ctx.beginPath();
+        var j, x;
+        for (j = 0; j <= SEG; j++) { x = -20 + j * step; ctx.lineTo(x, p.y + wave(x)); }
+        for (j = SEG; j >= 0; j--) { x = -20 + j * step; ctx.lineTo(x, p.y + wave(x) + thick); }
+        ctx.closePath();
+        ctx.fillStyle = 'rgba(96, 58, 24, ' + (0.13 * fade * (1 - night * 0.45)).toFixed(3) + ')';
+        ctx.fill();
+
+        // Lit windward face just above it.
+        ctx.beginPath();
+        for (j = 0; j <= SEG; j++) { x = -20 + j * step; ctx.lineTo(x, p.y + wave(x) - thick * 0.75); }
+        for (j = SEG; j >= 0; j--) { x = -20 + j * step; ctx.lineTo(x, p.y + wave(x)); }
+        ctx.closePath();
+        ctx.fillStyle = 'rgba(255, 233, 190, ' + (0.11 * fade * (1 - night * 0.55)).toFixed(3) + ')';
+        ctx.fill();
+      }
+
+      // Gravel: enough to break the gradient, not enough to read as noise.
+      var stones = 44;
+      for (var k = 0; k < stones; k++) {
+        var sseed = k * 1.93 + 0.5;
+        var sd = (hash(sseed) + this.scroll * 0.00118) % 1;
+        if (sd < 0.10) continue;
+        var sp = this.project(sd);
+        var sx = hash(sseed + 4.7) * w * 1.1 - w * 0.05;
+        var r = (0.7 + hash(sseed + 9.1) * 2.6) * sp.s * 2.4;
+        if (r < 0.45) continue;
+        var fade = clamp((sd - 0.10) / 0.22, 0, 1);
+        ctx.beginPath();
+        ctx.ellipse(sx, sp.y, r, r * 0.52, 0, 0, TAU);
+        ctx.fillStyle = 'rgba(84, 54, 24, ' + (0.30 * fade * (1 - night * 0.4)).toFixed(3) + ')';
+        ctx.fill();
+        ctx.beginPath();
+        ctx.ellipse(sx - r * 0.25, sp.y - r * 0.30, r * 0.55, r * 0.26, 0, 0, TAU);
+        ctx.fillStyle = 'rgba(255, 228, 176, ' + (0.22 * fade * (1 - night * 0.6)).toFixed(3) + ')';
+        ctx.fill();
+      }
+
+      // Sheets of loose sand blowing across the floor. They travel with the
+      // wind rather than with the car, which is the one thing on screen that
+      // is not simply rushing at the camera, and it makes the desert feel
+      // like weather instead of scenery.
+      var wisps = 5;
+      for (var m = 0; m < wisps; m++) {
+        var wseed = m * 5.31 + 2.1;
+        var wd = (hash(wseed) + this.scroll * 0.00060) % 1;
+        if (wd < 0.12 || wd > 0.92) continue;
+        var wp = this.project(wd);
+        var wx = ((hash(wseed + 3.9) + this.time * (0.045 + hash(wseed + 6.2) * 0.05)) % 1.4 - 0.2) * w;
+        var rx = w * (0.22 + hash(wseed + 8.7) * 0.30);
+        var ry = this.h * 0.020 * wp.s + 2;
+        var wa = 0.11 * (1 - night * 0.5) * clamp((wd - 0.12) / 0.2, 0, 1) * clamp((0.92 - wd) / 0.2, 0, 1);
+
+        var wg = ctx.createRadialGradient(wx, wp.y, 0, wx, wp.y, rx);
+        wg.addColorStop(0, 'rgba(255, 240, 210, ' + wa.toFixed(3) + ')');
+        wg.addColorStop(0.55, 'rgba(255, 236, 200, ' + (wa * 0.55).toFixed(3) + ')');
+        wg.addColorStop(1, 'rgba(255, 236, 200, 0)');
+        ctx.fillStyle = wg;
+        ctx.beginPath();
+        ctx.ellipse(wx, wp.y, rx, ry, 0, 0, TAU);
+        ctx.fill();
+      }
+
+      ctx.restore();
     },
 
     /* ------------------------------------------------------------ track */
@@ -539,6 +664,191 @@
         ctx.stroke();
       }
       ctx.restore();
+    },
+
+    /* --------------------------------------------------------- roadside */
+
+    /* Boulders, scrub and dry stalks standing along both shoulders.
+
+       The backdrop plates give depth but no speed: they slide sideways under
+       parallax and never grow. These do both — they stream out of the horizon
+       and swell as they pass the camera, which is what actually sells how
+       fast the car is going. Thirty of them, placed by hash and cycled by the
+       scroll, so the desert never repeats within a run.
+
+       Drawn after the track and before the coins: they stand on the sand, in
+       front of the dunes, behind everything the player interacts with. */
+
+    PROPS: 30,
+
+    /** Deterministic description of prop `i` at the current scroll, or null
+        if it is behind the haze or off the side of the frame. */
+    propAt: function (i, lateral) {
+      var seed = i * 2.713;
+      var d = (hash(seed) + this.scroll * 0.00105) % 1;
+      if (d < 0.06) return null;
+
+      var t = this.trackAt(d, lateral);
+      var side = i % 2 ? 1 : -1;
+      // Beyond the shoulder, and further out as they near the camera so they
+      // leave the frame at the sides instead of marching over the car.
+      var out = 1.35 + hash(seed + 3.3) * 1.5 + t.s * 1.1;
+      var x = t.cx + side * t.half * out;
+      if (x < -this.w * 0.6 || x > this.w * 1.6) return null;
+
+      var r = hash(seed + 6.1);
+      return {
+        d: d, x: x, y: t.y, s: t.s, seed: seed, side: side,
+        kind: r > 0.80 ? 2 : (r > 0.44 ? 1 : 0),   // 0 boulder, 1 scrub, 2 stalks
+        size: (0.55 + hash(seed + 9.7) * 0.85) * t.s * this.h * 0.20,
+        // How far into the haze it still is, measured by apparent size rather
+        // than by d: the projection is d^2.35, so equal steps in d are nothing
+        // like equal steps in distance. The plates fade the same way, so a
+        // far rock settles into them instead of reading as a sticker.
+        fog: clamp(1 - t.s / 0.30, 0, 1) * 0.85
+      };
+    },
+
+    drawRoadside: function (lateral, dusk) {
+      var night = clamp(dusk || 0, 0, 1);
+      var list = [];
+      for (var i = 0; i < this.PROPS; i++) {
+        var p = this.propAt(i, lateral);
+        if (p && p.size > 0.7) list.push(p);
+      }
+      // Back to front, so a near boulder can overlap a far one.
+      list.sort(function (a, b) { return a.d - b.d; });
+
+      var haze = mixHex('#E7C592', '#6B4A48', night);
+      var ctx = this.ctx;
+
+      for (var k = 0; k < list.length; k++) {
+        var o = list[k];
+        o.col = function (dayHex, nightHex) {
+          return mixHex(mixHex(dayHex, nightHex, night), haze, this.fog);
+        };
+        ctx.save();
+        ctx.globalAlpha = clamp(o.s / 0.055, 0, 1);
+        if (o.kind === 0) this.drawBoulder(o, night);
+        else if (o.kind === 1) this.drawScrub(o, night);
+        else this.drawStalks(o, night);
+        ctx.restore();
+      }
+    },
+
+    /** A rock: shadow pooled on the sand, dark body, sunlit cap. */
+    drawBoulder: function (o, night) {
+      var ctx = this.ctx;
+      var w = o.size * (0.62 + hash(o.seed + 2.2) * 0.45);
+      var h = o.size * (0.42 + hash(o.seed + 4.4) * 0.40);
+      var clear = 1 - o.fog;
+
+      ctx.beginPath();
+      ctx.ellipse(o.x + w * 0.18, o.y + h * 0.06, w * 1.05, h * 0.22, 0, 0, TAU);
+      ctx.fillStyle = 'rgba(58, 34, 16, ' + ((0.34 - night * 0.14) * clear).toFixed(3) + ')';
+      ctx.fill();
+
+      // A squashed dome with hashed notches, so no two rocks are the same
+      // ellipse.
+      ctx.beginPath();
+      var n = 9;
+      for (var i = 0; i <= n; i++) {
+        var a = Math.PI + (i / n) * Math.PI;
+        var rr = 1 - hash(o.seed + i * 1.9) * 0.22;
+        var px = o.x + Math.cos(a) * w * rr;
+        var py = o.y + Math.sin(a) * h * rr;
+        if (i === 0) ctx.moveTo(px, py); else ctx.lineTo(px, py);
+      }
+      ctx.closePath();
+
+      var g = ctx.createLinearGradient(o.x - w * 0.4, o.y - h, o.x + w * 0.5, o.y);
+      g.addColorStop(0, o.col('#C79B6A', '#5B3F40'));
+      g.addColorStop(0.55, o.col('#9A6F45', '#3E2A2C'));
+      g.addColorStop(1, o.col('#6A4728', '#241A1C'));
+      ctx.fillStyle = g;
+      ctx.fill();
+
+      // Low sun catching the upper left edge.
+      ctx.beginPath();
+      ctx.ellipse(o.x - w * 0.22, o.y - h * 0.62, w * 0.42, h * 0.20, -0.35, 0, TAU);
+      ctx.fillStyle = 'rgba(255, 228, 176, ' + (0.26 * (1 - night * 0.55) * clear).toFixed(3) + ')';
+      ctx.fill();
+    },
+
+    /** A desert bush. Five big circles read as a cartoon blob once one came
+        close to the camera, so it is built from a dozen small, unevenly
+        scattered clumps in a dry khaki palette, with sprigs standing out of
+        the crown. */
+    drawScrub: function (o, night) {
+      var ctx = this.ctx;
+      var w = o.size * 0.44;
+      var h = o.size * 0.34;
+      var clear = 1 - o.fog;
+
+      ctx.beginPath();
+      ctx.ellipse(o.x + w * 0.24, o.y + h * 0.10, w * 1.05, h * 0.26, 0, 0, TAU);
+      ctx.fillStyle = 'rgba(52, 34, 14, ' + ((0.28 - night * 0.12) * clear).toFixed(3) + ')';
+      ctx.fill();
+
+      // Sprigs first, so the clumps cover where they meet the ground.
+      ctx.strokeStyle = o.col('#8A7C4A', '#2A2218');
+      ctx.lineWidth = Math.max(0.6, o.size * 0.026);
+      ctx.beginPath();
+      for (var sp = 0; sp < 9; sp++) {
+        var a = -Math.PI * 0.5 + (hash(o.seed + sp * 3.7) - 0.5) * 2.3;
+        var len = 0.75 + hash(o.seed + sp * 6.4) * 0.65;
+        ctx.moveTo(o.x + (hash(o.seed + sp * 2.2) - 0.5) * w * 0.4, o.y);
+        ctx.lineTo(o.x + Math.cos(a) * w * 1.5 * len, o.y + Math.sin(a) * h * 2.4 * len);
+      }
+      ctx.stroke();
+
+      var tones = ['#8E8551', '#736A38', '#5A5228', '#9B9061'];
+      var darks = ['#332F1E', '#282415', '#1E1B10', '#3A3522'];
+      for (var i = 0; i < 12; i++) {
+        var ang = hash(o.seed + i * 5.1) * TAU;
+        var rad = hash(o.seed + i * 7.3);
+        var hx = Math.cos(ang) * w * 1.15 * rad;
+        var hy = -h * 0.35 - Math.sin(ang) * h * 1.05 * rad - h * 0.25;
+        var r = w * (0.17 + hash(o.seed + i * 2.9) * 0.20);
+        var tone = i % 4;
+        ctx.beginPath();
+        ctx.ellipse(o.x + hx, o.y + hy, r, r * (0.66 + hash(o.seed + i * 1.3) * 0.3),
+                    hash(o.seed + i * 4.1) * TAU, 0, TAU);
+        ctx.fillStyle = o.col(tones[tone], darks[tone]);
+        ctx.fill();
+      }
+
+      // Low sun catching the crown.
+      ctx.beginPath();
+      ctx.ellipse(o.x - w * 0.30, o.y - h * 1.35, w * 0.34, h * 0.20, -0.3, 0, TAU);
+      ctx.fillStyle = 'rgba(255, 228, 160, ' + (0.20 * (1 - night * 0.6) * clear).toFixed(3) + ')';
+      ctx.fill();
+    },
+
+    /** Dry stalks: a fan of bleached stems — the cheapest thing in the desert
+        that still reads as alive at twenty pixels. */
+    drawStalks: function (o, night) {
+      var ctx = this.ctx;
+      var h = o.size * 0.85;
+      var lean = (hash(o.seed + 1.1) - 0.5) * 0.5;
+
+      ctx.beginPath();
+      ctx.ellipse(o.x + h * 0.10, o.y, h * 0.34, h * 0.08, 0, 0, TAU);
+      ctx.fillStyle = 'rgba(52, 34, 14, ' + ((0.22 - night * 0.10) * (1 - o.fog)).toFixed(3) + ')';
+      ctx.fill();
+
+      ctx.strokeStyle = o.col('#D8BE84', '#584039');
+      ctx.lineWidth = Math.max(0.6, o.size * 0.030);
+      ctx.lineCap = 'round';
+      ctx.beginPath();
+      for (var i = 0; i < 7; i++) {
+        var f = (i / 6 - 0.5);
+        var tipX = o.x + f * h * 0.55 + lean * h * 0.6;
+        var tipY = o.y - h * (0.55 + hash(o.seed + i * 4.3) * 0.55);
+        ctx.moveTo(o.x + f * h * 0.10, o.y);
+        ctx.quadraticCurveTo(o.x + f * h * 0.25, o.y - h * 0.45, tipX, tipY);
+      }
+      ctx.stroke();
     },
 
     /* -------------------------------------------------------------- car */
@@ -931,6 +1241,7 @@
       this.drawMesas(dusk);
       this.drawGround(dusk);
       this.drawTrack(state.tilt || 0, dusk);
+      this.drawRoadside(state.tilt || 0, dusk);
 
       // Coins approaching from the horizon.
       var coins = state.coins || [];

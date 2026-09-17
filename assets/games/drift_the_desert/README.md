@@ -215,11 +215,32 @@ Three things make the result cheap to ship and to draw:
 - **No alpha.** A terrain plate is opaque below a per-column skyline, so the
   colour goes out as a JPEG and the silhouette as a height curve of a few
   hundred bytes that `js/backdrop.js` replays as a clip path. That took a
-  1280×300 layer from ~400 KB as RGBA PNG to ~25 KB. All eight plates plus the
-  curves come to ~220 KB.
+  2048×480 layer from ~900 KB as RGBA PNG to ~30 KB. All eight plates plus the
+  curves come to ~435 KB.
+- **Baked at 2048.** A plate is stretched to its layer's on-screen height and
+  tiled at whatever width that implies: on a 412 CSS phone the sky tile lands
+  near 1700 device px at DPR 2 and 2500 at DPR 3, so the old 1280 was visibly
+  upscaled. Every plate is now downsampled instead. Each pixel is also four
+  jittered samples rather than one — the strata, the wind ripples and the
+  silhouettes are all high-frequency enough to alias, and supersampling is
+  free when it happens at build time.
 - **Two times of day.** A golden-hour and a dusk bake, cross-faded by the same
   `dusk` value that drives the rest of the run, with either draw skipped once
   its weight rounds away.
+
+In front of the plates the desert floor is drawn live, because it has to move
+with the car rather than slide sideways under parallax:
+
+- **Wind ripples** sweeping the full width in perspective, each a shadowed lee
+  side with its lit windward face above it, fading out again in the near field
+  where the ground moves too fast to hold detail.
+- **Roadside props** — boulders, khaki scrub and dry stalks — streaming out of
+  the horizon along both shoulders, swelling as they pass. The plates give
+  depth but no speed; these are what actually sell how fast the car is going.
+  Each fades into the same horizon haze the plates do, weighted by apparent
+  size rather than by depth, since the projection is `d^2.35`.
+- **Blowing sand**, a handful of soft sheets crossing on the wind instead of
+  rushing at the camera.
 
 The run still walks through the evening: the palette slides into a red-violet
 dusk, the canvas darkens the track, dims its shoulders and the dust, and
@@ -232,7 +253,8 @@ the path that shipped before the plates existed. Blocking `img/bg/*.jpg` in
 devtools exercises it.
 
 Baking also made the game faster: under Chromium's software rasteriser the
-plates run at 43–57 fps where the live shader managed 21–39.
+plates run at 29–43 fps where the live shader managed 21–39 — and that is with
+the ripples, props and blowing sand on top, which the shader version never had.
 
 ## How the game works
 
