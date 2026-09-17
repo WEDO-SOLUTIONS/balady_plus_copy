@@ -39,6 +39,7 @@ import 'package:mapness/features/share_eta/models/eta_route_info.dart';
 import 'package:mapness/features/share_eta/providers/eta_route_info_provider.dart';
 import 'package:mapness/features/share_eta/providers/share_eta_provider.dart';
 import 'package:mapness/features/stream_audio/ui/providers/stream_audio_prov.dart';
+import 'package:mapness/pages/navigator_settings/pages/cursors_page/cursors_sheet.dart';
 import 'package:mapness/pages/path_nav/path_nav_wrapper.dart';
 import 'package:mapness/pages/routing/route_details_sheet.dart';
 import 'package:mapness/shared/constants/constants.dart';
@@ -606,6 +607,7 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
               },
             ),
             const ParkingBottomSheetPage(),
+            const CursorsSheet(),
           ],
         ),
       ),
