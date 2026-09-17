@@ -1035,8 +1035,7 @@ const CFG = {
   kabootSun: 44,        // all 8 tricks in Sun
   kabootHokum: 25,      // all 8 tricks in Hokum
   sunTotal: 26,         // converted points available in a Sun round
-  hokumTotal: 16,       // converted points available in a Hokum round
-  fourNines: 100        // value of four 9s (house rule; 400 is four Jacks)
+  hokumTotal: 16        // converted points available in a Hokum round
 };
 
 const card = (s,r) => ({s, r, id: s+r});
@@ -1140,11 +1139,10 @@ function findProjects(hand, st){
     flush();
   }
   // four of a kind
-  for (const r of ["J","A","K","Q","10","9"]){
-    const n = hand.filter(c => c.r === r).length;
-    if (n === 4){
+  // Four of a kind. Nines are not a Baloot project - that is Belote.
+  for (const r of ["J","A","K","Q","10"]){
+    if (hand.filter(c => c.r === r).length === 4){
       if (r === "J") out.push({kind:"400", value:400, len:4, top:99, suit:null, four:r});
-      else if (r === "9") out.push({kind:"100", value:CFG.fourNines, len:4, top:90, suit:null, four:r});
       else out.push({kind:"100", value:100, len:4, top:80 + ORDER_PLAIN[r], suit:null, four:r});
     }
   }
@@ -1200,6 +1198,28 @@ function convert(raw, mode){
   return q + (rem >= 6 ? 1 : 0);
 }
 
+/**
+ * Convert both sides at once. Rounding each side on its own can hand out more
+ * than the round contains: in Hokum two remainders of 6 both force up, so 86
+ * and 76 score 9 and 8 - seventeen points from a round that holds sixteen.
+ * The side with the weaker claim to its rounding gives the difference back;
+ * on equal remainders that is the side with fewer points.
+ */
+function shareRound(rawA, rawB, mode){
+  const total = convert(rawA + rawB, mode);
+  let a = convert(rawA, mode), b = convert(rawB, mode);
+  const drift = a + b - total;
+  if (drift !== 0){
+    const div = mode === "sun" ? 5 : 10;
+    const remA = rawA % div, remB = rawB % div;
+    const aIsWeaker = remA < remB || (remA === remB && rawA < rawB);
+    // over-shoot comes off the weaker side; a short-fall goes to the stronger
+    if (drift > 0){ if (aIsWeaker) a -= drift; else b -= drift; }
+    else          { if (aIsWeaker) b -= drift; else a -= drift; }
+  }
+  return [a, b];
+}
+
 function scoreRound(st){
   const mode = st.mode;
   const rawTricks = st.rawPoints.slice();          // [team0, team1] from tricks incl. last-trick bonus
@@ -1209,23 +1229,22 @@ function scoreRound(st){
   const proj = st.projects.teamPoints.slice();
 
   const kabootTeam = st.tricksWon[0] === 8 ? 0 : (st.tricksWon[1] === 8 ? 1 : -1);
-  const totalConverted = mode === "sun" ? CFG.sunTotal : CFG.hokumTotal;
 
   let final = [0,0], note = null;
+
+  const roundTotal = convert(rawTricks[0] + rawTricks[1] + proj[0] + proj[1], mode);
 
   if (kabootTeam >= 0){
     const base = mode === "sun" ? CFG.kabootSun : CFG.kabootHokum;
     final[kabootTeam] = base + convert(proj[0] + proj[1], mode);
     note = "kaboot";
   } else {
-    const c0 = convert(rawTricks[0] + proj[0], mode);
-    const c1 = convert(rawTricks[1] + proj[1], mode);
-    final = [c0, c1];
+    final = shareRound(rawTricks[0] + proj[0], rawTricks[1] + proj[1], mode);
 
     // failed bid ("خسارة"): bidding team scores less than the defenders
     const bidTeam = st.bidder % 2, defTeam = 1 - bidTeam;
     if (final[bidTeam] < final[defTeam]){
-      final[defTeam] = totalConverted + convert(proj[0] + proj[1], mode);
+      final[defTeam] = roundTotal;      // the whole round, converted once
       final[bidTeam] = 0;
       note = "losing";
     } else if (final[bidTeam] === final[defTeam]){
@@ -2863,6 +2882,24 @@ if (new URL(location.href).searchParams.get("test") === "1"){
 
   const rTie = scoreRound(mkRound("hokum", [81,81], [0,0], 0));
   ok("equal scores carry over", rTie.note === "tie" && rTie.final[0] === rTie.final[1]);
+
+  // a round must hand out exactly the points it holds
+  let split = 0, worst = null;
+  for (const [mode, total] of [["hokum", 162], ["sun", 130]]){
+    for (let a = 0; a <= total; a++){
+      const [x, y] = shareRound(a, total - a, mode);
+      if (x + y !== convert(total, mode)){ split++; worst = mode + " " + a + "/" + (total - a); }
+    }
+  }
+  ok("every point split adds up (" + (split ? worst : "293 checked") + ")", split === 0);
+  const h = shareRound(86, 76, "hokum");
+  ok("hokum 86/76 is 9+7, not 9+8", h[0] === 9 && h[1] === 7 && h[0] + h[1] === 16);
+  const hEq = shareRound(81, 81, "hokum");
+  ok("hokum 81/81 is 8+8", hEq[0] === 8 && hEq[1] === 8);
+  ok("four nines is not a project",
+     !findProjects(SUITS.map(s => card(s, "9")), stS).length);
+  ok("four aces is still a hundred",
+     findProjects(SUITS.map(s => card(s, "A")), stS).some(p => p.value === 100));
 
   // a big project can flip a round the bidders won on tricks - that is real Baloot
   const rFlip = scoreRound(mkRound("sun", [106,24], [0,400], 0));

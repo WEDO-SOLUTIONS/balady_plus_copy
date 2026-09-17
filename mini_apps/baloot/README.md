@@ -63,17 +63,31 @@ the initial language follows `navigator.language` and is remembered in `localSto
   (`J=20`, `9=14`). Last trick +10 — 130 raw in Sun, 162 in Hokum.
 - Legal moves are enforced: follow suit; in Hokum trump when void unless the
   partner is already winning; over-trump when you can.
-- Projects: Sra 20, Fifty 50, Hundred 100 (five-card run or four of a kind),
-  Four Hundred 400 (four jacks), Baloot 20 (K+Q of trump). Only the team holding
-  the single highest project scores them.
+- Projects: Sra 20, Fifty 50, Hundred 100 (five-card run, or four kings, queens,
+  jacks, tens or aces), Four Hundred 400 (four jacks), Baloot 20 (K+Q of trump).
+  Only the team holding the single highest project scores them. Four nines is
+  *not* a Baloot project — that is Belote — and is not counted.
 - Scoring: Sun ÷5 (remainder ≥3 rounds up) → 26 per round; Hokum ÷10
-  (remainder ≥6 rounds up) → 16. Projects are added to the raw points *before*
+  (remainder ≥6 rounds up) → 16. Both sides are converted together by
+  `shareRound`, because rounding each on its own can hand out more than the
+  round holds: in Hokum two remainders of 6 both force up, so 86 and 76 would
+  score 9 and 8 — seventeen points from a round worth sixteen. The side with the
+  weaker claim to its rounding gives the difference back; on equal remainders
+  that is the side with fewer points, so 86/76 is 9 and 7. Projects are added to the raw points *before*
   conversion, so a project is automatically worth twice as much in Sun — it is
   **not** multiplied again. Failed bid gives the defenders everything; kaboot is
   44 (Sun) / 25 (Hokum); a tie carries over. Game to 152.
 
 House rules that vary by region are collected in the `CFG` object near the top of
-the script (`target`, `kabootSun`, `kabootHokum`, `fourNines`).
+the script (`target`, `kabootSun`, `kabootHokum`).
+
+Known gaps against the Saudi federation ruleset, still open: there is no
+doubling (دبل) ladder; projects are detected and awarded automatically rather
+than declared before the second card, with no two-per-player limit; and the
+bots are forced to buy in the second round where a human may pass and force a
+redeal. Sources also describe Four Hundred as a Sun-only project made of four
+aces, which does not match the four-jacks-always rule implemented here — worth
+confirming against the federation text before changing.
 
 ## Look
 
