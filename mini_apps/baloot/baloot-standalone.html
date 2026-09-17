@@ -839,12 +839,12 @@ html[dir="ltr"] .rail-btn{text-transform:uppercase}
    ------------------------------------------------------------------ */
 body{background:#04100b}
 body::before{                         /* the majlis, thrown out of focus */
-  content:"";position:fixed;inset:-60px;z-index:0;
+  content:"";position:fixed;inset:-60px;z-index:-2;
   background:#050d0a center/cover no-repeat var(--room-img);
   filter:blur(30px) brightness(.28) saturate(.78);
 }
 body::after{
-  content:"";position:fixed;inset:0;z-index:0;pointer-events:none;
+  content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;
   background:radial-gradient(ellipse 62% 60% at 50% 46%, rgba(0,0,0,.15) 22%, rgba(0,0,0,.86) 100%);
 }
 #table, .scrim{
@@ -853,6 +853,7 @@ body::after{
   transform:translate(-50%,-50%);
   border-radius:min(32px, calc(7 * var(--vw)));
 }
+#table{z-index:1}                     /* over the room behind it, never under */
 #table{
   overflow:hidden;
   box-shadow:0 44px 90px rgba(0,0,0,.62),
