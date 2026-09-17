@@ -318,8 +318,8 @@ function caption(s, text, x, y, w) {
   body(s, 'The game ships as a Balady+ mini-app: an archive downloads, unpacks and is served by a local server inside the app. The same mini-app engine that runs today.',
     { y: 2.4, w: 6.4, h: 1.5 });
   const items = [
-    ['338 KB', 'all of the artwork'],
-    ['811 KB', 'the game as one file'],
+    ['448 KB', 'all of the artwork'],
+    ['835 KB', 'the game as one file'],
     ['0', 'installs for the player'],
     ['offline', 'after the first download']
   ];
@@ -381,7 +381,7 @@ function caption(s, text, x, y, w) {
     ['Cultural framing', 'Ardah is heritage. Wording, posture and banners go through review before art production starts.'],
     ['Audio licensing', 'Percussion is synthesised in the browser today. The shipping track is licensed or commissioned.'],
     ['Android latency', 'Calibration removes the constant offset. Jitter is measured on devices before the work starts.'],
-    ['Weight and network', 'Events mean poor connectivity. The ceiling is 4 MB; we are at 0.33 today.']
+    ['Weight and network', 'Events mean poor connectivity. The ceiling is 4 MB; we are at 0.62 today.']
   ];
   risks.forEach(([h, t], i) => {
     const x = 0.7 + (i % 2) * 6.2, y = 2.4 + Math.floor(i / 2) * 2.3;

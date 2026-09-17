@@ -42,6 +42,14 @@ edge" one, where the sync meter is set low so the slide can show the fail
 state, and the three from `capture3.js`; everything else is the game playing
 itself.
 
+One thing is **hidden** rather than staged: `prep()` in all three capture
+scripts sets `#tilt-pad` to `display: none`. The look-around pad is a live
+control and it works, but this deck does not talk about it, and an unexplained
+pair of arrows and a slider floating over the stage in every product shot would
+ask a question the slides do not answer. It decides what is on screen, not what
+the game is — the same kind of call as the low sync meter. If the deck ever
+covers looking around, delete those two lines and the frames come back with it.
+
 `capture3.js` has to stage its frames, and it is worth knowing why. A break
 lasts about 400 ms and taking a screenshot costs 200–300 ms, so waiting for the
 robot to happen to produce one is a lottery — the first attempts caught nothing

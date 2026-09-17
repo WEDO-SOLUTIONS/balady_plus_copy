@@ -15,9 +15,17 @@ const OUT = path.join(__dirname, 'frames');
 const URL = 'http://localhost:8123/index.html';
 const SAFE_TOP = '62px';
 
+/* The look-around pad is hidden for the deck's frames. It is a live control and
+   it works, but this deck does not talk about it, and an unexplained pair of
+   arrows floating over the stage in every product shot asks a question the
+   slides do not answer. This is the same kind of staging as the low sync meter
+   and the triggered breaks -- it decides what is on screen, not what the game
+   is -- and deck/README.md says so. */
 async function prep(p) {
   await p.evaluate((v) => {
     document.documentElement.style.setProperty('--ardah-safe-top', v);
+    var pad = document.getElementById('tilt-pad');
+    if (pad) pad.style.display = 'none';
     const g = window.Ardah && window.Ardah.game;
     if (g && g.renderer) g.renderer.resize();
   }, SAFE_TOP);
