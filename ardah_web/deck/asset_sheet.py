@@ -106,6 +106,13 @@ sheet(g('fx_chip_a0', 'fx_chip_a1', 'fx_chip_b0', 'fx_chip_b1',
       'Crystal chips in the note\'s own colour, gold shards, silver flakes. A gem throws '
       'nothing: a cut stone that breaks should flash, not leave rubble.')
 
+sheet(g('fx_flourish'),
+      'The flourish bar — the note that spans the runway', 1, (900, 190), None,
+      'assets_flourish.png',
+      'Taken with a swipe across all three lanes, so it is a bar rather than something you '
+      'could mistake for a tap. Carries the runway\'s lozenge lattice with a rosette struck '
+      'at the centre.')
+
 sheet(g('runway'),
       'The runway deck — dark glass with a gold Najdi lattice', 1, (900, 660), None,
       'assets_runway.png',

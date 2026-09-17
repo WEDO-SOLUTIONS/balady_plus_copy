@@ -214,12 +214,12 @@ function caption(s, text, x, y, w) {
   const s = slide();
   kicker(s, 'THE PEAK');
   title(s, 'The flourish —\none shared moment', { w: 5.0 });
-  body(s, 'On the chorus a banner of crossed sabres crosses every lane. Swipe across it and the whole row raises their blades at once.',
-    { y: 2.55, w: 4.5, h: 2.2 });
+  body(s, 'On the chorus a ceremonial bar crosses every lane, with a glint running its length that quickens as it closes. Swipe across it and the whole row raises their blades at once.',
+    { y: 2.75, w: 4.6, h: 2.2 });
   device(s, '09-flourish-incoming', 6.0, 0.55, 6.5);
-  device(s, '12-hold', 9.7, 0.55, 6.5);
-  caption(s, 'The banner crosses every lane', 6.0, 7.05, 3.4);
-  caption(s, 'A hold raises the sabre', 9.7, 7.05, 3.4);
+  device(s, '24-flourish-sweep', 9.7, 0.55, 6.5);
+  caption(s, 'The bar crosses every lane', 6.0, 7.05, 3.4);
+  caption(s, 'A sweep across the whole line', 9.7, 7.05, 3.4);
 }
 
 /* ================================ 7. crowd ================================ */

@@ -108,6 +108,26 @@ async function quiet(p) {
   await page.waitForTimeout(430);
   await page.screenshot({ path: path.join(OUT, '23-hold.png') });
 
+  // --- the flourish's sweep -------------------------------------------------
+  // Staged for the same reason as the breaks: the sweep lasts 560 ms, and
+  // capture.js's robot does not reliably take the flourish, so its own frame
+  // can land on a miss.
+  await quiet(page);
+  await page.evaluate(() => {
+    const r = window.Ardah.game.renderer;
+    r.__orig = r.draw;
+    r.draw = function (s, dt) { return r.__orig.call(this, s, dt / 7); };
+    r.flourishBurst();
+    r.shake = 0;
+  });
+  await page.waitForTimeout(950);
+  await page.evaluate(() => { window.Ardah.game.renderer.shake = 0; });
+  await page.screenshot({ path: path.join(OUT, '24-flourish-sweep.png') });
+  await page.evaluate(() => {
+    const r = window.Ardah.game.renderer;
+    if (r.__orig) { r.draw = r.__orig; delete r.__orig; }
+  });
+
   await browser.close();
   console.log('feedback frames captured');
 })();
