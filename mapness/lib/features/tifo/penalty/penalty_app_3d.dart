@@ -8,6 +8,7 @@ import 'package:flutter_embed_unity/flutter_embed_unity.dart';
 import 'package:mapness/features/tifo/data/tifo_debug_goalkeeper_difficulty.dart';
 import 'package:mapness/features/tifo/data/tifo_models.dart';
 import 'package:mapness/features/tifo/penalty/penalty_game.dart' show tifoKeeperColorRgb, tifoStrikerColorRgb;
+import 'package:mapness/features/tifo/penalty/penalty_hud_panel.dart';
 import 'package:mapness/features/tifo/ui/tifo_message_card.dart';
 import 'package:mapness/l10n/generated/app_localizations.dart';
 
@@ -16,7 +17,8 @@ import 'package:mapness/l10n/generated/app_localizations.dart';
 /// with the backend-shaped kick log, onConnectionLost, idle prompt, leave
 /// confirmation), so `building_sheet.dart` swaps between the two by widget
 /// name alone. Rendering and game rules live in Unity; everything the player
-/// reads — dialogs, later the HUD — stays Flutter, drawn over the Unity view.
+/// reads — dialogs and the score HUD — stays Flutter, drawn over the Unity
+/// view. The HUD is fed from the per-kick events below, so Unity draws no text.
 ///
 /// Message protocol (JSON strings over flutter_embed_unity):
 ///   Unity -> Flutter: {"event":"ready"}
@@ -132,6 +134,11 @@ class _Penalty3DPageState extends State<_Penalty3DPage> with WidgetsBindingObser
   bool _completed = false;
   bool _backgroundReported = false;
 
+  /// Live score for the Flutter HUD, mirrored from Unity's `kick`/`complete`
+  /// events (same two counters the Flame game exposes as notifiers).
+  final ValueNotifier<int> _goals = ValueNotifier<int>(0);
+  final ValueNotifier<int> _misses = ValueNotifier<int>(0);
+
   /// Unity stays resident between matches, and the `Leave` we send on dispose
   /// can be dropped when the previous view is already torn down — leaving a
   /// stale, still-armed scene that never says "ready" for the new view. So a
@@ -179,10 +186,26 @@ class _Penalty3DPageState extends State<_Penalty3DPage> with WidgetsBindingObser
           _arm();
         }
       case 'aim':
+        _onActivity();
       case 'kick':
         _onActivity();
+        _updateScore(data);
       case 'complete':
+        _updateScore(data);
         _onUnityComplete(data);
+    }
+  }
+
+  /// `kick` and `complete` both carry the running totals; take them as sent so
+  /// the HUD never disagrees with what Unity will report in the final outcome.
+  void _updateScore(Map<String, dynamic> data) {
+    final goals = (data['goals'] as num?)?.toInt();
+    final misses = (data['misses'] as num?)?.toInt();
+    if (goals != null) {
+      _goals.value = goals;
+    }
+    if (misses != null) {
+      _misses.value = misses;
     }
   }
 
@@ -399,6 +422,8 @@ class _Penalty3DPageState extends State<_Penalty3DPage> with WidgetsBindingObser
     _idleCheckTimer?.cancel();
     _offlineTimer?.cancel();
     unawaited(_connectivitySub?.cancel());
+    _goals.dispose();
+    _misses.dispose();
     if (!_completed) {
       // Closed without a result (host popped the route on connection loss,
       // or the widget went away): tell Unity so its next resume starts a
@@ -425,10 +450,32 @@ class _Penalty3DPageState extends State<_Penalty3DPage> with WidgetsBindingObser
       body: Stack(
         children: [
           Positioned.fill(child: EmbedUnity(onMessageFromUnity: _onMessageFromUnity)),
-          Positioned(
-            top: 12,
-            right: 12,
-            child: SafeArea(child: _ExitButton(onTap: _confirmLeave)),
+          // Same chrome layout as the Flame page: exit control on its own row
+          // above the HUD card so the two never overlap. Kept static (no blur,
+          // no animation) — overlays over the Unity platform view are where
+          // Impeller is most fragile on low-memory devices.
+          SafeArea(
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(12, 0, 12, 0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.only(top: 12),
+                    child: _ExitButton(onTap: _confirmLeave),
+                  ),
+                  Align(
+                    alignment: Alignment.topCenter,
+                    child: PenaltyHudPanel(
+                      goals: _goals,
+                      misses: _misses,
+                      missesAllowed: widget.missesAllowed,
+                      scoreToBeat: widget.scoreToBeat,
+                    ),
+                  ),
+                ],
+              ),
+            ),
           ),
         ],
       ),
