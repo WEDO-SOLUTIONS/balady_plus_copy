@@ -88,6 +88,9 @@
   var Ground = global.DriftGround || { ready: false, draw: noop };
   var Sprites = global.DriftSprites || { ready: false, draw: noop };
 
+  /* World travel per unit of the game's speed. See render(). */
+  var WORLD_SCALE = 0.48;
+
   /* Height of each plant on the baked sheet, relative to a rock of the same
      prop size: tussock, tussock, ghada, ghada, dead, saltbush, thorn bush. */
   var PLANT_SIZE = [1.55, 1.55, 1.70, 1.70, 1.40, 1.05, 2.30];
@@ -422,8 +425,9 @@
         horizon: this.horizon,
         dpr: this.dpr,
         scroll: this.scroll,
+        dScroll: this.dScroll || 0,
+        speed: (this.lastSpeed || 0) * WORLD_SCALE,
         lateral: lateral || 0,
-        blur: this.speedNorm || 0,
         dusk: night,
         tint: mixHex('#FFFFFF', '#6E4A52', 1)
       }) === true;
@@ -605,14 +609,19 @@
       // The baked road: braided ruts worn through the loose sand into the
       // crust underneath, mapped by the same perspective as the open ground
       // so the two cannot drift apart.
+      var trackHalf = function (t) {
+        return lerp(self.w * 0.055, self.w * 0.95, 0.035 + 0.965 * t) * 0.5;
+      };
       var roadDrawn = this.floorTextured && Ground.drawRoad(ctx, {
+        halfAt: trackHalf,
         w: this.w,
         h: this.h,
         horizon: this.horizon,
         dpr: this.dpr,
         scroll: this.scroll,
+        dScroll: this.dScroll || 0,
+        speed: (this.lastSpeed || 0) * WORLD_SCALE,
         lateral: lateral,
-        blur: this.speedNorm || 0,
         dusk: night,
         tint: mixHex('#FFFFFF', '#6E4A52', 1)
       });
@@ -1366,7 +1375,15 @@
     render: function (state, dt) {
       var ctx = this.ctx;
       this.time += dt;
-      this.scroll += (state.speed || 0) * dt;
+      // How far the world moved this frame. Scaled down from the raw speed:
+      // at the full value the ground covered more ground between two frames
+      // than the ripples on it are apart, which aliases into sand pouring
+      // towards the vanishing point however well it is drawn. Everything that
+      // scrolls reads this, so the plates, the props and the floor stay in
+      // step with each other.
+      this.lastSpeed = state.speed || 0;
+      this.dScroll = this.lastSpeed * dt * WORLD_SCALE;
+      this.scroll += this.dScroll;
 
       var dusk = clamp(state.dusk || 0, 0, 1);
       this.lastDusk = dusk;

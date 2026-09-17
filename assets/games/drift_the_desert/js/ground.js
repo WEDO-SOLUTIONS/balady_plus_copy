@@ -32,13 +32,14 @@
   // what the real ones measure.
   var TILE_ACROSS = 2.1;
 
-  // Texels of travel per unit of `scroll`. Tuned against the speed streaks so
-  // the floor and the rest of the frame agree about how fast the car is going.
+  // Texels of travel per unit of `scroll`. Tuned against the roadside props,
+  // which cross the frame on the same clock, so the floor and the things
+  // standing on it agree about how fast the car is going.
   var TRAVEL = 12;
 
   // Depth ratio allowed inside one band. Smaller is more exact and costs more
   // fills; past about 1.3 the difference stops being visible.
-  var BAND_RATIO = 1.28;
+  var BAND_RATIO = 1.36;
 
   /** One texture and its mip chain. Two of these ship: the open sand, and the
       road, which is the same mapping clipped to the track. */
@@ -122,7 +123,7 @@
         Returns false if the texture is not usable, so the caller can fall
         back to its own painted ground. */
     draw: function (ctx, o) {
-      return this.bands(ctx, o, this.sand, false);
+      return this.bands(ctx, o, this.sand, false, 3);
     },
 
     /** The road. Same mapping, same scroll, so it cannot drift against the
@@ -131,10 +132,12 @@
         the wheels. The caller has already clipped to the track. */
     drawRoad: function (ctx, o) {
       if (!this.roadReady) return false;
-      return this.bands(ctx, o, this.road, true);
+      // Two taps are enough here: the road's detail runs along the direction
+      // of travel, and a rut cannot alias against motion parallel to it.
+      return this.bands(ctx, o, this.road, true, 2);
     },
 
-    bands: function (ctx, o, tex, centred) {
+    bands: function (ctx, o, tex, centred, maxTaps) {
       if (!tex.ready || !global.DOMMatrix) return false;
 
       var bottom = o.h * 1.04;
@@ -175,7 +178,8 @@
         // The track's centre drifts with the steering; the floor goes with it,
         // so the world turns rather than the road sliding over it.
         var s = 0.035 + 0.965 * tMid;
-        var cx = o.w * 0.5 - (o.lateral || 0) * o.w * 0.06 * (1 - s);
+        var cxTrack = o.w * 0.5 - (o.lateral || 0) * o.w * 0.06 * (1 - s);
+        var cx = cxTrack;
         // The road tile carries its ruts down the middle, so its centre
         // column is what has to land on the track's centre line.
         if (centred) cx -= a * tex.size * 0.5;
@@ -188,26 +192,51 @@
         // plates end in, and a short one left a horizon-wide step in it.
         var alpha = tMid < 0.20 ? (tMid - 0.035) / 0.165 : 1;
         var bh = yBot - yTop + 1;
-        ctx.globalAlpha = alpha;
         ctx.fillStyle = pattern;
-        ctx.fillRect(0, yTop, o.w, bh);
 
-        // Motion blur, near field only. A photograph taken from a car at this
-        // speed has no sharp pebbles at the bottom of the frame, and leaving
-        // them sharp was the last thing making the floor look like a texture
-        // rather than like ground going past. Two trailing copies, offset
-        // back up the frame, are enough to smear it.
-        // Ramped in rather than switched on: a hard cutoff put a horizontal
-        // seam across the frame where the sharp bands met the smeared ones.
-        var smear = o.blur * (tMid < 0.35 ? 0 : (tMid > 0.75 ? 1 : (tMid - 0.35) / 0.40));
-        if (smear > 0.02) {
-          pattern.setTransform(new global.DOMMatrix([
-            a * k, 0, 0, d * k, cx, yTop - d * tyTop - bh * 0.55 * smear * tMid
-          ]));
-          ctx.globalAlpha = alpha * 0.42 * smear;
-          ctx.fillRect(0, yTop, o.w, bh);
-          ctx.globalAlpha = alpha;
+        /* Motion blur, taken from how far this band actually moves in one
+           frame rather than from a fixed fraction of its height.
+
+           This is not a garnish. Near the bottom of the frame the ground
+           travels further between two frames than the ripples on it are
+           apart, so with a single sharp sample the texture aliases: the sand
+           appears to crawl the wrong way, or to pour towards the vanishing
+           point, which is exactly what it looked like. A camera does not have
+           that problem because its shutter is open while the ground moves,
+           and neither does this now — the band is drawn several times along
+           the distance it covers, which is the same smear.
+
+           Weights 1, 1/2, 1/3 … give the taps an equal share under
+           source-over, so the result is their average rather than the last
+           one drawn. */
+        // Capped at three, and at two frames' worth of travel. A slow frame
+        // means a longer smear, which means more taps, which means a slower
+        // frame: without the cap a weak device spirals.
+        var trailPx = Math.abs(d) * Math.min(o.dScroll || 0, (o.speed || 0) / 30) * TRAVEL;
+        var taps = trailPx > 5 ? Math.min(maxTaps, Math.round(trailPx / 9) + 1) : 1;
+
+        // The road only ever covers a trapezoid of the frame, so the road
+        // pass is told how wide the track is at this depth and paints that
+        // much of the band instead of the full width behind the clip.
+        var x0 = 0, x1 = o.w;
+        if (o.halfAt) {
+          var hw = o.halfAt(tMid) + 4;
+          x0 = Math.max(0, cxTrack - hw);
+          x1 = Math.min(o.w, cxTrack + hw);
+          if (x1 <= x0) { tBot = tTop; continue; }
         }
+
+        for (var tap = 0; tap < taps; tap++) {
+          var back = taps > 1 ? trailPx * (tap / (taps - 1)) : 0;
+          if (tap > 0) {
+            pattern.setTransform(new global.DOMMatrix([
+              a * k, 0, 0, d * k, cx, yTop - d * tyTop - back
+            ]));
+          }
+          ctx.globalAlpha = alpha / (tap + 1);
+          ctx.fillRect(x0, yTop, x1 - x0, bh);
+        }
+        ctx.globalAlpha = alpha;
 
         // Evening. The texture is baked at golden hour only — a second bake
         // would double both the download and the fills — so dusk is a
@@ -217,7 +246,7 @@
           ctx.globalCompositeOperation = 'multiply';
           ctx.globalAlpha = alpha * o.dusk;
           ctx.fillStyle = o.tint;
-          ctx.fillRect(0, yTop, o.w, bh);
+          ctx.fillRect(x0, yTop, x1 - x0, bh);
           ctx.globalCompositeOperation = 'source-over';
         }
 
