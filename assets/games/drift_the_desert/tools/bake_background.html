@@ -286,11 +286,11 @@ void main() {
   if (uLayer == 0) {
     outc = bakeSky(u, v, dusk);
   } else if (uLayer == 1) {
-    outc = bakeRange(u, v, dusk, 3.0, 2.6, 0.62, 0.52,
+    outc = bakeRange(u, v, dusk, 3.0, 2.6, 0.62, 0.42,
                      mix(vec3(0.64, 0.49, 0.38), vec3(0.24, 0.17, 0.25), dusk),
                      mix(vec3(0.40, 0.29, 0.25), vec3(0.13, 0.09, 0.16), dusk));
   } else if (uLayer == 2) {
-    outc = bakeRange(u, v, dusk, 17.0, 1.7, 0.55, 0.20,
+    outc = bakeRange(u, v, dusk, 17.0, 1.7, 0.55, 0.10,
                      mix(vec3(0.74, 0.55, 0.38), vec3(0.28, 0.18, 0.22), dusk),
                      mix(vec3(0.38, 0.26, 0.21), vec3(0.10, 0.07, 0.12), dusk));
   } else {

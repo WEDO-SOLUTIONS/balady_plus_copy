@@ -17,9 +17,9 @@
      tools/extract_assets.py worked out with the crops. The two are shipped as
      separate sprites and composited here: baked into one image, his arm span
      widened the bounding box and cost the car 15% of its resolution. */
-  var SEAT = 0.97;    // fraction of the car's width his torso centres on
-  var LIFT = 1.02;    // how far his waist sits below the roof, in his heights
-  var DRIVER = 0.43;  // his height relative to the car's
+  var SEAT = 0.835;   // fraction of the car's width his torso centres on
+  var LIFT = 1.10;    // how far his waist sits below the roof, in his heights
+  var DRIVER = 0.36;  // his height relative to the car's
 
   function clamp(v, a, b) { return v < a ? a : (v > b ? b : v); }
   function lerp(a, b, t) { return a + (b - a) * t; }
@@ -145,7 +145,7 @@
           y: y + rand(-6, 10),
           vx: rand(-40, 40),
           vy: rand(-58, -8),
-          r: rand(10, 26),
+          r: rand(8, 20),
           life: 1,
           decay: rand(0.55, 1.15),
           tint: tint || 0
@@ -392,104 +392,152 @@
 
     /* ------------------------------------------------------------ track */
 
+    /** Half-width of the track at depth `d`, and the x it is centred on. */
+    trackAt: function (d, lateral) {
+      var p = this.project(d);
+      var cx = lerp(this.w * 0.5 - lateral * this.w * 0.06, this.w * 0.5, p.s);
+      return { y: p.y, s: p.s, cx: cx, half: lerp(this.w * 0.055, this.w * 0.95, p.s) * 0.5 };
+    },
+
+    /** Wobble of the track's edge at depth `d` — the drift of loose sand that
+        stops the shoulders reading as painted runway lines. */
+    edgeNoise: function (d, side) {
+      var t = d * 7 + this.scroll * 0.004 + (side > 0 ? 31.7 : 0);
+      return (Math.sin(t) * 0.6 + Math.sin(t * 2.7 + 1.3) * 0.3 + Math.sin(t * 6.1) * 0.1);
+    },
+
     drawTrack: function (lateral, dusk) {
       var ctx = this.ctx;
       var night = clamp(dusk || 0, 0, 1);
-      var cx = this.w * 0.5 - lateral * this.w * 0.06;
-      var nearW = this.w * 0.95;
-      var farW = this.w * 0.055;
       var farY = this.project(0.0).y;
       var nearY = this.h * 1.04;
+      var STEPS = 26;
+      var self = this;
 
-      // Packed sand track.
+      /* The track outline, with both edges eaten into by drifting sand. */
+      function edgePath() {
+        ctx.beginPath();
+        var i, t, p;
+        for (i = 0; i <= STEPS; i++) {
+          t = self.trackAt(i / STEPS, lateral);
+          p = t.cx - t.half * (1 - self.edgeNoise(i / STEPS, -1) * 0.13 * t.s);
+          if (i === 0) ctx.moveTo(p, t.y); else ctx.lineTo(p, t.y);
+        }
+        for (i = STEPS; i >= 0; i--) {
+          t = self.trackAt(i / STEPS, lateral);
+          p = t.cx + t.half * (1 - self.edgeNoise(i / STEPS, 1) * 0.13 * t.s);
+          ctx.lineTo(p, t.y);
+        }
+        ctx.closePath();
+      }
+
       ctx.save();
-      ctx.beginPath();
-      ctx.moveTo(cx - farW / 2, farY);
-      ctx.lineTo(cx + farW / 2, farY);
-      ctx.lineTo(this.w * 0.5 + nearW / 2, nearY);
-      ctx.lineTo(this.w * 0.5 - nearW / 2, nearY);
-      ctx.closePath();
+      edgePath();
       var g = ctx.createLinearGradient(0, farY, 0, nearY);
-      g.addColorStop(0, mixHex('#C09566', '#6A4740', night));
+      g.addColorStop(0.00, rgba(mixHex('#D3AE81', '#7B5850', night), 0));
+      g.addColorStop(0.09, mixHex('#D3AE81', '#7B5850', night));
       g.addColorStop(0.45, mixHex('#A87B4B', '#4B3128', night));
-      g.addColorStop(1, mixHex('#7E552C', '#2E1E18', night));
+      g.addColorStop(1.00, mixHex('#7E552C', '#2E1E18', night));
       ctx.fillStyle = g;
       ctx.fill();
       ctx.clip();
 
-      // Photographic sand, laid down in perspective slices so the grain grows
-      // towards the camera and scrolls with the car's speed.
-      if (IMG.sand) {
-        ctx.globalAlpha = 0.4;
-        var slices = 18;
-        var phase = (this.scroll * 0.0012) % 1;
-        for (var si = 0; si < slices; si++) {
-          var da = (si / slices + phase) % 1;
-          var db = da + 1.0 / slices;
-          var pa = this.project(da);
-          var pb = this.project(db);
-          var hgt = Math.max(1, pb.y - pa.y);
-          ctx.drawImage(IMG.sand, 0, 0, IMG.sand.width, IMG.sand.height,
-                        -this.w * 0.1, pa.y, this.w * 1.2, hgt);
-        }
-        ctx.globalAlpha = 1;
-      }
+      /* Drag marks running down the road. The photographic sand tile was tried
+         here first and had to go: at 264 px stretched across the full width it
+         resolved into rectangular patches wherever two slices sampled
+         different parts of it. Longitudinal streaks are what a packed sand
+         track actually shows at speed, and they stay sharp at any resolution. */
+      var streaks = 16;
+      for (var st = 0; st < streaks; st++) {
+        var sseed = st * 2.11;
+        var lane = (hash(sseed) - 0.5) * 1.9;
+        var phase = (hash(sseed + 4.3) + this.scroll * 0.0016) % 1;
+        var len = 0.30 + hash(sseed + 8.9) * 0.45;
+        var pale = hash(sseed + 1.7) > 0.5;
 
-      // Scrolling bands give a readable sense of speed.
-      var bandCount = 26;
-      for (var i = 0; i < bandCount; i++) {
-        var phase = ((i / bandCount) + (this.scroll * 0.0016) % 1) % 1;
-        var d0 = phase;
-        var d1 = phase + 0.5 / bandCount;
-        var p0 = this.project(d0);
-        var p1 = this.project(d1);
-        if (d0 < 0.22) continue;
-        ctx.fillStyle = 'rgba(92, 60, 30, 0.07)';
-        ctx.fillRect(0, p0.y, this.w, Math.max(1, p1.y - p0.y));
-      }
-
-      // Tyre ruts left by the drifters before you.
-      for (var s = -1; s <= 1; s += 2) {
         ctx.beginPath();
-        var steps = 22;
-        for (var j = 0; j <= steps; j++) {
-          var d = j / steps;
-          var p = this.project(d);
-          var halfW = lerp(farW, nearW, p.s) * 0.5;
-          var px = lerp(cx, this.w * 0.5, p.s) + s * halfW * 0.44;
-          if (j === 0) ctx.moveTo(px, p.y); else ctx.lineTo(px, p.y);
+        var drawn = 0;
+        for (var sj = 0; sj <= 14; sj++) {
+          var sd = phase + (sj / 14) * len;
+          if (sd > 1) break;
+          if (sd < 0.30) continue;
+          var stt = this.trackAt(sd, lateral);
+          var sx = stt.cx + lane * stt.half + this.edgeNoise(sd * 1.3, st % 2 ? 1 : -1) * stt.half * 0.05;
+          if (drawn++ === 0) ctx.moveTo(sx, stt.y); else ctx.lineTo(sx, stt.y);
         }
-        ctx.strokeStyle = 'rgba(86, 54, 26, 0.16)';
-        ctx.lineWidth = 4;
+        if (drawn < 2) continue;
+        ctx.strokeStyle = pale
+          ? 'rgba(255, 228, 184, ' + (0.07 * (1 - night * 0.6)).toFixed(3) + ')'
+          : 'rgba(78, 48, 22, 0.09)';
+        ctx.lineWidth = 2 + hash(sseed + 5.5) * 5;
         ctx.stroke();
       }
 
-      // Dissolve the far end of the track into whatever draws the dunes. This
-      // has to happen while the trapezoid is still clipped, or it would erase
-      // the terrain behind it too.
-      var fadeTo = this.project(0.14).y;
-      var fade = ctx.createLinearGradient(0, farY - 2, 0, fadeTo);
-      fade.addColorStop(0, 'rgba(0, 0, 0, 1)');
-      fade.addColorStop(1, 'rgba(0, 0, 0, 0)');
-      ctx.globalCompositeOperation = 'destination-out';
-      ctx.fillStyle = fade;
-      ctx.fillRect(0, farY - 2, this.w, fadeTo - farY + 2);
-      ctx.globalCompositeOperation = 'source-over';
+      /* Two tyre ruts: a scooped shadow with a lit ridge of thrown sand on the
+         outside of each. */
+      for (var side = -1; side <= 1; side += 2) {
+        for (var pass = 0; pass < 2; pass++) {
+          ctx.beginPath();
+          var started = 0;
+          for (var j = 0; j <= STEPS; j++) {
+            var d = j / STEPS;
+            if (d < 0.28) continue;
+            var tr = this.trackAt(d, lateral);
+            var wob = this.edgeNoise(d * 0.55, side) * 0.11;
+            var x = tr.cx + side * tr.half * (0.40 + wob) + (pass ? tr.half * side * 0.075 : 0);
+            if (started++ === 0) ctx.moveTo(x, tr.y); else ctx.lineTo(x, tr.y);
+          }
+          ctx.strokeStyle = pass
+            ? 'rgba(255, 226, 178, ' + (0.16 * (1 - night * 0.6)).toFixed(3) + ')'
+            : 'rgba(74, 44, 18, 0.30)';
+          ctx.lineWidth = pass ? 3 : 7;
+          ctx.stroke();
+        }
+      }
+
+      /* Stones and scrub scattered over the surface, scaled and spaced by
+         perspective so they rush at the camera with everything else. */
+      var pebbles = 34;
+      for (var k = 0; k < pebbles; k++) {
+        var seed = k * 1.37;
+        var pd = ((hash(seed) + this.scroll * 0.0013) % 1);
+        if (pd < 0.30) continue;
+        var pt = this.trackAt(pd, lateral);
+        var across = (hash(seed + 3.1) - 0.5) * 1.75;
+        var px = pt.cx + across * pt.half;
+        var r = (0.8 + hash(seed + 7.7) * 2.2) * pt.s * 2.2;
+        if (r < 0.4) continue;
+        ctx.fillStyle = hash(seed + 11.3) > 0.72
+          ? 'rgba(62, 48, 22, 0.45)'          // scrub
+          : 'rgba(96, 66, 34, 0.38)';         // stone
+        ctx.beginPath();
+        ctx.ellipse(px, pt.y, r, r * 0.55, 0, 0, TAU);
+        ctx.fill();
+      }
+
       ctx.restore();
 
-      // Soft shoulders where the track meets loose sand.
+      /* Banks of loose sand piled along the edges — drawn as a soft band that
+         follows the same wobble, rather than a ruled line. */
       ctx.save();
-      var edge = ctx.createLinearGradient(0, farY, 0, nearY);
-      edge.addColorStop(0, 'rgba(255, 226, 180, 0)');
-      edge.addColorStop(1, 'rgba(255, 226, 180, ' + (0.35 * (1 - night * 0.7)).toFixed(3) + ')');
-      ctx.strokeStyle = edge;
-      ctx.lineWidth = 8;
-      ctx.beginPath();
-      ctx.moveTo(cx - farW / 2, farY);
-      ctx.lineTo(this.w * 0.5 - nearW / 2, nearY);
-      ctx.moveTo(cx + farW / 2, farY);
-      ctx.lineTo(this.w * 0.5 + nearW / 2, nearY);
-      ctx.stroke();
+      for (var sd = -1; sd <= 1; sd += 2) {
+        ctx.beginPath();
+        for (var m = 0; m <= STEPS; m++) {
+          var md = m / STEPS;
+          var mt = this.trackAt(md, lateral);
+          var mx = mt.cx + sd * mt.half * (1 - this.edgeNoise(md, sd) * 0.13 * mt.s);
+          if (m === 0) ctx.moveTo(mx, mt.y); else ctx.lineTo(mx, mt.y);
+        }
+        var bank = ctx.createLinearGradient(0, farY, 0, nearY);
+        bank.addColorStop(0.00, 'rgba(255, 226, 180, 0)');
+        bank.addColorStop(0.12, 'rgba(255, 226, 180, 0)');
+        bank.addColorStop(0.45, 'rgba(255, 226, 180, ' + (0.12 * (1 - night * 0.7)).toFixed(3) + ')');
+        bank.addColorStop(1, 'rgba(255, 226, 180, ' + (0.26 * (1 - night * 0.7)).toFixed(3) + ')');
+        ctx.strokeStyle = bank;
+        ctx.lineWidth = 10;
+        ctx.lineJoin = 'round';
+        ctx.stroke();
+      }
       ctx.restore();
     },
 
@@ -742,6 +790,17 @@
         ctx.save();
         ctx.translate(dx + dw / 2, dy + dh);
         ctx.rotate(Math.sin(wobble * 0.5) * 0.03 - tilt * 0.05);
+
+        var sx = -dw * 0.16;
+        var sy = -dh * 0.10;
+        var cast = ctx.createRadialGradient(sx, sy, 1, sx, sy, dw * 0.30);
+        cast.addColorStop(0, 'rgba(24, 14, 8, 0.30)');
+        cast.addColorStop(1, 'rgba(24, 14, 8, 0)');
+        ctx.fillStyle = cast;
+        ctx.beginPath();
+        ctx.ellipse(sx, sy, dw * 0.30, dh * 0.11, 0, 0, TAU);
+        ctx.fill();
+
         ctx.drawImage(IMG.driver, -dw / 2, -dh, dw, dh);
         ctx.restore();
       }
@@ -823,12 +882,12 @@
       ctx.save();
       for (i = 0; i < this.particles.length; i++) {
         var p = this.particles[i];
-        var a = clamp(p.life, 0, 1) * 0.16 * lightFade;
+        var a = clamp(p.life, 0, 1) * 0.11 * lightFade;
         ctx.fillStyle = p.tint
           ? 'rgba(230, 140, 100, ' + (a * 1.1).toFixed(3) + ')'
           : 'rgba(224, 186, 136, ' + (a * 1.15).toFixed(3) + ')';
         ctx.beginPath();
-        ctx.arc(p.x, p.y, p.r, 0, TAU);
+        ctx.ellipse(p.x, p.y, p.r, p.r * 0.62, 0, 0, TAU);
         ctx.fill();
       }
       for (i = 0; i < this.sparks.length; i++) {

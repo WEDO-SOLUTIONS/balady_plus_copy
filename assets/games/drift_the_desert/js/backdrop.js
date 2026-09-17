@@ -107,7 +107,8 @@
       var srcH = Math.max(1, Math.round(plate.size[1] * frac));
       var tileW = height * (plate.size[0] / srcH);
       var bottom = y + height;
-      var step = 3;
+      // In CSS pixels: on a 3x screen a coarser step beads the crest line.
+      var step = 1;
       // The curve is coarse, so the boundary is nudged a pixel down: shaving a
       // crest is invisible, uncovering the JPEG's filled sky is not.
       var scale = height / frac;
@@ -117,8 +118,14 @@
       for (var x = 0; x <= w + step; x += step) {
         var u = ((x - offset) / tileW) % 1;
         if (u < 0) u += 1;
-        var i = Math.min(n - 1, Math.floor(u * n));
-        ctx.lineTo(x, Math.min(bottom, y + (heights[i] / 255) * scale + 2));
+        // Interpolate between samples: taking the nearest one turned the
+        // skyline into a visible staircase wherever a tile was drawn wider
+        // than the curve is dense.
+        var f = u * n;
+        var i0 = Math.floor(f) % n;
+        var i1 = (i0 + 1) % n;
+        var h = heights[i0] + (heights[i1] - heights[i0]) * (f - Math.floor(f));
+        ctx.lineTo(x, Math.min(bottom, y + (h / 255) * scale + 2));
       }
       ctx.lineTo(w + step, bottom);
       ctx.closePath();
