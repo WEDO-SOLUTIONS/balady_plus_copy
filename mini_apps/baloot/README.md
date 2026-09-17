@@ -8,7 +8,7 @@ file in any browser, and it is meant to be served as a Balady+ mini-app.
 mini_apps/baloot/
   index.html                 the whole game (markup, styles, rules engine, AI, UI, host bridge)
   room.webp                  the majlis scene, cut from the mock-up
-  crest.webp                 the plaque, scroll and shield — kept as artwork, no longer loaded
+  crest.webp                 the plaque, scroll and shield — the title card on the way in
   btn-gold.webp              the primary button face, emptied of its label
   btn-outline.webp           the outlined button face, emptied of its label
   corner-{tl,tr,bl,br}.webp  the gold arabesque, one file per corner
@@ -20,7 +20,7 @@ mini_apps/baloot/
 ```
 
 `baloot-standalone.html` is `index.html` with every image inlined as a data URI
-— one 382 KB file that opens straight from disk with nothing beside it, handy
+— one 398 KB file that opens straight from disk with nothing beside it, handy
 for sending to someone or dropping into a WebView that has no asset directory.
 Rebuild it with `python3 tools/build-standalone.py` after changing `index.html`
 or any asset, otherwise it goes stale. The mini-app bundle should keep using
@@ -179,10 +179,10 @@ folds it into the single-file build as a data URI. Nothing else changes.
 ## Look
 
 The table follows a supplied mock-up, with one departure: the ornate gold plaque
-that headed it is gone, and the status line — deal number, target, `Us / Them`
-in green and gold — is the header. The plaque cost 99px of an 880px screen and
-the room wanted them: the majlis is 399px tall now against 336 with the plaque.
-`crest.webp` stays in the folder as artwork. Below that, a round wooden-rimmed table with the
+that headed it now greets you on the way in and leaves the table alone, so the
+status line — deal number, target, `Us / Them` in green and gold — is the
+header there. The plaque cost 99px of an 880px screen and the room wanted them:
+the majlis is 399px tall now against 336 when it headed the table. Below that, a round wooden-rimmed table with the
 trick laid on the cloth, a `WINNING` marker over whichever card currently leads,
 a green "your turn" bubble naming a card worth playing, an arced hand fan, and a
 gold-ornamented action rail (play the suggested card / toggle hints / invite).

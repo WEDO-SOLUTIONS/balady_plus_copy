@@ -706,9 +706,30 @@ html[dir="ltr"] .rail-btn{text-transform:uppercase}
 .suitbtn.sel{background:linear-gradient(170deg,#e8c876,#c39a43);color:var(--ink)}
 
 /* lobby hero: a small fan of real cards */
+/* ---------- the plaque from the mock-up, kept for the way in ---------- */
+.crest{
+  position:relative;width:min(92%, 318px, calc(36 * var(--vh)));aspect-ratio:424/138;
+  margin:0 auto 6px;
+  background:center/100% 100% no-repeat url("crest.webp");
+  display:grid;place-items:center;
+  filter:drop-shadow(0 6px 14px rgba(0,0,0,.6));
+}
+.crest span{
+  position:absolute;top:62%;left:50%;transform:translate(-50%,-50%);
+  width:80%;text-align:center;
+  font-size:min(19px, calc(4.6 * var(--vw)), calc(2.4 * var(--vh)));
+  font-weight:900;letter-spacing:.02em;
+  background:linear-gradient(180deg,var(--gold-hi) 0%,var(--gold) 46%,#c79a40 100%);
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+  text-shadow:0 2px 4px rgba(0,0,0,.4);
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+}
+html[dir="ltr"] .crest span{text-transform:uppercase}
+
 .hero{
   display:flex;justify-content:center;align-items:flex-end;
-  height:calc(var(--card-h) + 20px);margin:0 0 12px;--card-w:64px;gap:2px;
+  height:calc(var(--card-h) + 20px);margin:0 0 8px;gap:2px;
+  --card-w:clamp(46px, calc(11 * var(--vh)), 64px);
 }
 .hero .card{margin-inline-start:-12px;transform-origin:bottom center;
             animation:fanIn .5s cubic-bezier(.2,.9,.3,1) backwards}
@@ -938,6 +959,7 @@ const I18N = {
     tieNote:"تعادل — الأفضلية لفريق المشتري",
     weWin:"فزتم! 🎉", theyWin:"خسرتم", kaboot:"كبوت!", losing:"خسارة — كل النقاط للخصم",
     nextRound:"الجولة التالية", newGame:"لعبة جديدة", playAgain:"العب مرة أخرى",
+    crestTitle:"تحدي البلوت",
     lobbyTitle:"بلوت", lobbySub:"لعبة الورق السعودية — أربعة لاعبين، فريقان، ٨ أوراق لكل لاعب.",
     startSolo:"العب مع البوتات", inviteFriends:"ادعُ أصدقاءك", rules:"الشرح والقوانين",
     seats:"المقاعد", seatN:"شريكك", seatE:"اليمين", seatW:"اليسار", seatS:"أنت",
@@ -991,6 +1013,7 @@ const I18N = {
     tieNote:"Tie — broken in the buyer's favour",
     weWin:"You win! 🎉", theyWin:"You lose", kaboot:"Kaboot!", losing:"Failed bid — all points to opponents",
     nextRound:"Next round", newGame:"New game", playAgain:"Play again",
+    crestTitle:"Baloot Challenge",
     lobbyTitle:"Baloot", lobbySub:"The Saudi card game — four players, two teams, 8 cards each.",
     startSolo:"Play with bots", inviteFriends:"Invite friends", rules:"How to play",
     seats:"Seats", seatN:"Partner", seatE:"Right", seatW:"Left", seatS:"You",
@@ -2700,7 +2723,9 @@ const Lobby = {
     const hero = el("div", "hero");
     for (const c of [card("D","J"), card("S","A"), card("H","K")]) hero.appendChild(cardNode(c));
     body.appendChild(hero);
-    body.appendChild(el("h2", null, T("lobbyTitle")));
+    const crest = el("div", "crest");
+    crest.appendChild(el("span", null, T("crestTitle")));
+    body.appendChild(crest);
     body.appendChild(el("p", "sub", T("lobbySub")));
 
     body.appendChild(el("h3", null, T("seats")));
