@@ -19,7 +19,7 @@ mini_apps/baloot/
 ```
 
 `baloot-standalone.html` is `index.html` with every image inlined as a data URI
-— one 364 KB file that opens straight from disk with nothing beside it, handy
+— one 393 KB file that opens straight from disk with nothing beside it, handy
 for sending to someone or dropping into a WebView that has no asset directory.
 Rebuild it with `python3 tools/build-standalone.py` after changing `index.html`
 or any asset, otherwise it goes stale. The mini-app bundle should keep using
@@ -45,7 +45,7 @@ CSS, and the game keeps working (plainer) if the images are missing.
 | Context | How |
 |---|---|
 | Browser | open `index.html`, or `baloot-standalone.html` for a single file |
-| Self-check | open `index.html?test=1` — 30 rules assertions, results in the console and a toast |
+| Self-check | open `index.html?test=1` — 56 rules assertions, results in the console and a toast |
 | Deep link into a room | `index.html?room=UY9ED8` |
 | Mini-app | ship the folder as a mini-app bundle; `CustomInAppLocalhostServer` serves `index.html` from the bundle's document root (see `lib/mini_apps_engine/`) |
 
@@ -54,40 +54,75 @@ the initial language follows `navigator.language` and is remembered in `localSto
 
 ## Implemented rules
 
+The reference is the Saudi Mind Sports Federation regulation
+(«القوانين المعتمدة للبلوت في الاتحاد السعودي للرياضات الذهنية») together with
+pagat.com's reading of the same tournament rules; the clause numbers below are
+the regulation's own (البند الرابع ٤-٢ … ٤-١١, البند الخامس, البند السادس,
+البند الثامن).
+
 - 32 cards, 4 players, 2 partnerships (seats 0/2 vs 1/3), 8 cards each.
 - Bidding: 5 cards dealt, one turned face up. Round 1 is Hokum on that suit, Sun,
-  or Pass, and **Sun outbids Hokum**. If everyone passes, round 2 allows any trump
-  suit or Sun; the dealer takes the best suit rather than force a redeal.
-  The bidder then receives the face-up card plus two, the others three.
+  **Ashkal** or Pass, and **Sun outbids Hokum**. Ashkal is a Sun bought for the
+  partner — only the third or fourth player may say it, only while nobody has
+  bought, and it is the partner who takes the face-up card and becomes the buyer
+  (البند الثامن). If everyone passes, round 2 allows any trump suit or Sun, with
+  no Ashkal; the dealer takes the best suit rather than force a redeal.
+  The buyer then receives the face-up card plus two, the others three, and the
+  player to the dealer's right leads to the first trick whoever bought.
 - Ranking and points: Sun `A>10>K>Q>J>9>8>7`; trump `J>9>A>10>K>Q>8>7`
   (`J=20`, `9=14`). Last trick +10 — 130 raw in Sun, 162 in Hokum.
-- Legal moves are enforced: follow suit; in Hokum trump when void unless the
-  partner is already winning; over-trump when you can.
-- Projects: Sra 20, Fifty 50, Hundred 100 (five-card run, or four kings, queens,
-  jacks, tens or aces), Four Hundred 400 (four jacks), Baloot 20 (K+Q of trump).
-  Only the team holding the single highest project scores them. Four nines is
-  *not* a Baloot project — that is Belote — and is not counted.
-- Scoring: Sun ÷5 (remainder ≥3 rounds up) → 26 per round; Hokum ÷10
-  (remainder ≥6 rounds up) → 16. Both sides are converted together by
-  `shareRound`, because rounding each on its own can hand out more than the
-  round holds: in Hokum two remainders of 6 both force up, so 86 and 76 would
-  score 9 and 8 — seventeen points from a round worth sixteen. The side with the
-  weaker claim to its rounding gives the difference back; on equal remainders
-  that is the side with fewer points, so 86/76 is 9 and 7. Projects are added to the raw points *before*
-  conversion, so a project is automatically worth twice as much in Sun — it is
-  **not** multiplied again. Failed bid gives the defenders everything; kaboot is
-  44 (Sun) / 25 (Hokum); a tie carries over. Game to 152.
+- Legal moves are enforced: follow suit; in Hokum beat the trick with a trump
+  when void and able — and when unable, anything goes, because throwing a trump
+  underneath is allowed and never forced; over-trump a trump lead when you can;
+  throw away freely when the partner is winning, *except* as third hand behind a
+  partner's lead that can still be beaten. An Ace, or a lead that is the highest
+  card of its suit still out (**Ekka**, announced automatically), frees the third
+  hand from having to trump.
+- Projects, in game points (البند السادس):
+
+  | | Hokum | Sun |
+  |---|---|---|
+  | Sra — three in sequence | 2 | 4 |
+  | Fifty — four in sequence | 5 | 10 |
+  | Hundred — five in sequence, or four kings/queens/jacks/tens | 10 | 20 |
+  | Four Hundred — four aces | 10 (scores as a Hundred) | 40 |
+  | Baloot — K+Q of trumps | 2 | — |
+
+  Only the team holding the single best project scores, and it scores every
+  project it holds. A sequential Hundred outranks a Hundred of four equal cards
+  (٥-٢) and sets of four run A, K, Q, J, 10 (٥-٣); equal projects go to the
+  player nearest the dealer's right (٥-٧). No card serves two projects, so a
+  hand of eight holds at most two — four kings out of `♦K ♥K ♠K ♣A-K-Q-J-10`
+  leave a Sra, not a second Hundred. Four nines, eights or sevens are *not*
+  projects. Baloot is scored independently by either team, unless it sits inside
+  a Hundred that team showed (٥-٨).
+- Scoring (البند الرابع): **only one team counts its card points** — the
+  defenders, since doubling is not implemented. In Hokum that count is rounded
+  to the nearest ten with a five rounding *down*, then divided by 10; in Sun it
+  is rounded to the nearest ten unless it ends in five, in which case it is not
+  rounded at all, then divided by 5 (٤-١١). The buyer's team is handed the rest
+  of the round's 16 (Hokum) or 26 (Sun), which is why a round can never pay out
+  more than it holds — converting both sides independently would give 9 and 8
+  for 86/76 in Hokum, seventeen points from a round worth sixteen. Projects are
+  added on top in game points. Level game points go to the side that gave up
+  more in the rounding, and to the buyer's team if both gave up the same. A
+  failed bid (خسارة) hands the defenders the whole round plus every project in
+  it; kaboot is 44 (Sun) / 25 (Hokum) plus that team's own projects; game to 152.
+
+  The regulation's own worked thresholds all fall out of this arithmetic and are
+  asserted in the self-check: a Sun is lost at 66 defending points and a Hokum at
+  82 (٤-٢, ٤-٣), with a Sra at 56 and 72 (٤-٤, ٤-٥), with a Fifty at 41 and 56
+  (٤-٦, ٤-٧), with a Hundred at 16 and 32 (٤-٨, ٤-٩).
 
 House rules that vary by region are collected in the `CFG` object near the top of
 the script (`target`, `kabootSun`, `kabootHokum`).
 
-Known gaps against the Saudi federation ruleset, still open: there is no
-doubling (دبل) ladder; projects are detected and awarded automatically rather
-than declared before the second card, with no two-per-player limit; and the
-bots are forced to buy in the second round where a human may pass and force a
-redeal. Sources also describe Four Hundred as a Sun-only project made of four
-aces, which does not match the four-jacks-always rule implemented here — worth
-confirming against the federation text before changing.
+Known gaps against the regulation, still open: there is no doubling ladder
+(دبل / ثري / فور / قهوة, البند السابع) and therefore no locked play and no
+moving the count to the other side; projects are detected and awarded
+automatically rather than declared before the second card and shown on it; and
+the bots are forced to buy in the second round where a human may pass and force
+a redeal.
 
 ## Look
 
@@ -191,11 +226,15 @@ list, so an unaware host degrades gracefully instead of hanging.
 
 ## Verification
 
-`index.html?test=1` runs 30 assertions over the deck, point totals, the two
-rounding rules, trick resolution, every legality rule, project detection and
-round scoring (including the failed-bid, kaboot and tie branches, and a guard
-against double-counting projects in Sun).
+`index.html?test=1` runs 56 assertions over the deck, point totals, both
+rounding rules, trick resolution, every legality rule including Ekka, project
+detection and ranking, and round scoring — among them pagat's worked examples of
+the tournament scoring and the federation's own loss thresholds (٤-٢ … ٤-٩),
+plus a sweep of all 293 possible card splits checking that a round hands out
+exactly the points it holds.
 
-The engine was additionally exercised over 400 simulated all-bot rounds: raw
+The engine was additionally exercised over 1500 simulated all-bot rounds: raw
 points always totalled 130 (Sun) / 162 (Hokum), the AI never produced an illegal
-move, no hand ended with cards left over and no round needed a redeal.
+move, no hand ended with cards left over, no round needed a redeal, every round
+paid out exactly its 16 or 26 plus projects, and every failed bid paid the
+defenders the whole round.

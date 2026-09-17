@@ -935,8 +935,10 @@ const I18N = {
     redeal:"الكل باص — توزيع جديد",
     trickWon:"أخذها",
     projSra:"سرا", proj50:"خمسين", proj100:"مية", proj400:"أربعمية", projBaloot:"بلوت",
+    ashkal:"أشكل", ashkalHint:"صن يشتريه شريكك — هو يأخذ الورقة المكشوفة", ekka:"إكه",
     roundOver:"انتهت الجولة", gameOver:"انتهت اللعبة",
-    tricks:"أكلات", projects:"مشاريع", raw:"نقاط خام", final:"النتيجة",
+    tricks:"أبناط الأكلات", gamePts:"قيد الأكلات", projects:"مشاريع", raw:"نقاط خام", final:"النتيجة",
+    tieNote:"تعادل — الأفضلية لفريق المشتري",
     weWin:"فزتم! 🎉", theyWin:"خسرتم", kaboot:"كبوت!", losing:"خسارة — كل النقاط للخصم",
     nextRound:"الجولة التالية", newGame:"لعبة جديدة", playAgain:"العب مرة أخرى",
     lobbyTitle:"بلوت", lobbySub:"لعبة الورق السعودية — أربعة لاعبين، فريقان، ٨ أوراق لكل لاعب.",
@@ -978,8 +980,10 @@ const I18N = {
     redeal:"Everyone passed — redealing",
     trickWon:"takes it",
     projSra:"Sra", proj50:"Fifty", proj100:"Hundred", proj400:"Four Hundred", projBaloot:"Baloot",
+    ashkal:"Ashkal", ashkalHint:"A Sun bought for your partner — they take the face-up card", ekka:"Ekka",
     roundOver:"Round over", gameOver:"Game over",
-    tricks:"Tricks", projects:"Projects", raw:"Raw points", final:"Score",
+    tricks:"Card points", gamePts:"Game points", projects:"Projects", raw:"Raw points", final:"Score",
+    tieNote:"Tie — broken in the buyer's favour",
     weWin:"You win! 🎉", theyWin:"You lose", kaboot:"Kaboot!", losing:"Failed bid — all points to opponents",
     nextRound:"Next round", newGame:"New game", playAgain:"Play again",
     lobbyTitle:"Baloot", lobbySub:"The Saudi card game — four players, two teams, 8 cards each.",
@@ -1100,158 +1104,245 @@ function legalCards(hand, trick, st){
   // void in the led suit
   if (!trumps.length) return hand.slice();
 
-  // partner already winning => free discard
   const winnerSeat = trickWinner(trick, st);
   const partnerOfMover = (st.currentSeat + 2) % 4;
-  if (trick.length && winnerSeat === partnerOfMover) return hand.slice();
 
+  if (winnerSeat === partnerOfMover){
+    // A partner who is winning with a lead that is not certain to hold must
+    // still be covered: only an Ace, or a lead called "Ekka" (the highest card
+    // of its suit still in play), lets the third hand throw a card away.
+    const partnerLed = trick[0].seat === partnerOfMover;
+    if (!partnerLed || trick[0].card.r === "A" || trick[0].ekka) return hand.slice();
+    return trumps.slice();
+  }
+
+  // An opponent holds the trick: beat it with a trump if you can. If you
+  // cannot, anything goes - throwing a trump underneath is allowed, not forced.
   const higher = trumps.filter(c => ORDER_TRUMP[c.r] > highestTrumpPlayed);
-  return higher.length ? higher : trumps;
+  return higher.length ? higher : hand.slice();
 }
 
 function illegalReason(c, hand, trick, st){
   if (!trick.length) return null;
   const lead = trick[0].card.s;
   if (hand.some(x => x.s === lead) && c.s !== lead) return T("mustFollow");
-  if (st.mode === "hokum" && c.s !== st.trump && !hand.some(x => x.s === lead)
-      && hand.some(x => x.s === st.trump)) return T("mustTrump");
+  if (st.mode === "hokum" && c.s !== st.trump
+      && legalCards(hand, trick, st).every(x => x.s === st.trump)) return T("mustTrump");
   return T("mustOver");
 }
 
-/* ---- projects (مشاريع) ---- */
-function findProjects(hand, st){
+// "إكه": a lead that is the highest card of its suit still in anyone's hand.
+function isEkka(c, st){
+  if (st.mode !== "hokum" || c.s === st.trump) return false;
+  return !st.hands.some(h => h.some(x => x.s === c.s && x.id !== c.id
+                                         && ORDER_PLAIN[x.r] > ORDER_PLAIN[c.r]));
+}
+
+/* ---- projects (مشاريع) ----
+   Values below are game points ("قيد"), straight from the federation table
+   (البند السادس: حساب المشاريع):
+     Hokum   sra 2   fifty 5   hundred 10   baloot 2   (no four hundred)
+     Sun     sra 4   fifty 10  hundred 20   four hundred 40
+   Four aces are the Four Hundred in Sun and a plain hundred in Hokum. Four
+   kings, queens, jacks or tens are a hundred; four nines, eights or sevens
+   are worth nothing - that is Belote, not Baloot. */
+const PROJ_PTS = {
+  sra:    {hokum: 2,  sun: 4},
+  "50":   {hokum: 5,  sun: 10},
+  "100":  {hokum: 10, sun: 20},
+  "400":  {hokum: 0,  sun: 40},
+  baloot: {hokum: 2,  sun: 0}
+};
+const PROJ_RAW  = {sra:20, "50":50, "100":100, "400":400, baloot:20};
+const FOUR_RANKS = ["A","K","Q","J","10"];        // a set of four only counts in these
+
+const ptsOf = (kind, mode) => (PROJ_PTS[kind] || {})[mode] || 0;
+const modeOf = st => (st && st.mode === "hokum") ? "hokum" : "sun";
+
+// every sequence of three, four or five in a suit, plus every set of four
+function projectCandidates(hand, mode){
   const out = [];
-  // sequences per suit
+  const add = (kind, o) => out.push(Object.assign({
+    kind, pts: ptsOf(kind, mode), raw: PROJ_RAW[kind], seq:true, suit:null, top:-1, four:null
+  }, o));
+
   for (const s of SUITS){
-    const idx = hand.filter(c => c.s === s).map(c => RANKS.indexOf(c.r)).sort((a,b)=>a-b);
-    let run = [];
-    const flush = () => {
-      if (run.length >= 5) out.push({kind:"100", value:100, len:run.length, top:run[run.length-1], suit:s});
-      else if (run.length === 4) out.push({kind:"50", value:50, len:4, top:run[3], suit:s});
-      else if (run.length === 3) out.push({kind:"sra", value:20, len:3, top:run[2], suit:s});
-      run = [];
-    };
-    for (const v of idx){
-      if (run.length && v === run[run.length-1] + 1) run.push(v);
-      else { flush(); run = [v]; }
-    }
-    flush();
-  }
-  // four of a kind
-  // Four of a kind. Nines are not a Baloot project - that is Belote.
-  for (const r of ["J","A","K","Q","10"]){
-    if (hand.filter(c => c.r === r).length === 4){
-      if (r === "J") out.push({kind:"400", value:400, len:4, top:99, suit:null, four:r});
-      else out.push({kind:"100", value:100, len:4, top:80 + ORDER_PLAIN[r], suit:null, four:r});
+    const run = hand.filter(c => c.s === s).map(c => RANKS.indexOf(c.r)).sort((a,b)=>a-b);
+    for (let i=0;i<run.length;i++){
+      for (let len=3; len<=5 && i+len<=run.length; len++){
+        if (run[i+len-1] - run[i] !== len - 1) break;         // not consecutive
+        add(len === 5 ? "100" : len === 4 ? "50" : "sra", {
+          suit:s, top:run[i+len-1],
+          ids: Array.from({length:len}, (_,k) => s + RANKS[run[i]+k])
+        });
+      }
     }
   }
-  // baloot: K+Q of trump (Hokum only)
-  if (st.mode === "hokum"
-      && hand.some(c => c.s===st.trump && c.r==="K")
-      && hand.some(c => c.s===st.trump && c.r==="Q")){
-    out.push({kind:"baloot", value:20, len:2, top:-1, suit:st.trump});
+  for (const r of FOUR_RANKS){
+    if (hand.filter(c => c.r === r).length < 4) continue;
+    add((r === "A" && mode === "sun") ? "400" : "100", {
+      seq:false, four:r, top: FOUR_RANKS.length - FOUR_RANKS.indexOf(r),
+      ids: SUITS.map(s => s + r)
+    });
   }
   return out;
 }
 
-// only the team holding the single highest project scores projects (baloot always scores)
-function resolveProjects(handsAtDeal, st){
-  const per = [0,1,2,3].map(i => findProjects(handsAtDeal[i], st));
-  const balootSeat = per.findIndex(list => list.some(p => p.kind === "baloot"));
-  const rank = p => p.value * 1000 + p.len * 100 + Math.max(p.top,0);
+/* البند الخامس: more points first; on equal points the sequential hundred
+   beats a hundred of matching cards (5-2); sets of four run A, K, Q, J, 10
+   (5-3); sequences of the same size go by their top card. */
+function projBetter(a, b){
+  if (a.pts !== b.pts) return a.pts > b.pts;
+  if (a.seq !== b.seq) return !!a.seq;
+  return a.top > b.top;
+}
+
+// No card can serve two projects, so a hand of eight holds at most two.
+function bestProjectSet(hand, mode){
+  const cand = projectCandidates(hand, mode);
+  const total = list => list.reduce((a,p) => a + p.pts, 0);
+  const top   = list => list.reduce((a,p) => projBetter(p,a) ? p : a);
+  const better = (list, cur) => {
+    if (!cur.length) return !!list.length;
+    if (total(list) !== total(cur)) return total(list) > total(cur);
+    return projBetter(top(list), top(cur));
+  };
+  let best = [];
+  for (let i=0;i<cand.length;i++){
+    if (better([cand[i]], best)) best = [cand[i]];
+    for (let j=i+1;j<cand.length;j++){
+      if (cand[i].ids.some(id => cand[j].ids.includes(id))) continue;
+      if (better([cand[i], cand[j]], best)) best = [cand[i], cand[j]];
+    }
+  }
+  return best;
+}
+
+function findProjects(hand, st){
+  const mode = modeOf(st);
+  const out = bestProjectSet(hand, mode);
+  if (mode === "hokum" && st.trump
+      && hand.some(c => c.s===st.trump && c.r==="K")
+      && hand.some(c => c.s===st.trump && c.r==="Q")){
+    out.push({kind:"baloot", pts: ptsOf("baloot","hokum"), raw:PROJ_RAW.baloot,
+              seq:false, suit:st.trump, top:-1, four:null,
+              ids:[st.trump+"K", st.trump+"Q"]});
+  }
+  return out;
+}
+
+/* Only the team holding the single best project shows and scores - the other
+   team's projects are lost. Baloot is separate: either team may score it. */
+function resolveProjects(handsAtDeal, st, firstSeat){
+  const mode = modeOf(st);
+  const start = (typeof firstSeat === "number") ? firstSeat : 0;
+  const order = [0,1,2,3].map(k => (start + k) % 4);   // declaring order, dealer's right first
+  const sets = {};
+  for (const seat of order) sets[seat] = bestProjectSet(handsAtDeal[seat], mode);
 
   let bestSeat = -1, best = null;
-  per.forEach((list, seat) => {
-    for (const p of list){
-      if (p.kind === "baloot") continue;
-      if (!best || rank(p) > rank(best)){ best = p; bestSeat = seat; }
+  for (const seat of order){
+    for (const p of sets[seat]){
+      if (!best || projBetter(p, best)){ best = p; bestSeat = seat; }   // ties go to the earlier seat (5-7)
     }
-  });
+  }
 
-  const res = { teamPoints:[0,0], announcements:[] };
+  const res = {teamPoints:[0,0], announcements:[]};
+  const shown = [];
   if (best){
     const team = bestSeat % 2;
-    for (const seat of [team, team+2].map(x => x % 4)){
-      for (const p of per[seat]){
-        if (p.kind === "baloot") continue;
-        res.teamPoints[team] += p.value;
-        res.announcements.push({seat, kind:p.kind, value:p.value});
+    for (const seat of order){
+      if (seat % 2 !== team) continue;
+      for (const p of sets[seat]){
+        res.teamPoints[team] += p.pts;
+        res.announcements.push({seat, kind:p.kind, value:p.pts});
+        shown.push({seat, p});
       }
     }
   }
-  if (balootSeat >= 0){
-    res.teamPoints[balootSeat % 2] += 20;
-    res.announcements.push({seat:balootSeat, kind:"baloot", value:20});
+
+  if (mode === "hokum" && st.trump){
+    const bSeat = order.find(seat =>
+      handsAtDeal[seat].some(c => c.s===st.trump && c.r==="K") &&
+      handsAtDeal[seat].some(c => c.s===st.trump && c.r==="Q"));
+    // a hundred that already contains the pair swallows it (5-8)
+    const swallowed = bSeat !== undefined && shown.some(x => x.seat === bSeat && x.p.kind === "100"
+      && (x.p.seq ? x.p.ids.includes(st.trump+"K") && x.p.ids.includes(st.trump+"Q")
+                  : (x.p.four === "K" || x.p.four === "Q")));
+    if (bSeat !== undefined && !swallowed){
+      res.teamPoints[bSeat % 2] += ptsOf("baloot","hokum");
+      res.announcements.push({seat:bSeat, kind:"baloot", value:ptsOf("baloot","hokum")});
+    }
   }
   return res;
 }
 
-/* ---- round scoring ---- */
+/* ---- round scoring ----
+   Only one side counts its card points (البند الرابع ٤-١٠): the defenders,
+   unless a double moved the count across. That count is rounded and divided,
+   and the other side is simply given the rest of the round's 16 (Hokum) or
+   26 (Sun) - which is why a round can never hand out more than it holds. */
 function convert(raw, mode){
-  // Sun: /5 (remainder >= 3 rounds up). Hokum: /10 (remainder >= 6 rounds up).
+  const u = raw % 10;
   if (mode === "sun"){
-    const q = Math.floor(raw / 5), rem = raw % 5;
-    return q + (rem >= 3 ? 1 : 0);
+    if (u === 5) return raw / 5;                     // a five is not rounded in Sun (٤-١١)
+    return (u < 5 ? raw - u : raw - u + 10) / 5;
   }
-  const q = Math.floor(raw / 10), rem = raw % 10;
-  return q + (rem >= 6 ? 1 : 0);
+  return (u <= 5 ? raw - u : raw - u + 10) / 10;     // a five rounds down in Hokum (٤-١١)
 }
 
-/**
- * Convert both sides at once. Rounding each side on its own can hand out more
- * than the round contains: in Hokum two remainders of 6 both force up, so 86
- * and 76 score 9 and 8 - seventeen points from a round that holds sixteen.
- * The side with the weaker claim to its rounding gives the difference back;
- * on equal remainders that is the side with fewer points.
- */
-function shareRound(rawA, rawB, mode){
-  const total = convert(rawA + rawB, mode);
-  let a = convert(rawA, mode), b = convert(rawB, mode);
-  const drift = a + b - total;
-  if (drift !== 0){
-    const div = mode === "sun" ? 5 : 10;
-    const remA = rawA % div, remB = rawB % div;
-    const aIsWeaker = remA < remB || (remA === remB && rawA < rawB);
-    // over-shoot comes off the weaker side; a short-fall goes to the stronger
-    if (drift > 0){ if (aIsWeaker) a -= drift; else b -= drift; }
-    else          { if (aIsWeaker) b -= drift; else a -= drift; }
+/* A tie in game points is broken by what each side gave up in the rounding:
+   the side that lost more wins. Lose the same and the buyer's team takes it. */
+function tieWinner(rawCount, mode, countTeam, bidTeam){
+  const u = rawCount % 10;
+  if (mode === "sun"){
+    if (u >= 1 && u <= 4) return countTeam;          // they gave up 1 to 4
+    if (u >= 6) return 1 - countTeam;
+    return bidTeam;                                  // 0 or 5: nothing was rounded
   }
-  return [a, b];
+  if (u >= 2 && u <= 5) return countTeam;
+  if (u === 0 || u >= 6) return 1 - countTeam;
+  return bidTeam;                                    // ends in 1: each side gave up one
 }
 
 function scoreRound(st){
   const mode = st.mode;
-  const rawTricks = st.rawPoints.slice();          // [team0, team1] from tricks incl. last-trick bonus
-  // Projects are added to the raw points and converted with the round's divisor.
-  // Sun divides by 5 and Hokum by 10, so a project is automatically worth twice
-  // as much in Sun (a 50 is 10 points in Sun, 5 in Hokum). No extra multiplier.
-  const proj = st.projects.teamPoints.slice();
-
+  const total = mode === "sun" ? CFG.sunTotal : CFG.hokumTotal;
+  const bidTeam = st.bidder % 2, defTeam = 1 - bidTeam;
+  const countTeam = (st.countTeam === 0 || st.countTeam === 1) ? st.countTeam : defTeam;
+  const rawTricks = st.rawPoints.slice();
+  const proj = st.projects.teamPoints.slice();       // game points already
   const kabootTeam = st.tricksWon[0] === 8 ? 0 : (st.tricksWon[1] === 8 ? 1 : -1);
 
-  let final = [0,0], note = null;
+  const cards = [0,0];
+  cards[countTeam]     = convert(rawTricks[countTeam], mode);
+  cards[1 - countTeam] = total - cards[countTeam];
 
-  const roundTotal = convert(rawTricks[0] + rawTricks[1] + proj[0] + proj[1], mode);
+  let final = [0,0], note = null, winner = -1;
 
   if (kabootTeam >= 0){
-    const base = mode === "sun" ? CFG.kabootSun : CFG.kabootHokum;
-    final[kabootTeam] = base + convert(proj[0] + proj[1], mode);
+    // كبوت: all eight tricks. Only the kabooting side's own projects count.
+    final[kabootTeam] = (mode === "sun" ? CFG.kabootSun : CFG.kabootHokum) + proj[kabootTeam];
+    winner = kabootTeam;
     note = "kaboot";
   } else {
-    final = shareRound(rawTricks[0] + proj[0], rawTricks[1] + proj[1], mode);
-
-    // failed bid ("خسارة"): bidding team scores less than the defenders
-    const bidTeam = st.bidder % 2, defTeam = 1 - bidTeam;
-    if (final[bidTeam] < final[defTeam]){
-      final[defTeam] = roundTotal;      // the whole round, converted once
+    const sum = [cards[0] + proj[0], cards[1] + proj[1]];
+    if (sum[0] === sum[1]){
+      winner = tieWinner(rawTricks[countTeam], mode, countTeam, bidTeam);
+      note = "tie";
+    } else {
+      winner = sum[0] > sum[1] ? 0 : 1;
+    }
+    if (winner === bidTeam){
+      final = sum;                                   // the buy stood: each side keeps what it made
+    } else {
+      // خسارة: the buyer failed, so the defenders take the round and every project in it
+      final[defTeam] = total + proj[0] + proj[1];
       final[bidTeam] = 0;
       note = "losing";
-    } else if (final[bidTeam] === final[defTeam]){
-      // tie: the round is carried over to the next one ("أرض")
-      note = "tie";
     }
   }
-  return { final, rawTricks, projRaw: proj, note, kabootTeam };
+  return {final, rawTricks, cards, projPts: proj, note, kabootTeam, countTeam, winner};
 }
 
 /* ---- state factory ---- */
@@ -1261,7 +1352,6 @@ function newGameState(seatsMeta){
     scores: [0,0],
     roundNo: 1,
     dealer: 3,
-    carry: [0,0],           // carried points from a tied round
     history: [],
     phase: "idle"
   };
@@ -1383,7 +1473,7 @@ const Friends = (() => {
    5. Bot AI — heuristic, plays a decent social-level game
    ============================================================ */
 const AI = {
-  bid(hand, seat, st, round, upcard, isLastSeat){
+  bid(hand, seat, st, round, upcard, isLastSeat, canAshkal){
     // rough hand strength for each option
     const suitScore = suit => {
       let s = 0;
@@ -1401,13 +1491,18 @@ const AI = {
       s += hand.filter(c => c.r === "10").length * 2;
       return s;
     };
-    const proj = findProjects(hand, {mode:"sun"}).reduce((a,p)=>a+p.value, 0);
+    const proj = findProjects(hand, {mode:"sun"}).reduce((a,p)=>a+p.raw, 0);
 
     // thresholds are calibrated against the score distribution of random hands
     if (round === 1){
       const h = suitScore(upcard.s) + proj * .06;
       const s = sunScore() + proj * .08;
-      if (s >= 42 && s >= h) return {type:"sun"};
+      if (s >= 42 && s >= h){
+        // أشكل: worth a Sun, but the face-up card is junk - let the partner
+        // take it and declare. Only the third and fourth seats may say it.
+        if (canAshkal && PTS_PLAIN[upcard.r] <= 2) return {type:"ashkal"};
+        return {type:"sun"};
+      }
       if (h >= 31) return {type:"hokum", suit:upcard.s};
       return {type:"pass"};
     }
@@ -1512,6 +1607,9 @@ const Settings = {
   set(k,v){ this[k]=v; try{ localStorage.setItem("baloot."+k, v===true?"on":v===false?"off":v);}catch(e){} }
 };
 const pace = base => base * ({slow:1.55, normal:1, fast:.55}[Settings.speed] || 1);
+
+const projName = kind => T(kind === "sra" ? "projSra" : kind === "50" ? "proj50"
+                         : kind === "100" ? "proj100" : kind === "400" ? "proj400" : "projBaloot");
 
 function setLang(l){
   LANG = l;
@@ -1653,12 +1751,20 @@ const Game = {
     } else {
       await wait(pace(620));
       const isLast = this.bidsSeen === 3 && this.bidRound === 2 && !this.currentBid;
-      const b = AI.bid(R.hands[seat], seat, {mode:"sun"}, this.bidRound, R.upcard, isLast);
+      const b = AI.bid(R.hands[seat], seat, {mode:"sun"}, this.bidRound, R.upcard,
+                       isLast, this.canAshkal());
       this.applyBid(seat, this.legalBid(b));
     }
   },
 
+  // البند الثامن: only the third and fourth seats may say أشكل, only in the
+  // first round, and only while nobody has bought.
+  canAshkal(){
+    return this.bidRound === 1 && !this.currentBid && this.bidsSeen >= 2;
+  },
+
   legalBid(b){
+    if (b.type === "ashkal" && !this.canAshkal()) b = {type:"sun"};
     // Sun over-rides a standing Hokum; nothing over-rides a standing Sun.
     if (!this.currentBid) return b;
     if (this.currentBid.type === "sun") return {type:"pass"};
@@ -1672,8 +1778,9 @@ const Game = {
     this.bidLocked = true;
     UI.hide("#m-bid");
     Sound.bid();
-    const label = b.type === "pass" ? T("pass")
-                : b.type === "sun"  ? T("sun")
+    const label = b.type === "pass"   ? T("pass")
+                : b.type === "sun"    ? T("sun")
+                : b.type === "ashkal" ? T("ashkal")
                 : T("hokum") + " " + SUIT_GLYPH[b.suit];
     UI.bubble(seat, label, b.type !== "pass");
     if (b.type !== "pass") this.currentBid = {...b, seat};
@@ -1686,33 +1793,36 @@ const Game = {
 
   async settleBid(){
     const R = this.R, G = this.G, b = this.currentBid;
-    R.mode   = b.type;
+    // أشكل is a Sun bought for the partner: the partner takes the face-up card
+    // and is the buyer, the player who said it keeps their own five.
+    const declarer = b.type === "ashkal" ? (b.seat + 2) % 4 : b.seat;
+    R.mode   = b.type === "ashkal" ? "sun" : b.type;
     R.trump  = b.type === "hokum" ? b.suit : null;
-    R.bidder = b.seat;
+    R.bidder = declarer;
+    R.ashkalBy = b.type === "ashkal" ? b.seat : -1;
 
-    // bidder receives the face-up card + 2, the others 3 each
+    // the buyer receives the face-up card + 2, the others 3 each
     for (let k=0;k<4;k++){
-      const seat = (b.seat + k) % 4;
-      if (seat === b.seat){ R.hands[seat].push(R.upcard, ...R.deck.splice(0,2)); }
+      const seat = (declarer + k) % 4;
+      if (seat === declarer){ R.hands[seat].push(R.upcard, ...R.deck.splice(0,2)); }
       else { R.hands[seat].push(...R.deck.splice(0,3)); }
     }
     R.upcard = null;
     R.handsAtDeal = R.hands.map(h => h.slice());
-    R.projects = resolveProjects(R.handsAtDeal, R);
+    R.projects = resolveProjects(R.handsAtDeal, R, (G.dealer + 1) % 4);
     R.unseen = [].concat(...R.hands.filter((_,i)=>i!==0).map(h=>h.slice()));
 
     UI.setMode(R);
     UI.renderHand(null, true);
     UI.renderSeats();
 
-    const who = G.seats[b.seat].name;
+    const who = G.seats[declarer].name;
     toast(T("bidderIs") + ": " + who + " — " +
           (R.mode === "sun" ? T("sun") : T("hokum") + " " + SUIT_GLYPH[R.trump]));
 
     await wait(pace(700));
     for (const a of R.projects.announcements){
-      UI.bubble(a.seat, T(a.kind === "sra" ? "projSra" : a.kind === "50" ? "proj50"
-                        : a.kind === "100" ? "proj100" : a.kind === "400" ? "proj400" : "projBaloot"), true);
+      UI.bubble(a.seat, projName(a.kind), true);
       await wait(pace(420));
     }
 
@@ -1768,8 +1878,10 @@ const Game = {
     R.currentSeat = seat;
     R.hands[seat] = R.hands[seat].filter(x => x.id !== c.id);
     R.unseen = R.unseen.filter(x => x.id !== c.id);
-    R.trick.push({seat, card:c});
+    const ekka = R.trick.length === 0 && isEkka(c, R);
+    R.trick.push({seat, card:c, ekka});
     Sound.card();
+    if (ekka && c.r !== "A") UI.bubble(seat, T("ekka"));
     UI.placeCard(seat, c, R);
     UI.renderHand(null);
     UI.renderSeats();
@@ -1806,14 +1918,7 @@ const Game = {
     const R = this.R, G = this.G;
     const res = scoreRound(R);
 
-    let gained = [res.final[0], res.final[1]];
-    if (res.note === "tie"){
-      G.carry = [G.carry[0] + gained[0], G.carry[1] + gained[1]];
-      gained = [0,0];
-    } else {
-      gained = [gained[0] + G.carry[0], gained[1] + G.carry[1]];
-      G.carry = [0,0];
-    }
+    const gained = [res.final[0], res.final[1]];
     G.scores[0] += gained[0];
     G.scores[1] += gained[1];
     G.history.push({round:G.roundNo, mode:R.mode, trump:R.trump, bidder:R.bidder, res, gained});
@@ -2105,16 +2210,22 @@ const UI = {
     }
 
     const row2 = el("div", "row"); row2.style.marginTop = "8px";
+    if (Game.canAshkal()){
+      const ba = el("button", "btn", T("ashkal"));
+      ba.title = T("ashkalHint");
+      ba.onclick = () => Game.applyBid(seat, {type:"ashkal"});
+      row2.appendChild(ba);
+    }
     const bp = el("button", "btn ghost", T("pass"));
     bp.onclick = () => Game.applyBid(seat, {type:"pass"});
     row2.appendChild(bp);
     body.appendChild(row2);
+    if (Game.canAshkal()) body.appendChild(el("div", "hint", T("ashkalHint")));
 
     // a short summary of the hand strength, purely informative
     const proj = findProjects(R.hands[0], {mode:"sun"});
     if (proj.length){
-      const names = proj.map(p => T(p.kind === "sra" ? "projSra" : p.kind === "50" ? "proj50"
-                                  : p.kind === "100" ? "proj100" : "proj400")).join("، ");
+      const names = proj.map(p => projName(p.kind)).join(LANG === "ar" ? "، " : ", ");
       body.appendChild(el("div", "hint", "✦ " + names));
     }
     this.show("#m-bid");
@@ -2130,14 +2241,15 @@ const UI = {
 
     if (res.note === "kaboot") body.appendChild(el("div", "hint", "🏆 " + T("kaboot")));
     if (res.note === "losing") body.appendChild(el("div", "hint", "⚠︎ " + T("losing")));
-    if (res.note === "tie")    body.appendChild(el("div", "hint", "= " + (LANG==="ar"?"أرض — تُضاف للجولة القادمة":"Tie — carried to the next round")));
+    if (res.note === "tie")    body.appendChild(el("div", "hint", "= " + T("tieNote")));
 
     const tab = el("table", "rtab");
     const winTeam = gained[0] === gained[1] ? -1 : (gained[0] > gained[1] ? 0 : 1);
     tab.innerHTML =
       "<tr><th></th><th>" + T("us") + "</th><th>" + T("them") + "</th></tr>" +
       "<tr><td>" + T("tricks") + "</td><td>" + res.rawTricks[0] + "</td><td>" + res.rawTricks[1] + "</td></tr>" +
-      "<tr><td>" + T("projects") + "</td><td>" + res.projRaw[0] + "</td><td>" + res.projRaw[1] + "</td></tr>" +
+      "<tr><td>" + T("gamePts") + "</td><td>" + res.cards[0] + "</td><td>" + res.cards[1] + "</td></tr>" +
+      "<tr><td>" + T("projects") + "</td><td>" + res.projPts[0] + "</td><td>" + res.projPts[1] + "</td></tr>" +
       "<tr class='" + (winTeam >= 0 ? "win" : "") + "'><td>" + T("final") + "</td>" +
         "<td>" + (winTeam === 0 ? "<b>" + gained[0] + "</b>" : gained[0]) + "</td>" +
         "<td>" + (winTeam === 1 ? "<b>" + gained[1] + "</b>" : gained[1]) + "</td></tr>" +
@@ -2501,8 +2613,10 @@ const RULES_AR = `
 <li>تُوزَّع ٥ أوراق لكل لاعب وتُكشف ورقة في الوسط.</li>
 <li>في الجولة الأولى: <b>حكم</b> على نوع الورقة المكشوفة، أو <b>صن</b> (بدون حكم)، أو <b>بس</b>.</li>
 <li><b>الصن يعلى على الحكم</b> في نفس الجولة.</li>
+<li><b>أشكل</b> — يقولها اللاعب الثالث أو الرابع إذا باص من قبله: صن يشتريه شريكك، وهو من يأخذ الورقة المكشوفة.</li>
 <li>إذا باص الجميع: جولة ثانية تختار فيها أي نوع للحكم أو الصن. وإذا باص الجميع مرة أخرى يُعاد التوزيع.</li>
-<li>من زايد يأخذ الورقة المكشوفة + ورقتين، والباقون ٣ أوراق لكل منهم.</li>
+<li>المشتري يأخذ الورقة المكشوفة + ورقتين، والباقون ٣ أوراق لكل منهم.</li>
+<li>أول أكلة يفتحها اللاعب الذي على يمين الموزع أياً كان المشتري.</li>
 </ul>
 
 <h3>ترتيب الأوراق والنقاط</h3>
@@ -2523,27 +2637,30 @@ const RULES_AR = `
 <h3>قواعد اللعب</h3>
 <ul>
 <li>يجب اتباع نوع الورقة المطروحة إن وُجد لديك.</li>
-<li>في الحكم: إذا لم يكن لديك النوع وجب عليك القطع بالحكم، إلا إذا كانت الأكلة لشريكك.</li>
-<li>يجب أن تعلو على الحكم المطروح إن استطعت.</li>
+<li>في الحكم: إذا لم يكن لديك النوع وجب قطع الأكلة بالحكم إن استطعت كسبها، وإن لم تستطع فالعب ما شئت.</li>
+<li>إذا طُرح الحكم وجب أن تعلو عليه إن استطعت.</li>
+<li>إذا كانت الأكلة لشريكك فارمِ ما شئت، إلا إن كنت ثالثاً على فتحة شريك يمكن قطعها؛ يعفيك منها الآكل أو نطق <b>إكه</b> (أعلى ورقة باقية من نوعها).</li>
 </ul>
 
 <h3>المشاريع</h3>
-<ul>
-<li><b>سرا</b> ٣ متتالية من نفس النوع = ٢٠</li>
-<li><b>خمسين</b> ٤ متتالية = ٥٠</li>
-<li><b>مية</b> ٥ متتالية أو ٤ أوراق متشابهة (آكل/شايب/بنت/١٠/٩) = ١٠٠</li>
-<li><b>أربعمية</b> ٤ ولد = ٤٠٠</li>
-<li><b>بلوت</b> شايب وبنت نوع الحكم = ٢٠ (في الحكم فقط)</li>
-</ul>
-<p>يحتسب المشاريع الفريق صاحب أعلى مشروع فقط. تُضاف قيمتها إلى نقاط الأكلات ثم تُقسَّم، ولأن الصن يُقسَّم على ٥ والحكم على ١٠ فإن <b>قيمة المشروع في الصن ضِعف قيمتها في الحكم</b> (الخمسين = ١٠ نقاط في الصن و٥ في الحكم، والأربعمية = ٨٠ في الصن و٤٠ في الحكم).</p>
+<table>
+<tr><th>المشروع</th><th>حكم</th><th>صن</th></tr>
+<tr><td><b>سرا</b> ٣ متتالية من نفس النوع</td><td>٢</td><td>٤</td></tr>
+<tr><td><b>خمسين</b> ٤ متتالية</td><td>٥</td><td>١٠</td></tr>
+<tr><td><b>مية</b> ٥ متتالية أو ٤ متشابهة (شايب/بنت/ولد/١٠)</td><td>١٠</td><td>٢٠</td></tr>
+<tr><td><b>أربعمية</b> ٤ آكال</td><td>١٠ (تُحسب مية)</td><td>٤٠</td></tr>
+<tr><td><b>بلوت</b> شايب وبنت نوع الحكم</td><td>٢</td><td>—</td></tr>
+</table>
+<p>القيم أعلاه بالقيد. يحتسب المشاريع الفريق صاحب أعلى مشروع وحده — وله كل مشاريعه — وتسقط مشاريع الفريق الآخر. المية المتسلسلة أكبر من مية الأوراق المتشابهة، وترتيب المتشابهة: آكال ثم شياب ثم بنات ثم أولاد ثم عشرات. ولا تدخل الورقة في مشروعين، فلا يزيد ما في اليد على مشروعين. وأربع تسعات أو ثمانيات أو سبعات بلا قيمة. والبلوت مستقل: يحسبه أي فريق، إلا إذا كان داخل مية مفروشة له.</p>
 
 <h3>الحساب</h3>
 <ul>
-<li>الصن: النقاط ÷ ٥ (الباقي ٣ فأكثر يُقرَّب لأعلى) — ٢٦ نقطة للجولة.</li>
-<li>الحكم: النقاط ÷ ١٠ (الباقي ٦ فأكثر يُقرَّب لأعلى) — ١٦ نقطة للجولة.</li>
-<li><b>خسارة</b>: إذا حصل فريق المزايد على نقاط أقل من الخصم تذهب كل نقاط الجولة للخصم.</li>
-<li><b>كبوت</b>: أخذ الأكلات الثماني = ٤٤ في الصن، ٢٥ في الحكم.</li>
-<li>التعادل = <b>أرض</b>، تُضاف نقاط الجولة إلى الجولة التالية.</li>
+<li>يَعُدّ أبناطه الفريق غير المشتري وحده. في <b>الحكم</b> تُقرَّب إلى أقرب عشرة والخمسة تنزل ثم ÷ ١٠، وفي <b>الصن</b> تُقرَّب إلى أقرب عشرة إلا إذا انتهت بخمسة فلا تُقرَّب ثم ÷ ٥.</li>
+<li>ويأخذ فريق المشتري باقي قيد الجولة: <b>١٦</b> في الحكم و<b>٢٦</b> في الصن — فلا تُخرج الجولة أكثر مما فيها.</li>
+<li>تُضاف المشاريع فوق ذلك بقيمتها بالقيد.</li>
+<li><b>خسارة</b>: إذا نقص فريق المشتري عن الخصم أخذ الخصم الجولة كاملة ومعها كل المشاريع.</li>
+<li>عند تساوي القيد تكون الأفضلية لمن خسر أكثر في التقريب، فإن تساويا فلفريق المشتري.</li>
+<li><b>كبوت</b>: أخذ الأكلات الثماني = ٤٤ في الصن و٢٥ في الحكم، ومعها مشاريع الفريق نفسه.</li>
 <li>اللعبة حتى <b>١٥٢</b> نقطة.</li>
 </ul>
 </div>`;
@@ -2557,8 +2674,10 @@ const RULES_EN = `
 <li>Five cards are dealt to each player and one card is turned face up.</li>
 <li>First round: bid <b>Hokum</b> (that card's suit is trump), <b>Sun</b> (no trump), or <b>Pass</b>.</li>
 <li><b>Sun outbids Hokum</b> within the same round.</li>
+<li><b>Ashkal</b> — said by the third or fourth player when everyone before them passed: a Sun bought for the partner, who takes the face-up card and becomes the buyer.</li>
 <li>If all pass, a second round lets you pick any trump suit or Sun. All passing again means a redeal.</li>
-<li>The bidder takes the face-up card plus two more; everyone else gets three.</li>
+<li>The buyer takes the face-up card plus two more; everyone else gets three.</li>
+<li>The player to the dealer's right leads to the first trick, whoever bought.</li>
 </ul>
 
 <h3>Card ranking &amp; points</h3>
@@ -2579,27 +2698,30 @@ Trump order: J &gt; 9 &gt; A &gt; 10 &gt; K &gt; Q &gt; 8 &gt; 7.</p>
 <h3>Playing rules</h3>
 <ul>
 <li>You must follow the led suit if you hold it.</li>
-<li>In Hokum, if you are void you must trump — unless your partner is already winning the trick.</li>
-<li>You must over-trump a trump already played whenever you can.</li>
+<li>In Hokum, if you are void you must take the trick with a trump when you can. If you cannot beat it, anything goes — throwing a trump underneath is allowed, never forced.</li>
+<li>A trump lead must be over-trumped whenever you can.</li>
+<li>You may throw away when your partner is winning — except as third hand behind a partner's lead that can still be beaten. An Ace, or a lead called <b>Ekka</b> (the highest card of its suit still out), frees you.</li>
 </ul>
 
 <h3>Projects</h3>
-<ul>
-<li><b>Sra</b> — 3 in sequence, same suit = 20</li>
-<li><b>Fifty</b> — 4 in sequence = 50</li>
-<li><b>Hundred</b> — 5 in sequence, or four of a kind (A/K/Q/10/9) = 100</li>
-<li><b>Four Hundred</b> — four Jacks = 400</li>
-<li><b>Baloot</b> — K + Q of trump = 20 (Hokum only)</li>
-</ul>
-<p>Only the team holding the single highest project scores projects. Project values are added to the trick points before conversion, so &mdash; because Sun divides by 5 and Hokum by 10 &mdash; <b>a project is worth twice as much in Sun</b> (a Fifty is 10 points in Sun, 5 in Hokum; a Four Hundred is 80 in Sun, 40 in Hokum).</p>
+<table>
+<tr><th>Project</th><th>Hokum</th><th>Sun</th></tr>
+<tr><td><b>Sra</b> — 3 in sequence, same suit</td><td>2</td><td>4</td></tr>
+<tr><td><b>Fifty</b> — 4 in sequence</td><td>5</td><td>10</td></tr>
+<tr><td><b>Hundred</b> — 5 in sequence, or four K/Q/J/10</td><td>10</td><td>20</td></tr>
+<tr><td><b>Four Hundred</b> — four Aces</td><td>10 (a Hundred)</td><td>40</td></tr>
+<tr><td><b>Baloot</b> — K + Q of trumps</td><td>2</td><td>—</td></tr>
+</table>
+<p>Those are game points. Only the team holding the single best project scores — and it scores every project it holds; the other team's are lost. A sequential Hundred beats a Hundred of four equal cards, and sets of four run A, K, Q, J, 10. No card serves two projects, so a hand holds at most two. Four nines, eights or sevens are worth nothing. Baloot stands apart: either team may score it, unless it sits inside a Hundred that team showed.</p>
 
 <h3>Scoring</h3>
 <ul>
-<li>Sun: raw ÷ 5 (remainder 3+ rounds up) — 26 points per round.</li>
-<li>Hokum: raw ÷ 10 (remainder 6+ rounds up) — 16 points per round.</li>
-<li><b>Failed bid</b>: if the bidding team scores less than the defenders, the defenders take everything.</li>
-<li><b>Kaboot</b> (all 8 tricks): 44 in Sun, 25 in Hokum.</li>
-<li>A tie carries the round's points over to the next round.</li>
+<li>Only the defenders count their card points. <b>Hokum</b>: round to the nearest ten, a five rounding down, then ÷10. <b>Sun</b>: round to the nearest ten unless the total ends in five, then ÷5.</li>
+<li>The buyer's team is handed the rest of the round — <b>16</b> in Hokum, <b>26</b> in Sun — so a round never pays out more than it holds.</li>
+<li>Projects are added on top, as game points.</li>
+<li><b>Failed bid</b>: if the buyer's team ends up with less, the defenders take the whole round plus every project in it.</li>
+<li>Level game points go to the side that gave up more in the rounding; give up the same and the buyer's team takes it.</li>
+<li><b>Kaboot</b> (all 8 tricks): 44 in Sun, 25 in Hokum, plus that team's own projects.</li>
 <li>The game is played to <b>152</b> points.</li>
 </ul>
 </div>`;
@@ -2811,9 +2933,9 @@ if (new URL(location.href).searchParams.get("test") === "1"){
   // conversion
   ok("convert sun 130 -> 26", convert(130,"sun") === 26);
   ok("convert hokum 162 -> 16", convert(162,"hokum") === 16);
-  ok("convert sun 62 -> 12", convert(62,"sun") === 12);   // 12 r2 -> down
-  ok("convert sun 63 -> 13", convert(63,"sun") === 13);   // 12 r3 -> up
-  ok("convert hokum 75 -> 7", convert(75,"hokum") === 7);
+  ok("convert sun 62 -> 12", convert(62,"sun") === 12);   // rounds to 60
+  ok("convert sun 63 -> 12", convert(63,"sun") === 12);   // still rounds to 60
+  ok("convert hokum 75 -> 7", convert(75,"hokum") === 7); // a five rounds down
   ok("convert hokum 76 -> 8", convert(76,"hokum") === 8);
 
   // trick winner
@@ -2844,14 +2966,79 @@ if (new URL(location.href).searchParams.get("test") === "1"){
   const lg4 = legalCards(h4, [{seat:0,card:card("H","K")},{seat:1,card:card("S","10")}], st4);
   ok("must over-trump", lg4.length === 1 && lg4[0].r === "A");
 
-  // projects
-  ok("sra = 20", findProjects([card("H","7"),card("H","8"),card("H","9"),card("C","A")], stS)
-      .some(p => p.kind === "sra"));
-  ok("fifty = 50", findProjects([card("H","7"),card("H","8"),card("H","9"),card("H","10")], stS)
-      .some(p => p.kind === "50"));
-  ok("four jacks = 400", findProjects(SUITS.map(s => card(s,"J")), stS).some(p => p.value === 400));
-  ok("baloot = 20", findProjects([card("S","K"),card("S","Q")], stH).some(p => p.kind === "baloot"));
+  // legality: a partner who led a card that can still be beaten must be covered
+  const h5 = [card("D","K"), card("S","8"), card("C","7")];
+  const st5 = {...stH, currentSeat:2};
+  const lead5 = [{seat:0, card:card("H","K")}, {seat:1, card:card("H","7")}];
+  ok("third hand trumps a partner's uncertain lead",
+     legalCards(h5, lead5, st5).every(c => c.s === "S"));
+  const lead5e = [{seat:0, card:card("H","K"), ekka:true}, {seat:1, card:card("H","7")}];
+  ok("an Ekka lead frees the third hand", legalCards(h5, lead5e, st5).length === 3);
+  ok("an Ace lead frees the third hand",
+     legalCards(h5, [{seat:0,card:card("H","A")},{seat:1,card:card("H","7")}], st5).length === 3);
 
+  // no obligation to throw a trump under an opponent's trump
+  const h6 = [card("S","7"), card("D","A")];
+  const st6 = {...stH, currentSeat:3};
+  const lg6 = legalCards(h6, [{seat:0,card:card("H","K")},{seat:1,card:card("H","7")},
+                              {seat:2,card:card("S","J")}], st6);
+  ok("no forced under-trump", lg6.length === 2);
+
+  // ---- projects (البند السادس) ----
+  const sun = {mode:"sun"}, hok = {mode:"hokum", trump:"S"};
+  const pk = (hand, st) => findProjects(hand, st).map(p => p.kind + ":" + p.pts).sort().join(" ");
+  ok("sra is 4 in sun and 2 in hokum",
+     pk([card("H","7"),card("H","8"),card("H","9"),card("C","A")], sun) === "sra:4" &&
+     pk([card("H","7"),card("H","8"),card("H","9"),card("C","A")], hok) === "sra:2");
+  ok("fifty is 10 in sun and 5 in hokum",
+     pk([card("H","7"),card("H","8"),card("H","9"),card("H","10")], sun) === "50:10" &&
+     pk([card("H","7"),card("H","8"),card("H","9"),card("H","10")], hok) === "50:5");
+  ok("four aces: four hundred in sun, a hundred in hokum",
+     pk(SUITS.map(s => card(s,"A")), sun) === "400:40" &&
+     pk(SUITS.map(s => card(s,"A")), hok) === "100:10");
+  ok("four jacks are a hundred, not a four hundred",
+     pk(SUITS.map(s => card(s,"J")), sun) === "100:20");
+  ok("four tens are a hundred", pk(SUITS.map(s => card(s,"10")), sun) === "100:20");
+  ok("four nines is not a project", !findProjects(SUITS.map(s => card(s,"9")), sun).length);
+  ok("baloot is 2 in hokum only",
+     pk([card("S","K"),card("S","Q")], hok) === "baloot:2" &&
+     !findProjects([card("S","K"),card("S","Q")], sun).length);
+
+  // a card cannot serve two projects: four kings plus the leftover Q-J-10 siri
+  const twoProj = [card("D","K"),card("H","K"),card("S","K"),
+                   card("C","A"),card("C","K"),card("C","Q"),card("C","J"),card("C","10")];
+  ok("no card serves two projects", pk(twoProj, sun) === "100:20 sra:4");
+
+  // 5-2: the sequential hundred outranks a hundred of matching cards
+  const seq100 = findProjects([card("C","A"),card("C","K"),card("C","Q"),card("C","J"),card("C","10")], hok)[0];
+  const four100 = findProjects(SUITS.map(s => card(s,"K")), hok)[0];
+  ok("a sequential hundred beats four kings", projBetter(seq100, four100));
+
+  const handsOf = (a,b,c,d) => [a,b,c,d];
+  const rp = resolveProjects(handsOf(
+      [card("C","A"),card("C","K"),card("C","Q")],          // seat 0: sra
+      [card("D","A"),card("D","K"),card("D","Q"),card("D","J")], // seat 1: fifty
+      [], []), sun, 0);
+  ok("only the best project's team scores", rp.teamPoints[0] === 0 && rp.teamPoints[1] === 10);
+
+  // 5-8: a hundred of kings swallows the baloot inside it
+  const rb = resolveProjects(handsOf(SUITS.map(s => card(s,"K")).concat([card("S","Q")]), [], [], []),
+                             {mode:"hokum", trump:"S"}, 0);
+  ok("four kings swallow the baloot", rb.teamPoints[0] === 10);
+
+  // ---- converting card points to game points (٤-١١) ----
+  ok("hokum rounds a five down", convert(65,"hokum") === 6 && convert(66,"hokum") === 7);
+  ok("hokum 56 to 65 is six", convert(56,"hokum") === 6 && convert(55,"hokum") === 5);
+  ok("sun leaves a five alone", convert(65,"sun") === 13 && convert(63,"sun") === 12 && convert(67,"sun") === 14);
+  ok("a whole round converts", convert(162,"hokum") === 16 && convert(130,"sun") === 26);
+
+  // this is exactly why only one team counts: in hokum both sides can round up
+  let over = 0;
+  for (let a = 0; a <= 162; a++) if (convert(a,"hokum") + convert(162-a,"hokum") > 16) over++;
+  ok("independent hokum counts can overshoot 16 (" + over + " splits)", over > 0);
+  let sunBad = 0;
+  for (let a = 0; a <= 130; a++) if (convert(a,"sun") + convert(130-a,"sun") !== 26) sunBad++;
+  ok("sun counts always add to 26", sunBad === 0);
 
   // ---- round scoring ----
   const mkRound = (mode, tricks, proj, bidder, won) => ({
@@ -2859,55 +3046,67 @@ if (new URL(location.href).searchParams.get("test") === "1"){
     rawPoints: tricks, tricksWon: won || [4,4],
     projects:{teamPoints: proj, announcements:[]}
   });
-  // a project is worth twice as much in Sun purely because Sun divides by 5
-  ok("fifty in hokum = 5",  convert(50, "hokum") === 5);
-  ok("fifty in sun = 10",   convert(50, "sun")   === 10);
-  ok("400 in hokum = 40",   convert(400,"hokum") === 40);
-  ok("400 in sun = 80",     convert(400,"sun")   === 80);
+  // team 0 buys, team 1 defends and therefore counts
+  const round = (mode, defRaw, projA, projB, won) =>
+    scoreRound(mkRound(mode, [(mode === "sun" ? 130 : 162) - defRaw, defRaw], [projA, projB], 0, won));
 
-  const rNorm = scoreRound(mkRound("hokum", [100,62], [0,0], 0));
-  ok("hokum split 100/62 -> 10/6", rNorm.final[0] === 10 && rNorm.final[1] === 6 && !rNorm.note);
+  // pagat's worked examples of the Saudi tournament scoring
+  const ex1 = round("hokum", 77, 0, 0);
+  ok("ex1: hokum 85/77 is 8 each and the buy stands",
+     ex1.note === "tie" && ex1.final[0] === 8 && ex1.final[1] === 8);
+  const ex3 = round("hokum", 56, 0, 5);
+  ok("ex3: a fifty flips a hokum the buyer led on cards",
+     ex3.note === "losing" && ex3.final[1] === 21 && ex3.final[0] === 0);
+  const ex5 = round("sun", 66, 10, 0);
+  ok("ex5: sun 64/66 with the buyer's fifty is 22 and 14",
+     !ex5.note && ex5.final[0] === 22 && ex5.final[1] === 14);
+  const ex6 = round("sun", 55, 0, 4);
+  ok("ex6: a tie with nothing rounded goes to the buyer",
+     ex6.note === "tie" && ex6.final[0] === 15 && ex6.final[1] === 15);
+  const ex7 = round("sun", 41, 0, 10);
+  ok("ex7: a tie goes to the side that lost more in the rounding",
+     ex7.note === "losing" && ex7.final[1] === 36 && ex7.final[0] === 0);
 
-  const rFail = scoreRound(mkRound("sun", [40,90], [0,0], 0));
-  ok("failed bid gives defenders the lot",
-     rFail.note === "losing" && rFail.final[0] === 0 && rFail.final[1] === CFG.sunTotal);
+  // the federation's own thresholds (البند الرابع ٤-٢ … ٤-٩)
+  const lost = r => r.note === "losing";
+  ok("4-2: sun without projects is lost at 66", lost(round("sun", 66, 0, 0)) && !lost(round("sun", 65, 0, 0)));
+  ok("4-3: hokum without projects is lost at 82", lost(round("hokum", 82, 0, 0)) && !lost(round("hokum", 81, 0, 0)));
+  ok("4-4: sun with a sra is lost at 56", lost(round("sun", 56, 0, 4)) && !lost(round("sun", 55, 0, 4)));
+  ok("4-5: hokum with a sra is lost at 72", lost(round("hokum", 72, 0, 2)) && !lost(round("hokum", 71, 0, 2)));
+  ok("4-6: sun with a fifty is lost at 41", lost(round("sun", 41, 0, 10)) && !lost(round("sun", 40, 0, 10)));
+  ok("4-7: hokum with a fifty is lost at 56", lost(round("hokum", 56, 0, 5)) && !lost(round("hokum", 55, 0, 5)));
+  ok("4-8: sun with a hundred is lost at 16", lost(round("sun", 16, 0, 20)) && !lost(round("sun", 15, 0, 20)));
+  ok("4-9: hokum with a hundred is lost at 32", lost(round("hokum", 32, 0, 10)) && !lost(round("hokum", 31, 0, 10)));
 
-  const rFailP = scoreRound(mkRound("sun", [40,90], [0,50], 0));
-  ok("failed bid adds the projects",
-     rFailP.final[1] === CFG.sunTotal + convert(50,"sun") && rFailP.final[0] === 0);
-
-  const rKab = scoreRound(mkRound("hokum", [162,0], [0,0], 0, [8,0]));
-  ok("kaboot hokum = 25", rKab.note === "kaboot" && rKab.final[0] === CFG.kabootHokum);
-
-  const rTie = scoreRound(mkRound("hokum", [81,81], [0,0], 0));
-  ok("equal scores carry over", rTie.note === "tie" && rTie.final[0] === rTie.final[1]);
-
-  // a round must hand out exactly the points it holds
-  let split = 0, worst = null;
-  for (const [mode, total] of [["hokum", 162], ["sun", 130]]){
-    for (let a = 0; a <= total; a++){
-      const [x, y] = shareRound(a, total - a, mode);
-      if (x + y !== convert(total, mode)){ split++; worst = mode + " " + a + "/" + (total - a); }
+  // a round never hands out more card points than it holds
+  let bad = null;
+  for (const [mode, total, cap] of [["hokum", 162, 16], ["sun", 130, 26]]){
+    for (let d = 0; d <= total; d++){
+      const r = round(mode, d, 0, 0);
+      if (r.cards[0] + r.cards[1] !== cap) bad = mode + " " + d;
+      if (!r.note && r.final[0] + r.final[1] !== cap) bad = mode + " " + d;
     }
   }
-  ok("every point split adds up (" + (split ? worst : "293 checked") + ")", split === 0);
-  const h = shareRound(86, 76, "hokum");
-  ok("hokum 86/76 is 9+7, not 9+8", h[0] === 9 && h[1] === 7 && h[0] + h[1] === 16);
-  const hEq = shareRound(81, 81, "hokum");
-  ok("hokum 81/81 is 8+8", hEq[0] === 8 && hEq[1] === 8);
-  ok("four nines is not a project",
-     !findProjects(SUITS.map(s => card(s, "9")), stS).length);
-  ok("four aces is still a hundred",
-     findProjects(SUITS.map(s => card(s, "A")), stS).some(p => p.value === 100));
+  ok("every split adds up to the round" + (bad ? " (" + bad + ")" : " (293 checked)"), !bad);
 
-  // a big project can flip a round the bidders won on tricks - that is real Baloot
-  const rFlip = scoreRound(mkRound("sun", [106,24], [0,400], 0));
-  ok("a 400 flips the round", rFlip.note === "losing" &&
-     rFlip.final[1] === CFG.sunTotal + convert(400,"sun"));
-  // ...but a mid-sized project must not, which it would if Sun doubled on top of /5
-  const rNoFlip = scoreRound(mkRound("sun", [106,24], [0,70], 0));
-  ok("a 70 project does not flip (no double-counting in Sun)",
-     !rNoFlip.note && rNoFlip.final[0] === convert(106,"sun") && rNoFlip.final[1] === convert(94,"sun"));
+  const rFail = round("sun", 90, 0, 0);
+  ok("a failed bid gives the defenders the lot",
+     rFail.note === "losing" && rFail.final[0] === 0 && rFail.final[1] === CFG.sunTotal);
+  const rFailP = round("sun", 90, 4, 0);
+  ok("a failed bid sweeps up both sides' projects",
+     rFailP.final[1] === CFG.sunTotal + 4 && rFailP.final[0] === 0);
+  const rKab = scoreRound(mkRound("hokum", [162,0], [5,0], 0, [8,0]));
+  ok("kaboot in hokum is 25 plus its own projects",
+     rKab.note === "kaboot" && rKab.final[0] === CFG.kabootHokum + 5 && rKab.final[1] === 0);
+  const rKabS = scoreRound(mkRound("sun", [130,0], [0,0], 0, [8,0]));
+  ok("kaboot in sun is 44", rKabS.final[0] === CFG.kabootSun);
+
+  // a big project can flip a round the buyer won on cards - that is real Baloot
+  const rFlip = round("sun", 24, 0, 40);
+  ok("a four hundred flips the round", rFlip.note === "losing" && rFlip.final[1] === CFG.sunTotal + 40);
+  const rNoFlip = round("sun", 24, 0, 4);
+  ok("a sra does not flip it", !rNoFlip.note && rNoFlip.final[0] === 22 && rNoFlip.final[1] === 8);
+
 
   console.log("%cBaloot self-check", "font-weight:bold", "\n" + out.join("\n"));
   const fails = out.filter(l => l.startsWith("FAIL"));
