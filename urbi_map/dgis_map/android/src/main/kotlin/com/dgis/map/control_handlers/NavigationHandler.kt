@@ -7,6 +7,7 @@ import com.dgis.map.control_handlers.navigation_controls.MessageControlModel
 import com.dgis.map.control_handlers.navigation_controls.SpeedControlModel
 import com.dgis.map.extensions.toMessage
 import com.dgis.map.extensions.toRouteSearchOptionsMessage
+import com.dgis.map.live_updates.LiveUpdatesCoordinator
 import com.dgis.map.map_api.*
 import com.dgis.map.map_api.BetterRouteResponseMessage
 import com.dgis.map.map_api.BetterRouteSettingsMessage
@@ -15,7 +16,6 @@ import com.dgis.map.map_api.SoundToggleType
 import io.flutter.plugin.common.EventChannel
 import ru.dgis.sdk.Context as SdkContext
 import ru.dgis.sdk.Duration
-import ru.dgis.sdk.Meter
 import ru.dgis.sdk.ScreenSize
 import ru.dgis.sdk.coordinates.Bearing
 import ru.dgis.sdk.geometry.ComplexGeometry
@@ -231,13 +231,10 @@ class NavigationHandler(
                 }
 
                 if (oldSource != null) {
-                        if (map.sources.isNotEmpty()) {
-                                map.removeSource(map.sources.first { it is MyLocationMapObjectSource })
-                        }
+                        map.sources.firstOrNull { it is MyLocationMapObjectSource }?.let { map.removeSource(it) }
                         map.addSource(oldSource!!)
                         oldSource = null
                 }
-
                 // BALADY-3772 (regression) / BALADY-3924: the session is over — drop
                 // the custom cursor model so the marker returns to the standard one.
                 // Called unconditionally: free roam does not swap the source at all.
@@ -252,9 +249,11 @@ class NavigationHandler(
                 speedControlModel.close()
                 stateClosable.close()
                 routeInfoCloseable.close()
-                speedControlModel.close()
                 maneuverControlModel.close()
                 betterRouteCloseable.close()
+                // Detach the map from the shared NavigationManager so it stops
+                // rendering into a map that is about to be closed.
+                navigationManager.mapManager.removeMap(map)
         }
 
         fun toggleVoiceInstruction(toggleType: SoundToggleType) {
@@ -336,7 +335,8 @@ class NavigationHandler(
                         callback(
                                 Result.failure(
                                         Exception(
-                                                "Not enough data to start navigation. Check RouteHandler documentation"
+                                                "Not enough data to start navigation. Check RouteHandler documentation. " +
+                                                        "finishPoint=$finishPoint, options=$options, route=$route"
                                         )
                                 )
                         )
@@ -349,17 +349,14 @@ class NavigationHandler(
                 // cursor model may be applied from here until the session ends.
                 isTurnByTurn = true
 
-                if (oldSource == null && map.sources.isNotEmpty()) {
-                        oldSource = map.sources.first { it is MyLocationMapObjectSource }
-                        map.removeSource(oldSource!!)
+                val currentLocationSource = map.sources.firstOrNull { it is MyLocationMapObjectSource }
+                if (oldSource == null && currentLocationSource != null) {
+                        oldSource = currentLocationSource
+                        map.removeSource(currentLocationSource)
                         map.addSource(
                                 MyLocationMapObjectSource(
                                         context = this.context,
-                                        controllerSettings =
-                                                MyLocationControllerSettings(
-                                                        coordinatesThreshold = Meter(10.0f),
-                                                        bearingThreshold = Bearing(90.0)
-                                                )
+                                        controllerSettings = MyLocationControllerSettings()
                                 )
                         )
                         onMyLocationSourceReplaced()
@@ -374,6 +371,7 @@ class NavigationHandler(
                                         ),
                                 trafficRoute = route
                         )
+                        LiveUpdatesCoordinator.onSessionStarted(appContext)
                 }
 
                 callback(Result.success(Unit))
@@ -395,7 +393,8 @@ class NavigationHandler(
                         callback(
                                 Result.failure(
                                         Exception(
-                                                "Not enough data to start navigation. Check RouteHandler documentation"
+                                                "Not enough data to start navigation. Check RouteHandler documentation. " +
+                                                        "finishPoint=$finishPoint, options=$options, route=$route"
                                         )
                                 )
                         )
@@ -417,6 +416,7 @@ class NavigationHandler(
                                         ),
                                 trafficRoute = route
                         )
+                        LiveUpdatesCoordinator.onSessionStarted(appContext)
                 }
 
                 callback(Result.success(Unit))
@@ -425,6 +425,7 @@ class NavigationHandler(
         fun stopNavigation() {
                 navigationManager.stop()
                 resetCamera()
+                LiveUpdatesCoordinator.onSessionStopped()
         }
 
         fun startFreeRoam(speedRangeZoom: List<SpeedRangeZoom>) {
@@ -433,11 +434,23 @@ class NavigationHandler(
                 // State.NAVIGATION so the reapply below picks it up.
                 isFreeRoam = true
                 navigationManager.start()
+                // Free roam gets the same ongoing notification as guidance, minus the route.
+                LiveUpdatesCoordinator.onSessionStarted(appContext)
         }
 
         fun stopFreeRoam() {
+                // Free roam has to leave the camera at the last roaming position instead of
+                // snapping back to the user location (TFS #34904). The behaviour stored by
+                // `setupCamera` may be a following one, so restoring it alone is not enough.
+                val wasActive = navigationManager.uiModel.state != State.DISABLED
                 navigationManager.stop()
+                stopFollowNavigation()
                 resetCamera()
+
+                if (!wasActive) return
+
+                map.camera.setBehaviour(CameraBehaviour(position = null))
+                LiveUpdatesCoordinator.onSessionStopped()
         }
 
         private fun stateChannelListener(state: State) {
@@ -449,6 +462,7 @@ class NavigationHandler(
                                                 "state" to Event.stateDisabled
                                         )
                                 )
+                                LiveUpdatesCoordinator.onNavStateChanged(Event.stateDisabled)
                                 isNavigating = false
                                 // BALADY-3772 / BALADY-3924: defensive — a session that ends
                                 // without passing stopNavigation/stopFreeRoam must not leave
@@ -463,6 +477,7 @@ class NavigationHandler(
                                                 "state" to Event.stateFinished
                                         )
                                 )
+                                LiveUpdatesCoordinator.onNavStateChanged(Event.stateFinished)
                                 stopNavigation()
                                 isNavigating = false
                         }
@@ -473,6 +488,7 @@ class NavigationHandler(
                                                 "state" to Event.stateNavigation
                                         )
                                 )
+                                LiveUpdatesCoordinator.onNavStateChanged(Event.stateNavigation)
                                 isNavigating = true
                                 // BALADY-3772 / BALADY-3924: the my-location object switches
                                 // to its navigation (3D model) representation only once the
@@ -492,6 +508,7 @@ class NavigationHandler(
                                                 "state" to Event.stateRouteSearch
                                         )
                                 )
+                                LiveUpdatesCoordinator.onNavStateChanged(Event.stateRouteSearch)
                                 isNavigating = true
                         }
                 }

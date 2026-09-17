@@ -1,6 +1,16 @@
 import DGis
 import Foundation
 
+// Cross-module contract with the Runner Live Activity controller.
+// Raw values are part of the fixed contract — do not rename.
+extension Notification.Name {
+    static let dgisNavigationDashboardTick = Notification.Name("dgis.navigation.dashboardTick")
+    static let dgisNavigationManeuverTick = Notification.Name("dgis.navigation.maneuverTick")
+    static let dgisNavigationSpeedTick = Notification.Name("dgis.navigation.speedTick")
+    static let dgisNavigationMessageTick = Notification.Name("dgis.navigation.messageTick")
+    static let dgisNavigationStateChanged = Notification.Name("dgis.navigation.stateChanged")
+}
+
 class NavigationHandler {
     private class Events {
         // event name
@@ -28,7 +38,7 @@ class NavigationHandler {
     
     private var cancelable: Array<Cancellable> = []
     private var moveCameraCancellable: DGis.Cancellable?
-    
+
     // Models to observe channels and send events to Flutter
     private let speedControlModel: SpeedControlModel
     private let dashboardControlModel: DashboardControlModel
@@ -36,7 +46,6 @@ class NavigationHandler {
     private let maneuverControlModel: ManeuverControlModel
     
     private let oldSource: DGis.Source?
-
     /// BALADY-3772: the navigation-cursor 3D model is set on the my-location
     /// object via setModelData. The owner (DgisMapView) re-applies it whenever
     /// that object may have (re)materialised its model: after guidance swaps
@@ -113,10 +122,8 @@ class NavigationHandler {
         )
         
         navigationManager.mapManager.addMap(map: map)
-        
-        
     }
-    
+
     private func stateChannelListener(_ state: State) {
         switch (state) {
         case State.disabled:
@@ -130,12 +137,14 @@ class NavigationHandler {
             // either custom-cursor flag armed.
             self.isTurnByTurn = false
             self.isFreeRoam = false
+            postStateChanged(Events.stateDisabled)
         case State.finished:
             self.eventChannel.success([
                 "event": Events.navigationEvent,
                 "state": Events.stateFinished
             ])
             self.isNavigating = false
+            postStateChanged(Events.stateFinished)
             stopNavigation()
         case State.navigation:
             self.eventChannel.success([
@@ -152,12 +161,26 @@ class NavigationHandler {
             if self.usesCustomCursor {
                 onMyLocationSourceReplaced?()
             }
+            postStateChanged(Events.stateNavigation)
         case State.routeSearch:
             self.eventChannel.success([
                 "event": Events.navigationEvent,
                 "state": Events.stateRouteSearch
             ])
             self.isNavigating = true
+            postStateChanged(Events.stateRouteSearch)
+        }
+    }
+
+    private func postStateChanged(_ state: String) {
+        // SDK callback thread: a synchronous post waits for main-queue observers and can
+        // deadlock against main-thread calls into the SDK — post async on main instead.
+        DispatchQueue.main.async {
+            NotificationCenter.default.post(
+                name: .dgisNavigationStateChanged,
+                object: nil,
+                userInfo: ["state": state]
+            )
         }
     }
     
@@ -374,7 +397,7 @@ class NavigationHandler {
         let oldSource = map.sources.first(where: { $0 is MyLocationMapObjectSource })!
 
         map.removeSource(source: oldSource)
-
+        
         map.addSource(source: MyLocationMapObjectSource(
             context: context,
             controllerSettings:  MyLocationControllerSettings(
@@ -383,10 +406,14 @@ class NavigationHandler {
             )
         ))
         onMyLocationSourceReplaced?()
-
+        
+        // HB-128: the trip was started from the phone; if CarPlay is connected
+        // the driver expects the car screen to switch to Balady+ on its own.
+        FlutterCarPlaySceneDelegate.activateCarScreen()
+        
         completion(Result.success(()))
     }
-
+    
     func setNavigatorVoice(_ id: String, completion: @escaping (Result<Void, any Error>) -> Void) {
 
         
@@ -464,7 +491,7 @@ class NavigationHandler {
         isFreeRoam = false
         onNavigationSessionEnded?()
     }
-    
+
     func saveNavigationState(completion: @escaping (Result<FlutterStandardTypedData, any Error>) -> Void) {
         let state = PackedNavigationState.fromModel(model: self.navigationManager.uiModel)
         completion(
@@ -540,7 +567,14 @@ class NavigationHandler {
     }
 
     func stopFreeRoam() {
+        // Free roam has to leave the camera at the last roaming position instead of
+        // snapping back to the user location, the same way Android behaves (TFS #34904).
+        // The behaviour stored by `setupCamera` may be a following one (the map usually
+        // follows the location before free roam starts), so restoring it would pull the
+        // camera back to the current location right after the trip is ended.
+        let wasActive = self.navigationManager.uiModel.state != .disabled
         self.navigationManager.stop()
+        stopFollowNavigation()
         resetCamera()
         // BALADY-3772 / BALADY-3924 (regression): see stopNavigation. Drops
         // the custom cursor model (free roam may have applied it) so the
@@ -548,6 +582,10 @@ class NavigationHandler {
         isTurnByTurn = false
         isFreeRoam = false
         onNavigationSessionEnded?()
+
+        guard wasActive else { return }
+
+        self.map.camera.setBehaviour(behaviour: CameraBehaviour(position: nil))
     }
 
     func toggleSounds(toggleType: SoundToggleType) {

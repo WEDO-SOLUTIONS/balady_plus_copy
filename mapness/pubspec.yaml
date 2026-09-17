@@ -9,7 +9,6 @@ environment:
   flutter: ">=3.0.0"
 
 dependencies:
-  cupertino_icons: 1.0.8
   flutter:
     sdk: flutter
   riverpod: 3.1.0
@@ -94,6 +93,8 @@ dependencies:
   image_picker: ^1.2.1
   geobase: ^1.5.0
   crypto: ^3.0.7
+  archive: ^4.0.7
+  file_picker: 10.3.8
   mixpanel_flutter: ^2.4.4
   posthog_flutter: ^5.30.0
   webview_flutter: ^4.13.1
@@ -102,6 +103,7 @@ dependencies:
   youtube_player_flutter: ^9.1.3
   custom_image_crop: ^0.1.1
   flutter_image_compress: ^2.4.0
+  flutter_uxcam: ^2.9.0
   dio_http_cache:
     git:
       url: https://github.com/guozhigq/dio-http-cache
@@ -194,7 +196,6 @@ flutter:
     - assets/config.json
     - assets/quick_actions_config.json
     - assets/icons/svg/
-    - assets/icons/svg/profile/
     - assets/icons/lottie/
     - assets/icons/svg/audio/
     - assets/icons/svg/quick_filters/
@@ -263,5 +264,3 @@ flutter_gen:
   integrations:
     flutter_svg: true
 
-dependency_overrides:
-  sdga_design_system: 1.0.0

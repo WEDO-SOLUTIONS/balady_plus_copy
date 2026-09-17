@@ -58,7 +58,6 @@ class FusedLocationSource(private val context: Context) : LocationSource {
     }
 
     fun onPermissionGranted() {
-        if (isAvailable) return
         isAvailable = true
         updateSource()
     }
@@ -75,11 +74,15 @@ class FusedLocationSource(private val context: Context) : LocationSource {
             }
 
             when (locationProvider) {
-                is GoogleLocationProvider -> (locationProvider as GoogleLocationProvider)
-                    .requestLocationUpdates(priority, interval) { processLocationResult(it) }
+                is GoogleLocationProvider -> (locationProvider as GoogleLocationProvider).apply {
+                    stopLocationUpdates()
+                    requestLocationUpdates(priority, interval) { processLocationResult(it) }
+                }
 
-                is HuaweiLocationProvider -> (locationProvider as HuaweiLocationProvider)
-                    .requestLocationUpdates(priority, interval) { processLocationResult(it) }
+                is HuaweiLocationProvider -> (locationProvider as HuaweiLocationProvider).apply {
+                    stopLocationUpdates()
+                    requestLocationUpdates(priority, interval) { processLocationResult(it) }
+                }
             }
             listener.onAvailabilityChanged(true)
         }

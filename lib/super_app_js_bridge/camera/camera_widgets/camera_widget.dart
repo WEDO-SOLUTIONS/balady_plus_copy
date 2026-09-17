@@ -19,29 +19,43 @@ class CameraWidget extends StatefulWidget {
   State<CameraWidget> createState() => _CameraWidgetState();
 }
 
-class _CameraWidgetState extends State<CameraWidget>
-    with WidgetsBindingObserver {
+class _CameraWidgetState extends State<CameraWidget> with WidgetsBindingObserver {
   late CameraBloc bloc;
 
   @override
-  void dispose() async {
-    WidgetsBinding.instance.removeObserver(this);
-    bloc.cameraController?.dispose();
-    super.dispose();
+  void initState() {
+    super.initState();
+    // Assigned here, not in the post-frame callback: dispose() reads `bloc`,
+    // and a fast pop used to hit LateInitializationError.
+    bloc = context.read<CameraBloc>();
+    WidgetsBinding.instance.addObserver(this);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      bloc.add(InitCameraEvent());
+    });
   }
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     try {
-      if (context.read<CameraBloc>().cameraController == null ||
-          !context.read<CameraBloc>().cameraController!.value.isInitialized) {
-        return;
-      }
-      if (state == AppLifecycleState.inactive ||
-          state == AppLifecycleState.paused) {
-        context.read<CameraBloc>().cameraController?.dispose();
+      if (state == AppLifecycleState.inactive) {
+        // Transient: Control Center, a notification banner, the app switcher.
+        // These never take the camera away, and a teardown here costs seconds
+        // of black preview on the way back - freeze the preview instead.
+        bloc.pausePreview();
+      } else if (state == AppLifecycleState.paused || state == AppLifecycleState.hidden) {
+        final controller = bloc.cameraController;
+        if (controller != null && controller.value.isInitialized) {
+          bloc.disposeCamera();
+        }
       } else if (state == AppLifecycleState.resumed) {
-        context.read<CameraBloc>().add(OnNewCameraSelected());
+        // No live controller means the background teardown ran, or an earlier
+        // re-init failed - so every resume doubles as the retry.
+        if (bloc.cameraController == null) {
+          bloc.add(OnNewCameraSelected());
+        } else {
+          bloc.resumePreview();
+        }
       }
     } catch (error, stackTrace) {
       LogsViewModel().sendEventFromModel(
@@ -55,57 +69,47 @@ class _CameraWidgetState extends State<CameraWidget>
   }
 
   @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance.addObserver(this);
-    WidgetsBinding.instance.addPostFrameCallback((_) async {
-      context.read<CameraBloc>().add(InitCameraEvent());
-      bloc = context.read<CameraBloc>();
-    });
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    bloc.disposeCamera();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<CameraBloc, CameraState>(
       builder: (context, state) {
+        // Guard on the live controller instance, not only the bloc flag: the
+        // flag can lag one emit behind the controller's disposal.
+        final cameraController = bloc.cameraController;
+        final isCameraReady =
+            (state.isCameraInitialized ?? false) && cameraController != null && cameraController.value.isInitialized;
         return Stack(
           children: [
-            (state.isCameraInitialized ?? false)
+            isCameraReady
                 ? GestureDetector(
                     behavior: HitTestBehavior.translucent,
                     onScaleStart: (details) {
-                      context
-                          .read<CameraBloc>()
-                          .add(SetZoomLevelEvent(zoom: state.scaleFactor));
+                      bloc.add(SetZoomLevelEvent(zoom: state.scaleFactor));
                     },
                     onScaleUpdate: (details) {
-                      context
-                          .read<CameraBloc>()
-                          .add(UpdateScaleLevelEvent(scale: details.scale));
+                      bloc.add(UpdateScaleLevelEvent(scale: details.scale));
                     },
-                    child: SizedBox(
-                      height: double.infinity,
-                      child: CameraPreview(
-                        context.read<CameraBloc>().cameraController!,
-                      ),
-                    ),
+                    child: SizedBox(height: double.infinity, child: CameraPreview(cameraController)),
                   )
                 : const Center(),
             GestureDetector(
               behavior: HitTestBehavior.translucent,
+              // Unlike the preview above, this overlay is always mounted:
+              // pinching a not-yet-initialized camera fired zoom events at
+              // frame rate into a dead controller (~30k telemetry events/7d).
               onScaleStart: (details) {
-                context.read<CameraBloc>().add(
-                      SetZoomLevelEvent(
-                        zoom: state.scaleFactor,
-                      ),
-                    );
+                if (!isCameraReady) return;
+                bloc.add(SetZoomLevelEvent(zoom: state.scaleFactor));
               },
               onScaleUpdate: (details) {
-                context.read<CameraBloc>().add(
-                      UpdateScaleLevelEvent(
-                        scale: details.scale,
-                      ),
-                    );
+                if (!isCameraReady) return;
+                bloc.add(UpdateScaleLevelEvent(scale: details.scale));
               },
               child: Align(
                 alignment: Alignment.center,
@@ -118,9 +122,7 @@ class _CameraWidgetState extends State<CameraWidget>
                       margin: const EdgeInsets.symmetric(horizontal: 24),
                       decoration: BoxDecoration(
                         border: Border.all(color: AppColor.white, width: 2),
-                        borderRadius: BorderRadius.circular(
-                          24,
-                        ),
+                        borderRadius: BorderRadius.circular(24),
                       ),
                     ),
                     const CustomVerticalSpace(height: 24),
@@ -145,29 +147,19 @@ class _CameraWidgetState extends State<CameraWidget>
                   children: [
                     // take photo button
                     GestureDetector(
-                        onTap: () async {
-                          context.read<CameraBloc>().add(TakePhoto());
-                        },
-                        child: Image.asset(
-                          IconPath.vdButtonCameraIcon,
-                          height: 72,
-                          width: 72,
-                        )),
-                    const CustomVerticalSpace(height: 30)
+                      onTap: () async {
+                        bloc.add(TakePhoto());
+                      },
+                      child: Image.asset(IconPath.vdButtonCameraIcon, height: 72, width: 72),
+                    ),
+                    const CustomVerticalSpace(height: 30),
                   ],
                 ),
               ),
             if (state.status == BlocStatus.loading)
-              const Align(
-                alignment: Alignment.center,
-                child: CustomCircularLoadingWidget(),
-              ),
+              const Align(alignment: Alignment.center, child: CustomCircularLoadingWidget()),
             Padding(
-              padding: EdgeInsets.only(
-                top: MediaQuery.of(context).padding.top + 16,
-                left: 16,
-                right: 16,
-              ),
+              padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top + 16, left: 16, right: 16),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -177,18 +169,18 @@ class _CameraWidgetState extends State<CameraWidget>
                     btnHeight: 40,
                     btnWidth: 40,
                     onPressed: () {
-                      Navigator.of(context).pop();
+                      if (Navigator.canPop(context)) {
+                        Navigator.of(context).pop();
+                      }
                     },
                   ),
                   CustomIconButtonWidget(
-                    icon: !state.isFlashOn
-                        ? IconPath.vdCameraFlashOff
-                        : IconPath.vdCameraFlashOn,
+                    icon: !state.isFlashOn ? IconPath.vdCameraFlashOff : IconPath.vdCameraFlashOn,
                     iconSize: 32,
                     btnHeight: 32,
                     btnWidth: 32,
                     onPressed: () {
-                      context.read<CameraBloc>().add(ToggleCameraFlashEvent());
+                      bloc.add(ToggleCameraFlashEvent());
                     },
                   ),
                 ],

@@ -267,24 +267,25 @@ abstract base class SnappingBehavior {
   /// Converts a state index to an offset index.
   ///
   /// - [state]: The index of the state.
-  /// - Returns: The corresponding index in the snapping offsets list.
-  /// - Throws: AssertionError if the state index is out of range.
+  /// - Returns: The corresponding index in the snapping offsets list, clamped
+  ///   to the list bounds.
   int stateToIndex(int state) {
-    assert(
-      state >= 0 && state < snappingPixelOffsets.length ||
-          snappingPixelOffsets.isEmpty,
-      'Provided state index is out of range for snapping positions. '
-      'Please ensure unique offsets and valid states.\n'
-      'State index: $state, Snapping offsets length: ${snappingPixelOffsets.length}\n'
-      'State offsets: $snappingPixelOffsets\n'
-      'Min and max offsets: $minOffset : $maxOffset',
-    );
-
     if (snappingPixelOffsets.isEmpty) {
       return 0;
     }
 
-    return snappingPixelOffsets.length - 1 - state;
+    // BALADY-3914: `snappingOffsets` is a deduplicated set of clamped values,
+    // so it can legitimately hold fewer entries than the sheet has states —
+    // two snap positions collapse into one when the keyboard shrinks the
+    // viewport, or when an optional snap (e.g. a photos row) is absent. An
+    // out-of-range state then produced a negative index here, and
+    // `elementAtOrNull` throws RangeError on negative indices, crashing
+    // layout in release. Clamp instead: a state above the top snap resolves
+    // to the most expanded available position, below the bottom snap to the
+    // least expanded one. (The previous assert fired for this same transient
+    // geometry, so it was removed rather than kept.)
+    return (snappingPixelOffsets.length - 1 - state)
+        .clamp(0, snappingPixelOffsets.length - 1);
   }
 
   /// Gets the state index for a given offset.

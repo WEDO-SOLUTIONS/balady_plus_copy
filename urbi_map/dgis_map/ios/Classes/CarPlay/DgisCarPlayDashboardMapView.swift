@@ -12,6 +12,12 @@ class DgisCarPlayDashboardMapView: UIViewController {
     
     private var cancellables = Set<Cancellable>()
     
+    private var mapAppearance: CarPlayMapAppearance?
+    private var prefersDarkMapContent = false
+
+    private var tunnelDetector: TunnelDetector?
+    private var isInTunnel = false
+
     override func viewDidLoad() {
         super.viewDidLoad()
         let sdk = DgisMapInitializer.shared.getSdkContainer()
@@ -81,6 +87,8 @@ class DgisCarPlayDashboardMapView: UIViewController {
         if let styleFactory = try? sdk.styleFactory, let cancellable = map.loadStyle(styleFactory: styleFactory) {
             cancellables.insert(cancellable)
         }
+
+        observeMapAppearance()
     }
     
     func myLocation() {
@@ -117,5 +125,34 @@ class DgisCarPlayDashboardMapView: UIViewController {
         mapView = nil
         myLocationControlModel = nil
         cancellables.forEach { $0.cancel() }
+        mapAppearance = nil
+        tunnelDetector?.cancel()
+        tunnelDetector = nil
+    }
+
+    // MARK: - Day/night appearance
+
+    /// The dashboard map follows the same CarPlay content style as the main car map, and
+    /// darkens inside tunnels for the same reason.
+    private func observeMapAppearance() {
+        mapAppearance = CarPlayMapAppearance { [weak self] prefersDark in
+            guard let self else { return }
+
+            self.prefersDarkMapContent = prefersDark
+            self.applyMapAppearance()
+        }
+
+        let navigationModel = DgisMapInitializer.shared.getNavigationManager().uiModel
+        tunnelDetector = TunnelDetector(model: navigationModel) { [weak self] isInTunnel in
+            guard let self else { return }
+
+            self.isInTunnel = isInTunnel
+            self.applyMapAppearance()
+        }
+    }
+
+    private func applyMapAppearance() {
+        let isNight = prefersDarkMapContent || isInTunnel
+        mapView?.appearance = isNight ? .universal("night") : .universal("day")
     }
 }

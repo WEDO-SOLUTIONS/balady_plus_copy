@@ -15,6 +15,8 @@ import 'package:intl/intl.dart' hide TextDirection;
 import 'package:localize_and_translate/localize_and_translate.dart';
 import 'package:mapness/_features/common/providers/network_status.dart';
 import 'package:mapness/_generated/assets/assets.gen.dart';
+import 'package:mapness/shared/constants/metrics_constants.dart';
+import 'package:mapness/features/balady_analytics/metrics.dart';
 import 'package:provider/provider.dart' as provider;
 
 class PrayerCard extends ConsumerWidget {
@@ -71,6 +73,11 @@ class PrayerCard extends ConsumerWidget {
                         ),
                         child: InkWell(
                           onTap: () {
+                            Metrics.logEventAdvanced(
+                              MetricsConstants.exploreKeys.prayerTimesBannerButton,
+                              action: MetricAction.tap.name,
+                              group: MetricsConstants.exploreTag,
+                            );
                             NavigationService.navigatorKey.currentState!.pushNamed(
                               RouteName.prayerTimes,
                               arguments: bloc,
@@ -163,6 +170,11 @@ class _NotificationIconSwitchState extends State<_NotificationIconSwitch> {
   Widget build(BuildContext context) => GestureDetector(
     behavior: HitTestBehavior.opaque,
     onTap: () {
+      Metrics.logEventAdvanced(
+        MetricsConstants.exploreKeys.prayerTimesBannerBellIcon,
+        action: MetricAction.tap.name,
+        group: MetricsConstants.exploreTag,
+      );
       provider.Provider.of<PrayerTimesCubit>(context, listen: false).prayerSettingsOnOff();
     },
     onTapDown: (_) {

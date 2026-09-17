@@ -4,6 +4,7 @@ import 'dart:math';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/services.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:mapness/features/dynamic_style/map_style_store.dart';
 import 'package:mapness/features/navigation_cursor/navigation_cursor_controller.dart';
 import 'package:mapness/features/routing/providers/routes.dart';
 import 'package:mapness/shared/constants/constants.dart';
@@ -42,7 +43,8 @@ class DgisController extends _$DgisController {
   late LocationSetupHelper _locationHelper;
 
   // Non-final so build() can replace it with a fresh open subject on each rebuild.
-  BehaviorSubject<VisibleRectEvent?> _visibleRectSubject = BehaviorSubject<VisibleRectEvent?>();
+  // Seeded so `.value` reads never throw before map init delivers the first event.
+  BehaviorSubject<VisibleRectEvent?> _visibleRectSubject = BehaviorSubject<VisibleRectEvent?>.seeded(null);
   bool? _indoorFloorPlansEnabled;
   StreamSubscription<Position>? _firstFixSubscription;
   bool _startupRecenterSuppressed = false;
@@ -59,7 +61,7 @@ class DgisController extends _$DgisController {
   @override
   Future<DgisMapController> build() {
     _completer = Completer();
-    _visibleRectSubject = BehaviorSubject<VisibleRectEvent?>();
+    _visibleRectSubject = BehaviorSubject<VisibleRectEvent?>.seeded(null);
     // onDispose below calls cancelFirstFixCameraMove, which raises the flag;
     // a rebuilt map starts a fresh startup sequence.
     _startupRecenterSuppressed = false;
@@ -99,7 +101,19 @@ class DgisController extends _$DgisController {
   Future<void> _setupControllerItself(DgisMapController controller) async {
     await controller.initialize();
 
-    await controller.loadStyles(MapnessConstants.mapStylesPath);
+    await _loadActiveStyle(controller);
+
+    // React to store revision bumps at runtime — repack / network / picker
+    // mutations all overwrite the same canonical file in place, so all we
+    // need to do here is re-run loadStylesFromPath on the (unchanged) path.
+    ref.listen<AsyncValue<StyleFile>>(mapStyleStoreProvider, (previous, next) {
+      final prevRev = previous?.value?.revision;
+      final nextFile = next.value;
+      if (nextFile == null || prevRev == nextFile.revision) {
+        return;
+      }
+      unawaited(_loadStyle(controller, nextFile.path));
+    });
 
     // Appearance
     await controller.setZoomRestrictions(min: 5.5);
@@ -138,13 +152,40 @@ class DgisController extends _$DgisController {
     }
   }
 
+  Future<void> _loadActiveStyle(DgisMapController controller) async {
+    final styleFile = await ref.read(mapStyleStoreProvider.future);
+    await _loadStyle(controller, styleFile.path);
+  }
+
+  Future<void> _loadStyle(DgisMapController controller, String absolutePath) async {
+    final sw = Stopwatch()..start();
+    try {
+      logger.log('[dynamic_style] loadStyle: loadStylesFromPath($absolutePath)');
+      await controller.loadStylesFromPath(absolutePath);
+      logger.log('[dynamic_style] loadStyle: applied in ${sw.elapsedMilliseconds}ms');
+    } on PlatformException catch (e) {
+      // If the canonical file is corrupt or missing, fall back to the
+      // bundled asset via the legacy loadStyles() path. This keeps the map
+      // functional; a subsequent app restart will let the store re-copy.
+      logger
+        ..log(
+          '[dynamic_style] loadStyle: FAILED $absolutePath after ${sw.elapsedMilliseconds}ms: $e',
+          logLevel: MapnessLogLevel.error,
+        )
+        ..log('[dynamic_style] loadStyle: falling back to bundled asset ${MapnessConstants.mapStylesPath}');
+      await controller.loadStyles(MapnessConstants.mapStylesPath);
+    }
+  }
+
   Future<void> _setupLocation(DgisMapController controller) async {
     await _setDefaultLocation(controller);
 
     _locationHelper = LocationSetupHelper(controller);
     await _locationHelper.run();
-
-    await controller.onLocationPermissionGranted(desiredAccuracy: DesiredAccuracyMessage.high);
+    final permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.always || permission == LocationPermission.whileInUse) {
+      await controller.onLocationPermissionGranted(desiredAccuracy: DesiredAccuracyMessage.high);
+    }
     await controller.toggleFollowState();
     _moveToUserLocationOnFirstFix(controller);
   }

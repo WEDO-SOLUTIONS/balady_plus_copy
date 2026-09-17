@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:collection/collection.dart';
 import 'package:dgis_map/library.dart';
 import 'package:mapness/entities/bus/model.dart';
 import 'package:mapness/features/jeddah_bus/repo.dart';
@@ -10,6 +11,27 @@ import 'package:mapness/shared/providers/map/object_manager.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'provider.g.dart';
+
+/// Degrees ~1.1 m: below this, consecutive gist points are near-duplicates
+/// that make the 2GIS gradient polyline renderer drop the segment at high zoom.
+const jeddahBusMinPointDeltaDegrees = 1e-5;
+
+/// Collapses consecutive points closer than [jeddahBusMinPointDeltaDegrees] in
+/// both lat and lon, keeping the first point of each run. Does not affect
+/// [BusLine.stations] matching, which uses the untouched coordinates.
+List<BusCoordinates> dropNearDuplicatePoints(Iterable<BusCoordinates> coordinates) {
+  final result = <BusCoordinates>[];
+  for (final c in coordinates) {
+    final prev = result.lastOrNull;
+    if (prev != null &&
+        (prev.latitude - c.latitude).abs() < jeddahBusMinPointDeltaDegrees &&
+        (prev.longitude - c.longitude).abs() < jeddahBusMinPointDeltaDegrees) {
+      continue;
+    }
+    result.add(c);
+  }
+  return result;
+}
 
 @riverpod
 class JeddahBusLayer extends _$JeddahBusLayer {
@@ -96,9 +118,9 @@ class JeddahBusLayer extends _$JeddahBusLayer {
     for (int i = 0; i < list.length; i++) {
       final line = list[i];
 
-      final geoPoints = line.polylineCoordinates
-          .map((c) => GeoPointMessage(latitude: c.latitude, longitude: c.longitude))
-          .toList();
+      final geoPoints = dropNearDuplicatePoints(
+        line.polylineCoordinates,
+      ).map((c) => GeoPointMessage(latitude: c.latitude, longitude: c.longitude)).toList();
 
       if (geoPoints.isEmpty) {
         continue;
