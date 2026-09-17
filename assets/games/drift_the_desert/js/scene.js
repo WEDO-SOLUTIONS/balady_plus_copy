@@ -91,6 +91,9 @@
   /* World travel per unit of the game's speed. See render(). */
   var WORLD_SCALE = 0.48;
 
+  /* What the floor is multiplied by at full dusk. */
+  var DUSK_TINT = [0.43, 0.29, 0.32];
+
   /* Height of each plant on the baked sheet, relative to a rock of the same
      prop size: tussock, tussock, ghada, ghada, dead, saltbush, thorn bush. */
   var PLANT_SIZE = [1.55, 1.55, 1.70, 1.70, 1.40, 1.05, 2.30];
@@ -414,22 +417,23 @@
       this.drawSandField(night, this.drawFloor(night, lateral));
     },
 
-    /** The sand texture itself, mapped onto the ground plane by js/ground.js.
-        Returns true when it drew, which tells the painted pass to step back:
-        with real ripples and real stones in the texture, its own are down to
-        the job of adding the big swells the tile is deliberately without. */
+    /** The ground plane, drawn by js/ground.js — sand, the road, the motion
+        blur and the evening, all in one pass. Returns true when it drew,
+        which tells the painted passes to step back: with real ripples, real
+        stones and real ruts in the textures, theirs are down to adding the
+        big swells the tiles are deliberately without. */
     drawFloor: function (night, lateral) {
       this.floorTextured = Ground.draw(this.ctx, {
         w: this.w,
         h: this.h,
-        horizon: this.horizon,
         dpr: this.dpr,
+        horizon: this.horizon,
         scroll: this.scroll,
         dScroll: this.dScroll || 0,
         speed: (this.lastSpeed || 0) * WORLD_SCALE,
         lateral: lateral || 0,
         dusk: night,
-        tint: mixHex('#FFFFFF', '#6E4A52', 1)
+        tint: DUSK_TINT
       }) === true;
       return this.floorTextured;
     },
@@ -601,30 +605,15 @@
       // away the one part of the frame with real grain in it. With the road
       // texture in as well it drops to a wash that only feathers the edges
       // and carries the fade into the horizon.
-      ctx.globalAlpha = this.floorTextured ? (Ground.roadReady ? 0.14 : 0.52) : 1;
+      ctx.globalAlpha = this.floorTextured ? (Ground.roadReady ? 0.12 : 0.52) : 1;
       ctx.fill();
       ctx.globalAlpha = 1;
       ctx.clip();
 
-      // The baked road: braided ruts worn through the loose sand into the
-      // crust underneath, mapped by the same perspective as the open ground
-      // so the two cannot drift apart.
-      var trackHalf = function (t) {
-        return lerp(self.w * 0.055, self.w * 0.95, 0.035 + 0.965 * t) * 0.5;
-      };
-      var roadDrawn = this.floorTextured && Ground.drawRoad(ctx, {
-        halfAt: trackHalf,
-        w: this.w,
-        h: this.h,
-        horizon: this.horizon,
-        dpr: this.dpr,
-        scroll: this.scroll,
-        dScroll: this.dScroll || 0,
-        speed: (this.lastSpeed || 0) * WORLD_SCALE,
-        lateral: lateral,
-        dusk: night,
-        tint: mixHex('#FFFFFF', '#6E4A52', 1)
-      });
+      // The road itself came in with the ground plane, ruts and all. What is
+      // left here is the wash that feathers the track's edges and carries it
+      // into the horizon, and the marks the texture does not have.
+      var roadDrawn = this.floorTextured && Ground.roadReady;
 
       /* Drag marks running down the road. The photographic sand tile was tried
          here first and had to go: at 264 px stretched across the full width it
@@ -1381,6 +1370,7 @@
       // towards the vanishing point however well it is drawn. Everything that
       // scrolls reads this, so the plates, the props and the floor stay in
       // step with each other.
+      if (Ground.pace) Ground.pace(dt);
       this.lastSpeed = state.speed || 0;
       this.dScroll = this.lastSpeed * dt * WORLD_SCALE;
       this.scroll += this.dScroll;

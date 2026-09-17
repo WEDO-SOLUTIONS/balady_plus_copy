@@ -98,7 +98,7 @@ before load, or append `?lang=ar` to the asset URL.
 | `js/bridge.js`  | Host detection, events out, `localStorage` persistence with a memory fallback |
 | `js/audio.js`   | Procedural engine loop, taps, coins, combo, crash — no audio assets |
 | `js/backdrop.js`| Draws the baked parallax plates |
-| `js/ground.js`  | Maps the baked sand texture onto the ground plane in perspective |
+| `js/ground.js`  | The WebGL ground plane: sand, road, motion blur, dusk |
 | `js/sprites.js` | Draws the baked roadside sheet — rocks and bushes — with haze and dusk |
 | `js/plates.js`  | Generated: plate sizes and skyline curves |
 | `js/scene.js`   | Canvas renderer: perspective track, the car, dust, coins, FX |
@@ -241,31 +241,51 @@ the track — and `js/ground.js` maps them onto the ground plane in perspective
 
 The mapping is the standard one for a pinhole camera looking at a plane: with
 `t` running 0 at the horizon to 1 at the bottom of the frame, depth goes as
-`1/t`, so a texel is `t` wide and `t²` tall on screen. Both are linear inside
-a band, so the floor goes out as a handful of horizontal bands, each one
-pattern fill under its own transform. Three details carry it:
+`1/t`, so a texel is `t` wide and `t²` tall on screen.
 
-- **Adaptive bands.** Each band is cut where the depth has grown by a fixed
-  ratio rather than at a fixed height, so the near field is a few tall bands
-  and the far field a stack of thin ones. Thirteen bands cover the floor with
-  the distortion inside each one down in the noise.
-- **Hand-rolled mips.** A pattern fill does not filter minification the way a
-  GPU does, and sand at a fifth of its size crawls and sparkles. The texture
-  is halved into a chain of canvases at load and each band picks the level
-  where a texel lands near a device pixel.
-- **Motion blur.** The nearest bands are drawn a second time, offset back up
-  the frame. A photograph taken from a car at this speed has no sharp pebbles
-  at the bottom of it, and leaving them sharp was the last thing making the
-  floor read as a texture rather than as ground going past.
+**This is done in WebGL, and the reason is worth writing down**, because two
+Canvas-2D versions came first and both looked wrong in ways that were hard to
+name. A 2D context can only fill a shape with a pattern under an affine
+transform, and perspective is not affine. The usual dodge is to cut the floor
+into horizontal bands and give each the transform that is right at its middle.
+In a still frame that is invisible. In motion it is not: the texture inside a
+band translates at one uniform rate and the band below it at another, so every
+seam is a step in velocity and the floor reads as a stack of conveyor belts —
+stripes pouring down the screen rather than ground going past a car. Varying
+the motion blur per band added a second set of stripes, in sharpness.
+
+So the plane is two triangles with the mapping done per pixel:
+
+- **Exact perspective.** Every pixel computes its own depth and lateral
+  offset, so there is nothing to step between.
+- **Hardware filtering.** Mipmaps and anisotropic filtering are what actually
+  stop sand crawling at a grazing angle, and a pattern fill has neither. This
+  is the single biggest reason the GPU path looks calmer than the hand-rolled
+  mip chain it replaced.
+- **Motion blur in the shader**, two taps back along the direction of travel,
+  the length taken from how far the car moved this frame. It varies smoothly
+  with depth on its own, because a fixed offset in texels is a larger offset
+  on screen the closer it is.
+- **The road in the same pass**, sampled from its own texture with the tile
+  centred on the track and blended in through the same wobbling edge the
+  painted track uses — no clip, no second pass.
+
+The plane is rendered into an offscreen GL canvas at nine tenths of device
+resolution and no more than 1.25 MP, and blitted in with one `drawImage`,
+which leaves the rest of the renderer untouched. A device that cannot hold the
+frame gets fewer ground pixels rather than a slideshow. If WebGL is missing,
+the context is lost, or the textures are cross-origin (a WebView running the
+game off `file://` with separate asset files would taint them), `draw` returns
+false and the painted floor takes over.
 
 The textures are baked at golden hour only — a second set would double both
 the download and the fills — so the evening is a multiply over the same sand,
 band by band, fading out with the same ramp so it never spills onto the plates
 above.
 
-The **track** is the same mapping again, run a second time inside the clip the
-game has already set to the road, with the tile centred on the track's centre
-line rather than on the frame so the baked ruts stay under the wheels. A
+The **track** is the same mapping again, sampled in the same shader with the
+tile centred on the track's centre line rather than on the frame, so the baked
+ruts stay under the wheels. A
 desert track in Saudi is not a road: it is a braid of tyre ruts worn through
 the loose sand into the crust underneath, so the texture is seven meandering
 grooves with tread in the bottom of them, berms of thrown sand along their
@@ -273,9 +293,9 @@ edges, gravel shouldered out to the sides, and drag streaks running with the
 traffic. It is paler and smoother than the dune it cuts across, but only a
 little — a heavier hand turned it into a concrete strip laid across the
 desert. The band fades back into ordinary sand at the edges of the tile,
-because the clip is never exactly a tile wide. Over the top of it the painted
-track is down to a 14% wash that only feathers the edges and carries the fade
-into the horizon.
+because the blend edge is never exactly a tile wide. Over the top of it the
+painted track is down to a 12% wash that only feathers the edges and carries
+the fade into the horizon.
 
 Three more passes sit on the floor, all of them live because they have to
 move with the car rather than slide sideways under parallax:
@@ -308,11 +328,12 @@ falls back to drawing its own sky, mesas and dunes from the mockup strips —
 the path that shipped before the plates existed. Blocking `img/bg/*.jpg` in
 devtools exercises it.
 
-Under Chromium's software rasteriser the whole scene runs at 20–32 fps, where
-the plates alone managed 29–43 and the live shader before them 21–39. The
-textured floor accounts for about five of those frames and the sprite sheet
-for two; both are a fraction of a millisecond of fill on a GPU-composited
-WebView, which is what the game actually runs on.
+Frame rates measured here are not worth much: Chromium's software rasteriser
+runs the ground's shader on the CPU, with anisotropic filtering, which is
+exactly the work a phone GPU does for free. For the record the whole scene
+sits at 13–20 fps under it. The thing to compare is the shape of the work —
+one shader pass over a megapixel, against the hundred-odd pattern fills the
+2D version needed for the same picture.
 
 ## Making it Saudi
 

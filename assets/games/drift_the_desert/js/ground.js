@@ -1,29 +1,43 @@
 /* Drift the Desert — the sand under the car.
 
-   Everything else in the scene is painted: gradients, strokes, a few
-   silhouettes. The floor is the one surface the player stares at for a whole
-   run, and a gradient with lines on it will never pass for sand. So this maps
-   a baked, tileable sand texture onto the ground plane in perspective.
+   The floor is the one surface the player stares at for a whole run, so it is
+   a real texture mapped onto the ground plane rather than a painted gradient.
+   Getting that right in Canvas 2D turned out to be impossible, and the reason
+   is worth writing down, because the first two attempts both looked wrong in
+   ways that were hard to name.
 
-   The mapping is the standard one for a pinhole camera looking at a plane:
-   with `t` running 0 at the horizon to 1 at the bottom of the frame, depth
-   goes as 1/t, so a texel's width on screen goes as t and its height as t².
-   Both are linear inside a band, so the floor is drawn as a handful of
-   horizontal bands, each a single pattern fill under its own transform.
+   A 2D context can only fill a shape with a pattern under an affine
+   transform, and perspective is not affine. The usual dodge is to cut the
+   floor into horizontal bands and give each one the transform that is right
+   at its middle. In a still frame that is invisible. In motion it is not: the
+   texture inside a band translates at one uniform rate, the band below it at
+   another, so every seam is a step in velocity, and the floor reads as a
+   stack of separate conveyor belts — stripes pouring down the screen rather
+   than ground going past a car. Varying the motion blur per band added a
+   second set of stripes, in sharpness.
 
-   Two details do most of the work:
+   So the plane is drawn in WebGL instead, as two triangles with the mapping
+   done per pixel:
 
-   - **Adaptive bands.** Each band is cut where the depth has grown by a fixed
-     ratio rather than at a fixed height, so the near field is a few tall
-     bands and the far field a stack of thin ones. Thirteen bands cover the
-     whole floor with the distortion inside each one down in the noise.
-   - **Hand-rolled mips.** A pattern fill does not filter minification the way
-     a GPU does, and sand at a fifth of its size crawls and sparkles. The
-     texture is halved into a chain of canvases at load and each band picks
-     the level where a texel lands near a device pixel.
+   - **Exact perspective.** With `t` running 0 at the horizon to 1 at the
+     bottom of the frame, depth goes as 1/t. Every pixel computes its own
+     depth and lateral offset, so there is nothing to step between.
+   - **Hardware filtering.** Mipmaps and anisotropic filtering are what
+     actually stop sand crawling at a grazing angle, and a pattern fill has
+     neither. This is the single biggest reason the GPU path looks calmer.
+   - **Motion blur in the shader**, three taps back along the direction of
+     travel, the length taken from how far the car moved this frame. It
+     varies smoothly with depth because a fixed offset in texels is a larger
+     offset on screen the closer it is.
+   - **The road in the same pass**, sampled from its own texture with the
+     tile centred on the track and blended in through the same wobbling edge
+     the painted track uses, so there is no clip and no second pass.
 
-   If anything here is missing — the texture, DOMMatrix, pattern transforms —
-   `draw` returns false and js/scene.js keeps its painted floor. */
+   The result is drawn into an offscreen GL canvas and blitted into the scene
+   with one drawImage, which keeps the rest of the renderer untouched.
+
+   If WebGL is missing or the context is lost, `draw` returns false and
+   js/scene.js paints its own floor, as it did before any of this existed. */
 (function (global) {
   'use strict';
 
@@ -37,225 +51,296 @@
   // standing on it agree about how fast the car is going.
   var TRAVEL = 12;
 
-  // Depth ratio allowed inside one band. Smaller is more exact and costs more
-  // fills; past about 1.3 the difference stops being visible.
-  var BAND_RATIO = 1.36;
+  // The plane is rendered at a fraction of device resolution and blitted up.
+  // It is filtered and motion blurred, so there is very little in it that
+  // survives to a device pixel anyway, and a phone GPU has to sample every
+  // one of these several times over.
+  var RES_SCALE = 0.9;
 
-  /** One texture and its mip chain. Two of these ship: the open sand, and the
-      road, which is the same mapping clipped to the track. */
-  function Texture() {
-    this.ready = false;
-    this.size = 0;
-    this.levels = [];      // level 0 is the texture itself, each next halved
-    this.patterns = [];    // created lazily, per level, from the scene's context
-  }
+  // …and never more than this many pixels of it, which is what keeps a 1440p
+  // phone from quietly costing three times what a 1080p one does.
+  var MAX_PIXELS = 1.25e6;
 
-  Texture.prototype.load = function (url, onDone) {
-    var self = this;
-    var img = new global.Image();
-    img.onload = function () {
-      try {
-        self.build(img);
-        self.ready = true;
-      } catch (e) {
-        self.ready = false;
-      }
-      if (onDone) onDone(self.ready);
-    };
-    img.onerror = function () { if (onDone) onDone(false); };
-    img.src = url;
-  };
+  // Anisotropy, which is what stops the far field either aliasing or turning
+  // to mush. Past four the cost climbs faster than the picture improves.
+  var ANISO = 4;
 
-  /** Halve the texture down to 64 px, so every scale has a level to sit on. */
-  Texture.prototype.build = function (img) {
-    var size = img.naturalWidth || img.width;
-    var c = global.document.createElement('canvas');
-    c.width = size;
-    c.height = size;
-    c.getContext('2d').drawImage(img, 0, 0);
+  var VERT = 'attribute vec2 aPos;' +
+    'void main() { gl_Position = vec4(aPos, 0.0, 1.0); }';
 
-    this.size = size;
-    this.levels = [c];
-    this.patterns = [];
-
-    var prev = c;
-    while (prev.width > 64) {
-      var next = global.document.createElement('canvas');
-      next.width = prev.width >> 1;
-      next.height = prev.height >> 1;
-      var nc = next.getContext('2d');
-      nc.imageSmoothingEnabled = true;
-      nc.drawImage(prev, 0, 0, next.width, next.height);
-      this.levels.push(next);
-      prev = next;
-    }
-  };
-
-  Texture.prototype.patternFor = function (ctx, level) {
-    if (!this.patterns[level]) {
-      this.patterns[level] = ctx.createPattern(this.levels[level], 'repeat');
-    }
-    return this.patterns[level];
-  };
+  var FRAG = [
+    'precision highp float;',
+    '',
+    'uniform vec2  uRes;        // device px',
+    'uniform float uHorizon;    // device px from the top',
+    'uniform float uSpan;       // device px, horizon to the bottom of the plane',
+    'uniform float uTD;         // depth at the bottom of the frame, in texels',
+    'uniform float uA0;         // device px per texel at the bottom',
+    'uniform float uTravel;     // texels travelled, wrapped to the tile',
+    'uniform float uBlur;       // texels travelled this frame',
+    'uniform float uLateral;    // the car lean the track centre follows',
+    'uniform float uScroll;     // for the edge wobble, same as the 2D path',
+    'uniform float uDusk;',
+    'uniform float uRoadOn;',
+    'uniform float uTexSize;',
+    'uniform vec3  uTint;',
+    'uniform sampler2D uSand;',
+    'uniform sampler2D uRoad;',
+    '',
+    '/* The drift of loose sand along the shoulder. Same three sines as',
+    '   js/scene.js, so the texture edge and the painted one agree. */',
+    'float edgeNoise(float d, float side) {',
+    '  float t = d * 7.0 + uScroll * 0.004 + (side > 0.0 ? 31.7 : 0.0);',
+    '  return sin(t) * 0.6 + sin(t * 2.7 + 1.3) * 0.3 + sin(t * 6.1) * 0.1;',
+    '}',
+    '',
+    'void main() {',
+    '  // The canvas covers the ground only, so y is measured down from the',
+    '  // horizon and everything is in its pixels rather than the frame\'s.',
+    '  float x = gl_FragCoord.x;',
+    '  float y = uRes.y - gl_FragCoord.y;',
+    '',
+    '  // Clamped rather than discarded: a branch around a texture fetch',
+    '  // leaves its derivatives undefined, and the derivatives are what pick',
+    '  // the mip level. Everything above the horizon comes out at alpha 0.',
+    '  float t = max((y - uHorizon) / uSpan, 0.02);',
+    '  float s = 0.035 + 0.965 * t;',
+    '  float cx = uRes.x * 0.5 - uLateral * uRes.x * 0.06 * (1.0 - s);',
+    '',
+    '  float a = uA0 * t;                 // device px per texel across',
+    '  float ty = uTD / t + uTravel;      // texels into the distance',
+    '  float tx = (x - cx) / a;',
+    '',
+    '  // Two taps for the sand, one for the road: the sand ripples run across',
+    '  // the direction of travel and alias against it, the ruts run along it',
+    '  // and cannot, and every fetch here is paid for a million times a frame.',
+    '  // The small negative bias pulls the mip selection back towards sharp:',
+    '  // anisotropic filtering already keeps this honest, and without it the',
+    '  // grazing angle averages the sand into suede.',
+    '  vec3 sand = texture2D(uSand, vec2(tx, ty) / uTexSize, -0.35).rgb;',
+    '  sand += texture2D(uSand, vec2(tx, ty - uBlur * 0.6) / uTexSize, -0.35).rgb;',
+    '  sand *= 0.5;',
+    '  vec3 road = texture2D(uRoad, vec2(tx + uTexSize * 0.5, ty - uBlur * 0.3) / uTexSize, -0.35).rgb;',
+    '',
+    '  // The track, with the same wobbling edge the painted one has.',
+    '  float d = pow(t, 1.0 / 2.35);',
+    '  float side = x > cx ? 1.0 : -1.0;',
+    '  float halfW = mix(uRes.x * 0.055, uRes.x * 0.95, s) * 0.5;',
+    '  float edge = halfW * (1.0 - edgeNoise(d, side) * 0.13 * s);',
+    '  float feather = max(2.0, edge * 0.07);',
+    '  float onRoad = (1.0 - smoothstep(edge - feather, edge, abs(x - cx))) * uRoadOn;',
+    '',
+    '  vec3 col = mix(sand, road, onRoad);',
+    '  col = mix(col, col * uTint, uDusk);',
+    '',
+    '  // Dissolve into the haze the plates end in.',
+    '  float fade = clamp((t - 0.035) / 0.165, 0.0, 1.0);',
+    '  gl_FragColor = vec4(col * fade, fade);',
+    '}'
+  ].join('\n');
 
   var Ground = {
     ready: false,
     roadReady: false,
-    sand: new Texture(),
-    road: new Texture(),
+    budget: 1,        // pixel budget, cut back on a device that cannot keep up
+    slow: 0,
+
+    canvas: null,
+    gl: null,
+    prog: null,
+    uni: {},
+    tex: {},
+    size: 2048,
+    pending: 0,
 
     /** `urls` is {sand, road} — file paths, or data URIs in the single-file
         build. The road is optional; without it the track stays painted. */
     load: function (urls, onDone) {
       var self = this;
-      var left = 2;
-      function step() {
-        if (--left > 0) return;
-        self.ready = self.sand.ready;
-        self.roadReady = self.road.ready;
+      var images = {};
+      var names = urls.road ? ['sand', 'road'] : ['sand'];
+      var left = names.length;
+
+      names.forEach(function (name) {
+        var img = new global.Image();
+        img.onload = function () {
+          images[name] = img;
+          if (--left === 0) finish();
+        };
+        img.onerror = function () { if (--left === 0) finish(); };
+        img.src = urls[name];
+      });
+
+      function finish() {
+        try {
+          self.init(images);
+        } catch (e) {
+          self.ready = false;
+          self.roadReady = false;
+        }
         if (onDone) onDone(self.ready);
       }
-      this.sand.load(urls.sand, step);
-      if (urls.road) this.road.load(urls.road, step); else step();
     },
 
-    /** Draw the floor. `o` is {w, h, horizon, dpr, scroll, lateral, dusk}.
-        Returns false if the texture is not usable, so the caller can fall
-        back to its own painted ground. */
+    init: function (images) {
+      if (!images.sand) return;
+
+      var canvas = global.document.createElement('canvas');
+      canvas.width = 2;
+      canvas.height = 2;
+      var gl = canvas.getContext('webgl', {
+        alpha: true, premultipliedAlpha: true, antialias: false,
+        depth: false, stencil: false
+      }) || canvas.getContext('experimental-webgl');
+      if (!gl) return;
+
+      var prog = gl.createProgram();
+      gl.attachShader(prog, compile(gl, gl.VERTEX_SHADER, VERT));
+      gl.attachShader(prog, compile(gl, gl.FRAGMENT_SHADER, FRAG));
+      gl.linkProgram(prog);
+      if (!gl.getProgramParameter(prog, gl.LINK_STATUS)) {
+        throw new Error(gl.getProgramInfoLog(prog));
+      }
+      gl.useProgram(prog);
+
+      var buf = gl.createBuffer();
+      gl.bindBuffer(gl.ARRAY_BUFFER, buf);
+      gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 3, -1, -1, 3]), gl.STATIC_DRAW);
+      var loc = gl.getAttribLocation(prog, 'aPos');
+      gl.enableVertexAttribArray(loc);
+      gl.vertexAttribPointer(loc, 2, gl.FLOAT, false, 0, 0);
+
+      this.uni = {};
+      ['uRes', 'uHorizon', 'uSpan', 'uTD', 'uA0', 'uTravel', 'uBlur', 'uLateral',
+       'uScroll', 'uDusk', 'uRoadOn', 'uTexSize', 'uTint', 'uSand', 'uRoad'
+      ].forEach(function (n) { Ground.uni[n] = gl.getUniformLocation(prog, n); });
+
+      this.tex.sand = upload(gl, images.sand);
+      this.tex.road = images.road ? upload(gl, images.road) : this.tex.sand;
+      this.size = images.sand.naturalWidth || 2048;
+
+      gl.activeTexture(gl.TEXTURE0);
+      gl.bindTexture(gl.TEXTURE_2D, this.tex.sand);
+      gl.uniform1i(this.uni.uSand, 0);
+      gl.activeTexture(gl.TEXTURE1);
+      gl.bindTexture(gl.TEXTURE_2D, this.tex.road);
+      gl.uniform1i(this.uni.uRoad, 1);
+
+      canvas.addEventListener('webglcontextlost', function (e) {
+        e.preventDefault();
+        Ground.ready = false;
+        Ground.roadReady = false;
+      });
+
+      this.canvas = canvas;
+      this.gl = gl;
+      this.prog = prog;
+      this.ready = true;
+      this.roadReady = !!images.road;
+    },
+
+    /** Frame time, from the scene. A phone that cannot hold 60 gets fewer
+        ground pixels rather than a slideshow; two steps down and it stops,
+        because past that the picture costs more than it is worth. */
+    pace: function (dt) {
+      if (dt > 0.028) {
+        if (++this.slow > 90 && this.budget > 0.5) {
+          this.budget *= 0.66;
+          this.slow = 0;
+        }
+      } else if (this.slow > 0) {
+        this.slow--;
+      }
+    },
+
+    /** Draw the plane and blit it into the scene's 2D context. `o` is
+        {w, h, dpr, horizon, scroll, dScroll, lateral, dusk, tint}. */
     draw: function (ctx, o) {
-      return this.bands(ctx, o, this.sand, false, 3);
-    },
+      if (!this.ready) return false;
+      var gl = this.gl;
 
-    /** The road. Same mapping, same scroll, so it cannot drift against the
-        sand it is cut into; the only difference is that the tile is centred
-        on the track rather than on the frame, which puts the baked ruts under
-        the wheels. The caller has already clipped to the track. */
-    drawRoad: function (ctx, o) {
-      if (!this.roadReady) return false;
-      // Two taps are enough here: the road's detail runs along the direction
-      // of travel, and a rut cannot alias against motion parallel to it.
-      return this.bands(ctx, o, this.road, true, 2);
-    },
+      // Only the ground is drawn, so the canvas starts at the horizon rather
+      // than at the top of the frame: nearly half the pixels, for free.
+      var top = Math.floor(o.horizon);
+      var full = o.w * o.dpr * (o.h - top) * o.dpr;
+      var px = o.dpr * Math.min(RES_SCALE,
+                                Math.sqrt(MAX_PIXELS * this.budget / Math.max(1, full)));
+      var w = Math.max(1, Math.round(o.w * px));
+      var h = Math.max(1, Math.round((o.h - top) * px));
+      if (this.canvas.width !== w || this.canvas.height !== h) {
+        this.canvas.width = w;
+        this.canvas.height = h;
+      }
+      gl.viewport(0, 0, w, h);
 
-    bands: function (ctx, o, tex, centred, maxTaps) {
-      if (!tex.ready || !global.DOMMatrix) return false;
-
-      var bottom = o.h * 1.04;
-      var span = bottom - o.horizon;
+      var horizon = (o.horizon - top) * px;
+      var span = (o.h * 1.04 - top) * px - horizon;
       if (span <= 1) return false;
 
-      var A0 = TILE_ACROSS * o.w / tex.size;     // css px per texel at t = 1
-      var TD = span / A0;                        // depth at the bottom, texels
-      var travel = o.scroll * TRAVEL;
-      var maxLevel = tex.levels.length - 1;
+      var A0 = TILE_ACROSS * w / this.size;   // canvas px per texel at t = 1
+      var TD = span / A0;                     // depth at the bottom, in texels
 
-      var tBot = 1;
-      ctx.save();
-      // The floor never reaches the horizon: the last band would be a single
-      // row of pixels holding a thousand texels. It dissolves into the haze
-      // instead, which is where the plates take over.
-      while (tBot > 0.035) {
-        var tTop = tBot / BAND_RATIO;
-        if (tTop < 0.035) tTop = 0.035;
+      // Wrapped to the tile so a long run cannot walk the coordinates out of
+      // float precision — the texture repeats, so this is exact.
+      var travel = (o.scroll * TRAVEL) % this.size;
 
-        var yBot = o.horizon + span * tBot;
-        var yTop = o.horizon + span * tTop;
-        var tyBot = TD / tBot + travel;
-        var tyTop = TD / tTop + travel;
+      gl.useProgram(this.prog);
+      gl.uniform2f(this.uni.uRes, w, h);
+      gl.uniform1f(this.uni.uHorizon, horizon);
+      gl.uniform1f(this.uni.uSpan, span);
+      gl.uniform1f(this.uni.uTD, TD);
+      gl.uniform1f(this.uni.uA0, A0);
+      gl.uniform1f(this.uni.uTravel, travel);
+      gl.uniform1f(this.uni.uBlur, Math.min(o.dScroll || 0, (o.speed || 0) / 30) * TRAVEL);
+      gl.uniform1f(this.uni.uLateral, o.lateral || 0);
+      gl.uniform1f(this.uni.uScroll, o.scroll % 100000);
+      gl.uniform1f(this.uni.uDusk, o.dusk || 0);
+      gl.uniform1f(this.uni.uRoadOn, this.roadReady ? 1 : 0);
+      gl.uniform1f(this.uni.uTexSize, this.size);
+      gl.uniform3f(this.uni.uTint, o.tint[0], o.tint[1], o.tint[2]);
 
-        var tMid = (tTop + tBot) * 0.5;
-        var a = A0 * tMid;                       // css px per texel across
-        var d = (yBot - yTop) / (tyBot - tyTop); // css px per texel down
+      gl.clearColor(0, 0, 0, 0);
+      gl.clear(gl.COLOR_BUFFER_BIT);
+      gl.drawArrays(gl.TRIANGLES, 0, 3);
 
-        // Pick the level whose texels land near a device pixel.
-        var level = Math.round(Math.log(1 / Math.max(1e-6, a * o.dpr)) / Math.LN2);
-        level = level < 0 ? 0 : (level > maxLevel ? maxLevel : level);
-        var k = 1 << level;
-
-        var pattern = tex.patternFor(ctx, level);
-        if (!pattern || !pattern.setTransform) { ctx.restore(); return false; }
-
-        // The track's centre drifts with the steering; the floor goes with it,
-        // so the world turns rather than the road sliding over it.
-        var s = 0.035 + 0.965 * tMid;
-        var cxTrack = o.w * 0.5 - (o.lateral || 0) * o.w * 0.06 * (1 - s);
-        var cx = cxTrack;
-        // The road tile carries its ruts down the middle, so its centre
-        // column is what has to land on the track's centre line.
-        if (centred) cx -= a * tex.size * 0.5;
-
-        pattern.setTransform(new global.DOMMatrix([
-          a * k, 0, 0, d * k, cx, yTop - d * tyTop
-        ]));
-
-        // A long ramp: the floor has to dissolve into the hazy band the
-        // plates end in, and a short one left a horizon-wide step in it.
-        var alpha = tMid < 0.20 ? (tMid - 0.035) / 0.165 : 1;
-        var bh = yBot - yTop + 1;
-        ctx.fillStyle = pattern;
-
-        /* Motion blur, taken from how far this band actually moves in one
-           frame rather than from a fixed fraction of its height.
-
-           This is not a garnish. Near the bottom of the frame the ground
-           travels further between two frames than the ripples on it are
-           apart, so with a single sharp sample the texture aliases: the sand
-           appears to crawl the wrong way, or to pour towards the vanishing
-           point, which is exactly what it looked like. A camera does not have
-           that problem because its shutter is open while the ground moves,
-           and neither does this now — the band is drawn several times along
-           the distance it covers, which is the same smear.
-
-           Weights 1, 1/2, 1/3 … give the taps an equal share under
-           source-over, so the result is their average rather than the last
-           one drawn. */
-        // Capped at three, and at two frames' worth of travel. A slow frame
-        // means a longer smear, which means more taps, which means a slower
-        // frame: without the cap a weak device spirals.
-        var trailPx = Math.abs(d) * Math.min(o.dScroll || 0, (o.speed || 0) / 30) * TRAVEL;
-        var taps = trailPx > 5 ? Math.min(maxTaps, Math.round(trailPx / 9) + 1) : 1;
-
-        // The road only ever covers a trapezoid of the frame, so the road
-        // pass is told how wide the track is at this depth and paints that
-        // much of the band instead of the full width behind the clip.
-        var x0 = 0, x1 = o.w;
-        if (o.halfAt) {
-          var hw = o.halfAt(tMid) + 4;
-          x0 = Math.max(0, cxTrack - hw);
-          x1 = Math.min(o.w, cxTrack + hw);
-          if (x1 <= x0) { tBot = tTop; continue; }
-        }
-
-        for (var tap = 0; tap < taps; tap++) {
-          var back = taps > 1 ? trailPx * (tap / (taps - 1)) : 0;
-          if (tap > 0) {
-            pattern.setTransform(new global.DOMMatrix([
-              a * k, 0, 0, d * k, cx, yTop - d * tyTop - back
-            ]));
-          }
-          ctx.globalAlpha = alpha / (tap + 1);
-          ctx.fillRect(x0, yTop, x1 - x0, bh);
-        }
-        ctx.globalAlpha = alpha;
-
-        // Evening. The texture is baked at golden hour only — a second bake
-        // would double both the download and the fills — so dusk is a
-        // multiply over the same sand, band by band, following the same fade
-        // so it never spills onto the plates above.
-        if (o.dusk > 0.02 && o.tint) {
-          ctx.globalCompositeOperation = 'multiply';
-          ctx.globalAlpha = alpha * o.dusk;
-          ctx.fillStyle = o.tint;
-          ctx.fillRect(x0, yTop, x1 - x0, bh);
-          ctx.globalCompositeOperation = 'source-over';
-        }
-
-        tBot = tTop;
-      }
-      ctx.restore();
+      ctx.drawImage(this.canvas, 0, top, o.w, o.h - top);
       return true;
     }
   };
+
+  function compile(gl, type, src) {
+    var sh = gl.createShader(type);
+    gl.shaderSource(sh, src);
+    gl.compileShader(sh);
+    if (!gl.getShaderParameter(sh, gl.COMPILE_STATUS)) {
+      throw new Error(gl.getShaderInfoLog(sh));
+    }
+    return sh;
+  }
+
+  /** A repeating, mipmapped texture. Anisotropy is the whole point of doing
+      this on the GPU: the ground is seen at a grazing angle, and without it
+      the far field either aliases or turns to mush. */
+  function upload(gl, img) {
+    var tex = gl.createTexture();
+    gl.bindTexture(gl.TEXTURE_2D, tex);
+    gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, false);
+    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, img);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.REPEAT);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.REPEAT);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR_MIPMAP_LINEAR);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+    gl.generateMipmap(gl.TEXTURE_2D);
+
+    var ext = gl.getExtension('EXT_texture_filter_anisotropic') ||
+              gl.getExtension('WEBKIT_EXT_texture_filter_anisotropic') ||
+              gl.getExtension('MOZ_EXT_texture_filter_anisotropic');
+    if (ext) {
+      var max = gl.getParameter(ext.MAX_TEXTURE_MAX_ANISOTROPY_EXT);
+      gl.texParameterf(gl.TEXTURE_2D, ext.TEXTURE_MAX_ANISOTROPY_EXT, Math.min(ANISO, max));
+    }
+    return tex;
+  }
 
   global.DriftGround = Ground;
 })(window);
