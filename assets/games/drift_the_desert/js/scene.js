@@ -700,8 +700,10 @@
         ctx.shadowColor = 'rgba(255, 70, 70, ' + (danger * 0.9).toFixed(2) + ')';
         ctx.shadowBlur = 26 * danger;
       }
-      // Pivot roughly on the loaded wheels, which sit low and left in the shot.
-      var x0 = -w * 0.46;
+      // The driver hangs out of the right-hand window, so the sprite is wider
+      // on that side than the car is: the pivot follows the body's centre
+      // (measured at 0.39 of the sprite) rather than the sprite's.
+      var x0 = -w * 0.39;
       var y0 = -h * 0.72;
       ctx.drawImage(img, x0, y0, w, h);
 

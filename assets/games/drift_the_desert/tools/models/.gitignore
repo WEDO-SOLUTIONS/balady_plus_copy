@@ -1,0 +1,3 @@
+# The super-resolution weights are 38 MB and are not worth versioning.
+# See the README: download EDSR_x4.pb here to sharpen the photographic crops.
+*.pb

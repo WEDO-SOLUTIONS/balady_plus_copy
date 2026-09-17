@@ -12,7 +12,13 @@ source sheet instead of being an opaque blob of binaries.
     pip install pillow rembg[cpu]
     python3 tools/extract_assets.py path/to/Arabic_drift.png
 
-`rembg` is only needed for the two cut-outs; everything else is plain Pillow.
+`rembg` is only needed for the cut-outs; everything else is plain Pillow.
+
+Optional but recommended: drop EDSR_x4.pb into tools/models/ and install
+opencv-contrib-python-headless. The sheet's crops are tiny — the rear car is
+90 px wide and the game draws it six times that — and a super-resolution pass
+buys back real edge that no amount of sharpening can. Without it the script
+falls back to Lanczos and says so.
 """
 
 import sys
@@ -182,6 +188,44 @@ def trim(im, pad=2):
                     min(im.width, x1 + pad), min(im.height, y1 + pad)))
 
 
+_SR_MODEL = Path(__file__).resolve().parent / 'models' / 'EDSR_x4.pb'
+_SR = None
+_SR_WARNED = False
+
+
+def superres(im, scale=4):
+    """Upscale a photographic crop with EDSR, or Lanczos if it is unavailable.
+
+    Worth it on the small crops: EDSR recovers the tail-light edges, the roof
+    rails and the body seams that Lanczos leaves as mush. It also gives `rembg`
+    a better input, which makes the mattes cleaner.
+    """
+    global _SR, _SR_WARNED
+    if _SR is None:
+        try:
+            import cv2
+            if not _SR_MODEL.is_file():
+                raise FileNotFoundError(_SR_MODEL)
+            sr = cv2.dnn_superres.DnnSuperResImpl_create()
+            sr.readModel(str(_SR_MODEL))
+            sr.setModel('edsr', 4)
+            _SR = (cv2, sr)
+        except Exception as exc:
+            if not _SR_WARNED:
+                print(f'  note: no super-resolution ({type(exc).__name__}) — falling back to Lanczos')
+                _SR_WARNED = True
+            _SR = False
+
+    if _SR is False or scale != 4:
+        return upscale(im, scale)
+
+    import numpy as np
+    cv2, sr = _SR
+    rgb = im.convert('RGB')
+    out = sr.upsample(cv2.cvtColor(np.array(rgb), cv2.COLOR_RGB2BGR))
+    return Image.fromarray(cv2.cvtColor(out, cv2.COLOR_BGR2RGB))
+
+
 def upscale(im, factor, resample=Image.LANCZOS):
     return im.resize((int(im.width * factor), int(im.height * factor)), resample)
 
@@ -197,11 +241,13 @@ def sharpen(im, radius=1.6, percent=105, threshold=2):
     return out
 
 
-def compose_hero(car, driver, seat=0.545, lift=0.42, scale=0.47):
-    """Seat the driver in the car's sunroof.
+def compose_hero(car, driver, seat=0.97, lift=1.02, scale=0.43):
+    """Hang the driver out of the car's right-hand window.
 
-    `seat` is where along the car's width he sits, `lift` how far his hips sit
-    below the roof line, and `scale` his height relative to the car's.
+    The car leans left, so its right flank is the one in the air — which is the
+    side a drifter hangs out of. `seat` is where along the car's width he sits,
+    `lift` how far his waist sits below the roof line, and `scale` his height
+    relative to the car's.
     """
     # The matte keeps a wedge of sand under the wheels; fading it out stops it
     # reading as a cardboard base once the sprite sits on the track.
@@ -285,7 +331,7 @@ def main():
     # --- hero car: the rear three-quarter, so the camera follows the car ----
     # The results screen is the only rear shot on the sheet and it is small,
     # so it is matted at 8x and kept larger than the crop deserves.
-    rear = trim(cutout(s['results'].crop((96, 286, 186, 374)), scale=8))
+    rear = trim(cutout(superres(s['results'].crop((96, 286, 186, 374))), scale=2))
 
     # Its driver faces away. The countdown screen's driver is turned towards
     # the camera, which is the pose the game wants, so he is matted separately
@@ -295,16 +341,16 @@ def main():
     # Gentle matting thresholds: the default pair is tuned for the car's hard
     # rim and eats his sleeves, but matting off leaves a halo of sky that shows
     # as a box once he is composited over the dark rear window.
-    driver = erode_alpha(trim(largest_blob(
-        cutout(s['ready'].crop((134, 219, 258, 298)), scale=8, matting=(200, 45, 3)))))
+    driver = erode_alpha(trim(largest_blob(cutout(
+        superres(s['ready'].crop((134, 219, 258, 298))), scale=2, matting=(200, 45, 3)))))
 
-    hero = compose_hero(sharpen(rear, radius=2.2, percent=155),
+    hero = compose_hero(sharpen(rear, radius=1.6, percent=105),
                         fade_bottom(sharpen(driver)))
     save_png(upscale(hero, 520.0 / hero.width), 'car.png')
 
 
     # --- one of the floating coins -----------------------------------------
-    coin = trim(cutout(s['play2'].crop((228, 312, 276, 360)), scale=8))
+    coin = trim(cutout(superres(s['play2'].crop((228, 312, 276, 360))), scale=4))
     save_png(upscale(coin, 160.0 / coin.width), 'coin.png')
 
     # --- scenery strips -----------------------------------------------------

@@ -118,7 +118,7 @@ than as an approximation of it:
 
 | Asset | Where it comes from | Where it is used |
 |-------|--------------------|------------------|
-| `car.png` | the results screen's rear shot, with the countdown screen's driver matted in | the car you steer, and the how-to screen |
+| `car.png` | the results screen's rear shot, super-resolved, with the countdown screen's driver matted into the right-hand window | the car you steer, and the how-to screen |
 | `coin.png` | a floating token on the danger screen | collectibles and the HUD coin pill |
 | `sky.jpg` | a clean column of the splash sky, mirror-tiled | the scrolling sky |
 | `ridge.png` | the splash mesas, mirror-tiled, both edges feathered | the parallax horizon |
@@ -131,9 +131,20 @@ than as an approximation of it:
 Regenerate them with:
 
 ```bash
-pip install pillow "rembg[cpu]"
+pip install pillow "rembg[cpu]" opencv-contrib-python-headless
+curl -L -o tools/models/EDSR_x4.pb \
+  https://raw.githubusercontent.com/Saafke/EDSR_Tensorflow/master/models/EDSR_x4.pb
 python3 tools/extract_assets.py /path/to/Arabic_drift.png
 ```
+
+The EDSR weights are 38 MB and are not versioned. They are optional — without
+them the script falls back to Lanczos and says so — but worth fetching: the
+crops are tiny and the game draws them large, and a super-resolution pass
+recovers edge that sharpening cannot invent. On the rear car it brings back the
+tail-light rims, the roof rails and the body seams, and it gives `rembg` a
+better input, so the mattes come out cleaner too. EDSR beat FSRCNN and LapSRN
+on these crops; Real-ESRGAN would likely beat all three but does not build
+against the current toolchain.
 
 The cut-outs are alpha-matted with `rembg`; the marks and icons are pulled off
 their dark backgrounds with a luminance key; the scenery strips are clean
@@ -142,19 +153,22 @@ rectangles widened by mirroring.
 The hero sprite is a composite. The camera sits behind the car — which is what
 the receding track always implied — so the body comes from the results
 screen's rear shot. That shot's driver faces away, so the countdown screen's
-driver, who is turned towards the camera, is matted separately and seated in
-the sunroof, cropped above the roof line and faded out at the waist so he
-reads as continuing down into the cabin. Three details of the matting matter:
+driver, who is turned towards the camera, is matted separately and hung out of
+the right-hand window: the car leans left, so its right flank is the one in
+the air, which is the side a drifter hangs out of. He is cropped above the
+countdown car's roof line and faded out at the waist so he reads as continuing
+down into the cabin. His sprite is wider than his torso — arms out — so the
+seat position is tuned by eye rather than computed, and `js/scene.js` pivots
+the sprite on the car body's measured centre (0.39 of the sprite) rather than
+on the sprite's own. Three details of the matting matter:
 the default `rembg` thresholds eat his sleeves (white on a bright sky), so he
 is matted gently; a loose matte then picks up a corner of the countdown panel,
 which `largest_blob` drops; and sharpening has to happen before compositing,
 or the unsharp pass rings his edge against the dark rear window and draws a
 pale box around him.
 
-The rear shot is only ~90 px wide on the sheet and the game draws it six times
-that, so it is matted at 8x and sharpened hard. That is the ceiling: an
-upscaler like Real-ESRGAN would be the way past it, but it does not build
-against the current toolchain. The mockup has no unobstructed full-width
+The rear shot is only 90 px wide on the sheet and the game draws it six times
+that, so it goes through EDSR before anything else touches it. The mockup has no unobstructed full-width
 background — the hero car sits in the middle of every screen — so the dunes,
 the track geometry and the dust stay procedural and the photographic strips
 scroll behind them.
