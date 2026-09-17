@@ -769,6 +769,46 @@ the last release is digital silence.
 Measured in the mix: playing a chorus perfectly adds **0.8 dB** over the bare
 bed (−22.3 → −21.5 dBFS RMS, peak −2.1). Present, and nowhere near in charge.
 
+### The end of a run
+
+A performance does not fade out; it lands. Both endings are written **in beats
+of the song that just stopped** — the cadence takes the chart's own `bpm` — so
+the last thing the player hears is still in tempo with everything before it. An
+ending out of tempo reads as the game being switched off rather than as the row
+finishing.
+
+The two endings are the same gesture played two ways, and the difference is
+**energy, not harshness**:
+
+- **The row held together** — a tag: downbeat, two small drums pushing, and the
+  whole row landing together on the next beat with sabres and hands. Then the
+  courtyard, which is the actual ending: silence with a room in it.
+- **The row lost its step** — the section falters. Three hits, slowing and
+  quieter, the second and third *damped* so they do not ring, no sabres, no
+  hands, almost no room. Nobody is being told off; the performance simply
+  stopped. Measured, the first ending peaks at its landing (−2.8 dBFS) and
+  rings for 2.5 s; the second peaks on its first hit (−4.6 dBFS) and is gone in
+  half that.
+
+Then the grade arrives under the result screen, a beat and a half later — long
+enough that the two do not talk over each other, short enough that the screen
+and its sound are one event. It follows the verdict rule taken further: **the
+reward is added consonance, never added harshness.** An S rings an octave and a
+fifth (2:3:4) and the row's hands come in; an A keeps the fifth; a B keeps one
+tone; a C has no interval at all and is left with a frame drum and the room.
+Nothing in the ladder is dissonant, sour or slow — a low grade sounds *plain*,
+not punished, which is the only reading a heritage ceremony can carry. A new
+personal best adds one bright partial on top, whatever the grade.
+
+**The stinger is the only sound that outlives what started it**, and "Play
+again" is one tap away, so it needs to be cancellable — and WebAudio cannot
+un-schedule a node already handed to the audio thread. It plays through a gain
+pair that `cancelStinger()` mutes and replaces; the nodes finish into a bus
+nobody is listening to. A *pair*, because the courtyard is a shared convolver
+and the first version cut only the dry half: the room went on playing the
+ending of the run you had just restarted, 25 dB down and perfectly audible.
+`deck/audio_preview.js` asserts the cancel takes the whole thing to −81 dBFS.
+
 ### What is deliberately missing
 
 The chanted poem. It is the heart of a real Ardah, and it is exactly what the

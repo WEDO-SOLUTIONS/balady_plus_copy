@@ -247,6 +247,90 @@ function wav(pcm, chans, rate) {
                 JSON.stringify(r.counts));
   }
 
+  /* The end of a run, as the player actually meets it: the last bars of the
+     chart played through, the cadence in that chart's own beat, and the grade
+     arriving under the result screen. Both endings back to back, so the
+     difference between "the row held together" and "the row lost its step" can
+     be judged rather than asserted. */
+  for (const take of [{ completed: true, grade: 'A' }, { completed: false, grade: 'C' }]) {
+    const r = await page.evaluate(async (c) => {
+      const A = window.Ardah;
+      const ctx = new OfflineAudioContext(2, Math.ceil(c.rate * 13), c.rate);
+      const eng = new A.AudioEngine();
+      eng.build(ctx);
+      const chart = A.charts.build('normal');
+      const beat = 60 / chart.bpm;
+      const endAt = 8.5;                       // where the run stops, in clip time
+      const from = chart.durationMs / 1000 - endAt;
+
+      for (const h of chart.drums) {
+        const t = h.t / 1000 - from;
+        if (t < 0 || t > endAt) continue;
+        eng.play(h.voice, t, h.gain);
+      }
+      // Still being played right up to the last note.
+      for (const n of chart.notes) {
+        const t = n.t / 1000 - from;
+        if (t < 0 || t > endAt) continue;
+        if (n.type === 'hold') {
+          eng.holdStart(n.lane, t + 0.02);
+          eng.holdEnd(n.lane, t + n.durMs / 1000);
+        }
+        eng.strike(c.completed ? 'perfect' : 'good', t + 0.022);
+      }
+
+      eng.ending(c.completed, 60000 / chart.bpm, endAt);
+      eng.result(c.grade, c.completed, endAt + beat * 1.5 + 0.35);
+      const out = await ctx.startRendering();
+      return window.__pack(out);
+    }, { rate: RATE, completed: take.completed, grade: take.grade });
+
+    fs.writeFileSync(path.join(OUT, `ardah_ending_${take.completed ? 'kept' : 'broke'}.wav`),
+                     wav(Buffer.from(r.b64, 'base64'), r.chans, RATE));
+    const db = (v) => (20 * Math.log10(Math.max(1e-9, v))).toFixed(1);
+    console.log(`ending ${(take.completed ? 'kept' : 'broke').padEnd(7)}         peak ${db(r.peak).padStart(6)} dBFS  ` +
+                `rms ${db(r.rms).padStart(6)} dBFS` + (r.peak >= 1 ? '  CLIPPED' : ''));
+  }
+
+  /* Cancelling a stinger has to silence ALL of it. The courtyard is a shared
+     convolver, so the first version cut only the dry half and left the room
+     playing the ending of the run you had just restarted — 25 dB down and
+     perfectly audible. This is the assertion that keeps it fixed. */
+  const cut = await page.evaluate(async (rate) => {
+    const A = window.Ardah;
+    const take = async (cancel) => {
+      const ctx = new OfflineAudioContext(2, rate * 4, rate);
+      const eng = new A.AudioEngine();
+      eng.build(ctx);
+      eng.ending(true, 625, 0.1);
+      eng.result('S', true, 1.2);
+      if (cancel) eng.cancelStinger();       // offline, currentTime is 0
+      const out = await ctx.startRendering();
+      const d = out.getChannelData(0);
+      let peak = 0;
+      for (let i = 0; i < d.length; i++) peak = Math.max(peak, Math.abs(d[i]));
+      return 20 * Math.log10(Math.max(1e-12, peak));
+    };
+    return { on: await take(false), off: await take(true) };
+  }, RATE);
+  console.log(`stinger      cancel      ${cut.on.toFixed(1)} dBFS -> ${cut.off.toFixed(1)} dBFS` +
+              (cut.off > -60 ? '   LEAKING' : '   (silent)'));
+
+  /* The grade ladder on its own: S, A, B, C, then S again as a new best. */
+  const grades = await page.evaluate(async (rate) => {
+    const A = window.Ardah;
+    const ctx = new OfflineAudioContext(2, Math.ceil(rate * 12), rate);
+    const eng = new A.AudioEngine();
+    eng.build(ctx);
+    let t = 0.2;
+    for (const g of ['S', 'A', 'B', 'C']) { eng.result(g, false, t); t += 2.2; }
+    eng.result('S', true, t);
+    const out = await ctx.startRendering();
+    return window.__pack(out);
+  }, RATE);
+  fs.writeFileSync(path.join(OUT, 'ardah_grades.wav'),
+                   wav(Buffer.from(grades.b64, 'base64'), grades.chans, RATE));
+
   /* Each voice alone, twice — once soft, once full. Two things come out of
      it: a clip you can actually listen to one drum at a time, and numbers
      that say whether the drums are distinct rather than three settings of

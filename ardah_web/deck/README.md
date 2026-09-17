@@ -102,6 +102,10 @@ alone, and the same chorus twice as it sounds *while being played* — once
 clean, once ragged. Those last two are the only way to answer the question that
 matters about feedback: not "is it a nice sound" but "does it sit in front of
 the groove without becoming another drummer".
+
+It also renders both endings with the last eight seconds of the chart in front
+of them, the grade ladder S/A/B/C plus a new best, and asserts that cancelling
+a stinger silences it completely — reverb send included.
 Offline because it renders faster than real time, the sandbox has no audio
 device, and it is deterministic: with the engine's seeded PRNG, two runs give
 byte-identical files, so a change to the synthesis can be diffed.

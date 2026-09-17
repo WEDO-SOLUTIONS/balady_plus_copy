@@ -107,6 +107,16 @@ decision it exists to settle: [`docs/ardah-concept.md`](../docs/ardah-concept.md
 - **A sustained voice needs an owner.** The raise hum is the only one, it lives
   in `_holds` keyed by lane, and every way a run can end has to release it
   (`holdEndAll`). End it with a fade — cutting a sustained gain to zero clicks.
+- **Anything that outlives a run must be cancellable, and cancelling means the
+  reverb too.** The end-of-round stinger plays through the `stinger` /
+  `stingerWet` gain pair so `cancelStinger()` can mute and replace it; cutting
+  only the dry half leaves the shared courtyard playing the ending of the run
+  the player just restarted. Cancel it wherever a run can begin or the menu can
+  open.
+- **The ending is in the chart's own beat**, taken from `chart.bpm`. An ending
+  out of tempo reads as the game being switched off, not as the row finishing.
+  Failure endings differ from success by energy, never by harshness: no
+  buzzers, no dissonance, and never louder than the win.
 - **No synthetic chant, ever.** The concept doc flags it twice (§11.1, §11.2):
   a mis-scanned chant is a PR incident and the rights are a separate track.
   Percussion and claps are fair game; a voice is licensed or commissioned, or

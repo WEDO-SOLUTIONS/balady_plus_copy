@@ -168,12 +168,31 @@ window.Ardah = window.Ardah || {};
     this.sfx.connect(this.musicGain);
     this._holds = {};
 
+    /* The end-of-round stinger gets a bus of its own for one reason: it is the
+       only sound in the game that outlives the thing that started it. It runs
+       for a second and a half after the run is over, and "Play again" is one
+       tap away — so it has to be cancellable, and WebAudio cannot un-schedule
+       a node that has already been handed to the audio thread. Muting and
+       replacing the gain it plays through is how you cancel a sound that is
+       already on its way out.
+
+       It is a PAIR of gains, dry and send, because the courtyard is a shared
+       convolver: cancelling only the dry half leaves the room still playing
+       the ending you just cancelled. Measured, that was 25 dB down and
+       perfectly audible — a ghost of the last run over the first bar of the
+       next one. Both halves are cut together, and the per-voice send levels
+       survive, which they would not if the stinger fed one fixed send.
+
+       Built after the courtyard below, because its send half connects to it. */
+
     var conv = ctx.createConvolver();
     conv.buffer = this._courtyard();
     this.wet = ctx.createGain();
     this.wet.gain.value = 0.34;         // send level; the IR itself is quiet
     this.wet.connect(conv);
     conv.connect(this.musicGain);
+
+    this._newStinger();
 
     this._buildNoise();
     return this;
@@ -242,12 +261,13 @@ window.Ardah = window.Ardah || {};
      voice: the big drums carry the room, the tar sits closer, the stick
      transients stay dry or the whole thing turns to mush. */
   AudioEngine.prototype._out = function (node, send, bus) {
-    node.connect(bus === 'sfx' ? this.sfx : this.dry);
+    var stinger = bus === 'stinger';
+    node.connect(stinger ? this.stinger : bus === 'sfx' ? this.sfx : this.dry);
     if (send > 0) {
       var s = this.ctx.createGain();
       s.gain.value = send;
       node.connect(s);
-      s.connect(this.wet);
+      s.connect(stinger ? this.stingerWet : this.wet);
     }
   };
 
@@ -317,9 +337,10 @@ window.Ardah = window.Ardah || {};
       The wide pitch drop (starts a fifth and a half sharp, settles over 55 ms)
       is the whole character: it is why a big drum sounds struck rather than
       played. */
-  AudioEngine.prototype.tabl = function (when, gain) {
+  AudioEngine.prototype.tabl = function (when, gain, bus) {
     var level = (gain === undefined ? 1 : gain) * 0.82;
     this._skin({
+      bus: bus,
       when: when, level: level, f0: 63, glide: 2.4, glideT: 0.055,
       modes: 3, decay: 0.62,
       hit: 0.55, hitHz: 1150, hitQ: 0.55, hitT: 0.016,   // the stick
@@ -331,9 +352,10 @@ window.Ardah = window.Ardah || {};
   /** Thakir — the small tight drum that fills between the takhmir. High,
       dry and quick; it is the reason an Ardah feels fast while the big drums
       stay slow. */
-  AudioEngine.prototype.thakir = function (when, gain) {
+  AudioEngine.prototype.thakir = function (when, gain, bus) {
     var level = (gain === undefined ? 1 : gain) * 0.42;
     this._skin({
+      bus: bus,
       when: when, level: level, f0: 196, glide: 1.7, glideT: 0.018,
       modes: 4, decay: 0.15,
       hit: 0.75, hitHz: 2300, hitQ: 0.85, hitT: 0.010,
@@ -344,9 +366,10 @@ window.Ardah = window.Ardah || {};
 
   /** Tar — the frame drum, centre stroke (`dum`): round, short, no shell to
       speak of, so almost all skin. */
-  AudioEngine.prototype.tar = function (when, gain) {
+  AudioEngine.prototype.tar = function (when, gain, bus) {
     var level = (gain === undefined ? 1 : gain) * 0.5;
     this._skin({
+      bus: bus,
       when: when, level: level, f0: 142, glide: 1.9, glideT: 0.026,
       modes: 3, decay: 0.26,
       hit: 0.5, hitHz: 1500, hitQ: 0.7, hitT: 0.013,
@@ -359,9 +382,10 @@ window.Ardah = window.Ardah || {};
       barely moves. Nearly all transient, a flick of pitch, and dry in about
       60 ms -- what you hear after that is the courtyard, not the drum. The
       pair is what makes a frame drum speak rather than repeat. */
-  AudioEngine.prototype.tak = function (when, gain) {
+  AudioEngine.prototype.tak = function (when, gain, bus) {
     var level = (gain === undefined ? 1 : gain) * 0.4;
     this._skin({
+      bus: bus,
       when: when, level: level * 0.45, f0: 330, glide: 1.4, glideT: 0.010,
       modes: 2, decay: 0.055,
       hit: 1.5, hitHz: 3100, hitQ: 0.5, hitT: 0.012,
@@ -381,7 +405,7 @@ window.Ardah = window.Ardah || {};
       are summed with a 1/sqrt(n) normalisation, because they do not add
       coherently the way two drums on one sample do. Measured alone the row
       lands well under the takhmir, which is where a row's hands belong. */
-  AudioEngine.prototype.clap = function (when, gain) {
+  AudioEngine.prototype.clap = function (when, gain, bus) {
     var ctx = this.ctx, level = (gain === undefined ? 1 : gain) * 1.15;
     var hands = 11;
     for (var i = 0; i < hands; i++) {
@@ -394,7 +418,7 @@ window.Ardah = window.Ardah || {};
       g.gain.setValueAtTime(amp, t);
       g.gain.exponentialRampToValueAtTime(0.0001, t + 0.035 + this._rnd() * 0.03);
       n.connect(f); f.connect(g);
-      this._out(g, 0.8);               // claps carry the room more than anything
+      this._out(g, 0.8, bus);          // claps carry the room more than anything
       this._noiseAt(n, t, 0.08);
     }
   };
@@ -406,7 +430,7 @@ window.Ardah = window.Ardah || {};
       Struck steel is inharmonic in a way no ratio describes, so the partials
       are deliberately unrelated, and two of them sit close enough to beat
       against each other — that slow throb is what says metal. */
-  AudioEngine.prototype.swords = function (when, gain) {
+  AudioEngine.prototype.swords = function (when, gain, bus) {
     var ctx = this.ctx, level = (gain === undefined ? 1 : gain) * 0.26;
 
     var n = this._noiseSource(), f = ctx.createBiquadFilter(), ng = ctx.createGain();
@@ -414,7 +438,7 @@ window.Ardah = window.Ardah || {};
     ng.gain.setValueAtTime(level * 0.8, when);
     ng.gain.exponentialRampToValueAtTime(0.0001, when + 0.045);
     n.connect(f); f.connect(ng);
-    this._out(ng, 0.5);
+    this._out(ng, 0.5, bus);
     this._noiseAt(n, when, 0.07);
 
     var partials = [2570, 2612, 3890, 5310, 6740];
@@ -427,7 +451,7 @@ window.Ardah = window.Ardah || {};
       g.gain.exponentialRampToValueAtTime(amp, when + 0.003);
       g.gain.exponentialRampToValueAtTime(0.0001, when + 0.9 - i * 0.13);
       osc.connect(g);
-      this._out(g, 0.7);
+      this._out(g, 0.7, bus);
       osc.start(when); osc.stop(when + 1.0);
     }
   };
@@ -591,6 +615,123 @@ window.Ardah = window.Ardah || {};
     for (var lane in this._holds) {
       if (Object.prototype.hasOwnProperty.call(this._holds, lane)) this.holdEnd(lane);
     }
+  };
+
+  /* ========================== the end of a run ==========================
+
+     A performance does not fade out; it lands. Both endings here are written
+     in beats of the song that just stopped, so the last thing the player hears
+     is still in tempo with everything before it — an ending out of tempo reads
+     as the game being switched off rather than the row finishing.
+
+     The two endings are the same gesture played two ways, and the difference
+     is energy, not harshness. The concept doc's framing is "the row lost its
+     step", never "you failed" (§11.1), so the failure ending is not a buzzer
+     and is not louder — it is the section faltering: two hits, slowing,
+     quieter, the second and third damped, no sabres, no hands, and almost no
+     room. Nobody is being told off. The performance simply stopped. */
+  AudioEngine.prototype.ending = function (completed, beatMs, at) {
+    if (!this.ctx) return;
+    // `at` is for the offline renderer, as everywhere else in here: in the
+    // game this is a reaction and plays now.
+    var t = at === undefined ? this.ctx.currentTime + 0.02 : at;
+    var beat = (beatMs || 625) / 1000;
+
+    if (completed) {
+      // A tag: down-beat, two small drums pushing, and the whole row landing
+      // together. Then the courtyard, which is the actual ending — silence
+      // with a room in it.
+      this.tabl(t, 0.9, 'stinger');
+      this.tar(t, 0.5, 'stinger');
+      this.thakir(t + beat * 0.5, 0.6, 'stinger');
+      this.thakir(t + beat * 0.75, 0.5, 'stinger');
+      this.tabl(t + beat, 1, 'stinger');
+      this.swords(t + beat, 0.8, 'stinger');
+      this.clap(t + beat, 0.9, 'stinger');
+      return;
+    }
+
+    this.tabl(t, 0.85, 'stinger');
+    this._skin({                              // the stroke that does not ring
+      when: t + beat * 0.85, level: 0.5, f0: 82, glide: 1.5, glideT: 0.03,
+      modes: 2, decay: 0.08, hit: 0.45, hitHz: 460, hitQ: 0.6, hitT: 0.02,
+      body: 0, bodyHz: 0, bodyT: 0, send: 0.15, bus: 'stinger'
+    });
+    this._skin({
+      when: t + beat * 1.75, level: 0.34, f0: 74, glide: 1.4, glideT: 0.035,
+      modes: 2, decay: 0.09, hit: 0.35, hitHz: 400, hitQ: 0.6, hitT: 0.022,
+      body: 0, bodyHz: 0, bodyT: 0, send: 0.15, bus: 'stinger'
+    });
+  };
+
+  /* The grade, arriving under the result screen.
+
+     Same rule as the verdicts, taken further: the reward is ADDED CONSONANCE,
+     never added harshness. An S rings an octave and a fifth (2:3:4) and the
+     row's hands come in; an A keeps the fifth; a B keeps one tone; a C has no
+     interval at all and is left with a frame drum and the room. Nothing in the
+     ladder is dissonant, sour or slow — a low grade sounds *plain*, not
+     punished, which is the only reading a heritage ceremony can carry.
+
+     A new personal best adds one bright partial on top, whatever the grade. */
+  var GRADE = {
+    S: { partials: [1320, 1980, 2640], level: 0.26, hands: true },
+    A: { partials: [1320, 1980], level: 0.22, hands: true },
+    B: { partials: [1320], level: 0.18, hands: false },
+    C: { partials: [], level: 0, hands: false }
+  };
+
+  AudioEngine.prototype.result = function (grade, isBest, at) {
+    if (!this.ctx) return;
+    var ctx = this.ctx, spec = GRADE[grade] || GRADE.C;
+    var when = at === undefined ? ctx.currentTime + 0.02 : at;
+
+    // A frame drum under everything, so even a C has a floor to land on.
+    this.tar(when, 0.42, 'stinger');
+
+    var list = spec.partials.slice();
+    if (isBest) list.push(3960);              // the octave above the fifth
+    for (var i = 0; i < list.length; i++) {
+      var osc = ctx.createOscillator(), g = ctx.createGain();
+      osc.type = 'sine';
+      osc.frequency.value = list[i];
+      var amp = (spec.level || 0.16) * Math.pow(0.62, i);
+      // Slower than a verdict on purpose: this one is allowed to be savoured.
+      g.gain.setValueAtTime(0.0001, when);
+      g.gain.exponentialRampToValueAtTime(amp, when + 0.035);
+      g.gain.exponentialRampToValueAtTime(0.0001, when + 1.5 - i * 0.2);
+      osc.connect(g);
+      this._out(g, 0.6, 'stinger');
+      osc.start(when); osc.stop(when + 1.6);
+    }
+
+    if (spec.hands) this.clap(when + 0.09, 0.55, 'stinger');
+  };
+
+  /** Cuts a stinger that is already on its way out — a run restarted, or the
+      menu opened, within the second and a half the ending takes. The nodes
+      cannot be un-scheduled, so the bus they play through is silenced and
+      replaced; they finish into a gain nobody is listening to. */
+  AudioEngine.prototype.cancelStinger = function () {
+    if (!this.stinger) return;
+    var t = this.ctx.currentTime;
+    var fade = function (g) {
+      g.gain.cancelScheduledValues(t);
+      g.gain.setValueAtTime(Math.max(0.0001, g.gain.value), t);
+      g.gain.exponentialRampToValueAtTime(0.0001, t + 0.04);
+    };
+    fade(this.stinger);
+    fade(this.stingerWet);
+    this._newStinger();
+  };
+
+  AudioEngine.prototype._newStinger = function () {
+    this.stinger = this.ctx.createGain();
+    this.stinger.gain.value = 1;
+    this.stinger.connect(this.sfx);
+    this.stingerWet = this.ctx.createGain();
+    this.stingerWet.gain.value = 1;
+    this.stingerWet.connect(this.wet);
   };
 
   /** Mutes the music bus — the drums and everything else the chart plays.

@@ -123,6 +123,9 @@ window.Ardah = window.Ardah || {};
   /* -------------------------------- a run -------------------------------- */
 
   Game.prototype.play = function () {
+    // Play again is one tap from the result screen, and the ending stinger
+    // runs for a second and a half after the run is over.
+    A.audio.cancelStinger();
     var self = this;
     A.audio.unlock().then(function () {
       var chart = self.charts[self.chartIndex];
@@ -269,6 +272,7 @@ window.Ardah = window.Ardah || {};
 
   Game.prototype.quit = function () {
     this.conductor.stop();
+    A.audio.cancelStinger();
     this.phase = 'menu';
     this.input.reset();
     this.renderer.keyReset();
@@ -284,11 +288,28 @@ window.Ardah = window.Ardah || {};
     A.audio.holdEndAll();
 
     var chart = this.charts[this.chartIndex];
+
+    /* The end of a run is one gesture in two parts, and both live here rather
+       than in the UI: the cadence belongs to the performance that just
+       stopped, so it is written in that chart's own beat, and the grade
+       arrives under the result screen a beat and a half later — long enough
+       that the two do not talk over each other, short enough that the screen
+       and its sound are one event. */
+    var beatMs = 60000 / (chart.bpm || 96);
+    A.audio.ending(completed, beatMs);
+
     var acc = this.judge.accuracy();
     var timing = this.judge.timing();
     var best = store('best.' + chart.id);
     var isBest = !best || acc > best.accuracy;
     if (isBest) store('best.' + chart.id, { accuracy: acc, score: this.judge.score, grade: this.judge.grade() });
+
+    // Scheduled from the same `isBest` the screen is about to print, so the
+    // sound and the text can never disagree about whether this was a best.
+    if (A.audio.ctx) {
+      A.audio.result(this.judge.grade(), isBest,
+                     A.audio.ctx.currentTime + (beatMs * 1.5) / 1000 + 0.35);
+    }
 
     A.bridge.track('ardah_run_finished', {
       chart: chart.id,
