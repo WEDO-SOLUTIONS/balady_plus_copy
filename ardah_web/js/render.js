@@ -31,6 +31,26 @@ window.Ardah = window.Ardah || {};
   // ornament outside it. Must match X_MAX in deck/make_runway.js.
   var DECK_X_MAX = 1.165;
   var FX_SHARDS = 6;
+  /* How far the view swings at full tilt, in points.
+
+     ONE constant for the whole scene, because the parallax is one camera move.
+     The runway is a real projection -- x = centre + laneOffset/z -- so rather
+     than sliding layers at invented rates, the camera orbits about the
+     judgment line, and every depth then follows from the projection:
+
+         shift(z) = -tilt * PARALLAX * (1 - 1/z)
+
+     At z = 1 that is zero, so the judgment line, the keycaps and the hit
+     testing never move -- which is the point, because a rhythm game whose
+     targets drift under a tilt is unplayable. As z grows the shift approaches
+     the full PARALLAX, and the backdrop, which sits beyond the far end, takes
+     exactly that. Near things move least and far things most, which is what an
+     orbit does and the opposite of what sliding layers would give you.
+
+     Because (1 - 1/z) is linear in screen y -- 1/z = (y - vpY)/C -- the same
+     move is a plain horizontal SHEAR on screen, so the pre-warped deck bitmap
+     can take it in one transform and stay exactly consistent with xAt(). */
+  var PARALLAX = 22;
   // Key glyphs are their own sprites rather than pixels baked into the pads:
   // that is what keeps them localisable (see docs/ardah-art-brief.md §1) while
   // still being modelled rather than flat canvas text.
@@ -86,6 +106,8 @@ window.Ardah = window.Ardah || {};
     this.drops = [];       // notes that were missed and are falling away
     this.holdEmit = [0, 0, 0];   // ember accumulator per lane while holding
     this.waves = [];       // the flourish's full-width sweep
+    this.tilt = 0;         // the eased view swing, -1 .. 1
+    this.tiltTarget = 0;
     this.floats = [];
     this.flashes = [0, 0, 0];
     this.held = [0, 0, 0];       // key or finger currently down, per lane
@@ -233,8 +255,25 @@ window.Ardah = window.Ardah || {};
 
   Renderer.prototype.yAt = function (z) { return this.vpY + this.C / z; };
   Renderer.prototype.halfAt = function (z) { return this.halfNear / z; };
+
+  /** The view swing at depth z. Zero at the judgment line, by construction. */
+  Renderer.prototype.shiftAt = function (z) {
+    return -this.tilt * PARALLAX * (1 - 1 / z);
+  };
+
+  /* The same swing as a screen-space shear, for anything drawn as a bitmap or
+     a trapezoid rather than positioned per depth. x' = x + a*y + b, with both
+     terms falling out of shift(z) = -tilt * PARALLAX * (judgeY - y) / C. */
+  Renderer.prototype.tiltShear = function (c) {
+    if (!this.tilt) return false;
+    var k = (-this.tilt * PARALLAX) / this.C;
+    c.save();
+    c.transform(1, 0, -k, 1, k * this.judgeY, 0);
+    return true;
+  };
+
   Renderer.prototype.xAt = function (lane, z) {
-    return this.w / 2 + ((lane - 1) * (this.halfNear * 2 / 3)) / z;
+    return this.w / 2 + ((lane - 1) * (this.halfNear * 2 / 3)) / z + this.shiftAt(z);
   };
   Renderer.prototype.zAt = function (leadMs) {
     var u = Math.max(-0.2, Math.min(1, leadMs / APPROACH_MS));
@@ -282,6 +321,11 @@ window.Ardah = window.Ardah || {};
      long, and easing both ends would let the pad reach a third of the way down
      and back before anyone saw it -- the animation would silently do nothing
      on exactly the input it exists to acknowledge. */
+  /** The view swing, -1 (left) .. 1 (right). Any source may set it. */
+  Renderer.prototype.setTilt = function (v) {
+    this.tiltTarget = v < -1 ? -1 : v > 1 ? 1 : v;
+  };
+
   Renderer.prototype.keyDown = function (lane) {
     if (lane < 0 || lane > 2) return;
     this.held[lane] = 1;
@@ -411,6 +455,11 @@ window.Ardah = window.Ardah || {};
   Renderer.prototype.draw = function (state, dtMs) {
     var c = this.ctx;
     this.tMs += dtMs;
+    // Ease towards the requested swing, frame-rate independent. A gyroscope
+    // is noisy and a button is a step function; both want the same smoothing.
+    this.tilt += (this.tiltTarget - this.tilt) *
+                 (1 - Math.pow(0.002, Math.min(64, dtMs) / 240));
+    if (Math.abs(this.tilt - this.tiltTarget) < 0.0015) this.tilt = this.tiltTarget;
     var decay = Math.min(1, dtMs / 220);
 
     c.save();
@@ -470,8 +519,11 @@ window.Ardah = window.Ardah || {};
     // feet and the deck, and the two perspectives visibly disagree.
     var joinY = this.yAt(Z_FAR);
     var scale = Math.max(this.w / img.width, joinY / img.height);
+    // Headroom for the swing: the plate is cropped to the screen, so without
+    // this a tilt would slide its edge in and show the base fill behind.
+    scale = Math.max(scale, (this.w + 2 * PARALLAX) / img.width);
     var dw = img.width * scale, dh = img.height * scale;
-    var dx = (this.w - dw) / 2, dy = joinY - dh;
+    var dx = (this.w - dw) / 2 + this.shiftAt(1e9), dy = joinY - dh;
 
     c.fillStyle = '#0B0A10';
     c.fillRect(0, 0, this.w, this.h);
@@ -579,6 +631,8 @@ window.Ardah = window.Ardah || {};
     var wBot = this.halfAt(Z_LIP), yBot = this.yAt(Z_LIP);
     var cx = this.w / 2;
 
+    var sheared = this.tiltShear(c);
+
     var deck = this._deckSprite();
     if (deck) {
       c.drawImage(deck.canvas, deck.x, deck.y, deck.w, deck.h);
@@ -641,6 +695,14 @@ window.Ardah = window.Ardah || {};
       this._rail(c, -1, active);
       this._rail(c, 1, active);
     }
+    /* One shear covers the whole runway.
+
+       Everything in here -- the deck bitmap, the far-end fade, the lane
+       flashes, the dividers and the rails -- is positioned from `cx` and a
+       depth by hand rather than through xAt(), so the shear is what swings
+       them. The notes go through xAt() and are drawn outside this, which is
+       why they must not be inside it as well. */
+    if (sheared) c.restore();
   };
 
   /* Ornamented gold rail down one side of the runway. */

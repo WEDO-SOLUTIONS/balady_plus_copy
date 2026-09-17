@@ -28,7 +28,7 @@ window.Ardah = window.Ardah || {};
   }
 
   function Input(target, api) {
-    this.api = api;                 // { laneAt, press, release, flourish, pause, active }
+    this.api = api;                 // { laneAt, press, release, flourish, tilt, pause, active }
     this.pointers = {};
     this.keys = {};
     this.touchUsed = false;
@@ -76,6 +76,15 @@ window.Ardah = window.Ardah || {};
         if (!self.keys.space) { self.keys.space = true; self.api.flourish(correction(ev)); }
         return;
       }
+      // 1 and 2 swing the view. Not gated on api.active(): looking around the
+      // stage in the menu is half the point of showing it.
+      if (ev.key === '1' || ev.key === '2') {
+        var dir = ev.key === '1' ? -1 : 1;
+        if (self.keys['tilt' + dir]) return;
+        self.keys['tilt' + dir] = true;
+        self.api.tilt(dir);
+        return;
+      }
       if (lane < 0 || self.keys[lane]) return;   // ignore auto-repeat
       self.keys[lane] = true;
       self.api.press(lane, correction(ev));
@@ -83,6 +92,14 @@ window.Ardah = window.Ardah || {};
 
     window.addEventListener('keyup', function (ev) {
       if (ev.key === ' ' || ev.code === 'Space') { self.keys.space = false; return; }
+      if (ev.key === '1' || ev.key === '2') {
+        var d = ev.key === '1' ? -1 : 1;
+        self.keys['tilt' + d] = false;
+        // Release to whichever direction is still held, so rolling from one
+        // key to the other does not drop the swing to centre in between.
+        self.api.tilt(self.keys['tilt-1'] ? -1 : self.keys['tilt1'] ? 1 : 0);
+        return;
+      }
       var lane = keyLane(ev.key);
       if (lane < 0 || !self.keys[lane]) return;
       self.keys[lane] = false;
@@ -95,6 +112,7 @@ window.Ardah = window.Ardah || {};
   Input.prototype.reset = function () {
     this.pointers = {};
     this.keys = {};
+    if (this.api && this.api.tilt) this.api.tilt(0);
   };
 
   function keyLane(key) {

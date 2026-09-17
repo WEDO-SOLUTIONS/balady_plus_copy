@@ -180,6 +180,26 @@ async function slowmo(page, factor) {
   await page.waitForTimeout(1400);
   await page.screenshot({ path: path.join(OUT, 'live_break.png') });
 
+  /* The parallax, at full left, centre and full right.
+
+     The tilt is set directly and the ease is skipped, because these frames are
+     about the geometry at the extremes rather than the ramp into them. The
+     pad's buttons and keys 1 and 2 drive the same setter. */
+  for (const [t, tag] of [[-1, 'l'], [0, 'c'], [1, 'r']]) {
+    await page.evaluate((v) => {
+      const g = window.Ardah.game, r = g.renderer;
+      for (const a of [r.lands, r.drops, r.sparks, r.bursts, r.shards, r.floats, r.waves]) a.length = 0;
+      r.popup = null; r.shake = 0;
+      const n = g.judge.notes[0];
+      if (n) { n.type = 'tap'; n.lane = 1; n.state = 'pending';
+               n.t = g.conductor.visualTimeMs() + 900; }
+      r.setTilt(v);
+      r.tilt = v;
+    }, t);
+    await page.waitForTimeout(170);
+    await page.screenshot({ path: path.join(OUT, `live_tilt_${tag}.png`) });
+  }
+
   /* The flourish: three frames, because it is three things.
 
      It has to go in notes[0]: _notes walks the array in order and BREAKS on

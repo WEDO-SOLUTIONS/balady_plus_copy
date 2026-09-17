@@ -34,6 +34,8 @@ window.Ardah = window.Ardah || {};
     A.audio.setMuted(this.muted);
     this.conductor = new A.Conductor(A.audio);
     this.judge = null;
+    this.tiltManual = 0;
+    this.tiltGyro = 0;
     this.renderer = null;
     this.input = null;
     this.lastFrame = 0;
@@ -56,6 +58,7 @@ window.Ardah = window.Ardah || {};
       press: function (lane, corr) { self._press(lane, corr); },
       release: function (lane, corr) { self._release(lane, corr); },
       flourish: function (corr) { self._flourish(corr); },
+      tilt: function (v) { self.setTiltManual(v); },
       pause: function () { if (self.phase === 'playing') self.pause(); }
     });
 
@@ -132,6 +135,27 @@ window.Ardah = window.Ardah || {};
     }).catch(function (err) {
       A.ui.toast('Audio unavailable: ' + err.message);
     });
+  };
+
+  /* The view swing has two sources and they must not fight.
+
+     A held button or key is a deliberate look, so it wins outright while it is
+     held; the gyroscope is the resting state underneath it. Without the
+     precedence a player on a handset could hold the button and watch the view
+     drift back under their thumb. */
+  Game.prototype.setTiltManual = function (v) {
+    this.tiltManual = v;
+    this._applyTilt();
+  };
+
+  Game.prototype.setTiltGyro = function (v) {
+    this.tiltGyro = v;
+    this._applyTilt();
+  };
+
+  Game.prototype._applyTilt = function () {
+    var m = this.tiltManual || 0;
+    this.renderer.setTilt(m !== 0 ? m : (this.tiltGyro || 0));
   };
 
   Game.prototype._press = function (lane, corr) {

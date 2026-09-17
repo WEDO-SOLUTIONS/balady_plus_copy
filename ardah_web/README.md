@@ -344,6 +344,52 @@ animation would do nothing on exactly the input it exists to acknowledge.
 tap still moves a key, and `Renderer.keyReset` pairs with `Input.reset` so a
 run that ends with a finger down does not leave a pad depressed into the next.
 
+### Looking around: parallax
+
+Two adjacent buttons top-left, or keys **1** and **2**, swing the view. On a
+handset the same axis comes from the gyroscope; the buttons are how it is
+driven and demonstrated on a desktop.
+
+**It is one camera move, not layers sliding at invented rates.** The runway is
+a real projection — `x = centre + laneOffset/z` — so the camera orbits about
+the judgment line and every depth follows from the projection itself:
+
+```
+shift(z) = -tilt * PARALLAX * (1 - 1/z)
+```
+
+At `z = 1` that is **zero**, so the judgment line, the keycaps, the lane labels
+and the hit testing never move. That is the whole constraint: a rhythm game
+whose targets drift under a tilt is unplayable. As `z` grows the shift
+approaches the full `PARALLAX`, and the backdrop — which sits beyond the far
+end — takes exactly that. Near things move least, far things most, which is
+what an orbit does and the *opposite* of what sliding layers would give you.
+
+Two things fall out of the maths and are worth knowing:
+
+- `(1 - 1/z)` is **linear in screen y**, because `1/z = (y - vpY)/C`. So the
+  same camera move is a plain horizontal **shear** on screen, which means the
+  pre-warped deck bitmap takes it in one transform and stays exactly consistent
+  with `xAt()`. Anything positioned through `xAt()` (the notes) must be drawn
+  *outside* that shear or it swings twice.
+- The plate is cropped to the screen, so it needs **headroom**: its scale is
+  raised until it is `w + 2 * PARALLAX` wide, or a tilt slides its edge in and
+  shows the base fill behind.
+
+Sources and precedence: a held button or key wins outright while it is held,
+with the gyroscope as the resting state underneath. Without that, a player on a
+handset could hold the button and watch the view drift back under their thumb.
+`Input.reset` releases the tilt along with everything else.
+
+iOS 13+ will not deliver `deviceorientation` without permission and only grants
+it from a user gesture, so the request rides on the first press of a button the
+player has already chosen to touch. If they decline, the buttons still work.
+
+On `?art=0` the runway parallax works — it is procedural — but the drawn
+backdrop does not shift: `scene.js` bakes its offscreen at exactly the canvas
+size, so moving it would expose an edge, and widening it for a comparison mode
+is not worth the change. The art path is the shipping look.
+
 ### The flourish
 
 The flourish is not a lane note: it spans the runway and is taken with a swipe

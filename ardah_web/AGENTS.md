@@ -23,6 +23,13 @@ decision it exists to settle: [`docs/ardah-concept.md`](../docs/ardah-concept.md
   drawing to the static half is how this scene stops holding 60 fps. The same
   goes for the art path: `_plateBelow` bakes everything under the join, and
   only the plate image (which breathes) and the firelight are per frame.
+- **Parallax is one camera move, and z = 1 is sacred.** `shiftAt(z)` is
+  `-tilt * PARALLAX * (1 - 1/z)`, which is zero at the judgment line, so the
+  keycaps, the lane labels and the hit testing never move under a tilt. Do not
+  give any layer its own rate: the projection already tells you how far each
+  depth goes. The same move is a screen-space shear (`tiltShear`), because
+  `(1 - 1/z)` is linear in y — use it for bitmaps and trapezoids, and keep
+  anything positioned through `xAt()` outside it or it swings twice.
 - **Frame cost here is overdraw, not code.** The renderer's whole script cost
   is about 0.2 ms/frame, so profiling JS will not find a dropped frame. Count
   full-screen passes instead, and A/B by stubbing one out at a time

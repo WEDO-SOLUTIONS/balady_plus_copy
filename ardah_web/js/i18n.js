@@ -156,6 +156,13 @@ window.Ardah = window.Ardah || {};
       for (var i = 0; i < nodes.length; i++) {
         nodes[i].textContent = A.i18n.t(nodes[i].getAttribute('data-i18n'));
       }
+      // Icon-only controls carry their name in aria-label, which has to
+      // localise as well: a screen reader announcing "Look left" in an Arabic
+      // interface is the same bug as untranslated body text.
+      var aria = document.querySelectorAll('[data-i18n-aria]');
+      for (var k = 0; k < aria.length; k++) {
+        aria[k].setAttribute('aria-label', A.i18n.t(aria[k].getAttribute('data-i18n-aria')));
+      }
       if (A.game && A.game.onLanguageChanged) A.game.onLanguageChanged();
     }
   };

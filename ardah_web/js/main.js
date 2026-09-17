@@ -15,6 +15,10 @@
         var el = $(screens[i]);
         if (el) el.hidden = screens[i] !== id;
       }
+      // id === null is "no overlay", i.e. a run in progress. The look-around
+      // pad sits bottom-left, which the menu's own panel occupies.
+      var pad = $('tilt-pad');
+      if (pad) pad.hidden = id !== null;
     },
 
     toast: function (msg) {
@@ -145,6 +149,7 @@
     });
     $('btn-lang').addEventListener('click', function () { A.i18n.toggle(); });
     $('btn-mute').addEventListener('click', function () { A.game.toggleMute(); });
+    bindTilt();
     $('btn-debug').addEventListener('click', function () { A.game.toggleDebug(); });
 
     var closers = document.querySelectorAll('[data-close]');
@@ -181,6 +186,74 @@
         ev.preventDefault();
         A.game.calibTap(Math.max(0, Math.min(120, performance.now() - ev.timeStamp)));
       }
+    });
+  }
+
+  /* The look-around pad, and the gyroscope behind it.
+
+     Held rather than clicked, so these bind pointer events and not click: a
+     tilt you have to tap repeatedly is not a tilt. Every exit path releases --
+     pointerup, pointercancel, and leaving the button with the finger still
+     down -- because a pad stuck at full swing would leave the stage lying on
+     its side.
+
+     The gyroscope is the same axis from a different source. iOS 13 and later
+     will not deliver deviceorientation without permission and will only grant
+     it from a user gesture, so the request rides on the first press of a
+     button the player has already chosen to touch. Everywhere else the
+     listener simply attaches. */
+  function bindTilt() {
+    var pad = $('tilt-pad');
+    if (!pad) return;
+
+    [['btn-tilt-l', -1], ['btn-tilt-r', 1]].forEach(function (pair) {
+      var el = $(pair[0]), dir = pair[1];
+      if (!el) return;
+      var hold = function (ev) {
+        ev.preventDefault();
+        el.setAttribute('data-held', '1');
+        A.game.setTiltManual(dir);
+        askGyro();
+      };
+      var drop = function () {
+        el.removeAttribute('data-held');
+        A.game.setTiltManual(0);
+      };
+      el.addEventListener('pointerdown', hold);
+      el.addEventListener('pointerup', drop);
+      el.addEventListener('pointercancel', drop);
+      el.addEventListener('pointerleave', drop);
+      el.addEventListener('contextmenu', function (ev) { ev.preventDefault(); });
+    });
+
+    if (window.DeviceOrientationEvent &&
+        typeof window.DeviceOrientationEvent.requestPermission !== 'function') {
+      attachGyro();
+    }
+  }
+
+  var gyroOn = false, gyroAsked = false;
+
+  function askGyro() {
+    if (gyroAsked || !window.DeviceOrientationEvent) return;
+    gyroAsked = true;
+    if (typeof window.DeviceOrientationEvent.requestPermission !== 'function') return;
+    window.DeviceOrientationEvent.requestPermission().then(function (state) {
+      if (state === 'granted') attachGyro();
+    }).catch(function () { /* declined: the buttons still work */ });
+  }
+
+  function attachGyro() {
+    if (gyroOn) return;
+    gyroOn = true;
+    window.addEventListener('deviceorientation', function (ev) {
+      if (ev.gamma === null || ev.gamma === undefined) return;
+      var pad = $('tilt-pad');
+      if (pad) pad.setAttribute('data-gyro', '1');
+      // gamma is the left-right tilt in degrees. 22 degrees of wrist is the
+      // full swing, about as far as a phone goes before the screen stops
+      // facing the player.
+      A.game.setTiltGyro(Math.max(-1, Math.min(1, ev.gamma / 22)));
     });
   }
 
