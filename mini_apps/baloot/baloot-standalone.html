@@ -94,7 +94,7 @@ button{font:inherit;color:inherit;border:0;background:none;cursor:pointer}
 #table::after{
   content:"";position:absolute;inset:0;pointer-events:none;z-index:3;
   background:radial-gradient(ellipse 88% 66% at 50% 52%,
-    transparent 44%, rgba(0,0,0,.42) 100%);
+    transparent 44%, rgba(0,0,0,.28) 100%);
 }
 
 /* ---------- crest: the plaque lifted from the mock-up ---------- */
@@ -181,7 +181,7 @@ html[dir="ltr"] .st-deal{text-transform:uppercase}
     radial-gradient(ellipse 62% 44% at 50% 0%,
       rgba(255,206,140,.19), transparent 62%),
     radial-gradient(ellipse 120% 70% at 50% 84%,
-      rgba(0,0,0,.26), transparent 72%),
+      rgba(0,0,0,.15), transparent 72%),
     url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='64' height='64' viewBox='0 0 64 64'%3E%3Cg fill='none' stroke='%23ffe3ae' stroke-width='1.1' opacity='.125'%3E%3Crect x='19' y='19' width='26' height='26'/%3E%3Cpath d='M32 13 51 32 32 51 13 32Z'/%3E%3Ccircle cx='32' cy='32' r='4.5'/%3E%3C/g%3E%3C/svg%3E") 0 0 / 64px 64px;
   -webkit-mask-image:linear-gradient(180deg,transparent 0%,#000 14%,#000 88%,transparent 100%);
           mask-image:linear-gradient(180deg,transparent 0%,#000 14%,#000 88%,transparent 100%);
@@ -196,7 +196,7 @@ html[dir="ltr"] .st-deal{text-transform:uppercase}
 
 #felt::before{                      /* the cloth the trick is played on */
   content:"";position:absolute;inset:0;pointer-events:none;
-  background:linear-gradient(180deg,transparent 30%,#0e4028 52%,#08301e 74%,#052315 100%);
+  background:linear-gradient(180deg,transparent 30%,#0e4028 54%,#0e3f27 78%,#0c3a24 100%);
 }
 
 /* ---------- the room, lifted from the mock-up ----------
@@ -443,6 +443,8 @@ html[dir="ltr"] .st-deal{text-transform:uppercase}
   position:relative;z-index:7;height:calc(var(--card-h) + 34px);
   display:flex;justify-content:center;align-items:flex-end;
   padding-bottom:6px;
+  /* the strip the fan sits on is cloth too, not the dark edge of the room */
+  background:linear-gradient(180deg,#0a3220 0%,#0b3624 100%);
 }
 #hand::before{                     /* warm pool of light while it is your move */
   content:"";position:absolute;bottom:-6px;left:50%;transform:translateX(-50%);
@@ -471,7 +473,7 @@ html[dir="ltr"] .st-deal{text-transform:uppercase}
   box-shadow:inset 0 0 0 1.5px rgba(226,187,100,.85), 0 0 14px rgba(226,187,100,.45);
 }
 #hand .slot.playable:active .card,#hand .slot.playable.sel .card{transform:translateY(-20px) scale(1.05)}
-#hand .slot.blocked .card::after{background:rgba(5,22,14,.22)}
+#hand .slot.blocked .card::after{background:rgba(5,22,14,.14)}
 #hand .slot.blocked{cursor:not-allowed}
 @media (hover:hover){#hand .slot.playable:hover .card{transform:translateY(-18px);box-shadow:0 16px 32px rgba(0,0,0,.5)}}
 
@@ -557,7 +559,7 @@ html[dir="ltr"] #hint{text-transform:uppercase}
   padding:clamp(7px, calc(1.1 * var(--vh)), 12px)
           clamp(15px, calc(9 * var(--vw)), 52px)
           calc(clamp(7px, calc(1.1 * var(--vh)), 12px) + var(--safe-b));
-  background:linear-gradient(180deg,rgba(6,38,24,.86),rgba(4,24,15,.97));
+  background:linear-gradient(180deg,rgba(15,64,40,.94),rgba(11,52,33,.97));
   border-top:1px solid rgba(240,207,114,.28);
 }
 /* gold arabesque in both bottom corners */
