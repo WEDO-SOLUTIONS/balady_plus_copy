@@ -20,7 +20,7 @@ mini_apps/baloot/
 ```
 
 `baloot-standalone.html` is `index.html` with every image inlined as a data URI
-— one 415 KB file that opens straight from disk with nothing beside it, handy
+— one 408 KB file that opens straight from disk with nothing beside it, handy
 for sending to someone or dropping into a WebView that has no asset directory.
 Rebuild it with `python3 tools/build-standalone.py` after changing `index.html`
 or any asset, otherwise it goes stale. The mini-app bundle should keep using
@@ -137,14 +137,21 @@ rather than pagat's doubled 88/50.
 
 ## On a phone, and on everything else
 
-The game is shaped for a phone and fills the window on one. On anything wider
-than 640px the window becomes the room instead: the majlis is thrown out of
-focus behind a vignette and the table is centred in it at phone proportions
-(`--app-w`, capped at 452px and at the window's height ÷ 2.1), framed like a
-handset. Modals, toasts and the card size follow that column rather than the
-glass — every `vw` in the stylesheet goes through `--vw`, which is one percent
-of the column, so a hand of cards is never stretched across sixteen hundred
-pixels. The ⛶ button in the corner, or the `F` key, takes the page full screen.
+A phone-shaped window — 560px or narrower and at least half again as tall as
+it is wide — gets the whole game, edge to edge. Every other window becomes the
+room around it: the majlis is thrown out of focus behind a vignette and the
+table is centred in it, framed like a handset, at
+
+    --app-w: min(100vw, 452px, max((100vh - 34px) / 2.1, 300px))
+
+with `--app-h` the lesser of `--app-w × 2.1` and the window. Nothing in the page
+is measured against the window: `--vw` and `--vh` are one percent of that
+column across and down, and the card size, the crest, the status line, the seat
+plates and every part of the action rail are continuous functions of them. So
+dragging a window edge scales the same layout instead of snapping to another
+one — there is no width or height breakpoint left in the stylesheet apart from
+the one that takes the frame off a phone. The ⛶ button in the corner, or the
+`F` key, takes the page full screen; it is hidden on a touch screen.
 
 ## Sound
 
@@ -180,39 +187,19 @@ Hints are a real suggestion: the bubble and the rail button both name the card
 the bots would play from your seat, and the rail button plays it. They can be
 turned off in the settings sheet.
 
-## Parallax
-
-The whole background moves, at different rates by depth: the scene pans inside
-its own crop, the wall lattice and the cloth's own ornament travel a shorter
-distance, and the header drifts least. On a phone a `deviceorientation` reading
-drives it — Android starts listening straight away, iOS asks for permission on
-the first press of the tilt pad. On a desktop the two arrows in the corner of
-the table, or the `1` and `2` keys, stand in: hold to tilt, release and it
-springs back. Under the arrows a hairline slider holds the camera at one angle,
-so a demo can be aimed and left there; pressing either arrow, or double-clicking
-the track, lets it go and recentres. A held arrow wins over the lock, and the
-lock wins over the gyroscope.
-
-The travel is a pixel budget, not a share of the crop: a tall narrow screen
-crops the picture hard, and a percentage of that crop swings the scene right
-across the display. `measure()` works out how wide the picture is drawn, widens
-it when a short screen leaves nothing to pan, clamps the travel to 18–40 px and
-publishes it as `--scene-pan`. Seat plates and lantern glows sit on things
-painted in the picture, so they follow that value; the plates follow at a shade
-less so a name near the edge is not pushed off screen.
-
-The cloth below the table is a flat wash with nothing to parallax, so it carries
-its own arabesque and a pool of the room's light — both panning — rather than a
-blurred copy of the scene, which read as a smear.
-`prefers-reduced-motion` turns the whole thing off and hides the pad.
-
 ## Light
 
 The scene is a still photograph, so the light is added over it: one warm pool
 per lamp in the picture, each breathing on its own cycle, a handful of embers
 rising through them, and a slow highlight wandering across the cloth. The lamp
 positions are percentages of the picture, measured off `room.webp`, so they
-follow it as it scales. All of it honours `prefers-reduced-motion`.
+follow it as it scales. The cloth below the table carries its own arabesque and
+a pool of that light. All of it honours `prefers-reduced-motion`.
+
+The scene itself does not move. An earlier build panned it from the gyroscope,
+with a tilt pad and a lock slider standing in on a desktop; it was removed
+along with the `--tilt` / `--scene-pan` plumbing, so the picture now sits
+still and every element is laid out once.
 
 ## Friends & invitations
 

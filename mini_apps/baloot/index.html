@@ -33,16 +33,21 @@
   --red:#cf2434;
   --ok:#3fae6d;
   --warn:#e0913a;
-  --card-w:clamp(64px, calc(16.4 * var(--vw)), 94px);
+  /* the card follows the column in both directions, so a short window makes
+     the same layout smaller instead of jumping to another one */
+  --card-w:clamp(46px, min(calc(16.4 * var(--vw)), calc(10.6 * var(--vh))), 94px);
   --card-h:calc(var(--card-w) * 1.42);
   --radius:14px;
   --shadow:0 10px 26px rgba(0,0,0,.42);
   --safe-b:env(safe-area-inset-bottom,0px);
   --safe-t:env(safe-area-inset-top,0px);
-  /* one percent of the playing column. On a phone that is the window; on a
-     desktop the column is narrower than the window, so everything sized in
-     it has to follow the column and not the glass. */
-  --vw:1vw;
+  /* one percent of the playing column, across and down. On a phone that is
+     the window; everywhere else the column is smaller than the window, so
+     everything sized from it follows the column and not the glass. */
+  --app-w:min(100vw, 452px, max(calc((100vh - 34px) / 2.1), 300px));
+  --app-h:min(calc(var(--app-w) * 2.1), 100vh);
+  --vw:calc(var(--app-w) / 100);
+  --vh:calc(var(--app-h) / 100);
   /* named once so the single-file build carries the picture only once */
   --room-img:url("room.webp");
 }
@@ -82,13 +87,12 @@ button{font:inherit;color:inherit;border:0;background:none;cursor:pointer}
   background-image:
     url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='46' height='46' viewBox='0 0 46 46'%3E%3Cg fill='none' stroke='%23ffd489' stroke-width='.9' opacity='.075'%3E%3Crect x='13.5' y='13.5' width='19' height='19'/%3E%3Cpath d='M23 9.5 36.5 23 23 36.5 9.5 23Z'/%3E%3C/g%3E%3C/svg%3E");
   background-size:46px 46px;
-  background-position:calc(var(--tilt,0) * -20px) 0;
   -webkit-mask-image:linear-gradient(180deg,transparent 3%,#000 12%,#000 84%,transparent 98%);
           mask-image:linear-gradient(180deg,transparent 3%,#000 12%,#000 84%,transparent 98%);
 }
 #table::after{
   content:"";position:absolute;inset:0;pointer-events:none;z-index:3;
-  background:radial-gradient(ellipse 88% 66% at calc(50% + var(--tilt,0) * 5%) 52%,
+  background:radial-gradient(ellipse 88% 66% at 50% 52%,
     transparent 44%, rgba(0,0,0,.42) 100%);
 }
 
@@ -97,19 +101,18 @@ button{font:inherit;color:inherit;border:0;background:none;cursor:pointer}
   position:relative;z-index:8;
   display:flex;justify-content:center;
   padding:2px 10px 0;
-  transform:translateX(calc(var(--tilt,0) * -5px));
 }
 .crest-plaque{
   position:relative;
-  width:min(76%, 330px);aspect-ratio:424/138;
+  width:min(76%, 330px, calc(52 * var(--vh)));aspect-ratio:424/138;
   background:center/100% 100% no-repeat url("crest.webp");
   display:grid;place-items:center;
   filter:drop-shadow(0 6px 14px rgba(0,0,0,.6));
 }
 .crest-title{
   position:absolute;top:62%;left:50%;transform:translate(-50%,-50%);
-  width:71%;text-align:center;
-  font-size:clamp(13px,calc(3.8 * var(--vw)),19px);font-weight:900;letter-spacing:.04em;
+  width:80%;text-align:center;
+  font-size:min(18px, calc(4 * var(--vw)));font-weight:900;letter-spacing:.02em;
   background:linear-gradient(180deg,var(--gold-hi) 0%,var(--gold) 46%,#c79a40 100%);
   -webkit-background-clip:text;background-clip:text;color:transparent;
   text-shadow:0 2px 4px rgba(0,0,0,.4);
@@ -127,12 +130,11 @@ html[dir="ltr"] .crest-title{text-transform:uppercase}
 #status{
   position:relative;z-index:7;
   display:flex;align-items:flex-start;gap:8px;
-  padding:9px 12px 4px;
-  transform:translateX(calc(var(--tilt,0) * -3px));
+  padding:clamp(3px, calc(1.1 * var(--vh)), 9px) 12px clamp(2px, calc(.5 * var(--vh)), 4px);
 }
 .st-side{
   flex:1 1 0;min-width:0;
-  font-size:10.5px;font-weight:700;letter-spacing:.09em;
+  font-size:min(10.5px, calc(2.7 * var(--vw)));font-weight:700;letter-spacing:.09em;
   color:rgba(245,239,228,.72);text-shadow:0 1px 4px rgba(0,0,0,.8);
   padding-top:5px;
   overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
@@ -141,13 +143,13 @@ html[dir="ltr"] .st-side{text-transform:uppercase}
 .st-side.end{display:flex;justify-content:flex-end;padding-top:0}
 .st-mid{flex:0 0 auto;text-align:center;line-height:1.25}
 .st-deal{
-  font-size:clamp(12px,calc(3.4 * var(--vw)),15px);font-weight:800;letter-spacing:.05em;
+  font-size:min(15px, calc(3.7 * var(--vw)));font-weight:800;letter-spacing:.05em;
   color:var(--cream);text-shadow:0 2px 6px rgba(0,0,0,.8);
 }
 html[dir="ltr"] .st-deal{text-transform:uppercase}
 .st-deal i{opacity:.55;font-style:normal;margin:0 3px}
 .st-score{
-  font-size:clamp(15px,calc(4.6 * var(--vw)),21px);font-weight:900;margin-top:1px;
+  font-size:min(21px, calc(5.1 * var(--vw)));font-weight:900;margin-top:1px;
   text-shadow:0 2px 7px rgba(0,0,0,.85);
   font-variant-numeric:tabular-nums;
 }
@@ -156,7 +158,8 @@ html[dir="ltr"] .st-deal{text-transform:uppercase}
 .st-score .them{color:var(--gold)}
 
 .icon-btn{
-  width:34px;height:34px;border-radius:50%;
+  width:clamp(28px, calc(8.3 * var(--vw)), 34px);
+  height:clamp(28px, calc(8.3 * var(--vw)), 34px);border-radius:50%;
   background:linear-gradient(170deg,rgba(0,0,0,.5),rgba(0,0,0,.3));
   border:1px solid rgba(240,207,114,.42);
   display:grid;place-items:center;font-size:15px;line-height:1;
@@ -169,17 +172,16 @@ html[dir="ltr"] .st-deal{text-transform:uppercase}
 
 /* ---------- seats ---------- */
 #felt{position:relative;z-index:2;flex:1;min-height:0}
-/* What the cloth can honestly carry: the room's light falling across it, and
-   the lattice showing through from the table behind. Both pan a shorter
-   distance than the scene, being nearer the viewer. */
+/* What the cloth can honestly carry: the room's light falling across it and
+   the lattice showing through from the table behind. */
 #felt .cloth{
   position:absolute;inset:20% -4% 0 -4%;pointer-events:none;z-index:0;
   background:
-    radial-gradient(ellipse 62% 44% at calc(50% + var(--tilt,0) * 13%) 0%,
+    radial-gradient(ellipse 62% 44% at 50% 0%,
       rgba(255,206,140,.19), transparent 62%),
-    radial-gradient(ellipse 120% 70% at calc(50% + var(--tilt,0) * -9%) 84%,
+    radial-gradient(ellipse 120% 70% at 50% 84%,
       rgba(0,0,0,.26), transparent 72%),
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='64' height='64' viewBox='0 0 64 64'%3E%3Cg fill='none' stroke='%23ffe3ae' stroke-width='1.1' opacity='.125'%3E%3Crect x='19' y='19' width='26' height='26'/%3E%3Cpath d='M32 13 51 32 32 51 13 32Z'/%3E%3Ccircle cx='32' cy='32' r='4.5'/%3E%3C/g%3E%3C/svg%3E") calc(var(--tilt,0) * -26px) 0 / 64px 64px;
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='64' height='64' viewBox='0 0 64 64'%3E%3Cg fill='none' stroke='%23ffe3ae' stroke-width='1.1' opacity='.125'%3E%3Crect x='19' y='19' width='26' height='26'/%3E%3Cpath d='M32 13 51 32 32 51 13 32Z'/%3E%3Ccircle cx='32' cy='32' r='4.5'/%3E%3C/g%3E%3C/svg%3E") 0 0 / 64px 64px;
   -webkit-mask-image:linear-gradient(180deg,transparent 0%,#000 14%,#000 88%,transparent 100%);
           mask-image:linear-gradient(180deg,transparent 0%,#000 14%,#000 88%,transparent 100%);
 }
@@ -201,11 +203,10 @@ html[dir="ltr"] .st-deal{text-transform:uppercase}
    into the cloth where the trick is played. A drawn fallback keeps the page
    sane if the image is missing.
    ------------------------------------------------------------------ */
-/* --tilt runs -1..1; the scene pans inside its own crop, so nothing reflows */
 #board{
   position:absolute;top:0;left:0;right:0;height:64%;
-  background:var(--room-img) no-repeat calc(50% + var(--scene-pan,0px)) 42%;
-  background-size:var(--scene-w,cover) var(--scene-h,auto);
+  background:var(--room-img) no-repeat 50% 42%;
+  background-size:cover;
   pointer-events:none;
 }
 #board::after{                       /* seat the scene into the cloth */
@@ -220,8 +221,7 @@ html[dir="ltr"] .st-deal{text-transform:uppercase}
    pool per lamp in the picture, each breathing on its own cycle, plus a few
    embers rising through them.
    ------------------------------------------------------------------ */
-.amb{position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:1;
-     transform:translateX(var(--scene-pan,0px))}
+.amb{position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:1}
 .amb .lamp{
   position:absolute;left:var(--x);top:var(--y);
   width:var(--r);aspect-ratio:1;transform:translate(-50%,-50%);
@@ -273,74 +273,10 @@ html[dir="ltr"] .st-deal{text-transform:uppercase}
   .amb .mote{display:none}
 }
 
-/* ---------- tilt pad: the desktop stand-in for the gyroscope ---------- */
-#tiltpad{
-  position:absolute;top:7px;inset-inline-start:7px;z-index:9;
-  display:flex;gap:5px;
-  padding:4px;border-radius:999px;
-  background:linear-gradient(180deg,rgba(6,32,20,.72),rgba(3,18,11,.78));
-  border:1px solid rgba(240,207,114,.34);
-  box-shadow:0 3px 10px rgba(0,0,0,.45);
-  backdrop-filter:blur(6px);
-}
-.tilt-btn{
-  width:28px;height:28px;border-radius:50%;
-  display:grid;place-items:center;
-  font-size:17px;font-weight:900;line-height:1;
-  color:var(--gold);
-  background:rgba(255,255,255,.05);
-  border:1px solid rgba(240,207,114,.3);
-  transition:transform .1s,background .12s,border-color .12s;
-}
-.tilt-btn:active,.tilt-btn.held{
-  background:rgba(240,207,114,.85);color:#20160a;
-  border-color:var(--gold-hi);transform:scale(.94);
-}
-#tiltpad.gyro{border-color:rgba(53,251,125,.5)}
-
-/* Holds the camera at one angle. Long enough to aim with, quiet enough to
-   disappear into the wall behind it: a hairline track with a small knob, and
-   a generous invisible grab area around them. */
-#tiltrange{
-  position:absolute;top:49px;inset-inline:14px;z-index:9;
-  -webkit-appearance:none;appearance:none;
-  height:22px;background:transparent;cursor:ew-resize;
-}
-#tiltrange::-webkit-slider-runnable-track{
-  height:2px;border-radius:2px;
-  background:
-    radial-gradient(circle 1.6px at 50% 50%, rgba(240,207,114,.42), transparent 100%),
-    linear-gradient(90deg, rgba(240,207,114,.03), rgba(240,207,114,.15) 30%,
-      rgba(240,207,114,.15) 70%, rgba(240,207,114,.03));
-}
-#tiltrange::-webkit-slider-thumb{
-  -webkit-appearance:none;appearance:none;
-  width:11px;height:11px;border-radius:50%;margin-top:-4.5px;
-  background:rgba(240,207,114,.42);
-  border:1px solid rgba(255,233,164,.4);
-  box-shadow:0 1px 4px rgba(0,0,0,.55);
-  transition:background .15s,transform .15s,border-color .15s;
-}
-#tiltrange::-moz-range-track{
-  height:2px;border-radius:2px;background:rgba(240,207,114,.2);
-}
-#tiltrange::-moz-range-thumb{
-  width:11px;height:11px;border-radius:50%;border:1px solid rgba(255,233,164,.45);
-  background:rgba(240,207,114,.5);box-shadow:0 1px 4px rgba(0,0,0,.55);
-}
-#tiltrange.locked::-webkit-slider-thumb{
-  background:var(--gold);border-color:var(--gold-hi);transform:scale(1.2);
-  box-shadow:0 1px 6px rgba(0,0,0,.6),0 0 10px rgba(240,207,114,.6);
-}
-#tiltrange.locked::-moz-range-thumb{background:var(--gold);border-color:var(--gold-hi)}
-@media (prefers-reduced-motion:reduce){ #tiltrange{display:none} }
-@media (prefers-reduced-motion:reduce){ #tiltpad{display:none} }
-
 /* ---------- seat plates, pinned to the painted players ---------- */
 .seat{
   position:absolute;z-index:5;
-  transform:translate(-50%,-50%)
-            translateX(clamp(-24px, calc(var(--scene-pan,0px) * .85), 24px));
+  transform:translate(-50%,-50%);
   display:flex;flex-direction:column;align-items:center;gap:3px;
   pointer-events:none;
 }
@@ -350,15 +286,15 @@ html[dir="ltr"] .st-deal{text-transform:uppercase}
 
 .plate{
   display:flex;align-items:center;gap:5px;
-  max-width:104px;
-  padding:3px 9px;border-radius:999px;
+  max-width:clamp(74px, calc(26 * var(--vw)), 104px);
+  padding:3px clamp(6px, calc(2.2 * var(--vw)), 9px);border-radius:999px;
   background:linear-gradient(180deg,rgba(6,32,20,.92),rgba(3,18,11,.94));
   border:1px solid rgba(240,207,114,.5);
   box-shadow:0 3px 10px rgba(0,0,0,.6);
-  font-size:11px;font-weight:800;color:var(--cream);
+  font-size:min(11px, calc(2.9 * var(--vw)));font-weight:800;color:var(--cream);
   white-space:nowrap;
 }
-.plate .nm{overflow:hidden;text-overflow:ellipsis;max-width:70px}
+.plate .nm{overflow:hidden;text-overflow:ellipsis;max-width:calc(18 * var(--vw))}
 .plate .tag{
   font-size:8.5px;font-weight:900;border-radius:999px;padding:1px 5px;line-height:1.35;
   background:rgba(255,255,255,.14);color:rgba(245,239,228,.8);
@@ -562,8 +498,10 @@ html[dir="ltr"] #winmark{text-transform:uppercase}
 
 /* ---------- turn hint ---------- */
 #hintwrap{position:relative;z-index:41;height:0}
+#hint[hidden]{display:none}
 #hint{
   position:absolute;bottom:2px;inset-inline-start:14px;
+  display:flex;align-items:center;gap:3px;line-height:1;
   background:linear-gradient(180deg,#3ddb73,#12933f);
   border:1px solid rgba(255,235,170,.55);
   color:#08260f;font-size:12.5px;font-weight:900;letter-spacing:.03em;
@@ -573,12 +511,9 @@ html[dir="ltr"] #winmark{text-transform:uppercase}
   animation:pop .24s cubic-bezier(.2,1.4,.5,1);
 }
 html[dir="ltr"] #hint{text-transform:uppercase}
-#hint::after{
-  content:"";position:absolute;bottom:-5px;inset-inline-start:22px;
-  width:11px;height:11px;background:#12933f;transform:rotate(45deg);
-}
-#hint .sr{color:#c8102e;font-size:14px}
-#hint .sk{color:#0d0f14;font-size:14px}
+#hint span{line-height:1}
+#hint .sr{color:#c8102e;font-size:1.15em}
+#hint .sk{color:#0d0f14;font-size:1.15em}
 
 /* the card the hint points at */
 #hand .slot.tip .card{
@@ -589,14 +524,18 @@ html[dir="ltr"] #hint{text-transform:uppercase}
 /* ---------- action rail ---------- */
 #rail{
   position:relative;z-index:8;
-  display:flex;align-items:center;gap:9px;
-  padding:10px 52px calc(10px + var(--safe-b));
+  display:flex;align-items:center;gap:clamp(5px, calc(2 * var(--vw)), 9px);
+  padding:clamp(7px, calc(1.1 * var(--vh)), 12px)
+          clamp(15px, calc(9 * var(--vw)), 52px)
+          calc(clamp(7px, calc(1.1 * var(--vh)), 12px) + var(--safe-b));
   background:linear-gradient(180deg,rgba(6,38,24,.86),rgba(4,24,15,.97));
   border-top:1px solid rgba(240,207,114,.28);
 }
 /* gold arabesque in both bottom corners */
 #rail::before,#rail::after{
-  content:"";position:absolute;bottom:2px;width:48px;height:54px;
+  content:"";position:absolute;bottom:2px;
+  width:clamp(28px, calc(11 * var(--vw)), 48px);
+  height:calc(clamp(28px, calc(11 * var(--vw)), 48px) * 1.125);
   pointer-events:none;opacity:.95;
   background:no-repeat left bottom/contain url("corner-bl.webp");
 }
@@ -604,12 +543,12 @@ html[dir="ltr"] #hint{text-transform:uppercase}
 #rail::after{right:2px;background-image:url("corner-br.webp");background-position:right bottom}
 .rail-btn{
   position:relative;z-index:2;
-  min-height:48px;
-  font-size:14px;font-weight:900;letter-spacing:.04em;
+  min-height:clamp(40px, calc(5.4 * var(--vh)), 52px);
+  font-size:clamp(10px, calc(3.4 * var(--vw)), 15px);font-weight:900;letter-spacing:.04em;
   display:flex;align-items:center;justify-content:center;gap:6px;
   color:var(--gold);
   /* the button faces are cut from the mock-up and stretched as border-image */
-  border:15px solid transparent;
+  border:clamp(9px, calc(3.2 * var(--vw)), 15px) solid transparent;
   border-image:url("btn-outline.webp") 24 fill stretch;
   background:none;box-shadow:none;border-radius:0;
   filter:drop-shadow(0 4px 11px rgba(0,0,0,.5));
@@ -623,16 +562,14 @@ html[dir="ltr"] .rail-btn{text-transform:uppercase}
   border-image-source:url("btn-gold.webp");
   border-image-slice:26 fill;
   color:#2a1a05;text-shadow:0 1px 0 rgba(255,255,255,.4);
-  padding-inline:12px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;
+  padding-inline:clamp(5px, calc(2 * var(--vw)), 12px);
+  overflow:hidden;white-space:nowrap;text-overflow:ellipsis;
 }
-.rail-btn.sq{flex:0 0 auto;width:58px;font-size:17px}
-.rail-btn.out{flex:0 0 auto;min-width:74px;font-size:15px}
-@media (max-width:380px){
-  .rail-btn.sq{width:42px}
-  .rail-btn.out{padding:0 10px}
-  #rail{gap:6px;padding-inline:44px}
-  #rail::before,#rail::after{width:40px;height:45px}
-}
+.rail-btn.sq{flex:0 0 auto;width:clamp(34px, calc(13 * var(--vw)), 58px);
+             font-size:clamp(13px, calc(4 * var(--vw)), 17px)}
+.rail-btn.out{flex:0 0 auto;min-width:clamp(42px, calc(17 * var(--vw)), 74px);
+              padding-inline:clamp(6px, calc(2 * var(--vw)), 12px);
+              font-size:clamp(12px, calc(3.6 * var(--vw)), 15px)}
 
 /* ---------- bubbles / announcements ---------- */
 .bubble{
@@ -849,7 +786,7 @@ html[dir="ltr"] .rail-btn{text-transform:uppercase}
 
 /* the full-screen switch, desktop only */
 #btn-full{
-  display:none;position:fixed;z-index:60;top:16px;right:16px;
+  display:grid;position:fixed;z-index:60;top:16px;right:16px;
   width:40px;height:40px;border-radius:12px;place-items:center;
   background:rgba(8,32,25,.72);border:1px solid rgba(226,187,100,.34);
   color:var(--gold);font-size:16px;line-height:1;
@@ -857,51 +794,55 @@ html[dir="ltr"] .rail-btn{text-transform:uppercase}
 }
 #btn-full:hover{background:rgba(14,58,42,.92);transform:scale(1.06)}
 
-/* ---------- a big screen ----------
-   The game is shaped for a phone, so on a desktop the window becomes the
-   room and the table is centred inside it at phone proportions, instead of
-   stretching a hand of cards across sixteen hundred pixels.
+/* ---------- the window around the table ----------
+   The table is shaped for a phone. A phone-shaped window gets all of it;
+   every other window - a desktop, a tablet, a phone on its side - becomes
+   the room around it, with the table centred at whatever size fits. The
+   column and everything measured from it change continuously, so dragging a
+   window edge scales the game rather than snapping it to another layout.
    ------------------------------------------------------------------ */
-@media (min-width:640px) and (min-height:520px){
-  :root{
-    --app-w:min(452px, calc((100vh - 36px) / 2.1));
-    --app-h:calc(var(--app-w) * 2.1);
-    --vw:calc(var(--app-w) / 100);
-  }
-  body{background:#04100b}
-  body::before{                       /* the majlis, thrown out of focus */
-    content:"";position:fixed;inset:-60px;z-index:0;
-    background:#050d0a center/cover no-repeat var(--room-img);
-    filter:blur(30px) brightness(.28) saturate(.78);
-  }
-  body::after{
-    content:"";position:fixed;inset:0;z-index:0;pointer-events:none;
-    background:radial-gradient(ellipse 62% 60% at 50% 46%, rgba(0,0,0,.15) 22%, rgba(0,0,0,.86) 100%);
-  }
-  #table, .scrim{
-    left:50%;right:auto;top:50%;bottom:auto;
-    width:var(--app-w);height:var(--app-h);
-    transform:translate(-50%,-50%);
-    border-radius:32px;
-  }
-  #table{
-    overflow:hidden;
-    box-shadow:0 44px 90px rgba(0,0,0,.62),
-               0 0 0 1px rgba(226,187,100,.22),
-               0 0 0 10px rgba(5,16,11,.94),
-               0 0 0 11px rgba(226,187,100,.13);
-  }
-  .panel{max-height:calc(var(--app-h) * .86)}
-  #toast{top:calc(50% - var(--app-h) * .23)}
-  #btn-full{display:grid}
+body{background:#04100b}
+body::before{                         /* the majlis, thrown out of focus */
+  content:"";position:fixed;inset:-60px;z-index:0;
+  background:#050d0a center/cover no-repeat var(--room-img);
+  filter:blur(30px) brightness(.28) saturate(.78);
 }
+body::after{
+  content:"";position:fixed;inset:0;z-index:0;pointer-events:none;
+  background:radial-gradient(ellipse 62% 60% at 50% 46%, rgba(0,0,0,.15) 22%, rgba(0,0,0,.86) 100%);
+}
+#table, .scrim{
+  left:50%;right:auto;top:50%;bottom:auto;
+  width:var(--app-w);height:var(--app-h);
+  transform:translate(-50%,-50%);
+  border-radius:min(32px, calc(7 * var(--vw)));
+}
+#table{
+  overflow:hidden;
+  box-shadow:0 44px 90px rgba(0,0,0,.62),
+             0 0 0 1px rgba(226,187,100,.22),
+             0 0 0 10px rgba(5,16,11,.94),
+             0 0 0 11px rgba(226,187,100,.13);
+}
+.panel{max-height:calc(var(--app-h) * .86)}
+#toast{top:calc(50% - var(--app-h) * .23)}
 
-@media (max-height:660px){
-  :root{--card-w:clamp(52px,calc(13 * var(--vw)),68px)}
-  #board{height:58%}
-  .avatar{width:36px;height:36px;font-size:15px}
-  #trick{width:min(calc(52 * var(--vw)),196px);height:min(calc(52 * var(--vw)),196px)}
+/* a phone-shaped window: no frame, no room around it, just the game */
+@media (max-width:560px) and (max-aspect-ratio:2/3){
+  :root{--app-w:100vw;--app-h:100vh;--vw:1vw;--vh:1vh}
+  body::before,body::after{display:none}
+  #table, .scrim{left:0;top:0;width:100%;height:100%;transform:none;border-radius:0}
+  #table{box-shadow:none}
+  #toast{top:calc(var(--safe-t) + 27 * var(--vh))}
+  #btn-full{display:none}
 }
+@supports (height:100dvh){
+  :root{--app-h:min(calc(var(--app-w) * 2.1), 100dvh)}
+  @media (max-width:560px) and (max-aspect-ratio:2/3){
+    :root{--app-h:100dvh;--vh:1dvh}
+  }
+}
+@media (hover:none){ #btn-full{display:none} }
 </style>
 </head>
 <body>
@@ -931,12 +872,6 @@ html[dir="ltr"] .rail-btn{text-transform:uppercase}
   </div>
 
   <div id="felt">
-    <div id="tiltpad">
-      <button class="tilt-btn" id="tilt-l" aria-label="tilt left">‹</button>
-      <button class="tilt-btn" id="tilt-r" aria-label="tilt right">›</button>
-    </div>
-    <input type="range" id="tiltrange" min="-100" max="100" value="0" step="1"
-           aria-label="hold the camera at an angle">
     <div id="board">
       <div class="seat" data-pos="north" id="seat-n"></div>
       <div class="seat" data-pos="west"  id="seat-w"></div>
@@ -3178,124 +3113,6 @@ window.addEventListener("keydown", e => {
   Fullscreen.toggle();
 });
 Fullscreen.sync();
-
-/* ============================================================
-   Parallax
-   ------------------------------------------------------------
-   The scene pans inside its own crop while the wall lattice and the chrome
-   drift the other way. On a phone a device-orientation reading drives it; on
-   a desktop the two arrows in the corner, or the 1 and 2 keys, stand in.
-   ============================================================ */
-const Tilt = (() => {
-  const root = document.documentElement;
-  const reduced = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-  let target = 0, current = 0, manual = 0, gyro = 0, lock = 0, locked = false,
-      live = false, raf = 0;
-
-  const PAN_SHARE = 0.26;           // of the hidden part of the picture...
-  const PAN_MAX = 40;               // ...capped here, and never less than
-  const PAN_MIN = 18;               // this, even on a screen that crops little
-  let pan = 0;                      // how far the scene travels at full tilt
-  function measure(){
-    const b = $("#board");
-    if (!b) return;
-    const w = b.clientWidth, h = b.clientHeight;
-    if (!w || !h) return;
-    // start from what `cover` would do
-    let imgW = 880 * Math.max(w / 880, h / 553);
-    // a short screen fits the picture to the width, leaving nothing to pan, so
-    // widen it just enough to buy some travel
-    const wanted = w + PAN_MIN / PAN_SHARE;
-    if (imgW < wanted) imgW = wanted;
-    pan = Math.min((imgW - w) * PAN_SHARE, PAN_MAX);
-    root.style.setProperty("--scene-w", imgW.toFixed(1) + "px");
-    root.style.setProperty("--scene-h", "auto");
-  }
-  window.addEventListener("resize", () => { measure(); kick(); });
-  requestAnimationFrame(measure);       // size the scene before the first tilt
-
-  function frame(){
-    const want = manual !== 0 ? manual : (locked ? lock : gyro);
-    target = Math.max(-1, Math.min(1, want));
-    current += (target - current) * 0.12;
-    if (Math.abs(current - target) < 0.0015) current = target;
-    root.style.setProperty("--tilt", current.toFixed(4));
-    root.style.setProperty("--scene-pan", (-current * pan).toFixed(2) + "px");
-    raf = (current !== target) ? requestAnimationFrame(frame) : 0;
-  }
-  const kick = () => { if (!pan) measure(); if (!raf && !reduced) raf = requestAnimationFrame(frame); };
-
-  /* ---- the desktop stand-in ---- */
-  function hold(dir, on){
-    if (on) release();                     // an arrow always lets the camera go
-    manual = on ? dir : (manual === dir ? 0 : manual);
-    $("#tilt-l").classList.toggle("held", manual < 0);
-    $("#tilt-r").classList.toggle("held", manual > 0);
-    kick();
-  }
-
-  /* ---- holding the camera at one angle ---- */
-  function setLock(v){
-    lock = Math.max(-1, Math.min(1, v));
-    locked = true;
-    $("#tiltrange").classList.add("locked");
-    kick();
-  }
-  function release(){
-    if (!locked && lock === 0) return;
-    lock = 0; locked = false;
-    const r = $("#tiltrange");
-    r.value = 0; r.classList.remove("locked");
-    kick();
-  }
-
-  /* ---- the real thing ---- */
-  function onOrientation(e){
-    if (e.gamma == null) return;
-    // gamma is the left-right tilt in degrees; a quarter turn is plenty of travel
-    gyro = Math.max(-1, Math.min(1, e.gamma / 26));
-    if (!live){ live = true; $("#tiltpad").classList.add("gyro"); }
-    kick();
-  }
-  function enableGyro(){
-    if (live || reduced) return;
-    const DOE = window.DeviceOrientationEvent;
-    if (!DOE) return;
-    if (typeof DOE.requestPermission === "function"){
-      // iOS only grants this from inside a user gesture
-      DOE.requestPermission().then(r => {
-        if (r === "granted") window.addEventListener("deviceorientation", onOrientation);
-      }).catch(() => {});
-    } else {
-      window.addEventListener("deviceorientation", onOrientation);
-    }
-  }
-
-  return { hold, setLock, release, enableGyro, measure, get live(){ return live; } };
-})();
-
-(function bindTilt(){
-  const pad = [["#tilt-l", -1], ["#tilt-r", 1]];
-  for (const [sel, dir] of pad){
-    const b = $(sel);
-    b.addEventListener("pointerdown", e => { e.preventDefault(); Tilt.enableGyro(); Tilt.hold(dir, true); });
-    for (const ev of ["pointerup", "pointerleave", "pointercancel"])
-      b.addEventListener(ev, () => Tilt.hold(dir, false));
-  }
-  const range = $("#tiltrange");
-  range.addEventListener("input", () => { Tilt.enableGyro(); Tilt.setLock(range.value / 100); });
-  // a double click on the track is the quickest way back to centre
-  range.addEventListener("dblclick", () => Tilt.release());
-
-  const KEY = { "1": -1, "2": 1 };
-  window.addEventListener("keydown", e => {
-    if (e.repeat || !(e.key in KEY)) return;
-    Tilt.hold(KEY[e.key], true);
-  });
-  window.addEventListener("keyup", e => { if (e.key in KEY) Tilt.hold(KEY[e.key], false); });
-  // Android reports orientation without asking; iOS waits for the first tap above
-  Tilt.enableGyro();
-})();
 
 /* ---- lantern pools, measured off the scene, and the embers between them ---- */
 (function ambience(){
