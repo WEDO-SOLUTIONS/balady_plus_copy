@@ -32,6 +32,24 @@ Controls: the on-screen **TAP LEFT** / **TAP RIGHT** buttons, a tap anywhere on
 the left/right half of the play area, or `←`/`→` (`A`/`D`) on a keyboard.
 `Esc`/`P` pauses, `Enter`/`Space` starts a run.
 
+## Single-file build
+
+`dist/drift-the-desert.html` is the whole game — markup, styles and all six
+scripts — inlined into one document. Use it to hand the game to a reviewer as a
+single attachment, or for a WebView that can only be pointed at one file.
+Open it by double-clicking; no server needed.
+
+The multi-file sources stay the source of truth. Regenerate the bundle after
+changing any of them:
+
+```bash
+cd assets/games/drift_the_desert
+python3 build_standalone.py
+```
+
+Only `index.html`, `css/` and `js/` are registered in `pubspec.yaml`, so
+`dist/`, this README and the build script are not shipped inside the app.
+
 ## Run it in the app's WebView
 
 The files are registered in the root `pubspec.yaml`, so `webview_flutter` can
@@ -78,6 +96,7 @@ before load, or append `?lang=ar` to the asset URL.
 | `js/scene.js`   | Canvas renderer: sky, mesas, dunes, perspective track, the car, dust, coins |
 | `js/game.js`    | Rules only, no DOM: balance physics, scoring, combo, coins, run lifecycle |
 | `js/main.js`    | Screen flow, HUD bindings, FX layer, input |
+| `build_standalone.py` | Inlines everything above into `dist/drift-the-desert.html` |
 
 ## How the game works
 
