@@ -45,7 +45,7 @@ class NavigationHandler {
     private let messageControlModel: MessageControlModel
     private let maneuverControlModel: ManeuverControlModel
     
-    private let oldSource: DGis.Source?
+    private var oldSource: DGis.Source?
     /// BALADY-3772: the navigation-cursor 3D model is set on the my-location
     /// object via setModelData. The owner (DgisMapView) re-applies it whenever
     /// that object may have (re)materialised its model: after guidance swaps
@@ -314,13 +314,14 @@ class NavigationHandler {
             resetCamera(map: carPlayMap)
         }
         
-        if oldSource == nil { return }
+        if self.oldSource == nil { return }
         let toDelete = map.sources.first(where: { $0 is MyLocationMapObjectSource})
         
         if toDelete == nil { return }
         
         map.removeSource(source: toDelete!)
-        map.addSource(source: oldSource!)
+        map.addSource(source: self.oldSource!)
+        self.oldSource = nil
     }
     
     func resetCamera(map: Map) {
@@ -394,19 +395,21 @@ class NavigationHandler {
         // model may be applied from here until the session ends.
         isTurnByTurn = true
 
-        let oldSource = map.sources.first(where: { $0 is MyLocationMapObjectSource })!
+        let currentSource = map.sources.first(where: { $0 is MyLocationMapObjectSource })
+        if self.oldSource == nil, let currentSource = currentSource {
+            self.oldSource = currentSource
+            map.removeSource(source: currentSource)
 
-        map.removeSource(source: oldSource)
-        
-        map.addSource(source: MyLocationMapObjectSource(
-            context: context,
-            controllerSettings:  MyLocationControllerSettings(
-                coordinatesThreshold: Meter(value: 10),
-                bearingThreshold: Bearing(value: 90)
-            )
-        ))
-        onMyLocationSourceReplaced?()
-        
+            // BALADY-3744: bearingThreshold 90° held a stale heading until course
+            // drift exceeded it, reading as "driving sideways". iOS twin of
+            // HB-113 (Android, verified on device) - use SDK defaults (0.1m/1°).
+            map.addSource(source: MyLocationMapObjectSource(
+                context: context,
+                controllerSettings: MyLocationControllerSettings()
+            ))
+            onMyLocationSourceReplaced?()
+        }
+
         // HB-128: the trip was started from the phone; if CarPlay is connected
         // the driver expects the car screen to switch to Balady+ on its own.
         FlutterCarPlaySceneDelegate.activateCarScreen()
