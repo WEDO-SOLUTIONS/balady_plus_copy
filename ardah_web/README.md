@@ -344,6 +344,27 @@ animation would do nothing on exactly the input it exists to acknowledge.
 tap still moves a key, and `Renderer.keyReset` pairs with `Input.reset` so a
 run that ends with a finger down does not leave a pad depressed into the next.
 
+### The flourish
+
+The flourish is not a lane note: it spans the runway and is taken with a swipe
+across all three lanes, so its object is a ceremonial **bar** rather than
+anything you could mistake for a tap. It carries the runway's own lozenge
+lattice with a rosette struck at the centre — the same vocabulary as the rails
+— and deliberately not the crossed sabres the drawn fallback uses, since that
+arrangement is the state emblem's.
+
+Its proportions are the sprite's job: `_flourishNote` draws it at
+`halfAt(z) * 1.92` wide and takes the height from the sprite's aspect, so the
+bar's thickness on screen is a property of the object rather than a number in
+the renderer.
+
+On approach a **glint runs its length**, and the period shortens as the note
+closes — `lead` drives it, so the bar is visibly more urgent in its last half
+second. Nothing about a static bar says "swipe"; a highlight travelling across
+it is the gesture it wants. On the hit it answers with **one sweep** along the
+judgment line rather than three separate bursts, with a flare head running out
+to each side, because the input was one gesture across all three lanes.
+
 ### Holds, and breaking by material
 
 **A held note has to look like work.** The ribbon was already shrinking towards
@@ -441,6 +462,32 @@ its own lane** at every depth. In the concept image the notes are roughly a
 third of the lane. With flat cut-out sprites this passed unnoticed; with the
 traced ones it is obvious. That is a tuning constant (`0.34` in `_gem`), not an
 art problem, and it is left alone here.
+
+### The stage plate is painted once, properly
+
+`AGENTS.md` has said "the backdrop is painted once" from the beginning, and the
+plate half of it was not: everything below the join — the floor wash stretched
+up from a 24×6 blur, the seam feather, the distance shade, the across gradient
+and the floor grid — was five full-screen passes **every frame**. It cost 5 fps,
+and the art path sat at 55 against the drawn path's 60.
+
+Finding it took measurement rather than reading. Profiling the renderer's
+sub-passes put the entire script cost at 0.21 ms/frame, which rules out code as
+the answer and points at the rasteriser; an A/B that stubbed out one pass at a
+time then put the whole 5 fps on `_plate`, and a second A/B inside it put ~4.5
+on the floor wash alone. Two fixes that looked obvious measured **nothing** —
+pre-scaling the plate image (it is upscaled every frame) and baking only the
+wash — which is what showed the cost is the *number* of full-screen passes, not
+the filtering of any one of them. Baking all five into one layer takes the art
+path to 60.0 fps, level with the drawn one.
+
+Verified by pixel diff against the previous build, with a control proving the
+capture is deterministic: the runway deck is identical, the plate's
+`drawImage` arguments and transform are byte-identical, and the residual is
+zero-mean edge noise from resampling. One thing that did have to match: the
+bake originally used `imageSmoothingQuality = 'high'` where the main context
+uses `'low'`, which biased the whole plate; it now takes the context's own
+setting.
 
 ### Sizing: the sprites are trimmed
 

@@ -35,7 +35,7 @@ window.Ardah = window.Ardah || {};
     'fx_chip_a0', 'fx_chip_a1', 'fx_chip_a2',
     'fx_chip_b0', 'fx_chip_b1', 'fx_chip_b2',
     'fx_chip_c0', 'fx_chip_c1', 'fx_chip_c2',
-    'fx_flake_0', 'fx_flake_1', 'fx_flake_2',
+    'fx_flake_0', 'fx_flake_1', 'fx_flake_2', 'fx_flourish',
     'glyph_a', 'glyph_s', 'glyph_d', 'glyph_dot'
   ];
 

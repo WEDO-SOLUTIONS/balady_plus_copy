@@ -42,6 +42,9 @@ for v in ('a', 'b', 'c'):
         JOBS['fx_chip_%s%d' % (v, i)] = (80, 92)
 for i in range(3):
     JOBS['fx_flake_%d' % i] = (80, 92)
+# The flourish bar spans the runway: ~388 pt wide at the judgment line, so 800
+# device px is already above what dpr 2 can ask for.
+JOBS['fx_flourish'] = (800, 92)
 
 total = 0
 for name, (longest, q) in sorted(JOBS.items()):

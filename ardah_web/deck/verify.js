@@ -180,6 +180,44 @@ async function slowmo(page, factor) {
   await page.waitForTimeout(1400);
   await page.screenshot({ path: path.join(OUT, 'live_break.png') });
 
+  /* The flourish: three frames, because it is three things.
+
+     It has to go in notes[0]: _notes walks the array in order and BREAKS on
+     the first note whose lead exceeds APPROACH_MS, and the chart was pushed
+     into the future above, so anything placed after index 0 is never
+     reached. */
+  await page.evaluate(() => {
+    const g = window.Ardah.game, r = g.renderer;
+    for (const a of [r.lands, r.drops, r.sparks, r.bursts, r.shards, r.floats, r.waves]) a.length = 0;
+    r.popup = null; r.shake = 0;
+    const n = g.judge.notes[0];
+    if (n) { n.type = 'flourish'; n.lane = 1; n.state = 'pending';
+             n.t = g.conductor.visualTimeMs() + 900; }
+  });
+  await page.waitForTimeout(340);
+  await page.screenshot({ path: path.join(OUT, 'live_flourish_in.png') });
+
+  // The sweep on its own, so it can be seen at all: the lane bursts that fire
+  // with it in the real thing are brighter than it is.
+  await page.evaluate(() => {
+    const r = window.Ardah.game.renderer;
+    for (const a of [r.sparks, r.bursts, r.shards, r.waves]) a.length = 0;
+    r.waves.push({ life: 1 });
+  });
+  await page.waitForTimeout(1500);
+  await page.screenshot({ path: path.join(OUT, 'live_flourish_wave.png') });
+
+  // And the whole answer as the game actually plays it.
+  await page.evaluate(() => {
+    const r = window.Ardah.game.renderer;
+    for (const a of [r.sparks, r.bursts, r.shards, r.waves]) a.length = 0;
+    r.flourishBurst();
+    r.shake = 0;
+  });
+  await page.waitForTimeout(900);
+  await page.evaluate(() => { window.Ardah.game.renderer.shake = 0; });
+  await page.screenshot({ path: path.join(OUT, 'live_flourish_hit.png') });
+
   // Back to real time for the two SUSTAINED states below. Slow motion exists
   // for transients that finish before a screenshot does; a hold and a held pad
   // are states, not moments, so capture latency does not matter -- and slowing

@@ -85,6 +85,7 @@ window.Ardah = window.Ardah || {};
     this.lands = [];       // notes travelling into their pad
     this.drops = [];       // notes that were missed and are falling away
     this.holdEmit = [0, 0, 0];   // ember accumulator per lane while holding
+    this.waves = [];       // the flourish's full-width sweep
     this.floats = [];
     this.flashes = [0, 0, 0];
     this.held = [0, 0, 0];       // key or finger currently down, per lane
@@ -130,6 +131,7 @@ window.Ardah = window.Ardah || {};
     // every frame was costing three to five frames a second on the art path.
     this._grad = {};
     this._deck = null;          // the warped runway, rebuilt with the layout
+    this._below = null;         // the static half of the stage plate
   };
 
   /* The runway deck, warped into this layout once.
@@ -164,6 +166,60 @@ window.Ardah = window.Ardah || {};
     this._deck = { canvas: cv, x: this.w / 2 - w / this.dpr / 2, y: yTop,
                    w: w / this.dpr, h: h / this.dpr };
     return this._deck;
+  };
+
+  /** The static half of the plate, below the join, built once per layout. */
+  Renderer.prototype._plateBelow = function (img, joinY) {
+    var top = joinY - 14;                     // the seam straddles the join
+    var w = Math.max(1, Math.round(this.w * this.dpr));
+    var h = Math.max(1, Math.round((this.h - top) * this.dpr));
+    if (this._below && this._below.w === w && this._below.h === h &&
+        this._below.src === img) return this._below;
+
+    var cv = document.createElement('canvas');
+    cv.width = w; cv.height = h;
+    var g = cv.getContext('2d');
+    // Draw in CSS coordinates, shifted so `top` lands on the layer's origin.
+    g.setTransform(this.dpr, 0, 0, this.dpr, 0, -top * this.dpr);
+    g.imageSmoothingQuality = this.ctx.imageSmoothingQuality;
+
+    // Ground beyond the join: the plate's own floor, taken from its cleanest
+    // band (just above the bottom, before the carpet and the shoes) and
+    // blurred by a round trip through a tiny canvas. Stretching the raw strip
+    // smeared the carpet and the feet down the screen; blurring it leaves the
+    // tone, which is the only part that has to match.
+    var tex = this._groundTex(img);
+    g.drawImage(tex, 0, 0, tex.width, tex.height, 0, joinY - 2, this.w, this.h - joinY + 2);
+
+    // A short feather over the join itself: the plate's last rows carry a dark
+    // edge from the original render, which otherwise reads as a hairline.
+    var seam = g.createLinearGradient(0, joinY - 14, 0, joinY + 14);
+    seam.addColorStop(0, 'rgba(161, 95, 64, 0)');
+    seam.addColorStop(0.5, 'rgba(161, 95, 64, 0.6)');
+    seam.addColorStop(1, 'rgba(161, 95, 64, 0)');
+    g.fillStyle = seam;
+    g.fillRect(0, joinY - 14, this.w, 28);
+
+    // Darken with distance so the deck stays readable over it, and keep the
+    // plate's brighter middle.
+    var shade = g.createLinearGradient(0, joinY, 0, this.h);
+    shade.addColorStop(0, 'rgba(10, 7, 6, 0)');
+    shade.addColorStop(0.45, 'rgba(10, 7, 6, 0.35)');
+    shade.addColorStop(1, 'rgba(8, 6, 5, 0.82)');
+    g.fillStyle = shade;
+    g.fillRect(0, joinY, this.w, this.h - joinY);
+
+    var across = g.createLinearGradient(0, 0, this.w, 0);
+    across.addColorStop(0, 'rgba(0, 0, 0, 0.3)');
+    across.addColorStop(0.5, 'rgba(255, 205, 150, 0.04)');
+    across.addColorStop(1, 'rgba(0, 0, 0, 0.3)');
+    g.fillStyle = across;
+    g.fillRect(0, joinY, this.w, this.h - joinY);
+
+    this._floorGrid(g, joinY);
+
+    this._below = { canvas: cv, w: w, h: h, top: top, src: img };
+    return this._below;
   };
 
   /** Layout-scoped gradient cache. */
@@ -254,6 +310,50 @@ window.Ardah = window.Ardah || {};
     for (var i = 0; i < PERFORMERS; i++) this.performers[i] = 1;
     this.flashes[0] = this.flashes[1] = this.flashes[2] = 1;
     for (var k = 0; k < 3; k++) this._sparks(this.xAt(k, 1), this.judgeY, '#FFD978', 16);
+    // The flourish is taken across all three lanes, so its answer is one
+    // sweep across all three rather than three separate bursts.
+    this.waves.push({ life: 1 });
+    this.shake = Math.max(this.shake, 0.45);
+  };
+
+  /* The flourish's answer: a line of light thrown outward along the judgment
+     line, with a head running to each side.
+
+     Drawn as a stretched glow rather than a gradient built per frame, and the
+     heads use the same flare the ordinary hit does, so a flourish reads as
+     more of the same language rather than a different effect. */
+  Renderer.prototype._waves = function (c, dtMs) {
+    if (!this.waves.length) return;
+    var cx = this.w / 2, y = this.judgeY, half = this.halfAt(1);
+    var glow = A.assets && A.assets.img('fx_glow');
+    var flare = A.assets && A.assets.img('fx_flare');
+    for (var i = this.waves.length - 1; i >= 0; i--) {
+      var w = this.waves[i];
+      w.life -= dtMs / 560;
+      if (w.life <= 0) { this.waves.splice(i, 1); continue; }
+      var u = 1 - w.life, e = 1 - (1 - u) * (1 - u);   // fast out, then settle
+      var reach = half * (0.15 + e * 1.15);
+      var th = 26 * (0.45 + w.life * 0.75);
+
+      c.save();
+      c.globalCompositeOperation = 'lighter';
+      if (glow) {
+        c.globalAlpha = w.life * w.life * 0.85;
+        c.drawImage(glow, cx - reach, y - th, reach * 2, th * 2);
+      }
+      // A hard bright line at the centre of the sweep, so it has an edge.
+      c.globalAlpha = w.life * w.life * 0.9;
+      c.fillStyle = 'rgba(255, 244, 214, 0.95)';
+      c.fillRect(cx - reach, y - 1.5, reach * 2, 3);
+      if (flare) {
+        var fs = 120 * (0.5 + w.life * 0.8);
+        c.globalAlpha = w.life * 0.9;
+        c.drawImage(flare, cx - reach - fs / 2, y - fs / 2, fs, fs);
+        c.drawImage(flare, cx + reach - fs / 2, y - fs / 2, fs, fs);
+      }
+      c.restore();
+      c.globalAlpha = 1;
+    }
   };
 
   /* Three ways to break, one per lane, in the colour the note happened to be.
@@ -334,6 +434,7 @@ window.Ardah = window.Ardah || {};
     }
     this._lands(c, dtMs);
     this._drops(c, dtMs);
+    this._waves(c, dtMs);
     this._keycaps(c, state, dtMs);
     this._effects(c, decay, dtMs);
     if (state.chart) this._hud(c, state);
@@ -390,42 +491,21 @@ window.Ardah = window.Ardah || {};
     // by a round trip through a tiny canvas. Stretching the raw strip smeared
     // the carpet and the feet down the screen; blurring it leaves the tone,
     // which is the only part that has to match.
-    var tex = this._groundTex(img);
-    c.drawImage(tex, 0, 0, tex.width, tex.height, 0, joinY - 2, this.w, this.h - joinY + 2);
+    /* Everything below the join is static, so it is one baked layer.
 
-    // A short feather over the join itself: the plate's last rows carry a dark
-    // edge from the original render, which otherwise reads as a hairline.
-    c.fillStyle = this._g('plateSeam', function (cc) {
-      var g = cc.createLinearGradient(0, joinY - 14, 0, joinY + 14);
-      g.addColorStop(0, 'rgba(161, 95, 64, 0)');
-      g.addColorStop(0.5, 'rgba(161, 95, 64, 0.6)');
-      g.addColorStop(1, 'rgba(161, 95, 64, 0)');
-      return g;
-    });
-    c.fillRect(0, joinY - 14, this.w, 28);
+       This used to be five full-screen passes every frame -- the floor wash
+       stretched up from a 24x6 blur, the seam feather, the distance shade, the
+       across gradient and the floor grid. Profiling found none of the cost in
+       script (the renderer's own JS is a fifth of a millisecond a frame) and
+       an A/B put ~5 fps on this block alone, so it is overdraw, not code.
+       AGENTS.md already says the backdrop is painted once; this part of it
+       was not.
 
-    // Darken with distance so the deck stays readable over it, and keep the
-    // plate's brighter middle.
-    var self = this;
-    c.fillStyle = this._g('plateShade', function (cc) {
-      var g = cc.createLinearGradient(0, joinY, 0, self.h);
-      g.addColorStop(0, 'rgba(10, 7, 6, 0)');
-      g.addColorStop(0.45, 'rgba(10, 7, 6, 0.35)');
-      g.addColorStop(1, 'rgba(8, 6, 5, 0.82)');
-      return g;
-    });
-    c.fillRect(0, joinY, this.w, this.h - joinY);
-
-    c.fillStyle = this._g('plateAcross', function (cc) {
-      var g = cc.createLinearGradient(0, 0, self.w, 0);
-      g.addColorStop(0, 'rgba(0, 0, 0, 0.3)');
-      g.addColorStop(0.5, 'rgba(255, 205, 150, 0.04)');
-      g.addColorStop(1, 'rgba(0, 0, 0, 0.3)');
-      return g;
-    });
-    c.fillRect(0, joinY, this.w, this.h - joinY);
-
-    this._floorGrid(c, joinY);
+       Baking just the wash and leaving the other four was tried first and
+       recovered almost nothing, which is the evidence that it is the number of
+       full-screen passes rather than the filtering of any one of them. */
+    var below = this._plateBelow(img, joinY);
+    c.drawImage(below.canvas, 0, below.top, this.w, this.h - below.top);
 
     // Firelight over the baked braziers, so the scene is not dead still.
     var fires = [[0.335, 0.735], [0.715, 0.73], [0.055, 0.70], [0.945, 0.70]];
@@ -908,6 +988,48 @@ window.Ardah = window.Ardah || {};
     var y = this.yAt(z), half = this.halfAt(z), cx = this.w / 2, s = 1 / z;
     var h = Math.max(7, 22 * s);
 
+    var bar = A.assets && A.assets.img('fx_flourish');
+    if (bar) {
+      // The height follows the sprite's own aspect rather than the drawn
+      // version's fixed 22 * s, so the bar's thickness on screen is a property
+      // of the object instead of a number here.
+      var dw = half * 1.92, dh = dw * (bar.height / bar.width);
+      c.save();
+      c.shadowColor = '#FFD978';
+      c.shadowBlur = 16 * s;
+      c.drawImage(bar, cx - dw / 2, y - dh / 2, dw, dh);
+      c.restore();
+
+      /* A glint running the length of it.
+
+         A flourish is the one note the player cannot take with a tap, and
+         nothing about a static bar says "swipe". The highlight travels
+         across, which is the gesture it wants, and it speeds up as the note
+         closes: lead drives the period, so the bar is visibly more urgent in
+         its last half second. */
+      var period = 260 + Math.max(0, Math.min(1, lead / APPROACH_MS)) * 900;
+      var q = (this.tMs % period) / period;
+      var gw = dw * 0.16;
+      var gx = cx - dw / 2 + (dw + gw) * q - gw / 2;
+      var glint = A.assets.img('fx_glow');
+      if (glint) {
+        c.save();
+        c.globalCompositeOperation = 'lighter';
+        c.globalAlpha = 0.55 * Math.sin(Math.PI * q);
+        c.drawImage(glint, gx - gw / 2, y - dh * 1.1, gw * 2, dh * 2.2);
+        c.restore();
+      }
+
+      if (lead < 420) {
+        c.save();
+        c.globalCompositeOperation = 'lighter';
+        c.globalAlpha = 0.16 + 0.20 * Math.sin(lead / 38);
+        c.drawImage(bar, cx - dw / 2, y - dh / 2, dw, dh);
+        c.restore();
+      }
+      return;
+    }
+
     var g = c.createLinearGradient(cx - half, 0, cx + half, 0);
     g.addColorStop(0, 'rgba(30, 138, 85, 0.9)');
     g.addColorStop(0.5, '#FFD978');
@@ -1227,24 +1349,33 @@ window.Ardah = window.Ardah || {};
       c.restore();
       c.globalAlpha = 1;
     }
-    for (i = this.sparks.length - 1; i >= 0; i--) {
-      var s = this.sparks[i];
-      s.x += s.vx * dtMs; s.y += s.vy * dtMs;
-      s.vy += 0.0012 * dtMs;
-      s.life -= dtMs / 620;
-      if (s.life <= 0) { this.sparks.splice(i, 1); continue; }
-      var ember = A.assets && A.assets.img('fx_spark');
-      if (ember) {
-        var es = s.size * 7;
-        c.globalCompositeOperation = 'lighter';
-        c.globalAlpha = Math.max(0, s.life * s.life);
-        c.drawImage(ember, s.x - es / 2, s.y - es / 2, es, es);
-        c.globalCompositeOperation = 'source-over';
-      } else {
-        c.globalAlpha = Math.max(0, s.life);
-        c.fillStyle = s.color;
-        c.fillRect(s.x, s.y, s.size, s.size);
+    /* The ember sprite and the blend mode are hoisted out of the loop.
+
+       A burst can be 26 embers and several bursts overlap, so the inner loop
+       ran well over a hundred canvas state changes a frame -- it set 'lighter'
+       and put it back on every single spark, and looked the image up by name
+       each time. Both are cheap individually and neither belongs in there. */
+    var ember = A.assets && A.assets.img('fx_spark');
+    if (this.sparks.length) {
+      c.save();
+      if (ember) c.globalCompositeOperation = 'lighter';
+      for (i = this.sparks.length - 1; i >= 0; i--) {
+        var s = this.sparks[i];
+        s.x += s.vx * dtMs; s.y += s.vy * dtMs;
+        s.vy += 0.0012 * dtMs;
+        s.life -= dtMs / 620;
+        if (s.life <= 0) { this.sparks.splice(i, 1); continue; }
+        if (ember) {
+          var es = s.size * 7;
+          c.globalAlpha = Math.max(0, s.life * s.life);
+          c.drawImage(ember, s.x - es / 2, s.y - es / 2, es, es);
+        } else {
+          c.globalAlpha = Math.max(0, s.life);
+          c.fillStyle = s.color;
+          c.fillRect(s.x, s.y, s.size, s.size);
+        }
       }
+      c.restore();
     }
     c.globalAlpha = 1;
 

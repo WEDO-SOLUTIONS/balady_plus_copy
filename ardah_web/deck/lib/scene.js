@@ -374,4 +374,65 @@ function flake(i) {
   };
 }
 
-module.exports = { crystal, gem, coin, keycap, shard, chip, flake };
+/* ------------------------------ the flourish ------------------------------ */
+/* The flourish is not a lane note: it spans the whole runway and is taken with
+   a swipe across all three lanes, so its object is a ceremonial bar rather
+   than something you could mistake for a tap.
+
+   It carries the runway's own lozenge lattice with a rosette struck at the
+   centre -- the same vocabulary as the rails, which is what makes it read as
+   part of the stage rather than a UI element dropped onto it. Deliberately NOT
+   the crossed sabres the drawn fallback uses: that arrangement is the state
+   emblem's, and docs/ardah-art-brief.md rules it out.
+
+   Its proportions matter more than usual. js/render.js draws it at
+   halfAt(z) * 1.92 wide, and the height follows this sprite's aspect, so the
+   aspect here IS the bar's thickness on screen. */
+function ridge(d, w) {
+  return 1 - smooth(w * 0.45, w, Math.abs(d));
+}
+
+function flourishRelief(x, z) {
+  const B = 0.36;
+  const zn = Math.max(-1, Math.min(1, z / B));
+  let h = 0.030 * (1 - zn * zn);            // a slight crown across the bar
+
+  if (Math.abs(x) < 0.62) {                 // the struck rosette at the centre
+    h -= 0.032 * smooth(0.014, -0.006, sdStar(x, z, 0.27, 8, 3.0));
+    const r = Math.hypot(x, z);
+    if (r < 0.086) h += 0.017 * smooth(0.086, 0.056, r);
+    return h;
+  }
+
+  // Lozenge chain running out to both ends, mirrored so the two halves match.
+  const P = 0.44;
+  let t = ((Math.abs(x) - 0.62) / P) % 1;
+  if (t < 0) t += 1;
+  const u = z / (B * 0.76);
+  const f = Math.abs(u) / 0.92 + Math.abs(t - 0.5) / 0.46;
+  h -= 0.024 * ridge(f - 1, 0.30);
+  h -= 0.012 * ridge(Math.abs(u) - 0.95, 0.10);   // a rail along each edge
+  return h;
+}
+
+function flourish() {
+  const A = 3.90, B = 0.36, R = 0.30;
+  const TOP = 0.12, BOT = -0.17;
+  const planes = roundRect(64, A, B, R, TOP, BOT, 0, 2);
+  planes.push(...roundChamfer(64, A, B, R, 0.085, TOP, 1));
+  planes.push(...roundChamfer(64, A, B, R, 0.060, BOT, -1));
+  return {
+    name: 'fx_flourish',
+    size: 1024,
+    radius: 4.28,
+    rot: { rx: 52 * DEG, ry: 0, rz: 0 },
+    glow: [1.00, 0.70, 0.20],
+    parts: [{
+      planes,
+      bump: { h: flourishRelief },
+      mat: { type: 'metal', f0: [0.96, 0.535, 0.150], rough: 0.28, spec: 240 },
+    }],
+  };
+}
+
+module.exports = { crystal, gem, coin, keycap, shard, chip, flake, flourish };

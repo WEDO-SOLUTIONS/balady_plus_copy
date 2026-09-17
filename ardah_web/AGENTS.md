@@ -20,7 +20,15 @@ decision it exists to settle: [`docs/ardah-concept.md`](../docs/ardah-concept.md
 - **The backdrop is painted once.** `scene.js` renders the static half (sky,
   fort, bunting, plaza) into an offscreen canvas on resize; only firelight, the
   performers, the drummers and the notes are per-frame work. Adding per-frame
-  drawing to the static half is how this scene stops holding 60 fps.
+  drawing to the static half is how this scene stops holding 60 fps. The same
+  goes for the art path: `_plateBelow` bakes everything under the join, and
+  only the plate image (which breathes) and the firelight are per frame.
+- **Frame cost here is overdraw, not code.** The renderer's whole script cost
+  is about 0.2 ms/frame, so profiling JS will not find a dropped frame. Count
+  full-screen passes instead, and A/B by stubbing one out at a time
+  (`deck/fps.js` plus a page-level monkey-patch). Two plausible fixes for the
+  plate — pre-scaling the image, baking only the floor wash — each measured
+  exactly nothing; collapsing five full-screen passes into one measured 5 fps.
 - **Artwork is optional, always.** `js/assets.js` loads `assets/*.webp` fire and
   forget; every draw call null-checks the image and falls back to the drawn
   version. Never `await` an asset, never let a missing file break a frame, and
