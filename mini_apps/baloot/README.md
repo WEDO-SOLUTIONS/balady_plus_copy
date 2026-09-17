@@ -20,7 +20,7 @@ mini_apps/baloot/
 ```
 
 `baloot-standalone.html` is `index.html` with every image inlined as a data URI
-— one 408 KB file that opens straight from disk with nothing beside it, handy
+— one 398 KB file that opens straight from disk with nothing beside it, handy
 for sending to someone or dropping into a WebView that has no asset directory.
 Rebuild it with `python3 tools/build-standalone.py` after changing `index.html`
 or any asset, otherwise it goes stale. The mini-app bundle should keep using
@@ -35,11 +35,18 @@ caught, and fades the scene's bottom edge into the cloth. Re-run it if the
 source art changes; the pixel offsets in it were measured by hand against the
 937x1679 original.
 
-Both button faces are used as CSS `border-image`, so one file stretches to any
-button width with its corners and bevel intact. The arabesque ships as four
-rotations because a background layer cannot be cropped to one cell of a sprite;
-together they frame the panels. Everything else in the page is still drawn in
-CSS, and the game keeps working (plainer) if the images are missing.
+The two button faces are no longer loaded by the page. They were stretched as
+nine-slice `border-image`, and a border thinner than the slice squeezes the
+corner pieces while the middle band keeps its own gradient, so the seams showed
+as bands across every button and the disabled main button drained to olive. The
+faces are now drawn in CSS from the colours sampled down the middle of those
+same files — a fourteen-stop gradient for the gold one, a dark green face with
+a gold rim for the outline one — which scales to any size without a seam. The
+files stay in the folder as the reference the gradients came from. The
+arabesque ships as four rotations because a background layer cannot be cropped
+to one cell of a sprite; together they frame the panels. Everything else in the
+page is drawn in CSS too, and the game keeps working (plainer) if the images
+are missing.
 
 ## Running it
 
