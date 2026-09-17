@@ -88,6 +88,10 @@
   var Ground = global.DriftGround || { ready: false, draw: noop };
   var Sprites = global.DriftSprites || { ready: false, draw: noop };
 
+  /* Height of each plant on the baked sheet, relative to a rock of the same
+     prop size: tussock, tussock, ghada, ghada, dead, saltbush, thorn bush. */
+  var PLANT_SIZE = [1.55, 1.55, 1.70, 1.70, 1.40, 1.05, 2.30];
+
   var Scene = {
     images: IMG,
     loadImages: loadImages,
@@ -590,18 +594,35 @@
       ctx.fillStyle = g;
       // Over the sand texture this is a stain, not a surface: a packed track
       // is the same sand, darker and smoother, and painting it opaque threw
-      // away the one part of the frame with real grain in it.
-      ctx.globalAlpha = this.floorTextured ? 0.52 : 1;
+      // away the one part of the frame with real grain in it. With the road
+      // texture in as well it drops to a wash that only feathers the edges
+      // and carries the fade into the horizon.
+      ctx.globalAlpha = this.floorTextured ? (Ground.roadReady ? 0.14 : 0.52) : 1;
       ctx.fill();
       ctx.globalAlpha = 1;
       ctx.clip();
+
+      // The baked road: braided ruts worn through the loose sand into the
+      // crust underneath, mapped by the same perspective as the open ground
+      // so the two cannot drift apart.
+      var roadDrawn = this.floorTextured && Ground.drawRoad(ctx, {
+        w: this.w,
+        h: this.h,
+        horizon: this.horizon,
+        dpr: this.dpr,
+        scroll: this.scroll,
+        lateral: lateral,
+        blur: this.speedNorm || 0,
+        dusk: night,
+        tint: mixHex('#FFFFFF', '#6E4A52', 1)
+      });
 
       /* Drag marks running down the road. The photographic sand tile was tried
          here first and had to go: at 264 px stretched across the full width it
          resolved into rectangular patches wherever two slices sampled
          different parts of it. Longitudinal streaks are what a packed sand
          track actually shows at speed, and they stay sharp at any resolution. */
-      var streaks = 16;
+      var streaks = roadDrawn ? 0 : 16;
       for (var st = 0; st < streaks; st++) {
         var sseed = st * 2.11;
         var lane = (hash(sseed) - 0.5) * 1.9;
@@ -628,8 +649,9 @@
       }
 
       /* Two tyre ruts: a scooped shadow with a lit ridge of thrown sand on the
-         outside of each. */
-      for (var side = -1; side <= 1; side += 2) {
+         outside of each. Only when the baked road is missing — it has seven
+         of them, meandering, with tread in the bottom. */
+      for (var side = -1; roadDrawn ? false : side <= 1; side += 2) {
         for (var pass = 0; pass < 2; pass++) {
           ctx.beginPath();
           var started = 0;
@@ -651,7 +673,7 @@
 
       /* Stones and scrub scattered over the surface, scaled and spaced by
          perspective so they rush at the camera with everything else. */
-      var pebbles = 34;
+      var pebbles = roadDrawn ? 0 : 34;
       for (var k = 0; k < pebbles; k++) {
         var seed = k * 1.37;
         var pd = ((hash(seed) + this.scroll * 0.0013) % 1);
@@ -790,8 +812,13 @@
       return {
         d: d, x: x, y: t.y, s: t.s, seed: seed, side: side,
         kind: r > 0.80 ? 2 : (r > 0.44 ? 1 : 0),   // 0 boulder, 1 scrub, 2 stalks
-        // Which cell of the baked sheet: rocks are 0-3, bushes 4-7.
-        sprite: (r > 0.46 ? 4 : 0) + Math.floor(hash(seed + 12.9) * 4) % 4,
+        // Which cell of the baked sheet. Five rocks — three limestone slabs
+        // off the escarpment, two dark ironstone — then seven plants: two
+        // straw tussocks, two ghada shrubs, a dead one, a saltbush and a
+        // thorn bush.
+        sprite: r > 0.46
+          ? 5 + Math.floor(hash(seed + 12.9) * 7) % 7
+          : Math.floor(hash(seed + 12.9) * 5) % 5,
         size: (0.55 + hash(seed + 9.7) * 0.85) * t.s * this.h * 0.20,
         // How far into the haze it still is, measured by apparent size rather
         // than by d: the projection is d^2.35, so equal steps in d are nothing
@@ -837,8 +864,10 @@
     drawSprite: function (o, night, haze) {
       if (!Sprites.ready) return false;
       var ctx = this.ctx;
-      var rock = o.sprite < 4;
-      var height = o.size * (rock ? 1.15 : 1.55);
+      var rock = o.sprite < 5;
+      // A saltbush hugs the ground and a thorn bush stands over head height;
+      // drawing every plant the same size threw that away.
+      var height = o.size * (rock ? 1.15 : PLANT_SIZE[o.sprite - 5]);
 
       // Shadow first: the sprite is cut off at its waterline, so what beds it
       // into the sand is drawn here rather than baked into the sheet, where

@@ -44,8 +44,10 @@ const TIMES = [
 // the dusk end of the run is a multiply over the same texture.
 const SQUARE = [
   { name: 'sand', layer: 4, w: 2048, h: 2048, dusk: 0.0 },
-  // The roadside sprite sheet: four rocks and four dry bushes, 512 px each.
-  { name: 'props', layer: 5, w: 2048, h: 1024, dusk: 0.0 }
+  // The roadside sprite sheet: rocks and desert scrub, 512 px each.
+  { name: 'props', layer: 5, w: 2048, h: 1536, dusk: 0.0 },
+  // The road: the same ground mapping, clipped to the track by the game.
+  { name: 'track', layer: 6, w: 2048, h: 2048, dusk: 0.0 }
 ];
 
 (async () => {

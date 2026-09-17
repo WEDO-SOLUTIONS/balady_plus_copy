@@ -184,6 +184,12 @@ vec4 bakeSky(float u, float v, float dusk) {
   // Aerial haze piling up at the horizon.
   col = mix(col, skyColour(1.0, dusk), smoothstep(0.72, 1.0, v) * 0.72);
 
+  // And the dust in it. The air over the Nefud is never clear at this time of
+  // day: there is always a tan band standing on the horizon, and without it
+  // the sky reads as somewhere much wetter than Arabia.
+  vec3 dustCol = mix(vec3(0.85, 0.72, 0.53), vec3(0.42, 0.25, 0.25), dusk);
+  col = mix(col, dustCol, smoothstep(0.68, 1.0, v) * 0.45);
+
   return vec4(col, 1.0);
 }
 
@@ -262,8 +268,8 @@ vec4 bakeDunes(float u, float v, float dusk) {
     float into = (v - top) / max(0.0001, 1.0 - top);   // 0 crest .. 1 base
     float slope = wfbm(u + 0.0025, seed, radius, 4) - wfbm(u, seed, radius, 4);
 
-    vec3 lit  = mix(vec3(0.96, 0.81, 0.56), vec3(0.52, 0.32, 0.31), dusk);
-    vec3 dark = mix(vec3(0.55, 0.36, 0.20), vec3(0.17, 0.11, 0.14), dusk);
+    vec3 lit  = mix(vec3(0.94, 0.75, 0.50), vec3(0.51, 0.30, 0.30), dusk);
+    vec3 dark = mix(vec3(0.48, 0.28, 0.15), vec3(0.16, 0.10, 0.13), dusk);
 
     // The face has to shade *down* the slope, not just across it: lighting
     // that depended on u alone painted each column a single flat colour.
@@ -350,6 +356,12 @@ float tfbm(vec2 uv, float cells, int octaves) {
   return s;
 }
 
+/* A second hash, on a plain vec2 — used by the track's ruts and by the prop
+   sheet, neither of which needs to tile. */
+float h21(vec2 p) {
+  return fract(sin(dot(p, vec2(41.7, 289.3))) * 43758.5453123);
+}
+
 /* Height of the sand surface at uv, in arbitrary units. Sampled three times
    per pixel so the shading can come from a real gradient rather than from a
    guess about which way the slope faces. */
@@ -397,17 +409,21 @@ vec4 bakeSand(vec2 uv, float dusk) {
   float diff = clamp(dot(nrm, L), 0.0, 1.0);
   float sky = 0.5 + 0.5 * nrm.z;                      // ambient from above
 
-  vec3 lit  = mix(vec3(0.95, 0.80, 0.55), vec3(0.55, 0.34, 0.33), dusk);
-  vec3 mid  = mix(vec3(0.78, 0.58, 0.35), vec3(0.37, 0.23, 0.24), dusk);
-  vec3 dark = mix(vec3(0.46, 0.30, 0.16), vec3(0.16, 0.10, 0.13), dusk);
+  // Nefud red, not Sahara yellow. The quartz here is coated in iron oxide,
+  // which is why Saudi dune fields photograph apricot in the sun and rust in
+  // the shade; the yellow-tan this started as read as a generic desert.
+  vec3 lit  = mix(vec3(0.94, 0.74, 0.50), vec3(0.54, 0.31, 0.30), dusk);
+  vec3 mid  = mix(vec3(0.76, 0.51, 0.29), vec3(0.36, 0.20, 0.21), dusk);
+  vec3 dark = mix(vec3(0.42, 0.23, 0.12), vec3(0.15, 0.09, 0.11), dusk);
 
   vec3 col = mix(dark, mid, sky);
   col = mix(col, lit, diff * 0.85);
 
-  // Colour drift: sand is never one hue over a whole field.
+  // Colour drift: sand is never one hue over a whole field, and the paler
+  // patches are where the wind has stripped the red coating off.
   float tone = tfbm(uv + 0.71, 2.0, 3);
   col *= 0.93 + 0.16 * tone;
-  col = mix(col, col * vec3(1.06, 0.98, 0.88), tfbm(uv + 1.31, 4.0, 3));
+  col = mix(col, col * vec3(1.05, 1.01, 0.94), tfbm(uv + 1.31, 4.0, 3));
 
   // Stones. Two sizes, each on its own wrapped lattice. Every pixel tests the
   // nine cells around it rather than only its own: a stone confined to one
@@ -415,8 +431,8 @@ vec4 bakeSand(vec2 uv, float dusk) {
   // with little grey squares.
   for (int k = 0; k < 2; k++) {
     float cells = k == 0 ? 26.0 : 44.0;
-    float base = k == 0 ? 0.24 : 0.13;
-    float thresh = k == 0 ? 0.90 : 0.945;
+    float base = k == 0 ? 0.20 : 0.10;
+    float thresh = k == 0 ? 0.945 : 0.972;
     vec2 gp = uv * cells;
     vec2 home = floor(gp);
 
@@ -451,19 +467,141 @@ vec4 bakeSand(vec2 uv, float dusk) {
         float stone = smoothstep(1.0, 0.86, dist);
         if (stone <= 0.0) continue;
 
-        vec3 sc = mix(vec3(0.54, 0.43, 0.31), vec3(0.20, 0.14, 0.16), dusk);
-        sc *= 0.70 + 0.80 * thash(cell + 17.0, cells);
+        // Desert pavement is two rocks, not one: chalky limestone spalled
+        // off the escarpment, and dark ironstone blown clean by the wind.
+        float kind = thash(cell + 53.0, cells);
+        vec3 pale = mix(vec3(0.56, 0.50, 0.42), vec3(0.25, 0.19, 0.20), dusk);
+        vec3 iron = mix(vec3(0.30, 0.25, 0.21), vec3(0.11, 0.08, 0.10), dusk);
+        vec3 sc = mix(iron, pale, step(0.42, kind));
+        sc *= 0.82 + 0.36 * thash(cell + 17.0, cells);
         // Curvature in the world frame: the upsun shoulder catches the light,
         // the far side does not, which is all it takes for a disc to read as
         // a pebble sitting on the sand.
+        // The lit shoulder is brightened, not blown out: a gain that ran past
+        // 1.7 turned every pale stone into a golf ball.
         float shade = clamp(0.52 - (raw.x * 0.55 + raw.y * 0.78) / r, 0.0, 1.25);
-        sc *= 0.58 + 1.00 * shade;
+        sc *= 0.70 + 0.54 * shade;
         col = mix(col, sc, stone);
       }
     }
   }
 
   return vec4(col, 1.0);
+}
+
+/* ---------------------------------------------------------------- track
+
+   The road, as a second ground texture tiled the same way as the sand and
+   clipped to the track by the game. A desert track in Saudi is not a road: it
+   is a braid of tyre ruts worn through the loose sand into the crust
+   underneath, so it is paler and smoother than what is either side of it,
+   with the sand it displaced piled along its berms.
+
+   Travel runs along the texture's y axis, so the ruts are constant in y and
+   the tread blocks repeat along it. The band is centred on the tile and fades
+   back into ordinary sand at both edges, because the track is between a half
+   and two thirds of a tile wide depending how far down the frame it is. */
+
+float trackHeight(vec2 uv, out float crust, out float wear) {
+  // The compacted surface itself: the same drift as the open sand, but the
+  // ripples on it have long since been driven flat.
+  float drift = tfbm(uv, 3.0, 4);
+  float h = drift * 0.75;
+  crust = 0.0;
+  wear = 0.0;
+
+  for (int i = 0; i < 7; i++) {
+    float fi = float(i);
+    float x0 = 0.5 + (h21(vec2(fi, 7.3)) - 0.5) * 0.52;
+    // Whole-number wander, so the rut still meets itself at the tile seam.
+    float k1 = 1.0 + floor(h21(vec2(fi, 3.1)) * 2.0);
+    float mean = sin(TAU * k1 * uv.y + fi * 2.1) * 0.016
+               + sin(TAU * 3.0 * uv.y + fi * 5.7) * 0.005;
+    float d = abs(uv.x - x0 - mean);
+    float w = 0.016 + h21(vec2(fi, 11.7)) * 0.013;
+
+    float groove = 1.0 - smoothstep(w * 0.45, w, d);
+    float berm = smoothstep(w, w * 1.5, d) * (1.0 - smoothstep(w * 1.5, w * 2.6, d));
+
+    h += -groove * 0.048 + berm * 0.026;
+    crust = max(crust, groove);
+    wear = max(wear, groove + berm * 0.5);
+  }
+
+  // Tread: blocks across the rut, faint, and only where a tyre actually ran.
+  float blocks = 0.5 + 0.5 * sin(TAU * 96.0 * uv.y + sin(TAU * 8.0 * uv.x) * 0.6);
+  h += (blocks - 0.5) * 0.010 * crust;
+
+  // Loose sand thrown out of the ruts, dragged along the direction of
+  // travel, plus the odd churned patch and the grain underneath it all.
+  float drag = sin(TAU * (37.0 * uv.x + 2.0 * uv.y) + tfbm(uv + 7.1, 6.0, 3) * 12.0);
+  h += drag * 0.010 * (1.0 - crust * 0.6);
+  h += (tfbm(uv + 2.3, 30.0, 3) - 0.5) * 0.024 * (1.0 - crust * 0.7);
+  h += (tfbm(uv + 5.9, 90.0, 2) - 0.5) * 0.050;
+  return h;
+}
+
+vec4 bakeTrack(vec2 uv, float dusk) {
+  float e = 1.0 / uRes.x;
+  float c0, w0, c1, w1, c2, w2;
+  float h = trackHeight(uv, c0, w0);
+  float hx = trackHeight(uv + vec2(e, 0.0), c1, w1);
+  float hy = trackHeight(uv + vec2(0.0, e), c2, w2);
+
+  vec3 nrm = normalize(vec3(-(hx - h) / e * 0.055, -(hy - h) / e * 0.055, 1.0));
+  vec3 L = normalize(vec3(-0.55, -0.78, 0.30));
+  float diff = clamp(dot(nrm, L), 0.0, 1.0);
+  float sky = 0.5 + 0.5 * nrm.z;
+
+  // Driven sand loses its red coat and shows the pale crust underneath, so
+  // the track reads lighter and greyer than the dune it cuts across.
+  vec3 lit  = mix(vec3(0.90, 0.71, 0.48), vec3(0.51, 0.30, 0.29), dusk);
+  vec3 mid  = mix(vec3(0.71, 0.49, 0.28), vec3(0.34, 0.19, 0.20), dusk);
+  vec3 dark = mix(vec3(0.38, 0.22, 0.12), vec3(0.13, 0.08, 0.10), dusk);
+
+  vec3 col = mix(dark, mid, sky);
+  col = mix(col, lit, diff * 0.85);
+
+  // The crust is paler than the dune around it, but only a little: driven
+  // sand is still Nefud sand, and a heavy hand here turned the track into a
+  // concrete strip laid across the desert.
+  vec3 crustCol = mix(vec3(0.74, 0.60, 0.43), vec3(0.35, 0.22, 0.23), dusk);
+  col = mix(col, crustCol, c0 * 0.22);
+  col *= 0.94 + 0.14 * tfbm(uv + 0.71, 2.0, 3);
+
+  // Gravel, shouldered out of the ruts and lying along their edges.
+  for (int k = 0; k < 2; k++) {
+    float cells = k == 0 ? 34.0 : 58.0;
+    float base = k == 0 ? 0.13 : 0.08;
+    float thresh = k == 0 ? 0.955 : 0.976;
+    vec2 gp = uv * cells;
+    vec2 home = floor(gp);
+    for (int oy = -1; oy <= 1; oy++) {
+      for (int ox = -1; ox <= 1; ox++) {
+        vec2 cell = home + vec2(float(ox), float(oy));
+        if (thash(cell + float(k) * 13.0, cells) <= thresh) continue;
+        vec2 at = cell + vec2(thash(cell + 3.0, cells), thash(cell + 9.0, cells));
+        float r = base * (0.55 + thash(cell + 5.0, cells) * 0.85);
+        vec2 raw = gp - at;
+        float sh = smoothstep(r * 2.0, r * 0.7, length(raw - vec2(0.55, 0.80) * r));
+        col *= 1.0 - sh * 0.26;
+        float stone = smoothstep(1.0, 0.85, length(raw) / r);
+        if (stone <= 0.0) continue;
+        vec3 sc = mix(mix(vec3(0.27, 0.22, 0.18), vec3(0.58, 0.52, 0.43),
+                          step(0.45, thash(cell + 53.0, cells))),
+                      vec3(0.12, 0.09, 0.10), dusk);
+        sc *= 0.82 + 0.36 * thash(cell + 17.0, cells);
+        sc *= 0.70 + 0.54 * clamp(0.52 - (raw.x * 0.55 + raw.y * 0.78) / r, 0.0, 1.25);
+        col = mix(col, sc, stone);
+      }
+    }
+  }
+
+  // Back to plain sand at the edges of the tile: the clip the game applies is
+  // never exactly this wide, and a hard end to the ruts would show.
+  float band = smoothstep(0.02, 0.17, 0.5 - abs(uv.x - 0.5));
+  vec4 open = bakeSand(uv, dusk);
+  return vec4(mix(open.rgb, col, band), 1.0);
 }
 
 /* ---------------------------------------------------------------- props
@@ -478,22 +616,30 @@ vec4 bakeSand(vec2 uv, float dusk) {
    both are cut off at their waterline so the game can bed them into the sand
    with its own contact shadow. */
 
-float h21(vec2 p) {
-  return fract(sin(dot(p, vec2(41.7, 289.3))) * 43758.5453123);
-}
 
 /* Height of a rock at p (0..1 inside its cell), 0 outside it. Sampled three
-   times per pixel: the shading is a real gradient, not a guess. */
-float rockHeight(vec2 p, float seed, out float mask) {
-  vec2 q = (p - vec2(0.5, 0.635)) / vec2(0.415, 0.315);
+   times per pixel: the shading is a real gradient, not a guess.
+
+   Two geologies, because the ground here has two. The Tuwaiq escarpment sheds
+   pale limestone, which weathers into flat, layered, angular slabs; the harrat
+   lava fields to the west shed ironstone, which weathers round and dark. Mixed
+   together on a gravel plain, they are half of what makes a Saudi desert floor
+   look like itself. */
+float rockHeight(vec2 p, float seed, float slab, out float mask) {
+  // Per-rock proportions, or the three limestone slabs come out as one rock
+  // drawn three times.
+  float wide = 0.34 + h21(vec2(seed, 5.0)) * 0.14;
+  float tall = (0.26 + h21(vec2(seed, 9.0)) * 0.12) - slab * 0.07;
+  vec2 q = (p - vec2(0.5, 0.635)) / vec2(wide, tall);
   float ang = atan(q.y, q.x);
 
   // A rounded polygon, not a cloud: the radius is constant across each of
   // seven sectors and eased across the corners, with a little harmonic noise
-  // on top. Sines alone gave blobs that read as dough.
+  // on top. Sines alone gave blobs that read as dough. Limestone keeps its
+  // corners; ironstone rounds them off.
   float sect = (ang / TAU + 0.5) * 7.0;
   float si = floor(sect);
-  float sf = smoothstep(0.62, 1.0, fract(sect));
+  float sf = smoothstep(0.62 - slab * 0.45, 1.0, fract(sect));
   float ra = 0.80 + h21(vec2(mod(si, 7.0), seed)) * 0.34;
   float rb = 0.80 + h21(vec2(mod(si + 1.0, 7.0), seed)) * 0.34;
   float lump = mix(ra, rb, sf)
@@ -506,45 +652,63 @@ float rockHeight(vec2 p, float seed, out float mask) {
 
   // A dome, roughened by two scales of noise and creased by a ridged one.
   // Heights are in the same units as p, so the gradient below is a real
-  // slope: the first version scaled it down by fifty and shaded every rock
-  // flat.
+  // slope: scaling it down by fifty shaded every rock flat.
   float dome = sqrt(max(0.0, 1.0 - r * r));
   float bump = tfbm(p * 0.9 + seed, 4.0, 4) - 0.5;
   float crack = 1.0 - abs(tfbm(p * 1.3 + seed * 2.0, 7.0, 3) * 2.0 - 1.0);
-  return dome * 0.34 + bump * 0.020 - pow(crack, 4.0) * 0.016;
+
+  // Bedding planes: the horizontal steps that say sedimentary rock.
+  float beds = slab * 0.022 * (fract(p.y * 7.0 + tfbm(p, 3.0, 3) * 0.6) - 0.5);
+
+  return dome * (0.34 - slab * 0.10) + bump * 0.020 - pow(crack, 4.0) * 0.016 + beds;
+}
+
+/* The crevices again, as colour rather than as height: a shadow in a crack
+   does not come back out. */
+float rockCrevice(vec2 p, float seed) {
+  float crack = 1.0 - abs(tfbm(p * 1.3 + seed * 2.0, 7.0, 3) * 2.0 - 1.0);
+  return pow(crack, 4.0);
 }
 
 vec4 rockSprite(vec2 p, float id, float dusk) {
   float seed = 3.1 + id * 7.37;
+  float lime = id < 3.0 ? 1.0 : 0.0;          // limestone slab or ironstone
   float e = 1.0 / 512.0;
   float m, mx, my;
-  float h = rockHeight(p, seed, m);
+  float h = rockHeight(p, seed, lime, m);
   if (m <= 0.0) return vec4(0.0);
-  float hx = rockHeight(p + vec2(e, 0.0), seed, mx);
-  float hy = rockHeight(p + vec2(0.0, e), seed, my);
+  float hx = rockHeight(p + vec2(e, 0.0), seed, lime, mx);
+  float hy = rockHeight(p + vec2(0.0, e), seed, lime, my);
 
   vec3 nrm = normalize(vec3(-(hx - h) / e, -(hy - h) / e, 1.0));
   vec3 L = normalize(vec3(-0.58, -0.72, 0.38));
   float diff = clamp(dot(nrm, L), 0.0, 1.0);
   float sky = 0.5 + 0.5 * nrm.z;
 
-  vec3 lit  = mix(vec3(0.78, 0.68, 0.54), vec3(0.36, 0.25, 0.27), dusk);
-  vec3 mid  = mix(vec3(0.44, 0.36, 0.28), vec3(0.18, 0.13, 0.15), dusk);
-  vec3 dark = mix(vec3(0.18, 0.14, 0.11), vec3(0.06, 0.05, 0.07), dusk);
+  vec3 lit  = mix(mix(vec3(0.58, 0.51, 0.43), vec3(0.70, 0.65, 0.54), lime),
+                  vec3(0.32, 0.22, 0.24), dusk);
+  vec3 mid  = mix(mix(vec3(0.33, 0.28, 0.24), vec3(0.48, 0.44, 0.36), lime),
+                  vec3(0.16, 0.11, 0.13), dusk);
+  vec3 dark = mix(mix(vec3(0.13, 0.11, 0.10), vec3(0.19, 0.17, 0.14), lime),
+                  vec3(0.05, 0.04, 0.05), dusk);
 
-  vec3 col = mix(dark, mid, sky);
-  col = mix(col, lit, diff * 0.9);
+  // Weighted towards the diffuse term: an ambient-heavy mix lit every face
+  // of the rock about equally, which is what made them read as bread rolls.
+  vec3 col = mix(dark, mid, sky * 0.78);
+  col = mix(col, lit, pow(diff, 1.35) * 1.05);
 
-  // Mineral streaks and a dusting of the sand it sits in.
+  // Mineral streaks, plus the red dust that gets into everything out here.
   float grain = tfbm(p * 2.0 + seed * 3.0, 14.0, 3);
   col *= 0.86 + 0.28 * grain;
   float dust = smoothstep(0.55, 0.95, nrm.z) * smoothstep(0.35, 0.05, p.y);
-  col = mix(col, mix(vec3(0.80, 0.66, 0.45), vec3(0.34, 0.22, 0.24), dusk), dust * 0.28);
+  col = mix(col, mix(vec3(0.74, 0.54, 0.34), vec3(0.32, 0.20, 0.22), dusk), dust * 0.30);
+
+  col *= 1.0 - rockCrevice(p, seed) * 0.35;
 
   // Bedded into the sand: the last tenth fades out rather than ending on a
-  // line, and darkens where the sand piles against it.
+  // line, and the whole lower third falls away into its own shadow.
   float bed = smoothstep(0.96, 0.90, p.y);
-  col *= 1.0 - smoothstep(0.86, 0.94, p.y) * 0.35;
+  col *= 1.0 - smoothstep(0.62, 0.94, p.y) * 0.42;
   return vec4(col, m * bed);
 }
 
@@ -555,87 +719,163 @@ float segDist(vec2 p, vec2 a, vec2 b) {
   return length(pa - ba * t);
 }
 
-/* Where stem fi of a bush ends up. Shared so the seed heads can sit on the
-   stems that carry them instead of floating over the clump. */
-vec2 stemTip(float fi, float seed) {
+/* Where stem fi of a plant ends up, given its spread and length. Shared so
+   the seed heads and leaves can sit on the stems that carry them. */
+vec2 stemTip(float fi, float seed, float spread, float len0, float len1) {
   float r1 = h21(vec2(fi, seed));
   float r2 = h21(vec2(fi + 31.0, seed));
   float r3 = h21(vec2(fi + 67.0, seed));
   float r4 = h21(vec2(fi + 97.0, seed));
   vec2 root = vec2(0.5 + (r4 - 0.5) * 0.13, 0.95 - r3 * 0.03);
-  float ang = -1.5708 + (r1 - 0.5) * 1.45;
-  float len = 0.22 + r2 * 0.34 - abs(r1 - 0.5) * 0.14;
+  float ang = -1.5708 + (r1 - 0.5) * spread;
+  float len = len0 + r2 * len1 - abs(r1 - 0.5) * len1 * 0.4;
   vec2 dir = vec2(cos(ang), sin(ang));
   vec2 tip = root + dir * len;
   vec2 side = vec2(-dir.y, dir.x) * (r1 - 0.5) * len * 0.55;
   return tip + vec2(side.x * 0.5, len * 0.10 * r2);
 }
 
-vec4 bushSprite(vec2 p, float id, float dusk) {
-  float seed = 17.0 + id * 11.13;
+/* The plants beside a Saudi track, as seven sprites:
+
+   0,1  thumam / arfaj — straw tussocks, the commonest thing on a gravel plain
+   2,3  ghada / arta   — dense shrubs of thin grey-green whips, no leaves
+   4    a dead one     — bleached twigs, which is half of what is out there
+   5    a saltbush     — a low grey-green mound of tiny leaves
+   6    a thorn bush   — a short trunk under a flat, dark canopy
+
+   All of them are built from the same stems, with the numbers and the palette
+   doing the work. */
+vec4 plantSprite(vec2 p, float k, float dusk) {
+  float seed = 17.0 + k * 11.13;
+  int kind = int(k + 0.5);
+
+  float spread = 1.45;
+  float len0 = 0.22, len1 = 0.34;
+  float wRoot = 0.0065, wTip = 0.0012;
+  float heads = 9.0, headR = 0.011;
+  vec3 tipCol = vec3(0.84, 0.74, 0.46);
+  vec3 rootCol = vec3(0.31, 0.29, 0.14);
+  vec3 headCol = vec3(0.78, 0.68, 0.40);
+  float stems = 38.0;
+  float trunk = 0.0;
+
+  if (kind == 2 || kind == 3) {               // ghada: whips, no seed heads
+    spread = 1.50; len0 = 0.24; len1 = 0.38;
+    wRoot = 0.0042; wTip = 0.0013;
+    heads = 0.0; stems = 56.0;
+    tipCol = vec3(0.47, 0.49, 0.34);
+    rootCol = vec3(0.25, 0.23, 0.16);
+  } else if (kind == 4) {                     // dead: sparse, bleached, stiff
+    spread = 2.20; len0 = 0.18; len1 = 0.30;
+    wRoot = 0.0070; wTip = 0.0020;
+    heads = 0.0; stems = 22.0;
+    tipCol = vec3(0.70, 0.63, 0.51);
+    rootCol = vec3(0.33, 0.28, 0.21);
+  } else if (kind == 5) {                     // saltbush: a low leafy mound
+    spread = 2.40; len0 = 0.10; len1 = 0.17;
+    wRoot = 0.0055; wTip = 0.0020;
+    heads = 30.0; headR = 0.020; stems = 30.0;
+    tipCol = vec3(0.41, 0.43, 0.29);
+    rootCol = vec3(0.24, 0.23, 0.16);
+    headCol = vec3(0.42, 0.44, 0.29);
+  } else if (kind == 6) {                     // thorn bush over a short trunk
+    spread = 1.60; len0 = 0.26; len1 = 0.22;
+    wRoot = 0.0085; wTip = 0.0020;
+    heads = 20.0; headR = 0.019; stems = 20.0;
+    tipCol = vec3(0.38, 0.36, 0.25);
+    rootCol = vec3(0.23, 0.19, 0.13);
+    headCol = vec3(0.32, 0.36, 0.24);
+    trunk = 1.0;
+  }
+
+  tipCol = mix(tipCol, vec3(0.35, 0.25, 0.27), dusk);
+  rootCol = mix(rootCol, vec3(0.11, 0.10, 0.11), dusk);
+  headCol = mix(headCol, vec3(0.28, 0.22, 0.23), dusk);
 
   float alpha = 0.0;
   vec3 col = vec3(0.0);
   float best = 1e9;
 
-  for (int i = 0; i < 38; i++) {
+  if (trunk > 0.5) {
+    float d = segDist(p, vec2(0.5, 0.97), vec2(0.5 + 0.02, 0.70));
+    float a = 1.0 - smoothstep(0.013, 0.021, d);
+    if (a > 0.0) {
+      col = mix(rootCol, tipCol, 0.3) * (0.8 + 0.5 * smoothstep(0.021, 0.010, d));
+      alpha = max(alpha, a);
+      best = d;
+    }
+  }
+
+  for (int i = 0; i < 56; i++) {
     float fi = float(i);
+    if (fi >= stems) break;
     float r1 = h21(vec2(fi, seed));
     float r2 = h21(vec2(fi + 31.0, seed));
     float r3 = h21(vec2(fi + 67.0, seed));
     float r4 = h21(vec2(fi + 97.0, seed));
 
-    // Branches leave a short root line rather than a single point, and lean
-    // out no further than forty degrees: a full fan made a starburst.
     vec2 root = vec2(0.5 + (r4 - 0.5) * 0.13, 0.95 - r3 * 0.03);
-    float ang = -1.5708 + (r1 - 0.5) * 1.45;
-    float len = 0.22 + r2 * 0.34 - abs(r1 - 0.5) * 0.14;
+    if (trunk > 0.5) root = vec2(0.5 + 0.02, 0.70 + (r3 - 0.5) * 0.04);
+
+    float ang = -1.5708 + (r1 - 0.5) * spread;
+    float len = len0 + r2 * len1 - abs(r1 - 0.5) * len1 * 0.4;
     vec2 dir = vec2(cos(ang), sin(ang));
     vec2 tip = root + dir * len;
-
-    // Arc: the middle bows away from the straight line, and the tip droops,
-    // which is what a dry shrub does under its own weight.
     vec2 side = vec2(-dir.y, dir.x) * (r1 - 0.5) * len * 0.55;
     vec2 mid = mix(root, tip, 0.5) + side;
     tip += vec2(side.x * 0.5, len * 0.10 * r2);
 
     float d = min(segDist(p, root, mid), segDist(p, mid, tip));
     float along = clamp((root.y - p.y) / max(0.02, root.y - tip.y), 0.0, 1.0);
-    float wide = mix(0.0065, 0.0012, along) * (0.7 + r2 * 0.7);
+    float wide = mix(wRoot, wTip, along) * (0.7 + r2 * 0.7);
     float a = 1.0 - smoothstep(wide * 0.55, wide * 1.45, d);
-    if (a <= 0.0) continue;
 
-    vec3 tipCol = mix(vec3(0.84, 0.74, 0.46), vec3(0.35, 0.25, 0.27), dusk);
-    vec3 rootCol = mix(vec3(0.31, 0.29, 0.14), vec3(0.11, 0.10, 0.11), dusk);
-    vec3 c = mix(rootCol, tipCol, along * (0.55 + 0.6 * r2));
-    c *= 0.74 + 0.42 * r1 + 0.22 * r4;          // some branches catch the sun
+    if (a > 0.0) {
+      vec3 c = mix(rootCol, tipCol, along * (0.55 + 0.6 * r2));
+      c *= 0.74 + 0.42 * r1 + 0.22 * r4;        // some branches catch the sun
+      if (d < best) { best = d; col = c; }
+      alpha = max(alpha, a);
+    }
 
-    if (d < best) { best = d; col = c; }
-    alpha = max(alpha, a);
-  }
+    // Seed heads on the tussocks, leaf clusters on the bushes — placed on
+    // this stem rather than computed separately, which is how the first
+    // version ended up with foliage floating beside the plant. This has to
+    // run whether or not the pixel is on the stem itself, or a leaf is only
+    // ever drawn where a twig already is.
+    if (heads <= 0.0) continue;
+    float every = max(1.0, floor(stems / heads));
+    if (mod(fi, every) > 0.5) continue;
 
-  // Seed heads, each one on the tip of a stem.
-  for (int k = 0; k < 9; k++) {
-    float fk = float(k);
-    vec2 at = stemTip(fk * 4.0 + 1.0, seed);
-    float rr = 0.011 + h21(vec2(fk + 41.0, seed)) * 0.012;
-    float d = length((p - at) / vec2(1.0, 1.7)) / rr;
-    float a = 1.0 - smoothstep(0.70, 1.0, d);
-    if (a <= 0.0) continue;
-    vec3 c = mix(vec3(0.78, 0.68, 0.40), vec3(0.30, 0.22, 0.23), dusk);
-    c *= 0.78 + 0.45 * clamp(1.0 - d, 0.0, 1.0);
-    col = mix(col, c, a);
-    alpha = max(alpha, a);
+    for (int j = 0; j < 4; j++) {
+      float fj = float(j);
+      // Several small ones per stem, jittered and overlapping. Two big ones
+      // apiece read as a bunch of grapes; the mass has to come from the
+      // number of them, not the size.
+      if (fj > 0.5 && heads < 12.0) break;
+      vec2 at = mix(mid, tip, 0.25 + fj * 0.25);
+      at += (vec2(h21(vec2(fi + fj * 5.0, seed + 3.0)),
+                  h21(vec2(fi + fj * 5.0, seed + 9.0))) - 0.5) * headR * 2.4;
+      float rr = headR * (0.55 + h21(vec2(fi + 41.0 + fj, seed)) * 0.6);
+      float squash = heads > 12.0 ? (0.75 + h21(vec2(fi + fj, seed + 2.0)) * 0.8) : 1.7;
+      float dh = length((p - at) / vec2(1.0, squash)) / rr;
+      float ah = 1.0 - smoothstep(0.30, 1.0, dh);
+      if (ah <= 0.0) continue;
+      vec3 hc = headCol * (0.78 + 0.44 * clamp(1.0 - dh, 0.0, 1.0));
+      hc *= 0.84 + 0.34 * h21(vec2(fi + 7.0 + fj, seed));
+      col = mix(col, hc, ah);
+      alpha = max(alpha, ah);
+    }
   }
 
   return vec4(col, alpha);
 }
 
 vec4 bakeProps(vec2 uv, float dusk) {
-  vec2 cell = vec2(floor(uv.x * 4.0), floor(uv.y * 2.0));
-  vec2 p = vec2(fract(uv.x * 4.0), fract(uv.y * 2.0));
+  // Four columns, three rows: five rocks then seven plants.
+  vec2 cell = vec2(floor(uv.x * 4.0), floor(uv.y * 3.0));
+  vec2 p = vec2(fract(uv.x * 4.0), fract(uv.y * 3.0));
   float id = cell.y * 4.0 + cell.x;
-  return id < 4.0 ? rockSprite(p, id, dusk) : bushSprite(p, id - 4.0, dusk);
+  return id < 5.0 ? rockSprite(p, id, dusk) : plantSprite(p, id - 5.0, dusk);
 }
 
 /* ------------------------------------------------------------------ main */
@@ -649,19 +889,23 @@ vec4 plate(float u, float v, float dusk) {
   if (uLayer == 0) {
     outc = bakeSky(u, v, dusk);
   } else if (uLayer == 1) {
+    // Tuwaiq limestone: the escarpment that runs past Riyadh is pale
+    // cream-grey and flat-topped, not the red of the sand in front of it.
     outc = bakeRange(u, v, dusk, 3.0, 2.6, 0.62, 0.42,
-                     mix(vec3(0.64, 0.49, 0.38), vec3(0.24, 0.17, 0.25), dusk),
-                     mix(vec3(0.40, 0.29, 0.25), vec3(0.13, 0.09, 0.16), dusk));
+                     mix(vec3(0.76, 0.70, 0.58), vec3(0.26, 0.19, 0.26), dusk),
+                     mix(vec3(0.48, 0.43, 0.36), vec3(0.14, 0.10, 0.16), dusk));
   } else if (uLayer == 2) {
     outc = bakeRange(u, v, dusk, 17.0, 1.7, 0.55, 0.10,
-                     mix(vec3(0.74, 0.55, 0.38), vec3(0.28, 0.18, 0.22), dusk),
-                     mix(vec3(0.38, 0.26, 0.21), vec3(0.10, 0.07, 0.12), dusk));
+                     mix(vec3(0.82, 0.76, 0.63), vec3(0.30, 0.20, 0.24), dusk),
+                     mix(vec3(0.46, 0.40, 0.33), vec3(0.11, 0.08, 0.13), dusk));
   } else if (uLayer == 3) {
     outc = bakeDunes(u, v, dusk);
   } else if (uLayer == 4) {
     outc = bakeSand(vec2(u, v), dusk);
-  } else {
+  } else if (uLayer == 5) {
     outc = bakeProps(vec2(u, v), dusk);
+  } else {
+    outc = bakeTrack(vec2(u, v), dusk);
   }
   return outc;
 }

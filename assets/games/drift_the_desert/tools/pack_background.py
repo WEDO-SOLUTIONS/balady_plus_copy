@@ -140,15 +140,17 @@ def main():
             'heights': base64.b64encode(bytes(heights)).decode('ascii')
         }
 
-    # The ground texture: square, tiled in both axes, no silhouette to store.
-    src = BG / 'sand.png'
-    if src.is_file():
+    # The ground textures: square, tiled in both axes, no silhouette to store.
+    for name in ('sand', 'track'):
+        src = BG / f'{name}.png'
+        if not src.is_file():
+            continue
         im = Image.open(src).convert('RGB')
-        dst = BG / 'sand.jpg'
+        dst = BG / f'{name}.jpg'
         im.save(dst, quality=Q_SAND, optimize=True, progressive=True, subsampling=0)
         total += dst.stat().st_size
         print(f'  {dst.name:18} {im.width}x{im.height} {dst.stat().st_size / 1024:8.1f} KB')
-        manifest['plates']['sand'] = {'size': [im.width, im.height]}
+        manifest['plates'][name] = {'size': [im.width, im.height]}
 
     # The roadside sprite sheet keeps its alpha, so it stays a PNG: splitting
     # it into a JPEG plus a mask would need getImageData to recombine, and a
@@ -159,7 +161,8 @@ def main():
         im.save(src, optimize=True)
         total += src.stat().st_size
         print(f'  {src.name:18} {im.width}x{im.height} {src.stat().st_size / 1024:8.1f} KB')
-        manifest['plates']['props'] = {'size': [im.width, im.height], 'grid': [4, 2]}
+        manifest['plates']['props'] = {'size': [im.width, im.height],
+                                       'grid': [4, im.height // (im.width // 4)]}
 
     out = ROOT / 'js' / 'plates.js'
     out.write_text(

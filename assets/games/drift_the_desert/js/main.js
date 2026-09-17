@@ -533,7 +533,10 @@
     // optional: without it the floor stays painted.
     var groundLoaded = 0;
     if (global.DriftGround) {
-      global.DriftGround.load('img/bg/sand.jpg', function () { groundLoaded = 1; });
+      global.DriftGround.load({
+        sand: 'img/bg/sand.jpg',
+        road: 'img/bg/track.jpg'
+      }, function () { groundLoaded = 1; });
     } else {
       groundLoaded = 1;
     }

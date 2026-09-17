@@ -235,9 +235,9 @@ Three things make the result cheap to ship and to draw:
 
 The floor is the one surface the player stares at for a whole run, and a
 gradient with lines drawn on it was never going to pass for sand. So the
-bake also produces a square, tileable sand texture — ripples, grain, drift,
-pebbles, all lit from one low sun — and `js/ground.js` maps it onto the
-ground plane in perspective (`tools/bake_background.html`, layer 4).
+bake also produces two square, tileable ground textures — the open sand and
+the track — and `js/ground.js` maps them onto the ground plane in perspective
+(`tools/bake_background.html`, layers 4 and 6).
 
 The mapping is the standard one for a pinhole camera looking at a plane: with
 `t` running 0 at the horizon to 1 at the bottom of the frame, depth goes as
@@ -258,12 +258,24 @@ pattern fill under its own transform. Three details carry it:
   at the bottom of it, and leaving them sharp was the last thing making the
   floor read as a texture rather than as ground going past.
 
-The texture is baked at golden hour only — a second one would double both the
-download and the fills — so the evening is a multiply over the same sand,
-band by band, fading out with the same ramp so it never spills onto the
-plates above. The track is drawn over it at half opacity: a packed track is
-the same sand, darker and smoother, and painting it opaque threw away the one
-part of the frame with real grain in it.
+The textures are baked at golden hour only — a second set would double both
+the download and the fills — so the evening is a multiply over the same sand,
+band by band, fading out with the same ramp so it never spills onto the plates
+above.
+
+The **track** is the same mapping again, run a second time inside the clip the
+game has already set to the road, with the tile centred on the track's centre
+line rather than on the frame so the baked ruts stay under the wheels. A
+desert track in Saudi is not a road: it is a braid of tyre ruts worn through
+the loose sand into the crust underneath, so the texture is seven meandering
+grooves with tread in the bottom of them, berms of thrown sand along their
+edges, gravel shouldered out to the sides, and drag streaks running with the
+traffic. It is paler and smoother than the dune it cuts across, but only a
+little — a heavier hand turned it into a concrete strip laid across the
+desert. The band fades back into ordinary sand at the edges of the tile,
+because the clip is never exactly a tile wide. Over the top of it the painted
+track is down to a 14% wash that only feathers the edges and carries the fade
+into the horizon.
 
 Three more passes sit on the floor, all of them live because they have to
 move with the car rather than slide sideways under parallax:
@@ -273,9 +285,9 @@ move with the car rather than slide sideways under parallax:
   tracks on both sides, lit along one crest and in shadow along the other.
   That is painted as light rather than built as geometry, which keeps the
   texture underneath.
-- **Roadside props** — rocks and dry bushes from a second baked sheet
-  (`img/bg/props.png`, four of each at 512 px) — streaming out of the horizon
-  along both shoulders and swelling as they pass. The plates give depth but no
+- **Roadside props** — from a second baked sheet (`img/bg/props.png`, twelve
+  cells of 512 px) — streaming out of the horizon along both shoulders and
+  swelling as they pass. The plates give depth but no
   speed; these are what sell how fast the car is going. Each fades into the
   horizon haze weighted by apparent size rather than by depth, since the
   projection is `d^2.35`. Haze and dusk are a flat-coloured copy of the sheet
@@ -301,6 +313,31 @@ the plates alone managed 29–43 and the live shader before them 21–39. The
 textured floor accounts for about five of those frames and the sprite sheet
 for two; both are a fraction of a millisecond of fill on a GPU-composited
 WebView, which is what the game actually runs on.
+
+## Making it Saudi
+
+The first version of all this was a generic desert: Sahara-yellow sand,
+red-brown rock, green tussocks. Arabia is specific, and most of the specifics
+are cheap to honour:
+
+- **The sand is red.** Nefud and Rub' al Khali quartz is coated in iron oxide,
+  which is why the dunes photograph apricot in the sun and rust in the shade.
+  The ground texture, the dune plates and the track all share that palette;
+  the paler patches in it are where the wind has stripped the coating off.
+- **The escarpment is limestone.** The buttes on the horizon are Tuwaiq, the
+  cliff that runs past Riyadh: pale cream-grey, flat-topped, bedded in
+  horizontal strata. They are the one thing in the frame that is not warm.
+- **The gravel is two rocks.** Desert pavement out here is chalky limestone
+  spalled off that escarpment together with dark ironstone blown clean by the
+  wind, so both the ground texture and the prop sheet carry the pair of them —
+  three limestone slabs, flat and angular, and two rounded ironstone boulders.
+- **The plants are the local ones.** Seven of them: two straw tussocks
+  (thumam, arfaj), two grey-green whip shrubs (ghada, arta), a bleached dead
+  one, a low saltbush mound, and a thorn bush on a short trunk. All of them
+  are grey-green or straw, never the green of somewhere it rains.
+- **The air is dusty.** There is always a tan band standing on the horizon at
+  this time of day, and without it the sky read as somewhere much wetter than
+  Arabia.
 
 ## How the game works
 
