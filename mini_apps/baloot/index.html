@@ -76,6 +76,7 @@ button{font:inherit;color:inherit;border:0;background:none;cursor:pointer}
   background-image:
     url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='46' height='46' viewBox='0 0 46 46'%3E%3Cg fill='none' stroke='%23ffd489' stroke-width='.9' opacity='.075'%3E%3Crect x='13.5' y='13.5' width='19' height='19'/%3E%3Cpath d='M23 9.5 36.5 23 23 36.5 9.5 23Z'/%3E%3C/g%3E%3C/svg%3E");
   background-size:46px 46px;
+  background-position:calc(var(--tilt,0) * -14px) 0;
   -webkit-mask-image:linear-gradient(180deg,transparent 4%,#000 14%,#000 52%,transparent 66%);
           mask-image:linear-gradient(180deg,transparent 4%,#000 14%,#000 52%,transparent 66%);
 }
@@ -89,6 +90,7 @@ button{font:inherit;color:inherit;border:0;background:none;cursor:pointer}
   position:relative;z-index:8;
   display:flex;justify-content:center;
   padding:2px 10px 0;
+  transform:translateX(calc(var(--tilt,0) * -5px));
 }
 .crest-plaque{
   position:relative;
@@ -119,6 +121,7 @@ html[dir="ltr"] .crest-title{text-transform:uppercase}
   position:relative;z-index:7;
   display:flex;align-items:flex-start;gap:8px;
   padding:9px 12px 4px;
+  transform:translateX(calc(var(--tilt,0) * -3px));
 }
 .st-side{
   flex:1 1 0;min-width:0;
@@ -177,9 +180,10 @@ html[dir="ltr"] .st-deal{text-transform:uppercase}
    into the cloth where the trick is played. A drawn fallback keeps the page
    sane if the image is missing.
    ------------------------------------------------------------------ */
+/* --tilt runs -1..1; the scene pans inside its own crop, so nothing reflows */
 #board{
   position:absolute;top:0;left:0;right:0;height:56%;
-  background:center 42%/cover no-repeat url("room.webp");
+  background:calc(50% + var(--tilt,0) * 26%) 42%/cover no-repeat url("room.webp");
   pointer-events:none;
 }
 #board::after{                       /* seat the scene into the cloth */
@@ -194,7 +198,8 @@ html[dir="ltr"] .st-deal{text-transform:uppercase}
    pool per lamp in the picture, each breathing on its own cycle, plus a few
    embers rising through them.
    ------------------------------------------------------------------ */
-.amb{position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:1}
+.amb{position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:1;
+     transform:translateX(var(--scene-shift,0px))}
 .amb .lamp{
   position:absolute;left:var(--x);top:var(--y);
   width:var(--r);aspect-ratio:1;transform:translate(-50%,-50%);
@@ -246,9 +251,36 @@ html[dir="ltr"] .st-deal{text-transform:uppercase}
   .amb .mote{display:none}
 }
 
+/* ---------- tilt pad: the desktop stand-in for the gyroscope ---------- */
+#tiltpad{
+  position:absolute;top:7px;inset-inline-start:7px;z-index:9;
+  display:flex;gap:5px;
+  padding:4px;border-radius:999px;
+  background:linear-gradient(180deg,rgba(6,32,20,.72),rgba(3,18,11,.78));
+  border:1px solid rgba(240,207,114,.34);
+  box-shadow:0 3px 10px rgba(0,0,0,.45);
+  backdrop-filter:blur(6px);
+}
+.tilt-btn{
+  width:28px;height:28px;border-radius:50%;
+  display:grid;place-items:center;
+  font-size:17px;font-weight:900;line-height:1;
+  color:var(--gold);
+  background:rgba(255,255,255,.05);
+  border:1px solid rgba(240,207,114,.3);
+  transition:transform .1s,background .12s,border-color .12s;
+}
+.tilt-btn:active,.tilt-btn.held{
+  background:rgba(240,207,114,.85);color:#20160a;
+  border-color:var(--gold-hi);transform:scale(.94);
+}
+#tiltpad.gyro{border-color:rgba(53,251,125,.5)}
+@media (prefers-reduced-motion:reduce){ #tiltpad{display:none} }
+
 /* ---------- seat plates, pinned to the painted players ---------- */
 .seat{
-  position:absolute;z-index:5;transform:translate(-50%,-50%);
+  position:absolute;z-index:5;
+  transform:translate(-50%,-50%) translateX(var(--scene-shift,0px));
   display:flex;flex-direction:column;align-items:center;gap:3px;
   pointer-events:none;
 }
@@ -790,6 +822,10 @@ html[dir="ltr"] .rail-btn{text-transform:uppercase}
   </div>
 
   <div id="felt">
+    <div id="tiltpad">
+      <button class="tilt-btn" id="tilt-l" aria-label="tilt left">‹</button>
+      <button class="tilt-btn" id="tilt-r" aria-label="tilt right">›</button>
+    </div>
     <div id="board">
       <div class="seat" data-pos="north" id="seat-n"></div>
       <div class="seat" data-pos="west"  id="seat-w"></div>
@@ -2515,6 +2551,93 @@ window.addEventListener("keydown", e => {
     ["#m-menu","#m-friends","#m-rules"].forEach(id => UI.hide(id));
   }
 });
+
+/* ============================================================
+   Parallax
+   ------------------------------------------------------------
+   The scene pans inside its own crop while the wall lattice and the chrome
+   drift the other way. On a phone a device-orientation reading drives it; on
+   a desktop the two arrows in the corner, or the 1 and 2 keys, stand in.
+   ============================================================ */
+const Tilt = (() => {
+  const root = document.documentElement;
+  const reduced = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  let target = 0, current = 0, manual = 0, gyro = 0, live = false, raf = 0;
+
+  const PAN = 0.26;                 // share of the crop the scene travels, matches the CSS
+  let overflow = 0;                 // px of picture hidden either side of the board
+  function measure(){
+    const b = $("#board");
+    if (!b) return;
+    const w = b.clientWidth, h = b.clientHeight;
+    if (!w || !h) return;
+    const scale = Math.max(w / 880, h / 553);   // background-size: cover
+    overflow = Math.max(0, 880 * scale - w);
+  }
+  window.addEventListener("resize", () => { measure(); kick(); });
+
+  function frame(){
+    const want = manual !== 0 ? manual : gyro;
+    target = Math.max(-1, Math.min(1, want));
+    current += (target - current) * 0.12;
+    if (Math.abs(current - target) < 0.0015) current = target;
+    root.style.setProperty("--tilt", current.toFixed(4));
+    // the picture slides the other way from the position percentage
+    root.style.setProperty("--scene-shift", (-current * PAN * overflow).toFixed(2) + "px");
+    raf = (current !== target) ? requestAnimationFrame(frame) : 0;
+  }
+  const kick = () => { if (!overflow) measure(); if (!raf && !reduced) raf = requestAnimationFrame(frame); };
+
+  /* ---- the desktop stand-in ---- */
+  function hold(dir, on){
+    manual = on ? dir : (manual === dir ? 0 : manual);
+    $("#tilt-l").classList.toggle("held", manual < 0);
+    $("#tilt-r").classList.toggle("held", manual > 0);
+    kick();
+  }
+
+  /* ---- the real thing ---- */
+  function onOrientation(e){
+    if (e.gamma == null) return;
+    // gamma is the left-right tilt in degrees; a quarter turn is plenty of travel
+    gyro = Math.max(-1, Math.min(1, e.gamma / 26));
+    if (!live){ live = true; $("#tiltpad").classList.add("gyro"); }
+    kick();
+  }
+  function enableGyro(){
+    if (live || reduced) return;
+    const DOE = window.DeviceOrientationEvent;
+    if (!DOE) return;
+    if (typeof DOE.requestPermission === "function"){
+      // iOS only grants this from inside a user gesture
+      DOE.requestPermission().then(r => {
+        if (r === "granted") window.addEventListener("deviceorientation", onOrientation);
+      }).catch(() => {});
+    } else {
+      window.addEventListener("deviceorientation", onOrientation);
+    }
+  }
+
+  return { hold, enableGyro, measure, get live(){ return live; } };
+})();
+
+(function bindTilt(){
+  const pad = [["#tilt-l", -1], ["#tilt-r", 1]];
+  for (const [sel, dir] of pad){
+    const b = $(sel);
+    b.addEventListener("pointerdown", e => { e.preventDefault(); Tilt.enableGyro(); Tilt.hold(dir, true); });
+    for (const ev of ["pointerup", "pointerleave", "pointercancel"])
+      b.addEventListener(ev, () => Tilt.hold(dir, false));
+  }
+  const KEY = { "1": -1, "2": 1 };
+  window.addEventListener("keydown", e => {
+    if (e.repeat || !(e.key in KEY)) return;
+    Tilt.hold(KEY[e.key], true);
+  });
+  window.addEventListener("keyup", e => { if (e.key in KEY) Tilt.hold(KEY[e.key], false); });
+  // Android reports orientation without asking; iOS waits for the first tap above
+  Tilt.enableGyro();
+})();
 
 /* ---- lantern pools, measured off the scene, and the embers between them ---- */
 (function ambience(){

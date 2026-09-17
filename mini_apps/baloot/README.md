@@ -93,6 +93,23 @@ Hints are a real suggestion: the bubble and the rail button both name the card
 the bots would play from your seat, and the rail button plays it. They can be
 turned off in the settings sheet.
 
+## Parallax
+
+The scene pans inside its own crop while the wall lattice and the header drift
+the other way, which reads as depth without anything reflowing. On a phone a
+`deviceorientation` reading drives it — Android starts listening straight away,
+iOS asks for permission on the first press of the tilt pad. On a desktop the two
+arrows in the corner of the table, or the `1` and `2` keys, stand in: hold to
+tilt, release and it springs back.
+
+Seat plates and lantern glows are pinned to things painted in the picture, so
+they travel with it: the pan distance is recomputed from the board's real
+geometry (`background-size: cover` over an 880 × 553 image) and published as
+`--scene-shift`. `prefers-reduced-motion` turns the whole thing off and hides
+the pad.
+
+## Light
+
 The scene is a still photograph, so the light is added over it: one warm pool
 per lamp in the picture, each breathing on its own cycle, a handful of embers
 rising through them, and a slow highlight wandering across the cloth. The lamp
