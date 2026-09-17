@@ -13,6 +13,20 @@
   function lerp(a, b, t) { return a + (b - a) * t; }
   function rand(a, b) { return a + Math.random() * (b - a); }
 
+  /** `rgb(...)` with an alpha, for gradient stops that need to fade out. */
+  function rgba(rgbString, alpha) {
+    return rgbString.replace('rgb(', 'rgba(').replace(')', ',' + alpha + ')');
+  }
+
+  /** Blend two #rrggbb colours — used to walk the palette into dusk. */
+  function mixHex(a, b, t) {
+    var ai = parseInt(a.slice(1), 16), bi = parseInt(b.slice(1), 16);
+    var r = Math.round(lerp((ai >> 16) & 255, (bi >> 16) & 255, t));
+    var g = Math.round(lerp((ai >> 8) & 255, (bi >> 8) & 255, t));
+    var bl = Math.round(lerp(ai & 255, bi & 255, t));
+    return 'rgb(' + r + ',' + g + ',' + bl + ')';
+  }
+
   /* Deterministic pseudo-random so the terrain silhouette is stable between
      frames without storing every vertex. */
   function hash(n) {
@@ -55,6 +69,8 @@
     dpr: 1,
 
     horizon: 0,
+    /** true while the WebGL layer draws sky, mesas and dunes for us. */
+    glBackground: false,
     scroll: 0,
     time: 0,
     shake: 0,
@@ -82,7 +98,8 @@
       this.canvas.width = Math.round(w * this.dpr);
       this.canvas.height = Math.round(h * this.dpr);
       this.ctx.setTransform(this.dpr, 0, 0, this.dpr, 0, 0);
-      this.horizon = Math.round(h * 0.44);
+      this.baseHorizon = Math.round(h * 0.44);
+      this.horizon = this.baseHorizon;
       this._sky = null; // gradients are cached per size
     },
 
@@ -134,6 +151,7 @@
     /* -------------------------------------------------------------- sky */
 
     drawSky: function () {
+      if (this.glBackground) return;
       var ctx = this.ctx;
       var sky = IMG.sky;
 
@@ -204,6 +222,7 @@
     /* ------------------------------------------------------------ mesas */
 
     drawMesas: function () {
+      if (this.glBackground) return;
       var ctx = this.ctx;
 
       var warm = this.ctx.createLinearGradient(0, this.horizon - this.h * 0.20, 0, this.horizon + this.h * 0.03);
@@ -291,21 +310,22 @@
 
     /* ------------------------------------------------------------ dunes */
 
-    drawGround: function () {
+    drawGround: function (dusk) {
+      if (this.glBackground) return;
       var ctx = this.ctx;
-      var g = ctx.createLinearGradient(0, this.horizon - 6, 0, this.h);
-      g.addColorStop(0.00, '#EBC694');
-      g.addColorStop(0.18, '#D9A874');
-      g.addColorStop(0.58, '#BC8552');
-      g.addColorStop(1.00, '#8E5C32');
-      ctx.fillStyle = g;
-      ctx.fillRect(0, this.horizon - 6, this.w, this.h - this.horizon + 6);
+      var night = clamp(dusk || 0, 0, 1);
 
-      var blend = ctx.createLinearGradient(0, this.horizon - 10, 0, this.horizon + this.h * 0.05);
-      blend.addColorStop(0, 'rgba(238, 205, 160, 0.75)');
-      blend.addColorStop(1, 'rgba(238, 205, 160, 0)');
-      ctx.fillStyle = blend;
-      ctx.fillRect(0, this.horizon - 10, this.w, this.h * 0.06);
+      // The gradient starts transparent well above the horizon so the ground
+      // dissolves into the ridge instead of butting against it with an edge.
+      var top = this.horizon - this.h * 0.05;
+      var g = ctx.createLinearGradient(0, top, 0, this.h);
+      g.addColorStop(0.00, rgba(mixHex('#EBC694', '#6B4A48', night), 0));
+      g.addColorStop(0.07, rgba(mixHex('#EBC694', '#6B4A48', night), 1));
+      g.addColorStop(0.24, mixHex('#D9A874', '#553A38', night));
+      g.addColorStop(0.60, mixHex('#BC8552', '#3B2724', night));
+      g.addColorStop(1.00, mixHex('#8E5C32', '#241816', night));
+      ctx.fillStyle = g;
+      ctx.fillRect(0, top, this.w, this.h - top);
 
       // Two dune ridges rolling towards the camera.
       var ridges = [
@@ -335,8 +355,9 @@
 
     /* ------------------------------------------------------------ track */
 
-    drawTrack: function (lateral) {
+    drawTrack: function (lateral, dusk) {
       var ctx = this.ctx;
+      var night = clamp(dusk || 0, 0, 1);
       var cx = this.w * 0.5 - lateral * this.w * 0.06;
       var nearW = this.w * 0.95;
       var farW = this.w * 0.055;
@@ -352,9 +373,9 @@
       ctx.lineTo(this.w * 0.5 - nearW / 2, nearY);
       ctx.closePath();
       var g = ctx.createLinearGradient(0, farY, 0, nearY);
-      g.addColorStop(0, '#C09566');
-      g.addColorStop(0.45, '#A87B4B');
-      g.addColorStop(1, '#7E552C');
+      g.addColorStop(0, mixHex('#C09566', '#6A4740', night));
+      g.addColorStop(0.45, mixHex('#A87B4B', '#4B3128', night));
+      g.addColorStop(1, mixHex('#7E552C', '#2E1E18', night));
       ctx.fillStyle = g;
       ctx.fill();
       ctx.clip();
@@ -405,13 +426,25 @@
         ctx.lineWidth = 4;
         ctx.stroke();
       }
+
+      // Dissolve the far end of the track into whatever draws the dunes. This
+      // has to happen while the trapezoid is still clipped, or it would erase
+      // the terrain behind it too.
+      var fadeTo = this.project(0.14).y;
+      var fade = ctx.createLinearGradient(0, farY - 2, 0, fadeTo);
+      fade.addColorStop(0, 'rgba(0, 0, 0, 1)');
+      fade.addColorStop(1, 'rgba(0, 0, 0, 0)');
+      ctx.globalCompositeOperation = 'destination-out';
+      ctx.fillStyle = fade;
+      ctx.fillRect(0, farY - 2, this.w, fadeTo - farY + 2);
+      ctx.globalCompositeOperation = 'source-over';
       ctx.restore();
 
       // Soft shoulders where the track meets loose sand.
       ctx.save();
       var edge = ctx.createLinearGradient(0, farY, 0, nearY);
       edge.addColorStop(0, 'rgba(255, 226, 180, 0)');
-      edge.addColorStop(1, 'rgba(255, 226, 180, 0.35)');
+      edge.addColorStop(1, 'rgba(255, 226, 180, ' + (0.35 * (1 - night * 0.7)).toFixed(3) + ')');
       ctx.strokeStyle = edge;
       ctx.lineWidth = 8;
       ctx.beginPath();
@@ -710,13 +743,14 @@
       if (this.particles.length > 220) this.particles.splice(0, this.particles.length - 220);
     },
 
-    drawParticles: function () {
+    drawParticles: function (dusk) {
       var ctx = this.ctx;
       var i;
+      var lightFade = 1 - clamp(dusk || 0, 0, 1) * 0.55;
       ctx.save();
       for (i = 0; i < this.particles.length; i++) {
         var p = this.particles[i];
-        var a = clamp(p.life, 0, 1) * 0.16;
+        var a = clamp(p.life, 0, 1) * 0.16 * lightFade;
         ctx.fillStyle = p.tint
           ? 'rgba(230, 140, 100, ' + (a * 1.1).toFixed(3) + ')'
           : 'rgba(224, 186, 136, ' + (a * 1.15).toFixed(3) + ')';
@@ -742,6 +776,12 @@
       this.time += dt;
       this.scroll += (state.speed || 0) * dt;
 
+      var dusk = clamp(state.dusk || 0, 0, 1);
+      var speedNorm = clamp(((state.speed || 0) - 240) / 460, 0, 1);
+
+      // The camera sits lower as the car picks up speed, so the horizon rises.
+      this.horizon = Math.round(this.baseHorizon - speedNorm * this.h * 0.022);
+
       this.stepParticles(dt);
 
       ctx.setTransform(this.dpr, 0, 0, this.dpr, 0, 0);
@@ -756,8 +796,8 @@
 
       this.drawSky();
       this.drawMesas();
-      this.drawGround();
-      this.drawTrack(state.tilt || 0);
+      this.drawGround(dusk);
+      this.drawTrack(state.tilt || 0, dusk);
 
       // Coins approaching from the horizon.
       var coins = state.coins || [];
@@ -777,7 +817,8 @@
       if (state.running) {
         this.addDust(carX + rand(-0.6, 0.6) * carSize, carY + carSize * 0.26, 1, state.danger > 0.5 ? 1 : 0);
       }
-      this.drawParticles();
+      this.drawParticles(dusk);
+      this.drawHeadlights(carX, carY, carSize, state.tilt || 0, dusk);
 
       this.drawCar(
         carX,
@@ -790,13 +831,15 @@
 
       // Speed streaks at the edges, stronger the faster you go.
       this.drawSpeedLines(state.speed || 0);
+      this.drawGroundRush(state.speed || 0, dusk);
 
-      // Heat haze / warm grade over everything.
-      var grade = ctx.createLinearGradient(0, 0, 0, this.h);
+      // Warm grade over the gameplay layer. The shader already applies its own
+      // vignette, so this only tints the track and the actors when it is on.
+      var grade = ctx.createLinearGradient(0, this.glBackground ? this.horizon : 0, 0, this.h);
       grade.addColorStop(0, 'rgba(255, 190, 120, 0.05)');
-      grade.addColorStop(1, 'rgba(120, 60, 20, 0.16)');
+      grade.addColorStop(1, dusk > 0.5 ? 'rgba(40, 20, 40, 0.34)' : 'rgba(120, 60, 20, 0.16)');
       ctx.fillStyle = grade;
-      ctx.fillRect(0, 0, this.w, this.h);
+      ctx.fillRect(0, this.glBackground ? this.horizon : 0, this.w, this.h);
 
       if (this.flash > 0.002) {
         ctx.fillStyle = 'rgba(255, 255, 255, ' + (this.flash * 0.55).toFixed(3) + ')';
@@ -805,6 +848,83 @@
       }
 
       ctx.setTransform(this.dpr, 0, 0, this.dpr, 0, 0);
+    },
+
+    /** Near-field smear plus wind-blown grains: the camera is low and fast,
+        so the closest sand should not read as a crisp texture. */
+    drawGroundRush: function (speed, dusk) {
+      var ctx = this.ctx;
+      var intensity = clamp((speed - 220) / 460, 0, 1);
+      if (intensity <= 0.02) return;
+
+      ctx.save();
+      ctx.globalCompositeOperation = 'lighter';
+      ctx.globalAlpha = intensity * 0.10;
+      var warm = dusk > 0.5 ? 'rgba(255, 170, 120, 1)' : 'rgba(255, 224, 176, 1)';
+      for (var i = 0; i < 16; i++) {
+        var seed = (this.time * (1.6 + (i % 5) * 0.5) + i * 0.13) % 1;
+        var d = 0.55 + seed * 0.5;
+        var p = this.project(Math.min(d, 1));
+        var len = 30 + seed * 150 * intensity;
+        var x = this.w * (hash(i * 3.7) * 1.4 - 0.2);
+        ctx.strokeStyle = warm;
+        ctx.lineWidth = 1 + seed * 2.5;
+        ctx.beginPath();
+        ctx.moveTo(x, p.y);
+        ctx.lineTo(x + (x - this.w * 0.5) * 0.06, p.y + len);
+        ctx.stroke();
+      }
+      ctx.restore();
+
+      // A veil of dust hugging the bottom of the frame.
+      ctx.save();
+      ctx.globalAlpha = intensity * 0.22;
+      var veil = ctx.createLinearGradient(0, this.h * 0.82, 0, this.h);
+      veil.addColorStop(0, 'rgba(226, 190, 140, 0)');
+      veil.addColorStop(1, dusk > 0.5 ? 'rgba(150, 96, 70, 0.9)' : 'rgba(228, 194, 146, 0.9)');
+      ctx.fillStyle = veil;
+      ctx.fillRect(0, this.h * 0.82, this.w, this.h * 0.18);
+      ctx.restore();
+    },
+
+    /** Beams thrown down the track once the sun is low. */
+    drawHeadlights: function (cx, cy, size, tilt, dusk) {
+      if (dusk < 0.28) return;
+      var ctx = this.ctx;
+      var power = (dusk - 0.28) / 0.72;
+
+      ctx.save();
+      ctx.globalCompositeOperation = 'lighter';
+
+      // The pool of light on the sand ahead of the car.
+      var top = cy + size * 0.02;
+      var bottom = this.h * 1.02;
+      var beam = ctx.createLinearGradient(0, top, 0, bottom);
+      beam.addColorStop(0, 'rgba(255, 238, 198, ' + (0.26 * power).toFixed(3) + ')');
+      beam.addColorStop(0.45, 'rgba(255, 216, 150, ' + (0.11 * power).toFixed(3) + ')');
+      beam.addColorStop(1, 'rgba(255, 200, 120, 0)');
+      ctx.fillStyle = beam;
+      ctx.beginPath();
+      ctx.moveTo(cx - size * 0.26 + tilt * size * 0.10, top);
+      ctx.lineTo(cx + size * 0.26 + tilt * size * 0.10, top);
+      ctx.lineTo(cx + size * 0.95, bottom);
+      ctx.lineTo(cx - size * 0.95, bottom);
+      ctx.closePath();
+      ctx.fill();
+
+      // A tight flare on each lamp itself.
+      for (var s = -1; s <= 1; s += 2) {
+        var lx = cx + s * size * 0.19 + tilt * size * 0.10;
+        var ly = cy - size * 0.03;
+        var g = ctx.createRadialGradient(lx, ly, 1, lx, ly, size * 0.17);
+        g.addColorStop(0, 'rgba(255, 249, 226, ' + (0.55 * power).toFixed(3) + ')');
+        g.addColorStop(1, 'rgba(255, 210, 130, 0)');
+        ctx.fillStyle = g;
+        ctx.beginPath();
+        ctx.arc(lx, ly, size * 0.17, 0, TAU);
+        ctx.fill();
+      }
+      ctx.restore();
     },
 
     drawSpeedLines: function (speed) {

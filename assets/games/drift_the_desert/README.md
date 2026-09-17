@@ -97,7 +97,8 @@ before load, or append `?lang=ar` to the asset URL.
 | `js/i18n.js`    | EN/AR strings, `dir` switching |
 | `js/bridge.js`  | Host detection, events out, `localStorage` persistence with a memory fallback |
 | `js/audio.js`   | Procedural engine loop, taps, coins, combo, crash — no audio assets |
-| `js/scene.js`   | Canvas renderer: sky, mesas, dunes, perspective track, the car, dust, coins |
+| `js/skygl.js`   | WebGL background: sky, sun, clouds, mesas, dunes, shimmer |
+| `js/scene.js`   | Canvas renderer: perspective track, the car, dust, coins, FX (and the 2D background when the shader is off) |
 | `js/game.js`    | Rules only, no DOM: balance physics, scoring, combo, coins, run lifecycle |
 | `js/main.js`    | Screen flow, HUD bindings, FX layer, input |
 | `img/`          | Artwork cut out of the mockup |
@@ -139,6 +140,48 @@ scroll behind them.
 Every image is optional at runtime: `js/scene.js` keeps its vector car, drawn
 coin, gradient sky and generated mesas as fallbacks, so a missing or
 slow-loading file degrades instead of leaving a blank frame.
+
+## The background
+
+Two stacked canvases. `#glscene` runs a single fragment shader — sky gradient,
+sun bloom, drifting fBm clouds, two ranges of flat-topped buttes, three dune
+ranges with lit crests, heat shimmer over the horizon and the aerial haze that
+ties them together. `#scene` sits on top and draws only the track and the
+actors, so the gameplay layer never had to change. Neither canvas carries a
+`z-index`: they paint in DOM order, and the HUD, which comes after them, stays
+above both.
+
+The run also walks through the evening. A `dusk` value goes 0 → 1 across the
+sixty seconds and drives both layers at once: the shader's palette slides from
+golden hour into a red-violet dusk and drops the sun behind the mesas, while
+the canvas darkens the track, dims its shoulders and the dust, and switches on
+the headlights — a beam down the sand plus a flare on each lamp.
+
+Speed is sold by more than the scrolling texture: the horizon lifts slightly,
+the shader's vignette and shimmer tighten, and the canvas adds edge streaks, a
+near-field smear and a veil of dust along the bottom of the frame.
+
+### Keeping it safe on a weak GPU
+
+A shader background is a luxury, so it is built to get out of the way:
+
+- **It is optional.** If the context will not create, the shader will not
+  compile or the context is lost mid-session, `DriftSky` disables itself and
+  `js/scene.js` goes back to drawing its own photographic sky, mesas and dunes.
+  That path is exercised in review by stubbing out `getContext('webgl')`.
+- **It under-renders.** The layer is all gradients and noise, so it draws at a
+  fraction of the device resolution and lets the compositor upscale it. That
+  is the only lever that matters for fill rate, and the quality ladder walks
+  down it: 0.50 → 0.36 → 0.26 of CSS pixels.
+- **It measures itself.** `DriftSky.observe()` watches the real frame time and
+  steps the ladder down when a 60-frame average goes over 26 ms; if the lowest
+  tier still runs over 38 ms it falls back to the 2D scene entirely. Only
+  downgrades are applied, so it cannot oscillate.
+
+Under Chromium's software rasteriser — a reasonable stand-in for a poor mobile
+GPU — the layer starts at ~21 fps, settles at ~39 fps after two downgrades, and
+the 2D fallback runs at ~51 fps. On real hardware it should stay on the top
+tier.
 
 ## How the game works
 
