@@ -12,6 +12,7 @@ mini_apps/baloot/
   btn-gold.webp              the primary button face, emptied of its label
   btn-outline.webp           the outlined button face, emptied of its label
   corner-{tl,tr,bl,br}.webp  the gold arabesque, one file per corner
+  ardah.mp3                  optional: an Ardah recording to loop instead of the synthesised drums
   baloot-standalone.html     the same game as one file, assets inlined
   tools/extract-assets.py    re-cuts the images from the source mock-up
   tools/build-standalone.py  folds the images into the single-file build
@@ -19,7 +20,7 @@ mini_apps/baloot/
 ```
 
 `baloot-standalone.html` is `index.html` with every image inlined as a data URI
-— one 405 KB file that opens straight from disk with nothing beside it, handy
+— one 415 KB file that opens straight from disk with nothing beside it, handy
 for sending to someone or dropping into a WebView that has no asset directory.
 Rebuild it with `python3 tools/build-standalone.py` after changing `index.html`
 or any asset, otherwise it goes stale. The mini-app bundle should keep using
@@ -47,6 +48,7 @@ CSS, and the game keeps working (plainer) if the images are missing.
 | Browser | open `index.html`, or `baloot-standalone.html` for a single file |
 | Self-check | open `index.html?test=1` — 64 rules assertions, results in the console and a toast |
 | Deep link into a room | `index.html?room=UY9ED8` |
+| Full screen | the ⛶ button beside the table, or the `F` key |
 | Mini-app | ship the folder as a mini-app bundle; `CustomInAppLocalhostServer` serves `index.html` from the bundle's document root (see `lib/mini_apps_engine/`) |
 
 Arabic (RTL) is the default, English is selectable in the settings sheet;
@@ -132,6 +134,33 @@ automatically rather than declared before the second card and shown on it; the
 bots are forced to buy in the second round where a human may pass and force a
 redeal; and a kaboot pays 44/25 whatever the multiplier, following ٧-٧ literally
 rather than pagat's doubled 88/50.
+
+## On a phone, and on everything else
+
+The game is shaped for a phone and fills the window on one. On anything wider
+than 640px the window becomes the room instead: the majlis is thrown out of
+focus behind a vignette and the table is centred in it at phone proportions
+(`--app-w`, capped at 452px and at the window's height ÷ 2.1), framed like a
+handset. Modals, toasts and the card size follow that column rather than the
+glass — every `vw` in the stylesheet goes through `--vw`, which is one percent
+of the column, so a hand of cards is never stretched across sixteen hundred
+pixels. The ⛶ button in the corner, or the `F` key, takes the page full screen.
+
+## Sound
+
+Two layers, both generated in the page: short blips for cards, bids and tricks,
+and the **Ardah** rhythm (العرضة السعودية) under the game — the deep تخمير on
+the downbeat, the tighter طار answering it, and the hands of the row between
+them, at 76 BPM. The drums are synthesised with WebAudio rather than sampled,
+so the file still runs offline with nothing licensed inside it. A kaboot, a
+قهوة and the end of a match get a flourish: a roll that tightens into two hits.
+The drums start on the tap that starts the game (browsers will not play audio
+before one), stop when the tab is hidden, and have their own switch in the
+settings sheet.
+
+To use a real recording instead, drop `ardah.mp3` (or `.m4a` / `.ogg`) next to
+`index.html`: the page prefers it and loops it, and `tools/build-standalone.py`
+folds it into the single-file build as a data URI. Nothing else changes.
 
 ## Look
 

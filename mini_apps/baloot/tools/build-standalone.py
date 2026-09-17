@@ -40,6 +40,14 @@ def sub(m):
 
 html = re.sub(r'url\((["\']?)([^"\')]+\.(?:webp|png|jpg|jpeg|svg))\1\)', sub, html)
 
+# an Ardah recording, if the folder carries one: the page reads it from
+# ARDAH_SRC, so the single-file build gets it as a data URI
+for audio in ("ardah.mp3", "ardah.m4a", "ardah.ogg"):
+    if (HERE / audio).exists():
+        html = html.replace('const ARDAH_SRC = "ardah.mp3";',
+                            'const ARDAH_SRC = "%s";' % datauri(audio), 1)
+        break
+
 html = html.replace(
     "<title>", "<!-- built by tools/build-standalone.py: assets inlined -->\n<title>", 1)
 DST.write_text(html, encoding="utf-8")

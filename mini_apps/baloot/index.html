@@ -33,12 +33,18 @@
   --red:#cf2434;
   --ok:#3fae6d;
   --warn:#e0913a;
-  --card-w:clamp(64px, 16.4vw, 94px);
+  --card-w:clamp(64px, calc(16.4 * var(--vw)), 94px);
   --card-h:calc(var(--card-w) * 1.42);
   --radius:14px;
   --shadow:0 10px 26px rgba(0,0,0,.42);
   --safe-b:env(safe-area-inset-bottom,0px);
   --safe-t:env(safe-area-inset-top,0px);
+  /* one percent of the playing column. On a phone that is the window; on a
+     desktop the column is narrower than the window, so everything sized in
+     it has to follow the column and not the glass. */
+  --vw:1vw;
+  /* named once so the single-file build carries the picture only once */
+  --room-img:url("room.webp");
 }
 
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -103,7 +109,7 @@ button{font:inherit;color:inherit;border:0;background:none;cursor:pointer}
 .crest-title{
   position:absolute;top:62%;left:50%;transform:translate(-50%,-50%);
   width:71%;text-align:center;
-  font-size:clamp(13px,3.8vw,19px);font-weight:900;letter-spacing:.04em;
+  font-size:clamp(13px,calc(3.8 * var(--vw)),19px);font-weight:900;letter-spacing:.04em;
   background:linear-gradient(180deg,var(--gold-hi) 0%,var(--gold) 46%,#c79a40 100%);
   -webkit-background-clip:text;background-clip:text;color:transparent;
   text-shadow:0 2px 4px rgba(0,0,0,.4);
@@ -135,13 +141,13 @@ html[dir="ltr"] .st-side{text-transform:uppercase}
 .st-side.end{display:flex;justify-content:flex-end;padding-top:0}
 .st-mid{flex:0 0 auto;text-align:center;line-height:1.25}
 .st-deal{
-  font-size:clamp(12px,3.4vw,15px);font-weight:800;letter-spacing:.05em;
+  font-size:clamp(12px,calc(3.4 * var(--vw)),15px);font-weight:800;letter-spacing:.05em;
   color:var(--cream);text-shadow:0 2px 6px rgba(0,0,0,.8);
 }
 html[dir="ltr"] .st-deal{text-transform:uppercase}
 .st-deal i{opacity:.55;font-style:normal;margin:0 3px}
 .st-score{
-  font-size:clamp(15px,4.6vw,21px);font-weight:900;margin-top:1px;
+  font-size:clamp(15px,calc(4.6 * var(--vw)),21px);font-weight:900;margin-top:1px;
   text-shadow:0 2px 7px rgba(0,0,0,.85);
   font-variant-numeric:tabular-nums;
 }
@@ -198,7 +204,7 @@ html[dir="ltr"] .st-deal{text-transform:uppercase}
 /* --tilt runs -1..1; the scene pans inside its own crop, so nothing reflows */
 #board{
   position:absolute;top:0;left:0;right:0;height:64%;
-  background:url("room.webp") no-repeat calc(50% + var(--scene-pan,0px)) 42%;
+  background:var(--room-img) no-repeat calc(50% + var(--scene-pan,0px)) 42%;
   background-size:var(--scene-w,cover) var(--scene-h,auto);
   pointer-events:none;
 }
@@ -414,7 +420,7 @@ html[dir="ltr"] .st-deal{text-transform:uppercase}
 }
 /* the trump (or the sun) breathes faintly in the middle of the felt */
 #trumpmark{
-  font-size:min(38vw,168px);line-height:1;opacity:0;
+  font-size:min(calc(38 * var(--vw)),168px);line-height:1;opacity:0;
   color:#fff;text-shadow:0 0 40px rgba(0,0,0,.35);
   transition:opacity .6s;
 }
@@ -617,7 +623,7 @@ html[dir="ltr"] .rail-btn{text-transform:uppercase}
   border-image-source:url("btn-gold.webp");
   border-image-slice:26 fill;
   color:#2a1a05;text-shadow:0 1px 0 rgba(255,255,255,.4);
-  overflow:hidden;white-space:nowrap;
+  padding-inline:12px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;
 }
 .rail-btn.sq{flex:0 0 auto;width:58px;font-size:17px}
 .rail-btn.out{flex:0 0 auto;min-width:74px;font-size:15px}
@@ -653,7 +659,7 @@ html[dir="ltr"] .rail-btn{text-transform:uppercase}
 /* ---------- toast ---------- */
 #toast{
   position:fixed;top:calc(var(--safe-t) + 27vh);
-  left:50%;transform:translateX(-50%);max-width:88vw;
+  left:50%;transform:translateX(-50%);max-width:calc(88 * var(--vw));
   z-index:40;display:flex;flex-direction:column;gap:6px;align-items:center;pointer-events:none;
 }
 .toast{
@@ -841,11 +847,60 @@ html[dir="ltr"] .rail-btn{text-transform:uppercase}
 .divider{height:1px;margin:16px 0;
   background:linear-gradient(90deg,transparent,rgba(226,187,100,.35),transparent)}
 
+/* the full-screen switch, desktop only */
+#btn-full{
+  display:none;position:fixed;z-index:60;top:16px;right:16px;
+  width:40px;height:40px;border-radius:12px;place-items:center;
+  background:rgba(8,32,25,.72);border:1px solid rgba(226,187,100,.34);
+  color:var(--gold);font-size:16px;line-height:1;
+  backdrop-filter:blur(6px);transition:background .15s ease,transform .15s ease;
+}
+#btn-full:hover{background:rgba(14,58,42,.92);transform:scale(1.06)}
+
+/* ---------- a big screen ----------
+   The game is shaped for a phone, so on a desktop the window becomes the
+   room and the table is centred inside it at phone proportions, instead of
+   stretching a hand of cards across sixteen hundred pixels.
+   ------------------------------------------------------------------ */
+@media (min-width:640px) and (min-height:520px){
+  :root{
+    --app-w:min(452px, calc((100vh - 36px) / 2.1));
+    --app-h:calc(var(--app-w) * 2.1);
+    --vw:calc(var(--app-w) / 100);
+  }
+  body{background:#04100b}
+  body::before{                       /* the majlis, thrown out of focus */
+    content:"";position:fixed;inset:-60px;z-index:0;
+    background:#050d0a center/cover no-repeat var(--room-img);
+    filter:blur(30px) brightness(.28) saturate(.78);
+  }
+  body::after{
+    content:"";position:fixed;inset:0;z-index:0;pointer-events:none;
+    background:radial-gradient(ellipse 62% 60% at 50% 46%, rgba(0,0,0,.15) 22%, rgba(0,0,0,.86) 100%);
+  }
+  #table, .scrim{
+    left:50%;right:auto;top:50%;bottom:auto;
+    width:var(--app-w);height:var(--app-h);
+    transform:translate(-50%,-50%);
+    border-radius:32px;
+  }
+  #table{
+    overflow:hidden;
+    box-shadow:0 44px 90px rgba(0,0,0,.62),
+               0 0 0 1px rgba(226,187,100,.22),
+               0 0 0 10px rgba(5,16,11,.94),
+               0 0 0 11px rgba(226,187,100,.13);
+  }
+  .panel{max-height:calc(var(--app-h) * .86)}
+  #toast{top:calc(50% - var(--app-h) * .23)}
+  #btn-full{display:grid}
+}
+
 @media (max-height:660px){
-  :root{--card-w:clamp(52px,13vw,68px)}
+  :root{--card-w:clamp(52px,calc(13 * var(--vw)),68px)}
   #board{height:58%}
   .avatar{width:36px;height:36px;font-size:15px}
-  #trick{width:min(52vw,196px);height:min(52vw,196px)}
+  #trick{width:min(calc(52 * var(--vw)),196px);height:min(calc(52 * var(--vw)),196px)}
 }
 </style>
 </head>
@@ -904,6 +959,7 @@ html[dir="ltr"] .rail-btn{text-transform:uppercase}
 </div>
 
 <div id="toast"></div>
+<button id="btn-full" aria-label="full screen" title="Full screen">⛶</button>
 
 <!-- ====================== MODALS ====================== -->
 <div class="scrim" id="m-lobby" hidden><div class="panel" id="lobby-body"></div></div>
@@ -936,6 +992,7 @@ const I18N = {
     trickWon:"أخذها",
     projSra:"سرا", proj50:"خمسين", proj100:"مية", proj400:"أربعمية", projBaloot:"بلوت",
     ashkal:"أشكل", ashkalHint:"صن يشتريه شريكك — هو يأخذ الورقة المكشوفة", ekka:"إكه",
+    ardah:"طبل العرضة", goFull:"ملء الشاشة", exitFull:"إنهاء ملء الشاشة",
     dbl:"دبل", triple:"ثري", quad:"فور", gahwa:"قهوة",
     lockedTag:"مقفل", openTag:"مفتوح", skip:"لا شيء",
     dblTitle:"المضاعفة",
@@ -989,6 +1046,7 @@ const I18N = {
     trickWon:"takes it",
     projSra:"Sra", proj50:"Fifty", proj100:"Hundred", proj400:"Four Hundred", projBaloot:"Baloot",
     ashkal:"Ashkal", ashkalHint:"A Sun bought for your partner — they take the face-up card", ekka:"Ekka",
+    ardah:"Ardah drums", goFull:"Full screen", exitFull:"Leave full screen",
     dbl:"Double", triple:"Triple", quad:"Quadruple", gahwa:"Gahwa",
     lockedTag:"locked", openTag:"open", skip:"No thanks",
     dblTitle:"Doubling",
@@ -1656,6 +1714,7 @@ const POSNAME = ["south","east","north","west"];
 const Settings = {
   speed: localStorage.getItem("baloot.speed") || "normal",
   sound: localStorage.getItem("baloot.sound") !== "off",
+  music: localStorage.getItem("baloot.music") !== "off",
   hints: localStorage.getItem("baloot.hints") !== "off",
   set(k,v){ this[k]=v; try{ localStorage.setItem("baloot."+k, v===true?"on":v===false?"off":v);}catch(e){} }
 };
@@ -1672,6 +1731,141 @@ function setLang(l){
   document.querySelectorAll("[data-i18n]").forEach(n => n.textContent = T(n.dataset.i18n));
   UI.refreshAll();
 }
+
+/* ---- العرضة السعودية: the Ardah rhythm ----------------------------
+   Ardah is drums and chant: the deep تخمير on the downbeat, the tighter
+   طار answering it, and the hands of the row between them. The drums are
+   synthesised here rather than sampled, so the game keeps its promise of
+   running offline out of one file with nothing licensed inside it.
+
+   Drop a recording named `ardah.mp3` (or .m4a / .ogg) beside index.html
+   and it is played instead, looped, with no code change. `tools/build-
+   standalone.py` folds it into the single-file build if it is there.
+   ------------------------------------------------------------------- */
+const ARDAH_SRC = "ardah.mp3";
+const Music = (() => {
+  const BPM = 76, STEP = 60 / BPM / 2;          // an eighth-note grid, stately
+  //            1               2               3               4
+  const BIG  = [1,0,0,0, 0,0,1,0, 1,0,0,0, 0,0,1,0];   // تخمير, the big drum
+  const MID  = [0,0,1,0, 1,0,0,1, 0,0,1,0, 1,0,0,1];   // طار answering it
+  const CLAP = [0,0,0,0, 1,0,0,0, 0,0,0,0, 1,0,0,0];   // the row's hands
+
+  let ctx = null, master = null, noise = null;
+  let timer = null, step = 0, next = 0, on = false, el = null, elState = 0;
+
+  function ensure(){
+    if (ctx) return true;
+    try{
+      ctx = new (window.AudioContext || window.webkitAudioContext)();
+      master = ctx.createGain(); master.gain.value = 0; master.connect(ctx.destination);
+      // one second of noise, re-used by every skin and rattle
+      noise = ctx.createBuffer(1, ctx.sampleRate, ctx.sampleRate);
+      const d = noise.getChannelData(0);
+      for (let i = 0; i < d.length; i++) d[i] = Math.random() * 2 - 1;
+      return true;
+    }catch(e){ return false; }
+  }
+  const env = (g, t, peak, dur) => {
+    g.gain.setValueAtTime(.0001, t);
+    g.gain.exponentialRampToValueAtTime(peak, t + .006);
+    g.gain.exponentialRampToValueAtTime(.0001, t + dur);
+  };
+  function burst(t, freq, q, peak, dur){
+    const src = ctx.createBufferSource(), f = ctx.createBiquadFilter(), g = ctx.createGain();
+    src.buffer = noise; src.loop = true;
+    f.type = "bandpass"; f.frequency.value = freq; f.Q.value = q;
+    env(g, t, peak, dur);
+    src.connect(f); f.connect(g); g.connect(master);
+    src.start(t); src.stop(t + dur + .02);
+  }
+  function drum(t, from, to, peak, dur){         // a struck skin: pitch drops fast
+    const o = ctx.createOscillator(), g = ctx.createGain();
+    o.type = "sine"; o.frequency.setValueAtTime(from, t);
+    o.frequency.exponentialRampToValueAtTime(to, t + dur * .32);
+    env(g, t, peak, dur);
+    o.connect(g); g.connect(master);
+    o.start(t); o.stop(t + dur + .02);
+  }
+  const big  = (t, v) => { drum(t, 150, 52, .95 * (v||1), .52); burst(t, 165, .9, .30 * (v||1), .1); };
+  const mid  = (t, v) => { drum(t, 210, 130, .26 * (v||1), .16); burst(t, 430, 3, .22 * (v||1), .13); };
+  const clap = (t, v) => { for (let i=0;i<3;i++) burst(t + i*.012, 1250, 1.3, .16 * (v||1), .15); };
+
+  function schedule(){
+    if (!ctx) return;
+    while (next < ctx.currentTime + .35){
+      const i = step % 16;
+      if (BIG[i])  big(next, i === 0 ? 1 : .78);
+      if (MID[i])  mid(next, .9);
+      if (CLAP[i]) clap(next, .9);
+      if (i % 2 === 1) burst(next, 5200, .8, .035, .05);     // the shimmer between beats
+      next += STEP; step++;
+    }
+  }
+
+  // a recording, if one was dropped next to the page
+  function element(){
+    if (elState) return elState === 2 ? el : null;
+    elState = 1;
+    try{
+      el = new Audio(ARDAH_SRC);
+      el.loop = true; el.volume = .38; el.preload = "auto";
+      el.addEventListener("canplaythrough", () => { elState = 2; if (on) play(); }, {once:true});
+      el.addEventListener("error", () => { elState = 3; if (on) play(); }, {once:true});
+    }catch(e){ elState = 3; }
+    return null;
+  }
+
+  function play(){
+    const rec = element();
+    if (rec){ rec.play().catch(()=>{}); return; }
+    if (elState === 1) return;                   // still deciding: the listeners restart us
+    if (!ensure()) return;
+    if (ctx.state === "suspended") ctx.resume().catch(()=>{});
+    master.gain.cancelScheduledValues(ctx.currentTime);
+    master.gain.setValueAtTime(Math.max(master.gain.value, .0001), ctx.currentTime);
+    master.gain.exponentialRampToValueAtTime(.16, ctx.currentTime + 1.2);
+    if (timer) return;
+    next = ctx.currentTime + .08; step = 0;
+    schedule();
+    timer = setInterval(schedule, 120);
+  }
+
+  return {
+    playing(){ return on; },
+    start(){ if (on || !Settings.music) return; on = true; play(); },
+    stop(){
+      on = false;
+      if (el) { try{ el.pause(); }catch(e){} }
+      if (timer){ clearInterval(timer); timer = null; }
+      if (ctx && master){
+        master.gain.cancelScheduledValues(ctx.currentTime);
+        master.gain.setValueAtTime(master.gain.value, ctx.currentTime);
+        master.gain.exponentialRampToValueAtTime(.0001, ctx.currentTime + .5);
+      }
+    },
+    toggle(v){ v ? this.start() : this.stop(); },
+    /** the short salute the row gives: a roll that tightens, then two hits */
+    flourish(){
+      if (!Settings.music && !Settings.sound) return;
+      if (!ensure()) return;
+      if (ctx.state === "suspended") ctx.resume().catch(()=>{});
+      const was = master.gain.value;
+      master.gain.setValueAtTime(Math.max(was, .18), ctx.currentTime);
+      let t = ctx.currentTime + .05, gap = .17;
+      for (let i = 0; i < 9; i++){ mid(t, .8); if (i % 2 === 0) clap(t, .7); t += gap; gap *= .88; }
+      big(t + .05, 1); clap(t + .05, 1); big(t + .42, 1);
+      if (!on) setTimeout(() => { try{
+        master.gain.exponentialRampToValueAtTime(.0001, ctx.currentTime + .6);
+      }catch(e){} }, 2600);
+    }
+  };
+})();
+
+// the drums stop when the page is put away, and pick up when it comes back
+document.addEventListener("visibilitychange", () => {
+  if (document.hidden) Music.stop();
+  else if (Settings.music && Game && Game.R) Music.start();
+});
 
 /* ---- audio: tiny synthesised blips, no asset files ---- */
 const Sound = (() => {
@@ -2054,9 +2248,11 @@ const Game = {
 
     UI.renderScores();
     Sound.round();
+    if (res.note === "kaboot" || res.note === "gahwa") Music.flourish();
 
     const over = G.scores[0] >= CFG.target || G.scores[1] >= CFG.target;
     if (over){
+      Music.flourish();
       const winner = G.scores[0] === G.scores[1] ? -1 : (G.scores[0] > G.scores[1] ? 0 : 1);
       Bridge.send("matchResult", {scores:G.scores, winner, rounds:G.roundNo});
     }
@@ -2079,6 +2275,7 @@ const UI = {
     if (!$("#m-friends").hidden) this.openFriends();
     if (!$("#m-rules").hidden) this.openRules();
     if (Game.R) this.setMode(Game.R);
+    Fullscreen.sync();
   },
 
   renderScores(){
@@ -2468,6 +2665,11 @@ const UI = {
     body.appendChild(this.seg([[true,T("on")],[false,T("off")]], Settings.sound,
       v => { Settings.set("sound", v === "true" || v === true); UI.openMenu(); }));
 
+    body.appendChild(el("h3", null, T("ardah")));
+    body.appendChild(this.seg([[true,T("on")],[false,T("off")]], Settings.music,
+      v => { const b = v === "true" || v === true;
+             Settings.set("music", b); Music.toggle(b); UI.openMenu(); }));
+
     body.appendChild(el("h3", null, LANG === "ar" ? "التلميحات" : "Hints"));
     body.appendChild(this.seg([[true,T("on")],[false,T("off")]], Settings.hints,
       v => { Settings.set("hints", v === "true" || v === true); UI.openMenu(); UI.renderHand(); }));
@@ -2774,6 +2976,7 @@ const Lobby = {
 
   startGame(){
     UI.hide("#m-lobby");
+    Music.start();                      // a tap: the browser will let audio through now
     Game.start(this.seats.map(s => ({...s})));
   }
 };
@@ -2943,6 +3146,38 @@ window.addEventListener("keydown", e => {
     ["#m-menu","#m-friends","#m-rules"].forEach(id => UI.hide(id));
   }
 });
+
+/* ---- full screen: the page fills the glass, the table stays phone-shaped ---- */
+const Fullscreen = {
+  el(){ return document.documentElement; },
+  on(){ return !!(document.fullscreenElement || document.webkitFullscreenElement); },
+  toggle(){
+    try{
+      if (this.on()){
+        (document.exitFullscreen || document.webkitExitFullscreen || (()=>{})).call(document);
+      } else {
+        const e = this.el();
+        (e.requestFullscreen || e.webkitRequestFullscreen || (()=>{})).call(e);
+      }
+    }catch(err){}
+  },
+  sync(){
+    const b = $("#btn-full");
+    if (!b) return;
+    b.textContent = this.on() ? "⤡" : "⛶";
+    b.title = T(this.on() ? "exitFull" : "goFull");
+    b.setAttribute("aria-label", b.title);
+  }
+};
+$("#btn-full").onclick = () => Fullscreen.toggle();
+document.addEventListener("fullscreenchange", () => Fullscreen.sync());
+document.addEventListener("webkitfullscreenchange", () => Fullscreen.sync());
+window.addEventListener("keydown", e => {
+  if (e.key !== "f" && e.key !== "F") return;
+  if (/^(INPUT|TEXTAREA)$/.test((e.target && e.target.tagName) || "")) return;
+  Fullscreen.toggle();
+});
+Fullscreen.sync();
 
 /* ============================================================
    Parallax
