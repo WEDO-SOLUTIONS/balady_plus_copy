@@ -249,14 +249,26 @@
                 android:name="android.app.shortcuts"
                 android:resource="@xml/shortcuts" />
             <!--
-                MAIN/LAUNCHER deliberately lives on the two activity-aliases
-                above rather than here. Keeping it on MainActivity as well
-                would surface a third launcher entry that neither alias can
-                disable, so the National Day icon would appear alongside the
-                default one instead of replacing it.
+                The visible launcher entries are the two activity-aliases
+                above; exactly one is enabled at a time. MainActivity itself
+                must NOT be a launcher entry, otherwise a third icon appears
+                that neither alias can disable.
+
+                The MAIN/LAUNCHER filter below exists ONLY for the Flutter
+                tooling. `flutter run` / `flutter install` pick the activity to
+                start by scanning <activity> elements (never <activity-alias>)
+                for a filter naming MAIN + LAUNCHER, and abort with "package
+                identifier or launch activity not found" otherwise. The <data>
+                scheme makes this filter unmatchable by any real launcher: a
+                launcher's MAIN/LAUNCHER query carries no data URI, so the
+                filter's data test fails and this activity is never listed.
+                The tooling's explicit-component `am start ... .MainActivity`
+                bypasses filter matching entirely, so it still launches.
             -->
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+                <data android:scheme="balady-flutter-tooling-launch" />
             </intent-filter>
 
             <!-- Deep linking -->

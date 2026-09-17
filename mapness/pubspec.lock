@@ -247,7 +247,7 @@ packages:
       path: ".."
       relative: true
     source: path
-    version: "3.30.3+890"
+    version: "3.30.3+894"
   balady_uikit:
     dependency: "direct main"
     description:

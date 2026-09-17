@@ -197,6 +197,11 @@ class MapnessEntryPoint extends ConsumerStatefulWidget {
 class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> with WidgetsBindingObserver {
   /// Latches once the launcher icon has been evaluated this session, so a
   /// rebuild cannot swap the launcher entry while the user is in the app.
+  ///
+  /// Only set once the resolved config is backed by real environment data —
+  /// see [_maybeApplyNationalDayIcon]. Latching on the first build instead
+  /// would freeze the bundled-default window, which is what made a fresh
+  /// install keep the default icon until the next cold start.
   bool _nationalDayIconApplied = false;
 
   late OverlayEntry? _debugOverlay;
@@ -555,6 +560,46 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> with Widg
     }
   }
 
+  /// Applies the National Day launcher icon once per cold start, but only
+  /// after the environment config has actually resolved.
+  ///
+  /// [dgisEnvironmentProvider] is an async notifier that awaits Hive, so on
+  /// the first frame it is still `AsyncLoading` and
+  /// [saudiNationalDayResolvedConfigProvider] falls back to
+  /// [SaudiNationalDayRemoteConfig.bundledDefault]. Latching on that first
+  /// build pinned the decision to the bundled window and ignored the window
+  /// configured in Firebase — on a fresh install the icon stayed default
+  /// until the user killed and relaunched the app (by which point Hive was
+  /// warm enough to resolve synchronously).
+  ///
+  /// Waiting for the env provider costs nothing on a normal start: the fetch
+  /// is already awaited in `runMapnessApp()` before `main()`, so this
+  /// resolves within the first few frames. If it errors we still apply, so a
+  /// broken config degrades to the bundled window rather than to no icon
+  /// swap at all.
+  ///
+  /// Still applied at most once per session — the launcher entry must not
+  /// change under a user who is mid-session.
+  void _maybeApplyNationalDayIcon() {
+    if (_nationalDayIconApplied) {
+      return;
+    }
+
+    final env = ref.watch(dgisEnvironmentProvider);
+    if (env.isLoading) {
+      // Not resolved yet — this method re-runs on the rebuild that lands the
+      // value, so the decision is simply deferred rather than dropped.
+      return;
+    }
+
+    _nationalDayIconApplied = true;
+
+    final isActive = ref.read(saudiNationalDayResolvedConfigProvider).isAppIconActiveAt(DateTime.now());
+
+    // Not awaited — a launcher-icon failure must never affect the UI.
+    unawaited(SaudiNationalDayAppIcon.apply(shouldUseNationalDay: isActive));
+  }
+
   @override
   Widget build(BuildContext context) {
     ref.listen(darkModeProvider, (prev, next) {
@@ -573,15 +618,7 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> with Widg
     // Launcher-icon swap. Watched here rather than in runMapnessApp() because
     // the window comes from `saudiNationalDayDateRange` in app_env_config,
     // which is only available once the env provider has resolved.
-    //
-    // Applied once per cold start: `_nationalDayIconApplied` latches so a
-    // later rebuild cannot flip the launcher entry under the user. Not
-    // awaited — a failure here must never affect the UI.
-    final nationalDayIconActive = ref.watch(saudiNationalDayResolvedConfigProvider).isAppIconActiveAt(DateTime.now());
-    if (!_nationalDayIconApplied) {
-      _nationalDayIconApplied = true;
-      unawaited(SaudiNationalDayAppIcon.apply(shouldUseNationalDay: nationalDayIconActive));
-    }
+    _maybeApplyNationalDayIcon();
 
     // Track theme changes for analytics
     ref
