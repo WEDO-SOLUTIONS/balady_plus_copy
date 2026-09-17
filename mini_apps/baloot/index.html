@@ -72,17 +72,18 @@ button{font:inherit;color:inherit;border:0;background:none;cursor:pointer}
 }
 /* arabesque lattice over the walls only */
 #table::before{
-  content:"";position:absolute;inset:0;pointer-events:none;
+  content:"";position:absolute;inset:0;pointer-events:none;z-index:1;
   background-image:
     url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='46' height='46' viewBox='0 0 46 46'%3E%3Cg fill='none' stroke='%23ffd489' stroke-width='.9' opacity='.075'%3E%3Crect x='13.5' y='13.5' width='19' height='19'/%3E%3Cpath d='M23 9.5 36.5 23 23 36.5 9.5 23Z'/%3E%3C/g%3E%3C/svg%3E");
   background-size:46px 46px;
-  background-position:calc(var(--tilt,0) * -14px) 0;
-  -webkit-mask-image:linear-gradient(180deg,transparent 4%,#000 14%,#000 52%,transparent 66%);
-          mask-image:linear-gradient(180deg,transparent 4%,#000 14%,#000 52%,transparent 66%);
+  background-position:calc(var(--tilt,0) * -20px) 0;
+  -webkit-mask-image:linear-gradient(180deg,transparent 3%,#000 12%,#000 84%,transparent 98%);
+          mask-image:linear-gradient(180deg,transparent 3%,#000 12%,#000 84%,transparent 98%);
 }
 #table::after{
-  content:"";position:absolute;inset:0;pointer-events:none;
-  background:radial-gradient(ellipse 88% 66% at 50% 52%, transparent 44%, rgba(0,0,0,.42) 100%);
+  content:"";position:absolute;inset:0;pointer-events:none;z-index:3;
+  background:radial-gradient(ellipse 88% 66% at calc(50% + var(--tilt,0) * 5%) 52%,
+    transparent 44%, rgba(0,0,0,.42) 100%);
 }
 
 /* ---------- crest: the plaque lifted from the mock-up ---------- */
@@ -161,7 +162,21 @@ html[dir="ltr"] .st-deal{text-transform:uppercase}
 .spacer{flex:1}
 
 /* ---------- seats ---------- */
-#felt{position:relative;flex:1;min-height:0}
+#felt{position:relative;z-index:2;flex:1;min-height:0}
+/* What the cloth can honestly carry: the room's light falling across it, and
+   the lattice showing through from the table behind. Both pan a shorter
+   distance than the scene, being nearer the viewer. */
+#felt .cloth{
+  position:absolute;inset:20% -4% 0 -4%;pointer-events:none;z-index:0;
+  background:
+    radial-gradient(ellipse 62% 44% at calc(50% + var(--tilt,0) * 13%) 0%,
+      rgba(255,206,140,.19), transparent 62%),
+    radial-gradient(ellipse 120% 70% at calc(50% + var(--tilt,0) * -9%) 84%,
+      rgba(0,0,0,.26), transparent 72%),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='64' height='64' viewBox='0 0 64 64'%3E%3Cg fill='none' stroke='%23ffe3ae' stroke-width='1.1' opacity='.125'%3E%3Crect x='19' y='19' width='26' height='26'/%3E%3Cpath d='M32 13 51 32 32 51 13 32Z'/%3E%3Ccircle cx='32' cy='32' r='4.5'/%3E%3C/g%3E%3C/svg%3E") calc(var(--tilt,0) * -26px) 0 / 64px 64px;
+  -webkit-mask-image:linear-gradient(180deg,transparent 0%,#000 14%,#000 88%,transparent 100%);
+          mask-image:linear-gradient(180deg,transparent 0%,#000 14%,#000 88%,transparent 100%);
+}
 #felt .sheen{
   position:absolute;left:-28%;right:-28%;top:48%;bottom:0;pointer-events:none;z-index:0;
   background:radial-gradient(ellipse 20% 46% at 50% 42%,rgba(255,240,205,.07),transparent 72%);
@@ -182,8 +197,9 @@ html[dir="ltr"] .st-deal{text-transform:uppercase}
    ------------------------------------------------------------------ */
 /* --tilt runs -1..1; the scene pans inside its own crop, so nothing reflows */
 #board{
-  position:absolute;top:0;left:0;right:0;height:56%;
-  background:calc(50% + var(--tilt,0) * 26%) 42%/cover no-repeat url("room.webp");
+  position:absolute;top:0;left:0;right:0;height:64%;
+  background:url("room.webp") no-repeat calc(50% + var(--scene-pan,0px)) 42%;
+  background-size:var(--scene-w,cover) var(--scene-h,auto);
   pointer-events:none;
 }
 #board::after{                       /* seat the scene into the cloth */
@@ -199,7 +215,7 @@ html[dir="ltr"] .st-deal{text-transform:uppercase}
    embers rising through them.
    ------------------------------------------------------------------ */
 .amb{position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:1;
-     transform:translateX(var(--scene-shift,0px))}
+     transform:translateX(var(--scene-pan,0px))}
 .amb .lamp{
   position:absolute;left:var(--x);top:var(--y);
   width:var(--r);aspect-ratio:1;transform:translate(-50%,-50%);
@@ -280,11 +296,12 @@ html[dir="ltr"] .st-deal{text-transform:uppercase}
 /* ---------- seat plates, pinned to the painted players ---------- */
 .seat{
   position:absolute;z-index:5;
-  transform:translate(-50%,-50%) translateX(var(--scene-shift,0px));
+  transform:translate(-50%,-50%)
+            translateX(clamp(-24px, calc(var(--scene-pan,0px) * .85), 24px));
   display:flex;flex-direction:column;align-items:center;gap:3px;
   pointer-events:none;
 }
-.seat[data-pos="west"] {left:15.5%;top:84%}
+.seat[data-pos="west"] {left:20%;top:84%}
 .seat[data-pos="north"]{left:28.5%;top:57%}
 .seat[data-pos="east"] {left:72.5%;top:57%}
 
@@ -789,7 +806,7 @@ html[dir="ltr"] .rail-btn{text-transform:uppercase}
 
 @media (max-height:660px){
   :root{--card-w:clamp(52px,13vw,68px)}
-  #board{height:50%}
+  #board{height:58%}
   .avatar{width:36px;height:36px;font-size:15px}
   #trick{width:min(52vw,196px);height:min(52vw,196px)}
 }
@@ -2564,17 +2581,27 @@ const Tilt = (() => {
   const reduced = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   let target = 0, current = 0, manual = 0, gyro = 0, live = false, raf = 0;
 
-  const PAN = 0.26;                 // share of the crop the scene travels, matches the CSS
-  let overflow = 0;                 // px of picture hidden either side of the board
+  const PAN_SHARE = 0.26;           // of the hidden part of the picture...
+  const PAN_MAX = 40;               // ...capped here, and never less than
+  const PAN_MIN = 18;               // this, even on a screen that crops little
+  let pan = 0;                      // how far the scene travels at full tilt
   function measure(){
     const b = $("#board");
     if (!b) return;
     const w = b.clientWidth, h = b.clientHeight;
     if (!w || !h) return;
-    const scale = Math.max(w / 880, h / 553);   // background-size: cover
-    overflow = Math.max(0, 880 * scale - w);
+    // start from what `cover` would do
+    let imgW = 880 * Math.max(w / 880, h / 553);
+    // a short screen fits the picture to the width, leaving nothing to pan, so
+    // widen it just enough to buy some travel
+    const wanted = w + PAN_MIN / PAN_SHARE;
+    if (imgW < wanted) imgW = wanted;
+    pan = Math.min((imgW - w) * PAN_SHARE, PAN_MAX);
+    root.style.setProperty("--scene-w", imgW.toFixed(1) + "px");
+    root.style.setProperty("--scene-h", "auto");
   }
   window.addEventListener("resize", () => { measure(); kick(); });
+  requestAnimationFrame(measure);       // size the scene before the first tilt
 
   function frame(){
     const want = manual !== 0 ? manual : gyro;
@@ -2582,11 +2609,10 @@ const Tilt = (() => {
     current += (target - current) * 0.12;
     if (Math.abs(current - target) < 0.0015) current = target;
     root.style.setProperty("--tilt", current.toFixed(4));
-    // the picture slides the other way from the position percentage
-    root.style.setProperty("--scene-shift", (-current * PAN * overflow).toFixed(2) + "px");
+    root.style.setProperty("--scene-pan", (-current * pan).toFixed(2) + "px");
     raf = (current !== target) ? requestAnimationFrame(frame) : 0;
   }
-  const kick = () => { if (!overflow) measure(); if (!raf && !reduced) raf = requestAnimationFrame(frame); };
+  const kick = () => { if (!pan) measure(); if (!raf && !reduced) raf = requestAnimationFrame(frame); };
 
   /* ---- the desktop stand-in ---- */
   function hold(dir, on){
@@ -2646,6 +2672,7 @@ const Tilt = (() => {
   const layer = el("div", "amb");
   layer.appendChild(el("div", "wash"));
   $("#felt").insertBefore(el("div", "sheen"), board.nextSibling);
+  $("#felt").insertBefore(el("div", "cloth"), board.nextSibling);
 
   // x / y are percentages of the picture, so they follow it as it scales
   const LAMPS = [

@@ -95,18 +95,26 @@ turned off in the settings sheet.
 
 ## Parallax
 
-The scene pans inside its own crop while the wall lattice and the header drift
-the other way, which reads as depth without anything reflowing. On a phone a
-`deviceorientation` reading drives it — Android starts listening straight away,
-iOS asks for permission on the first press of the tilt pad. On a desktop the two
-arrows in the corner of the table, or the `1` and `2` keys, stand in: hold to
-tilt, release and it springs back.
+The whole background moves, at different rates by depth: the scene pans inside
+its own crop, the wall lattice and the cloth's own ornament travel a shorter
+distance, and the header drifts least. On a phone a `deviceorientation` reading
+drives it — Android starts listening straight away, iOS asks for permission on
+the first press of the tilt pad. On a desktop the two arrows in the corner of
+the table, or the `1` and `2` keys, stand in: hold to tilt, release and it
+springs back.
 
-Seat plates and lantern glows are pinned to things painted in the picture, so
-they travel with it: the pan distance is recomputed from the board's real
-geometry (`background-size: cover` over an 880 × 553 image) and published as
-`--scene-shift`. `prefers-reduced-motion` turns the whole thing off and hides
-the pad.
+The travel is a pixel budget, not a share of the crop: a tall narrow screen
+crops the picture hard, and a percentage of that crop swings the scene right
+across the display. `measure()` works out how wide the picture is drawn, widens
+it when a short screen leaves nothing to pan, clamps the travel to 18–40 px and
+publishes it as `--scene-pan`. Seat plates and lantern glows sit on things
+painted in the picture, so they follow that value; the plates follow at a shade
+less so a name near the edge is not pushed off screen.
+
+The cloth below the table is a flat wash with nothing to parallax, so it carries
+its own arabesque and a pool of the room's light — both panning — rather than a
+blurred copy of the scene, which read as a smear.
+`prefers-reduced-motion` turns the whole thing off and hides the pad.
 
 ## Light
 
