@@ -358,10 +358,10 @@ class _RoutingInfoState extends ConsumerState<RoutingInfo> {
       ..listen<RouteSearchOptionsMessage>(routesUpdateTabProvider, (previous, next) {
         if (previous != next) {
           _navType.value = next;
-          ref
-            ..invalidate(routesProvider)
-            ..invalidate(publicTransportRoutesProvider)
-            ..invalidate(publicTransportVisibilityProvider);
+          // BALADY-3737: routesProvider/publicTransportRoutesProvider are keyed by navType,
+          // so the new tab already gets a fresh instance. Invalidating here only forces the
+          // still-live old-navType instance to re-run setRouteParams, racing the new tab's call.
+          ref.invalidate(publicTransportVisibilityProvider);
         }
       });
 
