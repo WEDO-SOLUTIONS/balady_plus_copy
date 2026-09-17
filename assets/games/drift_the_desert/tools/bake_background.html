@@ -502,6 +502,11 @@ vec4 bakeSand(vec2 uv, float dusk) {
    back into ordinary sand at both edges, because the track is between a half
    and two thirds of a tile wide depending how far down the frame it is. */
 
+/* The road tile spans the road, not two screen widths, so one texel across
+   is about half a texel along. Anything that has to come out round on screen
+   is measured through this. */
+#define ROAD_ASPECT 0.542
+
 float trackHeight(vec2 uv, out float crust, out float wear) {
   // The compacted surface itself: the same drift as the open sand, but the
   // ripples on it have long since been driven flat.
@@ -512,18 +517,20 @@ float trackHeight(vec2 uv, out float crust, out float wear) {
 
   for (int i = 0; i < 7; i++) {
     float fi = float(i);
-    float x0 = 0.5 + (h21(vec2(fi, 7.3)) - 0.5) * 0.52;
-    // Whole-number wander, so the rut still meets itself at the tile seam.
-    float k1 = 1.0 + floor(h21(vec2(fi, 3.1)) * 2.0);
-    float mean = sin(TAU * k1 * uv.y + fi * 2.1) * 0.016
-               + sin(TAU * 3.0 * uv.y + fi * 5.7) * 0.005;
+    float x0 = 0.5 + (h21(vec2(fi, 7.3)) - 0.5) * 0.78;
+    // The ruts run straight. They used to wander a whole cycle per tile,
+    // because a tile is the longest wavelength a tiling texture has — and a
+    // tile is five metres of desert, which arrives twice a second and read as
+    // the road snaking. The wander belongs to the road's centre line, which
+    // the game bends over hundreds of metres instead.
+    float mean = sin(TAU * uv.y + fi * 2.1) * 0.004;
     float d = abs(uv.x - x0 - mean);
-    float w = 0.016 + h21(vec2(fi, 11.7)) * 0.013;
+    float w = 0.028 + h21(vec2(fi, 11.7)) * 0.024;
 
     float groove = 1.0 - smoothstep(w * 0.45, w, d);
     float berm = smoothstep(w, w * 1.5, d) * (1.0 - smoothstep(w * 1.5, w * 2.6, d));
 
-    h += -groove * 0.048 + berm * 0.026;
+    h += -groove * 0.062 + berm * 0.032;
     crust = max(crust, groove);
     wear = max(wear, groove + berm * 0.5);
   }
@@ -534,7 +541,7 @@ float trackHeight(vec2 uv, out float crust, out float wear) {
 
   // Loose sand thrown out of the ruts, dragged along the direction of
   // travel, plus the odd churned patch and the grain underneath it all.
-  float drag = sin(TAU * (37.0 * uv.x + 2.0 * uv.y) + tfbm(uv + 7.1, 6.0, 3) * 12.0);
+  float drag = sin(TAU * (20.0 * uv.x + 2.0 * uv.y) + tfbm(uv + 7.1, 6.0, 3) * 12.0);
   h += drag * 0.010 * (1.0 - crust * 0.6);
   h += (tfbm(uv + 2.3, 30.0, 3) - 0.5) * 0.024 * (1.0 - crust * 0.7);
   h += (tfbm(uv + 5.9, 90.0, 2) - 0.5) * 0.050;
@@ -548,7 +555,10 @@ vec4 bakeTrack(vec2 uv, float dusk) {
   float hx = trackHeight(uv + vec2(e, 0.0), c1, w1);
   float hy = trackHeight(uv + vec2(0.0, e), c2, w2);
 
-  vec3 nrm = normalize(vec3(-(hx - h) / e * 0.055, -(hy - h) / e * 0.055, 1.0));
+  // The x slope is measured through the tile's aspect, or the ruts light as
+  // though they were twice as steep as they are.
+  vec3 nrm = normalize(vec3(-(hx - h) / e * 0.055 * ROAD_ASPECT,
+                            -(hy - h) / e * 0.055, 1.0));
   vec3 L = normalize(vec3(-0.55, -0.78, 0.30));
   float diff = clamp(dot(nrm, L), 0.0, 1.0);
   float sky = 0.5 + 0.5 * nrm.z;
@@ -566,7 +576,7 @@ vec4 bakeTrack(vec2 uv, float dusk) {
   // sand is still Nefud sand, and a heavy hand here turned the track into a
   // concrete strip laid across the desert.
   vec3 crustCol = mix(vec3(0.74, 0.60, 0.43), vec3(0.35, 0.22, 0.23), dusk);
-  col = mix(col, crustCol, c0 * 0.22);
+  col = mix(col, crustCol, c0 * 0.34);
   col *= 0.94 + 0.14 * tfbm(uv + 0.71, 2.0, 3);
 
   // Gravel, shouldered out of the ruts and lying along their edges.
@@ -574,23 +584,27 @@ vec4 bakeTrack(vec2 uv, float dusk) {
     float cells = k == 0 ? 34.0 : 58.0;
     float base = k == 0 ? 0.13 : 0.08;
     float thresh = k == 0 ? 0.955 : 0.976;
-    vec2 gp = uv * cells;
+    // Fewer cells across than along, so each one is square on the ground and
+    // the stones in it come out round rather than stretched into lozenges.
+    float cellsX = max(2.0, floor(cells * ROAD_ASPECT + 0.5));
+    vec2 gp = uv * vec2(cellsX, cells);
     vec2 home = floor(gp);
     for (int oy = -1; oy <= 1; oy++) {
       for (int ox = -1; ox <= 1; ox++) {
         vec2 cell = home + vec2(float(ox), float(oy));
-        if (thash(cell + float(k) * 13.0, cells) <= thresh) continue;
-        vec2 at = cell + vec2(thash(cell + 3.0, cells), thash(cell + 9.0, cells));
-        float r = base * (0.55 + thash(cell + 5.0, cells) * 0.85);
+        vec2 wrapped = vec2(mod(cell.x, cellsX), mod(cell.y, cells));
+        if (h21(wrapped + float(k) * 13.0) <= thresh) continue;
+        vec2 at = cell + vec2(h21(wrapped + 3.0), h21(wrapped + 9.0));
+        float r = base * (0.55 + h21(wrapped + 5.0) * 0.85);
         vec2 raw = gp - at;
         float sh = smoothstep(r * 2.0, r * 0.7, length(raw - vec2(0.55, 0.80) * r));
         col *= 1.0 - sh * 0.26;
         float stone = smoothstep(1.0, 0.85, length(raw) / r);
         if (stone <= 0.0) continue;
         vec3 sc = mix(mix(vec3(0.27, 0.22, 0.18), vec3(0.58, 0.52, 0.43),
-                          step(0.45, thash(cell + 53.0, cells))),
+                          step(0.45, h21(wrapped + 53.0))),
                       vec3(0.12, 0.09, 0.10), dusk);
-        sc *= 0.82 + 0.36 * thash(cell + 17.0, cells);
+        sc *= 0.82 + 0.36 * h21(wrapped + 17.0);
         sc *= 0.70 + 0.54 * clamp(0.52 - (raw.x * 0.55 + raw.y * 0.78) / r, 0.0, 1.25);
         col = mix(col, sc, stone);
       }
@@ -599,7 +613,7 @@ vec4 bakeTrack(vec2 uv, float dusk) {
 
   // Back to plain sand at the edges of the tile: the clip the game applies is
   // never exactly this wide, and a hard end to the ruts would show.
-  float band = smoothstep(0.02, 0.17, 0.5 - abs(uv.x - 0.5));
+  float band = smoothstep(0.015, 0.10, 0.5 - abs(uv.x - 0.5));
   vec4 open = bakeSand(uv, dusk);
   return vec4(mix(open.rgb, col, band), 1.0);
 }
@@ -917,9 +931,21 @@ vec4 cliffSprite(vec2 p, float id, float dusk) {
         + 0.4 * pow(1.0 - abs(tfbm(vec2(p.x * 1.7, p.y * 0.4 + id * 3.0), 21.0, 2) * 2.0 - 1.0), 3.0);
   flute *= smoothstep(0.18, 0.55, up);
 
-  // Bedding: the horizontal courses that say sedimentary rock.
-  float beds = 0.5 + 0.5 * sin(p.y * 74.0 + tfbm(p, 3.0, 3) * 4.0);
+  // Bedding: the horizontal courses that say sedimentary rock. A sine alone
+  // was a soft corrugation; what reads at a distance is the shadow line under
+  // each course, so the courses are ridged and the line is sharp.
+  float course = fract(p.y * 26.0 + tfbm(p, 3.0, 3) * 1.6);
+  float beds = smoothstep(0.0, 0.16, course) * smoothstep(1.0, 0.72, course);
   beds *= smoothstep(0.05, 0.25, up);
+
+  // Joints: the vertical cracks that break a face into blocks.
+  float jx = fract(p.x * 7.0 + tfbm(vec2(p.y * 0.6, id), 5.0, 2) * 2.0);
+  float joint = (1.0 - smoothstep(0.0, 0.05, min(jx, 1.0 - jx)))
+              * smoothstep(0.10, 0.40, up)
+              * step(0.5, h21(vec2(floor(p.x * 7.0), id + 3.0)));
+
+  // Rubble on the talus, so the apron is not a smooth skirt.
+  float rubble = tfbm(vec2(p.x * 2.0, p.y) * 3.0 + id, 34.0, 3);
 
   // Warmer than the loose rocks: a cliff face this size is half sunlight
   // bounced off the sand in front of it, and a cool grey slab sat in the
@@ -935,20 +961,23 @@ vec4 cliffSprite(vec2 p, float id, float dusk) {
   col = mix(col, lit, smoothstep(0.52, 1.0, sun) * 0.85);
 
   col *= 1.0 - clamp(flute, 0.0, 1.2) * 0.22;
-  col *= 0.93 + 0.13 * beds;
+  col *= 0.86 + 0.26 * beds;
+  col *= 1.0 - joint * 0.45;
   col *= 0.90 + 0.20 * tfbm(p * 1.6 + seed * 2.0, 18.0, 3);
   // The red dust that gets into everything out here, heaviest low down.
   col = mix(col, col * mix(vec3(1.10, 0.92, 0.74), vec3(1.0), dusk),
             smoothstep(0.75, 0.05, up) * 0.55);
 
-  // The cap catches the sun flat on; the base sits in its own shadow.
+  // The cap catches the sun flat on, with a hard bright lip along its edge;
+  // the base sits in its own shadow.
   col = mix(col, lit, smoothstep(0.93, 1.0, up) * 0.35);
+  col = mix(col, lit * 1.12, smoothstep(0.985, 1.0, up) * 0.75);
   col *= 1.0 - smoothstep(0.35, 0.0, up) * 0.30;
 
   // Talus: the skirt of broken rock and blown sand at the foot.
   vec3 scree = mix(vec3(0.66, 0.50, 0.33), vec3(0.27, 0.18, 0.20), dusk);
   float apron = smoothstep(0.26, 0.0, up + (tfbm(vec2(p.x * 2.0, id), 13.0, 2) - 0.5) * 0.10);
-  col = mix(col, scree * (0.70 + 0.6 * tfbm(p * 2.0 + 3.0, 30.0, 3)), apron * 0.80);
+  col = mix(col, scree * (0.62 + 0.8 * rubble), apron * 0.80);
   // …and the shadow the face throws across its own foot.
   col *= 1.0 - smoothstep(-0.1, 0.8, face) * apron * 0.35;
 

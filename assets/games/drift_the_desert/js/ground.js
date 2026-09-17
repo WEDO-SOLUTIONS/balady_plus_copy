@@ -55,15 +55,59 @@
   // It is filtered and motion blurred, so there is very little in it that
   // survives to a device pixel anyway, and a phone GPU has to sample every
   // one of these several times over.
-  var RES_SCALE = 0.9;
+  var RES_SCALE = 1.0;
 
   // …and never more than this many pixels of it, which is what keeps a 1440p
   // phone from quietly costing three times what a 1080p one does.
-  var MAX_PIXELS = 1.25e6;
+  var MAX_PIXELS = 1.7e6;
 
   // Anisotropy, which is what stops the far field either aliasing or turning
   // to mush. Past four the cost climbs faster than the picture improves.
   var ANISO = 4;
+
+  /* The road itself.
+
+     Half its width, as a fraction of the texture's size, and constant: a road
+     does not get wider the further away it is. It was drawn as a trapezoid
+     fitted to the screen before, which made it nearly three times as wide in
+     the world at the horizon as it was at the car — so everything placed
+     against its edges drifted sideways as it came in, and the road texture
+     had to stretch to fit. */
+  var TRACK_HALF = 0.226;
+
+  // How much wider the road's own tile is than the road, so its edges have
+  // somewhere to fade back into open sand.
+  var ROAD_MARGIN = 1.20;
+
+  /* The track wanders, because a desert track wanders. The lateral offset
+     grows from zero at the car — which is what keeps the car on the road —
+     with a slope that turns over on two long periods. Both divide the wrap
+     below, so the distance travelled can be reduced into it without the bend
+     jumping when it does. At speed those periods come out around forty and
+     ninety seconds.
+
+     This replaces a meander that used to be baked into the road texture,
+     where the longest wavelength available was one tile — about five metres
+     of desert, which arrived twice a second and read as the road snaking. */
+  var CURVE_WRAP = 262144;
+  var CURVE_K1 = Math.PI * 4 / CURVE_WRAP;
+  var CURVE_K2 = Math.PI * 2 / CURVE_WRAP;
+  var CURVE_A1 = 2.05;      // amplitudes, in tiles
+  var CURVE_A2 = 1.27;
+
+  /** Where the road's centre line is, at absolute distance `z`. */
+  function curveLine(z, size) {
+    return (CURVE_A1 * Math.sin(z * CURVE_K1) +
+            CURVE_A2 * Math.sin(z * CURVE_K2 + 1.1)) * size;
+  }
+
+  /** The bend, seen from a camera that is itself on the road: the line's
+      offset at this depth minus its offset at the car. Subtracting the
+      camera's own place on it is what keeps the car on the road — without
+      it the road slides out from under the wheels as you drive. */
+  function curveAt(depth, travelCurve, size, TD) {
+    return curveLine(travelCurve + depth, size) - curveLine(travelCurve + TD, size);
+  }
 
   var VERT = 'attribute vec2 aPos;' +
     'void main() { gl_Position = vec4(aPos, 0.0, 1.0); }';
@@ -77,6 +121,9 @@
     'uniform float uTD;         // depth at the bottom of the frame, in texels',
     'uniform float uA0;         // device px per texel at the bottom',
     'uniform float uTravel;     // texels travelled, wrapped to the tile',
+    'uniform float uCurve;      // …and wrapped to the bend\'s period',
+    'uniform float uHalf;       // half the road, in texels',
+    'uniform float uRoadX;      // texels of road texture per texel of world',
     'uniform float uBlur;       // texels travelled this frame',
     'uniform float uLateral;    // the car lean the track centre follows',
     'uniform float uDusk;',
@@ -91,8 +138,19 @@
     '   desert, so it has to come at the camera with it. Same three sines as',
     '   js/scene.js, which reads the same depth. */',
     'float edgeNoise(float depth, float side) {',
-    '  float w = depth * 0.0016 + (side > 0.0 ? 31.7 : 0.0);',
+    '  float w = depth * 0.00042 + (side > 0.0 ? 31.7 : 0.0);',
     '  return sin(w) * 0.6 + sin(w * 2.7 + 1.3) * 0.3 + sin(w * 6.1) * 0.1;',
+    '}',
+    '',
+    '/* The bend, as js/ground.js computes it. Both have to agree exactly or',
+    '   the painted edges and the textured road part company. */',
+    'float curveLine(float z) {',
+    '  return (' + CURVE_A1 + ' * sin(z * ' + CURVE_K1 + ') +',
+    '          ' + CURVE_A2 + ' * sin(z * ' + CURVE_K2 + ' + 1.1)) * uTexSize;',
+    '}',
+    '',
+    'float curveAt(float depth) {',
+    '  return curveLine(uCurve + depth) - curveLine(uCurve + uTD);',
     '}',
     '',
     'void main() {',
@@ -106,10 +164,11 @@
     '  // the mip level. Everything above the horizon comes out at alpha 0.',
     '  float t = max((y - uHorizon) / uSpan, 0.02);',
     '  float s = 0.035 + 0.965 * t;',
-    '  float cx = uRes.x * 0.5 - uLateral * uRes.x * 0.06 * (1.0 - s);',
     '',
     '  float a = uA0 * t;                 // device px per texel across',
-    '  float ty = uTD / t + uTravel;      // texels into the distance',
+    '  float ty = uTD / t + uTravel;      // texels into the distance, for the tile',
+    '  float bend = curveAt(uTD / t);',
+    '  float cx = uRes.x * 0.5 - uLateral * uRes.x * 0.06 * (1.0 - s) + bend * a;',
     '  float tx = (x - cx) / a;',
     '',
     '  // Two taps for the sand, one for the road: the sand ripples run across',
@@ -121,12 +180,17 @@
     '  vec3 sand = texture2D(uSand, vec2(tx, ty) / uTexSize, -0.35).rgb;',
     '  sand += texture2D(uSand, vec2(tx, ty - uBlur * 0.6) / uTexSize, -0.35).rgb;',
     '  sand *= 0.5;',
-    '  vec3 road = texture2D(uRoad, vec2(tx + uTexSize * 0.5, ty - uBlur * 0.3) / uTexSize, -0.35).rgb;',
+    '  // The road has its own lateral scale: its tile spans the road rather',
+    '  // than two screen widths, which is twice the texels across the part of',
+    '  // the frame the player is actually looking at.',
+    '  float rx = tx * uRoadX + uTexSize * 0.5;',
+    '  vec3 road = texture2D(uRoad, vec2(rx, ty - uBlur * 0.3) / uTexSize, -0.35).rgb;',
     '',
     '  // The track, with the same wobbling edge the painted one has.',
     '  float side = x > cx ? 1.0 : -1.0;',
-    '  float halfW = mix(uRes.x * 0.055, uRes.x * 0.95, s) * 0.5;',
-    '  float edge = halfW * (1.0 - edgeNoise(uTD / t + uTravel, side) * 0.13 * s);',
+    '  float halfW = uHalf * a;           // constant in the world, not on screen',
+    '  float edge = halfW * (1.0 - edgeNoise(uTD / t + uCurve, side) * 0.07);',
+    '',
     '  float feather = max(2.0, edge * 0.07);',
     '  float onRoad = (1.0 - smoothstep(edge - feather, edge, abs(x - cx))) * uRoadOn;',
     '',
@@ -150,14 +214,24 @@
     metrics: function (o) {
       var span = o.h * 1.04 - o.horizon;
       var A0 = TILE_ACROSS * o.w / this.size;   // css px per texel at t = 1
+      var travel = o.scroll * TRAVEL;
       return {
         span: span,
         A0: A0,
         TD: span / A0,                          // depth at the bottom of the frame
-        travel: o.scroll * TRAVEL,
-        travelPerScroll: TRAVEL
+        travel: travel,
+        travelPerScroll: TRAVEL,
+        halfTexels: TRACK_HALF * this.size,     // the road, in world texels
+        size: this.size,
+        // Reduced into the bend's period, so the sines stay in range and the
+        // road does not jump when the number wraps.
+        travelCurve: travel % CURVE_WRAP
       };
     },
+
+    /** Where the road's centre line is at this depth, in texels off straight
+        ahead. `worldZ` is depth plus the distance travelled. */
+    curveAt: curveAt,
 
     ready: false,
     roadReady: false,
@@ -231,7 +305,8 @@
 
       this.uni = {};
       ['uRes', 'uHorizon', 'uSpan', 'uTD', 'uA0', 'uTravel', 'uBlur', 'uLateral',
-       'uDusk', 'uRoadOn', 'uTexSize', 'uTint', 'uSand', 'uRoad'
+       'uDusk', 'uRoadOn', 'uTexSize', 'uTint', 'uSand', 'uRoad',
+       'uCurve', 'uHalf', 'uRoadX'
       ].forEach(function (n) { Ground.uni[n] = gl.getUniformLocation(prog, n); });
 
       this.tex.sand = upload(gl, images.sand);
@@ -313,6 +388,9 @@
       gl.uniform1f(this.uni.uTD, TD);
       gl.uniform1f(this.uni.uA0, A0);
       gl.uniform1f(this.uni.uTravel, travel);
+      gl.uniform1f(this.uni.uCurve, (o.scroll * TRAVEL) % CURVE_WRAP);
+      gl.uniform1f(this.uni.uHalf, TRACK_HALF * this.size);
+      gl.uniform1f(this.uni.uRoadX, 1 / (2 * TRACK_HALF * ROAD_MARGIN));
       gl.uniform1f(this.uni.uBlur, Math.min(o.dScroll || 0, (o.speed || 0) / 30) * TRAVEL);
       gl.uniform1f(this.uni.uLateral, o.lateral || 0);
       gl.uniform1f(this.uni.uDusk, o.dusk || 0);

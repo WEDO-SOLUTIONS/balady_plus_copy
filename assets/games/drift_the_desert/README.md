@@ -270,8 +270,8 @@ So the plane is two triangles with the mapping done per pixel:
   centred on the track and blended in through the same wobbling edge the
   painted track uses — no clip, no second pass.
 
-The plane is rendered into an offscreen GL canvas at nine tenths of device
-resolution and no more than 1.25 MP, and blitted in with one `drawImage`,
+The plane is rendered into an offscreen GL canvas at device resolution and no
+more than 1.7 MP, and blitted in with one `drawImage`,
 which leaves the rest of the renderer untouched. A device that cannot hold the
 frame gets fewer ground pixels rather than a slideshow. If WebGL is missing,
 the context is lost, or the textures are cross-origin (a WebView running the
@@ -283,9 +283,29 @@ the download and the fills — so the evening is a multiply over the same sand,
 band by band, fading out with the same ramp so it never spills onto the plates
 above.
 
-The **track** is the same mapping again, sampled in the same shader with the
-tile centred on the track's centre line rather than on the frame, so the baked
-ruts stay under the wheels. A
+The **track** is the same mapping again, sampled in the same shader. Three
+things about it are worth knowing.
+
+It is a **road, not a trapezoid**. The width used to be fitted to the screen —
+a fraction of the frame at the car, a larger fraction at the horizon — which
+made it nearly three times wider in the world at the far end than at the near
+one. Everything lined up against its edges therefore slid sideways on the way
+in, and the texture had to stretch to fit. The half-width is a constant in
+world texels now and only the projection narrows it.
+
+It **bends**, over hundreds of metres. The meander used to be baked into the
+texture, where the longest wavelength available is one tile — about five
+metres of desert, which arrives twice a second and reads as the road snaking.
+It is a property of the centre line now: two long sines of absolute distance,
+measured relative to the car's own place on them so the car stays on the road,
+and computed identically in `js/ground.js` and in its shader so the painted
+edges and the textured surface cannot part company.
+
+Its tile spans **the road** rather than two screen widths, which is twice the
+texels across the part of the frame the player actually looks at. That makes a
+texel about half as wide as it is long, so the bake lays its gravel out on a
+lattice with fewer cells across than along — stones come out round on screen
+rather than stretched into lozenges. A
 desert track in Saudi is not a road: it is a braid of tyre ruts worn through
 the loose sand into the crust underneath, so the texture is seven meandering
 grooves with tread in the bottom of them, berms of thrown sand along their
@@ -335,11 +355,11 @@ whatever the car was doing.
 Three more passes sit on the floor, all of them live because they have to
 move with the car rather than slide sideways under parallax:
 
-- **Dune flanks** either side of the track. The reference photograph is not a
-  car on a plain, it is a car in a trough: the sand rises away from the wheel
-  tracks on both sides, lit along one crest and in shadow along the other.
-  That is painted as light rather than built as geometry, which keeps the
-  texture underneath.
+- **Dune flanks** either side of the track, in the painted fallback only.
+  Sized correctly in the world, a metre-and-a-half bank beside the road covers
+  a large part of the near frame — and a wash cannot occlude what is behind
+  it, so over the textured floor all it did was lay a translucent wedge across
+  the sand. The ground texture and the road's own berms carry the shoulder.
 - **The outcrops the track runs between** (`img/bg/cliffs.png`, four cells of
   1024 px): flat caps of hard limestone over fluted vertical faces with an
   apron of talus, the way the Tuwaiq escarpment breaks up. They stand four to

@@ -193,12 +193,19 @@
       var t = W.TD / Math.max(depth, W.TD * 0.02);
       var s = 0.035 + 0.965 * t;
       var a = W.A0 * t;
+      // The road bends, and everything standing beside it bends with it.
+      // js/ground.js computes the same curve in its shader.
+      // Measured against the car rather than the camera: the car sits at the
+      // bottom of the frame, one frame-depth in front of the eye, and it is
+      // the car that has to stay on the road.
+      var bend = Ground.curveAt
+        ? Ground.curveAt(depth, W.travelCurve, W.size || 2048, W.TD) : 0;
       var cx = this.w * 0.5 - (lean || 0) * this.w * 0.06 * (1 - s);
       return {
         t: t,
         s: s,
         a: a,
-        x: cx + (lateral || 0) * a,
+        x: cx + (bend + (lateral || 0)) * a,
         y: this.horizon + W.span * t
       };
     },
@@ -604,11 +611,17 @@
 
     /* ------------------------------------------------------------ track */
 
-    /** Half-width of the track at depth `d`, and the x it is centred on. */
-    trackAt: function (d, lateral) {
-      var p = this.project(d);
-      var cx = lerp(this.w * 0.5 - lateral * this.w * 0.06, this.w * 0.5, p.s);
-      return { y: p.y, s: p.s, cx: cx, half: lerp(this.w * 0.055, this.w * 0.95, p.s) * 0.5 };
+    /** Half-width of the track at depth parameter `d`, and the x it is
+        centred on. The width is fixed in the world and only the projection
+        narrows it: fitting a trapezoid to the screen instead, as this used
+        to, made the road nearly three times wider in the world at the horizon
+        than at the car, and everything lined up against its edges slid
+        sideways on the way in. */
+    trackAt: function (d, lean) {
+      var t = Math.pow(clamp(d, 0, 1), 2.35);
+      var W = this.world;
+      var p = this.place(W.TD / Math.max(t, 0.0008), 0, lean);
+      return { y: p.y, s: p.s, t: p.t, a: p.a, cx: p.x, half: W.halfTexels * p.a };
     },
 
     /** Wobble of the track's edge at depth parameter `d` — the drift of loose
@@ -617,7 +630,7 @@
         the camera with everything else. js/ground.js reads the same depth. */
     edgeNoise: function (d, side) {
       var t = Math.pow(clamp(d, 0.001, 1), 2.35);
-      var w = (this.world.TD / t + this.world.travel) * 0.0016 + (side > 0 ? 31.7 : 0);
+      var w = (this.world.TD / t + this.world.travelCurve) * 0.00042 + (side > 0 ? 31.7 : 0);
       return (Math.sin(w) * 0.6 + Math.sin(w * 2.7 + 1.3) * 0.3 + Math.sin(w * 6.1) * 0.1);
     },
 
@@ -635,12 +648,12 @@
         var i, t, p;
         for (i = 0; i <= STEPS; i++) {
           t = self.trackAt(i / STEPS, lateral);
-          p = t.cx - t.half * (1 - self.edgeNoise(i / STEPS, -1) * 0.13 * t.s);
+          p = t.cx - t.half * (1 - self.edgeNoise(i / STEPS, -1) * 0.07);
           if (i === 0) ctx.moveTo(p, t.y); else ctx.lineTo(p, t.y);
         }
         for (i = STEPS; i >= 0; i--) {
           t = self.trackAt(i / STEPS, lateral);
-          p = t.cx + t.half * (1 - self.edgeNoise(i / STEPS, 1) * 0.13 * t.s);
+          p = t.cx + t.half * (1 - self.edgeNoise(i / STEPS, 1) * 0.07);
           ctx.lineTo(p, t.y);
         }
         ctx.closePath();
@@ -659,7 +672,7 @@
       // away the one part of the frame with real grain in it. With the road
       // texture in as well it drops to a wash that only feathers the edges
       // and carries the fade into the horizon.
-      ctx.globalAlpha = this.floorTextured ? (Ground.roadReady ? 0.12 : 0.52) : 1;
+      ctx.globalAlpha = this.floorTextured ? (Ground.roadReady ? 0.18 : 0.52) : 1;
       ctx.fill();
       ctx.globalAlpha = 1;
       ctx.clip();
@@ -756,7 +769,15 @@
          With the sun up and to the left, the left flank turns towards it and
          the right flank away, so one is washed with warm light and the other
          with a cool shadow. */
+      /* Painted flanks only where there is no textured floor. Sized correctly
+         in the world, a metre-and-a-half bank beside the road covers a large
+         part of the near frame — and a wash cannot occlude what is behind it,
+         so all it did was lay a translucent wedge over the sand. The ground
+         texture and the road's own berms carry the shoulder now. */
+      if (this.floorTextured) return;
+
       ctx.save();
+      var W = this.world;
       for (var bs = -1; bs <= 1; bs += 2) {
         var lit = bs < 0;
         var crest = [];
@@ -764,11 +785,14 @@
         for (var bi = 0; bi <= STEPS; bi++) {
           var bd = bi / STEPS;
           var bt = this.trackAt(bd, lateral);
-          var fx = bt.cx + bs * bt.half * (1 - this.edgeNoise(bd, bs) * 0.13 * bt.s);
-          // The crest sits out beyond the shoulder and stands above it, both
-          // by the same perspective scale, and wanders as the sand does.
-          var rise = this.h * (0.26 + this.edgeNoise(bd * 0.42 + 3.1, bs) * 0.075) * bt.s;
-          crest.push([fx + bs * bt.half * 0.62, bt.y - rise]);
+          var fx = bt.cx + bs * bt.half * (1 - this.edgeNoise(bd, bs) * 0.07);
+          // The crest sits a fixed distance out in the world and stands a
+          // fixed height above the sand — both in texels, like everything
+          // else out there. Sized to the screen instead, as this was, it
+          // sheared into a pair of translucent wedges once the road stopped
+          // being a trapezoid fitted to the frame.
+          var rise = (0.30 + this.edgeNoise(bd * 0.42 + 3.1, bs) * 0.08) * W.size * bt.a;
+          crest.push([fx + bs * W.halfTexels * 0.85 * bt.a, bt.y - rise]);
           foot.push([fx, bt.y]);
         }
 
@@ -864,10 +888,12 @@
 
       // Beyond the shoulder, and further out the closer it is, so they leave
       // at the sides of the frame instead of marching over the car.
+      // A fixed number of road-widths out, in world texels — so a rock keeps
+      // its distance from the road all the way in instead of drifting across
+      // the sand as the projection changed the road's width under it.
       var side = i % 2 ? 1 : -1;
-      var halfTexels = lerp(this.w * 0.055, this.w * 0.95, p.s) * 0.5 / p.a;
-      var out = 1.35 + hash(seed + 3.3 + pass) * 1.5 + p.t * 1.1;
-      var x = p.x + side * halfTexels * out * p.a;
+      var out = 1.5 + hash(seed + 3.3 + pass) * 3.2;
+      var x = p.x + side * W.halfTexels * out * p.a;
       if (x < -this.w * 0.6 || x > this.w * 1.6) return null;
 
       return {
@@ -906,16 +932,20 @@
       if (p.t > 1.4) return null;
 
       var side = i % 2 ? 1 : -1;
-      var halfTexels = lerp(this.w * 0.055, this.w * 0.95, p.s) * 0.5 / p.a;
-      var out = 4.6 + hash(seed + 3.3 + pass) * 6.5;
-      var x = p.x + side * halfTexels * out * p.a;
-      if (x < -this.w * 1.2 || x > this.w * 2.2) return null;
+      // Well off the road — sixteen to eighty metres — so they sweep past the
+      // sides of the frame instead of crowding the vanishing point.
+      var out = 14 + hash(seed + 3.3 + pass) * 20;
+      var x = p.x + side * W.halfTexels * out * p.a;
+      if (x < -this.w * 1.6 || x > this.w * 2.6) return null;
 
       return {
         cliff: true,
         d: p.t, x: x, y: p.y, s: p.t, seed: seed + pass * 0.37, side: side,
         sprite: Math.floor(hash(seed + 12.9 + pass) * 4) % 4,
-        size: (0.55 + hash(seed + 9.7 + pass) * 0.55) * p.t * this.h * 1.25,
+        // Thirteen to thirty metres tall, in world texels rather than in
+        // fractions of the frame: they were three and a half before, which is
+        // a boulder, and a row of boulders on the horizon reads as a fence.
+        size: (2.6 + hash(seed + 9.7 + pass) * 3.2) * (W.size || 2048) * p.a,
         fog: clamp(1 - p.t / 0.22, 0, 1) * 0.80
       };
     },
