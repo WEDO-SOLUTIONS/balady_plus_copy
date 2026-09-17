@@ -116,14 +116,6 @@ room.putalpha(fade)
 room.resize((880, int(880 * H / W)), Image.LANCZOS).save(
     OUT / "room.webp", quality=84, method=6)
 
-# ---------- 1b. a tiny blurred copy, used as the full-screen backdrop ----------
-# Scaled back up by the browser it gives a smooth blur for a couple of KB, and
-# costs nothing at runtime - no filter to recompute while it pans.
-blur = Image.open(OUT / "room.webp").convert("RGB")
-blur = blur.resize((176, int(176 * blur.height / blur.width)), Image.LANCZOS)
-blur = blur.filter(ImageFilter.GaussianBlur(5))
-blur.save(OUT / "room-blur.webp", quality=72, method=6)
-
 # ---------- 2. the crest: scroll, shield and plaque, emptied of text ----------
 P = (258, 80, 682, 218)
 crest = src.crop(P).copy()
@@ -173,6 +165,6 @@ for name, img in (("corner-tl", corner.transpose(Image.FLIP_TOP_BOTTOM)),
                   ("corner-br", corner.transpose(Image.FLIP_LEFT_RIGHT))):
     img.save(OUT / (name + ".webp"), quality=92, method=6)
 
-for n in ("room.webp", "room-blur.webp", "crest.webp", "corner-tl.webp", "corner-tr.webp", "corner-bl.webp", "corner-br.webp",
+for n in ("room.webp", "crest.webp", "corner-tl.webp", "corner-tr.webp", "corner-bl.webp", "corner-br.webp",
           "btn-gold.webp", "btn-outline.webp"):
     print(n, Image.open(OUT / n).size, (OUT / n).stat().st_size // 1024, "KB")
