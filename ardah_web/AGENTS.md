@@ -84,6 +84,25 @@ decision it exists to settle: [`docs/ardah-concept.md`](../docs/ardah-concept.md
   errors, failed loads and the fallback path. `node deck/fps.js` measures the
   frame rate with and without artwork — never take a frame rate measured while
   screenshotting, capture stalls the compositor and the number is meaningless.
+- **Two hits of the same voice on the same beat is one hit, 6 dB up.** They sum
+  in phase. `chart.js` goes through `pushDrum()`, which merges anything of the
+  same voice inside 12 ms and keeps the louder — write accents where they
+  belong musically and let it decide what that means when the groove is already
+  there. If the safety limiter in `audio.js` ever engages, look for this first:
+  it is set so that the loudest moment in the song passes under it untouched.
+- **The drums are modelled, not sampled or generated.** Inharmonic Bessel
+  modes, a pitch drop at the strike, a transient that is not the skin, a body.
+  Anything added to the section is a call to `_skin()` with those four, not a
+  new oscillator with an envelope. Variation comes from the engine's seeded
+  PRNG, never `Math.random`, so the offline render stays reproducible.
+- **Ornaments may be humanised; groove hits may not.** A groove hit is the cue
+  a judged note rides on, so its time is the chart's time exactly. The ±5 ms
+  scatter belongs to the ornament layer and is baked into the chart at build
+  time, not applied at playback.
+- **No synthetic chant, ever.** The concept doc flags it twice (§11.1, §11.2):
+  a mis-scanned chant is a PR incident and the rights are a separate track.
+  Percussion and claps are fair game; a voice is licensed or commissioned, or
+  it does not appear.
 - **`js/judge.js` stays pure.** No canvas, no audio, no globals: it is the part
   a native rewrite would port line for line, and the part worth unit tests.
 - **Mute is the music bus, never the master.** `AudioEngine.setMuted` ramps

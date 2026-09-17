@@ -86,6 +86,22 @@ screenshot lands. `motion.js` pins the sync meter *and* clears `judge.broken`
 — screenshots starve requestAnimationFrame, the robot player drops notes, and
 an unattended run would otherwise end mid-capture.
 
+## Hearing the drum line
+
+`audio_preview.js` renders the game's own audio engine through an
+`OfflineAudioContext` — the real engine, the real chart, the same code path the
+conductor uses — and writes WAVs plus a level report:
+
+```bash
+node deck/audio_preview.js      # needs the game served on 8123
+```
+
+Three sections (intro/verse, chorus, the raise) and one clip of every voice on
+its own, soft then full, with decay and spectral centroid measured per voice.
+Offline because it renders faster than real time, the sandbox has no audio
+device, and it is deterministic: with the engine's seeded PRNG, two runs give
+byte-identical files, so a change to the synthesis can be diffed.
+
 ## Verifying the deck without PowerPoint
 
 LibreOffice cannot load any file in this sandbox, so `preview.py` renders the

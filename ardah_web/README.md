@@ -644,8 +644,9 @@ Real — and intended to survive into production:
 
 Placeholder — replace before anything ships:
 
-- **All percussion is synthesised** in `js/audio.js` (oscillators and filtered
-  noise). Real Ardah percussion and chant must be licensed or commissioned.
+- **All percussion is synthesised** in `js/audio.js` — modelled on the real
+  section rather than sampled from it (see below). Real Ardah percussion and,
+  above all, the chant must be licensed or commissioned.
 - **The stage is drawn with canvas paths** — a Diriyah-style fort with a lit
   gate, palms, green banners, brazier fires, a tiled plaza, two facing rows of
   five, and a tabl player and an oud player on stools. Stylised on purpose,
@@ -655,6 +656,99 @@ Placeholder — replace before anything ships:
   recording.
 - No backend, no leaderboard, no tutorial gate, no seasonal gating. Scores live
   in `localStorage`.
+
+## The drum line
+
+The sound is synthesised, and the thing being synthesised is a specific
+ensemble rather than "some drums".
+
+A Najdi Ardah drum section is not one instrument, and the character comes from
+the relationship between two sizes of drum:
+
+| | what it is | what it does |
+|---|---|---|
+| **takhmir** | the big double-headed drums, curved stick on one head, hand on the other | the slow heavy pulse, and almost nothing else — what you hear from across the square |
+| **thakir** | the small tight drums | fill every gap between the takhmir; they are why the music feels fast while the big drums stay slow |
+| **tar** | the frame drum, `dum` in the centre and `tak` at the rim | answers, and stops the bar from repeating itself |
+
+Only three of those are lanes, because three lanes is a game decision, not a
+musical one. Put the thakir fills in a lane and the chart becomes a 16th-note
+wall nobody can play; leave them out and three drums a bar is a march. So they
+live in an **ornament layer** in `chart.js`: scheduled on the same clock as
+everything else, never turned into a note. The claps are the row's own hands
+and belong to the chorus — that is the moment the crowd joins in.
+
+### Why the drums are not oscillators with an envelope
+
+That is what a drum machine sounds like. `_skin()` builds four things, and each
+of them is audible by its absence:
+
+- **Inharmonic modes.** A circular membrane rings at 1, 1.59, 2.14, 2.30, 2.65
+  × its fundamental — the zeros of a Bessel function, not a harmonic series.
+  That ratio set is why a drum has a pitch you can almost name but never quite.
+- **A pitch drop at the strike.** The blow stretches the skin, so it starts
+  sharp and settles within tens of milliseconds. Take this out and the biggest
+  drum in the world is a sine wave. The takhmir starts a fifth and a half sharp
+  and settles over 55 ms; that one number is most of its character.
+- **A transient that is not the skin.** Stick on hide, palm on rim. It is most
+  of what tells you *how* the drum was hit.
+- **A body.** The shell and the air behind the skin, ringing around one
+  frequency.
+
+Measured alone, that gives six voices that are actually distinct rather than
+three settings of one drum:
+
+| voice | decay to −40 dB | spectral centroid |
+|---|---|---|
+| takhmir | 640 ms | 127 Hz |
+| tar (`dum`) | 420 ms | 236 Hz |
+| thakir | 300 ms | 305 Hz |
+| tar (`tak`) | 240 ms | 564 Hz |
+| claps | 440 ms | 2.4 kHz |
+| sabres | 580 ms | 2.8 kHz |
+
+### The three things that make it a row of people, not a drum machine
+
+- **The courtyard.** An Ardah happens outdoors between stone walls. The
+  convolution impulse is generated, not sampled (an IR is a file): 1.1 s of
+  noise under an exponential decay, with a handful of discrete early
+  reflections in the first 60 ms — walls close enough to hear individually —
+  and a tail that darkens as it decays, because stone and air eat treble first.
+- **The claps are eleven pairs of hands**, scattered across 28 ms with
+  different levels and filter centres. The spread *is* the crowd; one loud clap
+  is one person.
+- **Nothing repeats exactly.** Every mode is detuned by a hair and every noise
+  burst starts somewhere else in the buffer, all from a seeded PRNG rather than
+  `Math.random` — so it varies, and it still reproduces.
+
+The ornament layer is scattered by ±5 ms too, because a section that is
+sample-accurate sounds like a machine. The scatter is **baked into the chart**
+rather than applied at playback, so "the drums cannot drift from the chart"
+stays literally true — and it is applied only to ornaments. A groove hit is the
+cue a player is judged against; moving one by 5 ms is a bug wearing a
+musician's hat.
+
+### What is deliberately missing
+
+The chanted poem. It is the heart of a real Ardah, and it is exactly what the
+concept doc flags twice: the chant needs explicit rights (§11.2), and a
+mis-scanned chant is a PR incident rather than a bug (§11.1). A synthetic voice
+singing approximate Arabic would be the worst of both. Hand-claps are in,
+because a clap has no scansion.
+
+### Levels
+
+`deck/audio_preview.js` renders the real engine through an `OfflineAudioContext`
+and reports peak, RMS and a voice census per section. Current bed: peak −2.5 to
+−3.3 dBFS, RMS ≈ −22.5 dBFS, and the safety limiter at the end of the chain
+hangs unused — the loudest moment in the song (the flourish, measured with the
+limiter bypassed) reaches −2.1 dBFS against a −1 dBFS threshold.
+
+That is also how a long-standing bug surfaced: three places in the chart
+builder wrote an accent on a slot the groove already played, so two identical
+drums landed on the same sample — 6 dB up, perfectly in phase. It read as "the
+flourish is loud". `pushDrum()` now merges anything of the same voice inside
+12 ms and keeps the louder, because two hits that close are not two hits.
 
 ## Inside the superapp
 
@@ -679,7 +773,7 @@ css/ardah.css     menus; WebView hardening (no selection, no overscroll, safe ar
 js/i18n.js        ar/en strings, RTL flip (gameplay stays LTR by design)
 js/bridge.js      dsBridge adapter, no-op in a browser
 js/assets.js      optional artwork loader; the game never waits on it
-js/audio.js       synthesised tabl / swords / tar + metronome
+js/audio.js       the synthesised drum section, courtyard reverb, metronome
 js/scene.js       the stage: fort, palms, banners, braziers, rows, musicians
 js/chart.js       chart format, groove generator, validator
 js/conductor.js   the audio clock and schedule-ahead loop
