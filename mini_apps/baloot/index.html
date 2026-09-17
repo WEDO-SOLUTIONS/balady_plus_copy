@@ -936,6 +936,14 @@ const I18N = {
     trickWon:"أخذها",
     projSra:"سرا", proj50:"خمسين", proj100:"مية", proj400:"أربعمية", projBaloot:"بلوت",
     ashkal:"أشكل", ashkalHint:"صن يشتريه شريكك — هو يأخذ الورقة المكشوفة", ekka:"إكه",
+    dbl:"دبل", triple:"ثري", quad:"فور", gahwa:"قهوة",
+    lockedTag:"مقفل", openTag:"مفتوح", skip:"لا شيء",
+    dblTitle:"المضاعفة",
+    dblSubDouble:"تقدر تدبل على المشتري — والمقفل يمنع فتح الحكم",
+    dblSubTriple:"الخصم دبّل — ترد بثري؟",
+    dblSubQuad:"المشتري رد بثري — تطلب فور؟",
+    dblSubGahwa:"الخصم طلب فور — قهوة تكسب اللعبة كاملة",
+    doubledNote:"اللعبة مضاعفة", gahwaNote:"قهوة — اللعبة كاملة للفائز",
     roundOver:"انتهت الجولة", gameOver:"انتهت اللعبة",
     tricks:"أبناط الأكلات", gamePts:"قيد الأكلات", projects:"مشاريع", raw:"نقاط خام", final:"النتيجة",
     tieNote:"تعادل — الأفضلية لفريق المشتري",
@@ -981,6 +989,14 @@ const I18N = {
     trickWon:"takes it",
     projSra:"Sra", proj50:"Fifty", proj100:"Hundred", proj400:"Four Hundred", projBaloot:"Baloot",
     ashkal:"Ashkal", ashkalHint:"A Sun bought for your partner — they take the face-up card", ekka:"Ekka",
+    dbl:"Double", triple:"Triple", quad:"Quadruple", gahwa:"Gahwa",
+    lockedTag:"locked", openTag:"open", skip:"No thanks",
+    dblTitle:"Doubling",
+    dblSubDouble:"You can double the buy — locked play bars trump leads",
+    dblSubTriple:"They doubled — answer with Triple?",
+    dblSubQuad:"The buyer tripled — go Quadruple?",
+    dblSubGahwa:"They quadrupled — Gahwa wins the whole match",
+    doubledNote:"Doubled round", gahwaNote:"Gahwa — the winner takes the match",
     roundOver:"Round over", gameOver:"Game over",
     tricks:"Card points", gamePts:"Game points", projects:"Projects", raw:"Raw points", final:"Score",
     tieNote:"Tie — broken in the buyer's favour",
@@ -1076,7 +1092,12 @@ function trickWinner(plays, st){
 
 /* ---- legal moves ---- */
 function legalCards(hand, trick, st){
-  if (trick.length === 0) return hand.slice();
+  if (trick.length === 0){
+    // مقفل: in a locked Hokum nobody may lead a trump unless that is all they hold
+    if (st.locked && st.mode === "hokum" && hand.some(c => c.s !== st.trump))
+      return hand.filter(c => c.s !== st.trump);
+    return hand.slice();
+  }
   const lead = trick[0].card.s;
   const sameSuit = hand.filter(c => c.s === lead);
 
@@ -1247,7 +1268,7 @@ function resolveProjects(handsAtDeal, st, firstSeat){
     }
   }
 
-  const res = {teamPoints:[0,0], announcements:[]};
+  const res = {teamPoints:[0,0], baloot:[0,0], announcements:[]};
   const shown = [];
   if (best){
     const team = bestSeat % 2;
@@ -1270,7 +1291,7 @@ function resolveProjects(handsAtDeal, st, firstSeat){
       && (x.p.seq ? x.p.ids.includes(st.trump+"K") && x.p.ids.includes(st.trump+"Q")
                   : (x.p.four === "K" || x.p.four === "Q")));
     if (bSeat !== undefined && !swallowed){
-      res.teamPoints[bSeat % 2] += ptsOf("baloot","hokum");
+      res.baloot[bSeat % 2] += ptsOf("baloot","hokum");
       res.announcements.push({seat:bSeat, kind:"baloot", value:ptsOf("baloot","hokum")});
     }
   }
@@ -1309,9 +1330,14 @@ function scoreRound(st){
   const mode = st.mode;
   const total = mode === "sun" ? CFG.sunTotal : CFG.hokumTotal;
   const bidTeam = st.bidder % 2, defTeam = 1 - bidTeam;
+  const mult = st.mult || 1;
+  // البند الرابع ٤-١٠: the side that did not raise last counts. With no raise
+  // at all that is the defenders.
   const countTeam = (st.countTeam === 0 || st.countTeam === 1) ? st.countTeam : defTeam;
   const rawTricks = st.rawPoints.slice();
   const proj = st.projects.teamPoints.slice();       // game points already
+  const bal  = (st.projects.baloot || [0,0]).slice();
+  const projAll = proj[0] + proj[1], balAll = bal[0] + bal[1];
   const kabootTeam = st.tricksWon[0] === 8 ? 0 : (st.tricksWon[1] === 8 ? 1 : -1);
 
   const cards = [0,0];
@@ -1321,28 +1347,38 @@ function scoreRound(st){
   let final = [0,0], note = null, winner = -1;
 
   if (kabootTeam >= 0){
-    // كبوت: all eight tricks. Only the kabooting side's own projects count.
-    final[kabootTeam] = (mode === "sun" ? CFG.kabootSun : CFG.kabootHokum) + proj[kabootTeam];
+    // كبوت: all eight tricks, 44 or 25 and the kabooting side's own projects.
+    // البند السابع ٧-٧ pays the same whether or not the round was doubled.
+    final[kabootTeam] = (mode === "sun" ? CFG.kabootSun : CFG.kabootHokum)
+                      + proj[kabootTeam] + bal[kabootTeam];
     winner = kabootTeam;
     note = "kaboot";
   } else {
-    const sum = [cards[0] + proj[0], cards[1] + proj[1]];
+    const sum = [cards[0] + proj[0] + bal[0], cards[1] + proj[1] + bal[1]];
     if (sum[0] === sum[1]){
       winner = tieWinner(rawTricks[countTeam], mode, countTeam, bidTeam);
       note = "tie";
     } else {
       winner = sum[0] > sum[1] ? 0 : 1;
     }
-    if (winner === bidTeam){
+    if (st.gahwa){
+      // قهوة: the winner takes the whole match, there is nothing to add up
+      note = "gahwa";
+    } else if (mult > 1){
+      // A doubled round is all or nothing. Cards carry the multiplier, shown
+      // projects are doubled and no more, and Baloot is always a flat two.
+      final[winner] = total * mult + projAll * 2 + balAll;
+      note = winner === bidTeam ? "doubled" : "losing";
+    } else if (winner === bidTeam){
       final = sum;                                   // the buy stood: each side keeps what it made
     } else {
-      // خسارة: the buyer failed, so the defenders take the round and every project in it
-      final[defTeam] = total + proj[0] + proj[1];
-      final[bidTeam] = 0;
+      // خسارة: the buyer failed, so the defenders take the round and everything in it
+      final[defTeam] = total + projAll + balAll;
       note = "losing";
     }
   }
-  return {final, rawTricks, cards, projPts: proj, note, kabootTeam, countTeam, winner};
+  return {final, rawTricks, cards, projPts: proj, balootPts: bal,
+          note, kabootTeam, countTeam, winner, mult, gahwa: !!st.gahwa};
 }
 
 /* ---- state factory ---- */
@@ -1518,6 +1554,23 @@ const AI = {
     // the dealer is the last to speak: rather than force a redeal, take the best suit
     if (isLastSeat) return {type:"hokum", suit:bestSuit};
     return {type:"pass"};
+  },
+
+  // البند السابع. Bots double a buy they think they can beat, and lock the
+  // play when they hold almost no trumps of their own. They never say قهوة -
+  // one call would end the whole match.
+  double(hand, st, seat, kind){
+    let s = 0;
+    for (const c of hand) s += isTrump(c, st) ? PTS_TRUMP[c.r] : PTS_PLAIN[c.r];
+    const trumps = st.mode === "hokum" ? hand.filter(c => c.s === st.trump).length : 0;
+    s += trumps * 6 + hand.filter(c => c.r === "A").length * 5;
+    const locked = trumps <= 2;      // few trumps of your own: stop the buyer drawing them
+    // thresholds sit at the top of the distribution of random hands (p95 and up),
+    // so a double stays the exception it is at a real table
+    if (kind === "double") return s >= 78 ? {type:"double", locked} : null;
+    if (kind === "triple") return s >= 84 ? {type:"triple"} : null;
+    if (kind === "quad")   return s >= 94 ? {type:"quad", locked} : null;
+    return null;
   },
 
   play(hand, trick, st, seat){
@@ -1713,6 +1766,7 @@ const Game = {
       handsAtDeal:null, projects:{teamPoints:[0,0], announcements:[]},
       unseen:[], trickNo:0, lastWinner:-1
     };
+    UI.hide("#m-bid");            // a panel left over from an abandoned deal
     UI.clearTrick();
     UI.setMode(null);
     UI.renderHand();
@@ -1826,9 +1880,80 @@ const Game = {
       await wait(pace(420));
     }
 
+    await this.doublePhase();
+
     R.turn = (G.dealer + 1) % 4;
     R.trickNo = 0;
     this.step();
+  },
+
+  /* ---------------- doubling: دبل / ثري / فور / قهوة ---------------- */
+  // ٧-٢: a Sun may only be doubled by a side under a hundred against a side
+  // that has passed it. A Hokum is open from the first card (٧-٣).
+  canDoubleNow(){
+    const R = this.R, G = this.G;
+    if (R.mode !== "sun") return true;
+    const bidTeam = R.bidder % 2;
+    return G.scores[bidTeam] > 100 && G.scores[1 - bidTeam] <= 100;
+  },
+
+  askDouble(seat, kind){
+    const R = this.R, G = this.G;
+    if (!G.seats[seat].human){
+      return wait(pace(420)).then(() => AI.double(R.hands[seat], R, seat, kind));
+    }
+    return new Promise(done => UI.showDoublePanel(seat, kind, done));
+  },
+
+  async announceRaise(seat, kind, locked){
+    const R = this.R;
+    const bidTeam = R.bidder % 2;
+    R.mult = kind === "double" ? 2 : kind === "triple" ? 3 : kind === "quad" ? 4 : R.mult;
+    if (kind === "gahwa") R.gahwa = true;
+    // whoever spoke last hands the count to the other side (٤-١٠)
+    R.countTeam = (seat % 2 === bidTeam) ? 1 - bidTeam : bidTeam;
+    if (kind === "double" || kind === "quad") R.locked = !!locked;
+    if (kind === "triple" || kind === "gahwa") R.locked = false;   // always open (٧-٥)
+    Sound.bid();
+    UI.bubble(seat, T(kind === "double" ? "dbl" : kind === "triple" ? "triple"
+                    : kind === "quad" ? "quad" : "gahwa")
+                    + (R.mode === "hokum" && R.locked ? " · " + T("lockedTag") : ""), true);
+    UI.renderScores();
+    await wait(pace(620));
+  },
+
+  async doublePhase(){
+    const R = this.R;
+    const live = () => this.R === R;        // a new deal while we waited abandons this one
+    R.mult = 1; R.locked = false; R.gahwa = false;
+    const bidTeam = R.bidder % 2;
+    R.countTeam = 1 - bidTeam;
+    if (!this.canDoubleNow()) return;
+
+    // a defender doubles, in turn order from the dealer's right
+    const order = [0,1,2,3].map(k => (this.G.dealer + 1 + k) % 4);
+    let doubler = -1;
+    for (const seat of order){
+      if (seat % 2 === bidTeam) continue;
+      const a = await this.askDouble(seat, "double");
+      if (!live()) return;
+      if (a && a.type === "double"){ doubler = seat; await this.announceRaise(seat, "double", a.locked); break; }
+    }
+    if (doubler < 0 || R.mode === "sun" || !live()) return;   // ٧-١: no ثري or فور in Sun
+
+    const a3 = await this.askDouble(R.bidder, "triple");
+    if (!live()) return;
+    if (!a3 || a3.type !== "triple") return;
+    await this.announceRaise(R.bidder, "triple");
+
+    const a4 = await this.askDouble(doubler, "quad");
+    if (!live()) return;
+    if (!a4 || a4.type !== "quad") return;
+    await this.announceRaise(doubler, "quad", a4.locked);
+
+    const a5 = await this.askDouble(R.bidder, "gahwa");
+    if (!live()) return;
+    if (a5 && a5.type === "gahwa") await this.announceRaise(R.bidder, "gahwa");
   },
 
   /* ---------------- trick play ---------------- */
@@ -1919,6 +2044,10 @@ const Game = {
     const res = scoreRound(R);
 
     const gained = [res.final[0], res.final[1]];
+    if (res.note === "gahwa" && res.winner >= 0){
+      // قهوة: the winning team takes the whole match there and then (٧-٤)
+      gained[res.winner] = Math.max(CFG.target - G.scores[res.winner], 0);
+    }
     G.scores[0] += gained[0];
     G.scores[1] += gained[1];
     G.history.push({round:G.roundNo, mode:R.mode, trump:R.trump, bidder:R.bidder, res, gained});
@@ -1957,7 +2086,9 @@ const UI = {
     $("#score-us").textContent   = G.scores[0];
     $("#score-them").textContent = G.scores[1];
     $("#st-deal").textContent    = T("dealNo", {n:G.roundNo});
-    $("#st-target").textContent  = T("toTarget", {n:CFG.target});
+    const R = Game.R;
+    $("#st-target").textContent  = T("toTarget", {n:CFG.target})
+      + (R && R.mult > 1 ? " • ×" + R.mult + (R.locked ? " " + T("lockedTag") : "") : "");
     $("#crest-badge").textContent = G.roundNo;
   },
 
@@ -2231,6 +2362,47 @@ const UI = {
     this.show("#m-bid");
   },
 
+  /* ---------------- doubling panel ---------------- */
+  showDoublePanel(seat, kind, done){
+    const R = Game.R, body = $("#bid-body");
+    const sub = kind === "double" ? "dblSubDouble" : kind === "triple" ? "dblSubTriple"
+              : kind === "quad" ? "dblSubQuad" : "dblSubGahwa";
+    const name = kind === "double" ? "dbl" : kind === "triple" ? "triple"
+               : kind === "quad" ? "quad" : "gahwa";
+
+    body.innerHTML = "";
+    body.appendChild(el("h2", null, T("dblTitle")));
+    body.appendChild(el("p", "sub", T(sub)));
+
+    body.appendChild(el("div", "minilbl", LANG === "ar" ? "أوراقك" : "Your cards"));
+    const mh = el("div", "minihand");
+    for (const c of this.sortHand(R.hands[seat], R)) mh.appendChild(cardNode(c, R));
+    body.appendChild(mh);
+
+    const answer = a => { UI.hide("#m-bid"); done(a); };
+    const row = el("div", "row");
+    const lockable = R.mode === "hokum" && (kind === "double" || kind === "quad");
+    if (lockable){
+      const bo = el("button", "btn gold", T(name) + " · " + T("openTag"));
+      bo.onclick = () => answer({type:kind, locked:false});
+      const bl = el("button", "btn gold", T(name) + " · " + T("lockedTag"));
+      bl.onclick = () => answer({type:kind, locked:true});
+      row.appendChild(bo); row.appendChild(bl);
+    } else {
+      const b = el("button", "btn gold wide", T(name));
+      b.onclick = () => answer({type:kind});
+      row.appendChild(b);
+    }
+    body.appendChild(row);
+
+    const row2 = el("div", "row"); row2.style.marginTop = "8px";
+    const bp = el("button", "btn ghost", T("skip"));
+    bp.onclick = () => answer(null);
+    row2.appendChild(bp);
+    body.appendChild(row2);
+    this.show("#m-bid");
+  },
+
   /* ---------------- round result ---------------- */
   showRoundPanel(res, gained, over){
     const G = Game.G, R = Game.R, body = $("#round-body");
@@ -2241,6 +2413,10 @@ const UI = {
 
     if (res.note === "kaboot") body.appendChild(el("div", "hint", "🏆 " + T("kaboot")));
     if (res.note === "losing") body.appendChild(el("div", "hint", "⚠︎ " + T("losing")));
+    if (res.mult > 1 && res.note !== "gahwa")
+      body.appendChild(el("div", "hint", "×" + res.mult + " " + T("doubledNote")
+                        + (Game.R.locked ? " · " + T("lockedTag") : "")));
+    if (res.note === "gahwa")   body.appendChild(el("div", "hint", "☕ " + T("gahwaNote")));
     if (res.note === "tie")    body.appendChild(el("div", "hint", "= " + T("tieNote")));
 
     const tab = el("table", "rtab");
@@ -2249,7 +2425,8 @@ const UI = {
       "<tr><th></th><th>" + T("us") + "</th><th>" + T("them") + "</th></tr>" +
       "<tr><td>" + T("tricks") + "</td><td>" + res.rawTricks[0] + "</td><td>" + res.rawTricks[1] + "</td></tr>" +
       "<tr><td>" + T("gamePts") + "</td><td>" + res.cards[0] + "</td><td>" + res.cards[1] + "</td></tr>" +
-      "<tr><td>" + T("projects") + "</td><td>" + res.projPts[0] + "</td><td>" + res.projPts[1] + "</td></tr>" +
+      "<tr><td>" + T("projects") + "</td><td>" + (res.projPts[0] + res.balootPts[0]) +
+        "</td><td>" + (res.projPts[1] + res.balootPts[1]) + "</td></tr>" +
       "<tr class='" + (winTeam >= 0 ? "win" : "") + "'><td>" + T("final") + "</td>" +
         "<td>" + (winTeam === 0 ? "<b>" + gained[0] + "</b>" : gained[0]) + "</td>" +
         "<td>" + (winTeam === 1 ? "<b>" + gained[1] + "</b>" : gained[1]) + "</td></tr>" +
@@ -2642,6 +2819,15 @@ const RULES_AR = `
 <li>إذا كانت الأكلة لشريكك فارمِ ما شئت، إلا إن كنت ثالثاً على فتحة شريك يمكن قطعها؛ يعفيك منها الآكل أو نطق <b>إكه</b> (أعلى ورقة باقية من نوعها).</li>
 </ul>
 
+<h3>الدبل والثري والفور والقهوة</h3>
+<ul>
+<li>قبل أول ورقة يجوز لأحد الخصمين <b>الدبل</b> على الحكم، وله أن يجعل اللعب <b>مقفلاً</b> فلا يفتح أحد بالحكم إلا إذا كانت يده كلها حكماً.</li>
+<li>ويرد المشتري بـ<b>ثري</b>، ثم المدبّل بـ<b>فور</b> (مقفل أو مفتوح)، وأخيراً المشتري بـ<b>قهوة</b> وهي تكسب اللعبة كاملة.</li>
+<li>في الصن دبل فقط، ولا يجوز إلا إذا كان فريقك على مائة أو أقل وتجاوزها الفريق الآخر.</li>
+<li>الجولة المضاعفة كلها للفائز: ١٦ (أو ٢٦) × المضاعفة مع ضعف قيمة المشاريع المفروشة من الفريقين، والبلوت يبقى ٢، ولا شيء للخاسر.</li>
+<li>والمضاعفة تنقل العدّ: يَعُدّ الفريق الذي لم يتكلم أخيراً.</li>
+</ul>
+
 <h3>المشاريع</h3>
 <table>
 <tr><th>المشروع</th><th>حكم</th><th>صن</th></tr>
@@ -2655,7 +2841,7 @@ const RULES_AR = `
 
 <h3>الحساب</h3>
 <ul>
-<li>يَعُدّ أبناطه الفريق غير المشتري وحده. في <b>الحكم</b> تُقرَّب إلى أقرب عشرة والخمسة تنزل ثم ÷ ١٠، وفي <b>الصن</b> تُقرَّب إلى أقرب عشرة إلا إذا انتهت بخمسة فلا تُقرَّب ثم ÷ ٥.</li>
+<li>يَعُدّ أبناطه فريق واحد فقط: غير المشتري، أو فريق المشتري إذا دُبّلت اللعبة. في <b>الحكم</b> تُقرَّب إلى أقرب عشرة والخمسة تنزل ثم ÷ ١٠، وفي <b>الصن</b> تُقرَّب إلى أقرب عشرة إلا إذا انتهت بخمسة فلا تُقرَّب ثم ÷ ٥.</li>
 <li>ويأخذ فريق المشتري باقي قيد الجولة: <b>١٦</b> في الحكم و<b>٢٦</b> في الصن — فلا تُخرج الجولة أكثر مما فيها.</li>
 <li>تُضاف المشاريع فوق ذلك بقيمتها بالقيد.</li>
 <li><b>خسارة</b>: إذا نقص فريق المشتري عن الخصم أخذ الخصم الجولة كاملة ومعها كل المشاريع.</li>
@@ -2703,6 +2889,15 @@ Trump order: J &gt; 9 &gt; A &gt; 10 &gt; K &gt; Q &gt; 8 &gt; 7.</p>
 <li>You may throw away when your partner is winning — except as third hand behind a partner's lead that can still be beaten. An Ace, or a lead called <b>Ekka</b> (the highest card of its suit still out), frees you.</li>
 </ul>
 
+<h3>Double, Triple, Quadruple, Gahwa</h3>
+<ul>
+<li>Before the first card, a defender may <b>Double</b> a Hokum — and call <b>locked</b> play, where nobody may lead a trump unless their whole hand is trumps.</li>
+<li>The buyer may answer <b>Triple</b>, the doubler <b>Quadruple</b> (locked or open), and the buyer finally <b>Gahwa</b>, which wins the whole match.</li>
+<li>A Sun can only be doubled, and only while your side is at 100 or less and theirs is past it. No Triple, Quadruple or Gahwa in Sun.</li>
+<li>A doubled round is all or nothing: the winners take 16 (or 26) × the multiplier plus double the value of every project shown by either side, Baloot stays 2, and the losers take nothing.</li>
+<li>Raising also moves the count: the side that did not speak last counts its card points.</li>
+</ul>
+
 <h3>Projects</h3>
 <table>
 <tr><th>Project</th><th>Hokum</th><th>Sun</th></tr>
@@ -2716,7 +2911,7 @@ Trump order: J &gt; 9 &gt; A &gt; 10 &gt; K &gt; Q &gt; 8 &gt; 7.</p>
 
 <h3>Scoring</h3>
 <ul>
-<li>Only the defenders count their card points. <b>Hokum</b>: round to the nearest ten, a five rounding down, then ÷10. <b>Sun</b>: round to the nearest ten unless the total ends in five, then ÷5.</li>
+<li>Only one side counts its card points — the defenders, or the buyer's team once the round has been doubled. <b>Hokum</b>: round to the nearest ten, a five rounding down, then ÷10. <b>Sun</b>: round to the nearest ten unless the total ends in five, then ÷5.</li>
 <li>The buyer's team is handed the rest of the round — <b>16</b> in Hokum, <b>26</b> in Sun — so a round never pays out more than it holds.</li>
 <li>Projects are added on top, as game points.</li>
 <li><b>Failed bid</b>: if the buyer's team ends up with less, the defenders take the whole round plus every project in it.</li>
@@ -3100,6 +3295,33 @@ if (new URL(location.href).searchParams.get("test") === "1"){
      rKab.note === "kaboot" && rKab.final[0] === CFG.kabootHokum + 5 && rKab.final[1] === 0);
   const rKabS = scoreRound(mkRound("sun", [130,0], [0,0], 0, [8,0]));
   ok("kaboot in sun is 44", rKabS.final[0] === CFG.kabootSun);
+
+  // ---- doubling (البند السابع) ----
+  const dbl = (mode, extra) => scoreRound(Object.assign(
+    {mode, trump: mode === "hokum" ? "S" : null, bidder:0, tricksWon:[4,4]}, extra));
+  // pagat ex4: the same cards as ex3, but the defenders doubled, so the buyer's
+  // team counts - and with it the round swings the other way
+  const ex4 = dbl("hokum", {rawPoints:[106,56], projects:{teamPoints:[0,5]}, mult:2, countTeam:0});
+  ok("ex4: a double moves the count and turns the round",
+     ex4.note === "doubled" && ex4.final[0] === 42 && ex4.final[1] === 0);
+  const ex8 = dbl("sun", {rawPoints:[67,63], projects:{teamPoints:[0,0]}, mult:2, countTeam:0});
+  ok("ex8: a doubled sun pays 52", ex8.note === "doubled" && ex8.final[0] === 52);
+  const dblLost = dbl("hokum", {rawPoints:[40,122], projects:{teamPoints:[0,0]}, mult:2, countTeam:0});
+  ok("a lost double pays the defenders 32", dblLost.note === "losing" && dblLost.final[1] === 32);
+  const quad = dbl("hokum", {rawPoints:[106,56], projects:{teamPoints:[0,5]}, mult:4, countTeam:0});
+  ok("projects double but never triple or quadruple", quad.final[0] === 16*4 + 5*2);
+  const gah = dbl("hokum", {rawPoints:[106,56], projects:{teamPoints:[0,0]}, mult:4, countTeam:0, gahwa:true});
+  ok("gahwa hands the match to the winner", gah.note === "gahwa" && gah.winner === 0);
+  const dblBal = dbl("hokum", {rawPoints:[106,56], projects:{teamPoints:[0,0], baloot:[2,0]},
+                               mult:2, countTeam:0});
+  ok("baloot stays flat under a double", dblBal.final[0] === 32 + 2);
+
+  // مقفل: no trump leads unless that is all you hold
+  const lockSt = {mode:"hokum", trump:"S", locked:true, currentSeat:0};
+  ok("a locked hand may not lead trumps",
+     legalCards([card("S","A"), card("H","7")], [], lockSt).length === 1);
+  ok("all trumps may still be led",
+     legalCards([card("S","A"), card("S","7")], [], lockSt).length === 2);
 
   // a big project can flip a round the buyer won on cards - that is real Baloot
   const rFlip = round("sun", 24, 0, 40);
