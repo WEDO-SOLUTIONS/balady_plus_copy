@@ -25,7 +25,6 @@
     langToggle: $('langToggle'),
     langToggleLabel: $('langToggleLabel'),
 
-    howtoArt: $('howtoArt'),
     btnStart: $('btnStart'),
     btnBackFromHowto: $('btnBackFromHowto'),
 
@@ -112,57 +111,6 @@
       if (node.parentNode) node.parentNode.removeChild(node);
     }, 950);
   }
-
-  /* ------------------------------------------------------- car preview */
-
-  /** Reuses the scene's car renderer on a small standalone canvas so the
-      how-to and results screens show the same vehicle as the game. */
-  function makePreview(host, tilt, heightRatio, scale) {
-    var canvas = doc.createElement('canvas');
-    canvas.style.width = '100%';
-    canvas.style.height = '100%';
-    canvas.style.display = 'block';
-    host.appendChild(canvas);
-
-    function draw() {
-      var rect = host.getBoundingClientRect();
-      if (rect.width < 4 || rect.height < 4) return;
-      var dpr = Math.min(global.devicePixelRatio || 1, 2);
-      canvas.width = Math.round(rect.width * dpr);
-      canvas.height = Math.round(rect.height * dpr);
-      var ctx = canvas.getContext('2d');
-      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-      ctx.clearRect(0, 0, rect.width, rect.height);
-
-      // Warm glow behind the car, as in the mockup.
-      var glow = ctx.createRadialGradient(
-        rect.width * 0.5, rect.height * 0.62, 4,
-        rect.width * 0.5, rect.height * 0.62, rect.width * 0.6
-      );
-      glow.addColorStop(0, 'rgba(233, 197, 121, 0.22)');
-      glow.addColorStop(1, 'rgba(233, 197, 121, 0)');
-      ctx.fillStyle = glow;
-      ctx.fillRect(0, 0, rect.width, rect.height);
-
-      var saveCtx = Scene.ctx, saveW = Scene.w, saveH = Scene.h, saveDpr = Scene.dpr;
-      Scene.ctx = ctx; Scene.w = rect.width; Scene.h = rect.height; Scene.dpr = dpr;
-      Scene.drawCar(
-        rect.width * 0.5,
-        rect.height * (heightRatio || 0.6),
-        // The rotated car (roof to tyres, arms out) needs ~1.3x its size in
-        // both axes, so fit against whichever dimension is tighter.
-        Math.min(rect.width * 0.72, rect.height * 0.68) * (scale || 1),
-        tilt,
-        Date.now() / 110,
-        0
-      );
-      Scene.ctx = saveCtx; Scene.w = saveW; Scene.h = saveH; Scene.dpr = saveDpr;
-    }
-
-    return draw;
-  }
-
-  var previews = [];
 
   /* ----------------------------------------------------------- the game */
 
@@ -398,7 +346,6 @@
       }, dt);
     }
 
-    for (var p = 0; p < previews.length; p++) previews[p]();
   }
 
   /* ------------------------------------------------------------ inputs */
@@ -531,23 +478,40 @@
     Scene.init(el.scene);
     el.scene.style.transition = 'opacity 320ms ease';
 
-    previews.push(makePreview(el.howtoArt, -0.18, 0.56));
-    previews.push(makePreview($('resultsArt'), 0.1, 0.5, 0.95));
-
     var best = global.DriftGame.progress.load().best;
     el.resBest.textContent = fmtNum(best);
 
     global.requestAnimationFrame(frame);
 
-    // Splash loader, then straight into the instructions.
+    // The splash bar tracks the real artwork load, with a floor so it never
+    // flashes past on a warm cache and a ceiling so a stalled image cannot
+    // strand the player on the splash screen.
     var t0 = Date.now();
-    var duration = 1700;
+    var minMs = 1500;
+    var loaded = 0;
+    var entered = false;
+
+    function enter() {
+      if (entered) return;
+      entered = true;
+      el.loaderFill.style.width = '100%';
+      global.setTimeout(function () { show('howto'); }, 220);
+    }
+
+    Scene.loadImages([
+      ['car', 'img/car.png'],
+      ['coin', 'img/coin.png'],
+      ['sky', 'img/sky.jpg'],
+      ['ridge', 'img/ridge.png'],
+      ['sand', 'img/sand.jpg']
+    ], function (p) { loaded = p; });
+
     var timer = global.setInterval(function () {
-      var p = Math.min(1, (Date.now() - t0) / duration);
-      el.loaderFill.style.width = (p * 100) + '%';
-      if (p >= 1) {
+      var elapsed = (Date.now() - t0) / minMs;
+      el.loaderFill.style.width = (Math.min(1, Math.min(elapsed, 0.15 + loaded * 0.85)) * 100) + '%';
+      if ((loaded >= 1 && elapsed >= 1) || elapsed >= 4) {
         global.clearInterval(timer);
-        global.setTimeout(function () { show('howto'); }, 220);
+        enter();
       }
     }, 60);
   }

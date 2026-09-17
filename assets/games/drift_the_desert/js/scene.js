@@ -20,7 +20,34 @@
     return x - Math.floor(x);
   }
 
+  /* Art cut out of the design mockup (see tools/extract_assets.py). Every
+     draw path keeps its procedural version, so a missing or still-loading
+     image degrades to vector art instead of a blank frame. */
+  var IMG = {};
+
+  /** `entries` is a list of [key, url] pairs. The key is explicit so the
+      single-file build can rewrite the urls into data URIs without the lookup
+      names changing underneath it. */
+  function loadImages(entries, onProgress) {
+    var left = entries.length;
+    if (!left && onProgress) onProgress(1);
+    for (var i = 0; i < entries.length; i++) {
+      (function (key, url) {
+        var img = new global.Image();
+        function done(ok) {
+          if (ok) IMG[key] = img;
+          if (onProgress) onProgress(1 - (--left) / entries.length);
+        }
+        img.onload = function () { done(true); };
+        img.onerror = function () { done(false); };
+        img.src = url;
+      })(entries[i][0], entries[i][1]);
+    }
+  }
+
   var Scene = {
+    images: IMG,
+    loadImages: loadImages,
     canvas: null,
     ctx: null,
     w: 0,
@@ -77,7 +104,7 @@
           y: y + rand(-6, 10),
           vx: rand(-40, 40),
           vy: rand(-58, -8),
-          r: rand(12, 34),
+          r: rand(10, 26),
           life: 1,
           decay: rand(0.55, 1.15),
           tint: tint || 0
@@ -108,17 +135,27 @@
 
     drawSky: function () {
       var ctx = this.ctx;
-      if (!this._sky) {
-        var g = ctx.createLinearGradient(0, 0, 0, this.horizon + 30);
-        g.addColorStop(0.00, '#123A55');
-        g.addColorStop(0.28, '#3C6E88');
-        g.addColorStop(0.55, '#8CAFB8');
-        g.addColorStop(0.78, '#E3B27C');
-        g.addColorStop(1.00, '#F6D79D');
-        this._sky = g;
+      var sky = IMG.sky;
+
+      if (sky) {
+        // The strip is mirror-tiled, so it wraps: pan it for parallax.
+        var sh = this.horizon + 30;
+        var sw = sh * (sky.width / sky.height);
+        var off = (this.scroll * 0.03) % sw;
+        for (var x = -off; x < this.w; x += sw) ctx.drawImage(sky, x, 0, sw, sh);
+      } else {
+        if (!this._sky) {
+          var g = ctx.createLinearGradient(0, 0, 0, this.horizon + 30);
+          g.addColorStop(0.00, '#123A55');
+          g.addColorStop(0.28, '#3C6E88');
+          g.addColorStop(0.55, '#8CAFB8');
+          g.addColorStop(0.78, '#E3B27C');
+          g.addColorStop(1.00, '#F6D79D');
+          this._sky = g;
+        }
+        ctx.fillStyle = this._sky;
+        ctx.fillRect(0, 0, this.w, this.horizon + 30);
       }
-      ctx.fillStyle = this._sky;
-      ctx.fillRect(0, 0, this.w, this.horizon + 30);
 
       // Sun, low over the dunes.
       var sx = this.w * 0.68;
@@ -137,7 +174,7 @@
       ctx.arc(sx, sy, this.h * 0.035, 0, TAU);
       ctx.fill();
 
-      this.drawClouds();
+      if (!sky) this.drawClouds();
     },
 
     drawClouds: function () {
@@ -168,6 +205,29 @@
 
     drawMesas: function () {
       var ctx = this.ctx;
+
+      var warm = this.ctx.createLinearGradient(0, this.horizon - this.h * 0.20, 0, this.horizon + this.h * 0.03);
+      warm.addColorStop(0, 'rgba(246, 206, 150, 0)');
+      warm.addColorStop(1, 'rgba(246, 206, 150, 0.85)');
+      ctx.fillStyle = warm;
+      ctx.fillRect(0, this.horizon - this.h * 0.20, this.w, this.h * 0.23);
+
+      if (IMG.ridge) {
+        var r = IMG.ridge;
+        var bh = this.h * 0.085;
+        var bw = bh * (r.width / r.height);
+        var off = (this.scroll * 0.09) % bw;
+        var top = this.horizon + 6 - bh;
+        for (var rx = -off; rx < this.w; rx += bw) ctx.drawImage(r, rx, top, bw, bh);
+
+        var haze = ctx.createLinearGradient(0, this.horizon - this.h * 0.05, 0, this.horizon + this.h * 0.02);
+        haze.addColorStop(0, 'rgba(246, 215, 157, 0)');
+        haze.addColorStop(1, 'rgba(246, 215, 157, 0.6)');
+        ctx.fillStyle = haze;
+        ctx.fillRect(0, this.horizon - this.h * 0.05, this.w, this.h * 0.07);
+        return;
+      }
+
       var layers = [
         { h: 0.075, color: '#A9866A', alpha: 0.5, par: 0.010, seed: 3, step: 0.30 },
         { h: 0.055, color: '#8A6449', alpha: 0.75, par: 0.026, seed: 11, step: 0.24 }
@@ -234,17 +294,23 @@
     drawGround: function () {
       var ctx = this.ctx;
       var g = ctx.createLinearGradient(0, this.horizon - 6, 0, this.h);
-      g.addColorStop(0.00, '#E8C089');
-      g.addColorStop(0.22, '#DCAE76');
-      g.addColorStop(0.62, '#C78F58');
-      g.addColorStop(1.00, '#A66E3F');
+      g.addColorStop(0.00, '#EBC694');
+      g.addColorStop(0.18, '#D9A874');
+      g.addColorStop(0.58, '#BC8552');
+      g.addColorStop(1.00, '#8E5C32');
       ctx.fillStyle = g;
       ctx.fillRect(0, this.horizon - 6, this.w, this.h - this.horizon + 6);
 
+      var blend = ctx.createLinearGradient(0, this.horizon - 10, 0, this.horizon + this.h * 0.05);
+      blend.addColorStop(0, 'rgba(238, 205, 160, 0.75)');
+      blend.addColorStop(1, 'rgba(238, 205, 160, 0)');
+      ctx.fillStyle = blend;
+      ctx.fillRect(0, this.horizon - 10, this.w, this.h * 0.06);
+
       // Two dune ridges rolling towards the camera.
       var ridges = [
-        { d: 0.10, amp: 0.020, color: 'rgba(255, 224, 178, 0.55)', par: 0.05, seed: 21 },
-        { d: 0.24, amp: 0.030, color: 'rgba(168, 112, 62, 0.32)', par: 0.13, seed: 37 }
+        { d: 0.10, amp: 0.020, color: 'rgba(255, 224, 178, 0.30)', par: 0.05, seed: 21 },
+        { d: 0.24, amp: 0.030, color: 'rgba(150, 96, 50, 0.22)', par: 0.13, seed: 37 }
       ];
 
       for (var r = 0; r < ridges.length; r++) {
@@ -292,6 +358,24 @@
       ctx.fillStyle = g;
       ctx.fill();
       ctx.clip();
+
+      // Photographic sand, laid down in perspective slices so the grain grows
+      // towards the camera and scrolls with the car's speed.
+      if (IMG.sand) {
+        ctx.globalAlpha = 0.4;
+        var slices = 18;
+        var phase = (this.scroll * 0.0012) % 1;
+        for (var si = 0; si < slices; si++) {
+          var da = (si / slices + phase) % 1;
+          var db = da + 1.0 / slices;
+          var pa = this.project(da);
+          var pb = this.project(db);
+          var hgt = Math.max(1, pb.y - pa.y);
+          ctx.drawImage(IMG.sand, 0, 0, IMG.sand.width, IMG.sand.height,
+                        -this.w * 0.1, pa.y, this.w * 1.2, hgt);
+        }
+        ctx.globalAlpha = 1;
+      }
 
       // Scrolling bands give a readable sense of speed.
       var bandCount = 26;
@@ -344,6 +428,10 @@
     /** Front-three-quarter SUV riding on two wheels, with the driver leaning
         out of the window — the hero pose from the design. */
     drawCar: function (cx, cy, size, tilt, wobble, danger) {
+      if (IMG.car) {
+        this.drawCarPhoto(cx, cy, size, tilt, wobble, danger);
+        return;
+      }
       var ctx = this.ctx;
       // Resting lean of a two-wheel drift, plus the player's deviation.
       var angle = -0.44 + tilt * 0.46 + Math.sin(wobble) * 0.018;
@@ -525,11 +613,50 @@
       ctx.restore();
     },
 
+    /** The mockup's own hero shot, matted out and pivoted on its contact
+        patch. The photo already carries the two-wheel lean, so only the
+        player's deviation is applied on top of it. */
+    drawCarPhoto: function (cx, cy, size, tilt, wobble, danger) {
+      var ctx = this.ctx;
+      var img = IMG.car;
+      var w = size * 1.18;
+      var h = w * (img.height / img.width);
+
+      ctx.save();
+      ctx.globalAlpha = 0.16;
+      ctx.fillStyle = '#4A2E13';
+      ctx.beginPath();
+      ctx.ellipse(cx + tilt * size * 0.10, cy + size * 0.33, size * 0.34, size * 0.035, 0, 0, TAU);
+      ctx.fill();
+      ctx.restore();
+
+      ctx.save();
+      ctx.translate(cx, cy + Math.sin(wobble) * size * 0.012);
+      ctx.rotate(tilt * 0.40 + Math.sin(wobble) * 0.012);
+
+      if (danger > 0) {
+        ctx.shadowColor = 'rgba(255, 70, 70, ' + (danger * 0.9).toFixed(2) + ')';
+        ctx.shadowBlur = 26 * danger;
+      }
+      // Pivot roughly on the loaded wheels, which sit low and left in the shot.
+      ctx.drawImage(img, -w * 0.46, -h * 0.72, w, h);
+      ctx.restore();
+    },
+
     /* ----------------------------------------------------------- coins */
 
     drawCoin: function (x, y, r, spin) {
       var ctx = this.ctx;
       var squash = Math.abs(Math.cos(spin));
+
+      if (IMG.coin) {
+        ctx.save();
+        ctx.translate(x, y);
+        ctx.drawImage(IMG.coin, -r * squash, -r, Math.max(1, r * 2 * squash), r * 2);
+        ctx.restore();
+        return;
+      }
+
       ctx.save();
       ctx.translate(x, y);
 
@@ -589,10 +716,10 @@
       ctx.save();
       for (i = 0; i < this.particles.length; i++) {
         var p = this.particles[i];
-        var a = clamp(p.life, 0, 1) * 0.42;
+        var a = clamp(p.life, 0, 1) * 0.16;
         ctx.fillStyle = p.tint
-          ? 'rgba(255, 168, 128, ' + (a * 1.1).toFixed(3) + ')'
-          : 'rgba(250, 226, 186, ' + (a * 1.15).toFixed(3) + ')';
+          ? 'rgba(230, 140, 100, ' + (a * 1.1).toFixed(3) + ')'
+          : 'rgba(224, 186, 136, ' + (a * 1.15).toFixed(3) + ')';
         ctx.beginPath();
         ctx.arc(p.x, p.y, p.r, 0, TAU);
         ctx.fill();
@@ -638,17 +765,17 @@
         var c = coins[i];
         var p = this.project(c.d);
         var cxp = this.w * 0.5 + c.lane * this.w * 0.26 * p.s;
-        this.drawCoin(cxp, p.y - 96 * p.s - this.h * 0.015, Math.max(2, 24 * p.s), c.spin);
+        this.drawCoin(cxp, p.y - 150 * p.s - this.h * 0.02, Math.max(2, 26 * p.s), c.spin);
       }
 
       // Hero car.
       var carY = this.h * 0.655;
-      var carSize = Math.min(this.w * 0.62, this.h * 0.30);
+      var carSize = Math.min(this.w * 0.56, this.h * 0.27);
       var carX = this.w * 0.5 + (state.tilt || 0) * this.w * 0.085;
 
       // Dust plume trailing the rear wheels.
       if (state.running) {
-        this.addDust(carX + rand(-0.55, 0.55) * carSize, carY + carSize * 0.20, 2, state.danger > 0.5 ? 1 : 0);
+        this.addDust(carX + rand(-0.6, 0.6) * carSize, carY + carSize * 0.26, 1, state.danger > 0.5 ? 1 : 0);
       }
       this.drawParticles();
 

@@ -268,7 +268,7 @@
         }
       }
 
-      if (it.d >= 1.0) this.items.splice(i, 1);
+      if (it.d >= 0.95) this.items.splice(i, 1);
     }
 
     /* --- end of run ------------------------------------------------------ */

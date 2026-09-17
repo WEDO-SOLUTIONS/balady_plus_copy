@@ -309,6 +309,7 @@ flutter:
     - assets/games/drift_the_desert/index.html
     - assets/games/drift_the_desert/css/
     - assets/games/drift_the_desert/js/
+    - assets/games/drift_the_desert/img/
     - .env.stg
     - .env.dev
     - .env.prod

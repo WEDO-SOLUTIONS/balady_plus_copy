@@ -19,10 +19,10 @@
   <!-- ============================ SPLASH ============================ -->
   <section class="screen screen--splash is-active" data-screen="splash">
     <div class="brand brand--lg">
-      <span class="brand__palm">🌴</span>
-      <span class="brand__name">BALADY<span class="brand__plus">+</span></span>
-      <span class="brand__sub">MAPS</span>
+      <img class="brand__mark" src="img/logo.png" alt="Balady+ Maps" />
     </div>
+
+    <img class="splash__art" src="img/title.png" alt="Drift the Desert" />
 
     <div class="splash__title">
       <span class="splash__line1" data-i18n="splash.line1">DRIFT</span>
@@ -48,12 +48,12 @@
 
   <!-- ============================ HOW TO PLAY ============================ -->
   <section class="screen screen--sheet" data-screen="howto">
-    <div class="brand"><span class="brand__palm">🌴</span><span class="brand__name">BALADY<span class="brand__plus">+</span></span><span class="brand__sub">MAPS</span></div>
+    <div class="brand"><img class="brand__mark" src="img/logo.png" alt="Balady+ Maps" /></div>
 
     <h1 class="title" data-i18n="howto.title">HOW TO PLAY</h1>
     <p class="subtitle" data-i18n="howto.subtitle">Keep the car on two wheels for as long as you can!</p>
 
-    <div class="howto__art" id="howtoArt"></div>
+    <div class="howto__art"><img src="img/car.png" alt="" /></div>
 
     <div class="howto__cards">
       <div class="card card--howto">
@@ -78,7 +78,7 @@
 
   <!-- ============================ COUNTDOWN ============================ -->
   <section class="screen screen--countdown" data-screen="countdown">
-    <div class="brand"><span class="brand__palm">🌴</span><span class="brand__name">BALADY<span class="brand__plus">+</span></span><span class="brand__sub">MAPS</span></div>
+    <div class="brand"><img class="brand__mark" src="img/logo.png" alt="Balady+ Maps" /></div>
     <div class="countdown__box">
       <div class="countdown__label" data-i18n="countdown.ready">GET READY</div>
       <div class="countdown__num" id="countdownNum">3</div>
@@ -91,7 +91,7 @@
       <button class="icon-btn" id="btnPause" type="button" aria-label="Pause">
         <svg viewBox="0 0 24 24"><rect x="6" y="5" width="4" height="14" rx="1.2"/><rect x="14" y="5" width="4" height="14" rx="1.2"/></svg>
       </button>
-      <div class="coin-pill"><span class="coin-pill__icon">🪙</span><span id="hudCoins">0</span></div>
+      <div class="coin-pill"><img class="coin-pill__icon" src="img/coin.png" alt="" /><span id="hudCoins">0</span></div>
     </div>
 
     <div class="hud-stats">
@@ -145,20 +145,19 @@
 
   <!-- ============================ RESULTS ============================ -->
   <section class="screen screen--sheet screen--results" data-screen="results">
-    <div class="brand"><span class="brand__palm">🌴</span><span class="brand__name">BALADY<span class="brand__plus">+</span></span><span class="brand__sub">MAPS</span></div>
+    <div class="brand"><img class="brand__mark" src="img/logo.png" alt="Balady+ Maps" /></div>
     <h1 class="title" id="resultsTitle" data-i18n="results.title">GREAT RUN!</h1>
 
     <div class="grid2">
-      <div class="card card--stat"><span class="card__icon">👑</span><span class="card__label" data-i18n="hud.score">SCORE</span><span class="card__value" id="resScore">0</span></div>
-      <div class="card card--stat"><span class="card__icon">⏱️</span><span class="card__label" data-i18n="hud.time">TIME</span><span class="card__value" id="resTime">00:00</span></div>
-      <div class="card card--stat"><span class="card__icon">🔥</span><span class="card__label" data-i18n="results.maxCombo">MAX COMBO</span><span class="card__value" id="resCombo">x0</span></div>
-      <div class="card card--stat"><span class="card__icon">🪙</span><span class="card__label" data-i18n="results.tokens">TOKENS EARNED</span><span class="card__value card__value--green" id="resTokens">+0</span></div>
+      <div class="card card--stat"><img class="card__icon" src="img/icon-crown.png" alt="" /><span class="card__label" data-i18n="hud.score">SCORE</span><span class="card__value" id="resScore">0</span></div>
+      <div class="card card--stat"><img class="card__icon" src="img/icon-clock.png" alt="" /><span class="card__label" data-i18n="hud.time">TIME</span><span class="card__value" id="resTime">00:00</span></div>
+      <div class="card card--stat"><img class="card__icon" src="img/icon-flame.png" alt="" /><span class="card__label" data-i18n="results.maxCombo">MAX COMBO</span><span class="card__value" id="resCombo">x0</span></div>
+      <div class="card card--stat"><img class="card__icon" src="img/icon-coin.png" alt="" /><span class="card__label" data-i18n="results.tokens">TOKENS EARNED</span><span class="card__value card__value--green" id="resTokens">+0</span></div>
     </div>
 
     <div class="results__best"><span data-i18n="results.best">BEST</span> <b id="resBest">0</b></div>
 
-    <div class="results__art" id="resultsArt"></div>
-    <div class="results__quote" data-i18n="results.quote">SAUDI DRIFT CULTURE LIVES ON</div>
+    <div class="results__art"><img src="img/results-art.jpg" alt="" /></div>
 
     <button class="btn btn--gold" id="btnPlayAgain" type="button" data-i18n="results.playAgain">PLAY AGAIN</button>
     <button class="btn btn--ghost" id="btnRewards" type="button" data-i18n="results.rewards">COLLECT REWARDS</button>
@@ -166,24 +165,24 @@
 
   <!-- ============================ REWARDS ============================ -->
   <section class="screen screen--sheet screen--rewards" data-screen="rewards">
-    <div class="brand"><span class="brand__palm">🌴</span><span class="brand__name">BALADY<span class="brand__plus">+</span></span><span class="brand__sub">MAPS</span></div>
+    <div class="brand"><img class="brand__mark" src="img/logo.png" alt="Balady+ Maps" /></div>
     <h1 class="title" data-i18n="rewards.title">REWARDS</h1>
 
     <div class="results__spacer"></div>
 
     <div class="grid3">
       <div class="card card--reward" id="rewardTokens">
-        <span class="card__art">🪙</span>
+        <img class="card__art" src="img/tokens.png" alt="" />
         <span class="card__value card__value--gold" id="rewTokens">+0</span>
         <span class="card__label" data-i18n="rewards.tokens">Tokens</span>
       </div>
       <div class="card card--reward" id="rewardBadge">
-        <span class="card__art">🏅</span>
+        <img class="card__art" src="img/badge.png" alt="" />
         <span class="card__value card__value--sm" data-i18n="rewards.newBadge">New Badge</span>
         <span class="card__label" id="rewBadgeName" data-i18n="rewards.badgeDesertDrifter">Desert Drifter</span>
       </div>
       <div class="card card--reward" id="rewardSkin">
-        <span class="card__art">🚙</span>
+        <img class="card__art card__art--skin" src="img/skin.jpg" alt="" />
         <span class="card__value card__value--sm" data-i18n="rewards.newSkin">New Skin</span>
         <span class="card__label" id="rewSkinName" data-i18n="rewards.skinSandEdition">Sand Edition</span>
       </div>

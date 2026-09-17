@@ -9,6 +9,8 @@ document, or opened straight from file:// with no server.
 Usage:  python3 build_standalone.py
 """
 
+import base64
+import mimetypes
 import re
 import sys
 from datetime import date
@@ -33,6 +35,31 @@ def guard(js: str, name: str) -> str:
     return CLOSING_TAG.sub(lambda m: m.group(0).replace('<', '\\x3C'), js) if CLOSING_TAG.search(js) else js
 
 
+def data_uri(rel: str) -> str:
+    """Inline an image so the single file needs nothing next to it."""
+    path = (ROOT / rel).resolve()
+    if not path.is_file():
+        sys.exit(f'missing image: {rel}')
+    mime = mimetypes.guess_type(path.name)[0] or 'application/octet-stream'
+    return 'data:' + mime + ';base64,' + base64.b64encode(path.read_bytes()).decode('ascii')
+
+
+def inline_images(text: str, prefix: str = '') -> tuple:
+    """Replace every img/… reference (HTML src, CSS url(), JS asset list) with
+    a data URI. Returns the rewritten text and how many were replaced."""
+    seen = {}
+
+    def sub(match):
+        ref = match.group('path')
+        rel = ref[3:] if ref.startswith('../') else ref
+        if rel not in seen:
+            seen[rel] = data_uri(rel)
+        return match.group(0).replace(ref, seen[rel])
+
+    text = re.sub(r'(?P<path>(?:\.\./)?img/[A-Za-z0-9_.\-]+)', sub, text)
+    return text, len(seen)
+
+
 def main() -> None:
     html = read('index.html')
 
@@ -52,6 +79,10 @@ def main() -> None:
     if count == 0:
         sys.exit('could not find any script tags in index.html')
 
+    # The artwork is referenced from the markup, the stylesheet and the scene's
+    # loader list, so it is inlined after everything else has been folded in.
+    html, images = inline_images(html)
+
     stamp = (
         '<!--\n'
         '  Drift the Desert - Balady+ Maps.\n'
@@ -68,7 +99,7 @@ def main() -> None:
 
     print(f'{OUT.relative_to(ROOT.parent.parent.parent)}  '
           f'{len(html.encode("utf-8")) / 1024:.0f} KB  '
-          f'(1 stylesheet + {count} scripts inlined)')
+          f'(1 stylesheet + {count} scripts + {images} images inlined)')
 
 
 if __name__ == '__main__':

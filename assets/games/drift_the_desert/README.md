@@ -5,10 +5,11 @@ balanced on two wheels for 60 seconds, collect coins, build a combo, earn
 tokens. Built to run inside the Balady+ WebView and, unchanged, in a desktop
 browser for review.
 
-No build step, no bundler, no external requests: no CDN scripts, no web fonts,
-no image or audio files. Everything is drawn on a `<canvas>` and the sound is
-synthesised with the Web Audio API, so the whole mini app is ~100 KB of text and
-works offline and from `file://`.
+No build step, no bundler, no external requests. The artwork in `img/` is cut
+straight out of the design mockup (see **Artwork** below); everything else —
+the animated desert, the dust, the whole soundtrack — is generated at runtime,
+so the mini app ships no third-party code, no web fonts and no audio files. It
+is ~520 KB in total and works offline and from `file://`.
 
 ## Run it in a browser
 
@@ -47,8 +48,11 @@ cd assets/games/drift_the_desert
 python3 build_standalone.py
 ```
 
-Only `index.html`, `css/` and `js/` are registered in `pubspec.yaml`, so
-`dist/`, this README and the build script are not shipped inside the app.
+Images are inlined as data URIs, which is most of the file's weight.
+
+Only `index.html`, `css/`, `js/` and `img/` are registered in `pubspec.yaml`,
+so `dist/`, `tools/`, this README and the build script are not shipped inside
+the app.
 
 ## Run it in the app's WebView
 
@@ -96,7 +100,45 @@ before load, or append `?lang=ar` to the asset URL.
 | `js/scene.js`   | Canvas renderer: sky, mesas, dunes, perspective track, the car, dust, coins |
 | `js/game.js`    | Rules only, no DOM: balance physics, scoring, combo, coins, run lifecycle |
 | `js/main.js`    | Screen flow, HUD bindings, FX layer, input |
+| `img/`          | Artwork cut out of the mockup |
+| `tools/extract_assets.py` | Re-derives `img/` from the mockup sheet |
 | `build_standalone.py` | Inlines everything above into `dist/drift-the-desert.html` |
+
+## Artwork
+
+`img/` is derived from the design sheet (`Arabic_drift.png`, a 4x2 grid of
+phone mockups) rather than hand-drawn, so the game reads as the design rather
+than as an approximation of it:
+
+| Asset | Where it comes from | Where it is used |
+|-------|--------------------|------------------|
+| `car.png` | the countdown screen's hero shot, alpha-matted | the car you steer, and the how-to screen |
+| `coin.png` | a floating token on the danger screen | collectibles and the HUD coin pill |
+| `sky.jpg` | a clean column of the splash sky, mirror-tiled | the scrolling sky |
+| `ridge.png` | the splash mesas, mirror-tiled, both edges feathered | the parallax horizon |
+| `sand.jpg` | the countdown screen's foreground track | the track's perspective texture |
+| `results-art.jpg` | the results screen's sunset strip | the results screen |
+| `logo.png`, `title.png` | the Balady+ mark and the brush wordmark | every screen header, the splash |
+| `tokens.png`, `badge.png`, `skin.jpg` | the three reward cards | the rewards screen |
+| `icon-*.png` | the results stat icons | the results cards |
+
+Regenerate them with:
+
+```bash
+pip install pillow "rembg[cpu]"
+python3 tools/extract_assets.py /path/to/Arabic_drift.png
+```
+
+The two cut-outs are alpha-matted with `rembg`; the marks and icons are pulled
+off their dark backgrounds with a luminance key; the scenery strips are clean
+rectangles widened by mirroring. The mockup has no unobstructed full-width
+background — the hero car sits in the middle of every screen — so the dunes,
+the track geometry and the dust stay procedural and the photographic strips
+scroll behind them.
+
+Every image is optional at runtime: `js/scene.js` keeps its vector car, drawn
+coin, gradient sky and generated mesas as fallbacks, so a missing or
+slow-loading file degrades instead of leaving a blank frame.
 
 ## How the game works
 
