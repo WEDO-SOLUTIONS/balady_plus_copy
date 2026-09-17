@@ -18,7 +18,7 @@ source sheet instead of being an opaque blob of binaries.
 import sys
 from pathlib import Path
 
-from PIL import Image, ImageChops, ImageDraw, ImageFilter, ImageStat
+from PIL import Image, ImageChops, ImageDraw, ImageEnhance, ImageFilter, ImageStat
 
 OUT = Path(__file__).resolve().parent.parent / 'img'
 
@@ -81,6 +81,98 @@ def luma_key(im, floor, ceil, tint=None):
     return rgba
 
 
+def fade_bottom(im, frac=0.26):
+    """Dissolve the bottom of a sprite instead of ending it on a straight cut.
+
+    The driver is cropped at the waist, and no amount of seating him deeper
+    hides that edge without burying his torso as well. Fading it lets him read
+    as continuing down into the cabin.
+    """
+    h = im.height
+    start = int(h * (1 - frac))
+    ramp = Image.new('L', (1, h), 255)
+    rp = ramp.load()
+    for y in range(start, h):
+        rp[0, y] = int(255 * (1 - (y - start) / max(1, h - start)) ** 1.4)
+    out = im.copy()
+    out.putalpha(ImageChops.multiply(im.split()[3], ramp.resize(im.size)))
+    return out
+
+
+def erode_alpha(im, size=5):
+    """Shave the outermost ring of a matte.
+
+    Partially transparent edge pixels still carry the background's colour, so
+    over a dark surface they read as a pale outline. Cutting them is simpler
+    than un-mixing them and, at this scale, indistinguishable.
+    """
+    a = im.split()[3].filter(ImageFilter.MinFilter(size)).filter(ImageFilter.GaussianBlur(1))
+    out = im.copy()
+    out.putalpha(a)
+    return out
+
+
+def solidify(im, gamma=0.62, floor=58):
+    """Push a soft matte towards opaque.
+
+    A white sleeve against a bright sky comes back half-transparent, which
+    reads as a ghost limb once the sprite is composited. Bending the alpha
+    curve fills it in; anything below `floor` is dropped so the fringe does not
+    come with it.
+    """
+    a = im.split()[3].point(
+        lambda v: 0 if v < floor else min(255, int(255 * (v / 255.0) ** gamma)))
+    out = im.copy()
+    out.putalpha(a)
+    return out
+
+
+def largest_blob(im, thresh=40):
+    """Keep only the biggest connected run of opaque pixels.
+
+    A loose matte picks up specks — a corner of the countdown panel, a fleck of
+    debris — that read as dirt once the sprite is drawn large. Flood-filling
+    from the heaviest component and dropping the rest is enough to clear them.
+    """
+    a = im.split()[3]
+    w, h = a.size
+    small = a.resize((max(1, w // 4), max(1, h // 4)), Image.BILINEAR)
+    sw, sh = small.size
+    px = small.load()
+
+    seen = bytearray(sw * sh)
+    best, best_size = None, 0
+    for sy in range(sh):
+        for sx in range(sw):
+            if seen[sy * sw + sx] or px[sx, sy] < thresh:
+                continue
+            stack, cells = [(sx, sy)], []
+            seen[sy * sw + sx] = 1
+            while stack:
+                x, y = stack.pop()
+                cells.append((x, y))
+                for nx, ny in ((x - 1, y), (x + 1, y), (x, y - 1), (x, y + 1)):
+                    if 0 <= nx < sw and 0 <= ny < sh and not seen[ny * sw + nx] \
+                            and px[nx, ny] >= thresh:
+                        seen[ny * sw + nx] = 1
+                        stack.append((nx, ny))
+            if len(cells) > best_size:
+                best, best_size = cells, len(cells)
+
+    if not best:
+        return im
+
+    keep = Image.new('L', (sw, sh), 0)
+    kp = keep.load()
+    for x, y in best:
+        kp[x, y] = 255
+    keep = keep.resize((w, h), Image.BILINEAR).filter(ImageFilter.MaxFilter(5))
+
+    out = im.copy()
+    out.putalpha(ImageChops.multiply(a, keep))
+    return out
+
+
 def trim(im, pad=2):
     box = im.split()[3].getbbox()
     if not box:
@@ -92,6 +184,47 @@ def trim(im, pad=2):
 
 def upscale(im, factor, resample=Image.LANCZOS):
     return im.resize((int(im.width * factor), int(im.height * factor)), resample)
+
+
+def sharpen(im, radius=1.6, percent=105, threshold=2):
+    """The sheet's crops are small and the game draws them large; an unsharp
+    pass buys back the edge the upscale eats. It is applied to the colour only,
+    so the matte's soft edge is left alone."""
+    rgb = im.convert('RGB').filter(
+        ImageFilter.UnsharpMask(radius=radius, percent=percent, threshold=threshold))
+    out = rgb.convert('RGBA')
+    out.putalpha(im.split()[3])
+    return out
+
+
+def compose_hero(car, driver, seat=0.545, lift=0.42, scale=0.47):
+    """Seat the driver in the car's sunroof.
+
+    `seat` is where along the car's width he sits, `lift` how far his hips sit
+    below the roof line, and `scale` his height relative to the car's.
+    """
+    # The matte keeps a wedge of sand under the wheels; fading it out stops it
+    # reading as a cardboard base once the sprite sits on the track.
+    car = car.copy()
+    a = car.split()[3]
+    ramp = Image.linear_gradient('L').resize((1, car.height)).resize(car.size)
+    ramp = ramp.point(lambda v: 255 if v < 216 else max(0, 255 - (v - 216) * 7))
+    car.putalpha(ImageChops.multiply(a, ramp))
+
+    dh = int(car.height * scale)
+    dw = max(1, int(driver.width * dh / driver.height))
+    d = driver.resize((dw, dh), Image.LANCZOS)
+
+    pad = dh
+    out = Image.new('RGBA', (max(car.width, dw) + pad, car.height + pad), (0, 0, 0, 0))
+    ox = (out.width - car.width) // 2
+    oy = out.height - car.height
+    out.alpha_composite(car, (ox, oy))
+
+    dx = int(ox + car.width * seat - dw / 2)
+    dy = int(oy - dh + dh * lift)
+    out.alpha_composite(d, (max(0, dx), max(0, dy)))
+    return trim(out)
 
 
 def save_png(im, name):
@@ -110,9 +243,15 @@ def save_jpg(im, name, q=84):
 # cut-outs                                                                     #
 # --------------------------------------------------------------------------- #
 
-def cutout(im, scale=4):
+def cutout(im, scale=4, matting=True):
     """Alpha-matte a subject off the desert. Upscaling first gives the model a
-    workable input — the source crops are only ~200 px wide."""
+    workable input — the source crops are only ~200 px wide.
+
+    `matting` is True for the default thresholds, False to skip matting, or a
+    (foreground, background, erode) triple. The defaults give the car a clean
+    rim but eat thin low-contrast limbs: on the driver they cropped both of his
+    raised arms, which are white sleeves against a bright sky.
+    """
     from rembg import remove, new_session
     global _SESSION
     try:
@@ -120,10 +259,13 @@ def cutout(im, scale=4):
     except NameError:
         _SESSION = new_session('u2net')
     big = upscale(im, scale)
+    if matting is False:
+        return remove(big, session=_SESSION)
+    fg, bg, erode = (250, 15, 8) if matting is True else matting
     return remove(big, session=_SESSION, alpha_matting=True,
-                  alpha_matting_foreground_threshold=250,
-                  alpha_matting_background_threshold=15,
-                  alpha_matting_erode_size=8)
+                  alpha_matting_foreground_threshold=fg,
+                  alpha_matting_background_threshold=bg,
+                  alpha_matting_erode_size=erode)
 
 
 # --------------------------------------------------------------------------- #
@@ -140,14 +282,26 @@ def main():
     OUT.mkdir(parents=True, exist_ok=True)
     print(f'writing to {OUT}')
 
-    # --- hero car + driver, the sprite the whole game hangs on --------------
-    # Matted at 4x, kept at 2x: enough for a retina phone, half the bytes.
-    car_full = cutout(s['ready'].crop((48, 196, 272, 444)))
-    car = trim(car_full)
-    save_png(upscale(car, 0.5), 'car.png')
+    # --- hero car: the rear three-quarter, so the camera follows the car ----
+    # The results screen is the only rear shot on the sheet and it is small,
+    # so it is matted at 8x and kept larger than the crop deserves.
+    rear = trim(cutout(s['results'].crop((96, 286, 186, 374)), scale=8))
 
-    # The car driving away and the script lettering both already live inside
-    # results-art.jpg, so they are not cut out separately.
+    # Its driver faces away. The countdown screen's driver is turned towards
+    # the camera, which is the pose the game wants, so he is matted separately
+    # and seated in the rear car's sunroof.
+    # Cropped above the countdown car's roof line: any lower and the matte
+    # drags that car's bonnet along with him.
+    # Gentle matting thresholds: the default pair is tuned for the car's hard
+    # rim and eats his sleeves, but matting off leaves a halo of sky that shows
+    # as a box once he is composited over the dark rear window.
+    driver = erode_alpha(trim(largest_blob(
+        cutout(s['ready'].crop((134, 219, 258, 298)), scale=8, matting=(200, 45, 3)))))
+
+    hero = compose_hero(sharpen(rear, radius=2.2, percent=155),
+                        fade_bottom(sharpen(driver)))
+    save_png(upscale(hero, 520.0 / hero.width), 'car.png')
+
 
     # --- one of the floating coins -----------------------------------------
     coin = trim(cutout(s['play2'].crop((228, 312, 276, 360)), scale=8))

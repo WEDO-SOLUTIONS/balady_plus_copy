@@ -118,7 +118,7 @@ than as an approximation of it:
 
 | Asset | Where it comes from | Where it is used |
 |-------|--------------------|------------------|
-| `car.png` | the countdown screen's hero shot, alpha-matted | the car you steer, and the how-to screen |
+| `car.png` | the results screen's rear shot, with the countdown screen's driver matted in | the car you steer, and the how-to screen |
 | `coin.png` | a floating token on the danger screen | collectibles and the HUD coin pill |
 | `sky.jpg` | a clean column of the splash sky, mirror-tiled | the scrolling sky |
 | `ridge.png` | the splash mesas, mirror-tiled, both edges feathered | the parallax horizon |
@@ -135,9 +135,26 @@ pip install pillow "rembg[cpu]"
 python3 tools/extract_assets.py /path/to/Arabic_drift.png
 ```
 
-The two cut-outs are alpha-matted with `rembg`; the marks and icons are pulled
-off their dark backgrounds with a luminance key; the scenery strips are clean
-rectangles widened by mirroring. The mockup has no unobstructed full-width
+The cut-outs are alpha-matted with `rembg`; the marks and icons are pulled off
+their dark backgrounds with a luminance key; the scenery strips are clean
+rectangles widened by mirroring.
+
+The hero sprite is a composite. The camera sits behind the car — which is what
+the receding track always implied — so the body comes from the results
+screen's rear shot. That shot's driver faces away, so the countdown screen's
+driver, who is turned towards the camera, is matted separately and seated in
+the sunroof, cropped above the roof line and faded out at the waist so he
+reads as continuing down into the cabin. Three details of the matting matter:
+the default `rembg` thresholds eat his sleeves (white on a bright sky), so he
+is matted gently; a loose matte then picks up a corner of the countdown panel,
+which `largest_blob` drops; and sharpening has to happen before compositing,
+or the unsharp pass rings his edge against the dark rear window and draws a
+pale box around him.
+
+The rear shot is only ~90 px wide on the sheet and the game draws it six times
+that, so it is matted at 8x and sharpened hard. That is the ceiling: an
+upscaler like Real-ESRGAN would be the way past it, but it does not build
+against the current toolchain. The mockup has no unobstructed full-width
 background — the hero car sits in the middle of every screen — so the dunes,
 the track geometry and the dust stay procedural and the photographic strips
 scroll behind them.

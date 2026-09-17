@@ -9,6 +9,10 @@
 
   var TAU = Math.PI * 2;
 
+  /* Resting lean of a two-wheel drift. The hero sprite is a rear shot of a car
+     sitting flat, so the whole pose is applied here. */
+  var CAR_LEAN = -0.30;
+
   function clamp(v, a, b) { return v < a ? a : (v > b ? b : v); }
   function lerp(a, b, t) { return a + (b - a) * t; }
   function rand(a, b) { return a + Math.random() * (b - a); }
@@ -690,14 +694,35 @@
 
       ctx.save();
       ctx.translate(cx, cy + Math.sin(wobble) * size * 0.012);
-      ctx.rotate(tilt * 0.40 + Math.sin(wobble) * 0.012);
+      ctx.rotate(CAR_LEAN + tilt * 0.42 + Math.sin(wobble) * 0.012);
 
       if (danger > 0) {
         ctx.shadowColor = 'rgba(255, 70, 70, ' + (danger * 0.9).toFixed(2) + ')';
         ctx.shadowBlur = 26 * danger;
       }
       // Pivot roughly on the loaded wheels, which sit low and left in the shot.
-      ctx.drawImage(img, -w * 0.46, -h * 0.72, w, h);
+      var x0 = -w * 0.46;
+      var y0 = -h * 0.72;
+      ctx.drawImage(img, x0, y0, w, h);
+
+      // Tail lights, always faintly lit and flaring when the car is in trouble
+      // or the sun has gone.
+      var lamp = Math.max(0.18, Math.max(danger, this.lastDusk || 0) * 0.9);
+      ctx.globalCompositeOperation = 'lighter';
+      for (var side = 0; side < 2; side++) {
+        var lx = x0 + w * (side ? 0.845 : 0.155);
+        var ly = y0 + h * 0.615;
+        var r = w * 0.17;
+        var g = ctx.createRadialGradient(lx, ly, 1, lx, ly, r);
+        g.addColorStop(0, 'rgba(255, 90, 70, ' + (0.55 * lamp).toFixed(3) + ')');
+        g.addColorStop(0.45, 'rgba(255, 40, 30, ' + (0.22 * lamp).toFixed(3) + ')');
+        g.addColorStop(1, 'rgba(255, 20, 10, 0)');
+        ctx.fillStyle = g;
+        ctx.beginPath();
+        ctx.arc(lx, ly, r, 0, TAU);
+        ctx.fill();
+      }
+      ctx.globalCompositeOperation = 'source-over';
       ctx.restore();
     },
 
@@ -802,6 +827,7 @@
       this.scroll += (state.speed || 0) * dt;
 
       var dusk = clamp(state.dusk || 0, 0, 1);
+      this.lastDusk = dusk;
       var speedNorm = clamp(((state.speed || 0) - 240) / 460, 0, 1);
 
       // The camera sits lower as the car picks up speed, so the horizon rises.
@@ -835,7 +861,7 @@
 
       // Hero car.
       var carY = this.h * 0.655;
-      var carSize = Math.min(this.w * 0.56, this.h * 0.27);
+      var carSize = Math.min(this.w * 0.52, this.h * 0.25);
       var carX = this.w * 0.5 + (state.tilt || 0) * this.w * 0.085;
 
       // Dust plume trailing the rear wheels.
@@ -912,43 +938,35 @@
       ctx.restore();
     },
 
-    /** Beams thrown down the track once the sun is low. */
+    /** Head-lamp spill on the track once the sun is low.
+
+        The camera sits behind the car, so the beams run *away* from it, up the
+        road towards the horizon — the pool of light narrows with distance
+        instead of opening towards the viewer. */
     drawHeadlights: function (cx, cy, size, tilt, dusk) {
       if (dusk < 0.28) return;
       var ctx = this.ctx;
       var power = (dusk - 0.28) / 0.72;
 
+      var near = cy - size * 0.22;                 // just past the car's nose
+      var far = this.horizon + this.h * 0.02;      // fading out at the horizon
+
       ctx.save();
       ctx.globalCompositeOperation = 'lighter';
 
-      // The pool of light on the sand ahead of the car.
-      var top = cy + size * 0.02;
-      var bottom = this.h * 1.02;
-      var beam = ctx.createLinearGradient(0, top, 0, bottom);
-      beam.addColorStop(0, 'rgba(255, 238, 198, ' + (0.26 * power).toFixed(3) + ')');
-      beam.addColorStop(0.45, 'rgba(255, 216, 150, ' + (0.11 * power).toFixed(3) + ')');
-      beam.addColorStop(1, 'rgba(255, 200, 120, 0)');
+      var beam = ctx.createLinearGradient(0, near, 0, far);
+      beam.addColorStop(0, 'rgba(255, 238, 198, ' + (0.22 * power).toFixed(3) + ')');
+      beam.addColorStop(0.5, 'rgba(255, 220, 160, ' + (0.09 * power).toFixed(3) + ')');
+      beam.addColorStop(1, 'rgba(255, 210, 130, 0)');
       ctx.fillStyle = beam;
       ctx.beginPath();
-      ctx.moveTo(cx - size * 0.26 + tilt * size * 0.10, top);
-      ctx.lineTo(cx + size * 0.26 + tilt * size * 0.10, top);
-      ctx.lineTo(cx + size * 0.95, bottom);
-      ctx.lineTo(cx - size * 0.95, bottom);
+      ctx.moveTo(cx - size * 0.44 + tilt * size * 0.08, near);
+      ctx.lineTo(cx + size * 0.44 + tilt * size * 0.08, near);
+      ctx.lineTo(cx + size * 0.10, far);
+      ctx.lineTo(cx - size * 0.10, far);
       ctx.closePath();
       ctx.fill();
 
-      // A tight flare on each lamp itself.
-      for (var s = -1; s <= 1; s += 2) {
-        var lx = cx + s * size * 0.19 + tilt * size * 0.10;
-        var ly = cy - size * 0.03;
-        var g = ctx.createRadialGradient(lx, ly, 1, lx, ly, size * 0.17);
-        g.addColorStop(0, 'rgba(255, 249, 226, ' + (0.55 * power).toFixed(3) + ')');
-        g.addColorStop(1, 'rgba(255, 210, 130, 0)');
-        ctx.fillStyle = g;
-        ctx.beginPath();
-        ctx.arc(lx, ly, size * 0.17, 0, TAU);
-        ctx.fill();
-      }
       ctx.restore();
     },
 
