@@ -33,6 +33,7 @@ class PenaltyApp3D extends StatelessWidget {
     this.onComplete,
     this.onReady,
     this.onConnectionLost,
+    this.onBackgrounded,
     this.missesAllowed = 3,
     this.scoreToBeat = 0,
     this.strikerColor,
@@ -46,6 +47,11 @@ class PenaltyApp3D extends StatelessWidget {
   final ValueChanged<TifoShootoutOutcome>? onComplete;
   final void Function(VoidCallback arm)? onReady;
   final VoidCallback? onConnectionLost;
+
+  /// See [PenaltyApp.onBackgrounded]: fires once when the app is backgrounded
+  /// while the shootout is still live ("player left the pitch"), distinct
+  /// from [onConnectionLost].
+  final VoidCallback? onBackgrounded;
   final int missesAllowed;
   final int scoreToBeat;
   final String? strikerColor;
@@ -75,6 +81,7 @@ class PenaltyApp3D extends StatelessWidget {
       onComplete: onComplete,
       onReady: onReady,
       onConnectionLost: onConnectionLost,
+      onBackgrounded: onBackgrounded,
       missesAllowed: missesAllowed,
       scoreToBeat: scoreToBeat,
       strikerColor: strikerColor,
@@ -89,6 +96,7 @@ class _Penalty3DPage extends StatefulWidget {
     required this.onComplete,
     required this.onReady,
     required this.onConnectionLost,
+    required this.onBackgrounded,
     required this.missesAllowed,
     required this.scoreToBeat,
     required this.strikerColor,
@@ -99,6 +107,7 @@ class _Penalty3DPage extends StatefulWidget {
   final ValueChanged<TifoShootoutOutcome>? onComplete;
   final void Function(VoidCallback arm)? onReady;
   final VoidCallback? onConnectionLost;
+  final VoidCallback? onBackgrounded;
   final int missesAllowed;
   final int scoreToBeat;
   final String? strikerColor;
@@ -109,7 +118,7 @@ class _Penalty3DPage extends StatefulWidget {
   State<_Penalty3DPage> createState() => _Penalty3DPageState();
 }
 
-class _Penalty3DPageState extends State<_Penalty3DPage> {
+class _Penalty3DPageState extends State<_Penalty3DPage> with WidgetsBindingObserver {
   static const String _bridge = 'PenaltyBridge';
 
   /// Same constants as the Flame page: warn this many seconds before the
@@ -121,6 +130,7 @@ class _Penalty3DPageState extends State<_Penalty3DPage> {
 
   bool _armed = false;
   bool _completed = false;
+  bool _backgroundReported = false;
 
   /// Unity stays resident between matches, and the `Leave` we send on dispose
   /// can be dropped when the previous view is already torn down — leaving a
@@ -238,6 +248,7 @@ class _Penalty3DPageState extends State<_Penalty3DPage> {
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
     _readyTimer = Timer.periodic(_readyRetryInterval, (timer) {
       if (_gotReady || !mounted || _readyRetries >= _readyRetryLimit) {
         timer.cancel();
@@ -261,6 +272,19 @@ class _Penalty3DPageState extends State<_Penalty3DPage> {
       return;
     }
     sendToUnity(_bridge, 'Forfeit', '');
+  }
+
+  // ---- Backgrounded (mirrors PenaltyGamePage) ----------------------------
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    // `paused` (not `inactive`): iOS reports `inactive` for a notification
+    // shade pull or a control-centre swipe, which is not leaving the game.
+    if (state != AppLifecycleState.paused || _backgroundReported || _completed) {
+      return;
+    }
+    _backgroundReported = true;
+    widget.onBackgrounded?.call();
   }
 
   // ---- Idle watch (mirrors PenaltyGamePage) ------------------------------
@@ -370,6 +394,7 @@ class _Penalty3DPageState extends State<_Penalty3DPage> {
 
   @override
   void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
     _readyTimer?.cancel();
     _idleCheckTimer?.cancel();
     _offlineTimer?.cancel();
