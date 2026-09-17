@@ -303,13 +303,16 @@ class NavigationHandler(
                 if (oldSource == null && map.sources.isNotEmpty()) {
                         oldSource = map.sources.first { it is MyLocationMapObjectSource }
                         map.removeSource(oldSource!!)
+                        // BALADY-3744: bearingThreshold 90° blocked the vehicle icon from
+                        // rotating until the course drifted by a full 90°, making it look
+                        // like driving sideways. Lowered to 10° to keep GPS noise smoothing.
                         map.addSource(
                                 MyLocationMapObjectSource(
                                         context = this.context,
                                         controllerSettings =
                                                 MyLocationControllerSettings(
                                                         coordinatesThreshold = Meter(10.0f),
-                                                        bearingThreshold = Bearing(90.0)
+                                                        bearingThreshold = Bearing(10.0)
                                                 )
                                 )
                         )
