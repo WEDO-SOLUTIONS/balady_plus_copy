@@ -271,9 +271,9 @@ class _CursorThumbnail extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // BALADY-3960: source PNGs run up to 320x272 for a 28x28 slot — without
-    // cacheWidth/cacheHeight all eight rows decode at full resolution
-    // (~2.2MB) on the same first build, right as the sheet opens.
+    // BALADY-3960: decode near the 28x28 slot instead of the source's full
+    // resolution. Only cacheWidth is set — sources aren't square, and
+    // ResizeImage with both sides set stretches instead of scaling proportionally.
     final devicePixelRatio = MediaQuery.devicePixelRatioOf(context);
     final cacheSize = (_size * devicePixelRatio).round();
     return SizedBox(
@@ -283,7 +283,6 @@ class _CursorThumbnail extends StatelessWidget {
         cursor.thumbnailAsset,
         fit: BoxFit.contain,
         cacheWidth: cacheSize,
-        cacheHeight: cacheSize,
         errorBuilder: (_, __, ___) => _fallback(),
       ),
     );
