@@ -74,6 +74,7 @@ window.Ardah = window.Ardah || {};
     this.wet = null;
     this._noise = null;
     this._muted = false;
+    this._holds = {};
     this._seed = 0x2f6e2b1;
   }
 
@@ -153,6 +154,20 @@ window.Ardah = window.Ardah || {};
     this.dry.gain.value = 1;
     this.dry.connect(this.musicGain);
 
+    /* The player's own feedback rides its own bus into the music. Two reasons
+       it is not just another voice: it has to sit IN FRONT of the stage (a
+       verdict arriving from across the square is a verdict you notice late),
+       so it takes a fraction of the courtyard rather than all of it; and it
+       has one gain to pull if the feedback ever fights the groove.
+
+       Into musicGain and not the master, so mute means silence. The only
+       thing that bypasses mute is the calibration click, which is
+       instrumentation. */
+    this.sfx = ctx.createGain();
+    this.sfx.gain.value = 1;
+    this.sfx.connect(this.musicGain);
+    this._holds = {};
+
     var conv = ctx.createConvolver();
     conv.buffer = this._courtyard();
     this.wet = ctx.createGain();
@@ -226,8 +241,8 @@ window.Ardah = window.Ardah || {};
   /* Routes a source to both the dry bus and the courtyard send. `send` is per
      voice: the big drums carry the room, the tar sits closer, the stick
      transients stay dry or the whole thing turns to mush. */
-  AudioEngine.prototype._out = function (node, send) {
-    node.connect(this.dry);
+  AudioEngine.prototype._out = function (node, send, bus) {
+    node.connect(bus === 'sfx' ? this.sfx : this.dry);
     if (send > 0) {
       var s = this.ctx.createGain();
       s.gain.value = send;
@@ -263,7 +278,7 @@ window.Ardah = window.Ardah || {};
       g.gain.exponentialRampToValueAtTime(amp, when + 0.003);
       g.gain.exponentialRampToValueAtTime(0.0001, when + dec);
       osc.connect(g);
-      this._out(g, o.send);
+      this._out(g, o.send, o.bus);
       osc.start(when);
       osc.stop(when + dec + 0.02);
     }
@@ -278,7 +293,7 @@ window.Ardah = window.Ardah || {};
       ng.gain.setValueAtTime(level * o.hit, when);
       ng.gain.exponentialRampToValueAtTime(0.0001, when + o.hitT);
       n.connect(f); f.connect(ng);
-      this._out(ng, o.send * 0.5);
+      this._out(ng, o.send * 0.5, o.bus);
       this._noiseAt(n, when, o.hitT + 0.02);
     }
 
@@ -291,7 +306,7 @@ window.Ardah = window.Ardah || {};
       bg.gain.setValueAtTime(level * o.body, when);
       bg.gain.exponentialRampToValueAtTime(0.0001, when + o.bodyT);
       bn.connect(bf); bf.connect(bg);
-      this._out(bg, o.send);
+      this._out(bg, o.send, o.bus);
       this._noiseAt(bn, when, o.bodyT + 0.02);
     }
   };
@@ -414,6 +429,167 @@ window.Ardah = window.Ardah || {};
       osc.connect(g);
       this._out(g, 0.7);
       osc.start(when); osc.stop(when + 1.0);
+    }
+  };
+
+  /* ======================= the player's own feedback =======================
+
+     Three sounds for the three things that can happen to a note, and one rule
+     over all of them: THE VERDICT MUST NOT SOUND LIKE A DRUM.
+
+     The chart already plays a drum on that beat. A second drum a few tens of
+     milliseconds later is the doubling problem from chart.js all over again,
+     only worse — it lands at the player's own timing error, so a late tap
+     produces a flam and the groove itself seems to stumble. The one thing a
+     rhythm game must never do is make the beat ambiguous.
+
+     So the verdicts live where the drums are not: up in the 2-6 kHz air, short,
+     and on the sfx bus in front of the stage. They read as the row answering,
+     not as another drummer. */
+
+  /* What a clean strike sounds like. The two partials are a perfect fifth
+     apart, which is the difference between "correct" and "a beep": a
+     consonant interval is heard as an answer, an arbitrary one as an alarm.
+     Early and late get no interval at all — a dry wooden tick, plainly less
+     than the ring, without ever being a scolding. */
+  var STRIKE = {
+    perfect: { ring: [1980, 2970], ringGain: 0.30, tick: 0.16, tickHz: 2600, air: 0.22, decay: 0.34 },
+    good:    { ring: [1660, 2490], ringGain: 0.20, tick: 0.16, tickHz: 2100, air: 0.15, decay: 0.24 },
+    early:   { ring: null,         ringGain: 0,    tick: 0.26, tickHz: 900,  air: 0.05, decay: 0.10 },
+    late:    { ring: null,         ringGain: 0,    tick: 0.26, tickHz: 780,  air: 0.05, decay: 0.10 }
+  };
+
+  AudioEngine.prototype.strike = function (judgment, at) {
+    if (!this.ctx) return;
+    var spec = STRIKE[judgment];
+    if (!spec) return;
+    // `at` exists for the offline renderer only. In the game a verdict is a
+    // reaction and plays now; offline there is no "now" until rendering runs.
+    var ctx = this.ctx, when = at === undefined ? ctx.currentTime + 0.001 : at;
+
+    if (spec.ring) {
+      for (var i = 0; i < spec.ring.length; i++) {
+        var osc = ctx.createOscillator(), g = ctx.createGain();
+        osc.type = 'sine';
+        osc.frequency.value = spec.ring[i];
+        g.gain.setValueAtTime(0.0001, when);
+        g.gain.exponentialRampToValueAtTime(spec.ringGain * (i ? 0.55 : 1), when + 0.004);
+        g.gain.exponentialRampToValueAtTime(0.0001, when + spec.decay);
+        osc.connect(g);
+        this._out(g, 0.25, 'sfx');
+        osc.start(when); osc.stop(when + spec.decay + 0.02);
+      }
+    }
+
+    // The contact itself. Present in all four verdicts, because something has
+    // to acknowledge the tap even when the timing was poor.
+    var n = this._noiseSource(), f = ctx.createBiquadFilter(), ng = ctx.createGain();
+    f.type = 'bandpass';
+    f.frequency.value = spec.tickHz;
+    f.Q.value = 1.1;
+    ng.gain.setValueAtTime(spec.tick, when);
+    ng.gain.exponentialRampToValueAtTime(0.0001, when + 0.035);
+    n.connect(f); f.connect(ng);
+    this._out(ng, 0.2, 'sfx');
+    this._noiseAt(n, when, 0.06);
+
+    // A breath of air sweeping up — the row lifting together. Tiny, and only
+    // really felt on a perfect.
+    if (spec.air > 0) {
+      var an = this._noiseSource(), af = ctx.createBiquadFilter(), ag = ctx.createGain();
+      af.type = 'bandpass';
+      af.Q.value = 0.9;
+      af.frequency.setValueAtTime(1300, when);
+      af.frequency.exponentialRampToValueAtTime(4200, when + 0.09);
+      ag.gain.setValueAtTime(0.0001, when);
+      ag.gain.exponentialRampToValueAtTime(spec.air, when + 0.02);
+      ag.gain.exponentialRampToValueAtTime(0.0001, when + 0.11);
+      an.connect(af); af.connect(ag);
+      this._out(ag, 0.35, 'sfx');
+      this._noiseAt(an, when, 0.14);
+    }
+  };
+
+  /** A missed note. Ardah is a ceremony and the concept doc is explicit that
+      the framing is "the row loses its step", never "you failed" — so this is
+      not a buzzer, and it is not louder than a hit.
+
+      It is a DAMPED skin: the same drum model with the decay cut to 70 ms, as
+      if a hand were left flat on the head. That is a real sound with a real
+      meaning — a drummer smothering a stroke — and it is the opposite of the
+      ring a clean strike gets: no interval, no air, no room to speak of. */
+  AudioEngine.prototype.missed = function (at) {
+    if (!this.ctx) return;
+    var when = at === undefined ? this.ctx.currentTime + 0.001 : at;
+    this._skin({
+      when: when, level: 0.42, f0: 88, glide: 1.55, glideT: 0.03,
+      modes: 2, decay: 0.07,
+      hit: 0.5, hitHz: 480, hitQ: 0.6, hitT: 0.02,
+      body: 0, bodyHz: 0, bodyT: 0,
+      send: 0.12, bus: 'sfx'
+    });
+  };
+
+  /* A raise in progress. Sustained, so unlike everything else in here it has a
+     start and an end, and something has to own it in between — `_holds`, keyed
+     by lane, because two lanes can be held at once.
+
+     Noise through a narrow band rather than a tone: a pitch held under the
+     drums would be a chord nobody wrote, and the point is tension, not
+     harmony. A slow tremolo makes it read as a roll (the section is rolling
+     underneath a raise anyway), and the band climbing while it is held is the
+     sabre going up — so letting go early is audibly letting go of something
+     that had not finished. */
+  AudioEngine.prototype.holdStart = function (lane, at) {
+    if (!this.ctx) return;
+    this.holdEnd(lane, at);                   // never stack two on one lane
+    var ctx = this.ctx, t = at === undefined ? ctx.currentTime : at;
+
+    var n = this._noiseSource();
+    var f = ctx.createBiquadFilter();
+    f.type = 'bandpass';
+    f.Q.value = 5.5;
+    f.frequency.setValueAtTime(300, t);
+    f.frequency.linearRampToValueAtTime(430, t + 1.6);
+
+    var g = ctx.createGain();
+    g.gain.setValueAtTime(0.0001, t);
+    g.gain.exponentialRampToValueAtTime(0.16, t + 0.08);
+
+    var lfo = ctx.createOscillator(), lfoGain = ctx.createGain();
+    lfo.type = 'sine';
+    lfo.frequency.value = 7.5;
+    lfoGain.gain.value = 0.055;
+    lfo.connect(lfoGain);
+    lfoGain.connect(g.gain);
+
+    n.connect(f); f.connect(g);
+    this._out(g, 0.3, 'sfx');
+    this._noiseAt(n, t, 8);                   // stopped by holdEnd long before
+    lfo.start(t);
+    this._holds[lane] = { n: n, g: g, lfo: lfo };
+  };
+
+  /** Ends a raise. The 60 ms fade is not politeness — cutting a sustained gain
+      to zero clicks, and a click at the end of every hold would be the loudest
+      thing in the game. */
+  AudioEngine.prototype.holdEnd = function (lane, at) {
+    var h = this._holds && this._holds[lane];
+    if (!h) return;
+    delete this._holds[lane];
+    var t = at === undefined ? this.ctx.currentTime : at;
+    h.g.gain.cancelScheduledValues(t);
+    h.g.gain.setValueAtTime(Math.max(0.0001, h.g.gain.value), t);
+    h.g.gain.exponentialRampToValueAtTime(0.0001, t + 0.06);
+    try { h.n.stop(t + 0.09); h.lfo.stop(t + 0.09); } catch (e) { /* already stopped */ }
+  };
+
+  /** Every raise, released. A run that ends, a pause, or a page that loses
+      focus mid-hold must not leave a lane humming — the context keeps running
+      and nothing else would ever stop it. */
+  AudioEngine.prototype.holdEndAll = function () {
+    for (var lane in this._holds) {
+      if (Object.prototype.hasOwnProperty.call(this._holds, lane)) this.holdEnd(lane);
     }
   };
 

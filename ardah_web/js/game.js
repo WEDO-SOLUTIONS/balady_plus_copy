@@ -131,6 +131,7 @@ window.Ardah = window.Ardah || {};
       self.conductor.start();
       self.input.reset();
       self.renderer.keyReset();
+      A.audio.holdEndAll();
       self.phase = 'playing';
       A.ui.showScreen(null);
       A.bridge.track('ardah_run_started', { chart: chart.id, calibrated: self.calibrated });
@@ -185,12 +186,28 @@ window.Ardah = window.Ardah || {};
     this.renderer.keyDown(lane);
     var t = this.conductor.judgeTimeMs() - corr;
     var ev = this.judge.press(lane, t);
-    if (ev) this._reactTo(ev);
-    else this.renderer.hit(lane, 'stray');       // silent feedback, no penalty
+    if (ev) {
+      this._reactTo(ev);
+      // A raise that has just begun starts humming. The judge marks the note
+      // `holding` and says nothing more until it ends, so this is the only
+      // moment the sustain can be started from.
+      if (ev.note && ev.note.type === 'hold' && ev.note.state === 'holding') {
+        A.audio.holdStart(lane);
+      }
+    } else {
+      // Silent, and deliberately: a stray tap costs nothing, and a sound for
+      // it would teach the player that they did something wrong when they did
+      // not. The pad still moved, which is feedback enough.
+      this.renderer.hit(lane, 'stray');
+    }
   };
 
   Game.prototype._release = function (lane, corr) {
     this.renderer.keyUp(lane);
+    // Unconditional, and _reactTo does it again for the verdict: a finger
+    // coming off always stops the hum, whatever the judge makes of it. A
+    // sustained sound with no owner is the worst failure this file can have.
+    A.audio.holdEnd(lane);
     var ev = this.judge.release(lane, this.conductor.judgeTimeMs() - corr);
     if (ev) this._reactTo(ev);
   };
@@ -203,6 +220,18 @@ window.Ardah = window.Ardah || {};
   Game.prototype._reactTo = function (ev) {
     if (!ev) return;
     var lane = ev.note ? ev.note.lane : -1;
+
+    /* Every verdict passes through here — a press, a release, a flourish, and
+       the misses the judge emits from update() when a window closes — so this
+       is the one place the sound belongs. A raise ends here too, whichever way
+       it ended: released on the beat, let go too early, or held all the way
+       through and credited by update(). */
+    if (ev.judgment === 'miss') A.audio.missed();
+    else A.audio.strike(ev.judgment);
+    if (ev.note && ev.note.type === 'hold' && ev.note.state !== 'holding') {
+      A.audio.holdEnd(lane);
+    }
+
     this.renderer.hit(lane, ev.judgment, ev.note ? ev.note.t : 0);
     if (ev.points) this.renderer.score(lane, ev.points);
     this.renderer.say(A.i18n.t(ev.judgment), ev.judgment === 'perfect' ? '#E7B44C'
@@ -216,6 +245,7 @@ window.Ardah = window.Ardah || {};
     this.phase = 'paused';
     this.input.reset();
     this.renderer.keyReset();
+    A.audio.holdEndAll();
     this.conductor.pause();
     A.ui.showScreen('screen-pause');
   };
@@ -242,6 +272,7 @@ window.Ardah = window.Ardah || {};
     this.phase = 'menu';
     this.input.reset();
     this.renderer.keyReset();
+    A.audio.holdEndAll();
     A.ui.showScreen('screen-menu');
   };
 
@@ -250,6 +281,7 @@ window.Ardah = window.Ardah || {};
     this.phase = 'result';
     this.input.reset();
     this.renderer.keyReset();
+    A.audio.holdEndAll();
 
     var chart = this.charts[this.chartIndex];
     var acc = this.judge.accuracy();

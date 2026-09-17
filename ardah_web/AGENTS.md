@@ -99,6 +99,14 @@ decision it exists to settle: [`docs/ardah-concept.md`](../docs/ardah-concept.md
   a judged note rides on, so its time is the chart's time exactly. The ±5 ms
   scatter belongs to the ornament layer and is baked into the chart at build
   time, not applied at playback.
+- **A verdict must not sound like a drum.** Hit, miss and hold feedback lands
+  at the player's own timing error, so anything drum-shaped flams against the
+  chart's own hit and makes the beat ambiguous. Feedback goes high, short and
+  on the `sfx` bus; it feeds `musicGain` so mute silences it. A stray tap stays
+  silent on purpose.
+- **A sustained voice needs an owner.** The raise hum is the only one, it lives
+  in `_holds` keyed by lane, and every way a run can end has to release it
+  (`holdEndAll`). End it with a fade — cutting a sustained gain to zero clicks.
 - **No synthetic chant, ever.** The concept doc flags it twice (§11.1, §11.2):
   a mis-scanned chant is a PR incident and the rights are a separate track.
   Percussion and claps are fair game; a voice is licensed or commissioned, or

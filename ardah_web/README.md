@@ -728,6 +728,47 @@ stays literally true — and it is applied only to ornaments. A groove hit is th
 cue a player is judged against; moving one by 5 ms is a bug wearing a
 musician's hat.
 
+### The player's own feedback
+
+Three sounds — a strike, a miss, a raise in progress — and one rule over all of
+them: **a verdict must not sound like a drum.**
+
+The chart already plays a drum on that beat. A second drum a few tens of
+milliseconds later is the doubling problem from `chart.js` all over again, only
+worse: it lands at the *player's own timing error*, so a late tap produces a
+flam and the groove itself seems to stumble. A rhythm game may do many things
+badly; making its own beat ambiguous is not one of them.
+
+So the verdicts live where the drums are not — up in the 2–6 kHz air, short,
+and on a separate `sfx` bus that takes only a fraction of the courtyard, so the
+answer arrives from beside the player rather than from across the square. The
+bus feeds the *music* gain, not the master, so mute means silence; the
+calibration click remains the only thing that bypasses mute, because it is
+instrumentation.
+
+| | what it is | why |
+|---|---|---|
+| **perfect** | two partials a perfect fifth apart, a contact tick, a breath of air sweeping up | a consonant interval is heard as an answer; an arbitrary one is heard as an alarm |
+| **good** | the same, lower and duller | audibly less, with nothing taken away |
+| **early / late** | no interval at all — a dry wooden tick | plainly less than the ring, and never a scolding |
+| **miss** | a *damped* skin: the drum model with its decay cut to 70 ms, as if a hand were left flat on the head | a real sound with a real meaning (a drummer smothering a stroke), and the opposite of a ring — no interval, no air, no room |
+| **raise held** | narrow-band noise with a slow tremolo, its band climbing while the key is down | tension, not harmony: a held *pitch* under the drums would be a chord nobody wrote. The climb is the sabre going up, so letting go early is audibly letting go of something unfinished |
+
+A stray tap — a press with no note near it — stays **silent**. It costs no
+points, and a sound would teach the player they had done something wrong when
+they had not. The pad still moves.
+
+The raise is the only sustained voice in the engine, so it is the only one that
+can be left running by mistake. It is owned by `_holds`, keyed by lane; it is
+stopped by the verdict, by the finger coming off, and by every reset the game
+has (pause, quit, run over) via `holdEndAll()`; a second `holdStart` on a lane
+replaces rather than stacks; and the end is a 60 ms fade because cutting a
+sustained gain to zero clicks. `deck/audio_preview.js` asserts the tail after
+the last release is digital silence.
+
+Measured in the mix: playing a chorus perfectly adds **0.8 dB** over the bare
+bed (−22.3 → −21.5 dBFS RMS, peak −2.1). Present, and nowhere near in charge.
+
 ### What is deliberately missing
 
 The chanted poem. It is the heart of a real Ardah, and it is exactly what the

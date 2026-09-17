@@ -60,6 +60,32 @@ function wav(pcm, chans, rate) {
 
   fs.mkdirSync(OUT, { recursive: true });
 
+  // Interleave + base64 in the page: shipping a million JS numbers per clip
+  // over CDP is slower than rendering the audio was.
+  await page.evaluate(() => {
+    window.__pack = (out) => {
+      const chans = out.numberOfChannels, len = out.length;
+      const pcm = new Int16Array(len * chans);
+      const data = [];
+      for (let c = 0; c < chans; c++) data.push(out.getChannelData(c));
+      let peak = 0, sum = 0;
+      for (let i = 0, k = 0; i < len; i++) {
+        for (let c = 0; c < chans; c++, k++) {
+          const v = Math.max(-1, Math.min(1, data[c][i]));
+          pcm[k] = Math.round(v * 32767);
+          if (Math.abs(v) > peak) peak = Math.abs(v);
+          sum += v * v;
+        }
+      }
+      let bin = '';
+      const bytes = new Uint8Array(pcm.buffer);
+      for (let i = 0; i < bytes.length; i += 8192) {
+        bin += String.fromCharCode.apply(null, bytes.subarray(i, i + 8192));
+      }
+      return { b64: btoa(bin), chans, peak, rms: Math.sqrt(sum / (len * chans)) };
+    };
+  });
+
   for (const clip of CLIPS) {
     const res = await page.evaluate(async (c) => {
       const A = window.Ardah;
@@ -120,6 +146,105 @@ function wav(pcm, chans, rate) {
       (res.peak >= 1 ? 'CLIPPED  ' : '         ') +
       JSON.stringify(res.voices)
     );
+  }
+
+  /* The verdicts: each one alone, then the chorus played WELL and the same
+     chorus played badly.
+
+     The two mixed clips are the only way to answer the question that matters
+     about feedback — not "is it a nice sound" but "does it sit in front of the
+     groove without becoming another drummer". */
+  const sfx = await page.evaluate(async (rate) => {
+    const A = window.Ardah;
+    const dur = 11;
+    const ctx = new OfflineAudioContext(2, Math.ceil(rate * dur), rate);
+    const eng = new A.AudioEngine();
+    eng.build(ctx);
+    let t = 0.2;
+    for (const j of ['perfect', 'perfect', 'good', 'good', 'early', 'late']) {
+      eng.strike(j, t); t += 0.55;
+    }
+    t += 0.35;
+    eng.missed(t); t += 0.7;
+    eng.missed(t); t += 1.0;
+    eng.holdStart(0, t);
+    eng.holdEnd(0, t + 1.8);
+    t += 2.1;
+    eng.holdStart(0, t);
+    eng.strike('perfect', t + 1.3);          // a raise released on the beat
+    eng.holdEnd(0, t + 1.3);
+    const out = await ctx.startRendering();
+    // The last thing in the clip is a raise released at 8.95 s. A second and a
+    // half later there must be nothing left but the courtyard dying away -- a
+    // sustained voice that outlives its holdEnd is the one bug this whole
+    // mechanism can have, and it is silent to read and obvious to hear.
+    const d = out.getChannelData(0);
+    let tail = 0;
+    for (let i = Math.floor(10.4 * rate); i < d.length; i++) tail = Math.max(tail, Math.abs(d[i]));
+    return Object.assign(window.__pack(out), { tail });
+  }, RATE);
+  fs.writeFileSync(path.join(OUT, 'ardah_verdicts.wav'),
+                   wav(Buffer.from(sfx.b64, 'base64'), sfx.chans, RATE));
+  {
+    const db = (v) => (20 * Math.log10(Math.max(1e-9, v))).toFixed(1);
+    console.log(`verdicts     alone       peak ${db(sfx.peak).padStart(6)} dBFS  ` +
+                `rms ${db(sfx.rms).padStart(6)} dBFS  ` +
+                `tail after the last hold ${db(sfx.tail).padStart(6)} dBFS`);
+  }
+
+  /* The chorus as it sounds while being PLAYED — the bed plus the verdicts a
+     player's hands would produce. Two versions of the same sixteen seconds:
+     one clean, one ragged. */
+  for (const take of [
+    { name: 'played_well', from: 28, to: 44, miss: 0, late: 0 },
+    { name: 'played_badly', from: 28, to: 44, miss: 3, late: 2 },
+  ]) {
+    const r = await page.evaluate(async (c) => {
+      const A = window.Ardah;
+      const dur = c.to - c.from, lead = 0.05;
+      const ctx = new OfflineAudioContext(2, Math.ceil(c.rate * dur), c.rate);
+      const eng = new A.AudioEngine();
+      eng.build(ctx);
+      const chart = A.charts.build('normal');
+      for (const h of chart.drums) {
+        const t = h.t / 1000 - c.from;
+        if (t < -lead || t > dur) continue;
+        eng.play(h.voice, Math.max(0, t) + lead, h.gain);
+      }
+      // The player. Nobody is sample-accurate, so every verdict lands a few
+      // milliseconds after the note it answers — which is also the worst case
+      // for the sound doubling the drum, and the reason to listen to this.
+      let i = 0, counts = {};
+      const tally = (k) => { counts[k] = (counts[k] || 0) + 1; };
+      for (const n of chart.notes) {
+        const t = n.t / 1000 - c.from;
+        if (t < 0 || t > dur) continue;
+        i++;
+        const missed = c.miss && i % c.miss === 0;
+        const sloppy = !missed && c.late && i % c.late === 0;
+        const at = Math.max(0, t) + lead;
+        if (missed) { eng.missed(at + 0.14); tally('miss'); continue; }
+        const verdict = sloppy ? (i % 4 ? 'good' : 'late') : 'perfect';
+        if (n.type === 'hold') {
+          eng.holdStart(n.lane, at + 0.02);
+          eng.strike(verdict, at + n.durMs / 1000);
+          eng.holdEnd(n.lane, at + n.durMs / 1000);
+          tally('hold');
+        } else {
+          eng.strike(verdict, at + 0.022);
+          tally(verdict);
+        }
+      }
+      const out = await ctx.startRendering();
+      return Object.assign(window.__pack(out), { counts });
+    }, { from: take.from, to: take.to, rate: RATE, miss: take.miss, late: take.late });
+
+    fs.writeFileSync(path.join(OUT, `ardah_${take.name}.wav`),
+                     wav(Buffer.from(r.b64, 'base64'), r.chans, RATE));
+    const db = (v) => (20 * Math.log10(Math.max(1e-9, v))).toFixed(1);
+    console.log(`${take.name.padEnd(12)} ${take.from}-${take.to}s  peak ${db(r.peak).padStart(6)} dBFS  ` +
+                `rms ${db(r.rms).padStart(6)} dBFS  ` + (r.peak >= 1 ? 'CLIPPED  ' : '         ') +
+                JSON.stringify(r.counts));
   }
 
   /* Each voice alone, twice — once soft, once full. Two things come out of

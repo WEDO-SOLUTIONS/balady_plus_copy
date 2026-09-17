@@ -319,7 +319,7 @@ function caption(s, text, x, y, w) {
     { y: 2.4, w: 6.4, h: 1.5 });
   const items = [
     ['448 KB', 'all of the artwork'],
-    ['852 KB', 'the game as one file'],
+    ['862 KB', 'the game as one file'],
     ['0', 'installs for the player'],
     ['offline', 'after the first download']
   ];
@@ -381,7 +381,7 @@ function caption(s, text, x, y, w) {
     ['Cultural framing', 'Ardah is heritage. Wording, posture and banners go through review before art production starts.'],
     ['Audio licensing', 'Percussion is synthesised in the browser — modelled on the real section, not sampled. The chant and the shipping track are licensed or commissioned.'],
     ['Android latency', 'Calibration removes the constant offset. Jitter is measured on devices before the work starts.'],
-    ['Weight and network', 'Events mean poor connectivity. The ceiling is 4 MB; we are at 0.63 today.']
+    ['Weight and network', 'Events mean poor connectivity. The ceiling is 4 MB; we are at 0.64 today.']
   ];
   risks.forEach(([h, t], i) => {
     const x = 0.7 + (i % 2) * 6.2, y = 2.4 + Math.floor(i / 2) * 2.3;

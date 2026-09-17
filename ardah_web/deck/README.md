@@ -96,8 +96,12 @@ conductor uses — and writes WAVs plus a level report:
 node deck/audio_preview.js      # needs the game served on 8123
 ```
 
-Three sections (intro/verse, chorus, the raise) and one clip of every voice on
-its own, soft then full, with decay and spectral centroid measured per voice.
+Three sections (intro/verse, chorus, the raise), every voice on its own soft
+then full with decay and spectral centroid measured, the six verdict sounds
+alone, and the same chorus twice as it sounds *while being played* — once
+clean, once ragged. Those last two are the only way to answer the question that
+matters about feedback: not "is it a nice sound" but "does it sit in front of
+the groove without becoming another drummer".
 Offline because it renders faster than real time, the sandbox has no audio
 device, and it is deterministic: with the engine's seeded PRNG, two runs give
 byte-identical files, so a change to the synthesis can be diffed.
