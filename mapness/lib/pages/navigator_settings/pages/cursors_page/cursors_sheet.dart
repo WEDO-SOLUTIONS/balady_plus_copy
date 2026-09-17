@@ -18,12 +18,23 @@ import 'package:sheetify/sheetify.dart';
 /// calls while the sheet is still up are ignored.
 bool _isCursorsSheetOpen = false;
 
+/// BALADY-3960: a finger held over the my-location cursor keeps re-firing
+/// native `onMyLocationTap` after the sheet's own close animation lands,
+/// reopening it in a loop. Ignore reopen attempts for this long after a close.
+const _reopenCooldown = Duration(seconds: 2);
+
+DateTime? _lastClosedAt;
+
 /// BALADY-3764: Navigator Customization opened from a tap on the navigation
 /// cursor during guidance / free roam. Shown as a modal ToggleSheet over the
 /// map (same pattern as EndTripModal) instead of a full-screen route, so the
 /// driver keeps the route context behind the sheet.
 Future<void> showCursorsSheet(BuildContext context) async {
   if (_isCursorsSheetOpen) {
+    return;
+  }
+  final lastClosedAt = _lastClosedAt;
+  if (lastClosedAt != null && DateTime.now().difference(lastClosedAt) < _reopenCooldown) {
     return;
   }
   _isCursorsSheetOpen = true;
@@ -44,6 +55,7 @@ Future<void> showCursorsSheet(BuildContext context) async {
     );
   } finally {
     _isCursorsSheetOpen = false;
+    _lastClosedAt = DateTime.now();
   }
 }
 
