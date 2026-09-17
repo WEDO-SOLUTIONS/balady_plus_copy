@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8" />
+<title>Drift the Desert — background baker</title>
+<style>html,body{margin:0;background:#111;color:#ccc;font:13px monospace}canvas{display:block;max-width:100%}</style>
+</head>
+<body>
+<canvas id="c"></canvas>
+<script>
+/* Offline renderer for the game's background plates.
+
+   This is the runtime shader's rich cousin. Nothing here has to fit in a
+   frame budget on a cheap Android GPU, so it can afford what the live version
+   could not: eight octaves of warped noise, sedimentary strata and erosion
+   gullies in the rock, wind ripples and rim light on the dunes, two cloud
+   decks with god rays. tools/bake_background.js drives it headlessly and
+   writes the results into img/bg/.
+
+   Every layer is horizontally seamless. Noise is sampled around a circle in
+   x, so u = 0 and u = 1 land on the same point and the plates can wrap
+   forever under parallax. */
+
+const VERT = `
+attribute vec2 aPos;
+void main() { gl_Position = vec4(aPos, 0.0, 1.0); }`;
+
+const FRAG = `
+precision highp float;
+
+uniform vec2  uRes;
+uniform float uDusk;     // 0 = golden hour, 1 = dusk
+uniform int   uLayer;    // 0 sky, 1 far range, 2 near range, 3 dunes
+
+#define TAU 6.28318530718
+
+/* ------------------------------------------------------------------ noise
+
+   Seamless horizontally: the plate's x axis is wrapped around a cylinder and
+   sampled with 3D noise, so u = 0 and u = 1 are the same point. Horizontal
+   frequency therefore comes from the cylinder radius, never from scaling u —
+   scaling u by a non-integer would break the wrap.                         */
+
+float hash3(vec3 p) {
+  return fract(sin(dot(p, vec3(127.1, 311.7, 74.7))) * 43758.5453123);
+}
+
+float vnoise3(vec3 p) {
+  vec3 i = floor(p);
+  vec3 f = fract(p);
+  vec3 w = f * f * (3.0 - 2.0 * f);
+  float n000 = hash3(i);
+  float n100 = hash3(i + vec3(1.0, 0.0, 0.0));
+  float n010 = hash3(i + vec3(0.0, 1.0, 0.0));
+  float n110 = hash3(i + vec3(1.0, 1.0, 0.0));
+  float n001 = hash3(i + vec3(0.0, 0.0, 1.0));
+  float n101 = hash3(i + vec3(1.0, 0.0, 1.0));
+  float n011 = hash3(i + vec3(0.0, 1.0, 1.0));
+  float n111 = hash3(i + vec3(1.0, 1.0, 1.0));
+  return mix(mix(mix(n000, n100, w.x), mix(n010, n110, w.x), w.y),
+             mix(mix(n001, n101, w.x), mix(n011, n111, w.x), w.y), w.z);
+}
+
+// The radius sets how many features fit across the plate; y is already scaled.
+float wnoise(float u, float y, float radius) {
+  float a = u * TAU;
+  return vnoise3(vec3(cos(a) * radius, sin(a) * radius, y));
+}
+
+float wfbm(float u, float y, float radius, int octaves) {
+  float s = 0.0, amp = 0.5, r = radius, yy = y;
+  for (int i = 0; i < 8; i++) {
+    if (i >= octaves) break;
+    s += amp * wnoise(u, yy, r);
+    r *= 2.0; yy *= 2.0; amp *= 0.5;
+  }
+  return s;
+}
+
+// Ridged variant — the sharp creases that make dunes and rock read as solid.
+float wridge(float u, float y, float radius, int octaves) {
+  float s = 0.0, amp = 0.5, r = radius, yy = y;
+  for (int i = 0; i < 8; i++) {
+    if (i >= octaves) break;
+    s += amp * (1.0 - abs(wnoise(u, yy, r) * 2.0 - 1.0));
+    r *= 2.0; yy *= 2.0; amp *= 0.5;
+  }
+  return s;
+}
+
+// Vertical scale that makes noise of this radius isotropic on the plate: the
+// cylinder puts TAU * radius noise units across the width, so the height needs
+// the same units per pixel. Without this the two axes drift apart and the
+// noise smears into corduroy.
+float ys(float radius) {
+  return TAU * radius * uRes.y / uRes.x;
+}
+
+/* -------------------------------------------------------------- palettes */
+
+vec3 skyColour(float t, float dusk) {
+  vec3 zenithDay  = vec3(0.06, 0.20, 0.38);
+  vec3 midDay     = vec3(0.38, 0.55, 0.66);
+  vec3 lowDay     = vec3(0.99, 0.80, 0.52);
+  vec3 zenithDusk = vec3(0.03, 0.04, 0.13);
+  vec3 midDusk    = vec3(0.18, 0.13, 0.27);
+  vec3 lowDusk    = vec3(0.78, 0.35, 0.24);
+  vec3 zenith = mix(zenithDay, zenithDusk, dusk);
+  vec3 mid    = mix(midDay,    midDusk,    dusk);
+  vec3 low    = mix(lowDay,    lowDusk,    dusk);
+  return t < 0.62 ? mix(zenith, mid, smoothstep(0.0, 0.62, t))
+                  : mix(mid, low, smoothstep(0.62, 1.0, t));
+}
+
+vec3 sunColour(float dusk) {
+  return mix(vec3(1.0, 0.93, 0.76), vec3(1.0, 0.50, 0.30), dusk);
+}
+
+/* ------------------------------------------------------------------- sky */
+
+vec4 bakeSky(float u, float v, float dusk) {
+  // v: 0 at the top of the plate, 1 at the horizon.
+  vec3 col = skyColour(v, dusk);
+  vec3 sunT = sunColour(dusk);
+  vec2 sunPos = vec2(0.66, 0.955 - 0.02 * dusk);
+  float aspect = uRes.x / uRes.y;
+  float sunDist = length((vec2(u, v) - sunPos) * vec2(aspect, 1.0));
+
+  // --- high cirrus: stretched thin, so low vertical frequency -------------
+  float cir = wfbm(u, v * ys(7.0) * 2.4, 7.0, 5);
+  cir = smoothstep(0.50, 0.72, cir) * smoothstep(0.04, 0.26, v) * smoothstep(0.70, 0.40, v);
+  vec3 cirCol = mix(vec3(1.0, 0.96, 0.90), vec3(0.62, 0.34, 0.36), dusk);
+  col = mix(col, cirCol, cir * 0.40);
+
+  // --- cumulus deck: domain-warped, lit from the sun side -----------------
+  float warp = wfbm(u, v * ys(1.8), 1.8, 4);
+  float dens = wfbm(u + warp * 0.03, v * ys(3.0) * 0.85 + warp * 0.8, 3.0, 6);
+  float band = smoothstep(0.28, 0.54, v) * smoothstep(1.03, 0.76, v);
+  float cover = smoothstep(0.44, 0.68, dens) * band;
+
+  // Shade from the density gradient towards the sun: cheap, and it gives the
+  // decks a lit crown and a bruised underside.
+  float densUp = wfbm(u + warp * 0.03, v * ys(3.0) * 0.85 + warp * 0.8 - 0.55, 3.0, 5);
+  float lit = smoothstep(-0.06, 0.10, densUp - dens);
+
+  vec3 cloudLit  = mix(vec3(1.0, 0.97, 0.93), vec3(0.86, 0.48, 0.36), dusk);
+  vec3 cloudDark = mix(vec3(0.56, 0.54, 0.58), vec3(0.20, 0.14, 0.22), dusk);
+  vec3 cloudCol = mix(cloudDark, cloudLit, lit);
+  cloudCol += sunT * exp(-sunDist * 4.0) * 0.5;
+  col = mix(col, cloudCol, cover);
+
+  // --- sun: bloom, then a restrained fan of rays through the deck ---------
+  col += sunT * (0.38 * exp(-sunDist * 5.0) + 0.85 * exp(-sunDist * 20.0));
+
+  float ang = atan(v - sunPos.y, (u - sunPos.x) * aspect);
+  float rays = wfbm(ang / TAU + 0.5, 0.0, 9.0, 3);
+  col += sunT * smoothstep(0.52, 0.92, rays) * exp(-sunDist * 5.5) * 0.18 * (1.0 - cover * 0.8);
+
+  col = mix(col, sunT * 1.35, smoothstep(0.030, 0.021, sunDist));
+
+  // Aerial haze piling up at the horizon.
+  col = mix(col, skyColour(1.0, dusk), smoothstep(0.72, 1.0, v) * 0.72);
+
+  return vec4(col, 1.0);
+}
+
+/* ----------------------------------------------------------------- rock */
+
+// Silhouette height of a range, 0..1 of the plate height. Terracing the
+// height field is what turns hills into flat-topped buttes.
+float rangeHeight(float u, float seed, float radius, float fill) {
+  float h = wfbm(u, seed, radius, 4);
+  h = smoothstep(0.24, 0.78, h);
+
+  // Four terraces with soft risers.
+  float steps = 4.0;
+  float t = h * steps;
+  h = (floor(t) + smoothstep(0.34, 0.66, fract(t))) / steps;
+
+  // A little erosion on the rim so the plateaus are not perfectly level.
+  h += (wfbm(u, seed + 5.0, radius * 4.0, 3) - 0.5) * 0.06;
+  return clamp(h, 0.0, 1.0) * fill;
+}
+
+vec4 bakeRange(float u, float v, float dusk, float seed, float radius, float fill,
+               float hazeAmt, vec3 rockLit, vec3 rockDark) {
+  float h = rangeHeight(u, seed, radius, fill);
+  float top = 1.0 - h;
+  if (v < top) return vec4(0.0);
+
+  float into = (v - top) / max(0.0001, 1.0 - top);   // 0 crest .. 1 base
+
+  // Sedimentary strata: banded in v, drifting slowly in u so they follow the
+  // rock rather than ruling straight lines across the plate.
+  float drift = wfbm(u, seed * 2.0, radius * 0.6, 3);
+  float bands = 0.5 + 0.5 * sin((v + drift * 0.05) * 42.0);
+  bands *= smoothstep(0.02, 0.18, into);
+
+  // Erosion gullies: high frequency across the face, low down it.
+  float gully = wridge(u, v * ys(radius * 3.0) * 0.22 + seed, radius * 3.0, 3);
+  gully = smoothstep(0.55, 0.95, gully) * smoothstep(0.05, 0.4, into);
+
+  // Light from the sun side: the slope of the silhouette tells us which way
+  // the face turns.
+  float slope = rangeHeight(u + 0.0025, seed, radius, fill) - h;
+  float face = clamp(0.5 - slope * 18.0, 0.0, 1.0);
+
+  vec3 col = mix(rockDark, rockLit, face);
+  col *= 1.0 - smoothstep(0.1, 1.0, into) * 0.22;      // shade down the face
+  col *= 0.90 + 0.10 * bands;
+  col *= 1.0 - gully * 0.16;
+
+  // Talus fans at the base catch more light and more dust.
+  col = mix(col, mix(col, rockLit, 0.30) * 1.03, smoothstep(0.62, 1.0, into));
+
+  vec3 haze = skyColour(1.0, dusk);
+  col = mix(col, haze, hazeAmt + (1.0 - hazeAmt) * smoothstep(0.72, 1.0, into) * 0.5);
+
+  float edge = smoothstep(0.0, 1.5 / uRes.y, v - top);
+  return vec4(col, edge);
+}
+
+/* ---------------------------------------------------------------- dunes */
+
+vec4 bakeDunes(float u, float v, float dusk) {
+  vec3 col = vec3(0.0);
+  float alpha = 0.0;
+
+  for (int i = 0; i < 3; i++) {
+    float fi = float(i);
+    float seed = 11.0 + fi * 7.0;
+    float radius = 1.3 + fi * 0.7;
+    float crest = wfbm(u, seed, radius, 4);
+    float top = 0.08 + fi * 0.26 + (crest - 0.5) * 0.16;
+    if (v < top) continue;
+
+    float into = (v - top) / max(0.0001, 1.0 - top);   // 0 crest .. 1 base
+    float slope = wfbm(u + 0.0025, seed, radius, 4) - crest;
+
+    vec3 lit  = mix(vec3(0.96, 0.81, 0.56), vec3(0.52, 0.32, 0.31), dusk);
+    vec3 dark = mix(vec3(0.55, 0.36, 0.20), vec3(0.17, 0.11, 0.14), dusk);
+
+    // The face has to shade *down* the slope, not just across it: lighting
+    // that depended on u alone painted each column a single flat colour.
+    float down = smoothstep(0.0, 0.95, into);
+    float aspect = clamp(0.5 - slope * 18.0, 0.0, 1.0);   // which way it turns
+    vec3 c = mix(lit, dark, down * (0.55 + 0.45 * (1.0 - aspect)));
+
+    // Mottling in both axes, so the face never resolves into flat columns.
+    float mottle = wfbm(u, v * ys(2.2), 2.2, 4);
+    float grain = wfbm(u, v * ys(9.0), 9.0, 3);
+    c *= 0.86 + 0.22 * mottle + 0.14 * grain;
+
+    // Wind ripples follow the crest: wide across the plate, tight up it, and
+    // fading out as the slope turns away.
+    float ripple = wridge(u, v * 150.0 + seed, 5.0, 2);
+    c *= 1.0 + (ripple - 0.5) * 0.14 * (1.0 - down * 0.6);
+
+    // Rim light right on the crest, and a shadow pooling just under it.
+    c += lit * smoothstep(0.05, 0.0, into) * 0.30;
+    c *= 1.0 - smoothstep(0.02, 0.10, into) * smoothstep(0.30, 0.12, into) * 0.12;
+
+    // Scattered scrub and stones, thinning into the distance.
+    float sprinkle = step(0.9955, hash3(vec3(floor(u * 1400.0), floor(v * 700.0), fi)));
+    c *= 1.0 - sprinkle * 0.5 * smoothstep(0.08, 0.45, into);
+
+    c *= 1.0 - fi * 0.09;
+
+    float edge = smoothstep(0.0, 1.5 / uRes.y, v - top);
+    col = mix(col, c, edge);
+    alpha = max(alpha, edge);
+  }
+
+  col = mix(skyColour(1.0, dusk), col, smoothstep(0.0, 0.10, v));
+  return vec4(col, alpha);
+}
+
+/* ------------------------------------------------------------------ main */
+
+void main() {
+  float u = gl_FragCoord.x / uRes.x;
+  float v = 1.0 - gl_FragCoord.y / uRes.y;    // 0 top .. 1 bottom
+  float dusk = uDusk;
+  vec4 outc;
+
+  if (uLayer == 0) {
+    outc = bakeSky(u, v, dusk);
+  } else if (uLayer == 1) {
+    outc = bakeRange(u, v, dusk, 3.0, 2.6, 0.62, 0.52,
+                     mix(vec3(0.64, 0.49, 0.38), vec3(0.24, 0.17, 0.25), dusk),
+                     mix(vec3(0.40, 0.29, 0.25), vec3(0.13, 0.09, 0.16), dusk));
+  } else if (uLayer == 2) {
+    outc = bakeRange(u, v, dusk, 17.0, 1.7, 0.55, 0.20,
+                     mix(vec3(0.74, 0.55, 0.38), vec3(0.28, 0.18, 0.22), dusk),
+                     mix(vec3(0.38, 0.26, 0.21), vec3(0.10, 0.07, 0.12), dusk));
+  } else {
+    outc = bakeDunes(u, v, dusk);
+  }
+
+  // A whisper of grain keeps the big gradients from banding in 8 bits.
+  outc.rgb += (hash3(vec3(gl_FragCoord.xy * 0.37, 1.0)) - 0.5) * 0.012;
+
+  gl_FragColor = vec4(clamp(outc.rgb, 0.0, 1.0), outc.a);
+}`;
+
+const canvas = document.getElementById('c');
+let gl, prog, uni = {};
+
+function compile(type, src) {
+  const sh = gl.createShader(type);
+  gl.shaderSource(sh, src);
+  gl.compileShader(sh);
+  if (!gl.getShaderParameter(sh, gl.COMPILE_STATUS)) {
+    throw new Error(gl.getShaderInfoLog(sh));
+  }
+  return sh;
+}
+
+function init() {
+  gl = canvas.getContext('webgl', {
+    alpha: true, premultipliedAlpha: false, antialias: false,
+    preserveDrawingBuffer: true, depth: false, stencil: false
+  });
+  if (!gl) throw new Error('no webgl');
+
+  prog = gl.createProgram();
+  gl.attachShader(prog, compile(gl.VERTEX_SHADER, VERT));
+  gl.attachShader(prog, compile(gl.FRAGMENT_SHADER, FRAG));
+  gl.linkProgram(prog);
+  if (!gl.getProgramParameter(prog, gl.LINK_STATUS)) {
+    throw new Error(gl.getProgramInfoLog(prog));
+  }
+  gl.useProgram(prog);
+
+  const buf = gl.createBuffer();
+  gl.bindBuffer(gl.ARRAY_BUFFER, buf);
+  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 3, -1, -1, 3]), gl.STATIC_DRAW);
+  const loc = gl.getAttribLocation(prog, 'aPos');
+  gl.enableVertexAttribArray(loc);
+  gl.vertexAttribPointer(loc, 2, gl.FLOAT, false, 0, 0);
+
+  for (const n of ['uRes', 'uDusk', 'uLayer']) uni[n] = gl.getUniformLocation(prog, n);
+}
+
+/** Render one plate and hand back a data URL. Called from the Node driver. */
+window.bake = function (w, h, layer, dusk) {
+  if (!gl) init();
+  canvas.width = w;
+  canvas.height = h;
+  gl.viewport(0, 0, w, h);
+  gl.clearColor(0, 0, 0, 0);
+  gl.clear(gl.COLOR_BUFFER_BIT);
+  gl.uniform2f(uni.uRes, w, h);
+  gl.uniform1f(uni.uDusk, dusk);
+  gl.uniform1i(uni.uLayer, layer);
+  gl.drawArrays(gl.TRIANGLES, 0, 3);
+  gl.finish();
+  return canvas.toDataURL('image/png');
+};
+
+window.bakeReady = true;
+</script>
+</body>
+</html>

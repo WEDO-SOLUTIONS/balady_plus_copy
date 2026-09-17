@@ -12,6 +12,7 @@
   function clamp(v, a, b) { return v < a ? a : (v > b ? b : v); }
   function lerp(a, b, t) { return a + (b - a) * t; }
   function rand(a, b) { return a + Math.random() * (b - a); }
+  function noop() { return false; }
 
   /** `rgb(...)` with an alpha, for gradient stops that need to fade out. */
   function rgba(rgbString, alpha) {
@@ -59,6 +60,8 @@
     }
   }
 
+  var Backdrop = global.DriftBackdrop || { ready: false, drawSky: noop, drawRanges: noop, drawDunes: noop };
+
   var Scene = {
     images: IMG,
     loadImages: loadImages,
@@ -69,8 +72,6 @@
     dpr: 1,
 
     horizon: 0,
-    /** true while the WebGL layer draws sky, mesas and dunes for us. */
-    glBackground: false,
     scroll: 0,
     time: 0,
     shake: 0,
@@ -104,6 +105,17 @@
     },
 
     /* ----------------------------------------------------------- helpers */
+
+    /** What the baked plates need to place themselves in this frame. */
+    plateState: function (dusk) {
+      return {
+        w: this.w,
+        h: this.h,
+        horizon: this.horizon,
+        scroll: this.scroll,
+        dusk: clamp(dusk || 0, 0, 1)
+      };
+    },
 
     /** Depth 0 = horizon, 1 = at the camera. Returns {y, s}. */
     project: function (d) {
@@ -150,9 +162,10 @@
 
     /* -------------------------------------------------------------- sky */
 
-    drawSky: function () {
-      if (this.glBackground) return;
+    drawSky: function (dusk) {
       var ctx = this.ctx;
+      if (Backdrop.drawSky(ctx, this.plateState(dusk))) return;
+
       var sky = IMG.sky;
 
       if (sky) {
@@ -221,9 +234,9 @@
 
     /* ------------------------------------------------------------ mesas */
 
-    drawMesas: function () {
-      if (this.glBackground) return;
+    drawMesas: function (dusk) {
       var ctx = this.ctx;
+      if (Backdrop.drawRanges(ctx, this.plateState(dusk))) return;
 
       var warm = this.ctx.createLinearGradient(0, this.horizon - this.h * 0.20, 0, this.horizon + this.h * 0.03);
       warm.addColorStop(0, 'rgba(246, 206, 150, 0)');
@@ -311,7 +324,6 @@
     /* ------------------------------------------------------------ dunes */
 
     drawGround: function (dusk) {
-      if (this.glBackground) return;
       var ctx = this.ctx;
       var night = clamp(dusk || 0, 0, 1);
 
@@ -326,6 +338,19 @@
       g.addColorStop(1.00, mixHex('#8E5C32', '#241816', night));
       ctx.fillStyle = g;
       ctx.fillRect(0, top, this.w, this.h - top);
+
+      if (Backdrop.drawDunes(ctx, this.plateState(night))) {
+        // The dune plate stops partway down the frame; wash the ground colour
+        // back over its lower edge so the seam disappears. Erasing instead
+        // would punch a hole through the ground fill underneath it.
+        var end = Backdrop.duneBottom || (this.horizon + this.h * 0.2);
+        var seam = ctx.createLinearGradient(0, end - this.h * 0.085, 0, end + this.h * 0.02);
+        seam.addColorStop(0, rgba(mixHex('#C79463', '#4A322C', night), 0));
+        seam.addColorStop(1, rgba(mixHex('#C79463', '#4A322C', night), 1));
+        ctx.fillStyle = seam;
+        ctx.fillRect(0, end - this.h * 0.085, this.w, this.h * 0.105);
+        return;
+      }
 
       // Two dune ridges rolling towards the camera.
       var ridges = [
@@ -794,8 +819,8 @@
         this.shake = Math.max(0, this.shake - dt * 2.4);
       }
 
-      this.drawSky();
-      this.drawMesas();
+      this.drawSky(dusk);
+      this.drawMesas(dusk);
       this.drawGround(dusk);
       this.drawTrack(state.tilt || 0, dusk);
 
@@ -835,11 +860,11 @@
 
       // Warm grade over the gameplay layer. The shader already applies its own
       // vignette, so this only tints the track and the actors when it is on.
-      var grade = ctx.createLinearGradient(0, this.glBackground ? this.horizon : 0, 0, this.h);
+      var grade = ctx.createLinearGradient(0, 0, 0, this.h);
       grade.addColorStop(0, 'rgba(255, 190, 120, 0.05)');
       grade.addColorStop(1, dusk > 0.5 ? 'rgba(40, 20, 40, 0.34)' : 'rgba(120, 60, 20, 0.16)');
       ctx.fillStyle = grade;
-      ctx.fillRect(0, this.glBackground ? this.horizon : 0, this.w, this.h);
+      ctx.fillRect(0, 0, this.w, this.h);
 
       if (this.flash > 0.002) {
         ctx.fillStyle = 'rgba(255, 255, 255, ' + (this.flash * 0.55).toFixed(3) + ')';

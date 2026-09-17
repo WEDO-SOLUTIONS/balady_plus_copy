@@ -97,12 +97,17 @@ before load, or append `?lang=ar` to the asset URL.
 | `js/i18n.js`    | EN/AR strings, `dir` switching |
 | `js/bridge.js`  | Host detection, events out, `localStorage` persistence with a memory fallback |
 | `js/audio.js`   | Procedural engine loop, taps, coins, combo, crash — no audio assets |
-| `js/skygl.js`   | WebGL background: sky, sun, clouds, mesas, dunes, shimmer |
-| `js/scene.js`   | Canvas renderer: perspective track, the car, dust, coins, FX (and the 2D background when the shader is off) |
+| `js/backdrop.js`| Draws the baked parallax plates |
+| `js/plates.js`  | Generated: plate sizes and skyline curves |
+| `js/scene.js`   | Canvas renderer: perspective track, the car, dust, coins, FX |
 | `js/game.js`    | Rules only, no DOM: balance physics, scoring, combo, coins, run lifecycle |
 | `js/main.js`    | Screen flow, HUD bindings, FX layer, input |
 | `img/`          | Artwork cut out of the mockup |
+| `img/bg/`       | Baked backdrop plates |
 | `tools/extract_assets.py` | Re-derives `img/` from the mockup sheet |
+| `tools/bake_background.html` | The offline shader the backdrop is rendered from |
+| `tools/bake_background.js` | Renders the plates headlessly |
+| `tools/pack_background.py` | Compresses them and emits `js/plates.js` |
 | `build_standalone.py` | Inlines everything above into `dist/drift-the-desert.html` |
 
 ## Artwork
@@ -143,45 +148,49 @@ slow-loading file degrades instead of leaving a blank frame.
 
 ## The background
 
-Two stacked canvases. `#glscene` runs a single fragment shader — sky gradient,
-sun bloom, drifting fBm clouds, two ranges of flat-topped buttes, three dune
-ranges with lit crests, heat shimmer over the horizon and the aerial haze that
-ties them together. `#scene` sits on top and draws only the track and the
-actors, so the gameplay layer never had to change. Neither canvas carries a
-`z-index`: they paint in DOM order, and the HUD, which comes after them, stays
-above both.
+Four plates scroll behind the track at their own speeds: sky, a far range of
+buttes, a near range, and the dune field. They are not drawn live — they are
+**baked offline** and shipped as images.
 
-The run also walks through the evening. A `dusk` value goes 0 → 1 across the
-sixty seconds and drives both layers at once: the shader's palette slides from
-golden hour into a red-violet dusk and drops the sun behind the mesas, while
-the canvas darkens the track, dims its shoulders and the dust, and switches on
-the headlights — a beam down the sand plus a flare on each lamp.
+That is the whole trick. Rendering the desert per frame meant fitting it into
+the budget of a cheap Android GPU, which capped it at four octaves of noise and
+flat, untextured rock. Baking moves that cost to build time, where there is no
+budget at all: `tools/bake_background.html` is the same shader with eight
+octaves, sedimentary strata and erosion gullies in the rock, wind ripples and
+rim light on the dunes, two cloud decks and crepuscular rays. Rendering one
+frame of it would be hopeless on a phone; rendering it once on a build machine
+costs a few seconds.
 
-Speed is sold by more than the scrolling texture: the horizon lifts slightly,
-the shader's vignette and shimmer tighten, and the canvas adds edge streaks, a
+```bash
+node   tools/bake_background.js     # render the plates (needs playwright)
+python3 tools/pack_background.py    # compress them, emit js/plates.js
+```
+
+Three things make the result cheap to ship and to draw:
+
+- **Seamless.** The noise is sampled around a cylinder in x, so a plate's left
+  and right edges are the same point and the parallax wraps forever.
+- **No alpha.** A terrain plate is opaque below a per-column skyline, so the
+  colour goes out as a JPEG and the silhouette as a height curve of a few
+  hundred bytes that `js/backdrop.js` replays as a clip path. That took a
+  1280×300 layer from ~400 KB as RGBA PNG to ~25 KB. All eight plates plus the
+  curves come to ~220 KB.
+- **Two times of day.** A golden-hour and a dusk bake, cross-faded by the same
+  `dusk` value that drives the rest of the run, with either draw skipped once
+  its weight rounds away.
+
+The run still walks through the evening: the palette slides into a red-violet
+dusk, the canvas darkens the track, dims its shoulders and the dust, and
+switches on the headlights. Speed lifts the horizon, adds edge streaks, a
 near-field smear and a veil of dust along the bottom of the frame.
 
-### Keeping it safe on a weak GPU
+If a plate fails to decode, `backdrop.ready` stays false and `js/scene.js`
+falls back to drawing its own sky, mesas and dunes from the mockup strips —
+the path that shipped before the plates existed. Blocking `img/bg/*.jpg` in
+devtools exercises it.
 
-A shader background is a luxury, so it is built to get out of the way:
-
-- **It is optional.** If the context will not create, the shader will not
-  compile or the context is lost mid-session, `DriftSky` disables itself and
-  `js/scene.js` goes back to drawing its own photographic sky, mesas and dunes.
-  That path is exercised in review by stubbing out `getContext('webgl')`.
-- **It under-renders.** The layer is all gradients and noise, so it draws at a
-  fraction of the device resolution and lets the compositor upscale it. That
-  is the only lever that matters for fill rate, and the quality ladder walks
-  down it: 0.50 → 0.36 → 0.26 of CSS pixels.
-- **It measures itself.** `DriftSky.observe()` watches the real frame time and
-  steps the ladder down when a 60-frame average goes over 26 ms; if the lowest
-  tier still runs over 38 ms it falls back to the 2D scene entirely. Only
-  downgrades are applied, so it cannot oscillate.
-
-Under Chromium's software rasteriser — a reasonable stand-in for a poor mobile
-GPU — the layer starts at ~21 fps, settles at ~39 fps after two downgrades, and
-the 2D fallback runs at ~51 fps. On real hardware it should stay on the top
-tier.
+Baking also made the game faster: under Chromium's software rasteriser the
+plates run at 43–57 fps where the live shader managed 21–39.
 
 ## How the game works
 

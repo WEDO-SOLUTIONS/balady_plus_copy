@@ -71,12 +71,6 @@ html[dir="rtl"] body { font-family: var(--font-ar); }
 
 .scene { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
 
-/* Both canvases are position:absolute with z-index auto, so they paint in DOM
-   order — shader first, gameplay over it — and the HUD screens, which come
-   after them, stay on top. Giving either one a z-index would lift it above the
-   HUD instead. */
-.scene--gl { pointer-events: none; }
-
 .scene-tint {
   position: absolute;
   inset: 0;

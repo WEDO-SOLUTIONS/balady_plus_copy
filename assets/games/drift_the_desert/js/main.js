@@ -10,7 +10,7 @@
   var Bridge = global.DriftBridge;
   var Audio = global.DriftAudio;
   var Scene = global.DriftScene;
-  var Sky = global.DriftSky;
+  var Backdrop = global.DriftBackdrop;
   var I18n = global.I18n;
 
   var GAUGE_ARC = 214;     // path length of the balance arc in the SVG
@@ -19,7 +19,6 @@
   var el = {
     app: $('app'),
     scene: $('scene'),
-    glscene: $('glscene'),
     tint: $('sceneTint'),
     fx: $('fx'),
 
@@ -345,7 +344,6 @@
 
     var showScene = current === 'splash' || current === 'countdown' || current === 'play';
     el.scene.style.opacity = showScene ? '1' : '0';
-    if (Sky.active) el.glscene.style.opacity = showScene ? '1' : '0';
 
     if (showScene) {
       var speed = game.state === 'running' ? game.speed() : 200;
@@ -360,15 +358,6 @@
         running: game.state === 'running' || game.state === 'countdown'
       }, dt);
 
-      Sky.observe(dt * 1000);
-
-      // Same scroll and horizon as the 2D layer, so the parallax lines up.
-      Sky.render({
-        scroll: Scene.scroll,
-        horizon: Scene.horizon,
-        dusk: dusk,
-        speed: Math.max(0, Math.min(1, (speed - 240) / 460))
-      });
     }
 
   }
@@ -503,20 +492,6 @@
     Scene.init(el.scene);
     el.scene.style.transition = 'opacity 320ms ease';
 
-    // The shader background is an enhancement: when it cannot start, the 2D
-    // scene keeps drawing its own sky, mesas and dunes exactly as before.
-    Sky.onFallback = function () {
-      Scene.glBackground = false;
-      el.glscene.style.display = 'none';
-    };
-    if (Sky.start(el.glscene)) {
-      Scene.glBackground = true;
-      el.glscene.style.transition = 'opacity 320ms ease';
-      global.addEventListener('resize', function () { Sky.resize(); });
-      global.addEventListener('orientationchange', function () { Sky.resize(); });
-    } else {
-      el.glscene.style.display = 'none';
-    }
 
     var best = global.DriftGame.progress.load().best;
     el.resBest.textContent = fmtNum(best);
@@ -538,6 +513,22 @@
       global.setTimeout(function () { show('howto'); }, 220);
     }
 
+    // The baked backdrop plates. They are an enhancement: if any of them
+    // fails to decode, js/scene.js falls back to drawing its own sky and
+    // mesas, so the game never boots into an empty frame.
+    var plateUrls = {
+      'sky-gold.jpg': 'img/bg/sky-gold.jpg',
+      'sky-dusk.jpg': 'img/bg/sky-dusk.jpg',
+      'far-gold.jpg': 'img/bg/far-gold.jpg',
+      'far-dusk.jpg': 'img/bg/far-dusk.jpg',
+      'near-gold.jpg': 'img/bg/near-gold.jpg',
+      'near-dusk.jpg': 'img/bg/near-dusk.jpg',
+      'dunes-gold.jpg': 'img/bg/dunes-gold.jpg',
+      'dunes-dusk.jpg': 'img/bg/dunes-dusk.jpg'
+    };
+    var platesLoaded = 0;
+    Backdrop.load(global.DRIFT_PLATES, plateUrls, function (p) { platesLoaded = p; });
+
     Scene.loadImages([
       ['car', 'img/car.png'],
       ['coin', 'img/coin.png'],
@@ -548,8 +539,9 @@
 
     var timer = global.setInterval(function () {
       var elapsed = (Date.now() - t0) / minMs;
-      el.loaderFill.style.width = (Math.min(1, Math.min(elapsed, 0.15 + loaded * 0.85)) * 100) + '%';
-      if ((loaded >= 1 && elapsed >= 1) || elapsed >= 4) {
+      var progress = 0.10 + (loaded * 0.45 + platesLoaded * 0.45);
+      el.loaderFill.style.width = (Math.min(1, Math.min(elapsed, progress)) * 100) + '%';
+      if ((loaded >= 1 && platesLoaded >= 1 && elapsed >= 1) || elapsed >= 4) {
         global.clearInterval(timer);
         enter();
       }
@@ -560,7 +552,7 @@
      inspector) to drive the game without touching the UI. */
   global.DriftApp = {
     game: game,
-    sky: Sky,
+    backdrop: Backdrop,
     show: show,
     startRun: startRun,
     openRewards: openRewards,

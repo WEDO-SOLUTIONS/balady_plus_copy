@@ -12,9 +12,7 @@
 <body>
 
 <div id="app" class="app">
-  <!-- Shader background (sky, sun, clouds, mesas, dunes) -->
-  <canvas id="glscene" class="scene scene--gl"></canvas>
-  <!-- Live game scene (track, car, coins, dust, FX) -->
+  <!-- Game scene: baked backdrop plates, track, car, coins, dust, FX -->
   <canvas id="scene" class="scene"></canvas>
   <div class="scene-tint" id="sceneTint"></div>
 
@@ -223,7 +221,8 @@
 <script src="js/i18n.js"></script>
 <script src="js/bridge.js"></script>
 <script src="js/audio.js"></script>
-<script src="js/skygl.js"></script>
+<script src="js/plates.js"></script>
+<script src="js/backdrop.js"></script>
 <script src="js/scene.js"></script>
 <script src="js/game.js"></script>
 <script src="js/main.js"></script>

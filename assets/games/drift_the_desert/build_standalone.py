@@ -56,7 +56,7 @@ def inline_images(text: str, prefix: str = '') -> tuple:
             seen[rel] = data_uri(rel)
         return match.group(0).replace(ref, seen[rel])
 
-    text = re.sub(r'(?P<path>(?:\.\./)?img/[A-Za-z0-9_.\-]+)', sub, text)
+    text = re.sub(r'(?P<path>(?:\.\./)?img/[A-Za-z0-9_.\-]+(?:/[A-Za-z0-9_.\-]+)*)', sub, text)
     return text, len(seen)
 
 
