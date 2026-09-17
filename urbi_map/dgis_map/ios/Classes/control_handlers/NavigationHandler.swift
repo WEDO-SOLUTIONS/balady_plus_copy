@@ -35,7 +35,7 @@ class NavigationHandler {
     private let messageControlModel: MessageControlModel
     private let maneuverControlModel: ManeuverControlModel
     
-    private let oldSource: DGis.Source?
+    private var oldSource: DGis.Source?
     
     private(set) var isNavigating: Bool = false
 
@@ -247,13 +247,14 @@ class NavigationHandler {
             resetCamera(map: carPlayMap)
         }
         
-        if oldSource == nil { return }
+        if self.oldSource == nil { return }
         let toDelete = map.sources.first(where: { $0 is MyLocationMapObjectSource})
         
         if toDelete == nil { return }
         
         map.removeSource(source: toDelete!)
-        map.addSource(source: oldSource!)
+        map.addSource(source: self.oldSource!)
+        self.oldSource = nil
     }
     
     func resetCamera(map: Map) {
@@ -323,9 +324,9 @@ class NavigationHandler {
             return
         }
         
-        let oldSource = map.sources.first(where: { $0 is MyLocationMapObjectSource })!
+        self.oldSource = map.sources.first(where: { $0 is MyLocationMapObjectSource })!
         
-        map.removeSource(source: oldSource)
+        map.removeSource(source: self.oldSource!)
         
         // BALADY-3744: bearingThreshold 90° blocked the vehicle icon from
         // rotating until the course drifted by a full 90°, making it look
