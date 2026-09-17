@@ -33,7 +33,9 @@
     greatPopEvery: 1.6,
 
     coinEvery: 1.45,
-    coinTravel: 2.6,          // seconds from horizon to the car
+    coinTravel: 2.5,          // seconds from where they appear to the car,
+                              // at the base speed — the scene picks the depth
+                              // that makes this match the ground's own rate
     coinValue: 1,
     coinScore: 25,
 
@@ -253,7 +255,10 @@
 
     for (var i = this.items.length - 1; i >= 0; i--) {
       var it = this.items[i];
-      it.d += dt / CONFIG.coinTravel;
+      // Scaled by speed, because the scene puts coins on the ground plane
+      // now: the desert comes at you faster the faster you go, and a coin
+      // that did not would slide against it.
+      it.d += dt * (this.speed() / CONFIG.speedBase) / CONFIG.coinTravel;
       it.spin += dt * 4.2;
 
       if (!it.taken && it.d >= 0.86) {

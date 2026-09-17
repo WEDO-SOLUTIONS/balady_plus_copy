@@ -543,8 +543,12 @@
 
     var spritesLoaded = 0;
     if (global.DriftSprites) {
-      var meta = (global.DRIFT_PLATES && global.DRIFT_PLATES.plates.props) || {};
-      global.DriftSprites.load('img/bg/props.png', meta.grid, function () { spritesLoaded = 1; });
+      var plates = (global.DRIFT_PLATES && global.DRIFT_PLATES.plates) || {};
+      var sheets = 2;
+      var done = function () { if (--sheets === 0) spritesLoaded = 1; };
+      global.DriftSprites.load('img/bg/props.png', (plates.props || {}).grid, done);
+      global.DriftCliffs = global.DriftSprites.create();
+      global.DriftCliffs.load('img/bg/cliffs.png', (plates.cliffs || {}).grid, done);
     } else {
       spritesLoaded = 1;
     }

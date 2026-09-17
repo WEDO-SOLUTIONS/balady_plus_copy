@@ -99,7 +99,7 @@ before load, or append `?lang=ar` to the asset URL.
 | `js/audio.js`   | Procedural engine loop, taps, coins, combo, crash — no audio assets |
 | `js/backdrop.js`| Draws the baked parallax plates |
 | `js/ground.js`  | The WebGL ground plane: sand, road, motion blur, dusk |
-| `js/sprites.js` | Draws the baked roadside sheet — rocks and bushes — with haze and dusk |
+| `js/sprites.js` | Draws a baked sprite sheet — props, cliffs — with haze and dusk |
 | `js/plates.js`  | Generated: plate sizes and skyline curves |
 | `js/scene.js`   | Canvas renderer: perspective track, the car, dust, coins, FX |
 | `js/game.js`    | Rules only, no DOM: balance physics, scoring, combo, coins, run lifecycle |
@@ -297,6 +297,41 @@ because the blend edge is never exactly a tile wide. Over the top of it the
 painted track is down to a 12% wash that only feathers the edges and carries
 the fade into the horizon.
 
+## One clock
+
+Everything standing on the ground — rocks, bushes, the outcrops, the coins,
+the drift of sand along the track's shoulder — is placed by **depth**, in the
+same texels the ground texture is measured in, and depth shrinks as the world
+comes at you. That is the only way any of it can move with the road.
+
+It is worth being explicit about why, because the first version had each of
+them on a clock of its own and they visibly slid against each other. The
+ground is a true perspective plane: a thing twice as far away takes more than
+twice as long to arrive, because the time to cover a depth is what is uniform,
+not the time to cross the frame. Anything advancing evenly in *screen* terms —
+props stepping through a 0…1 parameter, coins on a fixed two-and-a-half second
+run in, a shoulder wobble keyed to the clock rather than to the sand —
+accelerates differently from the floor underneath it, and the eye reads that
+immediately even when it cannot name it.
+
+So `js/ground.js` publishes the metrics (the depth at the bottom of the frame,
+the texels-per-pixel at that depth, the distance travelled) and the scene
+places everything through one `place(depth, lateral)`. Props hold a fixed spot
+in the desert and wrap round the band as it passes them. Coins keep the rules'
+own 0…1 progress, but it is mapped onto a depth band picked so its rate equals
+the ground's exactly, and `js/game.js` scales it by speed so the two stay
+locked at any velocity. The shoulder wobble is a function of depth, in both
+the scene and the shader, so the drift comes at the camera instead of sliding
+along the horizon. Measured frame to frame at 1/60 s: a prop at `t` = 0.42
+moves 3.53 px against the ground's 3.59 at the same depth, and a coin loses
+exactly the depth the ground does.
+
+The backdrop plates are the other half of it. Driving straight at a ridge a
+kilometre off does not move it sideways; drifting past it does. So the plates
+take most of their offset from the car's lean now and only a trickle from the
+distance covered, where before the whole background slid along at a fixed rate
+whatever the car was doing.
+
 Three more passes sit on the floor, all of them live because they have to
 move with the car rather than slide sideways under parallax:
 
@@ -305,6 +340,11 @@ move with the car rather than slide sideways under parallax:
   tracks on both sides, lit along one crest and in shadow along the other.
   That is painted as light rather than built as geometry, which keeps the
   texture underneath.
+- **The outcrops the track runs between** (`img/bg/cliffs.png`, four cells of
+  1024 px): flat caps of hard limestone over fluted vertical faces with an
+  apron of talus, the way the Tuwaiq escarpment breaks up. They stand four to
+  eleven track-widths out and are some twenty times the size of a roadside
+  rock, which is what gives the horizon a shape to read.
 - **Roadside props** — from a second baked sheet (`img/bg/props.png`, twelve
   cells of 512 px) — streaming out of the horizon along both shoulders and
   swelling as they pass. The plates give depth but no

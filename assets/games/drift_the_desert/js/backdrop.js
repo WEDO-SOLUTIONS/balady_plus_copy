@@ -75,6 +75,15 @@
 
     /* ------------------------------------------------------------ drawing */
 
+    /** How far a layer is offset this frame. Almost all of it comes from the
+        car's lean — the sideways drift — because driving straight ahead moves
+        a distant ridge across the frame by nothing at all. The trickle from
+        the distance covered is there so the far scenery is not dead still. */
+    slide: function (s, perScroll, perLean) {
+      return s.scroll * perScroll + (s.lean || 0) * s.w * (perLean || 0);
+    },
+
+
     /** Tile one plate across the viewport at `y`, `height`, wrapping by
         `offset`. Both time variants are drawn, the second weighted by dusk. */
     tile: function (ctx, plate, w, y, height, offset, dusk, srcFrac) {
@@ -138,7 +147,7 @@
       if (!this.ready) return false;
       var plate = this.plates.sky;
       var height = s.horizon * 1.06;
-      this.tile(ctx, plate, s.w, 0, height, s.scroll * 0.020, s.dusk);
+      this.tile(ctx, plate, s.w, 0, height, this.slide(s, 0.004, 0.02), s.dusk);
       return true;
     },
 
@@ -146,8 +155,8 @@
     drawRanges: function (ctx, s) {
       if (!this.ready) return false;
       var ranges = [
-        { name: 'far', height: s.h * 0.090, base: s.horizon + 2, speed: 0.055 },
-        { name: 'near', height: s.h * 0.065, base: s.horizon + 5, speed: 0.105 }
+        { name: 'far', height: s.h * 0.090, base: s.horizon + 2, speed: 0.010, lean: 0.05 },
+        { name: 'near', height: s.h * 0.065, base: s.horizon + 5, speed: 0.018, lean: 0.09 }
       ];
       for (var i = 0; i < ranges.length; i++) {
         var r = ranges[i];
@@ -155,8 +164,9 @@
         if (!plate) continue;
         var y = r.base - r.height;
         ctx.save();
-        if (this.clipToSkyline(ctx, plate, s.w, y, r.height, s.scroll * r.speed)) {
-          this.tile(ctx, plate, s.w, y, r.height, s.scroll * r.speed, s.dusk);
+        var off = this.slide(s, r.speed, r.lean);
+        if (this.clipToSkyline(ctx, plate, s.w, y, r.height, off)) {
+          this.tile(ctx, plate, s.w, y, r.height, off, s.dusk);
         }
         ctx.restore();
       }
@@ -171,7 +181,7 @@
       var frac = 0.52;
       var height = s.h * 0.20;
       var y = s.horizon - s.h * 0.010;
-      var off = s.scroll * 0.19;
+      var off = this.slide(s, 0.030, 0.16);
       ctx.save();
       if (this.clipToSkyline(ctx, plate, s.w, y, height, off, frac)) {
         this.tile(ctx, plate, s.w, y, height, off, s.dusk, frac);

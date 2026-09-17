@@ -155,14 +155,16 @@ def main():
     # The roadside sprite sheet keeps its alpha, so it stays a PNG: splitting
     # it into a JPEG plus a mask would need getImageData to recombine, and a
     # WebView loading the game off file:// taints that canvas.
-    src = BG / 'props.png'
-    if src.is_file():
+    for name, cols in (('props', 4), ('cliffs', 2)):
+        src = BG / f'{name}.png'
+        if not src.is_file():
+            continue
         im = Image.open(src)
         im.save(src, optimize=True)
         total += src.stat().st_size
         print(f'  {src.name:18} {im.width}x{im.height} {src.stat().st_size / 1024:8.1f} KB')
-        manifest['plates']['props'] = {'size': [im.width, im.height],
-                                       'grid': [4, im.height // (im.width // 4)]}
+        manifest['plates'][name] = {'size': [im.width, im.height],
+                                    'grid': [cols, im.height // (im.width // cols)]}
 
     out = ROOT / 'js' / 'plates.js'
     out.write_text(
@@ -174,7 +176,7 @@ def main():
     print(f'  {out.name:18} {"":9} {out.stat().st_size / 1024:8.1f} KB')
 
     for p in BG.glob('*.png'):
-        if p.name != 'props.png':
+        if p.name not in ('props.png', 'cliffs.png'):
             p.unlink()
     print(f'total {total / 1024:.0f} KB (source PNGs removed)')
 

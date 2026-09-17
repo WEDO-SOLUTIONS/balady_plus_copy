@@ -87,6 +87,11 @@
   var Backdrop = global.DriftBackdrop || { ready: false, drawSky: noop, drawRanges: noop, drawDunes: noop };
   var Ground = global.DriftGround || { ready: false, draw: noop };
   var Sprites = global.DriftSprites || { ready: false, draw: noop };
+  var NO_SHEET = { ready: false, draw: noop };
+
+  /* The cliff sheet is made at load time by js/main.js, which runs after
+     this file, so it cannot be captured here the way the props sheet is. */
+  function cliffSheet() { return global.DriftCliffs || NO_SHEET; }
 
   /* World travel per unit of the game's speed. See render(). */
   var WORLD_SCALE = 0.48;
@@ -137,6 +142,7 @@
       this.ctx.setTransform(this.dpr, 0, 0, this.dpr, 0, 0);
       this.baseHorizon = Math.round(h * 0.44);
       this.horizon = this.baseHorizon;
+      this.syncWorld();
       this._sky = null; // gradients are cached per size
     },
 
@@ -149,7 +155,51 @@
         h: this.h,
         horizon: this.horizon,
         scroll: this.scroll,
+        // Driving straight at a ridge a kilometre off does not move it
+        // sideways; drifting past it does. The plates take most of their
+        // offset from the lean now and only a trickle from the distance
+        // covered, which is what stopped the whole background sliding along
+        // on a clock of its own.
+        lean: this.lastLean || 0,
         dusk: clamp(dusk || 0, 0, 1)
+      };
+    },
+
+    /* ------------------------------------------------------- the world
+
+       Everything that stands on the ground — rocks, bushes, coins, the drift
+       along the track's shoulder — is placed by depth, in the same texels the
+       ground texture is measured in, and depth shrinks as the world comes at
+       you. That is the only way any of it can move with the road: the ground
+       is a true perspective plane, where a thing twice as far away takes more
+       than twice as long to arrive, and anything advancing on a clock of its
+       own slides against it.
+
+       Refreshed once a frame, because it depends on the horizon, which moves
+       with speed. */
+    syncWorld: function () {
+      this.world = Ground.metrics({
+        w: this.w, h: this.h, horizon: this.horizon, scroll: this.scroll
+      });
+      // The furthest we place anything. Past this the haze has it anyway.
+      this.world.far = this.world.TD / 0.045;
+      return this.world;
+    },
+
+    /** Where a thing at this depth and lateral offset lands on screen.
+        `lateral` is in texels from the track's centre line. */
+    place: function (depth, lateral, lean) {
+      var W = this.world;
+      var t = W.TD / Math.max(depth, W.TD * 0.02);
+      var s = 0.035 + 0.965 * t;
+      var a = W.A0 * t;
+      var cx = this.w * 0.5 - (lean || 0) * this.w * 0.06 * (1 - s);
+      return {
+        t: t,
+        s: s,
+        a: a,
+        x: cx + (lateral || 0) * a,
+        y: this.horizon + W.span * t
       };
     },
 
@@ -385,7 +435,8 @@
         seam.addColorStop(1, rgba(mixHex('#C79463', '#4A322C', night), 1));
         ctx.fillStyle = seam;
         ctx.fillRect(0, end - this.h * 0.085, this.w, this.h * 0.105);
-        this.drawSandField(night, this.drawFloor(night, lateral));
+        var textured = this.drawFloor(night, lateral);
+        if (!textured) this.drawSandField(night, false);
         return;
       }
 
@@ -414,7 +465,7 @@
         ctx.fill();
       }
 
-      this.drawSandField(night, this.drawFloor(night, lateral));
+      if (!this.drawFloor(night, lateral)) this.drawSandField(night, false);
     },
 
     /** The ground plane, drawn by js/ground.js — sand, the road, the motion
@@ -560,11 +611,14 @@
       return { y: p.y, s: p.s, cx: cx, half: lerp(this.w * 0.055, this.w * 0.95, p.s) * 0.5 };
     },
 
-    /** Wobble of the track's edge at depth `d` — the drift of loose sand that
-        stops the shoulders reading as painted runway lines. */
+    /** Wobble of the track's edge at depth parameter `d` — the drift of loose
+        sand that stops the shoulders reading as painted runway lines. Keyed
+        to where the ground is, not to what time it is, so the drift comes at
+        the camera with everything else. js/ground.js reads the same depth. */
     edgeNoise: function (d, side) {
-      var t = d * 7 + this.scroll * 0.004 + (side > 0 ? 31.7 : 0);
-      return (Math.sin(t) * 0.6 + Math.sin(t * 2.7 + 1.3) * 0.3 + Math.sin(t * 6.1) * 0.1);
+      var t = Math.pow(clamp(d, 0.001, 1), 2.35);
+      var w = (this.world.TD / t + this.world.travel) * 0.0016 + (side > 0 ? 31.7 : 0);
+      return (Math.sin(w) * 0.6 + Math.sin(w * 2.7 + 1.3) * 0.3 + Math.sin(w * 6.1) * 0.1);
     },
 
     drawTrack: function (lateral, dusk) {
@@ -791,46 +845,91 @@
 
     PROPS: 30,
 
-    /** Deterministic description of prop `i` at the current scroll, or null
-        if it is behind the haze or off the side of the frame. */
-    propAt: function (i, lateral) {
+    /** Where prop `i` is now, or null if it is past the camera or off the
+        side of the frame. Each one keeps a fixed place in the desert and the
+        desert slides past: the depth band wraps, so a prop that goes under
+        the car comes back at the far end as a different rock. */
+    propAt: function (i, lean) {
+      var W = this.world;
+      var band = W.far - W.TD;
       var seed = i * 2.713;
-      var d = (hash(seed) + this.scroll * 0.00105) % 1;
-      if (d < 0.06) return null;
 
-      var t = this.trackAt(d, lateral);
+      var cycles = (hash(seed) * band - W.travel) / band;
+      var depth = W.TD + (cycles - Math.floor(cycles)) * band;
+      var pass = Math.floor(cycles);          // which time round, for variety
+      var r = hash(seed + 6.1 + pass * 0.37);
+
+      var p = this.place(depth, 0, lean);
+      if (p.t > 1.25) return null;
+
+      // Beyond the shoulder, and further out the closer it is, so they leave
+      // at the sides of the frame instead of marching over the car.
       var side = i % 2 ? 1 : -1;
-      // Beyond the shoulder, and further out as they near the camera so they
-      // leave the frame at the sides instead of marching over the car.
-      var out = 1.35 + hash(seed + 3.3) * 1.5 + t.s * 1.1;
-      var x = t.cx + side * t.half * out;
+      var halfTexels = lerp(this.w * 0.055, this.w * 0.95, p.s) * 0.5 / p.a;
+      var out = 1.35 + hash(seed + 3.3 + pass) * 1.5 + p.t * 1.1;
+      var x = p.x + side * halfTexels * out * p.a;
       if (x < -this.w * 0.6 || x > this.w * 1.6) return null;
 
-      var r = hash(seed + 6.1);
       return {
-        d: d, x: x, y: t.y, s: t.s, seed: seed, side: side,
+        d: p.t, x: x, y: p.y, s: p.t, seed: seed + pass * 0.37, side: side,
         kind: r > 0.80 ? 2 : (r > 0.44 ? 1 : 0),   // 0 boulder, 1 scrub, 2 stalks
         // Which cell of the baked sheet. Five rocks — three limestone slabs
         // off the escarpment, two dark ironstone — then seven plants: two
         // straw tussocks, two ghada shrubs, a dead one, a saltbush and a
         // thorn bush.
         sprite: r > 0.46
-          ? 5 + Math.floor(hash(seed + 12.9) * 7) % 7
-          : Math.floor(hash(seed + 12.9) * 5) % 5,
-        size: (0.55 + hash(seed + 9.7) * 0.85) * t.s * this.h * 0.20,
-        // How far into the haze it still is, measured by apparent size rather
-        // than by d: the projection is d^2.35, so equal steps in d are nothing
-        // like equal steps in distance. The plates fade the same way, so a
-        // far rock settles into them instead of reading as a sticker.
-        fog: clamp(1 - t.s / 0.30, 0, 1) * 0.85
+          ? 5 + Math.floor(hash(seed + 12.9 + pass) * 7) % 7
+          : Math.floor(hash(seed + 12.9 + pass) * 5) % 5,
+        size: (0.55 + hash(seed + 9.7) * 0.85) * p.t * this.h * 0.26,
+        // How far into the haze it still is, by apparent size rather than by
+        // depth. The plates fade the same way, so a far rock settles into
+        // them instead of reading as a sticker.
+        fog: clamp(1 - p.t / 0.30, 0, 1) * 0.85
+      };
+    },
+
+    /* The outcrops the track runs between. Same world clock, same wrapping
+       band, but they stand well off the road and are some twenty times the
+       size, which is what gives the horizon a shape to read. */
+    CLIFFS: 6,
+
+    cliffAt: function (i, lean) {
+      var W = this.world;
+      var band = W.far - W.TD;
+      var seed = 101.7 + i * 5.317;
+
+      var cycles = (hash(seed) * band - W.travel) / band;
+      var depth = W.TD + (cycles - Math.floor(cycles)) * band;
+      var pass = Math.floor(cycles);
+
+      var p = this.place(depth, 0, lean);
+      if (p.t > 1.4) return null;
+
+      var side = i % 2 ? 1 : -1;
+      var halfTexels = lerp(this.w * 0.055, this.w * 0.95, p.s) * 0.5 / p.a;
+      var out = 4.6 + hash(seed + 3.3 + pass) * 6.5;
+      var x = p.x + side * halfTexels * out * p.a;
+      if (x < -this.w * 1.2 || x > this.w * 2.2) return null;
+
+      return {
+        cliff: true,
+        d: p.t, x: x, y: p.y, s: p.t, seed: seed + pass * 0.37, side: side,
+        sprite: Math.floor(hash(seed + 12.9 + pass) * 4) % 4,
+        size: (0.55 + hash(seed + 9.7 + pass) * 0.55) * p.t * this.h * 1.25,
+        fog: clamp(1 - p.t / 0.22, 0, 1) * 0.80
       };
     },
 
     drawRoadside: function (lateral, dusk) {
       var night = clamp(dusk || 0, 0, 1);
       var list = [];
-      for (var i = 0; i < this.PROPS; i++) {
-        var p = this.propAt(i, lateral);
+      var i, p;
+      for (i = 0; i < this.CLIFFS; i++) {
+        p = this.cliffAt(i, lateral);
+        if (p && p.size > 2) list.push(p);
+      }
+      for (i = 0; i < this.PROPS; i++) {
+        p = this.propAt(i, lateral);
         if (p && p.size > 0.7) list.push(p);
       }
       // Back to front, so a near boulder can overlap a far one.
@@ -848,7 +947,7 @@
         };
         ctx.save();
         ctx.globalAlpha = clamp(o.s / 0.055, 0, 1);
-        if (!this.drawSprite(o, night, haze)) {
+        if (!this.drawSprite(o, night, haze) && !o.cliff) {
           if (o.kind === 0) this.drawBoulder(o, night);
           else if (o.kind === 1) this.drawScrub(o, night);
           else this.drawStalks(o, night);
@@ -860,8 +959,19 @@
     /** The baked version: a contact shadow, then the sprite. Returns false if
         the sheet has not loaded, and the painted props take over. */
     drawSprite: function (o, night, haze) {
-      if (!Sprites.ready) return false;
       var ctx = this.ctx;
+
+      if (o.cliff) {
+        var sheet = cliffSheet();
+        if (!sheet.ready) return false;
+        // No contact shadow: the sheet carries its own talus apron, which is
+        // what a cliff has instead of a shadow on the sand.
+        return sheet.draw(ctx, o.sprite, o.x, o.y, o.size, {
+          fog: o.fog, hazeColour: haze, dusk: night, duskColour: '#6B4A54'
+        });
+      }
+
+      if (!Sprites.ready) return false;
       var rock = o.sprite < 5;
       // A saltbush hugs the ground and a thorn bush stands over head height;
       // drawing every plant the same size threw that away.
@@ -1372,6 +1482,7 @@
       // step with each other.
       if (Ground.pace) Ground.pace(dt);
       this.lastSpeed = state.speed || 0;
+      this.lastLean = state.tilt || 0;
       this.dScroll = this.lastSpeed * dt * WORLD_SCALE;
       this.scroll += this.dScroll;
 
@@ -1382,6 +1493,7 @@
 
       // The camera sits lower as the car picks up speed, so the horizon rises.
       this.horizon = Math.round(this.baseHorizon - speedNorm * this.h * 0.022);
+      this.syncWorld();
 
       this.stepParticles(dt);
 
@@ -1401,13 +1513,21 @@
       this.drawTrack(state.tilt || 0, dusk);
       this.drawRoadside(state.tilt || 0, dusk);
 
-      // Coins approaching from the horizon.
+      // Coins, on the same plane as everything else that is out there. They
+      // come in from a quarter of the way to the horizon rather than from the
+      // horizon itself: at this projection the far distance is many seconds
+      // away, and a token that takes twenty of them to arrive is not a token.
       var coins = state.coins || [];
+      var cfg = global.DriftGame && global.DriftGame.CONFIG;
+      var coinFar = this.world.TD + (cfg ? cfg.coinTravel * cfg.speedBase : 650) *
+                                    WORLD_SCALE * this.world.travelPerScroll;
       for (var i = 0; i < coins.length; i++) {
         var c = coins[i];
-        var p = this.project(c.d);
-        var cxp = this.w * 0.5 + c.lane * this.w * 0.26 * p.s;
-        this.drawCoin(cxp, p.y - 150 * p.s - this.h * 0.02, Math.max(2, 26 * p.s), c.spin);
+        var cp = this.place(coinFar + (this.world.TD - coinFar) * c.d,
+                            c.lane * this.w * 0.26 / this.world.A0, state.tilt || 0);
+        ctx.globalAlpha = clamp(c.d / 0.08, 0, 1);
+        this.drawCoin(cp.x, cp.y - 150 * cp.t - this.h * 0.02, Math.max(2, 26 * cp.t), c.spin);
+        ctx.globalAlpha = 1;
       }
 
       // Hero car.

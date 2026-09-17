@@ -47,7 +47,9 @@ const SQUARE = [
   // The roadside sprite sheet: rocks and desert scrub, 512 px each.
   { name: 'props', layer: 5, w: 2048, h: 1536, dusk: 0.0 },
   // The road: the same ground mapping, clipped to the track by the game.
-  { name: 'track', layer: 6, w: 2048, h: 2048, dusk: 0.0 }
+  { name: 'track', layer: 6, w: 2048, h: 2048, dusk: 0.0 },
+  // The outcrops the track runs between: four of them, 1024 px each.
+  { name: 'cliffs', layer: 7, w: 2048, h: 2048, dusk: 0.0 }
 ];
 
 (async () => {

@@ -870,6 +870,97 @@ vec4 plantSprite(vec2 p, float k, float dusk) {
   return vec4(col, alpha);
 }
 
+/* ---------------------------------------------------------------- cliffs
+
+   The outcrops the track runs between: four of them, 1024 px each, drawn the
+   way the Tuwaiq escarpment breaks up — a flat cap of hard limestone over a
+   fluted vertical face, with an apron of talus where the face has been
+   shedding itself for a few million years. They are the one thing in the
+   frame tall enough to give the horizon a shape, and they arrive on the same
+   world clock as everything else standing on the ground. */
+vec4 cliffSprite(vec2 p, float id, float dusk) {
+  float seed = 71.0 + id * 9.13;
+  float base = 0.965;
+
+  // The cap: two or three flat steps along its length, lightly eroded.
+  float steps = floor(h21(vec2(id, 3.0)) * 2.0) + 2.0;
+  float stepv = floor(p.x * steps) / steps;
+  float top = 0.22 + h21(vec2(id, 2.0)) * 0.30
+            + (h21(vec2(stepv * 7.0 + id, 5.0)) - 0.5) * 0.15;
+  top += (tfbm(p * 0.7 + seed, 14.0, 3) - 0.5) * 0.018;
+  if (p.y < top - 0.02) return vec4(0.0);
+
+  // Height up the face, 1 at the rim and 0 at the sand.
+  float up = clamp((base - p.y) / max(0.001, base - top), 0.0, 1.0);
+
+  // Half width: a battered vertical face flaring into talus at the foot.
+  float wTop = 0.20 + h21(vec2(id, 7.0)) * 0.19;
+  float wide = mix(wTop + 0.09, wTop, up) + smoothstep(0.34, 0.0, up) * 0.11;
+  wide += (tfbm(vec2(p.y * 2.4, id), 11.0, 3) - 0.5) * 0.035;
+  // One weathered notch bitten out of the face, so the four of them are not
+  // the same butte drawn four times.
+  float notch = h21(vec2(id, 13.0));
+  wide -= smoothstep(0.26, 0.0, abs(up - 0.25 - notch * 0.5)) * (0.05 + notch * 0.09);
+
+  float dx = abs(p.x - 0.5);
+  float mask = (1.0 - smoothstep(wide - 0.006, wide, dx))
+             * smoothstep(base + 0.015, base - 0.03, p.y)
+             * smoothstep(top - 0.003, top + 0.005, p.y);
+  if (mask <= 0.0) return vec4(0.0);
+
+  float face = (p.x - 0.5) / max(wide, 0.001);        // -1 left .. 1 right
+
+  // Fluting: the vertical channels runoff cuts down a limestone face. Two
+  // scales, and none of it on the talus, or the whole thing reads as fur.
+  float flute = 1.0 - abs(tfbm(vec2(p.x * 1.7, p.y * 0.20 + id), 9.0, 2) * 2.0 - 1.0);
+  flute = pow(flute, 2.5)
+        + 0.4 * pow(1.0 - abs(tfbm(vec2(p.x * 1.7, p.y * 0.4 + id * 3.0), 21.0, 2) * 2.0 - 1.0), 3.0);
+  flute *= smoothstep(0.18, 0.55, up);
+
+  // Bedding: the horizontal courses that say sedimentary rock.
+  float beds = 0.5 + 0.5 * sin(p.y * 74.0 + tfbm(p, 3.0, 3) * 4.0);
+  beds *= smoothstep(0.05, 0.25, up);
+
+  // Warmer than the loose rocks: a cliff face this size is half sunlight
+  // bounced off the sand in front of it, and a cool grey slab sat in the
+  // frame like a piece of another game.
+  vec3 lit  = mix(vec3(0.85, 0.77, 0.61), vec3(0.36, 0.25, 0.27), dusk);
+  vec3 mid  = mix(vec3(0.54, 0.45, 0.34), vec3(0.18, 0.13, 0.14), dusk);
+  vec3 dark = mix(vec3(0.21, 0.17, 0.13), vec3(0.06, 0.04, 0.06), dusk);
+
+  // Sun from the upper left. A wide gradient across the face left them all
+  // reading as grey lumps; a rock this size has a lit side and a dark one.
+  float sun = smoothstep(-0.95, 0.60, -face);
+  vec3 col = mix(dark, mid, sun);
+  col = mix(col, lit, smoothstep(0.52, 1.0, sun) * 0.85);
+
+  col *= 1.0 - clamp(flute, 0.0, 1.2) * 0.22;
+  col *= 0.93 + 0.13 * beds;
+  col *= 0.90 + 0.20 * tfbm(p * 1.6 + seed * 2.0, 18.0, 3);
+  // The red dust that gets into everything out here, heaviest low down.
+  col = mix(col, col * mix(vec3(1.10, 0.92, 0.74), vec3(1.0), dusk),
+            smoothstep(0.75, 0.05, up) * 0.55);
+
+  // The cap catches the sun flat on; the base sits in its own shadow.
+  col = mix(col, lit, smoothstep(0.93, 1.0, up) * 0.35);
+  col *= 1.0 - smoothstep(0.35, 0.0, up) * 0.30;
+
+  // Talus: the skirt of broken rock and blown sand at the foot.
+  vec3 scree = mix(vec3(0.66, 0.50, 0.33), vec3(0.27, 0.18, 0.20), dusk);
+  float apron = smoothstep(0.26, 0.0, up + (tfbm(vec2(p.x * 2.0, id), 13.0, 2) - 0.5) * 0.10);
+  col = mix(col, scree * (0.70 + 0.6 * tfbm(p * 2.0 + 3.0, 30.0, 3)), apron * 0.80);
+  // …and the shadow the face throws across its own foot.
+  col *= 1.0 - smoothstep(-0.1, 0.8, face) * apron * 0.35;
+
+  return vec4(col, mask);
+}
+
+vec4 bakeCliffs(vec2 uv, float dusk) {
+  vec2 cell = vec2(floor(uv.x * 2.0), floor(uv.y * 2.0));
+  vec2 p = vec2(fract(uv.x * 2.0), fract(uv.y * 2.0));
+  return cliffSprite(p, cell.y * 2.0 + cell.x, dusk);
+}
+
 vec4 bakeProps(vec2 uv, float dusk) {
   // Four columns, three rows: five rocks then seven plants.
   vec2 cell = vec2(floor(uv.x * 4.0), floor(uv.y * 3.0));
@@ -904,8 +995,10 @@ vec4 plate(float u, float v, float dusk) {
     outc = bakeSand(vec2(u, v), dusk);
   } else if (uLayer == 5) {
     outc = bakeProps(vec2(u, v), dusk);
-  } else {
+  } else if (uLayer == 6) {
     outc = bakeTrack(vec2(u, v), dusk);
+  } else {
+    outc = bakeCliffs(vec2(u, v), dusk);
   }
   return outc;
 }

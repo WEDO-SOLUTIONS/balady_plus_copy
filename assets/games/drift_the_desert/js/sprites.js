@@ -15,16 +15,19 @@
 (function (global) {
   'use strict';
 
-  var Sprites = {
-    ready: false,
-    img: null,
-    cols: 4,
-    rows: 2,
-    cell: 0,
+  /* One sheet. Two ship: the roadside props, and the cliffs that stand
+     further out, which are the same thing at ten times the size. */
+  function Sheet() {
+    this.ready = false;
+    this.img = null;
+    this.cols = 4;
+    this.rows = 2;
+    this.cell = 0;
+    this.tints = {};   // colour -> canvas: the sheet as a flat silhouette
+    this.tintKeys = [];
+  }
 
-    tints: {},         // colour -> canvas: the sheet as a flat silhouette
-    tintKeys: [],
-
+  Sheet.prototype = {
     load: function (url, grid, onDone) {
       var self = this;
       var img = new global.Image();
@@ -103,5 +106,7 @@
     }
   };
 
+  var Sprites = new Sheet();
+  Sprites.create = function () { return new Sheet(); };
   global.DriftSprites = Sprites;
 })(window);

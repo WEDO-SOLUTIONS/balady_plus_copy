@@ -79,7 +79,6 @@
     'uniform float uTravel;     // texels travelled, wrapped to the tile',
     'uniform float uBlur;       // texels travelled this frame',
     'uniform float uLateral;    // the car lean the track centre follows',
-    'uniform float uScroll;     // for the edge wobble, same as the 2D path',
     'uniform float uDusk;',
     'uniform float uRoadOn;',
     'uniform float uTexSize;',
@@ -87,11 +86,13 @@
     'uniform sampler2D uSand;',
     'uniform sampler2D uRoad;',
     '',
-    '/* The drift of loose sand along the shoulder. Same three sines as',
-    '   js/scene.js, so the texture edge and the painted one agree. */',
-    'float edgeNoise(float d, float side) {',
-    '  float t = d * 7.0 + uScroll * 0.004 + (side > 0.0 ? 31.7 : 0.0);',
-    '  return sin(t) * 0.6 + sin(t * 2.7 + 1.3) * 0.3 + sin(t * 6.1) * 0.1;',
+    '/* The drift of loose sand along the shoulder, as a function of where the',
+    '   ground is rather than of what time it is: the wobble belongs to the',
+    '   desert, so it has to come at the camera with it. Same three sines as',
+    '   js/scene.js, which reads the same depth. */',
+    'float edgeNoise(float depth, float side) {',
+    '  float w = depth * 0.0016 + (side > 0.0 ? 31.7 : 0.0);',
+    '  return sin(w) * 0.6 + sin(w * 2.7 + 1.3) * 0.3 + sin(w * 6.1) * 0.1;',
     '}',
     '',
     'void main() {',
@@ -123,10 +124,9 @@
     '  vec3 road = texture2D(uRoad, vec2(tx + uTexSize * 0.5, ty - uBlur * 0.3) / uTexSize, -0.35).rgb;',
     '',
     '  // The track, with the same wobbling edge the painted one has.',
-    '  float d = pow(t, 1.0 / 2.35);',
     '  float side = x > cx ? 1.0 : -1.0;',
     '  float halfW = mix(uRes.x * 0.055, uRes.x * 0.95, s) * 0.5;',
-    '  float edge = halfW * (1.0 - edgeNoise(d, side) * 0.13 * s);',
+    '  float edge = halfW * (1.0 - edgeNoise(uTD / t + uTravel, side) * 0.13 * s);',
     '  float feather = max(2.0, edge * 0.07);',
     '  float onRoad = (1.0 - smoothstep(edge - feather, edge, abs(x - cx))) * uRoadOn;',
     '',
@@ -140,6 +140,25 @@
   ].join('\n');
 
   var Ground = {
+    /* Where the ground is, in the units everything else on it has to use.
+
+       Depth is measured in the texture's own texels and shrinks as the world
+       comes at you, so a thing standing on the ground is a depth and a
+       lateral offset, and its place on screen falls out of the same two
+       lines the shader uses. Everything here works whether or not WebGL
+       came up, because the props have to move the same way either way. */
+    metrics: function (o) {
+      var span = o.h * 1.04 - o.horizon;
+      var A0 = TILE_ACROSS * o.w / this.size;   // css px per texel at t = 1
+      return {
+        span: span,
+        A0: A0,
+        TD: span / A0,                          // depth at the bottom of the frame
+        travel: o.scroll * TRAVEL,
+        travelPerScroll: TRAVEL
+      };
+    },
+
     ready: false,
     roadReady: false,
     budget: 1,        // pixel budget, cut back on a device that cannot keep up
@@ -212,7 +231,7 @@
 
       this.uni = {};
       ['uRes', 'uHorizon', 'uSpan', 'uTD', 'uA0', 'uTravel', 'uBlur', 'uLateral',
-       'uScroll', 'uDusk', 'uRoadOn', 'uTexSize', 'uTint', 'uSand', 'uRoad'
+       'uDusk', 'uRoadOn', 'uTexSize', 'uTint', 'uSand', 'uRoad'
       ].forEach(function (n) { Ground.uni[n] = gl.getUniformLocation(prog, n); });
 
       this.tex.sand = upload(gl, images.sand);
@@ -279,6 +298,9 @@
 
       var A0 = TILE_ACROSS * w / this.size;   // canvas px per texel at t = 1
       var TD = span / A0;                     // depth at the bottom, in texels
+      // Same number the scene's props run on: the canvas is a scaled copy of
+      // the frame, and the scale cancels out of span/A0.
+
 
       // Wrapped to the tile so a long run cannot walk the coordinates out of
       // float precision — the texture repeats, so this is exact.
@@ -293,7 +315,6 @@
       gl.uniform1f(this.uni.uTravel, travel);
       gl.uniform1f(this.uni.uBlur, Math.min(o.dScroll || 0, (o.speed || 0) / 30) * TRAVEL);
       gl.uniform1f(this.uni.uLateral, o.lateral || 0);
-      gl.uniform1f(this.uni.uScroll, o.scroll % 100000);
       gl.uniform1f(this.uni.uDusk, o.dusk || 0);
       gl.uniform1f(this.uni.uRoadOn, this.roadReady ? 1 : 0);
       gl.uniform1f(this.uni.uTexSize, this.size);
