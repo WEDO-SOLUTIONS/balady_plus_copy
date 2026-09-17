@@ -79,6 +79,14 @@ class DgisMapView(
                 if (mapView.parent === container) {
                     container.removeView(mapView)
                     container.addView(mapView)
+                    // BALADY-3961: the surface recreate above drops the navigation-
+                    // cursor model too. mapView.post waits for its own layout pass
+                    // (after re-attach) before re-applying, same gate as setNavigationCursorModel.
+                    mapView.post {
+                        if (navigationHandlerLazy.isInitialized() && navigationHandler.usesCustomCursor) {
+                            reapplyNavigationCursorModel()
+                        }
+                    }
                 }
             }
         }
