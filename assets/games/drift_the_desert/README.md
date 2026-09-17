@@ -118,7 +118,8 @@ than as an approximation of it:
 
 | Asset | Where it comes from | Where it is used |
 |-------|--------------------|------------------|
-| `car.png` | the results screen's rear shot, super-resolved, with the countdown screen's driver matted into the right-hand window | the car you steer, and the how-to screen |
+| `car.png` | the results screen's rear shot, super-resolved | the car you steer, and the how-to screen |
+| `driver.png` | the countdown screen's driver, matted separately | composited into the car's right-hand window at draw time |
 | `coin.png` | a floating token on the danger screen | collectibles and the HUD coin pill |
 | `sky.jpg` | a clean column of the splash sky, mirror-tiled | the scrolling sky |
 | `ridge.png` | the splash mesas, mirror-tiled, both edges feathered | the parallax horizon |
@@ -157,10 +158,20 @@ driver, who is turned towards the camera, is matted separately and hung out of
 the right-hand window: the car leans left, so its right flank is the one in
 the air, which is the side a drifter hangs out of. He is cropped above the
 countdown car's roof line and faded out at the waist so he reads as continuing
-down into the cabin. His sprite is wider than his torso — arms out — so the
-seat position is tuned by eye rather than computed, and `js/scene.js` pivots
-the sprite on the car body's measured centre (0.39 of the sprite) rather than
-on the sprite's own. Three details of the matting matter:
+down into the cabin. The two ship as separate sprites and are composited by `js/scene.js` at draw
+time, using the SEAT / LIFT / SCALE constants the extractor documents. Baked
+into one image they cost the car 15% of its resolution: his outstretched arms
+widened the sprite's bounding box, and the sprite is normalised to a fixed
+width, so a seventh of those pixels went to empty sky around his hands.
+
+### The resolution ceiling
+
+The car body is now 520 px of sprite drawn at about 480 device pixels on a
+phone — roughly 1:1, so nothing further is to be had from resampling,
+sharpening or drawing it smaller. What is left is baked in: the source is 90 px
+wide. A genuinely crisp car needs a bigger original — the designer's render,
+a stock rear three-quarter of a Land Cruiser, or a generated one. Dropping it
+in is a small change: the pipeline below already mattes, seats and draws. Three details of the matting matter:
 the default `rembg` thresholds eat his sleeves (white on a bright sky), so he
 is matted gently; a loose matte then picks up a corner of the countdown panel,
 which `largest_blob` drops; and sharpening has to happen before compositing,

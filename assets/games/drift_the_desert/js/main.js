@@ -531,6 +531,7 @@
 
     Scene.loadImages([
       ['car', 'img/car.png'],
+      ['driver', 'img/driver.png'],
       ['coin', 'img/coin.png'],
       ['sky', 'img/sky.jpg'],
       ['ridge', 'img/ridge.png'],

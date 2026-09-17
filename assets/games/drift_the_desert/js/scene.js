@@ -13,6 +13,14 @@
      sitting flat, so the whole pose is applied here. */
   var CAR_LEAN = -0.30;
 
+  /* Where the driver sits on the car, in car-sprite units — the geometry
+     tools/extract_assets.py worked out with the crops. The two are shipped as
+     separate sprites and composited here: baked into one image, his arm span
+     widened the bounding box and cost the car 15% of its resolution. */
+  var SEAT = 0.97;    // fraction of the car's width his torso centres on
+  var LIFT = 1.02;    // how far his waist sits below the roof, in his heights
+  var DRIVER = 0.43;  // his height relative to the car's
+
   function clamp(v, a, b) { return v < a ? a : (v > b ? b : v); }
   function lerp(a, b, t) { return a + (b - a) * t; }
   function rand(a, b) { return a + Math.random() * (b - a); }
@@ -700,10 +708,8 @@
         ctx.shadowColor = 'rgba(255, 70, 70, ' + (danger * 0.9).toFixed(2) + ')';
         ctx.shadowBlur = 26 * danger;
       }
-      // The driver hangs out of the right-hand window, so the sprite is wider
-      // on that side than the car is: the pivot follows the body's centre
-      // (measured at 0.39 of the sprite) rather than the sprite's.
-      var x0 = -w * 0.39;
+      // The sprite is the car alone now, so the pivot is back on its centre.
+      var x0 = -w * 0.46;
       var y0 = -h * 0.72;
       ctx.drawImage(img, x0, y0, w, h);
 
@@ -725,6 +731,21 @@
         ctx.fill();
       }
       ctx.globalCompositeOperation = 'source-over';
+
+      // The driver, hung out of the right-hand window — the flank that is in
+      // the air. He rides inside the car's rotation, with a little extra sway.
+      if (IMG.driver) {
+        var dh = h * DRIVER;
+        var dw = dh * (IMG.driver.width / IMG.driver.height);
+        var dx = x0 + w * SEAT - dw / 2;
+        var dy = y0 - dh + dh * LIFT;
+        ctx.save();
+        ctx.translate(dx + dw / 2, dy + dh);
+        ctx.rotate(Math.sin(wobble * 0.5) * 0.03 - tilt * 0.05);
+        ctx.drawImage(IMG.driver, -dw / 2, -dh, dw, dh);
+        ctx.restore();
+      }
+
       ctx.restore();
     },
 

@@ -241,38 +241,6 @@ def sharpen(im, radius=1.6, percent=105, threshold=2):
     return out
 
 
-def compose_hero(car, driver, seat=0.97, lift=1.02, scale=0.43):
-    """Hang the driver out of the car's right-hand window.
-
-    The car leans left, so its right flank is the one in the air — which is the
-    side a drifter hangs out of. `seat` is where along the car's width he sits,
-    `lift` how far his waist sits below the roof line, and `scale` his height
-    relative to the car's.
-    """
-    # The matte keeps a wedge of sand under the wheels; fading it out stops it
-    # reading as a cardboard base once the sprite sits on the track.
-    car = car.copy()
-    a = car.split()[3]
-    ramp = Image.linear_gradient('L').resize((1, car.height)).resize(car.size)
-    ramp = ramp.point(lambda v: 255 if v < 216 else max(0, 255 - (v - 216) * 7))
-    car.putalpha(ImageChops.multiply(a, ramp))
-
-    dh = int(car.height * scale)
-    dw = max(1, int(driver.width * dh / driver.height))
-    d = driver.resize((dw, dh), Image.LANCZOS)
-
-    pad = dh
-    out = Image.new('RGBA', (max(car.width, dw) + pad, car.height + pad), (0, 0, 0, 0))
-    ox = (out.width - car.width) // 2
-    oy = out.height - car.height
-    out.alpha_composite(car, (ox, oy))
-
-    dx = int(ox + car.width * seat - dw / 2)
-    dy = int(oy - dh + dh * lift)
-    out.alpha_composite(d, (max(0, dx), max(0, dy)))
-    return trim(out)
-
-
 def save_png(im, name):
     p = OUT / name
     im.save(p, optimize=True)
@@ -285,9 +253,18 @@ def save_jpg(im, name, q=84):
     print(f'  {name:22} {im.size[0]}x{im.size[1]}  {p.stat().st_size / 1024:6.1f} KB')
 
 
-# --------------------------------------------------------------------------- #
-# cut-outs                                                                     #
-# --------------------------------------------------------------------------- #
+# Where the driver sits, in car-sprite units. js/scene.js composites the two at
+# draw time using exactly these numbers; they are kept here because they were
+# derived together with the crops above.
+#
+#   SEAT  fraction of the car's width his torso centres on
+#   LIFT  how far his waist sits below the car's roof line, in his own heights
+#   SCALE his height relative to the car's
+#
+# The car leans left, so its right flank is the one in the air — the side a
+# drifter hangs out of.
+SEAT, LIFT, SCALE = 0.97, 1.02, 0.43
+
 
 def cutout(im, scale=4, matting=True):
     """Alpha-matte a subject off the desert. Upscaling first gives the model a
@@ -344,10 +321,11 @@ def main():
     driver = erode_alpha(trim(largest_blob(cutout(
         superres(s['ready'].crop((134, 219, 258, 298))), scale=2, matting=(200, 45, 3)))))
 
-    hero = compose_hero(sharpen(rear, radius=1.6, percent=105),
-                        fade_bottom(sharpen(driver)))
+    hero = sharpen(rear, radius=2.0, percent=135)
     save_png(upscale(hero, 520.0 / hero.width), 'car.png')
 
+    drv = fade_bottom(sharpen(driver))
+    save_png(upscale(drv, 260.0 / drv.width), 'driver.png')
 
     # --- one of the floating coins -----------------------------------------
     coin = trim(cutout(superres(s['play2'].crop((228, 312, 276, 360))), scale=4))
