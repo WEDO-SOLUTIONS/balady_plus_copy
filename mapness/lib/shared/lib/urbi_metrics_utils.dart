@@ -105,7 +105,17 @@ class AdvancedMetrics {
       logger.log('${AdvancedMetricsConstants.debugConsole}::${AdvancedMetricsConstants.batteryUsage}::${e.toString()}');
       return;
     }
-    await _measureBattery();
+    // Never let a metrics failure escape: this is awaited from the entry-point
+    // init chain, and an escaped throw both killed the periodic timer below
+    // and silently aborted everything after the call in entry_point.dart.
+    try {
+      await _measureBattery();
+    } catch (e) {
+      logger.log(
+        '${AdvancedMetricsConstants.debugConsole}::${AdvancedMetricsConstants.batteryUsage}::${e.toString()}',
+        logLevel: MapnessLogLevel.critical,
+      );
+    }
 
     _batteryTimer = Timer.periodic(_batteryDuration, (_) async {
       await _measureBattery();
@@ -153,8 +163,17 @@ class AdvancedMetrics {
         );
       }
 
-      final levelDiff = _batteryInitial! - level;
-      final batteryUsage = levelDiff / (duration / (1000 * 60));
+      final minutes = duration / (1000 * 60);
+      if (minutes <= 0) {
+        // First sample lands sub-millisecond after start on fast devices:
+        // elapsedMilliseconds is 0, and 0 / 0.0 = NaN, which jsonEncode can't
+        // serialize. The sample carries no information anyway.
+        return;
+      }
+      final batteryUsage = (_batteryInitial! - level) / minutes;
+      if (!batteryUsage.isFinite) {
+        return;
+      }
 
       final batteryUsageMetrics = BatteryUsage(
         batteryUsage: batteryUsage,

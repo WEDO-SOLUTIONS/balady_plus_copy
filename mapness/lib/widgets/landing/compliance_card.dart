@@ -4,13 +4,22 @@ import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/extensions/string_ext.dart';
+import 'package:mapness/features/balady_analytics/metrics.dart';
 
 class ComplianceCard extends ConsumerWidget {
   const ComplianceCard({super.key});
 
   void createCompliance() {
+    Metrics.logEventAdvanced(
+      MetricsConstants.layersKeys.complianceOpenCreateCompliance,
+      group: MetricsConstants.layersTag,
+      action: MetricAction.tap.toString(),
+      props: {'id': 'compliance'},
+    );
+
     CommonFunctions.openCreateCompliance();
   }
 

@@ -19,7 +19,7 @@ on:
       - "bugfix/*"
       - "feat/*"
       - "feature/*"
-      - "urbi"
+      - "core"
       - "release/*"
     paths-ignore:
       - "**.md"
@@ -328,6 +328,11 @@ jobs:
               git:
                 url: https://github.com/WEDO-SOLUTIONS/map_styles.git
                 ref: development
+            # BALADY-3923: this file replaces the whole dependency_overrides block of
+            # pubspec.yaml, dropping the vendored sheetify — without it the analyzer
+            # reads third_party/sheetify against the pub.dev copy and its parts break.
+            sheetify:
+              path: third_party/sheetify
           EOF
 
           cat > mapness/pubspec_overrides.yaml <<'EOF'
@@ -384,12 +389,17 @@ jobs:
               git:
                 url: https://github.com/WEDO-SOLUTIONS/map_styles.git
                 ref: development
+            # BALADY-3923: this file replaces the whole dependency_overrides block of
+            # pubspec.yaml, dropping the vendored sheetify — without it the analyzer
+            # reads third_party/sheetify against the pub.dev copy and its parts break.
+            sheetify:
+              path: ../third_party/sheetify
           EOF
 
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: "3.38.5"
+          flutter-version: "3.44.5"
           channel: "stable"
 
       - name: Download Localazy #wait secrets from 2gis

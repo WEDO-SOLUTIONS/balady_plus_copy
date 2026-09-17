@@ -459,6 +459,22 @@ class NewMiniAppLogicCubit extends Cubit<NewMiniAppLogicState> {
 
   void clearSearch() {
     _searchDebounce?.cancel();
+    // The state class has no value equality, so an emit here always rebuilds
+    // every watcher. This runs from PopScope during a page's own pop; emitting
+    // when there is nothing to clear feeds a rebuild -> pop -> clearSearch
+    // loop on AppsGroupPage.
+    final alreadyClear =
+        state.searchResults.isEmpty &&
+        !state.isSearching &&
+        state.searchError == null &&
+        !state.isAppsGroupLoading &&
+        !state.isEntryPointsLoading &&
+        !state.isFavLoading &&
+        !state.isUnFavLoading &&
+        !state.isRefreshing;
+    if (alreadyClear) {
+      return;
+    }
     emit(
       state.copyWith(
         searchResults: [],

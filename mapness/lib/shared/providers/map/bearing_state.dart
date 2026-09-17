@@ -1,6 +1,8 @@
 import 'dart:math';
 
 import 'package:dgis_map/library.dart';
+import 'package:mapness/shared/constants/metrics_constants.dart';
+import 'package:mapness/features/balady_analytics/metrics.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -45,6 +47,11 @@ class BearingState extends _$BearingState {
   }
 
   void onCompassTap() {
+    Metrics.logEventAdvanced(
+      MetricsConstants.exploreKeys.compass,
+      group: MetricsConstants.exploreTag,
+      action: MetricAction.tap.name,
+    );
     ref.read(dgisControllerProvider).value?.naviCompassController.onCompassClicked();
   }
 }
