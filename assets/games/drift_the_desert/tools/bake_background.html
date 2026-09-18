@@ -896,75 +896,106 @@ vec4 cliffSprite(vec2 p, float id, float dusk) {
   float seed = 71.0 + id * 9.13;
   float base = 0.965;
 
-  // Six landforms, not one butte drawn six ways: a plain butte, a stepped
-  // mesa, a spire, a long low ridge, a cuesta with its beds dipping to one
-  // side, and an eroded stack cut nearly through at the waist. The escarpment
-  // really does break up into all of these, and variations on a single
-  // flat-topped silhouette read as the same rock every time it comes past.
-  float isStep  = step(0.5, id) * step(id, 1.5);
-  float isSpire = step(1.5, id) * step(id, 2.5);
-  float isRidge = step(2.5, id) * step(id, 3.5);
-  float isTilt  = step(3.5, id) * step(id, 4.5);
-  float isStack = step(4.5, id);
+  // Eight landforms, and most of them sandstone. The escarpment that runs
+  // past Riyadh is Tuwaiq limestone — pale, flat-topped, thin-bedded — but
+  // nearly everything else standing out of sand in this country is the Hegra
+  // and Al-Ula sandstone: massive rather than ruled into thin courses,
+  // rounded on top, undercut at the foot by wind-blown sand, split by
+  // vertical joints and eaten into by tafoni. Drawing every one of them as a
+  // thin-bedded layered mesa is what made the set read as Utah.
+  float isWall   = step(id, 0.5);                      // 0 Tuwaiq escarpment
+  float isButte  = step(0.5, id) * step(id, 1.5);      // 1 Tuwaiq butte
+  float isBlock  = step(1.5, id) * step(id, 2.5);      // 2 Hegra massif
+  float isPed    = step(2.5, id) * step(id, 3.5);      // 3 pedestal, undercut
+  float isDome   = step(3.5, id) * step(id, 4.5);      // 4 wind-polished dome
+  float isPin    = step(4.5, id) * step(id, 5.5);      // 5 sandstone pinnacle
+  float isCuesta = step(5.5, id) * step(id, 6.5);      // 6 dipping crossbeds
+  float isStack  = step(6.5, id);                      // 7 cut at the waist
 
-  // The cap: flat steps along its length, lightly eroded. The stepped mesa
-  // gets one more of them and four times the drop between.
-  float steps = floor(h21(vec2(id, 3.0)) * 2.0) + 2.0 + isStep;
+  float lime = isWall + isButte;
+  float sand = 1.0 - lime;
+  // How much of a rounded crown it carries. Sandstone weathers to domes; a
+  // limestone cap breaks off square along its bedding and stays flat.
+  float crown = isBlock * 0.35 + isPed * 0.80 + isDome * 1.0
+              + isPin * 0.38 + isStack * 0.40;
+
+  // The nominal half-width, needed before the cap: a crown measured across
+  // the cell only ever showed the middle third of its curve, because the rock
+  // is not as wide as its cell — which is why the dome kept coming out flat
+  // on top however far the arc was pushed.
+  float wTop = 0.21 + h21(vec2(id, 7.0)) * 0.17;
+  wTop = mix(wTop, 0.10, isPin);
+  wTop = mix(wTop, 0.46, isWall);
+  wTop = mix(wTop, 0.29, isDome);
+  wTop = mix(wTop, 0.24, isBlock);
+  wTop = mix(wTop, 0.23, isPed);
+
+  // The cap: flat steps along its length, lightly eroded.
+  float steps = floor(h21(vec2(id, 3.0)) * 2.0) + 2.0 + isButte;
   float stepv = floor(p.x * steps) / steps;
-  float top = 0.22 + h21(vec2(id, 2.0)) * 0.30
-            + (h21(vec2(stepv * 7.0 + id, 5.0)) - 0.5) * (0.15 + isStep * 0.50);
-  top = mix(top, 0.10, isSpire);                       // starts near the top
-  top = mix(top, 0.62, isRidge);                       // barely off the sand
-  top += (p.x - 0.5) * 0.30 * isTilt;                  // beds dipping one way
-  top += sin(p.x * 9.0 + id) * 0.030 * isRidge;        // a broken crest
+  float top = 0.24 + h21(vec2(id, 2.0)) * 0.26
+            + (h21(vec2(stepv * 7.0 + id, 5.0)) - 0.5) * (0.13 + isButte * 0.46)
+              * (1.0 - crown * 0.75);   // flat steps fight a rounded crown
+  top = mix(top, 0.62, isWall);                        // barely off the sand
+  top = mix(top, 0.20, isBlock);
+  top = mix(top, 0.24, isPed);
+  top = mix(top, 0.27, isDome);
+  top = mix(top, 0.10, isPin);                         // starts near the top
+  top += (p.x - 0.5) * 0.30 * isCuesta;                // beds dipping one way
+  top += sin(p.x * 9.0 + id) * 0.030 * isWall;         // a broken crest
+  // A circular arc pulled down at the shoulders, which is the whole
+  // difference between a mesa and a sandstone dome.
+  float ax = clamp(abs(p.x - 0.5) / max(wTop + 0.09, 0.001), 0.0, 1.0);
+  top += (1.0 - sqrt(max(0.0, 1.0 - ax * ax))) * 0.34 * crown;
   top += (tfbm(p * 0.7 + seed, 14.0, 3) - 0.5) * 0.018;
   if (p.y < top - 0.02) return vec4(0.0);
 
   // Height up the face, 1 at the rim and 0 at the sand.
   float up = clamp((base - p.y) / max(0.001, base - top), 0.0, 1.0);
 
-  // The sedimentary courses, indexed, so each one can carry its own colour
-  // and its own set-back rather than being one more ripple in a corrugation.
-  // A Tuwaiq face is a stack of storeys of slightly different rock, and a few
-  // of them stand proud of the rest; that is most of what reads as detail.
-  // The warp has to be gentle and low-frequency in x: a bed is one band of
-  // rock along its whole length, so if the index it is looked up by swings
-  // across that length the same course steps in and out of the silhouette and
-  // the outline turns into a sawtooth. A quarter of a course of tilt is a
-  // real bed; one and a half is a stack of plates.
-  float yy = p.y + 0.009 * sin(p.y * 7.7 + id * 2.3) + 0.006 * sin(p.y * 19.0 + id);
-  float cy = yy * 21.0 + (tfbm(vec2(p.x * 0.8, id), 5.0, 2) - 0.5) * 0.5;
+  // The bedding, indexed so each course can carry its own colour and its own
+  // set-back. Limestone is ruled into thin storeys; sandstone is a handful of
+  // thick ones, and its beds run at an angle — the dune crossbedding they
+  // were laid down as, still legible in the rock at Hegra.
+  float dip = (h21(vec2(id, 21.0)) - 0.5) * 0.55 * sand + 0.55 * isCuesta;
+  float yy = p.y + 0.009 * sin(p.y * 7.7 + id * 2.3) + 0.006 * sin(p.y * 19.0 + id)
+           + (p.x - 0.5) * dip * 0.10;
+  float cy = yy * mix(21.0, 7.0, sand) + (tfbm(vec2(p.x * 0.8, id), 5.0, 2) - 0.5) * 0.5;
   float ci = floor(cy);
   float course = fract(cy);
   float cr = h21(vec2(ci, id * 3.0 + 1.7));
-  // Only a few courses stand proud. Stepping all of them gave a silhouette
-  // like the edge of a stack of paper; two or three real ledges on a face
-  // is what actually reads as structure.
   float ledge = smoothstep(0.84, 0.97, cr);
 
-  // Half width: a battered vertical face flaring into talus at the foot.
-  float wTop = 0.20 + h21(vec2(id, 7.0)) * 0.19;
-  wTop = mix(wTop, 0.085, isSpire);                    // a tower, not a wall
-  wTop = mix(wTop, 0.46, isRidge);                     // a wall, not a tower
-  float wide = mix(wTop + 0.09, wTop, up) + smoothstep(0.34, 0.0, up) * 0.11;
-  // A spire is not flat on top: it draws in to a point over its last third.
-  wide *= 1.0 - smoothstep(0.52, 1.0, up) * 0.62 * isSpire;
-  wide += (tfbm(vec2(p.y * 2.4, id), 11.0, 3) - 0.5) * 0.035 * mix(1.0, 0.30, isSpire);
-  // Each course set back or standing out by its own amount, so the outline
-  // steps storey by storey instead of running smooth from cap to talus.
-  wide += ledge * 0.016 * smoothstep(0.04, 0.16, up) * smoothstep(0.98, 0.86, up);
-  // One weathered notch bitten out of the face, so the four of them are not
-  // the same butte drawn four times.
+  // Half width. A limestone face flares into a talus apron at its foot; a
+  // sandstone monolith is cut *in* there instead, because the sand the wind
+  // carries never gets more than a metre or two off the ground and that is
+  // where it does its work. It is the single most recognisable thing about
+  // the rocks at Al-Ula and none of these had it.
+  float flare = 0.11 * (lime + isCuesta);
+  float undercut = isPed * 0.30 + isDome * 0.085 + isBlock * 0.105
+                 + isStack * 0.11 + isPin * 0.05;
+  float wide = mix(wTop + 0.09, wTop, up)
+             + smoothstep(0.34, 0.0, up) * flare
+             - smoothstep(0.38, 0.02, up) * undercut;
+  wide *= mix(1.0, mix(1.0, 0.42, up), isPin);
+  wide += (tfbm(vec2(p.y * 2.4, id), 11.0, 3) - 0.5) * 0.035 * mix(1.0, 0.18, isPin);
+  wide += ledge * 0.016 * smoothstep(0.04, 0.16, up) * smoothstep(0.98, 0.86, up) * lime;
+  // One weathered notch bitten out of the face — clamped to a share of the
+  // width it is biting into. A fixed depth is wider than a pinnacle is, so it
+  // cut straight through and left the tip floating above the break as a
+  // separate island.
   float notch = h21(vec2(id, 13.0));
-  wide -= smoothstep(0.26, 0.0, abs(up - 0.25 - notch * 0.5))
-        * (0.05 + notch * 0.09 + isStack * 0.115);
+  float bite = smoothstep(0.26, 0.0, abs(up - 0.25 - notch * 0.5))
+             * (0.05 + notch * 0.09 + isStack * 0.115);
+  // …and kept off a pinnacle entirely: clamped, it no longer severed the
+  // tip, but a waist bitten into something that narrow turns a spire into a
+  // bottle. A tower erodes by losing its whole flank, not by being nipped.
+  wide -= min(bite * (1.0 - isPin * 0.92), max(wide, 0.0) * 0.60);
 
   float dx = abs(p.x - 0.5);
-  // The foot dissolves into the sand over an irregular line. It used to be
-  // cut off square across the bottom of the cell, and at distance that dead
-  // straight edge is the whole of what makes one read as a cut-out pasted on
-  // the desert instead of a rock standing in it — no amount of getting the
-  // ground underneath right fixes a horizontal guillotine.
+  // The foot dissolves into the sand over an irregular line. Cut off square
+  // across the bottom of the cell, a distant one reads as a cut-out pasted on
+  // the desert however right the ground under it is.
   float bline = base + (tfbm(vec2(p.x * 3.0, id * 5.0), 9.0, 3) - 0.5) * 0.050;
   float mask = (1.0 - smoothstep(wide - 0.006, wide, dx))
              * smoothstep(bline + 0.008, bline - 0.040, p.y)
@@ -973,23 +1004,20 @@ vec4 cliffSprite(vec2 p, float id, float dusk) {
 
   float face = (p.x - 0.5) / max(wide, 0.001);        // -1 left .. 1 right
 
-  // Fluting: the vertical channels runoff cuts down a limestone face. Two
-  // scales, and none of it on the talus, or the whole thing reads as fur.
+  // Fluting: the vertical channels runoff cuts down a limestone face. Barely
+  // there on sandstone, which sheds water off a rounded top instead.
   float fx = p.x + tfbm(vec2(p.y * 0.35, id * 7.0), 4.0, 2) * 0.25;
   float flute = 1.0 - abs(tfbm(vec2(fx * 1.7, p.y * 0.20 + id), 9.0, 2) * 2.0 - 1.0);
   flute = pow(flute, 3.2)
         + 0.4 * pow(1.0 - abs(tfbm(vec2(fx * 2.9, p.y * 0.4 + id * 3.0), 21.0, 2) * 2.0 - 1.0), 3.5);
-  flute *= smoothstep(0.18, 0.55, up);
+  flute *= smoothstep(0.18, 0.55, up) * mix(1.0, 0.35, sand) * (1.0 - isDome * 0.8);
 
-  // Bedding: what reads at a distance is the shadow line under each course,
-  // so the courses are ridged and the line is sharp.
   float beds = smoothstep(0.0, 0.16, course) * smoothstep(1.0, 0.72, course);
   beds *= smoothstep(0.05, 0.25, up) * (0.35 + 0.65 * step(0.45, cr));
-  // …and the hard line a proud course throws onto the one beneath it. This is
-  // the difference between a textured slab and a face with storeys in it.
   float ledgeShade = ledge * smoothstep(0.20, 0.0, course) * smoothstep(0.06, 0.22, up);
 
-  // Joints: the vertical cracks that break a face into blocks.
+  // Joints: the vertical cracks that break a face into blocks. On a Hegra
+  // massif these are the dominant structure, not a detail.
   float jcol = floor(p.x * 7.0);
   float jx = fract(p.x * 7.0 + tfbm(vec2(p.y * 0.6, id), 5.0, 2) * 2.0);
   float jTop = 0.52 + h21(vec2(jcol, id + 6.0)) * 0.43;
@@ -1000,15 +1028,18 @@ vec4 cliffSprite(vec2 p, float id, float dusk) {
               * smoothstep(0.24, 0.42, up)
               * step(0.62, h21(vec2(jcol, id + 3.0)));
 
-  // Desert varnish: the dark manganese streaks that run down a face from the
-  // rim wherever water comes over the cap. Long, narrow, and top-weighted —
-  // they are what stops a sunlit face reading as flat paint.
+  // Tafoni: the honeycomb weathering that eats into a sandstone face in
+  // patches, worst where it is shaded and near the foot. This and the
+  // undercut are what say Al-Ula rather than Monument Valley.
+  float taf = smoothstep(0.50, 0.86, tfbm(vec2(p.x * 9.0, p.y * 9.0) + id * 3.0, 46.0, 2));
+  float tafoni = taf * smoothstep(0.45, 0.78, tfbm(p * 2.0 + id, 7.0, 2))
+               * sand * smoothstep(0.95, 0.30, up);
+
+  // Desert varnish: the dark manganese streaks running down from the rim.
   float vn = 1.0 - abs(tfbm(vec2(p.x * 6.5 + id * 5.0, p.y * 0.10), 11.0, 2) * 2.0 - 1.0);
   float varnish = pow(clamp(vn, 0.0, 1.0), 7.0) * smoothstep(0.95, 0.42, up);
 
-  // Blocks that have come off the face and are sat in the talus, on a hashed
-  // lattice: each one lit on top and dark underneath, which is enough at this
-  // size to stop the apron reading as a smooth cone of gravel.
+  // Blocks that have come off the face and are sat in the talus.
   vec2 bl = vec2(p.x * 13.0, p.y * 26.0);
   vec2 bi = floor(bl);
   vec2 bf = fract(bl) - 0.5;
@@ -1017,59 +1048,61 @@ vec4 cliffSprite(vec2 p, float id, float dusk) {
   float boulder = smoothstep(br, br * 0.55, length((bf - bo) * vec2(1.0, 1.45)))
                 * step(0.62, h21(bi + id + 12.0));
   float bLit = clamp(-(bf.y - bo.y) / max(br, 0.001), 0.0, 1.0);
-
-  // Rubble on the talus, so the apron is not a smooth skirt.
   float rubble = tfbm(vec2(p.x * 2.0, p.y) * 3.0 + id, 34.0, 3);
 
-  // Warmer than the loose rocks: a cliff face this size is half sunlight
-  // bounced off the sand in front of it, and a cool grey slab sat in the
-  // frame like a piece of another game.
-  vec3 lit  = mix(vec3(0.88, 0.80, 0.65), vec3(0.38, 0.27, 0.29), dusk);
-  vec3 mid  = mix(vec3(0.70, 0.61, 0.47), vec3(0.26, 0.19, 0.20), dusk);
-  vec3 dark = mix(vec3(0.52, 0.44, 0.34), vec3(0.17, 0.12, 0.13), dusk);
+  // Two rocks, two palettes. Tuwaiq limestone is pale cream and the one thing
+  // out here that is not warm; Hegra sandstone runs honey to rust, and which
+  // end of that range a given monolith sits at varies from one to the next,
+  // so the cell's own hash picks it.
+  float rust = h21(vec2(id, 31.0));
+  vec3 litL  = mix(vec3(0.89, 0.85, 0.74), vec3(0.39, 0.30, 0.31), dusk);
+  vec3 midL  = mix(vec3(0.72, 0.67, 0.55), vec3(0.26, 0.20, 0.21), dusk);
+  vec3 darkL = mix(vec3(0.54, 0.49, 0.40), vec3(0.17, 0.13, 0.14), dusk);
+  vec3 litS  = mix(mix(vec3(0.92, 0.80, 0.58), vec3(0.87, 0.64, 0.42), rust),
+                   vec3(0.41, 0.27, 0.26), dusk);
+  vec3 midS  = mix(mix(vec3(0.78, 0.62, 0.41), vec3(0.70, 0.45, 0.28), rust),
+                   vec3(0.28, 0.18, 0.18), dusk);
+  vec3 darkS = mix(mix(vec3(0.58, 0.44, 0.28), vec3(0.50, 0.30, 0.19), rust),
+                   vec3(0.18, 0.11, 0.12), dusk);
+  vec3 lit  = mix(litL, litS, sand);
+  vec3 mid  = mix(midL, midS, sand);
+  vec3 dark = mix(darkL, darkS, sand);
 
-  // Sun from the upper left. A wide gradient across the face left them all
-  // reading as grey lumps; a rock this size has a lit side and a dark one.
   float sun = smoothstep(-0.90, 0.58, -face);
   vec3 col = mix(dark, mid, sun);
   col = mix(col, lit, smoothstep(0.48, 1.0, sun) * 0.90);
 
   col *= 1.0 - clamp(flute, 0.0, 1.2) * 0.16;
   col *= 0.90 + 0.18 * beds;
-  // Each course its own stone: the beds out here run from near white to a
-  // rusty brown within a single face.
   col *= 0.92 + 0.16 * cr;
   col *= 1.0 - ledgeShade * 0.34;
-  col *= 1.0 - joint * 0.22;
+  col *= 1.0 - joint * 0.22 * (1.0 + isBlock * 1.6) * (1.0 - isDome * 0.75);
   col *= 1.0 - varnish * 0.14;
+  col *= 1.0 - tafoni * 0.28;
   col *= 0.90 + 0.20 * tfbm(p * 1.6 + seed * 2.0, 18.0, 3);
   // The red dust that gets into everything out here, heaviest low down.
   col = mix(col, col * mix(vec3(1.10, 0.92, 0.74), vec3(1.0), dusk),
             smoothstep(0.75, 0.05, up) * 0.55);
 
-  // The cap catches the sun flat on, with a hard bright lip along its edge;
-  // the base sits in its own shadow.
-  col = mix(col, lit, smoothstep(0.93, 1.0, up) * 0.35);
-  col = mix(col, lit * 1.12, smoothstep(0.985, 1.0, up) * 0.75);
+  // A rounded crown catches the sun over its whole curve, not along a lip.
+  col = mix(col, lit, smoothstep(0.93, 1.0, up) * mix(0.35, 0.55, crown));
+  col = mix(col, lit * 1.12, smoothstep(0.985, 1.0, up) * 0.75 * (1.0 - crown * 0.7));
   col *= 1.0 - smoothstep(0.35, 0.0, up) * 0.20;
+  // The shadow an undercut throws back under itself.
+  col *= 1.0 - smoothstep(0.30, 0.02, up) * undercut * 2.4;
 
-  // Talus: the skirt of broken rock and blown sand at the foot.
   vec3 scree = mix(vec3(0.66, 0.50, 0.33), vec3(0.27, 0.18, 0.20), dusk);
-  float apron = smoothstep(0.26, 0.0, up + (tfbm(vec2(p.x * 2.0, id), 13.0, 2) - 0.5) * 0.10);
+  float apron = smoothstep(0.26, 0.0, up + (tfbm(vec2(p.x * 2.0, id), 13.0, 2) - 0.5) * 0.10)
+              * (lime + isCuesta * 0.7 + 0.25);
   col = mix(col, scree * (0.62 + 0.8 * rubble), apron * 0.80);
   vec3 bcol = scree * (0.70 + 0.55 * h21(bi + id + 16.0));
   col = mix(col, mix(bcol * 0.66, bcol * 1.18, bLit), boulder * apron * 0.70);
 
-  // What dissolves at the bottom has to be sand-coloured. Fading the talus
-  // out as it stood left a dark speckled fringe round the foot of every one
-  // of them — the shading that beds a talus into its own shadow is exactly
-  // the wrong colour to be dissolving into open desert, and a dark fringe
-  // reads as a cut-out just as plainly as the straight edge did.
-  // Finished before the alpha ramp starts, so nothing dark is ever left
-  // half-transparent: by the depth the sprite begins to fade it is already
-  // blown sand, and what dissolves is sand dissolving into sand.
+  // What dissolves at the bottom has to be sand-coloured, and it has to get
+  // there before the alpha starts dropping: fading the talus out as it stood
+  // left a dark speckled fringe round the foot, which reads as a cut-out just
+  // as plainly as a straight edge does.
   float bury = smoothstep(bline - 0.085, bline - 0.035, p.y);
-  // …and the shadow the face throws across its own foot, lifted as it goes.
   col *= 1.0 - smoothstep(-0.1, 0.8, face) * apron * 0.35 * (1.0 - bury);
   col = mix(col, scree * 1.22, bury);
 
@@ -1077,8 +1110,8 @@ vec4 cliffSprite(vec2 p, float id, float dusk) {
 }
 
 vec4 bakeCliffs(vec2 uv, float dusk) {
-  vec2 cell = vec2(floor(uv.x * 2.0), floor(uv.y * 3.0));
-  vec2 p = vec2(fract(uv.x * 2.0), fract(uv.y * 3.0));
+  vec2 cell = vec2(floor(uv.x * 2.0), floor(uv.y * 4.0));
+  vec2 p = vec2(fract(uv.x * 2.0), fract(uv.y * 4.0));
   return cliffSprite(p, cell.y * 2.0 + cell.x, dusk);
 }
 

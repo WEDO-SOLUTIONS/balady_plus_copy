@@ -408,18 +408,26 @@ move with the car rather than slide sideways under parallax:
   a large part of the near frame — and a wash cannot occlude what is behind
   it, so over the textured floor all it did was lay a translucent wedge across
   the sand. The ground texture and the road's own berms carry the shoulder.
-- **The outcrops the track runs between** (`img/bg/cliffs.png`, six cells of
-  1024 px, two columns by three): **six landforms, not one butte drawn six
-  times** — a plain butte, a stepped mesa, a spire, a long low ridge, a cuesta
-  with its beds dipping to one side, and a stack cut nearly through at the
-  waist. The escarpment really does break up into all of these, and variations
-  on a single flat-topped silhouette read as the same rock every time it comes
-  past. Each instance is mirrored on a coin-flip and stretched over
-  0.86–1.28 of its height, which is two more axes of variation for no extra
-  texture; the half-width used to place it carries the stretch, or the
-  frame-edge exit the whole placement is built on stops being where it says.
-  Flat caps of hard limestone over fluted vertical faces with an
-  apron of talus, the way the Tuwaiq escarpment breaks up. Courses of unequal
+- **The outcrops the track runs between** (`img/bg/cliffs.png`, eight cells of
+  1024 px, two columns by four): **eight landforms, and two different rocks.**
+  The escarpment that runs past Riyadh is Tuwaiq limestone — pale cream-grey,
+  flat-topped, ruled into thin courses — and two cells are that: a long low
+  escarpment wall and a butte. The other six are the Hegra and Al-Ula
+  sandstone, which is a different rock and reads nothing like it: warm honey
+  to rust, *massive* rather than thin-bedded (seven courses where the
+  limestone has twenty-one), rounded on top, and **undercut at the foot**,
+  because the sand the wind carries never gets more than a metre or two off
+  the ground and that is where it does its work. A massif, a pedestal, a
+  wind-polished dome, a pinnacle, a cuesta with its beds dipping one way, and
+  a stack cut at the waist. Crossbedding, from the dunes the rock was laid
+  down as, runs through them at an angle; tafoni — the honeycomb pitting —
+  eats into the shaded lower faces. Drawing every one of them as a
+  thin-bedded layered mesa is what made the set read as Utah.
+
+  Each instance is mirrored on a coin-flip and stretched over 0.86–1.28 of its
+  height, which is two more axes of variation for no extra texture; the
+  half-width used to place it carries the stretch, or the frame-edge exit the
+  whole placement is built on stops being where it says. Courses of unequal
   thickness, each with its own tone, two or three of them standing proud far
   enough to step the silhouette and throw a shadow line on the bed below;
   manganese streaks down from the rim; fallen blocks in the talus. Four of
@@ -495,6 +503,18 @@ move with the car rather than slide sideways under parallax:
   because fading it out as it stood left a dark speckled fringe round every
   foot, and a dark fringe reads as a cut-out just as plainly as the straight
   edge did.
+
+  Three shape traps, all of which produced a silhouette rather than a bug.
+  The weathering notch subtracted a *fixed* depth from the half-width, which
+  is wider than a pinnacle is — it cut clean through and left the tip floating
+  above the break as a separate island; clamped to a share of the width it
+  was biting into, it severed nothing, but a waist nipped into something that
+  narrow still turns a spire into a bottle, so the notch stays off a pinnacle
+  entirely. And the rounded crown was an arc measured across the *cell*, while
+  the rock is not as wide as its cell — only the middle third of the curve
+  ever showed, which is why the dome kept coming out flat on top however far
+  the arc was pushed. Measuring it across the rock's own width meant choosing
+  the width before the cap rather than after.
 
   **A lump in the draw.** The per-lap choices — which landform, mirrored or
   not, how wide — came off the same `sin`-based hash as everything else, with
