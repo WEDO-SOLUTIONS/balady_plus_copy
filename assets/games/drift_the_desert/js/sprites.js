@@ -91,24 +91,31 @@
       // The sprite is square and its subject stands on the cell's baseline.
       var f = this.foot;
       var size = height / f;
-      var dx = x - size * 0.5;
+      // Mirrored and stretched per instance. Six baked landforms go a long
+      // way, but the same one coming past the same way round is still the
+      // same one; this is two more axes of variation for no extra texture.
+      var wide = size * ((o && o.wide) || 1);
+      var dx = x - wide * 0.5;
       var dy = y - size * f;
-
-      ctx.drawImage(this.img, sx, sy, this.cell, this.cell, dx, dy, size, size);
       var was = ctx.globalAlpha;
+      var flip = !!(o && o.flip);
+      if (flip) { ctx.save(); ctx.translate(x * 2, 0); ctx.scale(-1, 1); }
+
+      ctx.drawImage(this.img, sx, sy, this.cell, this.cell, dx, dy, wide, size);
 
       if (o.dusk > 0.02 && o.duskColour) {
         ctx.globalCompositeOperation = 'multiply';
         ctx.globalAlpha = was * o.dusk;
-        ctx.drawImage(this.tintSheet(o.duskColour), sx, sy, this.cell, this.cell, dx, dy, size, size);
+        ctx.drawImage(this.tintSheet(o.duskColour), sx, sy, this.cell, this.cell, dx, dy, wide, size);
         ctx.globalCompositeOperation = 'source-over';
       }
 
       if (o.fog > 0.01 && o.hazeColour) {
         ctx.globalAlpha = was * o.fog;
-        ctx.drawImage(this.tintSheet(o.hazeColour), sx, sy, this.cell, this.cell, dx, dy, size, size);
+        ctx.drawImage(this.tintSheet(o.hazeColour), sx, sy, this.cell, this.cell, dx, dy, wide, size);
       }
 
+      if (flip) ctx.restore();
       ctx.globalAlpha = was;
       return true;
     }

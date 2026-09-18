@@ -173,7 +173,11 @@ def main():
         for r in range(im.height // cell):
             for c in range(cols):
                 box = alpha.crop((c * cell, r * cell, (c + 1) * cell, (r + 1) * cell))
-                bbox = box.point(lambda v: 255 if v > 24 else 0).getbbox()
+                # Where the subject is solid, not where its last faint pixel
+                # is. A cliff's talus now dissolves into sand over the bottom
+                # of its cell, and putting the ground line at the end of that
+                # tail would hang the rock above its own dust.
+                bbox = box.point(lambda v: 255 if v > 160 else 0).getbbox()
                 if bbox:
                     foot = max(foot, bbox[3] / cell)
         manifest['plates'][name] = {'size': [im.width, im.height],

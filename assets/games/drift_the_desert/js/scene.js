@@ -59,6 +59,20 @@
     return x - Math.floor(x);
   }
 
+  /* An integer mix, for draws that step an input by one at a time. The sine
+     hash above evens out over hundreds of steps but is lumpy over a handful,
+     which is all a lap counter ever gets: measured over the outcrops' first
+     four laps, it covered five of the six baked landforms, drawing one of
+     them six times in sixteen and another not at all. This covers all six
+     over the same four laps. Both are uniform in the long run — the argument
+     for this one is entirely about the short one, which is the only run a
+     session actually plays. */
+  function ihash(a, b, c) {
+    var n = (a | 0) * 374761393 + (b | 0) * 668265263 + (c | 0) * 2246822519;
+    n = Math.imul(n ^ (n >>> 13), 1274126177);
+    return ((n ^ (n >>> 16)) >>> 0) / 4294967296;
+  }
+
   /* Art cut out of the design mockup (see tools/extract_assets.py). Every
      draw path keeps its procedural version, so a missing or still-loading
      image degrades to vector art instead of a blank frame. */
@@ -1025,19 +1039,25 @@
       // sprite's inner edge is exactly half a frame plus half a sprite from
       // the centre — which is the frame edge, by construction. No pair of
       // hashes can make a wall, and none can make a speck either.
-      var tExit = 0.048 + hash(seed + 3.3 + pass) * 0.016;
-      var tall = 0.19 + hash(seed + 9.7 + pass) * 0.08;
+      var tExit = 0.048 + ihash(i, pass, 1) * 0.016;
+      var tall = 0.19 + ihash(i, pass, 2) * 0.08;
       var grow = p.t / tExit;
       if (grow > 1.6) return null;
 
+      // Stretched a little either way, and half of them mirrored. The
+      // half-width has to carry the stretch or the frame-edge exit that the
+      // whole placement is built on stops being where it says it is.
+      var wide = 0.86 + ihash(i, pass, 4) * 0.42;
       var size = tall * this.h * grow;
-      var x = p.x + side * (this.w * 0.5 + 0.42 * tall * this.h) * grow;
+      var x = p.x + side * (this.w * 0.5 + 0.42 * tall * this.h * wide) * grow;
 
       return {
         cliff: true,
         d: p.t, x: x, y: p.y, s: p.t, seed: seed + pass * 0.37, side: side,
-        sprite: Math.floor(hash(seed + 12.9 + pass) * 4) % 4,
+        sprite: Math.floor(ihash(i, pass, 3) * 6) % 6,
         size: size,
+        wide: wide,
+        flip: ihash(i, pass, 5) < 0.5,
         // Opaque sooner than a prop. One of these leaves the frame sideways
         // rather than by going past the camera, and on the shared ramp the
         // nearest-exiting of them was still fading up as it left.
@@ -1105,7 +1125,8 @@
         // No contact shadow: the sheet carries its own talus apron, which is
         // what a cliff has instead of a shadow on the sand.
         return sheet.draw(ctx, o.sprite, o.x, o.y, o.size, {
-          fog: o.fog, hazeColour: haze, dusk: night, duskColour: '#6B4A54'
+          fog: o.fog, hazeColour: haze, dusk: night, duskColour: '#6B4A54',
+          wide: o.wide, flip: o.flip
         });
       }
 

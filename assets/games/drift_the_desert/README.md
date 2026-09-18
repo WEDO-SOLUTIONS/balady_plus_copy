@@ -408,8 +408,17 @@ move with the car rather than slide sideways under parallax:
   a large part of the near frame — and a wash cannot occlude what is behind
   it, so over the textured floor all it did was lay a translucent wedge across
   the sand. The ground texture and the road's own berms carry the shoulder.
-- **The outcrops the track runs between** (`img/bg/cliffs.png`, four cells of
-  1024 px): flat caps of hard limestone over fluted vertical faces with an
+- **The outcrops the track runs between** (`img/bg/cliffs.png`, six cells of
+  1024 px, two columns by three): **six landforms, not one butte drawn six
+  times** — a plain butte, a stepped mesa, a spire, a long low ridge, a cuesta
+  with its beds dipping to one side, and a stack cut nearly through at the
+  waist. The escarpment really does break up into all of these, and variations
+  on a single flat-topped silhouette read as the same rock every time it comes
+  past. Each instance is mirrored on a coin-flip and stretched over
+  0.86–1.28 of its height, which is two more axes of variation for no extra
+  texture; the half-width used to place it carries the stretch, or the
+  frame-edge exit the whole placement is built on stops being where it says.
+  Flat caps of hard limestone over fluted vertical faces with an
   apron of talus, the way the Tuwaiq escarpment breaks up. Courses of unequal
   thickness, each with its own tone, two or three of them standing proud far
   enough to step the silhouette and throw a shadow line on the bed below;
@@ -468,10 +477,34 @@ move with the car rather than slide sideways under parallax:
 
   **Each sheet stands on its own baseline.** `Sheet.draw` assumed every
   subject sat at 0.95 of its cell. Measured off the alpha, the props end at
-  0.990 and the cliffs at 0.972 — so the two sheets were on two different
+  0.986 and the cliffs at 0.963 — so the two sheets were on two different
   ground lines, each sunk below its own by a few per cent of its height. The
   figure is now measured by `tools/pack_background.py` and carried per sheet
-  in `plates.js`.
+  in `plates.js`, at the depth the subject is *solid* rather than where its
+  last faint pixel is — a cliff's talus dissolves over the bottom of its cell
+  now, and putting the ground line at the end of that tail would hang the rock
+  above its own dust.
+
+  **And the foot dissolves.** Getting the ground underneath right did not stop
+  the distant ones reading as floating, because the sprite was still cut off
+  *square* across the bottom of its cell. At distance that dead straight
+  horizontal edge is the whole of what the eye needs to call something a
+  cut-out pasted on the desert. The silhouette now ends on an irregular line
+  and fades out over the last 5% of the cell — and the colour gets there
+  first: the talus goes to blown sand *before* the alpha starts dropping,
+  because fading it out as it stood left a dark speckled fringe round every
+  foot, and a dark fringe reads as a cut-out just as plainly as the straight
+  edge did.
+
+  **A lump in the draw.** The per-lap choices — which landform, mirrored or
+  not, how wide — came off the same `sin`-based hash as everything else, with
+  a lap counter stepping its input by one. That hash is uniform over hundreds
+  of steps but lumpy over a handful, which is all a lap counter ever gets:
+  measured over the first four laps it covered five of the six landforms,
+  drawing one of them six times in sixteen and another not at all. Those
+  draws now use an integer mix (`ihash`), which covers all six over the same
+  four laps. Both are uniform in the long run; the argument is entirely about
+  the short one, which is the only run a session actually plays.
 
   One sheet serves both sides of the road, so strong directional shading
   cannot be right for both: whichever flank it made dark became a black wall

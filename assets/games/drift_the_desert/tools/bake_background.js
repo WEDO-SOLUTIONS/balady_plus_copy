@@ -48,8 +48,9 @@ const SQUARE = [
   { name: 'props', layer: 5, w: 2048, h: 1536, dusk: 0.0 },
   // The road: the same ground mapping, clipped to the track by the game.
   { name: 'track', layer: 6, w: 2048, h: 2048, dusk: 0.0 },
-  // The outcrops the track runs between: four of them, 1024 px each.
-  { name: 'cliffs', layer: 7, w: 2048, h: 2048, dusk: 0.0 }
+  // The outcrops the track runs between: six of them, 1024 px each, two
+  // columns by three rows.
+  { name: 'cliffs', layer: 7, w: 2048, h: 3072, dusk: 0.0 }
 ];
 
 (async () => {

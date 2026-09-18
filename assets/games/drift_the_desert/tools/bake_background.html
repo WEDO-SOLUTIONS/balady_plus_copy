@@ -896,11 +896,27 @@ vec4 cliffSprite(vec2 p, float id, float dusk) {
   float seed = 71.0 + id * 9.13;
   float base = 0.965;
 
-  // The cap: two or three flat steps along its length, lightly eroded.
-  float steps = floor(h21(vec2(id, 3.0)) * 2.0) + 2.0;
+  // Six landforms, not one butte drawn six ways: a plain butte, a stepped
+  // mesa, a spire, a long low ridge, a cuesta with its beds dipping to one
+  // side, and an eroded stack cut nearly through at the waist. The escarpment
+  // really does break up into all of these, and variations on a single
+  // flat-topped silhouette read as the same rock every time it comes past.
+  float isStep  = step(0.5, id) * step(id, 1.5);
+  float isSpire = step(1.5, id) * step(id, 2.5);
+  float isRidge = step(2.5, id) * step(id, 3.5);
+  float isTilt  = step(3.5, id) * step(id, 4.5);
+  float isStack = step(4.5, id);
+
+  // The cap: flat steps along its length, lightly eroded. The stepped mesa
+  // gets one more of them and four times the drop between.
+  float steps = floor(h21(vec2(id, 3.0)) * 2.0) + 2.0 + isStep;
   float stepv = floor(p.x * steps) / steps;
   float top = 0.22 + h21(vec2(id, 2.0)) * 0.30
-            + (h21(vec2(stepv * 7.0 + id, 5.0)) - 0.5) * 0.15;
+            + (h21(vec2(stepv * 7.0 + id, 5.0)) - 0.5) * (0.15 + isStep * 0.50);
+  top = mix(top, 0.10, isSpire);                       // starts near the top
+  top = mix(top, 0.62, isRidge);                       // barely off the sand
+  top += (p.x - 0.5) * 0.30 * isTilt;                  // beds dipping one way
+  top += sin(p.x * 9.0 + id) * 0.030 * isRidge;        // a broken crest
   top += (tfbm(p * 0.7 + seed, 14.0, 3) - 0.5) * 0.018;
   if (p.y < top - 0.02) return vec4(0.0);
 
@@ -928,19 +944,30 @@ vec4 cliffSprite(vec2 p, float id, float dusk) {
 
   // Half width: a battered vertical face flaring into talus at the foot.
   float wTop = 0.20 + h21(vec2(id, 7.0)) * 0.19;
+  wTop = mix(wTop, 0.085, isSpire);                    // a tower, not a wall
+  wTop = mix(wTop, 0.46, isRidge);                     // a wall, not a tower
   float wide = mix(wTop + 0.09, wTop, up) + smoothstep(0.34, 0.0, up) * 0.11;
-  wide += (tfbm(vec2(p.y * 2.4, id), 11.0, 3) - 0.5) * 0.035;
+  // A spire is not flat on top: it draws in to a point over its last third.
+  wide *= 1.0 - smoothstep(0.52, 1.0, up) * 0.62 * isSpire;
+  wide += (tfbm(vec2(p.y * 2.4, id), 11.0, 3) - 0.5) * 0.035 * mix(1.0, 0.30, isSpire);
   // Each course set back or standing out by its own amount, so the outline
   // steps storey by storey instead of running smooth from cap to talus.
   wide += ledge * 0.016 * smoothstep(0.04, 0.16, up) * smoothstep(0.98, 0.86, up);
   // One weathered notch bitten out of the face, so the four of them are not
   // the same butte drawn four times.
   float notch = h21(vec2(id, 13.0));
-  wide -= smoothstep(0.26, 0.0, abs(up - 0.25 - notch * 0.5)) * (0.05 + notch * 0.09);
+  wide -= smoothstep(0.26, 0.0, abs(up - 0.25 - notch * 0.5))
+        * (0.05 + notch * 0.09 + isStack * 0.115);
 
   float dx = abs(p.x - 0.5);
+  // The foot dissolves into the sand over an irregular line. It used to be
+  // cut off square across the bottom of the cell, and at distance that dead
+  // straight edge is the whole of what makes one read as a cut-out pasted on
+  // the desert instead of a rock standing in it — no amount of getting the
+  // ground underneath right fixes a horizontal guillotine.
+  float bline = base + (tfbm(vec2(p.x * 3.0, id * 5.0), 9.0, 3) - 0.5) * 0.050;
   float mask = (1.0 - smoothstep(wide - 0.006, wide, dx))
-             * smoothstep(base + 0.015, base - 0.03, p.y)
+             * smoothstep(bline + 0.008, bline - 0.040, p.y)
              * smoothstep(top - 0.003, top + 0.005, p.y);
   if (mask <= 0.0) return vec4(0.0);
 
@@ -1032,15 +1059,26 @@ vec4 cliffSprite(vec2 p, float id, float dusk) {
   col = mix(col, scree * (0.62 + 0.8 * rubble), apron * 0.80);
   vec3 bcol = scree * (0.70 + 0.55 * h21(bi + id + 16.0));
   col = mix(col, mix(bcol * 0.66, bcol * 1.18, bLit), boulder * apron * 0.70);
-  // …and the shadow the face throws across its own foot.
-  col *= 1.0 - smoothstep(-0.1, 0.8, face) * apron * 0.35;
+
+  // What dissolves at the bottom has to be sand-coloured. Fading the talus
+  // out as it stood left a dark speckled fringe round the foot of every one
+  // of them — the shading that beds a talus into its own shadow is exactly
+  // the wrong colour to be dissolving into open desert, and a dark fringe
+  // reads as a cut-out just as plainly as the straight edge did.
+  // Finished before the alpha ramp starts, so nothing dark is ever left
+  // half-transparent: by the depth the sprite begins to fade it is already
+  // blown sand, and what dissolves is sand dissolving into sand.
+  float bury = smoothstep(bline - 0.085, bline - 0.035, p.y);
+  // …and the shadow the face throws across its own foot, lifted as it goes.
+  col *= 1.0 - smoothstep(-0.1, 0.8, face) * apron * 0.35 * (1.0 - bury);
+  col = mix(col, scree * 1.22, bury);
 
   return vec4(col, mask);
 }
 
 vec4 bakeCliffs(vec2 uv, float dusk) {
-  vec2 cell = vec2(floor(uv.x * 2.0), floor(uv.y * 2.0));
-  vec2 p = vec2(fract(uv.x * 2.0), fract(uv.y * 2.0));
+  vec2 cell = vec2(floor(uv.x * 2.0), floor(uv.y * 3.0));
+  vec2 p = vec2(fract(uv.x * 2.0), fract(uv.y * 3.0));
   return cliffSprite(p, cell.y * 2.0 + cell.x, dusk);
 }
 
