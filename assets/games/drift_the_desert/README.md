@@ -504,7 +504,19 @@ move with the car rather than slide sideways under parallax:
   foot, and a dark fringe reads as a cut-out just as plainly as the straight
   edge did.
 
-  Three shape traps, all of which produced a silhouette rather than a bug.
+  **An undercut still reaches the ground.** Run all the way down to `up = 0`,
+  the waist ate the whole base: measured on the pedestal, its half-width went
+  from 0.98 of its widest at seven tenths height to **0.32, 0.13, 0.05 and
+  then nothing** — a boulder balanced on a needle, and a needle that then
+  dissolves into sand is a boulder hanging in the air. The wind hollows a
+  rock's flank; it does not saw through it. The waist is now a band that stops
+  short of the ground and lets the rock flare back out into a foot, with sand
+  banked against it — held full a little way *up* the rock rather than peaking
+  at `up = 0`, which is exactly where the foot is dissolving, because a bank
+  drawn at one fifth opacity is not a bank. Same measurement after: **0.82 at
+  the same height, and 0.91 below it.**
+
+  Three more shape traps, all of which produced a silhouette rather than a bug.
   The weathering notch subtracted a *fixed* depth from the half-width, which
   is wider than a pinnacle is — it cut clean through and left the tip floating
   above the break as a separate island; clamped to a share of the width it

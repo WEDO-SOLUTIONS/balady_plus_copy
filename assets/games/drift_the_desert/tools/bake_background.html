@@ -972,11 +972,22 @@ vec4 cliffSprite(vec2 p, float id, float dusk) {
   // where it does its work. It is the single most recognisable thing about
   // the rocks at Al-Ula and none of these had it.
   float flare = 0.11 * (lime + isCuesta);
-  float undercut = isPed * 0.30 + isDome * 0.085 + isBlock * 0.105
+  float undercut = isPed * 0.19 + isDome * 0.085 + isBlock * 0.105
                  + isStack * 0.11 + isPin * 0.05;
+  // The waist is a band, and it stops short of the ground. Running it all the
+  // way down to up = 0 ate the whole base: the pedestal went from 0.98 of its
+  // widest at seven tenths height to 0.32, 0.13, 0.05 and then nothing, which
+  // is a boulder balanced on a needle, and a needle that then dissolves into
+  // sand is a boulder hanging in the air. An undercut rock still meets the
+  // ground — the wind hollows its flank, it does not saw through it.
+  float waist = smoothstep(0.44, 0.20, up) * smoothstep(0.03, 0.15, up);
   float wide = mix(wTop + 0.09, wTop, up)
              + smoothstep(0.34, 0.0, up) * flare
-             - smoothstep(0.38, 0.02, up) * undercut;
+             // Held full a little way up the rock rather than peaking at
+             // up = 0, which is exactly where the foot is dissolving: a bank
+             // drawn at one fifth opacity is not a bank.
+             + smoothstep(0.19, 0.05, up) * 0.075 * sand
+             - waist * undercut;
   wide *= mix(1.0, mix(1.0, 0.42, up), isPin);
   wide += (tfbm(vec2(p.y * 2.4, id), 11.0, 3) - 0.5) * 0.035 * mix(1.0, 0.18, isPin);
   wide += ledge * 0.016 * smoothstep(0.04, 0.16, up) * smoothstep(0.98, 0.86, up) * lime;
