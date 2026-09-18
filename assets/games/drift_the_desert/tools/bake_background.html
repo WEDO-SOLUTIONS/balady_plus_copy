@@ -910,14 +910,16 @@ vec4 cliffSprite(vec2 p, float id, float dusk) {
   float isDome   = step(3.5, id) * step(id, 4.5);      // 4 wind-polished dome
   float isPin    = step(4.5, id) * step(id, 5.5);      // 5 sandstone pinnacle
   float isCuesta = step(5.5, id) * step(id, 6.5);      // 6 dipping crossbeds
-  float isStack  = step(6.5, id);                      // 7 cut at the waist
+  float isStack  = step(6.5, id) * step(id, 7.5);      // 7 cut at the waist
+  float isArch   = step(7.5, id) * step(id, 8.5);      // 8 natural arch
+  float isTowers = step(8.5, id);                      // 9 a group of towers
 
   float lime = isWall + isButte;
   float sand = 1.0 - lime;
   // How much of a rounded crown it carries. Sandstone weathers to domes; a
   // limestone cap breaks off square along its bedding and stays flat.
   float crown = isBlock * 0.35 + isPed * 0.80 + isDome * 1.0
-              + isPin * 0.38 + isStack * 0.40;
+              + isPin * 0.38 + isStack * 0.40 + isArch * 0.45 + isTowers * 0.20;
 
   // The nominal half-width, needed before the cap: a crown measured across
   // the cell only ever showed the middle third of its curve, because the rock
@@ -929,6 +931,8 @@ vec4 cliffSprite(vec2 p, float id, float dusk) {
   wTop = mix(wTop, 0.29, isDome);
   wTop = mix(wTop, 0.24, isBlock);
   wTop = mix(wTop, 0.23, isPed);
+  wTop = mix(wTop, 0.36, isArch);      // enough rock either side of the hole
+  wTop = mix(wTop, 0.40, isTowers);
 
   // The cap: flat steps along its length, lightly eroded.
   float steps = floor(h21(vec2(id, 3.0)) * 2.0) + 2.0 + isButte;
@@ -941,6 +945,15 @@ vec4 cliffSprite(vec2 p, float id, float dusk) {
   top = mix(top, 0.24, isPed);
   top = mix(top, 0.27, isDome);
   top = mix(top, 0.10, isPin);                         // starts near the top
+  top = mix(top, 0.30, isArch);
+  top = mix(top, 0.26, isTowers);
+  // A group of towers is one mass split into three, each with its own
+  // skyline: a shared plinth with clefts cut down into it, which is how they
+  // stand in Wadi Disah. Doing it as three separate silhouettes would mean
+  // three of everything below — this keeps one face and cuts it.
+  float tu = (p.x - 0.5) / max(wTop + 0.09, 0.001);    // -1 .. 1 across it
+  float tcol = floor((tu + 1.0) * 1.5);                // which of the three
+  top += (h21(vec2(tcol, id + 41.0)) - 0.5) * 0.30 * isTowers;
   top += (p.x - 0.5) * 0.30 * isCuesta;                // beds dipping one way
   top += sin(p.x * 9.0 + id) * 0.030 * isWall;         // a broken crest
   // A circular arc pulled down at the shoulders, which is the whole
@@ -973,7 +986,7 @@ vec4 cliffSprite(vec2 p, float id, float dusk) {
   // the rocks at Al-Ula and none of these had it.
   float flare = 0.11 * (lime + isCuesta);
   float undercut = isPed * 0.19 + isDome * 0.085 + isBlock * 0.105
-                 + isStack * 0.11 + isPin * 0.05;
+                 + isStack * 0.11 + isPin * 0.05 + isTowers * 0.05;
   // The waist is a band, and it stops short of the ground. Running it all the
   // way down to up = 0 ate the whole base: the pedestal went from 0.98 of its
   // widest at seven tenths height to 0.32, 0.13, 0.05 and then nothing, which
@@ -1011,6 +1024,26 @@ vec4 cliffSprite(vec2 p, float id, float dusk) {
   float mask = (1.0 - smoothstep(wide - 0.006, wide, dx))
              * smoothstep(bline + 0.008, bline - 0.040, p.y)
              * smoothstep(top - 0.003, top + 0.005, p.y);
+
+  // The arch: a half-ellipse of nothing, widest at the ground and closing to
+  // a rounded crown. Cut out of the mask rather than built from two legs and
+  // a lintel, so the span and the legs stay one piece of rock.
+  // Kept near the middle and opened up: off to one side with a thin leg on
+  // that side it reads as a cave mouth bitten into a cliff, not as an arch.
+  float aoff = (h21(vec2(id, 53.0)) - 0.5) * 0.06;
+  float ax2 = clamp(up / 0.60, 0.0, 1.0);
+  float voidHalf = 0.140 * sqrt(max(0.0, 1.0 - ax2 * ax2));
+  float hole = (1.0 - smoothstep(voidHalf - 0.008, voidHalf, abs(p.x - 0.5 - aoff)))
+             * isArch;
+  mask *= 1.0 - hole;
+
+  // The clefts between the towers, stopping short of the foot so the three of
+  // them still rise off one plinth.
+  float tb = fract((tu + 1.0) * 1.5);
+  float cleft = (1.0 - smoothstep(0.0, 0.10, min(tb, 1.0 - tb)))
+              * smoothstep(0.05, 0.20, up) * isTowers;
+  mask *= 1.0 - cleft;
+
   if (mask <= 0.0) return vec4(0.0);
 
   float face = (p.x - 0.5) / max(wide, 0.001);        // -1 left .. 1 right
@@ -1090,6 +1123,11 @@ vec4 cliffSprite(vec2 p, float id, float dusk) {
   col *= 1.0 - joint * 0.22 * (1.0 + isBlock * 1.6) * (1.0 - isDome * 0.75);
   col *= 1.0 - varnish * 0.14;
   col *= 1.0 - tafoni * 0.28;
+  // The underside of a span and the inner faces of its legs never see the
+  // sun; nor does the rock down inside a cleft.
+  col *= 1.0 - (1.0 - smoothstep(voidHalf, voidHalf + 0.075, abs(p.x - 0.5 - aoff)))
+             * 0.40 * isArch;
+  col *= 1.0 - (1.0 - smoothstep(0.0, 0.16, min(tb, 1.0 - tb))) * 0.34 * isTowers;
   col *= 0.90 + 0.20 * tfbm(p * 1.6 + seed * 2.0, 18.0, 3);
   // The red dust that gets into everything out here, heaviest low down.
   col = mix(col, col * mix(vec3(1.10, 0.92, 0.74), vec3(1.0), dusk),
@@ -1121,8 +1159,8 @@ vec4 cliffSprite(vec2 p, float id, float dusk) {
 }
 
 vec4 bakeCliffs(vec2 uv, float dusk) {
-  vec2 cell = vec2(floor(uv.x * 2.0), floor(uv.y * 4.0));
-  vec2 p = vec2(fract(uv.x * 2.0), fract(uv.y * 4.0));
+  vec2 cell = vec2(floor(uv.x * 2.0), floor(uv.y * 5.0));
+  vec2 p = vec2(fract(uv.x * 2.0), fract(uv.y * 5.0));
   return cliffSprite(p, cell.y * 2.0 + cell.x, dusk);
 }
 

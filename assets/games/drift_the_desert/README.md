@@ -408,8 +408,8 @@ move with the car rather than slide sideways under parallax:
   a large part of the near frame — and a wash cannot occlude what is behind
   it, so over the textured floor all it did was lay a translucent wedge across
   the sand. The ground texture and the road's own berms carry the shoulder.
-- **The outcrops the track runs between** (`img/bg/cliffs.png`, eight cells of
-  1024 px, two columns by four): **eight landforms, and two different rocks.**
+- **The outcrops the track runs between** (`img/bg/cliffs.png`, ten cells of
+  1024 px, two columns by five): **ten landforms, and two different rocks.**
   The escarpment that runs past Riyadh is Tuwaiq limestone — pale cream-grey,
   flat-topped, ruled into thin courses — and two cells are that: a long low
   escarpment wall and a butte. The other six are the Hegra and Al-Ula
@@ -419,10 +419,21 @@ move with the car rather than slide sideways under parallax:
   because the sand the wind carries never gets more than a metre or two off
   the ground and that is where it does its work. A massif, a pedestal, a
   wind-polished dome, a pinnacle, a cuesta with its beds dipping one way, and
-  a stack cut at the waist. Crossbedding, from the dunes the rock was laid
-  down as, runs through them at an angle; tafoni — the honeycomb pitting —
-  eats into the shaded lower faces. Drawing every one of them as a
-  thin-bedded layered mesa is what made the set read as Utah.
+  a stack cut at the waist, a **natural arch** and a **group of towers**.
+  Crossbedding, from the dunes the rock was laid down as, runs through them at
+  an angle; tafoni — the honeycomb pitting — eats into the shaded lower faces.
+  Drawing every one of them as a thin-bedded layered mesa is what made the set
+  read as Utah.
+
+  The arch is a half-ellipse of nothing *cut out of the mask*, widest at the
+  ground and closing to a rounded crown, rather than built from two legs and a
+  lintel — so the span and its legs stay one piece of rock with one set of
+  bedding running through them. Kept near the middle: offset to one side with
+  a thin leg on that side, it reads as a cave mouth bitten into a cliff
+  instead. The group of towers is likewise one mass with clefts cut down into
+  it, stopping short of the foot so the three of them rise off a shared
+  plinth, each with its own skyline — the way they stand in Wadi Disah. Three
+  separate silhouettes would have meant three of everything below.
 
   Each instance is mirrored on a coin-flip and stretched over 0.86–1.28 of its
   height, which is two more axes of variation for no extra texture; the

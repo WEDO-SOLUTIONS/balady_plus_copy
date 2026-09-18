@@ -1001,9 +1001,10 @@
        band, but they stand well off the road and are some twenty times the
        size, which is what gives the horizon a shape to read. Four of them,
        alternating sides: nine read as a canyon, and a canyon is not what the
-       road out of Riyadh looks like. Eight baked landforms — two of Tuwaiq
-       limestone, six of Hegra sandstone — mirrored and stretched per
-       instance. See tools/bake_background.html. */
+       road out of Riyadh looks like. Ten baked landforms — two of Tuwaiq
+       limestone, eight of Hegra sandstone, including a natural arch and a
+       group of towers — mirrored and stretched per instance.
+       See tools/bake_background.html. */
     CLIFFS: 4,
 
     cliffAt: function (i, lean) {
@@ -1056,7 +1057,7 @@
       return {
         cliff: true,
         d: p.t, x: x, y: p.y, s: p.t, seed: seed + pass * 0.37, side: side,
-        sprite: Math.floor(ihash(i, pass, 3) * 8) % 8,
+        sprite: Math.floor(ihash(i, pass, 3) * 10) % 10,
         size: size,
         wide: wide,
         flip: ihash(i, pass, 5) < 0.5,
