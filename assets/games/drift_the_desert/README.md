@@ -593,6 +593,13 @@ are per-streak too — five shared rates had them beating together — and there
 are 26 at lower weight rather than 16 at higher, so it reads as a field rather
 than as a set of sticks.
 
+**The side streaks** (`drawSpeedLines`) got the same treatment, for the same
+reasons: the eased ramp from the base speed, a side and a band drawn per lap
+rather than fixed by index — nine of them alternating sides on `i % 2` at one
+shared rate came past in the same order all run — and the two-depth projection,
+so they lean out harder the closer they get instead of holding one angle the
+whole way down the frame.
+
 If a plate fails to decode, `backdrop.ready` stays false and `js/scene.js`
 falls back to drawing its own sky, mesas and dunes from the mockup strips —
 the path that shipped before the plates existed. Blocking `img/bg/*.jpg` in
