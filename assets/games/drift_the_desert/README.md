@@ -437,9 +437,41 @@ move with the car rather than slide sideways under parallax:
   nothing rather than dust resolving into a rock. These also leave the frame
   *sideways* rather than by going past the camera, so on the shared fade ramp
   the nearest-exiting of them was still fading up as it left; cliffs carry
-  their own `ramp` of 0.20 against the props' 0.5. With the haze clearing at
-  `t = 0.052`, one is 89% dust at half opacity and clear of it before it
-  reaches the frame edge.
+  their own `ramp` of 0.20 against the props' 0.5. One is 93% dust at half
+  opacity and clear of the haze before it reaches the frame edge.
+
+  **They stand where the ground actually is.** The textured plane used to be
+  invisible until `t = 0.045` and only fully opaque at `t = 0.21` — a 109 px
+  band below the horizon whose only ground was the painted dunes plate, which
+  slides on its own clock rather than the world's. Every outcrop lives in
+  exactly that band, so they were solid rock on a surface that was not there:
+  measured, one at `t = 0.076` was fully opaque over ground drawn at **19%**,
+  and the two nearer the horizon stood on **0%**. That is what read as
+  floating, and as not moving with everything else — what they were standing
+  on genuinely was not moving with everything else. The ramp is now
+  `(t − 0.008) / 0.075`, opaque by `t = 0.083` (43 px below the horizon rather
+  than 109), and the same three cliffs stand on 32%, 45% and 91%.
+
+  A cliff then clears its haze on a schedule tied to that ramp, at
+  `GROUND_IN × 0.84`, so it is never conspicuously more present than what it
+  stands on. Tying the two *exactly* was the first attempt and it is too
+  strict — the horizon dust lies over the sand as well, so ground drawn at 60%
+  does not read as 60% of a surface, and matching a cliff to that number
+  bleached it to nothing. Measured now: 10% solid on 32% ground, 62% on 61%,
+  100% on 91%.
+
+  Drawing ground that close to the horizon raises the frame-to-frame delta in
+  that band from 2.61 to 3.06. That is not shimmer returning — raising the LOD
+  bias, which is what would fix aliasing, barely moves it (3.12 → 3.03). It is
+  the band no longer being a nearly-static painted plate, which is the whole
+  point.
+
+  **Each sheet stands on its own baseline.** `Sheet.draw` assumed every
+  subject sat at 0.95 of its cell. Measured off the alpha, the props end at
+  0.990 and the cliffs at 0.972 — so the two sheets were on two different
+  ground lines, each sunk below its own by a few per cent of its height. The
+  figure is now measured by `tools/pack_background.py` and carried per sheet
+  in `plates.js`.
 
   One sheet serves both sides of the road, so strong directional shading
   cannot be right for both: whichever flank it made dark became a black wall

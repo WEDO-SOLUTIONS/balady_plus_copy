@@ -163,8 +163,22 @@ def main():
         im.save(src, optimize=True)
         total += src.stat().st_size
         print(f'  {src.name:18} {im.width}x{im.height} {src.stat().st_size / 1024:8.1f} KB')
+        # Where the subject actually stands in its cell. The draw code used to
+        # assume 0.95 for every sheet; the props end at 0.988 and the cliffs at
+        # 0.971, so one number put them on two different ground lines.
+        rgba = im.convert('RGBA')
+        alpha = rgba.split()[3]
+        cell = im.width // cols
+        foot = 0.0
+        for r in range(im.height // cell):
+            for c in range(cols):
+                box = alpha.crop((c * cell, r * cell, (c + 1) * cell, (r + 1) * cell))
+                bbox = box.point(lambda v: 255 if v > 24 else 0).getbbox()
+                if bbox:
+                    foot = max(foot, bbox[3] / cell)
         manifest['plates'][name] = {'size': [im.width, im.height],
-                                    'grid': [cols, im.height // (im.width // cols)]}
+                                    'grid': [cols, im.height // (im.width // cols)],
+                                    'foot': round(foot, 4)}
 
     out = ROOT / 'js' / 'plates.js'
     out.write_text(

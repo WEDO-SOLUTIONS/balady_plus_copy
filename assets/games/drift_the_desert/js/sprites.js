@@ -23,12 +23,18 @@
     this.cols = 4;
     this.rows = 2;
     this.cell = 0;
+    // How far down its cell this sheet's subject actually stands, measured
+    // off the alpha by tools/pack_background.py. It is not the same for every
+    // sheet — the props end at 0.988 of their cell and the cliffs at 0.971 —
+    // and assuming one number for both put them on two different ground
+    // lines.
+    this.foot = 0.95;
     this.tints = {};   // colour -> canvas: the sheet as a flat silhouette
     this.tintKeys = [];
   }
 
   Sheet.prototype = {
-    load: function (url, grid, onDone) {
+    load: function (url, grid, onDone, foot) {
       var self = this;
       var img = new global.Image();
       img.onload = function () {
@@ -36,6 +42,7 @@
         self.cols = (grid && grid[0]) || 4;
         self.rows = (grid && grid[1]) || 2;
         self.cell = img.naturalWidth / self.cols;
+        self.foot = foot || 0.95;
         self.ready = self.cell > 0;
         if (onDone) onDone(self.ready);
       };
@@ -82,9 +89,10 @@
       var sy = Math.floor(i / this.cols) * this.cell;
 
       // The sprite is square and its subject stands on the cell's baseline.
-      var size = height / 0.95;
+      var f = this.foot;
+      var size = height / f;
       var dx = x - size * 0.5;
-      var dy = y - size * 0.95;
+      var dy = y - size * f;
 
       ctx.drawImage(this.img, sx, sy, this.cell, this.cell, dx, dy, size, size);
       var was = ctx.globalAlpha;

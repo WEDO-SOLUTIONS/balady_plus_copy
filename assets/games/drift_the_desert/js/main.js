@@ -546,9 +546,11 @@
       var plates = (global.DRIFT_PLATES && global.DRIFT_PLATES.plates) || {};
       var sheets = 2;
       var done = function () { if (--sheets === 0) spritesLoaded = 1; };
-      global.DriftSprites.load('img/bg/props.png', (plates.props || {}).grid, done);
+      global.DriftSprites.load('img/bg/props.png', (plates.props || {}).grid, done,
+                               (plates.props || {}).foot);
       global.DriftCliffs = global.DriftSprites.create();
-      global.DriftCliffs.load('img/bg/cliffs.png', (plates.cliffs || {}).grid, done);
+      global.DriftCliffs.load('img/bg/cliffs.png', (plates.cliffs || {}).grid, done,
+                              (plates.cliffs || {}).foot);
     } else {
       spritesLoaded = 1;
     }

@@ -95,6 +95,19 @@
 
   /* World travel per unit of the game's speed. See render(). */
   var WORLD_SCALE = 0.48;
+  // The depth at which the textured ground plane finishes fading in — the end
+  // of the ramp in js/ground.js, kept here because what stands on the ground
+  // has to agree with how much of it is drawn. Change one, change the other.
+  var GROUND_IN = 0.083;
+  // An outcrop clears its haze a little sooner than the ground beneath it
+  // finishes arriving. Tying the two exactly, which is where this started,
+  // is too strict: the horizon dust lies over the sand as well, so ground
+  // drawn at 60% does not read as 60% of a surface, and matching a cliff to
+  // that number bleached it to nothing. What has to hold is the direction —
+  // never conspicuously more present than what it stands on, which is the
+  // 100%-on-19% case that read as floating. Measured against this: 10% solid
+  // on 32% ground, 62% on 61%, 100% on 91%.
+  var CLIFF_CLEAR = GROUND_IN * 0.84;
 
   /* What the floor is multiplied by at full dusk. */
   var DUSK_TINT = [0.43, 0.29, 0.32];
@@ -1029,13 +1042,12 @@
         // rather than by going past the camera, and on the shared ramp the
         // nearest-exiting of them was still fading up as it left.
         ramp: 0.20,
-        // The haze has to outlast the fade-in, or the two ramps overlap and
-        // the thing is seen to arrive: at half opacity it was already half
-        // its own colour, which is a rock fading up out of nothing rather
-        // than dust resolving into a rock. Against the faster ramp above this
-        // leaves it four fifths dust at half opacity and clear of the haze
-        // before it reaches the frame edge at t = 0.048 upwards.
-        fog: clamp((0.052 - p.t) / (0.052 - W.tSpawn), 0, 1)
+        // Cleared on the same schedule as the ground plane fades in, so a
+        // cliff is never more present than the surface it stands on — that
+        // mismatch is what read as floating. It still has to outlast the
+        // fade-in above, or the thing is seen to arrive as a rock rather than
+        // as dust that resolves into one.
+        fog: clamp((CLIFF_CLEAR - p.t) / (CLIFF_CLEAR - W.tSpawn), 0, 1)
       };
     },
 

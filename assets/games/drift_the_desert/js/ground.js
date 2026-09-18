@@ -218,7 +218,14 @@
     '',
     '  // Dissolve into the haze the plates end in, starting a little lower',
     '  // than it used to: the last few rows were never more than noise.',
-    '  float fade = clamp((t - 0.045) / 0.165, 0.0, 1.0);',
+    // The textured plane used to be invisible until t = 0.045 and only fully
+    // opaque at t = 0.21 — a 107 px band below the horizon where the only
+    // ground was the painted dunes plate, sliding on its own clock. Every
+    // outcrop stands in exactly that band, so they were solid rock on a
+    // surface that was not there: measured, one at t = 0.076 was fully
+    // opaque over ground drawn at 19%. The LOD bias above already blurs this
+    // strip to near-flat sand, which is what makes it safe to draw it.
+    '  float fade = clamp((t - 0.008) / 0.075, 0.0, 1.0);',
     '  gl_FragColor = vec4(col * fade, fade);',
     '}'
   ].join('\n');
