@@ -3421,41 +3421,48 @@ window.DRIFT_PLATES = {"samples":1024,"plates":{"sky":{"size":[2048,1024]},"far"
       var pass = Math.floor(cycles);
 
       var p = this.place(depth, 0, lean);
-      // Held on far longer than a prop: one of these is half the frame tall
-      // as it goes by, and cutting it at the moment its base leaves the
-      // bottom edge is the most obvious disappearance in the game.
-      if (p.t > 2.6) return null;
 
       // Strictly alternating, which the even spacing above makes true of the
       // order they arrive in and not just of their indices.
       var side = i % 2 ? 1 : -1;
-      // Thirty to forty-four metres off the road, out near the edge of the
-      // frame rather than crowding the verge. The ratio of this to the height
-      // below is what decides how long one is on screen: its inner edge
-      // leaves the frame when (out - width) * scale passes the half-width, so
-      // a taller rock at the same distance stays in view far longer, which is
-      // how they can be pushed this far out without going back to being the
-      // ghosts they were — the height went up with the distance.
-      var out = 26 + hash(seed + 3.3 + pass) * 12;
-      var x = p.x + side * W.halfTexels * out * p.a;
-      if (x < -this.w * 2.4 || x > this.w * 3.4) return null;
+
+      // Distance and height used to be hashed independently — so far out
+      // times short was a speck and close times tall was a wall, and the wall
+      // came up often enough to be the thing you noticed: measured, one
+      // reached 68% of the frame while still on screen. They are two ends of
+      // one quantity, so they are chosen as one.
+      //
+      // `tExit` is the depth at which the inner edge finally clears the frame
+      // and `tall` how much of the frame it fills at that moment, which is
+      // its largest. Everything else follows, because both the size and the
+      // offset from the road grow with the same `grow`: at grow = 1 the
+      // sprite's inner edge is exactly half a frame plus half a sprite from
+      // the centre — which is the frame edge, by construction. No pair of
+      // hashes can make a wall, and none can make a speck either.
+      var tExit = 0.048 + hash(seed + 3.3 + pass) * 0.016;
+      var tall = 0.19 + hash(seed + 9.7 + pass) * 0.08;
+      var grow = p.t / tExit;
+      if (grow > 1.6) return null;
+
+      var size = tall * this.h * grow;
+      var x = p.x + side * (this.w * 0.5 + 0.42 * tall * this.h) * grow;
 
       return {
         cliff: true,
         d: p.t, x: x, y: p.y, s: p.t, seed: seed + pass * 0.37, side: side,
         sprite: Math.floor(hash(seed + 12.9 + pass) * 4) % 4,
-        // Sixteen to twenty-six metres tall, in world texels rather than in
-        // fractions of the frame: they were three and a half before, which is
-        // a boulder, and a row of boulders on the horizon reads as a fence.
-        // Raised along with `out` so the two stay in step.
-        size: (6.2 + hash(seed + 9.7 + pass) * 4.0) * (W.size || 2048) * p.a,
+        size: size,
+        // Opaque sooner than a prop. One of these leaves the frame sideways
+        // rather than by going past the camera, and on the shared ramp the
+        // nearest-exiting of them was still fading up as it left.
+        ramp: 0.20,
         // The haze has to outlast the fade-in, or the two ramps overlap and
         // the thing is seen to arrive: at half opacity it was already half
         // its own colour, which is a rock fading up out of nothing rather
-        // than dust resolving into a rock. Clearing at this depth leaves it
-        // three fifths hazed at the moment it becomes opaque, and solid for
-        // most of its run — it leaves the frame around t = 0.2.
-        fog: clamp((0.065 - p.t) / (0.065 - W.tSpawn), 0, 1)
+        // than dust resolving into a rock. Against the faster ramp above this
+        // leaves it four fifths dust at half opacity and clear of the haze
+        // before it reaches the frame edge at t = 0.048 upwards.
+        fog: clamp((0.052 - p.t) / (0.052 - W.tSpawn), 0, 1)
       };
     },
 
@@ -3492,7 +3499,7 @@ window.DRIFT_PLATES = {"samples":1024,"plates":{"sky":{"size":[2048,1024]},"far"
         // haze has already cleared, as it did next, makes the thing look like
         // a ghost of itself for the whole approach.
         var born = this.world.tSpawn;
-        ctx.globalAlpha = clamp((o.s - born) / (born * 0.5), 0, 1);
+        ctx.globalAlpha = clamp((o.s - born) / (born * (o.ramp || 0.5)), 0, 1);
         if (!this.drawSprite(o, night, haze) && !o.cliff) {
           if (o.kind === 0) this.drawBoulder(o, night);
           else if (o.kind === 1) this.drawScrub(o, night);

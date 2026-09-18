@@ -419,17 +419,27 @@ move with the car rather than slide sideways under parallax:
   hash, so they wrap — and so arrive — in index order, and the side can come
   straight off the index. An odd count breaks it; six or four do not.
 
-  Their height is raised with their distance on purpose. The inner edge
-  leaves the frame when `(out − width) × scale` passes the half-width, so a
-  taller rock at the same distance stays in view longer — which is what lets
-  them sit out by the frame edge without going back to being the ghosts they
-  were. Measured, they leave around `t = 0.2`.
+  **Distance and height are one quantity, not two.** They used to be hashed
+  independently, so far-out times short was a speck and close times tall was a
+  wall — and the wall came up often enough to be the thing you noticed:
+  measured, one reached **68% of the frame** while still on screen, and the
+  cliffs covered 13.4% of the frame on average. They are now chosen as a pair:
+  `tExit`, the depth at which the inner edge finally clears the frame, and
+  `tall`, how much of the frame it fills at that moment, which is its largest.
+  Both the size and the offset from the road then grow with the same `grow =
+  t / tExit`, so at `grow = 1` the inner edge is half a frame plus half a
+  sprite from the centre — the frame edge, by construction. No pair of hashes
+  can make a wall, and none can make a speck. Measured after: **36% of the
+  frame at worst, 5.2% mean coverage.**
 
   The haze has to outlast the fade-in. When the two ramps overlapped, a cliff
   at half opacity was already half its own colour — a rock fading up out of
-  nothing rather than dust resolving into a rock. Clearing the haze at
-  `t = 0.065` against a fade that completes at `0.044` leaves it three fifths
-  hazed at the moment it becomes opaque, and 81% dust at half opacity.
+  nothing rather than dust resolving into a rock. These also leave the frame
+  *sideways* rather than by going past the camera, so on the shared fade ramp
+  the nearest-exiting of them was still fading up as it left; cliffs carry
+  their own `ramp` of 0.20 against the props' 0.5. With the haze clearing at
+  `t = 0.052`, one is 89% dust at half opacity and clear of it before it
+  reaches the frame edge.
 
   One sheet serves both sides of the road, so strong directional shading
   cannot be right for both: whichever flank it made dark became a black wall
