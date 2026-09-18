@@ -54,7 +54,16 @@
         Composite only — no getImageData, which a WebView running the game off
         file:// would refuse. */
     tintSheet: function (colour) {
-      if (this.tints[colour]) return this.tints[colour];
+      if (this.tints[colour]) {
+        // Move it to the back of the queue. The eviction below was plain
+        // FIFO, which ages a colour that is asked for every single frame just
+        // as fast as one that is never asked for again — and rebuilding one of
+        // these means repainting the whole sheet. Now that the shadows want a
+        // colour of their own alongside the haze and the dusk, that matters.
+        var at = this.tintKeys.indexOf(colour);
+        if (at >= 0) { this.tintKeys.splice(at, 1); this.tintKeys.push(colour); }
+        return this.tints[colour];
+      }
 
       var c = global.document.createElement('canvas');
       c.width = this.img.naturalWidth;
@@ -81,6 +90,38 @@
         second. The sheet is baked at golden hour only; dusk is a multiply
         through the silhouette, which keeps the relief a flat tint would lose
         and costs a megabyte less than a second bake. */
+    /** The subject's own outline, laid flat on the sand and leaned away from
+        the sun. An ellipse is the same shape whatever stands on it — a thorn
+        bush and a boulder cast the same blob — and at these sizes the shape
+        of the shadow is most of what tells you which one it is.
+
+        The mirror is applied inside the sheared space, not outside it: the
+        shear displaces by y alone, so flipping x cannot change which way the
+        shadow leans. The sun does not flip when the sprite does. */
+    drawShadow: function (ctx, index, x, y, height, o) {
+      if (!this.ready) return false;
+      var n = this.cols * this.rows;
+      var i = ((index % n) + n) % n;
+      var sx = (i % this.cols) * this.cell;
+      var sy = Math.floor(i / this.cols) * this.cell;
+      var f = this.foot;
+      var size = height / f;
+      var wide = size * ((o && o.wide) || 1);
+      var was = ctx.globalAlpha;
+
+      ctx.save();
+      ctx.translate(x, y);
+      ctx.transform(1, 0, -((o && o.skew) || 0.55), (o && o.squash) || 0.20, 0, 0);
+      if (o && o.flip) ctx.scale(-1, 1);
+      ctx.globalAlpha = was * ((o && o.strength) || 0.30);
+      ctx.drawImage(this.tintSheet((o && o.colour) || '#3A2410'),
+                    sx, sy, this.cell, this.cell,
+                    -wide * 0.5, -size * f, wide, size);
+      ctx.restore();
+      ctx.globalAlpha = was;
+      return true;
+    },
+
     draw: function (ctx, index, x, y, height, o) {
       if (!this.ready) return false;
       var n = this.cols * this.rows;

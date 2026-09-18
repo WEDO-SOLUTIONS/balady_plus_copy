@@ -59,6 +59,25 @@
     return x - Math.floor(x);
   }
 
+  /* A flat-coloured copy of a plain image, for casting its own outline as a
+     shadow. js/sprites.js does the same for the sheets; there are only ever a
+     couple of these, so the cache needs no eviction. */
+  var SILHOUETTES = {};
+  function silhouette(img, colour) {
+    var key = (img.src || '') + '|' + colour;
+    if (SILHOUETTES[key]) return SILHOUETTES[key];
+    var c = global.document.createElement('canvas');
+    c.width = img.naturalWidth || img.width;
+    c.height = img.naturalHeight || img.height;
+    var g = c.getContext('2d');
+    g.drawImage(img, 0, 0);
+    g.globalCompositeOperation = 'source-in';
+    g.fillStyle = colour;
+    g.fillRect(0, 0, c.width, c.height);
+    SILHOUETTES[key] = c;
+    return c;
+  }
+
   /* An integer mix, for draws that step an input by one at a time. The sine
      hash above evens out over hundreds of steps but is lumpy over a handful,
      which is all a lap counter ever gets: measured over the outcrops' first
@@ -1139,14 +1158,18 @@
       // drawing every plant the same size threw that away.
       var height = o.size * (rock ? 1.15 : PLANT_SIZE[o.sprite - 5]);
 
-      // Shadow first: the sprite is cut off at its waterline, so what beds it
-      // into the sand is drawn here rather than baked into the sheet, where
-      // it could not follow the sun across the run.
-      var sw = height * (rock ? 0.72 : 0.40);
-      ctx.beginPath();
-      ctx.ellipse(o.x + sw * 0.42, o.y - height * 0.012, sw, sw * 0.26, 0, 0, TAU);
-      ctx.fillStyle = 'rgba(58, 34, 14, ' + ((0.34 - night * 0.14) * (1 - o.fog)).toFixed(3) + ')';
-      ctx.fill();
+      // Shadow first, and it is the plant's own outline rather than an
+      // ellipse: a thorn bush and a boulder used to cast the same blob, and
+      // the shape on the sand is most of what tells them apart at this size.
+      // Drawn here rather than baked into the sheet so it can follow the sun
+      // across the run.
+      Sprites.drawShadow(ctx, o.sprite, o.x, o.y, height, {
+        // A rock sits on its shadow; a stalk throws one twice its own height.
+        skew: rock ? 0.38 : 0.62,
+        squash: rock ? 0.26 : 0.17,
+        strength: (rock ? 0.34 : 0.26) * (1 - night * 0.42) * (1 - o.fog),
+        colour: '#3A2410'
+      });
 
       return Sprites.draw(ctx, o.sprite, o.x, o.y, height, {
         fog: o.fog,
@@ -1470,11 +1493,26 @@
       var w = size * 1.18;
       var h = w * (img.height / img.width);
 
+      // The car's footprint rather than an ellipse: wide across the rear,
+      // narrower under the nose, and leaned away from the sun. It cannot be
+      // the sprite's own outline the way the roadside props now are —
+      // car.png is a photo crop, 76% of it fully opaque, so its alpha
+      // describes a rectangle and not a car.
+      var sox = tilt * size * 0.10;
+      var nearY = cy + size * 0.345, farY = cy + size * 0.185;
+      var nearHalf = size * 0.40, farHalf = size * 0.28, lean = size * 0.11;
+      var sg = ctx.createLinearGradient(0, farY, 0, nearY + size * 0.05);
+      sg.addColorStop(0, 'rgba(58, 36, 19, 0.04)');
+      sg.addColorStop(0.55, 'rgba(58, 36, 19, 0.26)');
+      sg.addColorStop(1, 'rgba(58, 36, 19, 0)');
       ctx.save();
-      ctx.globalAlpha = 0.16;
-      ctx.fillStyle = '#4A2E13';
+      ctx.fillStyle = sg;
       ctx.beginPath();
-      ctx.ellipse(cx + tilt * size * 0.10, cy + size * 0.33, size * 0.34, size * 0.035, 0, 0, TAU);
+      ctx.moveTo(cx + sox - nearHalf, nearY);
+      ctx.lineTo(cx + sox + nearHalf, nearY);
+      ctx.lineTo(cx + sox + farHalf + lean, farY);
+      ctx.lineTo(cx + sox - farHalf + lean, farY);
+      ctx.closePath();
       ctx.fill();
       ctx.restore();
 
@@ -1845,26 +1883,40 @@
 
     drawSpeedLines: function (speed) {
       var ctx = this.ctx;
-      var intensity = clamp((speed - 240) / 420, 0, 1);
-      if (intensity <= 0.01) return;
+      // Same ramp as the ground rush, and for the same reason: this used to
+      // be 5% at the speed a run starts at and reach full only at the cap.
+      var u = clamp((speed - 260) / 440, 0, 1);
+      var intensity = 0.20 + 0.80 * Math.pow(u, 0.7);
+      var cx = this.w * 0.5;
+
       ctx.save();
       ctx.strokeStyle = '#FFF3DC';
       ctx.lineWidth = 2;
-      for (var i = 0; i < 9; i++) {
-        var seed = (this.time * 2.2 + i * 0.37) % 1;
-        // Started below the skyline and faded in and out along the way. Each
-        // of these used to switch on at full weight exactly on the horizon
-        // and switch off at the bottom — nine of them, twice a second, which
-        // is what made the horizon flicker.
-        var y = this.horizon + (this.h - this.horizon) * (0.08 + 0.92 * seed);
-        var len = 26 + seed * 90;
-        var side = i % 2 === 0 ? -1 : 1;
-        var x = this.w * 0.5 + side * (this.w * 0.34 + seed * this.w * 0.2);
-        ctx.globalAlpha = intensity * 0.28 *
+      for (var i = 0; i < 14; i++) {
+        // A side and a band per lap, not per index: nine streaks alternating
+        // sides by i % 2 on one shared rate came past in the same order, at
+        // the same rate, all run.
+        var phase = this.time * (1.7 + hash(i * 2.9) * 1.6) + i * 0.37;
+        var lap = Math.floor(phase);
+        var seed = phase - lap;
+        var side = hash(i * 2.3 + lap * 3.1) < 0.5 ? -1 : 1;
+        var band = 0.30 + hash(i * 4.1 + lap * 5.9) * 0.24;
+
+        // Along the flow, like the rush: one world point at two depths, so it
+        // leans out and down harder the closer it gets instead of holding one
+        // angle the whole way down the frame.
+        var d = 0.30 + seed * 0.72;
+        var p1 = this.project(Math.min(d, 1));
+        var p2 = this.project(Math.min(d + 0.05 + 0.07 * intensity, 1));
+        var x = cx + side * this.w * band;
+        var x2 = cx + (x - cx) * (p2.s / Math.max(p1.s, 0.001));
+        var y = p1.y;
+
+        ctx.globalAlpha = intensity * 0.20 *
           clamp(seed / 0.18, 0, 1) * clamp((1 - seed) / 0.22, 0, 1);
         ctx.beginPath();
         ctx.moveTo(x, y);
-        ctx.lineTo(x + side * len * 0.35, y + len * 0.5);
+        ctx.lineTo(x2, p2.y);
         ctx.stroke();
       }
       ctx.restore();
