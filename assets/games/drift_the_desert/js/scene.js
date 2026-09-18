@@ -1753,26 +1753,49 @@
         so the closest sand should not read as a crisp texture. */
     drawGroundRush: function (speed, dusk) {
       var ctx = this.ctx;
-      var intensity = clamp((speed - 220) / 460, 0, 1);
-      if (intensity <= 0.02) return;
+      // There from the first metre rather than arriving halfway through the
+      // run. The old ramp read 9% at the speed a run starts at and only
+      // reached full at the 700 cap, so it was invisible for the first half
+      // and then it was simply there. Speed never drops below the 260 base,
+      // so that is where the range starts, and the curve is eased to put most
+      // of the growth early: 22% at the start, 57% by mid-run, full at the
+      // cap, against 9 / 39 / 100 before.
+      var u = clamp((speed - 260) / 440, 0, 1);
+      var intensity = 0.22 + 0.78 * Math.pow(u, 0.7);
+      var cx = this.w * 0.5;
 
       ctx.save();
       ctx.globalCompositeOperation = 'lighter';
-      var warm = dusk > 0.5 ? 'rgba(255, 170, 120, 1)' : 'rgba(255, 224, 176, 1)';
-      for (var i = 0; i < 16; i++) {
-        var seed = (this.time * (1.6 + (i % 5) * 0.5) + i * 0.13) % 1;
-        var d = 0.55 + seed * 0.5;
-        var p = this.project(Math.min(d, 1));
-        var len = 30 + seed * 150 * intensity;
-        var x = this.w * (hash(i * 3.7) * 1.4 - 0.2);
-        // Faded in and out too, for the same reason.
-        ctx.globalAlpha = intensity * 0.10 *
-          clamp(seed / 0.16, 0, 1) * clamp((1 - seed) / 0.2, 0, 1);
-        ctx.strokeStyle = warm;
-        ctx.lineWidth = 1 + seed * 2.5;
+      var warm = dusk > 0.5 ? '255, 170, 120' : '255, 224, 176';
+      for (var i = 0; i < 26; i++) {
+        // A new lane on every pass. Sixteen streaks on sixteen hashed but
+        // *fixed* x positions meant the same sixteen columns of sand over and
+        // over, which is the one thing that gave this away as an effect
+        // rather than as blown sand. The rate is per-streak too: five shared
+        // rates had them beating together.
+        var phase = this.time * (1.3 + hash(i * 1.7) * 1.9) + i * 0.37;
+        var lap = Math.floor(phase);
+        var seed = phase - lap;
+
+        // Along the real perspective ray. A streak is a length of *ground*, so
+        // its two ends are one world point seen at two depths, and the lateral
+        // offset scales with the depth exactly as everything else in the scene
+        // does. Drawn as a near-vertical line, as it was, it read as falling
+        // past the camera rather than rushing away under it.
+        var d = 0.50 + seed * 0.55;
+        var p1 = this.project(Math.min(d, 1));
+        var p2 = this.project(Math.min(d + 0.07 + 0.09 * intensity, 1));
+        var x1 = this.w * (hash(i * 3.7 + lap * 7.13) * 1.5 - 0.25);
+        var x2 = cx + (x1 - cx) * (p2.s / Math.max(p1.s, 0.001));
+
+        ctx.globalAlpha = intensity * 0.075 *
+          clamp(seed / 0.16, 0, 1) * clamp((1 - seed) / 0.2, 0, 1) *
+          (0.55 + hash(i * 5.1 + lap) * 0.9);
+        ctx.strokeStyle = 'rgba(' + warm + ', 1)';
+        ctx.lineWidth = (0.8 + seed * 2.2) * (0.6 + hash(i * 9.3 + lap) * 0.9);
         ctx.beginPath();
-        ctx.moveTo(x, p.y);
-        ctx.lineTo(x + (x - this.w * 0.5) * 0.06, p.y + len);
+        ctx.moveTo(x1, p1.y);
+        ctx.lineTo(x2, p2.y);
         ctx.stroke();
       }
       ctx.restore();

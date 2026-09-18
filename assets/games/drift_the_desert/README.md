@@ -573,6 +573,26 @@ dusk, the canvas darkens the track, dims its shoulders and the dust, and
 switches on the headlights. Speed lifts the horizon, adds edge streaks, a
 near-field smear and a veil of dust along the bottom of the frame.
 
+**The ground rush** (`drawGroundRush`) is the sand blowing back under the car,
+and it had two faults. It arrived rather than grew: the ramp read 9% at the
+speed a run starts at and reached full only at the 700 cap, so it was
+invisible through the first half and then it was simply there. Speed never
+drops below the 260 base, so the range now starts there and the curve is eased
+to put the growth early — **22% at the start, 44% a third in, 57% mid-run**,
+against 9 / 24 / 39 before.
+
+And each streak sat in a *fixed* lane. Sixteen of them on sixteen hashed but
+constant x positions meant the same sixteen columns of sand, over and over —
+measured, one position per streak, sixteen in total, forever. Drawing the lane
+from the streak's index *and its lap* gives 584 distinct positions over 120
+laps. They also ran nearly vertically, which reads as falling past the camera
+rather than rushing away under it; a streak is a length of *ground*, so its
+two ends are now one world point projected at two depths, and its lateral
+offset scales with depth exactly as everything else in the scene does. Rates
+are per-streak too — five shared rates had them beating together — and there
+are 26 at lower weight rather than 16 at higher, so it reads as a field rather
+than as a set of sticks.
+
 If a plate fails to decode, `backdrop.ready` stays false and `js/scene.js`
 falls back to drawing its own sky, mesas and dunes from the mockup strips —
 the path that shipped before the plates existed. Blocking `img/bg/*.jpg` in
