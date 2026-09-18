@@ -410,9 +410,33 @@ move with the car rather than slide sideways under parallax:
   the sand. The ground texture and the road's own berms carry the shoulder.
 - **The outcrops the track runs between** (`img/bg/cliffs.png`, four cells of
   1024 px): flat caps of hard limestone over fluted vertical faces with an
-  apron of talus, the way the Tuwaiq escarpment breaks up. They stand four to
-  eleven track-widths out and are some twenty times the size of a roadside
-  rock, which is what gives the horizon a shape to read.
+  apron of talus, the way the Tuwaiq escarpment breaks up. Courses of unequal
+  thickness, each with its own tone, two or three of them standing proud far
+  enough to step the silhouette and throw a shadow line on the bed below;
+  manganese streaks down from the rim; fallen blocks in the talus. Four of
+  them, out near the edge of the frame, and they **alternate sides**: the
+  depth slots are spaced evenly around the band rather than scattered by a
+  hash, so they wrap — and so arrive — in index order, and the side can come
+  straight off the index. An odd count breaks it; six or four do not.
+
+  Their height is raised with their distance on purpose. The inner edge
+  leaves the frame when `(out − width) × scale` passes the half-width, so a
+  taller rock at the same distance stays in view longer — which is what lets
+  them sit out by the frame edge without going back to being the ghosts they
+  were. Measured, they leave around `t = 0.2`.
+
+  The haze has to outlast the fade-in. When the two ramps overlapped, a cliff
+  at half opacity was already half its own colour — a rock fading up out of
+  nothing rather than dust resolving into a rock. Clearing the haze at
+  `t = 0.065` against a fade that completes at `0.044` leaves it three fifths
+  hazed at the moment it becomes opaque, and 81% dust at half opacity.
+
+  One sheet serves both sides of the road, so strong directional shading
+  cannot be right for both: whichever flank it made dark became a black wall
+  up the edge of the frame for the cliffs on that side. The palette is flat
+  and pale, and the shadow side is filled the way sand bounces light into a
+  real one — measured, a cliff now averages RGB (141, 103, 69) against sand
+  at (138, 107, 81).
 - **Roadside props** — from a second baked sheet (`img/bg/props.png`, twelve
   cells of 512 px) — streaming out of the horizon along both shoulders and
   swelling as they pass. The plates give depth but no

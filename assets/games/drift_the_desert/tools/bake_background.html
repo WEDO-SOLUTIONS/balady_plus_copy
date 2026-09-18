@@ -907,10 +907,32 @@ vec4 cliffSprite(vec2 p, float id, float dusk) {
   // Height up the face, 1 at the rim and 0 at the sand.
   float up = clamp((base - p.y) / max(0.001, base - top), 0.0, 1.0);
 
+  // The sedimentary courses, indexed, so each one can carry its own colour
+  // and its own set-back rather than being one more ripple in a corrugation.
+  // A Tuwaiq face is a stack of storeys of slightly different rock, and a few
+  // of them stand proud of the rest; that is most of what reads as detail.
+  // The warp has to be gentle and low-frequency in x: a bed is one band of
+  // rock along its whole length, so if the index it is looked up by swings
+  // across that length the same course steps in and out of the silhouette and
+  // the outline turns into a sawtooth. A quarter of a course of tilt is a
+  // real bed; one and a half is a stack of plates.
+  float yy = p.y + 0.009 * sin(p.y * 7.7 + id * 2.3) + 0.006 * sin(p.y * 19.0 + id);
+  float cy = yy * 21.0 + (tfbm(vec2(p.x * 0.8, id), 5.0, 2) - 0.5) * 0.5;
+  float ci = floor(cy);
+  float course = fract(cy);
+  float cr = h21(vec2(ci, id * 3.0 + 1.7));
+  // Only a few courses stand proud. Stepping all of them gave a silhouette
+  // like the edge of a stack of paper; two or three real ledges on a face
+  // is what actually reads as structure.
+  float ledge = smoothstep(0.84, 0.97, cr);
+
   // Half width: a battered vertical face flaring into talus at the foot.
   float wTop = 0.20 + h21(vec2(id, 7.0)) * 0.19;
   float wide = mix(wTop + 0.09, wTop, up) + smoothstep(0.34, 0.0, up) * 0.11;
   wide += (tfbm(vec2(p.y * 2.4, id), 11.0, 3) - 0.5) * 0.035;
+  // Each course set back or standing out by its own amount, so the outline
+  // steps storey by storey instead of running smooth from cap to talus.
+  wide += ledge * 0.016 * smoothstep(0.04, 0.16, up) * smoothstep(0.98, 0.86, up);
   // One weathered notch bitten out of the face, so the four of them are not
   // the same butte drawn four times.
   float notch = h21(vec2(id, 13.0));
@@ -926,23 +948,48 @@ vec4 cliffSprite(vec2 p, float id, float dusk) {
 
   // Fluting: the vertical channels runoff cuts down a limestone face. Two
   // scales, and none of it on the talus, or the whole thing reads as fur.
-  float flute = 1.0 - abs(tfbm(vec2(p.x * 1.7, p.y * 0.20 + id), 9.0, 2) * 2.0 - 1.0);
-  flute = pow(flute, 2.5)
-        + 0.4 * pow(1.0 - abs(tfbm(vec2(p.x * 1.7, p.y * 0.4 + id * 3.0), 21.0, 2) * 2.0 - 1.0), 3.0);
+  float fx = p.x + tfbm(vec2(p.y * 0.35, id * 7.0), 4.0, 2) * 0.25;
+  float flute = 1.0 - abs(tfbm(vec2(fx * 1.7, p.y * 0.20 + id), 9.0, 2) * 2.0 - 1.0);
+  flute = pow(flute, 3.2)
+        + 0.4 * pow(1.0 - abs(tfbm(vec2(fx * 2.9, p.y * 0.4 + id * 3.0), 21.0, 2) * 2.0 - 1.0), 3.5);
   flute *= smoothstep(0.18, 0.55, up);
 
-  // Bedding: the horizontal courses that say sedimentary rock. A sine alone
-  // was a soft corrugation; what reads at a distance is the shadow line under
-  // each course, so the courses are ridged and the line is sharp.
-  float course = fract(p.y * 26.0 + tfbm(p, 3.0, 3) * 1.6);
+  // Bedding: what reads at a distance is the shadow line under each course,
+  // so the courses are ridged and the line is sharp.
   float beds = smoothstep(0.0, 0.16, course) * smoothstep(1.0, 0.72, course);
-  beds *= smoothstep(0.05, 0.25, up);
+  beds *= smoothstep(0.05, 0.25, up) * (0.35 + 0.65 * step(0.45, cr));
+  // …and the hard line a proud course throws onto the one beneath it. This is
+  // the difference between a textured slab and a face with storeys in it.
+  float ledgeShade = ledge * smoothstep(0.20, 0.0, course) * smoothstep(0.06, 0.22, up);
 
   // Joints: the vertical cracks that break a face into blocks.
+  float jcol = floor(p.x * 7.0);
   float jx = fract(p.x * 7.0 + tfbm(vec2(p.y * 0.6, id), 5.0, 2) * 2.0);
-  float joint = (1.0 - smoothstep(0.0, 0.05, min(jx, 1.0 - jx)))
-              * smoothstep(0.10, 0.40, up)
-              * step(0.5, h21(vec2(floor(p.x * 7.0), id + 3.0)));
+  float jTop = 0.52 + h21(vec2(jcol, id + 6.0)) * 0.43;
+  float jBot = max(0.30, jTop - 0.18 - h21(vec2(jcol, id + 9.0)) * 0.30);
+  float joint = (1.0 - smoothstep(0.0, 0.035, min(jx, 1.0 - jx)))
+              * smoothstep(jBot - 0.10, jBot + 0.06, up)
+              * smoothstep(jTop + 0.10, jTop - 0.06, up)
+              * smoothstep(0.24, 0.42, up)
+              * step(0.62, h21(vec2(jcol, id + 3.0)));
+
+  // Desert varnish: the dark manganese streaks that run down a face from the
+  // rim wherever water comes over the cap. Long, narrow, and top-weighted —
+  // they are what stops a sunlit face reading as flat paint.
+  float vn = 1.0 - abs(tfbm(vec2(p.x * 6.5 + id * 5.0, p.y * 0.10), 11.0, 2) * 2.0 - 1.0);
+  float varnish = pow(clamp(vn, 0.0, 1.0), 7.0) * smoothstep(0.95, 0.42, up);
+
+  // Blocks that have come off the face and are sat in the talus, on a hashed
+  // lattice: each one lit on top and dark underneath, which is enough at this
+  // size to stop the apron reading as a smooth cone of gravel.
+  vec2 bl = vec2(p.x * 13.0, p.y * 26.0);
+  vec2 bi = floor(bl);
+  vec2 bf = fract(bl) - 0.5;
+  vec2 bo = (vec2(h21(bi + id), h21(bi + id + 4.0)) - 0.5) * 0.5;
+  float br = 0.10 + h21(bi + id + 8.0) * 0.28;
+  float boulder = smoothstep(br, br * 0.55, length((bf - bo) * vec2(1.0, 1.45)))
+                * step(0.62, h21(bi + id + 12.0));
+  float bLit = clamp(-(bf.y - bo.y) / max(br, 0.001), 0.0, 1.0);
 
   // Rubble on the talus, so the apron is not a smooth skirt.
   float rubble = tfbm(vec2(p.x * 2.0, p.y) * 3.0 + id, 34.0, 3);
@@ -950,19 +997,24 @@ vec4 cliffSprite(vec2 p, float id, float dusk) {
   // Warmer than the loose rocks: a cliff face this size is half sunlight
   // bounced off the sand in front of it, and a cool grey slab sat in the
   // frame like a piece of another game.
-  vec3 lit  = mix(vec3(0.85, 0.77, 0.61), vec3(0.36, 0.25, 0.27), dusk);
-  vec3 mid  = mix(vec3(0.54, 0.45, 0.34), vec3(0.18, 0.13, 0.14), dusk);
-  vec3 dark = mix(vec3(0.21, 0.17, 0.13), vec3(0.06, 0.04, 0.06), dusk);
+  vec3 lit  = mix(vec3(0.88, 0.80, 0.65), vec3(0.38, 0.27, 0.29), dusk);
+  vec3 mid  = mix(vec3(0.70, 0.61, 0.47), vec3(0.26, 0.19, 0.20), dusk);
+  vec3 dark = mix(vec3(0.52, 0.44, 0.34), vec3(0.17, 0.12, 0.13), dusk);
 
   // Sun from the upper left. A wide gradient across the face left them all
   // reading as grey lumps; a rock this size has a lit side and a dark one.
-  float sun = smoothstep(-0.95, 0.60, -face);
+  float sun = smoothstep(-0.90, 0.58, -face);
   vec3 col = mix(dark, mid, sun);
-  col = mix(col, lit, smoothstep(0.52, 1.0, sun) * 0.85);
+  col = mix(col, lit, smoothstep(0.48, 1.0, sun) * 0.90);
 
-  col *= 1.0 - clamp(flute, 0.0, 1.2) * 0.22;
-  col *= 0.86 + 0.26 * beds;
-  col *= 1.0 - joint * 0.45;
+  col *= 1.0 - clamp(flute, 0.0, 1.2) * 0.16;
+  col *= 0.90 + 0.18 * beds;
+  // Each course its own stone: the beds out here run from near white to a
+  // rusty brown within a single face.
+  col *= 0.92 + 0.16 * cr;
+  col *= 1.0 - ledgeShade * 0.34;
+  col *= 1.0 - joint * 0.22;
+  col *= 1.0 - varnish * 0.14;
   col *= 0.90 + 0.20 * tfbm(p * 1.6 + seed * 2.0, 18.0, 3);
   // The red dust that gets into everything out here, heaviest low down.
   col = mix(col, col * mix(vec3(1.10, 0.92, 0.74), vec3(1.0), dusk),
@@ -972,12 +1024,14 @@ vec4 cliffSprite(vec2 p, float id, float dusk) {
   // the base sits in its own shadow.
   col = mix(col, lit, smoothstep(0.93, 1.0, up) * 0.35);
   col = mix(col, lit * 1.12, smoothstep(0.985, 1.0, up) * 0.75);
-  col *= 1.0 - smoothstep(0.35, 0.0, up) * 0.30;
+  col *= 1.0 - smoothstep(0.35, 0.0, up) * 0.20;
 
   // Talus: the skirt of broken rock and blown sand at the foot.
   vec3 scree = mix(vec3(0.66, 0.50, 0.33), vec3(0.27, 0.18, 0.20), dusk);
   float apron = smoothstep(0.26, 0.0, up + (tfbm(vec2(p.x * 2.0, id), 13.0, 2) - 0.5) * 0.10);
   col = mix(col, scree * (0.62 + 0.8 * rubble), apron * 0.80);
+  vec3 bcol = scree * (0.70 + 0.55 * h21(bi + id + 16.0));
+  col = mix(col, mix(bcol * 0.66, bcol * 1.18, bLit), boulder * apron * 0.70);
   // …and the shadow the face throws across its own foot.
   col *= 1.0 - smoothstep(-0.1, 0.8, face) * apron * 0.35;
 

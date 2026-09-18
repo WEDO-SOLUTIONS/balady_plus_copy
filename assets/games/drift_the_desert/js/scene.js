@@ -972,14 +972,24 @@
 
     /* The outcrops the track runs between. Same world clock, same wrapping
        band, but they stand well off the road and are some twenty times the
-       size, which is what gives the horizon a shape to read. */
-    CLIFFS: 9,
+       size, which is what gives the horizon a shape to read. Four of them,
+       alternating sides: nine read as a canyon, and a canyon is not what the
+       road out of Riyadh looks like. */
+    CLIFFS: 4,
 
     cliffAt: function (i, lean) {
       var W = this.world;
       var seed = 101.7 + i * 5.317;
 
-      var cycles = (hash(seed) * W.band - W.travel) / W.band;
+      // Evenly spaced around the band rather than scattered through it by a
+      // hash. They all travel at the same rate, so an even spacing means they
+      // wrap — and therefore arrive — in index order, and `side` below can
+      // simply alternate on the index. Scattered, the sides came up in
+      // whatever order the hash felt like and three in a row down one side
+      // was common. The jitter is kept under half the spacing so it never
+      // reorders two of them.
+      var slot = (i + (hash(seed) - 0.5) * 0.45) / this.CLIFFS;
+      var cycles = slot - W.travel / W.band;
       var depth = W.near + (cycles - Math.floor(cycles)) * W.band;
       var pass = Math.floor(cycles);
 
@@ -989,15 +999,17 @@
       // bottom edge is the most obvious disappearance in the game.
       if (p.t > 2.6) return null;
 
+      // Strictly alternating, which the even spacing above makes true of the
+      // order they arrive in and not just of their indices.
       var side = i % 2 ? 1 : -1;
-      // Twenty-three to thirty-four metres off the road, and twenty-five to
-      // forty tall. The ratio of the two is what decides how long one is on
-      // screen: its inner edge leaves the frame when (out - width) * scale
-      // passes the half-width, so a taller rock at the same distance stays
-      // far longer. Pushed further out than this and they are gone before
-      // the haze has let go of them, which is what made them look like
-      // ghosts; brought closer and they are canyon walls.
-      var out = 20 + hash(seed + 3.3 + pass) * 10;
+      // Thirty to forty-four metres off the road, out near the edge of the
+      // frame rather than crowding the verge. The ratio of this to the height
+      // below is what decides how long one is on screen: its inner edge
+      // leaves the frame when (out - width) * scale passes the half-width, so
+      // a taller rock at the same distance stays in view far longer, which is
+      // how they can be pushed this far out without going back to being the
+      // ghosts they were — the height went up with the distance.
+      var out = 26 + hash(seed + 3.3 + pass) * 12;
       var x = p.x + side * W.halfTexels * out * p.a;
       if (x < -this.w * 2.4 || x > this.w * 3.4) return null;
 
@@ -1005,14 +1017,18 @@
         cliff: true,
         d: p.t, x: x, y: p.y, s: p.t, seed: seed + pass * 0.37, side: side,
         sprite: Math.floor(hash(seed + 12.9 + pass) * 4) % 4,
-        // Thirteen to thirty metres tall, in world texels rather than in
+        // Sixteen to twenty-six metres tall, in world texels rather than in
         // fractions of the frame: they were three and a half before, which is
         // a boulder, and a row of boulders on the horizon reads as a fence.
-        size: (5.0 + hash(seed + 9.7 + pass) * 3.0) * (W.size || 2048) * p.a,
-        // Clear of the haze by the time it is halfway through its run past
-        // the frame. It used to be half hazed for the whole of it, which is
-        // why one never looked like rock — it looked like the ghost of one.
-        fog: clamp((0.050 - p.t) / (0.050 - W.tSpawn), 0, 1)
+        // Raised along with `out` so the two stay in step.
+        size: (6.2 + hash(seed + 9.7 + pass) * 4.0) * (W.size || 2048) * p.a,
+        // The haze has to outlast the fade-in, or the two ramps overlap and
+        // the thing is seen to arrive: at half opacity it was already half
+        // its own colour, which is a rock fading up out of nothing rather
+        // than dust resolving into a rock. Clearing at this depth leaves it
+        // three fifths hazed at the moment it becomes opaque, and solid for
+        // most of its run — it leaves the frame around t = 0.2.
+        fog: clamp((0.065 - p.t) / (0.065 - W.tSpawn), 0, 1)
       };
     },
 
