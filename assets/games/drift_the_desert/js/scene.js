@@ -182,6 +182,11 @@
         w: this.w, h: this.h, horizon: this.horizon, scroll: this.scroll
       });
       // The furthest we place anything. Past this the haze has it anyway.
+      // Where a thing first exists: the far end of the band, expressed the
+      // way everything else is. Anything that arrives has to be pure dust
+      // colour here and fade up over the next little way, or it is seen to
+      // arrive.
+      this.world.tSpawn = this.world.TD / (this.world.band + this.world.near);
       return this.world;
     },
 
@@ -443,6 +448,7 @@
         ctx.fillRect(0, end - this.h * 0.085, this.w, this.h * 0.105);
         var textured = this.drawFloor(night, lateral);
         if (!textured) this.drawSandField(night, false);
+        this.drawHorizonDust(night);
         return;
       }
 
@@ -472,6 +478,7 @@
       }
 
       if (!this.drawFloor(night, lateral)) this.drawSandField(night, false);
+      this.drawHorizonDust(night);
     },
 
     /** The ground plane, drawn by js/ground.js — sand, the road, the motion
@@ -607,6 +614,52 @@
       }
 
       ctx.restore();
+    },
+
+    /** The dust standing on the horizon.
+
+        Two jobs. It hides the join where the baked plates stop and the ground
+        plane begins, which is the part of the frame with the most going on
+        and the least to look at. And it gives everything that arrives from
+        the distance something to arrive out of: the props and the cliffs wash
+        towards this exact colour as they recede, so by the time one is far
+        enough to be fading in it is the same tan as the air behind it.
+
+        The billows drift on the wind rather than with the car, and slowly —
+        a hundred seconds to cross the frame — because anything quicker along
+        the skyline reads as flicker rather than as weather. */
+    drawHorizonDust: function (night) {
+      var ctx = this.ctx;
+      var hz = this.horizon;
+      var top = hz - this.h * 0.11;
+      var bot = hz + this.h * 0.17;
+      var col = mixHex('#E7C592', '#6B4A48', night);
+
+      var g = ctx.createLinearGradient(0, top, 0, bot);
+      g.addColorStop(0.00, rgba(col, 0));
+      g.addColorStop(0.34, rgba(col, (0.20 * (1 - night * 0.30)).toFixed(3)));
+      g.addColorStop(0.44, rgba(col, (0.30 * (1 - night * 0.30)).toFixed(3)));
+      g.addColorStop(0.62, rgba(col, (0.22 * (1 - night * 0.30)).toFixed(3)));
+      g.addColorStop(1.00, rgba(col, 0));
+      ctx.fillStyle = g;
+      ctx.fillRect(0, top, this.w, bot - top);
+
+      for (var i = 0; i < 5; i++) {
+        var seed = i * 7.31;
+        var drift = (hash(seed) + this.time * (0.006 + hash(seed + 2.1) * 0.008)) % 1.4;
+        var x = (drift - 0.2) * this.w;
+        var rx = this.w * (0.26 + hash(seed + 5.3) * 0.34);
+        var ry = this.h * (0.035 + hash(seed + 8.7) * 0.030);
+        var y = hz + (hash(seed + 9.1) - 0.42) * this.h * 0.055;
+        var r = ctx.createRadialGradient(x, y, 0, x, y, rx);
+        r.addColorStop(0, rgba(col, (0.11 * (1 - night * 0.35)).toFixed(3)));
+        r.addColorStop(0.55, rgba(col, (0.05 * (1 - night * 0.35)).toFixed(3)));
+        r.addColorStop(1, rgba(col, 0));
+        ctx.fillStyle = r;
+        ctx.beginPath();
+        ctx.ellipse(x, y, rx, ry, 0, 0, TAU);
+        ctx.fill();
+      }
     },
 
     /* ------------------------------------------------------------ track */
@@ -886,7 +939,7 @@
       var r = hash(seed + 6.1 + pass * 0.37);
 
       var p = this.place(depth, 0, lean);
-      if (p.t > 1.6 || p.t < 0.036) return null;
+      if (p.t > 1.6) return null;
 
       // Beyond the shoulder, and further out the closer it is, so they leave
       // at the sides of the frame instead of marching over the car.
@@ -910,17 +963,17 @@
           : Math.floor(hash(seed + 12.9 + pass) * 5) % 5,
         size: (0.55 + hash(seed + 9.7) * 0.85) * p.t * this.h * 0.26,
         // How far into the haze it still is, by apparent size rather than by
-        // depth. It reaches the haze colour entirely before the band's far
-        // end, so a prop arrives out of the haze rather than appearing in
-        // front of it.
-        fog: clamp(1 - p.t / 0.30, 0, 1) * 0.98
+        // depth. It reaches the dust colour completely — not 98% of the way
+        // there — well before the far end of the band, so what fades in is
+        // already the same tan as the air it fades in from.
+        fog: clamp((0.30 - p.t) / (0.30 - W.tSpawn), 0, 1)
       };
     },
 
     /* The outcrops the track runs between. Same world clock, same wrapping
        band, but they stand well off the road and are some twenty times the
        size, which is what gives the horizon a shape to read. */
-    CLIFFS: 7,
+    CLIFFS: 9,
 
     cliffAt: function (i, lean) {
       var W = this.world;
@@ -934,12 +987,17 @@
       // Held on far longer than a prop: one of these is half the frame tall
       // as it goes by, and cutting it at the moment its base leaves the
       // bottom edge is the most obvious disappearance in the game.
-      if (p.t > 2.6 || p.t < 0.036) return null;
+      if (p.t > 2.6) return null;
 
       var side = i % 2 ? 1 : -1;
-      // Well off the road — twenty-three to fifty-three metres — so they sweep
-      // past the sides of the frame rather than over it.
-      var out = 19 + hash(seed + 3.3 + pass) * 11;
+      // Twenty-three to thirty-four metres off the road, and twenty-five to
+      // forty tall. The ratio of the two is what decides how long one is on
+      // screen: its inner edge leaves the frame when (out - width) * scale
+      // passes the half-width, so a taller rock at the same distance stays
+      // far longer. Pushed further out than this and they are gone before
+      // the haze has let go of them, which is what made them look like
+      // ghosts; brought closer and they are canyon walls.
+      var out = 20 + hash(seed + 3.3 + pass) * 10;
       var x = p.x + side * W.halfTexels * out * p.a;
       if (x < -this.w * 2.4 || x > this.w * 3.4) return null;
 
@@ -950,8 +1008,11 @@
         // Thirteen to thirty metres tall, in world texels rather than in
         // fractions of the frame: they were three and a half before, which is
         // a boulder, and a row of boulders on the horizon reads as a fence.
-        size: (2.6 + hash(seed + 9.7 + pass) * 3.2) * (W.size || 2048) * p.a,
-        fog: clamp(1 - p.t / 0.20, 0, 1) * 0.98
+        size: (5.0 + hash(seed + 9.7 + pass) * 3.0) * (W.size || 2048) * p.a,
+        // Clear of the haze by the time it is halfway through its run past
+        // the frame. It used to be half hazed for the whole of it, which is
+        // why one never looked like rock — it looked like the ghost of one.
+        fog: clamp((0.050 - p.t) / (0.050 - W.tSpawn), 0, 1)
       };
     },
 
@@ -981,10 +1042,14 @@
           return mixHex(mixHex(dayHex, nightHex, night), haze, this.fog);
         };
         ctx.save();
-        // A long fade at the far end. Anything that switches on at four fifths
-        // of its weight, as this used to, pops — and the bigger it is the
-        // more it pops.
-        ctx.globalAlpha = clamp((o.s - 0.038) / 0.032, 0, 1);
+        // The fade is short, and deep enough into the band that whatever is
+        // fading is still solid dust colour — so nothing is ever seen to be
+        // half transparent. Switching on at four fifths of its weight, as
+        // this first did, pops; ramping in over the part of the run where the
+        // haze has already cleared, as it did next, makes the thing look like
+        // a ghost of itself for the whole approach.
+        var born = this.world.tSpawn;
+        ctx.globalAlpha = clamp((o.s - born) / (born * 0.5), 0, 1);
         if (!this.drawSprite(o, night, haze) && !o.cliff) {
           if (o.kind === 0) this.drawBoulder(o, night);
           else if (o.kind === 1) this.drawScrub(o, night);

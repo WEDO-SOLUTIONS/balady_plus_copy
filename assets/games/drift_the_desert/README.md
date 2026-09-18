@@ -245,13 +245,29 @@ have to be watched carefully. Four of them were not:
 - **The GL canvas** was sized from the current horizon, so it was reallocated
   every time the horizon crossed a pixel. It is sized from the highest the
   horizon ever goes, and the horizon is passed in as a uniform.
+- **The horizon itself** now carries its own dust: a warm band across the
+  skyline with a few billows drifting on the wind, slowly enough to read as
+  weather rather than as flicker. It hides the join where the baked plates
+  stop and the ground plane begins, and it gives everything arriving from the
+  distance the same tan to arrive out of.
 - **The speed streaks** switched on at full weight exactly on the horizon line
   and switched off at the bottom of the frame — nine of them, twice a second.
   They start below the skyline now and fade in and out along the way.
 
-Anything arriving from the distance fades in over a long ramp, and reaches the
-haze colour entirely before the far end of the band, so it comes out of the
-haze rather than appearing in front of it. The ground's own far field is
+Anything arriving from the distance reaches the dust colour **completely** at
+the far end of the band — not most of the way there — and the short fade that
+brings it in happens there, while it is still that colour. Both halves matter.
+Fading in over the part of the run where the haze has already let go makes a
+thing look like a ghost of itself for its whole approach, which is what the
+cliffs did; switching on at four fifths of its weight pops.
+
+That puts a limit on how far off the road a landmark can stand. Its inner edge
+leaves the frame when `(distance − width) × scale` passes the half-width, so a
+taller rock at the same distance stays in view far longer; push one out until
+it is gone before the haze releases it and it is never seen as rock at all.
+The outcrops sit at twenty-three to thirty-four metres and stand twenty-five to
+forty tall, which is the ratio that lets them come clear of the dust while
+there is still a second or two of them left. The ground's own far field is
 biased several mip levels coarser, because a few rows below the skyline one
 screen pixel covers thousands of texels and whichever of them the filter lands
 on changes fast enough to crawl.
