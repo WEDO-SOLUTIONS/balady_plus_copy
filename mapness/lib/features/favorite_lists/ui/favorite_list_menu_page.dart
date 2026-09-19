@@ -77,7 +77,7 @@ class FavoriteListMenuPage extends HookConsumerWidget {
             ContentRow(
               leading: Icon(SystemIcons.bookmarkAdd, color: context.colors.foregroundMuted),
               text: ContentRowTextOptions(
-                title: context.l10n.addPlace,
+                title: context.l10n.favoriteListAddPlace,
               ),
               onTap: () async {
                 if (isSubmitting.value) {

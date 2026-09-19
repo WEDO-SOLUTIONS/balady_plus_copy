@@ -152,7 +152,7 @@ class FavoriteListsPage extends HookConsumerWidget {
                     ContentRow(
                       leading: Icon(SystemIcons.bookmarkAdd, color: context.colors.accentDefault, size: 24),
                       text: ContentRowTextOptions(
-                        title: context.l10n.addPlace,
+                        title: context.l10n.favoriteListAddPlace,
                         titleOptions: ContentRowTextOption(baseColor: context.colors.accentDefault),
                       ),
                       isDividerEnabled: true,

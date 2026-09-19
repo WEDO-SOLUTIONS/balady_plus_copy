@@ -214,7 +214,7 @@ class CreateOrUpdateFavoriteListPage extends HookConsumerWidget {
                 builder: (context) => Container(
                   width: 24,
                   height: 24,
-                  margin: const EdgeInsets.only(right: Spacing.$4x),
+                  margin: const EdgeInsetsDirectional.only(end: Spacing.$4x),
                   decoration: BoxDecoration(
                     color: color.value.color,
                     borderRadius: BorderRadius.circular(Spacing.$1x),
