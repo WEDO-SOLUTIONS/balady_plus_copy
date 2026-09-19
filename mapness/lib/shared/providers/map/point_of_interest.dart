@@ -26,7 +26,6 @@ import 'package:mapness/shared/providers/map/rubric_marker_type_mapper.dart';
 import 'package:mapness/shared/providers/map/selected_marker.dart';
 import 'package:mapness/shared/ui/markers/markers.dart';
 import 'package:mapness/shared/ui/toast/app_locale.dart';
-import 'package:riverpod/riverpod.dart' show ProviderListenableSelect;
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'point_of_interest.g.dart';
@@ -67,23 +66,15 @@ Future<DirectoryObjectMessage?> pointOfInterest(
       .getMarkerPath(rubrics, objectId.objectId, closestPoint: closestPoint?.geoPoint);
   final favoriteMarker = await ref.watch(favoritePlaceMarkerProvider(objectId.objectId.toString()).future);
   final favoritePinBitmap = ref.read(favoritePinMarkerBitmapProvider);
-  final homeWorkIconType = favoriteMarker != null
-      ? null
-      : ref.watch(
-          homeWorkFavoritesProvider.select((asyncHomeWork) {
-            final homeWork = asyncHomeWork.value;
-            if (homeWork == null) {
-              return null;
-            }
-            if (parseObjectIdFromFavouriteEntityId(homeWork.home?.entity?.id) == objectId.objectId) {
-              return FavoriteIconType.home;
-            }
-            if (parseObjectIdFromFavouriteEntityId(homeWork.work?.entity?.id) == objectId.objectId) {
-              return FavoriteIconType.building;
-            }
-            return null;
-          }),
-        );
+  FavoriteIconType? homeWorkIconType;
+  if (favoriteMarker == null) {
+    final homeWork = await ref.watch(homeWorkFavoritesProvider.future);
+    if (parseObjectIdFromFavouriteEntityId(homeWork.home?.entity?.id) == objectId.objectId) {
+      homeWorkIconType = FavoriteIconType.home;
+    } else if (parseObjectIdFromFavouriteEntityId(homeWork.work?.entity?.id) == objectId.objectId) {
+      homeWorkIconType = FavoriteIconType.building;
+    }
+  }
   final isFavoritePin = favoriteMarker != null || homeWorkIconType != null;
   Uint8List? favoriteIconBytes;
   if (isFavoritePin) {

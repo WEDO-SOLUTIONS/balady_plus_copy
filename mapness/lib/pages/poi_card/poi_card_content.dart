@@ -386,6 +386,7 @@ class _ContentState extends ConsumerState<_PoiCardContent> with SingleTickerProv
                   bottomSheetController: _bottomSheetController,
                   title:
                       ref.watch(customPlaceNicknameProvider(widget.objectId.toString())).value ??
+                      ref.watch(homeWorkFavoritesProvider).value?.titleFor(widget.objectId, l10n) ??
                       widget.data.address?.buildingName ??
                       widget.poiCardDataFromGoogle?.displayName ??
                       widget.data.pinTitle(l10n),

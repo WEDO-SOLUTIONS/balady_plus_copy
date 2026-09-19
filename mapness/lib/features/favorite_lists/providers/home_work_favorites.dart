@@ -9,6 +9,7 @@ import 'package:mapness/features/favorite_lists/providers/favorite_list_place_po
 import 'package:mapness/features/favourites/helpers/favourite_entity_id.dart';
 import 'package:mapness/features/favourites/mappers/directory_object_message_mapper.dart';
 import 'package:mapness/features/sso_auth/data/auth_provider.dart';
+import 'package:mapness/l10n/generated/app_localizations.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'home_work_favorites.g.dart';
@@ -30,6 +31,21 @@ class HomeWorkFavorites {
   final FavouriteItem? work;
 
   const HomeWorkFavorites({this.home, this.work});
+
+  /// "Home"/"Work" if [objectId] matches the saved slot, so a POI card can show that
+  /// instead of falling back to a raw address/"Dropped Pin" title.
+  String? titleFor(int? objectId, AppLocalizations l10n) {
+    if (objectId == null) {
+      return null;
+    }
+    if (parseObjectIdFromFavouriteEntityId(home?.entity?.id) == objectId) {
+      return l10n.home;
+    }
+    if (parseObjectIdFromFavouriteEntityId(work?.entity?.id) == objectId) {
+      return l10n.work;
+    }
+    return null;
+  }
 }
 
 Future<String> _getOrCreateSystemListId(
