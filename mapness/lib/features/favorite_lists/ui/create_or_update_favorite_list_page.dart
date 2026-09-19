@@ -95,210 +95,216 @@ class CreateOrUpdateFavoriteListPage extends HookConsumerWidget {
         color.value == original.color &&
         selectedIcon.value == original.icon;
 
-    return ToggleSheet(
-      scrollController: scrollController,
-      backgroundColor: context.colors.backgroundSurface4,
-      safeAreaColor: context.colors.backgroundSurface4,
-      dragger: SheetDragger(draggerColor: context.colors.backgroundSurface5),
-      outside: GestureDetector(
-        behavior: HitTestBehavior.opaque,
-        onTap: () => context.router.pop(),
-        child: const SizedBox.expand(),
-      ),
-      header: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x),
-        child: Row(
-          children: [
-            Expanded(
-              child: Text(
-                isEditing ? context.l10n.favoriteListSettingsTitle : context.l10n.favoriteListNewTitle,
-                style: context.textStyles.h4SemiBold.copyWith(color: context.colors.foregroundDefault),
-              ),
-            ),
-            IconButton(
-              onPressed: () => context.router.pop(),
-              icon: Icon(SystemIcons.close, color: context.colors.foregroundDefault),
-            ),
-          ],
+    return AnimatedPadding(
+      padding: EdgeInsets.only(bottom: MediaQuery.viewInsetsOf(context).bottom),
+      duration: const Duration(milliseconds: 250),
+      curve: Curves.easeOut,
+      child: ToggleSheet(
+        resizeToAvoidBottomPadding: false,
+        scrollController: scrollController,
+        backgroundColor: context.colors.backgroundSurface4,
+        safeAreaColor: context.colors.backgroundSurface4,
+        dragger: SheetDragger(draggerColor: context.colors.backgroundSurface5),
+        outside: GestureDetector(
+          behavior: HitTestBehavior.opaque,
+          onTap: () => context.router.pop(),
+          child: const SizedBox.expand(),
         ),
-      ),
-      contentPadding: const EdgeInsets.all(Spacing.$4x),
-      content: [
-        Row(
-          spacing: Spacing.$3x,
-          children: [
-            Expanded(
-              child: BaladyTextInput(
-                controller: listNameController,
-                config: BaladyInputConfig(
-                  hintText: context.l10n.favoriteListName,
-                  fillColor: context.colors.backgroundSurface1,
-                  hintColor: context.colors.foregroundSoft,
+        header: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x),
+          child: Row(
+            children: [
+              Expanded(
+                child: Text(
+                  isEditing ? context.l10n.favoriteListSettingsTitle : context.l10n.favoriteListNewTitle,
+                  style: context.textStyles.h4SemiBold.copyWith(color: context.colors.foregroundDefault),
                 ),
               ),
-            ),
-            GestureDetector(
-              onTap: () {
-                isIconPickerExpanded.value = !isIconPickerExpanded.value;
-              },
-              child: Container(
-                padding: const EdgeInsets.all(Spacing.$3x),
-                decoration: BoxDecoration(
-                  color: context.colors.backgroundSurface1,
-                  borderRadius: BorderRadius.circular(Spacing.$2x),
-                ),
-                child: selectedIcon.value.getIcon().svg(
-                  width: 24,
-                  height: 24,
-                  colorFilter: ColorFilter.mode(color.value.color, BlendMode.srcIn),
-                ),
+              IconButton(
+                onPressed: () => context.router.pop(),
+                icon: Icon(SystemIcons.close, color: context.colors.foregroundDefault),
               ),
-            ),
-          ],
-        ),
-        AnimatedSize(
-          duration: const Duration(milliseconds: 200),
-          alignment: Alignment.topCenter,
-          child: isIconPickerExpanded.value
-              ? Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const SizedBox(height: Spacing.$4x),
-                    Container(
-                      padding: const EdgeInsets.symmetric(vertical: Spacing.$3x, horizontal: Spacing.$4x),
-                      decoration: BoxDecoration(
-                        color: context.colors.backgroundSurface1,
-                        borderRadius: BorderRadius.circular(Spacing.$2x),
-                      ),
-                      child: Wrap(
-                        spacing: Spacing.$3x,
-                        children: FavoriteIconType.validValues
-                            .map(
-                              (e) => GestureDetector(
-                                onTap: () {
-                                  selectedIcon.value = e == selectedIcon.value ? FavoriteIconType.$default : e;
-                                  isIconPickerExpanded.value = false;
-                                },
-                                child: e.getIcon().svg(
-                                  width: 24,
-                                  height: 24,
-                                  colorFilter: ColorFilter.mode(
-                                    e == selectedIcon.value ? color.value.color : context.colors.foregroundSoft,
-                                    BlendMode.srcIn,
-                                  ),
-                                ),
-                              ),
-                            )
-                            .toList(),
-                      ),
-                    ),
-                  ],
-                )
-              : const SizedBox.shrink(),
-        ),
-        const SizedBox(height: Spacing.$4x),
-        BaladyTextInput(
-          controller: descriptionController,
-          config: BaladyInputConfig(
-            hintText: context.l10n.favoriteListDescription,
-            fillColor: context.colors.backgroundSurface1,
-            hintColor: context.colors.foregroundSoft,
+            ],
           ),
         ),
-        const SizedBox(height: Spacing.$4x),
-        ContentWrapper(
-          color: context.colors.backgroundSurface1,
-          children: [
-            ContentRow(
-              trailing: ContentRowCustomTrailingOptions(
-                builder: (context) => Container(
-                  width: 24,
-                  height: 24,
-                  margin: const EdgeInsetsDirectional.only(end: Spacing.$4x),
-                  decoration: BoxDecoration(
-                    color: color.value.color,
-                    borderRadius: BorderRadius.circular(Spacing.$1x),
+        contentPadding: const EdgeInsets.all(Spacing.$4x),
+        content: [
+          Row(
+            spacing: Spacing.$3x,
+            children: [
+              Expanded(
+                child: BaladyTextInput(
+                  controller: listNameController,
+                  config: BaladyInputConfig(
+                    hintText: context.l10n.favoriteListName,
+                    fillColor: context.colors.backgroundSurface1,
+                    hintColor: context.colors.foregroundSoft,
                   ),
                 ),
               ),
-              text: ContentRowTextOptions(
-                title: context.l10n.favoriteListMarkerColor,
-                subtitle: context.l10n.favoriteListMarkerColorCustomizable,
+              GestureDetector(
+                onTap: () {
+                  isIconPickerExpanded.value = !isIconPickerExpanded.value;
+                },
+                child: Container(
+                  padding: const EdgeInsets.all(Spacing.$3x),
+                  decoration: BoxDecoration(
+                    color: context.colors.backgroundSurface1,
+                    borderRadius: BorderRadius.circular(Spacing.$2x),
+                  ),
+                  child: selectedIcon.value.getIcon().svg(
+                    width: 24,
+                    height: 24,
+                    colorFilter: ColorFilter.mode(color.value.color, BlendMode.srcIn),
+                  ),
+                ),
               ),
-              onTap: () async {
-                final picked = await context.router.push<MarkerColorCode>(
-                  MarkerColorPickerRoute(selectedColor: color.value),
-                );
-                if (picked != null) {
-                  color.value = picked;
-                }
-              },
+            ],
+          ),
+          AnimatedSize(
+            duration: const Duration(milliseconds: 200),
+            alignment: Alignment.topCenter,
+            child: isIconPickerExpanded.value
+                ? Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const SizedBox(height: Spacing.$4x),
+                      Container(
+                        padding: const EdgeInsets.symmetric(vertical: Spacing.$3x, horizontal: Spacing.$4x),
+                        decoration: BoxDecoration(
+                          color: context.colors.backgroundSurface1,
+                          borderRadius: BorderRadius.circular(Spacing.$2x),
+                        ),
+                        child: Wrap(
+                          spacing: Spacing.$3x,
+                          children: FavoriteIconType.validValues
+                              .map(
+                                (e) => GestureDetector(
+                                  onTap: () {
+                                    selectedIcon.value = e == selectedIcon.value ? FavoriteIconType.$default : e;
+                                    isIconPickerExpanded.value = false;
+                                  },
+                                  child: e.getIcon().svg(
+                                    width: 24,
+                                    height: 24,
+                                    colorFilter: ColorFilter.mode(
+                                      e == selectedIcon.value ? color.value.color : context.colors.foregroundSoft,
+                                      BlendMode.srcIn,
+                                    ),
+                                  ),
+                                ),
+                              )
+                              .toList(),
+                        ),
+                      ),
+                    ],
+                  )
+                : const SizedBox.shrink(),
+          ),
+          const SizedBox(height: Spacing.$4x),
+          BaladyTextInput(
+            controller: descriptionController,
+            config: BaladyInputConfig(
+              hintText: context.l10n.favoriteListDescription,
+              fillColor: context.colors.backgroundSurface1,
+              hintColor: context.colors.foregroundSoft,
             ),
-          ],
-        ),
-      ],
-      footer: Padding(
-        padding: const EdgeInsets.all(Spacing.$4x).copyWith(top: 0),
-        child: SizedBox(
-          width: double.infinity,
-          child: BaladyAppButton(
-            primaryLabel: isUnchanged
-                ? context.l10n.favoriteListCloseWithoutSaving
-                : isEditing
-                ? context.l10n.save
-                : context.l10n.favoriteListCreateButton,
-            buttonColorScheme: isUnchanged ? ButtonColorScheme.accentSecondary : ButtonColorScheme.accent,
-            buttonType: isUnchanged ? ButtonType.secondary : ButtonType.primary,
-            buttonState: isSubmitting.value || (listDetailAsync?.isLoading ?? false)
-                ? ButtonState.loading
-                : (isValid ? ButtonState.defaultState : ButtonState.disabled),
-            onTap: isUnchanged
-                ? () => context.router.pop()
-                : () async {
-                    final listName = listNameController.value.text.trim();
-                    final description = descriptionController.value.text.trim();
+          ),
+          const SizedBox(height: Spacing.$4x),
+          ContentWrapper(
+            color: context.colors.backgroundSurface1,
+            children: [
+              ContentRow(
+                trailing: ContentRowCustomTrailingOptions(
+                  builder: (context) => Container(
+                    width: 24,
+                    height: 24,
+                    margin: const EdgeInsetsDirectional.only(end: Spacing.$4x),
+                    decoration: BoxDecoration(
+                      color: color.value.color,
+                      borderRadius: BorderRadius.circular(Spacing.$1x),
+                    ),
+                  ),
+                ),
+                text: ContentRowTextOptions(
+                  title: context.l10n.favoriteListMarkerColor,
+                  subtitle: context.l10n.favoriteListMarkerColorCustomizable,
+                ),
+                onTap: () async {
+                  final picked = await context.router.push<MarkerColorCode>(
+                    MarkerColorPickerRoute(selectedColor: color.value),
+                  );
+                  if (picked != null) {
+                    color.value = picked;
+                  }
+                },
+              ),
+            ],
+          ),
+        ],
+        footer: Padding(
+          padding: const EdgeInsets.all(Spacing.$4x).copyWith(top: 0),
+          child: SizedBox(
+            width: double.infinity,
+            child: BaladyAppButton(
+              primaryLabel: isUnchanged
+                  ? context.l10n.favoriteListCloseWithoutSaving
+                  : isEditing
+                  ? context.l10n.save
+                  : context.l10n.favoriteListCreateButton,
+              buttonColorScheme: isUnchanged ? ButtonColorScheme.accentSecondary : ButtonColorScheme.accent,
+              buttonType: isUnchanged ? ButtonType.secondary : ButtonType.primary,
+              buttonState: isSubmitting.value || (listDetailAsync?.isLoading ?? false)
+                  ? ButtonState.loading
+                  : (isValid ? ButtonState.defaultState : ButtonState.disabled),
+              onTap: isUnchanged
+                  ? () => context.router.pop()
+                  : () async {
+                      final listName = listNameController.value.text.trim();
+                      final description = descriptionController.value.text.trim();
 
-                    isSubmitting.value = true;
-                    try {
-                      final dataSource = await ref.read(favoriteListsRemoteDataSourceProvider.future);
-                      final request = FavoriteListRequestDto(
-                        name: listName,
-                        description: description.isEmpty ? null : description,
-                        markerColorCode: color.value,
-                        iconType: selectedIcon.value,
-                      );
-                      switch (params) {
-                        case CreateFavoriteListParams():
-                          await dataSource.createFavoriteList(request);
-                        case UpdateFavoriteListParams(:final listId):
-                          await dataSource.updateFavoriteList(listId, request);
-                          ref.invalidate(favoriteListDetailProvider(listId: listId));
-                        case AcceptSharedFavoriteListParams(:final shareToken):
-                          final acceptResult = await dataSource.acceptShareLink(shareToken);
-                          final listId = acceptResult.list.id;
-                          await dataSource.updateFavoriteList(listId, request);
-                          ref.invalidate(favoriteListDetailProvider(listId: listId));
-                      }
-                      ref
-                        ..invalidate(favoriteListsResponseProvider)
-                        ..invalidate(aggregatedFavoriteMarkersProvider);
-                      if (context.mounted) {
-                        context.router.pop(true);
-                      }
-                    } catch (e) {
-                      isSubmitting.value = false;
-                      if (context.mounted) {
-                        if (e is FavoriteListsApiException && e.code == 'DUPLICATE_LIST_NAME') {
-                          final shouldCloseForm = await showDuplicateListNameErrorSheet(context, ref, e);
-                          if (shouldCloseForm == true && context.mounted) {
-                            context.router.pop();
+                      isSubmitting.value = true;
+                      try {
+                        final dataSource = await ref.read(favoriteListsRemoteDataSourceProvider.future);
+                        final request = FavoriteListRequestDto(
+                          name: listName,
+                          description: description.isEmpty ? null : description,
+                          markerColorCode: color.value,
+                          iconType: selectedIcon.value,
+                        );
+                        switch (params) {
+                          case CreateFavoriteListParams():
+                            await dataSource.createFavoriteList(request);
+                          case UpdateFavoriteListParams(:final listId):
+                            await dataSource.updateFavoriteList(listId, request);
+                            ref.invalidate(favoriteListDetailProvider(listId: listId));
+                          case AcceptSharedFavoriteListParams(:final shareToken):
+                            final acceptResult = await dataSource.acceptShareLink(shareToken);
+                            final listId = acceptResult.list.id;
+                            await dataSource.updateFavoriteList(listId, request);
+                            ref.invalidate(favoriteListDetailProvider(listId: listId));
+                        }
+                        ref
+                          ..invalidate(favoriteListsResponseProvider)
+                          ..invalidate(aggregatedFavoriteMarkersProvider);
+                        if (context.mounted) {
+                          context.router.pop(true);
+                        }
+                      } catch (e) {
+                        isSubmitting.value = false;
+                        if (context.mounted) {
+                          if (e is FavoriteListsApiException && e.code == 'DUPLICATE_LIST_NAME') {
+                            final shouldCloseForm = await showDuplicateListNameErrorSheet(context, ref, e);
+                            if (shouldCloseForm == true && context.mounted) {
+                              context.router.pop();
+                            }
+                          } else {
+                            showFavoriteListsErrorSheet(context, ref, e);
                           }
-                        } else {
-                          showFavoriteListsErrorSheet(context, ref, e);
                         }
                       }
-                    }
-                  },
+                    },
+            ),
           ),
         ),
       ),

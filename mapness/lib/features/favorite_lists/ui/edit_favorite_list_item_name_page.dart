@@ -40,87 +40,93 @@ class EditFavoriteListItemNamePage extends HookConsumerWidget {
     final isTooLong = trimmedLength > _customNameMaxLength;
     final isValid = trimmedLength > 0 && !isTooLong;
 
-    return ToggleSheet(
-      scrollController: scrollController,
-      backgroundColor: context.colors.backgroundSurface4,
-      safeAreaColor: context.colors.backgroundSurface4,
-      dragger: SheetDragger(draggerColor: context.colors.backgroundSurface5),
-      outside: GestureDetector(
-        behavior: HitTestBehavior.opaque,
-        onTap: () => context.router.pop(),
-        child: const SizedBox.expand(),
-      ),
-      header: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x),
-        child: Stack(
-          alignment: AlignmentGeometry.center,
-          children: [
-            Text(
-              context.l10n.name,
-              style: context.textStyles.bodyLargeSemiBold.copyWith(color: context.colors.foregroundDefault),
-            ),
-            Align(
-              alignment: Alignment.centerLeft,
-              child: IconButton(
-                iconSize: 24,
-                visualDensity: VisualDensity.compact,
-                icon: Icon(SystemIcons.arrowCornerLeftLarge, color: context.colors.foregroundDefault),
-                onPressed: context.router.pop,
+    return AnimatedPadding(
+      padding: EdgeInsets.only(bottom: MediaQuery.viewInsetsOf(context).bottom),
+      duration: const Duration(milliseconds: 250),
+      curve: Curves.easeOut,
+      child: ToggleSheet(
+        resizeToAvoidBottomPadding: false,
+        scrollController: scrollController,
+        backgroundColor: context.colors.backgroundSurface4,
+        safeAreaColor: context.colors.backgroundSurface4,
+        dragger: SheetDragger(draggerColor: context.colors.backgroundSurface5),
+        outside: GestureDetector(
+          behavior: HitTestBehavior.opaque,
+          onTap: () => context.router.pop(),
+          child: const SizedBox.expand(),
+        ),
+        header: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x),
+          child: Stack(
+            alignment: AlignmentGeometry.center,
+            children: [
+              Text(
+                context.l10n.name,
+                style: context.textStyles.bodyLargeSemiBold.copyWith(color: context.colors.foregroundDefault),
               ),
+              Align(
+                alignment: Alignment.centerLeft,
+                child: IconButton(
+                  iconSize: 24,
+                  visualDensity: VisualDensity.compact,
+                  icon: Icon(SystemIcons.arrowCornerLeftLarge, color: context.colors.foregroundDefault),
+                  onPressed: context.router.pop,
+                ),
+              ),
+            ],
+          ),
+        ),
+        contentPadding: const EdgeInsets.all(Spacing.$4x),
+        content: [
+          BaladyTextInput(
+            controller: nameController,
+            inputState: isTooLong ? BaladyInputState.error : BaladyInputState.defaultValue,
+            config: BaladyInputConfig(
+              hintText: context.l10n.favoriteListCustomName,
+              fillColor: context.colors.backgroundSurface1,
+              hintColor: context.colors.foregroundSoft,
             ),
-          ],
-        ),
-      ),
-      contentPadding: const EdgeInsets.all(Spacing.$4x),
-      content: [
-        BaladyTextInput(
-          controller: nameController,
-          inputState: isTooLong ? BaladyInputState.error : BaladyInputState.defaultValue,
-          config: BaladyInputConfig(
-            hintText: context.l10n.favoriteListCustomName,
-            fillColor: context.colors.backgroundSurface1,
-            hintColor: context.colors.foregroundSoft,
+            supportingText: BaladySupportingText(
+              text:
+                  '     ${isTooLong ? context.l10n.favoriteListNameTooLongError : context.l10n.favoriteListCustomNameHelperText}',
+            ),
           ),
-          supportingText: BaladySupportingText(
-            text:
-                '     ${isTooLong ? context.l10n.favoriteListNameTooLongError : context.l10n.favoriteListCustomNameHelperText}',
-          ),
-        ),
-      ],
-      footer: Padding(
-        padding: const EdgeInsets.all(Spacing.$4x),
-        child: SizedBox(
-          width: double.infinity,
-          child: BaladyAppButton(
-            primaryLabel: context.l10n.favoriteListConfirmButton,
-            buttonColorScheme: ButtonColorScheme.accentSecondary,
-            buttonState: isSubmitting.value
-                ? ButtonState.loading
-                : (isValid ? ButtonState.defaultState : ButtonState.disabled),
-            onTap: () async {
-              if (isSubmitting.value) {
-                return;
-              }
-              isSubmitting.value = true;
-              try {
-                final name = nameController.value.text.trim();
-                final dataSource = await ref.read(favoriteListsRemoteDataSourceProvider.future);
-                await dataSource.setCustomPlaceNickname(place.placeId, name, placeType: place.placeType);
-                ref
-                  ..invalidate(favoriteListsResponseProvider)
-                  ..invalidate(favoriteListDetailProvider(listId: listId))
-                  ..invalidate(customPlaceNicknameProvider(place.placeId))
-                  ..invalidate(aggregatedFavoriteMarkersProvider);
-                if (context.mounted) {
-                  context.router.pop(true);
+        ],
+        footer: Padding(
+          padding: const EdgeInsets.all(Spacing.$4x),
+          child: SizedBox(
+            width: double.infinity,
+            child: BaladyAppButton(
+              primaryLabel: context.l10n.favoriteListConfirmButton,
+              buttonColorScheme: ButtonColorScheme.accentSecondary,
+              buttonState: isSubmitting.value
+                  ? ButtonState.loading
+                  : (isValid ? ButtonState.defaultState : ButtonState.disabled),
+              onTap: () async {
+                if (isSubmitting.value) {
+                  return;
                 }
-              } catch (e) {
-                isSubmitting.value = false;
-                if (context.mounted) {
-                  showFavoriteListsErrorSheet(context, ref, e);
+                isSubmitting.value = true;
+                try {
+                  final name = nameController.value.text.trim();
+                  final dataSource = await ref.read(favoriteListsRemoteDataSourceProvider.future);
+                  await dataSource.setCustomPlaceNickname(place.placeId, name, placeType: place.placeType);
+                  ref
+                    ..invalidate(favoriteListsResponseProvider)
+                    ..invalidate(favoriteListDetailProvider(listId: listId))
+                    ..invalidate(customPlaceNicknameProvider(place.placeId))
+                    ..invalidate(aggregatedFavoriteMarkersProvider);
+                  if (context.mounted) {
+                    context.router.pop(true);
+                  }
+                } catch (e) {
+                  isSubmitting.value = false;
+                  if (context.mounted) {
+                    showFavoriteListsErrorSheet(context, ref, e);
+                  }
                 }
-              }
-            },
+              },
+            ),
           ),
         ),
       ),
