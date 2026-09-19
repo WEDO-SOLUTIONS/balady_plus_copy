@@ -84,7 +84,7 @@ class ConfirmationSheetPage extends HookConsumerWidget {
             ),
             IconButton(
               onPressed: () => context.router.pop(),
-              icon: const Icon(SystemIcons.close),
+              icon: Icon(SystemIcons.close, color: context.colors.foregroundDefault),
             ),
           ],
         ),

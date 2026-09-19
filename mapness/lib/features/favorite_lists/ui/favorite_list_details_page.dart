@@ -81,7 +81,10 @@ class FavoriteListDetailsPage extends HookConsumerWidget {
                 ),
               ),
             ),
-            IconButton(onPressed: context.router.pop, icon: const Icon(SystemIcons.close)),
+            IconButton(
+              onPressed: context.router.pop,
+              icon: Icon(SystemIcons.close, color: context.colors.foregroundDefault),
+            ),
           ],
         ),
       ),
