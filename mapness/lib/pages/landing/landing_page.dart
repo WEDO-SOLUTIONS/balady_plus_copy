@@ -248,8 +248,13 @@ class _LandingPageState extends ConsumerState<LandingPage>
                   ),
                 ),
                 RepaintBoundary(
+                  // No ValueKey here: ConfettiGeneratorConfig does not override
+                  // `==`/`hashCode`, so `getConfettiConfig()` returns a new
+                  // identity on every build and the key would change each
+                  // frame. That forces Flutter to tear down and re-mount the
+                  // render object mid-layout, which trips the
+                  // `child._parent == this` / `canUpdate` assertions.
                   child: ConfettiAnimation(
-                    key: ValueKey(confettiConfig.hashCode),
                     animationController: confettiController,
                     config: confettiConfig,
                   ),

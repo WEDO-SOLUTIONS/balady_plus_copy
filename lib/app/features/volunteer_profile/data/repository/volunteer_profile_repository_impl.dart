@@ -264,6 +264,24 @@ class VolunteerProfileRepositoryImpl implements VolunteerProfileRepository {
   }
 
   @override
+  Future<Either<Failure, List<VolunteerLookup>>> getVolunteeringServices(String parentId) async {
+    try {
+      final data = await remoteDataSource.getVolunteeringServices(parentId);
+      return Right(data);
+    } on ServerException catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+      return Left(
+          ServerFailure(error.errorMessage, statusCode: error.statusCode));
+    }
+  }
+
+  @override
   Future<Either<Failure, CVUploadResponse>> uploadCV(FileDataItem file) async {
     try {
       final data = await remoteDataSource.uploadCV(file);

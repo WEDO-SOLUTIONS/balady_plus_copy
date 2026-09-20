@@ -67,22 +67,22 @@ class EntryPointCubit extends Cubit<EntryPointState> {
     required GetForceVersion forceVersion,
     // required GetGISData getGisData,
   }) : _getToken = getToken,
-       _saveAuth = saveAuth,
-       _checkAuth = checkAuth,
-       _refreshToken = refreshToken,
-       _getProfile = getProfile,
-       _saveSSOProfile = saveSSOProfile,
-       _checkSSOProfile = checkSSOProfile,
-       _getCookie = getCookie,
-       _getAPIgeeToken = getAPIgeeToken,
-       _clearAuth = clearAuth,
-       _logout = logout,
-       _getPaymentUrl = GetPaymentUrl(repository: sl()),
-       _getForceVersion = forceVersion,
-       _getTestData = GetTestData(repository: sl()),
-       _getEkramPermission = GetEkramPermission(repository: sl()),
-       // _getGisData = getGisData,
-       super(const EntryPointState()) {
+        _saveAuth = saveAuth,
+        _checkAuth = checkAuth,
+        _refreshToken = refreshToken,
+        _getProfile = getProfile,
+        _saveSSOProfile = saveSSOProfile,
+        _checkSSOProfile = checkSSOProfile,
+        _getCookie = getCookie,
+        _getAPIgeeToken = getAPIgeeToken,
+        _clearAuth = clearAuth,
+        _logout = logout,
+        _getPaymentUrl = GetPaymentUrl(repository: sl()),
+        _getForceVersion = forceVersion,
+        _getTestData = GetTestData(repository: sl()),
+        _getEkramPermission = GetEkramPermission(repository: sl()),
+  // _getGisData = getGisData,
+        super(const EntryPointState()) {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       sl<LocationCubit>().getLocationInit();
       Permission.notification.request();
@@ -99,6 +99,7 @@ class EntryPointCubit extends Cubit<EntryPointState> {
   }
 
   String? mainPage;
+  String? miniAppKey;
 
   ////////////////////////////////////////////////////////////////////////
   ////////////////////////////////////////////////////////////////////////
@@ -107,10 +108,12 @@ class EntryPointCubit extends Cubit<EntryPointState> {
     // When Use This Function and you want to login with municipality send isMunicipality = true
     required bool isMunicipality,
     String? mainPage,
+    String? miniAppKey,
   }) async {
     try {
       sl<ActionLoginCubit>().openLoginScreen(state: sl<AuthenticationBloc>().state, isMunicipality: isMunicipality);
       this.mainPage = mainPage;
+      this.miniAppKey = miniAppKey;
     } catch (e) {
       print("object");
     }
@@ -133,10 +136,10 @@ class EntryPointCubit extends Cubit<EntryPointState> {
     } else {
       final failureOrSuccessForToken = await _getToken(NoParams());
       await failureOrSuccessForToken.fold(
-        (failure) {
+            (failure) {
           emit(state.copyWith(status: AuthStatus.failure, errorMessage: (failure as ServerFailure).errorMessage));
         },
-        (success) async {
+            (success) async {
           token = SSOToken(
             token: success.accessToken,
             refreshToken: success.refreshToken,
@@ -200,12 +203,12 @@ class EntryPointCubit extends Cubit<EntryPointState> {
     emit(state.copyWith(status: AuthStatus.loading));
     final failureOrSuccessForToken = await _getToken(NoParams());
     await failureOrSuccessForToken.fold(
-      (failure) {
+          (failure) {
         emit(state.copyWith(status: AuthStatus.failure, errorMessage: (failure as ServerFailure).errorMessage));
         EasyLoading.dismiss();
         return;
       },
-      (success) async {
+          (success) async {
         try {
           EasyLoading.dismiss();
           sl<AuthenticationBloc>().add(
@@ -281,10 +284,10 @@ class EntryPointCubit extends Cubit<EntryPointState> {
     if (expireTime == null || (expireTime.difference(DateTime.now()).inHours <= 2)) {
       final failureOrSuccess = await _getAPIgeeToken(NoParams());
       return await failureOrSuccess.fold(
-        (failure) {
+            (failure) {
           return false;
         },
-        (success) async {
+            (success) async {
           success.expirationTime = success.getExpireTime().toString();
           emit(state.copyWith(apigeeToken: success));
           return true;
@@ -467,10 +470,10 @@ class EntryPointCubit extends Cubit<EntryPointState> {
 
       var result = await getgis(GISParams(x: latlng.longitude, y: latlng.latitude));
       result.fold(
-        (l) {
+            (l) {
           emit(state.copyWith(gisStatus: BlocStatus.failure));
         },
-        (r) {
+            (r) {
           emit(state.copyWith(userLocationGIS: r, gisStatus: BlocStatus.success));
 
           return (state.userLocation, state.userLocationGIS);
@@ -483,10 +486,10 @@ class EntryPointCubit extends Cubit<EntryPointState> {
   Future<String?> getPaymentURL(PaymentRequest request) async {
     var result = await _getPaymentUrl(request);
     result.fold(
-      (l) {
+          (l) {
         CommonFunctions.showError((l as ServerFailure).errorMessage);
       },
-      (r) async {
+          (r) async {
         return r;
       },
     );
@@ -511,10 +514,10 @@ class EntryPointCubit extends Cubit<EntryPointState> {
     print(" ");
     final failureOrSuccess = await _saveAuth(token);
     failureOrSuccess.fold(
-      (failure) {
+          (failure) {
         print("object");
       },
-      (success) async {
+          (success) async {
         emit(state.copyWith(status: AuthStatus.loading, token: token, errorMessage: ""));
 
         Map<String, dynamic> decodedToken = JwtDecoder.decode(token.token ?? "");
@@ -576,13 +579,13 @@ class EntryPointCubit extends Cubit<EntryPointState> {
         final failureOrSuccessForCookie = await _getCookie(true);
 
         await failureOrSuccessForCookie.fold(
-          (l) async {
+              (l) async {
             final failureOrSuccessForCookie = await _getCookie(true);
             await failureOrSuccessForCookie.fold(
-              (failure) {
+                  (failure) {
                 emit(state.copyWith(status: AuthStatus.failure, errorMessage: (failure as ServerFailure).errorMessage));
               },
-              (r) async {
+                  (r) async {
                 SSOToken? token = state.token;
                 token?.appCookie = r;
                 if (token != null) {
@@ -592,7 +595,7 @@ class EntryPointCubit extends Cubit<EntryPointState> {
               },
             );
           },
-          (r) async {
+              (r) async {
             SSOToken? token = state.token;
             token?.appCookie = r;
             if (token != null) {

@@ -50,10 +50,7 @@ class FeedbackBannerCardV2 extends StatelessWidget {
                 asset: path,
                 title: title,
                 subTitle: subtitle,
-
-                ///todo fix colors
-                ///          gradientColors: gradientColors,
-                gradientColors: [context.colors.accentActive, context.colors.accentActive],
+                gradientColors: gradientColors,
                 textDirection: Directionality.of(context),
                 imageSizeCalculator: imageSizeCalculator,
                 child: Padding(
@@ -284,7 +281,14 @@ class _RenderFeedBack extends RenderBox with RenderObjectWithChildMixin<RenderBo
       final isLTR = textDirection == TextDirection.ltr;
 
       /// Paint background gradient.
-      final painter = Paint()..shader = LinearGradient(colors: gradientColors).createShader(rect);
+      final painter = Paint()
+        ..shader = LinearGradient(
+          // Near-vertical sweep (top to bottom, slight lean) so the banner
+          // reads as a soft wash rather than a left-to-right split.
+          begin: const Alignment(0.50, -0.00),
+          end: const Alignment(0.53, 1.00),
+          colors: gradientColors,
+        ).createShader(rect);
       canvas.drawPaint(painter);
 
       /// Calculate offsets for title and subtitle.

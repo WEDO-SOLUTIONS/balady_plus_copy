@@ -10,6 +10,7 @@
 		1498D2341E8E89220040F4C2 /* GeneratedPluginRegistrant.m in Sources */ = {isa = PBXBuildFile; fileRef = 1498D2331E8E89220040F4C2 /* GeneratedPluginRegistrant.m */; };
 		A1B2C3D4E5F60718293A4B5D /* AudioCoordinationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60718293A4B5C /* AudioCoordinationManager.swift */; };
 		B2C3D4E5F60718293A4B5D6E /* AppIconQuickActionChannel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2C3D4E5F60718293A4B5D6F /* AppIconQuickActionChannel.swift */; };
+		E5F60718293A4B5D6E7F8091 /* LauncherIconChannel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5F60718293A4B5D6E7F8092 /* LauncherIconChannel.swift */; };
 		C3D4E5F60718293A4B5D6E70 /* NativeRadioPlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3D4E5F60718293A4B5D6E71 /* NativeRadioPlayer.swift */; };
 		1ED85E2D2A8A4C8000187FA6 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 1ED85E2C2A8A4C8000187FA6 /* GoogleService-Info.plist */; };
 		3B3967161E833CAA004F5970 /* AppFrameworkInfo.plist in Resources */ = {isa = PBXBuildFile; fileRef = 3B3967151E833CAA004F5970 /* AppFrameworkInfo.plist */; };
@@ -43,6 +44,21 @@
 		F6FE3E092D1126020011838B /* AppIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6FE3E082D1126020011838B /* AppIntent.swift */; };
 		F6FE3E0B2D1126030011838B /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F6FE3E0A2D1126030011838B /* Assets.xcassets */; };
 		F6FE3E0F2D1126030011838B /* MovingViolationsExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = F6FE3DFC2D1126020011838B /* MovingViolationsExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		DDDDDDDDDDDDDDBB11CE0000 /* NationalDay1024.png in Resources */ = {isa = PBXBuildFile; fileRef = DDDDDDDDDDDDDDFA11CE0000 /* NationalDay1024.png */; };
+		DDDDDDDDDDDDDDBB11CE0001 /* NationalDay20x20@1x.png in Resources */ = {isa = PBXBuildFile; fileRef = DDDDDDDDDDDDDDFA11CE0001 /* NationalDay20x20@1x.png */; };
+		DDDDDDDDDDDDDDBB11CE0002 /* NationalDay20x20@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = DDDDDDDDDDDDDDFA11CE0002 /* NationalDay20x20@2x.png */; };
+		DDDDDDDDDDDDDDBB11CE0003 /* NationalDay20x20@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = DDDDDDDDDDDDDDFA11CE0003 /* NationalDay20x20@3x.png */; };
+		DDDDDDDDDDDDDDBB11CE0004 /* NationalDay29x29@1x.png in Resources */ = {isa = PBXBuildFile; fileRef = DDDDDDDDDDDDDDFA11CE0004 /* NationalDay29x29@1x.png */; };
+		DDDDDDDDDDDDDDBB11CE0005 /* NationalDay29x29@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = DDDDDDDDDDDDDDFA11CE0005 /* NationalDay29x29@2x.png */; };
+		DDDDDDDDDDDDDDBB11CE0006 /* NationalDay29x29@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = DDDDDDDDDDDDDDFA11CE0006 /* NationalDay29x29@3x.png */; };
+		DDDDDDDDDDDDDDBB11CE0007 /* NationalDay40x40@1x.png in Resources */ = {isa = PBXBuildFile; fileRef = DDDDDDDDDDDDDDFA11CE0007 /* NationalDay40x40@1x.png */; };
+		DDDDDDDDDDDDDDBB11CE0008 /* NationalDay40x40@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = DDDDDDDDDDDDDDFA11CE0008 /* NationalDay40x40@2x.png */; };
+		DDDDDDDDDDDDDDBB11CE0009 /* NationalDay40x40@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = DDDDDDDDDDDDDDFA11CE0009 /* NationalDay40x40@3x.png */; };
+		DDDDDDDDDDDDDDBB11CE000A /* NationalDay60x60@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = DDDDDDDDDDDDDDFA11CE000A /* NationalDay60x60@2x.png */; };
+		DDDDDDDDDDDDDDBB11CE000B /* NationalDay60x60@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = DDDDDDDDDDDDDDFA11CE000B /* NationalDay60x60@3x.png */; };
+		DDDDDDDDDDDDDDBB11CE000C /* NationalDay76x76@1x.png in Resources */ = {isa = PBXBuildFile; fileRef = DDDDDDDDDDDDDDFA11CE000C /* NationalDay76x76@1x.png */; };
+		DDDDDDDDDDDDDDBB11CE000D /* NationalDay76x76@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = DDDDDDDDDDDDDDFA11CE000D /* NationalDay76x76@2x.png */; };
+		DDDDDDDDDDDDDDBB11CE000E /* NationalDay83.5x83.5@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = DDDDDDDDDDDDDDFA11CE000E /* NationalDay83.5x83.5@2x.png */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -127,6 +143,7 @@
 		74858FAE1ED2DC5600515810 /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		A1B2C3D4E5F60718293A4B5C /* AudioCoordinationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioCoordinationManager.swift; sourceTree = "<group>"; };
 		B2C3D4E5F60718293A4B5D6F /* AppIconQuickActionChannel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppIconQuickActionChannel.swift; sourceTree = "<group>"; };
+		E5F60718293A4B5D6E7F8092 /* LauncherIconChannel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LauncherIconChannel.swift; sourceTree = "<group>"; };
 		C3D4E5F60718293A4B5D6E71 /* NativeRadioPlayer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NativeRadioPlayer.swift; sourceTree = "<group>"; };
 		7A79FDAEAB8227BD8CC1ACCB /* Pods-InsiderNotificationContent.release-stg.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-InsiderNotificationContent.release-stg.xcconfig"; path = "Target Support Files/Pods-InsiderNotificationContent/Pods-InsiderNotificationContent.release-stg.xcconfig"; sourceTree = "<group>"; };
 		7AFA3C8E1D35360C0083082E /* Release.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; name = Release.xcconfig; path = Flutter/Release.xcconfig; sourceTree = "<group>"; };
@@ -184,6 +201,21 @@
 		F6FE3E0A2D1126030011838B /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		F6FE3E0C2D1126030011838B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		F6FE3E1E2D1146470011838B /* MovingViolationsExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = MovingViolationsExtension.entitlements; sourceTree = "<group>"; };
+		DDDDDDDDDDDDDDFA11CE0000 /* NationalDay1024.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "NationalDay1024.png"; sourceTree = "<group>"; };
+		DDDDDDDDDDDDDDFA11CE0001 /* NationalDay20x20@1x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "NationalDay20x20@1x.png"; sourceTree = "<group>"; };
+		DDDDDDDDDDDDDDFA11CE0002 /* NationalDay20x20@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "NationalDay20x20@2x.png"; sourceTree = "<group>"; };
+		DDDDDDDDDDDDDDFA11CE0003 /* NationalDay20x20@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "NationalDay20x20@3x.png"; sourceTree = "<group>"; };
+		DDDDDDDDDDDDDDFA11CE0004 /* NationalDay29x29@1x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "NationalDay29x29@1x.png"; sourceTree = "<group>"; };
+		DDDDDDDDDDDDDDFA11CE0005 /* NationalDay29x29@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "NationalDay29x29@2x.png"; sourceTree = "<group>"; };
+		DDDDDDDDDDDDDDFA11CE0006 /* NationalDay29x29@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "NationalDay29x29@3x.png"; sourceTree = "<group>"; };
+		DDDDDDDDDDDDDDFA11CE0007 /* NationalDay40x40@1x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "NationalDay40x40@1x.png"; sourceTree = "<group>"; };
+		DDDDDDDDDDDDDDFA11CE0008 /* NationalDay40x40@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "NationalDay40x40@2x.png"; sourceTree = "<group>"; };
+		DDDDDDDDDDDDDDFA11CE0009 /* NationalDay40x40@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "NationalDay40x40@3x.png"; sourceTree = "<group>"; };
+		DDDDDDDDDDDDDDFA11CE000A /* NationalDay60x60@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "NationalDay60x60@2x.png"; sourceTree = "<group>"; };
+		DDDDDDDDDDDDDDFA11CE000B /* NationalDay60x60@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "NationalDay60x60@3x.png"; sourceTree = "<group>"; };
+		DDDDDDDDDDDDDDFA11CE000C /* NationalDay76x76@1x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "NationalDay76x76@1x.png"; sourceTree = "<group>"; };
+		DDDDDDDDDDDDDDFA11CE000D /* NationalDay76x76@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "NationalDay76x76@2x.png"; sourceTree = "<group>"; };
+		DDDDDDDDDDDDDDFA11CE000E /* NationalDay83.5x83.5@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "NationalDay83.5x83.5@2x.png"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -331,6 +363,21 @@
 		97C146F01CF9000F007C117D /* Runner */ = {
 			isa = PBXGroup;
 			children = (
+				DDDDDDDDDDDDDDFA11CE0000 /* NationalDay1024.png */,
+				DDDDDDDDDDDDDDFA11CE0001 /* NationalDay20x20@1x.png */,
+				DDDDDDDDDDDDDDFA11CE0002 /* NationalDay20x20@2x.png */,
+				DDDDDDDDDDDDDDFA11CE0003 /* NationalDay20x20@3x.png */,
+				DDDDDDDDDDDDDDFA11CE0004 /* NationalDay29x29@1x.png */,
+				DDDDDDDDDDDDDDFA11CE0005 /* NationalDay29x29@2x.png */,
+				DDDDDDDDDDDDDDFA11CE0006 /* NationalDay29x29@3x.png */,
+				DDDDDDDDDDDDDDFA11CE0007 /* NationalDay40x40@1x.png */,
+				DDDDDDDDDDDDDDFA11CE0008 /* NationalDay40x40@2x.png */,
+				DDDDDDDDDDDDDDFA11CE0009 /* NationalDay40x40@3x.png */,
+				DDDDDDDDDDDDDDFA11CE000A /* NationalDay60x60@2x.png */,
+				DDDDDDDDDDDDDDFA11CE000B /* NationalDay60x60@3x.png */,
+				DDDDDDDDDDDDDDFA11CE000C /* NationalDay76x76@1x.png */,
+				DDDDDDDDDDDDDDFA11CE000D /* NationalDay76x76@2x.png */,
+				DDDDDDDDDDDDDDFA11CE000E /* NationalDay83.5x83.5@2x.png */,
 				1E130FCF2A3EA8D40005BE7A /* Runner.entitlements */,
 				97C146FA1CF9000F007C117D /* Main.storyboard */,
 				97C146FD1CF9000F007C117D /* Assets.xcassets */,
@@ -342,6 +389,7 @@
 				74858FAE1ED2DC5600515810 /* AppDelegate.swift */,
 				A1B2C3D4E5F60718293A4B5C /* AudioCoordinationManager.swift */,
 				B2C3D4E5F60718293A4B5D6F /* AppIconQuickActionChannel.swift */,
+				E5F60718293A4B5D6E7F8092 /* LauncherIconChannel.swift */,
 				C3D4E5F60718293A4B5D6E71 /* NativeRadioPlayer.swift */,
 				98F4D4E02C6CB1B900CFF6EB /* SceneDelegate.swift */,
 				74858FAD1ED2DC5600515810 /* Runner-Bridging-Header.h */,
@@ -522,6 +570,21 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DDDDDDDDDDDDDDBB11CE0000 /* NationalDay1024.png in Resources */,
+				DDDDDDDDDDDDDDBB11CE0001 /* NationalDay20x20@1x.png in Resources */,
+				DDDDDDDDDDDDDDBB11CE0002 /* NationalDay20x20@2x.png in Resources */,
+				DDDDDDDDDDDDDDBB11CE0003 /* NationalDay20x20@3x.png in Resources */,
+				DDDDDDDDDDDDDDBB11CE0004 /* NationalDay29x29@1x.png in Resources */,
+				DDDDDDDDDDDDDDBB11CE0005 /* NationalDay29x29@2x.png in Resources */,
+				DDDDDDDDDDDDDDBB11CE0006 /* NationalDay29x29@3x.png in Resources */,
+				DDDDDDDDDDDDDDBB11CE0007 /* NationalDay40x40@1x.png in Resources */,
+				DDDDDDDDDDDDDDBB11CE0008 /* NationalDay40x40@2x.png in Resources */,
+				DDDDDDDDDDDDDDBB11CE0009 /* NationalDay40x40@3x.png in Resources */,
+				DDDDDDDDDDDDDDBB11CE000A /* NationalDay60x60@2x.png in Resources */,
+				DDDDDDDDDDDDDDBB11CE000B /* NationalDay60x60@3x.png in Resources */,
+				DDDDDDDDDDDDDDBB11CE000C /* NationalDay76x76@1x.png in Resources */,
+				DDDDDDDDDDDDDDBB11CE000D /* NationalDay76x76@2x.png in Resources */,
+				DDDDDDDDDDDDDDBB11CE000E /* NationalDay83.5x83.5@2x.png in Resources */,
 				44C538792A6AC53C003D7D2B /* dgissdk.key in Resources */,
 				97C147011CF9000F007C117D /* LaunchScreen.storyboard in Resources */,
 				3B3967161E833CAA004F5970 /* AppFrameworkInfo.plist in Resources */,
@@ -734,6 +797,7 @@
 				74858FAF1ED2DC5600515810 /* AppDelegate.swift in Sources */,
 				A1B2C3D4E5F60718293A4B5D /* AudioCoordinationManager.swift in Sources */,
 				B2C3D4E5F60718293A4B5D6E /* AppIconQuickActionChannel.swift in Sources */,
+				E5F60718293A4B5D6E7F8091 /* LauncherIconChannel.swift in Sources */,
 				C3D4E5F60718293A4B5D6E70 /* NativeRadioPlayer.swift in Sources */,
 				1498D2341E8E89220040F4C2 /* GeneratedPluginRegistrant.m in Sources */,
 				98F4D4E12C6CB1B900CFF6EB /* SceneDelegate.swift in Sources */,

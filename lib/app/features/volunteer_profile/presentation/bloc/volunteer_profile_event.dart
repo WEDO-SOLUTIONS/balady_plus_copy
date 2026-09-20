@@ -127,6 +127,10 @@ class UpdateVolunteeringInterests extends VolunteerProfileEvent {
   final String? volunteeringLevelId;
   final String? volunteeringWorkField;
   final String? volunteeringWorkFieldId;
+  final String? volunteeringService;
+  final String? volunteeringServiceId;
+  final String? volunteeringDomainServiceId;
+  final List<String>? volunteeringDomainServiceNames;
   final String? volunteeringType;
   final bool? isIndividualSelected;
   final bool? isGroupSelected;
@@ -142,6 +146,10 @@ class UpdateVolunteeringInterests extends VolunteerProfileEvent {
     this.volunteeringLevelId,
     this.volunteeringWorkField,
     this.volunteeringWorkFieldId,
+    this.volunteeringService,
+    this.volunteeringServiceId,
+    this.volunteeringDomainServiceId,
+    this.volunteeringDomainServiceNames,
     this.volunteeringType,
     this.isIndividualSelected,
     this.isGroupSelected,
@@ -159,6 +167,10 @@ class UpdateVolunteeringInterests extends VolunteerProfileEvent {
         volunteeringLevelId,
         volunteeringWorkField,
         volunteeringWorkFieldId,
+        volunteeringService,
+        volunteeringServiceId,
+        volunteeringDomainServiceId,
+        volunteeringDomainServiceNames,
         volunteeringType,
         isIndividualSelected,
         isGroupSelected,
@@ -262,6 +274,14 @@ class FetchInterests extends VolunteerProfileEvent {
 
 class FetchVolunteeringFields extends VolunteerProfileEvent {
   const FetchVolunteeringFields();
+}
+
+class FetchVolunteeringServices extends VolunteerProfileEvent {
+  final String parentId;
+  const FetchVolunteeringServices(this.parentId);
+
+  @override
+  List<Object?> get props => [parentId];
 }
 
 class FetchBloodTypes extends VolunteerProfileEvent {
