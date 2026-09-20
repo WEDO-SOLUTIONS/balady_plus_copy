@@ -29,8 +29,10 @@ import 'package:mapness/features/routing/ui/routes_carousel.dart';
 import 'package:mapness/pages/path_nav/path_nav_page.dart';
 import 'package:mapness/pages/routing/lib/route_point_extension.dart';
 import 'package:mapness/pages/routing/ui/routing_tab_bar.dart';
+import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/extensions/double_ext.dart';
 import 'package:mapness/shared/lib/common_functions.dart';
+import 'package:mapness/features/balady_analytics/metrics.dart';
 import 'package:mapness/shared/providers/car_connection.dart';
 import 'package:mapness/shared/providers/location.dart';
 import 'package:mapness/shared/providers/map/camera_position.dart';
@@ -70,16 +72,52 @@ class _RoutingInfoState extends ConsumerState<RoutingInfo> {
 
   bool _navigationStarted = false;
   RouteSearchOptionsMessage? _lockedNavType;
+  RouteParamsPoint? _myLocationStop;
 
   RouteSearchOptionsMessage get _initialNavType => widget.navType ?? _defaultNavType;
 
   @override
   void initState() {
     super.initState();
+    _captureMyLocationStop();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _initialize();
       _updateIntermediateStopMarkers();
     });
+  }
+
+  void _captureMyLocationStop() {
+    final position = ref.read(locationProvider);
+    if (position == null) {
+      return;
+    }
+
+    _myLocationStop = RouteParamsPoint(latitude: position.latitude, longitude: position.longitude);
+  }
+
+  bool get _hasMyLocationInTheMiddle {
+    final points = widget.pointsWithLabel;
+    return points.length > 2 && points.sublist(1, points.length - 1).any((point) => point.value == null);
+  }
+
+  List<RouteParamsPointWithLabel> get _resolvedPointsWithLabel {
+    final points = widget.pointsWithLabel;
+    final myLocationStop = _myLocationStop;
+
+    if (points.length <= 2 || myLocationStop == null) {
+      return points;
+    }
+
+    return [
+      points.first,
+      ...points
+          .sublist(1, points.length - 1)
+          .map(
+            (point) =>
+                point.value == null ? RouteParamsPointWithLabel(value: myLocationStop, label: point.label) : point,
+          ),
+      points.last,
+    ];
   }
 
   Future<void> _initialize() async {
@@ -158,6 +196,7 @@ class _RoutingInfoState extends ConsumerState<RoutingInfo> {
     super.didUpdateWidget(oldWidget);
     // if points have changed we need to recalculate nav type
     if (!const DeepCollectionEquality().equals(oldWidget.points, widget.points)) {
+      _captureMyLocationStop();
       _initializeNavType();
       _updateIntermediateStopMarkers();
     }
@@ -276,11 +315,12 @@ class _RoutingInfoState extends ConsumerState<RoutingInfo> {
     await manager.removeAllMarkers();
 
     // Get intermediate points (all except first and last)
-    if (widget.pointsWithLabel.length <= 2) {
+    final points = _resolvedPointsWithLabel;
+    if (points.length <= 2) {
       return;
     }
 
-    final intermediatePoints = widget.pointsWithLabel.sublist(1, widget.pointsWithLabel.length - 1);
+    final intermediatePoints = points.sublist(1, points.length - 1);
     if (intermediatePoints.isEmpty) {
       return;
     }
@@ -364,6 +404,14 @@ class _RoutingInfoState extends ConsumerState<RoutingInfo> {
             ..invalidate(publicTransportRoutesProvider)
             ..invalidate(publicTransportVisibilityProvider);
         }
+      })
+      ..listen(locationProvider, (previous, next) {
+        if (_myLocationStop != null || next == null || !_hasMyLocationInTheMiddle) {
+          return;
+        }
+
+        setState(_captureMyLocationStop);
+        _updateIntermediateStopMarkers();
       });
 
     return ValueListenableBuilder(
@@ -376,7 +424,8 @@ class _RoutingInfoState extends ConsumerState<RoutingInfo> {
         return ValueListenableBuilder(
           valueListenable: _navType,
           builder: (context, navigatingType, _) {
-            final intermediatePoints = widget.points.getIntermediatePoints();
+            final resolvedPoints = _resolvedPointsWithLabel;
+            final intermediatePoints = resolvedPoints.getIntermediatePointsWithLabels();
 
             final routes = ref.watch(
               routesProvider(
@@ -402,7 +451,7 @@ class _RoutingInfoState extends ConsumerState<RoutingInfo> {
               children: [
                 Spacing.$4x.heightBox,
                 RoutesCarousel(
-                  points: widget.pointsWithLabel,
+                  points: resolvedPoints,
                   startNavigation: (route) => _startNavigation(route, navigatingType),
                   navType: navigatingType,
                   publicTransportVisibility: publicTransportVisibility,
@@ -458,6 +507,12 @@ class _RoutingInfoState extends ConsumerState<RoutingInfo> {
 
       ref.read(appAnalyticsProvider).transportModeSelected(type: navigatingType.name);
 
+      Metrics.logEventAdvanced(
+        MetricsConstants.routesKeys.routeSelectionGoButton,
+        group: MetricsConstants.routesTag,
+        action: MetricAction.tap.toString(),
+      );
+
       // log advert analytics event
       ref.read(advertMetricsProvider.notifier).sendEvent(AdvertMetricsKeys.navigationRoutingStartedJorney);
       ref
@@ -472,10 +527,11 @@ class _RoutingInfoState extends ConsumerState<RoutingInfo> {
             .track('startNavigation', properties: {'duration': route.duration, 'distance': route.distance}),
         tag: 'routingInfo.track',
       );
-
       await ref
           .read(currentRouteProvider.notifier)
-          .setNavigationState(CurrentRouteState(points: widget.pointsWithLabel, navType: navigatingType, route: route));
+          .setNavigationState(
+            CurrentRouteState(points: _resolvedPointsWithLabel, navType: navigatingType, route: route),
+          );
       ref.read(currentNavigationDestinationProvider.notifier).state = widget.pointsWithLabel.lastOrNull?.value;
 
       await context.router.pushAndPopUntil(
@@ -534,6 +590,17 @@ class _RoutingInfoState extends ConsumerState<RoutingInfo> {
   }
 
   void _onChanged(RouteSearchOptionsMessage routeSearch) {
+    Metrics.logEventAdvanced(
+      MetricsConstants.routesKeys.routeSelectionChangeNavType,
+      group: MetricsConstants.routesTag,
+      action: MetricAction.tap.toString(),
+      props: {
+        'navType': routeSearch.name,
+        'points':
+            '[${widget.points.map((e) => 'objectId: ${e?.objectId} coords: ${e?.latitude}, ${e?.longitude}').join(', ')}]',
+      },
+    );
+
     ref.read(routesUpdateTabProvider.notifier).update = routeSearch;
     _navType.value = routeSearch;
   }

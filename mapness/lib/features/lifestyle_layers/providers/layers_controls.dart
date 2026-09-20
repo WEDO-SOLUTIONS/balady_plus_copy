@@ -6,10 +6,10 @@ import 'package:dgis_map/library.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:mapness/shared/lib/geo/geo_utils.dart';
 import 'package:mapness/_generated/assets/assets.gen.dart';
 import 'package:mapness/app/auto_route/app_routes.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
+import 'package:mapness/features/balady_analytics/metrics.dart';
 import 'package:mapness/features/favourites/providers/favourite_markers.dart';
 import 'package:mapness/features/iwish/providers/iwish_markers.dart';
 import 'package:mapness/features/jeddah_bus/provider.dart';
@@ -38,8 +38,11 @@ import 'package:mapness/features/satellite/providers/satellite_map_controller.da
 import 'package:mapness/features/shuttle_bus/provider.dart';
 import 'package:mapness/features/shuttle_bus/repo.dart';
 import 'package:mapness/features/shuttle_bus/visible_provider.dart';
+import 'package:mapness/l10n/generated/app_localizations_en.dart';
 import 'package:mapness/shared/config/environment_config.dart';
 import 'package:mapness/shared/constants/constants.dart';
+import 'package:mapness/shared/constants/metrics_constants.dart';
+import 'package:mapness/shared/lib/geo/geo_utils.dart';
 import 'package:mapness/shared/providers/dgis_environment.dart';
 import 'package:mapness/shared/providers/location.dart';
 import 'package:mapness/shared/providers/map/camera_position.dart';
@@ -438,6 +441,12 @@ class LayersControls extends _$LayersControls {
   void setSelection({LayerType? selectedType}) {
     if (selectedType != null) {
       _saveLayersState(selectedType);
+      Metrics.logEventAdvanced(
+        MetricsConstants.layersKeys.layerSelect,
+        group: MetricsConstants.layersTag,
+        action: MetricAction.tap.toString(),
+        props: {'type': selectedType.titleLocale(AppLocalizationsEn())},
+      );
     } else {
       _removeLayersState();
 
@@ -1034,6 +1043,12 @@ class LayersControls extends _$LayersControls {
     logger.log(
       'layers: toggleTraffic wasEnabled=$wasEnabled selectedType=$currentState',
       logLevel: MapnessLogLevel.info,
+    );
+
+    Metrics.logEventAdvanced(
+      MetricsConstants.exploreKeys.trafficLightButton,
+      group: MetricsConstants.exploreTag,
+      action: MetricAction.tap.name,
     );
 
     // BALADY-3615: when enabling traffic while another overlay is on, hide

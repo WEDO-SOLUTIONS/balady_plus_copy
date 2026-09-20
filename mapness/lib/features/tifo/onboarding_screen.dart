@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:mapness/features/balady_analytics/events/tifo_events.dart' show TifoActivationSource;
 import 'package:mapness/features/tifo/team_select_screen.dart';
 import 'package:mapness/l10n/generated/app_localizations.dart';
 
@@ -489,7 +490,9 @@ class _BottomCta extends StatelessWidget {
                 Navigator.of(context).push<void>(
                   MaterialPageRoute<void>(
                     fullscreenDialog: true,
-                    builder: (_) => const TifoTeamSelectScreen(),
+                    // This legacy full-screen intro is the game's own
+                    // banner, not one of the play-gate entry points.
+                    builder: (_) => const TifoTeamSelectScreen(source: TifoActivationSource.banner),
                   ),
                 );
               },

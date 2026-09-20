@@ -6,6 +6,8 @@ import 'package:balady_plus/app/features/location/domain/use_cases/get_gis_data.
 import 'package:balady_plus/app/features/location/gis_response_model.dart';
 import 'package:dgis_map/library.dart';
 import 'package:equatable/equatable.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:geolocator/geolocator.dart';
 
@@ -23,6 +25,9 @@ class LocationCubit extends Cubit<LocationState> {
 
   LocationCubit() : _getGISData = GetGISData(repository: sl()), super(const LocationState());
 
+  bool _permissionRequestInFlight = false;
+  AppLifecycleListener? _resumeRetry;
+
   /// Clears the one-shot success flag so the page does not react to it twice.
   /// Lives here because `emit` is protected: the page used to call it directly.
   void resetRequestsStatus() {
@@ -30,27 +35,69 @@ class LocationCubit extends Cubit<LocationState> {
   }
 
   Future<void> getLocationPermission() async {
-    perm.ServiceStatus? serviceStatus = await perm.Permission.location.serviceStatus;
-    if (serviceStatus != perm.ServiceStatus.disabled) {
+    // Fires from AuthCubit's post-frame AND from every resume of
+    // AcquireLocationPage - two concurrent request() calls get rejected by
+    // the platform side just like the no-Activity case.
+    if (_permissionRequestInFlight) {
+      return;
+    }
+    // permission_handler needs an attached foreground Activity. A request from
+    // the background throws PlatformException(Unable to detect current Android
+    // Activity) - that flood was 43% of all our exception traffic. `null`
+    // lifecycle = cold start before the first lifecycle event: proceed, the
+    // catch below covers the rare loss of the race with Activity attach.
+    final lifecycle = WidgetsBinding.instance.lifecycleState;
+    if (lifecycle != null && lifecycle != AppLifecycleState.resumed) {
+      _scheduleRetryOnResume();
+      return;
+    }
+    _permissionRequestInFlight = true;
+    try {
+      perm.ServiceStatus? serviceStatus = await perm.Permission.location.serviceStatus;
+      if (serviceStatus == perm.ServiceStatus.disabled) {
+        emit(state.copyWith(locationServiceStatus: BlocStatus.locationServiceFailed));
+        return;
+      }
       emit(state.copyWith(locationServiceStatus: BlocStatus.locationServiceSuceess));
 
+      // Exactly one request: the OS never re-prompts for a just-denied
+      // permission in the same foreground pass, so the old immediate second
+      // request() was pure noise doubling the no-Activity exposure window.
       var status = await perm.Permission.location.request();
-      if (status == perm.PermissionStatus.permanentlyDenied) {
-        emit(state.copyWith(locationPermissionStatus: BlocStatus.locationPermissionFailed));
-      } else if (status != perm.PermissionStatus.granted) {
-        PermissionStatus status = await perm.Permission.location.request();
-
-        if (status == perm.PermissionStatus.granted) {
-          emit(state.copyWith(locationPermissionStatus: BlocStatus.locationPermissionSuceess));
-        } else {
-          emit(state.copyWith(locationPermissionStatus: BlocStatus.locationPermissionFailed));
-        }
-      } else {
-        emit(state.copyWith(locationPermissionStatus: BlocStatus.locationPermissionSuceess));
-      }
-    } else {
-      emit(state.copyWith(locationServiceStatus: BlocStatus.locationServiceFailed));
+      emit(
+        state.copyWith(
+          locationPermissionStatus: status == perm.PermissionStatus.granted
+              ? BlocStatus.locationPermissionSuceess
+              : BlocStatus.locationPermissionFailed,
+        ),
+      );
+    } on PlatformException {
+      // No Activity attached (cold start race / backgrounded mid-request).
+      // Silent one-shot retry on the next resume instead of a report.
+      _scheduleRetryOnResume();
+    } finally {
+      _permissionRequestInFlight = false;
     }
+  }
+
+  void _scheduleRetryOnResume() {
+    if (_resumeRetry != null) {
+      return;
+    }
+    _resumeRetry = AppLifecycleListener(
+      onResume: () {
+        _resumeRetry?.dispose();
+        _resumeRetry = null;
+        getLocationPermission();
+      },
+    );
+  }
+
+  @override
+  Future<void> close() {
+    _resumeRetry?.dispose();
+    _resumeRetry = null;
+    return super.close();
   }
 
   Future<void> getLocationData() async {

@@ -70,6 +70,14 @@ log in the backend shape `{kick: 1-based, result: 'goal'|'miss'}`
 (anything else gets the play session voided server-side — this bit us once:
 the original `{index, outcome, atMs}` shape silently voided every session).
 
+`PenaltyGame.forfeit({required TifoShootoutEnd reason})` now carries *why* a run
+ended early instead of collapsing every non-natural end into one "forfeit" case:
+`TifoShootoutEnd { completed, forfeitExit, forfeitAfk, connectionLost }`
+(`data/tifo_models.dart`), stored on `TifoShootoutOutcome`. `building_sheet.dart`
+maps it onto the `tifo_play_exit` analytics event's `reason` (see
+`docs/analytics-tracking-plan.md`): `user_quit`, `timeout`, `connection_lost`,
+`backgrounded`, `completed`.
+
 ### Rendering models
 
 No Flame `SpriteComponent`s — the actors are custom canvas painters:

@@ -3,7 +3,6 @@ import 'package:balady_plus/app/features/accecipilities/life_sycle_event_handler
 import 'package:dgis_map/dgis_map_controller.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-
 import 'package:shared_preferences/shared_preferences.dart';
 
 class AccessibilityController extends ChangeNotifier {
@@ -36,7 +35,7 @@ class AccessibilityController extends ChangeNotifier {
   // Platform integration
   bool followSystemSettings = true;
 
-  static Map<FontWeight, String> fontWeightLabels = {
+  static final Map<FontWeight, String> fontWeightLabels = {
     FontWeight.w100: 'Thin',
     FontWeight.w300: 'Light',
     FontWeight.w400: 'Regular',

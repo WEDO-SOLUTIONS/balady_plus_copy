@@ -5,6 +5,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/app/auto_route/app_routes.dart';
+import 'package:mapness/features/balady_analytics/events/tifo_events.dart';
 import 'package:mapness/features/tifo/data/tifo_activity_log.dart';
 import 'package:mapness/features/tifo/data/tifo_api.dart';
 import 'package:mapness/features/tifo/data/tifo_debug_collider_overlay.dart';
@@ -23,6 +24,40 @@ import 'package:mapness/l10n/generated/app_localizations.dart';
 import 'package:mapness/shared/providers/app_language.dart';
 import 'package:mapness/shared/utils/detach.dart';
 import 'package:mapness/shared/utils/logger/logger.dart';
+
+/// Which call-to-action the building sheet shows, and therefore whether the
+/// sheet is refusing a play intent at all.
+enum TifoBuildingCta {
+  play,
+
+  /// The player's own club already holds this building (the server 409s).
+  ownBuilding,
+
+  notPlayReady,
+
+  /// Someone else has a live session on it ("Hold on…").
+  live,
+
+  cooldown,
+}
+
+/// Derives the sheet's CTA state. Pure on purpose: `build()` renders it and
+/// `tifo_blocked` reports it, so the event can never disagree with what the
+/// player is actually looking at.
+TifoBuildingCta tifoBuildingCta({
+  required TifoBuilding building,
+  required bool isPlayReady,
+  required String? myClubId,
+}) {
+  final isOwnBuilding = building.ownerClubSlug != null && building.ownerClubSlug == myClubId;
+  if (isOwnBuilding) {
+    return TifoBuildingCta.ownBuilding;
+  }
+  if (building.isAvailable) {
+    return isPlayReady ? TifoBuildingCta.play : TifoBuildingCta.notPlayReady;
+  }
+  return building.status == 'live' ? TifoBuildingCta.live : TifoBuildingCta.cooldown;
+}
 
 /// Opens the capture sheet for [building] on the root navigator, so it floats
 /// above the map regardless of who triggered it (a polygon tap from the map
@@ -52,6 +87,14 @@ class _TifoBuildingSheetState extends ConsumerState<_TifoBuildingSheet> {
   bool _isBusy = false;
   String? _error;
 
+  /// Phase the current shootout run is in, for `tifo_play_exit`.
+  TifoPlayPhase _playPhase = TifoPlayPhase.aiming;
+
+  /// Exactly one `tifo_play_exit` per shootout run. Reset in [_runShootout];
+  /// this call site is the only place that knows where a run begins and ends,
+  /// which is why the guard lives here and not in `TifoEvents`.
+  bool _playExitReported = true;
+
   /// Captured before the sheet is popped so the post-game submit (which runs
   /// after this State is disposed) can still read providers.
   ProviderContainer? _container;
@@ -61,6 +104,58 @@ class _TifoBuildingSheetState extends ConsumerState<_TifoBuildingSheet> {
   /// the pre-capture values (e.g. the owner BEFORE this attempt on the result
   /// screen) — keep it frozen; `build()` renders the live cache entry instead.
   TifoBuilding get _building => widget.building;
+
+  @override
+  void initState() {
+    super.initState();
+    // Once per sheet open: a sheet that opens with its CTA already disabled is
+    // the UI refusing a play intent before the player even taps.
+    WidgetsBinding.instance.addPostFrameCallback((_) => _reportOpenBlock());
+  }
+
+  /// `tifo_blocked` for a sheet that cannot be played right now. Only the two mechanics states
+  /// are reported — `notPlayReady` is an unmet gate already reported by the gate walk, and
+  /// `ownBuilding` is a rule, not friction.
+  void _reportOpenBlock() {
+    if (!mounted) {
+      return;
+    }
+    final session = ref.read(tifoSessionProvider);
+    final live = ref.read(tifoBuildingsProvider).byId[widget.building.id] ?? widget.building;
+    final cta = tifoBuildingCta(building: live, isPlayReady: session.isPlayReady, myClubId: session.myClub?.id);
+    switch (cta) {
+      case TifoBuildingCta.cooldown:
+        unawaited(TifoEvents.blocked(reason: TifoBlockReason.cooldown, surface: TifoSurface.building));
+      case TifoBuildingCta.live:
+        unawaited(TifoEvents.blocked(reason: TifoBlockReason.buildingLocked, surface: TifoSurface.building));
+      case TifoBuildingCta.play:
+      case TifoBuildingCta.ownBuilding:
+      case TifoBuildingCta.notPlayReady:
+        break;
+    }
+  }
+
+  /// Reports how this shootout run ended, once. [_playPhase] is whatever the run had reached.
+  /// [outcome] is the server's verdict — known only for the natural end (see [_submit]);
+  /// every other exit leaves before it answers.
+  void _reportPlayExit(TifoPlayExitReason reason, {TifoPlayOutcome? outcome}) {
+    if (_playExitReported) {
+      return;
+    }
+    _playExitReported = true;
+    TifoEvents.playExit(phase: _playPhase, reason: reason, outcome: outcome);
+  }
+
+  /// The API's verdict as the analytics enum. [TifoOutcome.unknown] (an unrecognized string)
+  /// maps to null so the property is omitted, rather than folded into `voided` and read as a
+  /// server-side void that never happened.
+  static TifoPlayOutcome? _analyticsOutcome(TifoOutcome outcome) => switch (outcome) {
+    TifoOutcome.claimed => TifoPlayOutcome.claimed,
+    TifoOutcome.taken => TifoPlayOutcome.taken,
+    TifoOutcome.failed => TifoPlayOutcome.failed,
+    TifoOutcome.voided => TifoPlayOutcome.voided,
+    TifoOutcome.unknown => null,
+  };
 
   @override
   Widget build(BuildContext context) {
@@ -84,6 +179,7 @@ class _TifoBuildingSheetState extends ConsumerState<_TifoBuildingSheet> {
     // opened and closed again. Block the CTA up front instead.
     final isOwnBuilding = live.ownerClubSlug != null && live.ownerClubSlug == session.myClub?.id;
     final standingDays = live.standingDays;
+    final cta = tifoBuildingCta(building: live, isPlayReady: canChallenge, myClubId: session.myClub?.id);
 
     return SafeArea(
       top: false,
@@ -260,20 +356,20 @@ class _TifoBuildingSheetState extends ConsumerState<_TifoBuildingSheet> {
             ],
             const SizedBox(height: 20),
 
-            // CTA by status.
-            if (live.isAvailable && canChallenge && !isOwnBuilding)
-              TifoPrimaryButton(
+            // CTA by status — one derivation, shared with `tifo_blocked` so
+            // the event can never disagree with the button on screen.
+            switch (cta) {
+              TifoBuildingCta.play => TifoPrimaryButton(
                 label: isClaim ? l10n.tifoClaimBuilding : l10n.tifoChallenge,
                 leadingEmoji: '⚽',
                 busy: _isBusy,
                 onPressed: _isBusy ? null : _onPlayPressed,
-              )
-            else if (isOwnBuilding)
-              _disabledBar(l10n.tifoOwnBuildingHint)
-            else if (live.isAvailable)
-              _disabledBar(l10n.tifoNotPlayReady)
-            else
-              _disabledBar(live.status == 'live' ? l10n.tifoBuildingLiveHint : l10n.tifoBuildingCooldownHint),
+              ),
+              TifoBuildingCta.ownBuilding => _disabledBar(l10n.tifoOwnBuildingHint),
+              TifoBuildingCta.notPlayReady => _disabledBar(l10n.tifoNotPlayReady),
+              TifoBuildingCta.live => _disabledBar(l10n.tifoBuildingLiveHint),
+              TifoBuildingCta.cooldown => _disabledBar(l10n.tifoBuildingCooldownHint),
+            },
             if (kDebugMode) ...[
               const SizedBox(height: 8),
               SizedBox(
@@ -339,7 +435,7 @@ class _TifoBuildingSheetState extends ConsumerState<_TifoBuildingSheet> {
       _error = null;
     });
 
-    final ready = await TifoJourney(ref).ensurePlayReady(context);
+    final ready = await TifoJourney(ref).ensurePlayReady(context, source: TifoActivationSource.buildingSheet);
     if (!mounted) {
       return;
     }
@@ -363,6 +459,7 @@ class _TifoBuildingSheetState extends ConsumerState<_TifoBuildingSheet> {
 
     final session = ref.read(tifoSessionProvider);
     if ((session.profile?.balance ?? 0) < session.config.challengeCost) {
+      unawaited(TifoEvents.blocked(reason: TifoBlockReason.noTokens, surface: TifoSurface.building));
       setState(() => _isBusy = false);
       final l10n = AppLocalizations.of(context);
       detach(
@@ -404,6 +501,9 @@ class _TifoBuildingSheetState extends ConsumerState<_TifoBuildingSheet> {
     if (navigator == null) {
       return;
     }
+    // A new run: arm the one-shot `tifo_play_exit` guard.
+    _playExitReported = false;
+    _playPhase = TifoPlayPhase.aiming;
     final container = _container!;
     final session = container.read(tifoSessionProvider);
     final missesAllowed = session.config.missesAllowed;
@@ -439,7 +539,11 @@ class _TifoBuildingSheetState extends ConsumerState<_TifoBuildingSheet> {
             goalkeeperDifficulty: container.read(tifoDebugGoalkeeperDifficultyProvider),
             sessionTimeoutSeconds: session.config.liveLockTimeoutSeconds,
             locale: container.read(appLanguageProvider).locale,
-            onReady: (arm) => detach(
+            // The player left the pitch. Reported immediately with the phase
+            // the run had reached; the guard then keeps a later natural end
+            // from reporting a second time.
+            onBackgrounded: () => _reportPlayExit(TifoPlayExitReason.backgrounded),
+            onReady: (arm) => unawaited(
               _openSession(container).then((session) {
                 if (session == null) {
                   return; // start failed — the game route is already gone
@@ -464,6 +568,7 @@ class _TifoBuildingSheetState extends ConsumerState<_TifoBuildingSheet> {
               }
               handled = true;
               logger.log('[tifo] shootout abandoned: device went offline mid-session');
+              _reportPlayExit(TifoPlayExitReason.connectionLost);
               container.read(tifoBuildingsPollerProvider.notifier).start();
               rootNavigatorKey.currentState?.pop();
               _showResult('connection lost mid-shootout', connectionLost: true);
@@ -474,6 +579,19 @@ class _TifoBuildingSheetState extends ConsumerState<_TifoBuildingSheet> {
                 return;
               }
               handled = true;
+              // A forfeited run ends HERE — the submit and result screen that
+              // follow are bookkeeping, not play. A natural end is reported as
+              // `completed` once the result hero is actually up (see [_submit]).
+              switch (outcome.end) {
+                case TifoShootoutEnd.forfeitExit:
+                  _reportPlayExit(TifoPlayExitReason.userQuit);
+                case TifoShootoutEnd.forfeitAfk:
+                  _reportPlayExit(TifoPlayExitReason.timeout);
+                case TifoShootoutEnd.connectionLost:
+                  _reportPlayExit(TifoPlayExitReason.connectionLost);
+                case TifoShootoutEnd.completed:
+                  break;
+              }
               container.read(tifoBuildingsPollerProvider.notifier).start();
               // Short beat so the last GOAL!/MISS! flash is readable, then
               // submit — kept tight because the clock is still running.
@@ -518,6 +636,7 @@ class _TifoBuildingSheetState extends ConsumerState<_TifoBuildingSheet> {
     // The kick log is spelled out (g = goal, m = miss): the backend rejects a
     // session that doesn't end on the allowed miss, and without seeing the
     // sequence a "voided again" report is unreadable.
+    _playPhase = TifoPlayPhase.resultPending;
     final kicks = outcome.events.map((e) => e.scored ? 'g' : 'm').join();
     logger.log(
       '[tifo] submit ${_building.id}: score=${outcome.goals} misses=${outcome.misses} '
@@ -567,7 +686,9 @@ class _TifoBuildingSheetState extends ConsumerState<_TifoBuildingSheet> {
       // Fullscreen Win/Loss/voided hero (US-14); errors keep the small dialog.
       final ctx = rootNavigatorKey.currentContext;
       if (ctx != null) {
-        detach(
+        _playPhase = TifoPlayPhase.resultShown;
+        _reportPlayExit(TifoPlayExitReason.completed, outcome: _analyticsOutcome(result.outcome));
+        unawaited(
           showTifoPenaltyResult(
             ctx,
             result,
@@ -596,6 +717,11 @@ class _TifoBuildingSheetState extends ConsumerState<_TifoBuildingSheet> {
       // token (FR-16). Say so plainly — "Submit failed" reads like a bug and
       // sends testers hunting for one.
       final expired = message.toLowerCase().contains('expired');
+      if (expired) {
+        // The backend voided a session that outlived `expiresAt` — the client
+        // half of the same story `tifo_play_exit` exists to tell.
+        _reportPlayExit(TifoPlayExitReason.timeout);
+      }
       logger.log('[tifo] submit failed${expired ? ' (session expired)' : ''}: $message');
       _showResult('Submit failed: $message', connectionLost: expired, onRetry: _onPlayPressed);
     }
@@ -614,7 +740,7 @@ class _TifoBuildingSheetState extends ConsumerState<_TifoBuildingSheet> {
 
     // Make sure the player is play-ready (logged in + team) — the server
     // rejects a start otherwise.
-    final ready = await TifoJourney(ref).ensurePlayReady(context);
+    final ready = await TifoJourney(ref).ensurePlayReady(context, source: TifoActivationSource.buildingSheet);
     if (!mounted) {
       return;
     }
@@ -648,6 +774,8 @@ class _TifoBuildingSheetState extends ConsumerState<_TifoBuildingSheet> {
       );
     }
     final api = ref.read(tifoApiProvider);
+    // Debug shortcut: no shootout ran, so no `tifo_play_exit` for it.
+    _playExitReported = true;
     try {
       final playSession = await api.startPlay(_building.id);
       // Enough goals to win: claim needs ≥1; challenge needs > scoreToBeat.
@@ -689,6 +817,9 @@ class _TifoBuildingSheetState extends ConsumerState<_TifoBuildingSheet> {
       return;
     }
     logger.log('[tifo] showing failure dialog${connectionLost ? ' (connection lost)' : ''}: $detail');
+    // Every play/start, submit and connection failure the player is actually
+    // shown funnels through here — one `error` report, debounced in TifoEvents.
+    unawaited(TifoEvents.blocked(reason: TifoBlockReason.error, surface: TifoSurface.building));
     final l10n = AppLocalizations.of(ctx);
     detach(
       showTifoMessageDialog<void>(

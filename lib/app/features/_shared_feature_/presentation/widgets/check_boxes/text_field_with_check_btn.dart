@@ -121,7 +121,7 @@ class _TextWithCheckBtnState extends State<TextWithCheckBtn> {
           //             Padding(
           //               padding: const EdgeInsets.symmetric(horizontal: 4),
           //               child: Image.asset(
-          //                 "assets/images/verified@3x.png",
+          //                 "assets/images/verified@3x.webp",
           //                 height: 12,
           //                 width: 12,
           //               ),

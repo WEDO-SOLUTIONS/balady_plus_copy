@@ -19,17 +19,21 @@ class ManeuverEventHandler {
       case "nextHidden":
         return _controller.sink.add(const ManeuverEventHidden());
       case "nextManeuver":
-        if (map['distance'] == null || map['unit'] == null) {
+        if (map['distance'] is! num || map['unit'] == null) {
           return _controller.sink.add(const ManeuverEventHidden());
         }
 
-        final formattedDistance = formatMeters(map['distance']);
+        final instruction = ManeuverInstruction.tryFromString('${map['instruction'] ?? ''}');
+        if (instruction == null) {
+          return _controller.sink.add(const ManeuverEventHidden());
+        }
+        final formattedDistance = formatMeters((map['distance'] as num).toInt());
         return _controller.sink.add(
           ManeuverEvent(
             distance: formattedDistance.value,
             unit: formattedDistance.unit,
-            roadName: map['roadName'],
-            instruction: ManeuverInstruction.fromString(map['instruction']),
+            roadName: '${map['roadName'] ?? ''}',
+            instruction: instruction,
           ),
         );
     }
@@ -42,9 +46,16 @@ class ManeuverEventHandler {
       case "additionalHide":
         return _controller.sink.add(const ManeuverAdditionalEventHidden());
       case "additionalExitName":
-        return _controller.sink.add(ManeuverAdditionalEventExit(map['value']));
+        // The native side sends numeric exit names (exit "12") as int; the
+        // event field is String, and the implicit dynamic downcast threw on
+        // every maneuver event of such an exit. Stringify instead.
+        return _controller.sink.add(ManeuverAdditionalEventExit('${map['value'] ?? ''}'));
       case "additionalIconWithText":
-        return _controller.sink.add(ManeuverAdditionalEventWithIcon(ManeuverInstruction.fromString(map['value'])));
+        final instruction = ManeuverInstruction.tryFromString('${map['value'] ?? ''}');
+        if (instruction == null) {
+          return;
+        }
+        return _controller.sink.add(ManeuverAdditionalEventWithIcon(instruction));
     }
   }
 

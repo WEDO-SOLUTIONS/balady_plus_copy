@@ -117,7 +117,10 @@ class _Header extends StatelessWidget {
           context.l10n.aiSummaryLabel,
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
-          style: palette.labelTextStyle,
+          // Same locale-aware token the address ContentRow title resolves to:
+          // the uikit picks the font family per language (Golos / IBMPlexSansArabic),
+          // which a const palette TextStyle cannot do — see BALADY-3626.
+          style: context.textStyles.bodyLargeSemiBold.copyWith(color: palette.labelTextStyle.color),
         ),
       ),
       const SizedBox(width: AiSummaryTokens.headerSpacing),

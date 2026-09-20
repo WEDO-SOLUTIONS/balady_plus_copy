@@ -89,8 +89,8 @@ class OpportunityMapCard extends StatelessWidget {
                 children: [
                   Image.asset(
                     type == "Investment"
-                        ? "assets/icons/svg/map/investment.png"
-                        : "assets/icons/svg/map/temprental.png",
+                        ? "assets/icons/svg/map/investment.webp"
+                        : "assets/icons/svg/map/temprental.webp",
                     height: 58,
                     width: 58,
                   ),
@@ -156,7 +156,7 @@ class OpportunityMapCard extends StatelessWidget {
                               flex: 1,
                               child: Row(
                                 children: [
-                                  Image.asset('assets/images/map_area_icon.png', height: 12, width: 12),
+                                  Image.asset('assets/images/map_area_icon.webp', height: 12, width: 12),
                                   const SizedBox(width: 6),
                                   Text(
                                     area != null ? ("${area!} م٢ ") : "",

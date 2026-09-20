@@ -38,6 +38,33 @@ class _AppsGroupPageState extends State<AppsGroupPage> {
 
   final FocusNode _searchFocusNode = FocusNode();
 
+  //! Build can re-enter the "group not found" branch on every cubit emit while
+  //! the exit transition is still playing (context.mounted stays true), so an
+  //! unguarded pop per rebuild empties the nested services navigator (only
+  //! home + group live there) and the next pop throws "Bad state: No element".
+  //! One-shot flag + route/stack checks keep it to a single safe pop.
+  bool _autoPopScheduled = false;
+
+  void _autoPopIfGroupMissing() {
+    if (_autoPopScheduled) return;
+    _autoPopScheduled = true;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      final route = ModalRoute.of(context);
+      if (route == null || !route.isCurrent) {
+        // Already popped (or covered) - nothing to pop for this page.
+        _autoPopScheduled = false;
+        return;
+      }
+      final navigator = Navigator.maybeOf(context);
+      if (navigator == null || !navigator.canPop()) {
+        _autoPopScheduled = false;
+        return;
+      }
+      navigator.pop();
+    });
+  }
+
   @override
   void initState() {
     super.initState();
@@ -88,11 +115,7 @@ class _AppsGroupPageState extends State<AppsGroupPage> {
         );
       }
 
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        if (context.mounted) {
-          Navigator.of(context).pop();
-        }
-      });
+      _autoPopIfGroupMissing();
       return const Scaffold(
         backgroundColor: Colors.transparent,
         body: Center(child: CircularProgressIndicator(color: Color(0xFF1CA9A6))),

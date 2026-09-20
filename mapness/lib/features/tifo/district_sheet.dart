@@ -5,6 +5,7 @@ import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/app/auto_route/app_routes.dart';
+import 'package:mapness/features/balady_analytics/events/tifo_events.dart' show TifoActivationSource;
 import 'package:mapness/features/tifo/data/tifo_models.dart';
 import 'package:mapness/features/tifo/providers/tifo_session_provider.dart';
 import 'package:mapness/features/tifo/tifo_journey.dart';
@@ -79,7 +80,7 @@ class _DistrictSheetState extends ConsumerState<_DistrictSheet> {
     if (gateCtx == null) {
       return;
     }
-    final ready = await TifoJourney(ref).ensurePlayReady(gateCtx);
+    final ready = await TifoJourney(ref).ensurePlayReady(gateCtx, source: TifoActivationSource.districtSheet);
     if (!ready || !mounted) {
       return;
     }

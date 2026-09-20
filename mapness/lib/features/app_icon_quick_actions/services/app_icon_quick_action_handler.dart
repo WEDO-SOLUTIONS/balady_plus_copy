@@ -14,7 +14,9 @@ import 'package:mapness/features/app_icon_quick_actions/services/app_icon_quick_
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/features/sso_auth/data/auth_provider.dart';
 import 'package:mapness/l10n/generated/app_localizations.dart';
+import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/lib/auth/auth_methods.dart';
+import 'package:mapness/features/balady_analytics/metrics.dart';
 import 'package:mapness/shared/providers/location.dart';
 import 'package:mapness/shared/providers/urbi_analytics.dart';
 import 'package:mapness/shared/ui/loading/loading_overlay.dart';
@@ -335,6 +337,16 @@ class AppIconQuickActionHandler extends _$AppIconQuickActionHandler {
             },
           ),
       tag: 'appIconQuickActionHandler.track',
+    );
+    Metrics.logEventAdvanced(
+      MetricsConstants.appIconQuickActionsKeys.shortcutHandled,
+      group: MetricsConstants.appIconQuickActionsTag,
+      action: MetricAction.tap.name,
+      props: {
+        'shortcut_key': shortcutKey,
+        'outcome': outcome,
+        if (reason != null) 'reason': reason,
+      },
     );
   }
 }

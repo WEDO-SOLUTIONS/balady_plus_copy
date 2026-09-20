@@ -14,13 +14,13 @@ class _MakkahNearbySection extends StatelessWidget {
     final decoration = colors.isDark
         // Dark Makkah: Figma `1412:36565` ("image 12") composites the grayscale
         // Islamic-pattern asset over `darkSheet` via soft-light @ 0.20. The same
-        // grayscale source ships in-bundle as `ribbon_pattern_dark.png` (md5
+        // grayscale source ships in-bundle as `ribbon_pattern_dark.webp` (md5
         // matches `image-12-dark-pattern.png` from the Figma export). Approximate
         // soft-light by laying the asset at low opacity over a `darkSheet` fill.
         ? const BoxDecoration(
             color: MakkahPoiConstants.darkSheet,
             image: DecorationImage(
-              image: AssetImage('assets/images/themes/makkah/ribbon_pattern_dark.png'),
+              image: AssetImage('assets/images/themes/makkah/ribbon_pattern_dark.webp'),
               matchTextDirection: true,
               fit: BoxFit.fitWidth,
               alignment: Alignment.bottomCenter,
@@ -29,7 +29,7 @@ class _MakkahNearbySection extends StatelessWidget {
           )
         : const BoxDecoration(
             image: DecorationImage(
-              image: AssetImage('assets/images/themes/makkah/places_makkah.png'),
+              image: AssetImage('assets/images/themes/makkah/places_makkah.webp'),
               matchTextDirection: true,
               fit: BoxFit.fitWidth,
               alignment: Alignment.bottomCenter,

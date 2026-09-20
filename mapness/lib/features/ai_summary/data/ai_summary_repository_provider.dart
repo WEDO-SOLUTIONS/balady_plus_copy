@@ -30,7 +30,6 @@ Future<AiSummaryRepository> aiSummaryRepository(Ref ref) async {
   const timeout = Duration(seconds: 30);
   final env = await ref.watch(dgisEnvironmentProvider.future);
 
-  logger.log('ai_summary base url: ${env.url}');
   final dio = Dio(
     BaseOptions(
       baseUrl: env.url,

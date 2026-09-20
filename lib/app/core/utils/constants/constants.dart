@@ -442,13 +442,13 @@ class Constants {
   static const String multiSelectDropdown = 'MultiSelect Dropdown';
 
   // Map Icons
-  static const String mapMarkerLocation = 'assets/images/location@3x.png';
+  static const String mapMarkerLocation = 'assets/images/location@3x.webp';
 
-  static const String userMarkerLocation = 'assets/images/useLocation@3x.png';
+  static const String userMarkerLocation = 'assets/images/useLocation@3x.webp';
 
-  static const String pinDarkGreenMarkerLocation = 'assets/images/pinMarkerDarkGreen.png';
+  static const String pinDarkGreenMarkerLocation = 'assets/images/pinMarkerDarkGreen.webp';
 
-  static const String pinLightGreenMarkerLocation = 'assets/images/pinMarkerLightGreen.png';
+  static const String pinLightGreenMarkerLocation = 'assets/images/pinMarkerLightGreen.webp';
 
   // Deep Links
   static const String customerSoundDeepLinkUrl = 'customervoice';

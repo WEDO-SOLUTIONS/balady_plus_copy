@@ -63,6 +63,13 @@ class DgisMapController {
   /// Events during navigation.
   Stream<NavigationEvent> get navigationEvents => _instance.navigationEvents;
 
+  /// Emitted when the vehicle enters or leaves a tunnel on the active route. The map
+  /// surface is re-themed natively; this lets the app follow with the rest of the UI.
+  Stream<TunnelStateEvent> get tunnelStateEvents => _instance.tunnelStateEvents;
+
+  /// Whether the last reported tunnel state was "inside".
+  bool get isInTunnel => _instance.isInTunnel;
+
   /// Sound on events
   Stream<SoundOnEvent> get soundOnEvents => _instance.soundOnEvents;
 
@@ -154,6 +161,11 @@ class DgisMapController {
   /// Load map styles from asset.
   Future<void> loadStyles(String asset) async => _instance.loadStyles(asset);
 
+  /// Load map styles from an absolute filesystem path.
+  /// Use it when the `.2gis` archive lives outside the app bundle — e.g. a
+  /// repacked copy in the support directory with overridden GLB models.
+  Future<void> loadStylesFromPath(String absolutePath) async => _instance.loadStylesFromPath(absolutePath);
+
   /// Override locale for map. Uses string format "en-US", "ar-SA".
   Future<void> overrideLocales(List<String> locales) => _instance.overrideLocales(locales);
 
@@ -229,6 +241,9 @@ class DgisMapController {
 
   /// Returns map camera position.
   Future<CameraPositionMessage> getCameraPosition() => _instance.getCameraPosition();
+
+  /// Swap the navigation-cursor 3D model on the live map (raw GLB bytes).
+  Future<void> setNavigationCursorModel(Uint8List glb) => _instance.setNavigationCursorModel(glb);
 
   /// Returns nearest objects to camera position.
   Future<List<RenderedObjectMessage>> getNearestObjects() => _instance.getNearestObjects();

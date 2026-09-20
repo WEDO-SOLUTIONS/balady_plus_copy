@@ -57,7 +57,7 @@ class NeedLoginBottomSheet extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisSize: MainAxisSize.min,
               children: [
-                Image.asset("assets/icons/png/lockv.png", width: 73, height: 88, fit: BoxFit.cover),
+                Image.asset("assets/icons/png/lockv.webp", width: 73, height: 88, fit: BoxFit.cover),
                 const SizedBox(height: 40),
                 CustomTextWidget(
                   ("not_registered").tr(),

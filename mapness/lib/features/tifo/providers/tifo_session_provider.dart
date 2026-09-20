@@ -223,9 +223,11 @@ class TifoSessionController extends Notifier<TifoSessionState> {
     }
   }
 
-  Future<void> refreshProfile() async {
+  /// [timing] collects the `/me` round-trip for the caller that needs it (the
+  /// dashboard tab's `tifo_surface_viewed`); every other call leaves it null.
+  Future<void> refreshProfile({TifoRequestTiming? timing}) async {
     try {
-      state = state.copyWith(profile: await _api.getMe());
+      state = state.copyWith(profile: await _api.getMe(timing: timing));
     } catch (_) {
       // Keep the stale profile; the next explicit load() surfaces errors.
     }

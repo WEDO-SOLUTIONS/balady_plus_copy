@@ -27,6 +27,8 @@ import 'package:mapness/shared/utils/detach.dart';
 import 'package:mapness/widgets/parking_spot/selected_images.dart';
 import 'package:provider/provider.dart';
 
+import '../../widgets/landing/map_attribution_label.dart';
+
 @RoutePage()
 class ParkingSpotPage extends HookConsumerWidget {
   final String? address;
@@ -143,37 +145,46 @@ class ParkingSpotPage extends HookConsumerWidget {
                 Spacing.$2x.heightBox,
                 SizedBox(
                   height: 108,
-                  child: ClipRRect(
-                    borderRadius: const BorderRadius.all(Radius.circular(RadiusBorder.l)),
-                    child: UrbiMap(
-                      onMapCreated: (controller) async {
-                        final dgisMapController = ref.read(parkingSpotMapProvider.notifier);
-                        await dgisMapController.onMapCreated(controller);
-                        if (latLng.value != null) {
-                          await dgisMapController.setCameraPosition(
-                            GeoPointWithElevationMessage(
-                              latitude: latLng.value!.latitude,
-                              longitude: latLng.value!.longitude,
-                              elevation: 0,
-                            ),
-                          );
-                          await dgisMapController.addMarker(
-                            Marker(
-                              id: parkingId,
-                              options: MarkerOptionsMessage(
-                                position: GeoPointWithElevationMessage(
+                  child: Stack(
+                    alignment: AlignmentDirectional.bottomStart,
+                    children: [
+                      ClipRRect(
+                        borderRadius: const BorderRadius.all(Radius.circular(RadiusBorder.l)),
+                        child: UrbiMap(
+                          onMapCreated: (controller) async {
+                            final dgisMapController = ref.read(parkingSpotMapProvider.notifier);
+                            await dgisMapController.onMapCreated(controller);
+                            if (latLng.value != null) {
+                              await dgisMapController.setCameraPosition(
+                                GeoPointWithElevationMessage(
                                   latitude: latLng.value!.latitude,
                                   longitude: latLng.value!.longitude,
                                   elevation: 0,
                                 ),
-                                icon: icParkingIcon,
-                              ),
-                            ),
-                          );
-                        }
-                      },
-                      key: const Key('ParkingSpotDGISMapKey'),
-                    ),
+                              );
+                              await dgisMapController.addMarker(
+                                Marker(
+                                  id: parkingId,
+                                  options: MarkerOptionsMessage(
+                                    position: GeoPointWithElevationMessage(
+                                      latitude: latLng.value!.latitude,
+                                      longitude: latLng.value!.longitude,
+                                      elevation: 0,
+                                    ),
+                                    icon: icParkingIcon,
+                                  ),
+                                ),
+                              );
+                            }
+                          },
+                          key: const Key('ParkingSpotDGISMapKey'),
+                        ),
+                      ),
+                      const Padding(
+                        padding: EdgeInsetsDirectional.only(start: Spacing.$2x, bottom: Spacing.$1x),
+                        child: MapAttributionLabel(),
+                      ),
+                    ],
                   ),
                 ),
                 Spacing.$2x.heightBox,

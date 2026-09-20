@@ -53,17 +53,18 @@ class __ToastTransitionState extends State<_ToastTransition> with SingleTickerPr
   }
 
   Future<void> _hide() async {
-    if (_isHiding || !mounted) {
+    if (_isHiding) {
       return;
     }
 
     _isHiding = true;
     _hideTimer?.cancel();
 
-    await _controller.reverse();
     if (mounted) {
-      widget.hide();
+      unawaited(_controller.reverse());
     }
+    await Future<void>.delayed(widget.transitionDuration);
+    widget.hide();
   }
 
   void _onActionTap(ToastAction action) {

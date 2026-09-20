@@ -1,3 +1,5 @@
+// ignore_for_file: always_put_control_body_on_new_line
+
 import 'dart:async';
 import 'package:balady_plus/app/core/services/local/shared_prefs_manager.dart';
 import 'package:flutter/material.dart';
@@ -363,6 +365,16 @@ class StreamAudioProvider extends ChangeNotifier {
     debugPrint('StreamAudioProvider: Toggle panel callback ${callback != null ? 'registered' : 'unregistered'}');
   }
 
+  // Identity-aware unregister: during a shell rebuild the new StreamAudio can
+  // register its callback before the old one disposes — a blind null here
+  // would silently kill the live hook.
+  void clearTogglePanelCallback(VoidCallback callback) {
+    if (identical(_togglePanelCallback, callback)) {
+      _togglePanelCallback = null;
+      debugPrint('StreamAudioProvider: Toggle panel callback unregistered');
+    }
+  }
+
   // Trigger the panel toggle from external widgets (like mini apps)
   void togglePanel() {
     debugPrint('StreamAudioProvider: togglePanel called');
@@ -416,7 +428,9 @@ class StreamAudioProvider extends ChangeNotifier {
       _isLoadingChannels = false;
       notifyListeners();
       debugPrint('StreamAudioProvider: Failed to load channels: $e');
-      rethrow; // Re-throw to let callers handle the error
+      // No rethrow: every call site is fire-and-forget, so a rethrow became
+      // an unhandled zone error billed to telemetry rather than something a
+      // caller handled. UI reads state via hasChannels / isLoadingChannels.
     }
   }
 
@@ -880,40 +894,6 @@ class StreamAudioProvider extends ChangeNotifier {
     }
   }
 
-  // Method to restore after mini app navigation
-  // Future<void> restoreAfterMiniAppNavigation() async {
-  //   debugPrint('StreamAudioProvider: Restoring after mini app navigation');
-  //
-  //   try {
-  //     // Restart background monitoring if we have a selected channel
-  //     if (_selectedChannel != null && !_isExited) {
-  //       _startBackgroundMonitoring();
-  //     }
-  //
-  //     notifyListeners();
-  //   } catch (e) {
-  //     debugPrint('StreamAudioProvider: Error restoring after mini app navigation: $e');
-  //   }
-  // }
-
-  // Program reordering (for UI)
-  // void reorderPrograms(int oldIndex, int passedNewIndex) {
-  //   final ln = liveNow;
-  //   if (ln == null) {
-  //     return;
-  //   }
-  //
-  //   final list = [...ln.programs];
-  //   int newIndex = passedNewIndex;
-  //   if (passedNewIndex > oldIndex) {
-  //     newIndex = passedNewIndex - 1;
-  //   }
-  //   final item = list.removeAt(oldIndex);
-  //   list.insert(newIndex, item);
-  //
-  //   liveNow = ln.copyWith(programs: list);
-  // }
-
   @override
   void dispose() {
     debugPrint('StreamAudioProvider: Starting dispose');
@@ -924,9 +904,6 @@ class StreamAudioProvider extends ChangeNotifier {
     // Cancel all timers
     _contextualMessageTimer?.cancel();
     _contextualMessageTimer = null;
-
-    // _backgroundMonitorTimer?.cancel();
-    // _backgroundMonitorTimer = null;
 
     // Clear any pending channels request
     _currentChannelsRequest = null;

@@ -2,6 +2,7 @@ import 'package:mapness/entry_point.dart';
 import 'package:mapness/features/jobs/data/models/job_response_model.dart';
 import 'package:mapness/features/jobs/data/models/job_statistic_model.dart';
 import 'package:mapness/features/sso_auth/data/auth_provider.dart';
+import 'package:mapness/features/balady_analytics/metrics.dart';
 import 'package:mapness/shared/providers/dgis_environment.dart';
 import 'package:mapness/shared/providers/dgis_hmac_netwrok.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -14,6 +15,8 @@ class JobStatistic extends _$JobStatistic {
 
   @override
   Future<JobStatisticModel?> build() async {
+    Metrics.logEvent(_metricEventName);
+
     mixpanel?.timeEvent(_metricEventName);
 
     // Rebuild statistic, when auth state is changed

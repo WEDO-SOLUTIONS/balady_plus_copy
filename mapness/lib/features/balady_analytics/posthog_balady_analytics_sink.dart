@@ -159,6 +159,12 @@ class PosthogBaladyAnalyticsSink implements BaladyAnalyticsSink {
     );
   }
 
+  @override
+  void setSessionProperty(String key, Object? value) {
+    // No-op: the facade already merges its session properties into every
+    // event's properties, which is how they reach PostHog.
+  }
+
   /// The SDK wants `Map<String, Object>` — null values must not cross the
   /// platform channel.
   Map<String, Object> _sanitize(Map<String, dynamic> props) => {

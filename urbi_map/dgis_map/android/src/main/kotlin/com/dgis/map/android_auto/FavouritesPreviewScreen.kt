@@ -2,6 +2,7 @@ package com.dgis.map.android_auto
 
 import android.text.SpannableString
 import android.text.Spanned
+import android.util.Log
 import androidx.car.app.CarContext
 import androidx.car.app.annotations.ExperimentalCarApi
 import androidx.car.app.constraints.ConstraintManager
@@ -18,6 +19,7 @@ import androidx.lifecycle.LifecycleOwner
 import com.dgis.map.R
 import com.dgis.map.android_auto.settings.SettingsScreen
 import com.dgis.map.android_auto.utils.AndroidAutoUtils
+import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
@@ -229,7 +231,12 @@ class FavouritesPreviewScreen(
         }
 
         estimatesJob?.cancel()
-        estimatesJob = CoroutineScope(Dispatchers.IO).launch {
+        // Root coroutine: without a handler a throw from the SDK route search (e.g. a router
+        // closed with the session) would reach the default uncaught handler and kill the process.
+        val exceptionHandler = CoroutineExceptionHandler { _, e ->
+            Log.e("FavouritesPreviewScreen", "Home/work estimates failed", e)
+        }
+        estimatesJob = CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
             val durations = points.map {
                 async {
                     suspendCoroutine { continuation ->

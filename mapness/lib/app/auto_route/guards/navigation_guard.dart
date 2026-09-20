@@ -8,20 +8,25 @@ import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:mapness/shared/providers/top_route_name_notifier.dart';
 import 'package:mapness/shared/utils/detach.dart';
 
+const _destinationRoutes = {
+  RoutingRoutesRoute.name,
+  PoiCardWidgetRoute.name,
+};
+
+const _searchRoutes = {
+  NaviSearchRoute.name,
+  NaviFavoritesRoute.name,
+  SearchRoute.name,
+};
+
 const _explicitNaviRoutes = _RouteConfig(
   currentRoutes: {PathNavRoute.name},
-  upcomingRoutes: {
-    RoutingRoutesRoute.name,
-    PoiCardWidgetRoute.name,
-  },
+  upcomingRoutes: _destinationRoutes,
 );
 
 const _implicitNaviRoutes = _RouteConfig(
   currentRoutes: {RoutingRoutesRoute.name},
-  upcomingRoutes: {
-    RoutingRoutesRoute.name,
-    PoiCardWidgetRoute.name,
-  },
+  upcomingRoutes: _destinationRoutes,
 );
 
 /// shows confirmation botton sheet if navigation is currently active or hide routes silently
@@ -33,6 +38,11 @@ final class NavigationGuard extends AutoRouteGuard {
   @override
   Future<void> onNavigation(NavigationResolver resolver, StackRouter router) async {
     if (_explicitNaviRoutes.routeMatches(resolver, router)) {
+      if (_isDestinationPickedInSearch(resolver, router)) {
+        await _stopNavigation(router);
+        resolver.next();
+        return;
+      }
       // stop navigation after user confirmation
       // Not awaited: `push` completes when the sheet is popped, and the guard
       // must return its decision now.
@@ -40,9 +50,7 @@ final class NavigationGuard extends AutoRouteGuard {
         router.push(
           ExitNavigationRoute(
             onConfirm: () async {
-              await ref.read(dgisControllerProvider).value?.stopNavigation();
-              // wait for navigation to really stop. The page won't open otherwise
-              await _waitForRoute(router, BottomMenuRoute.name);
+              await _stopNavigation(router);
               resolver.next();
             },
             onCancel: () {
@@ -59,6 +67,25 @@ final class NavigationGuard extends AutoRouteGuard {
     } else {
       resolver.next();
     }
+  }
+
+  bool _isDestinationPickedInSearch(NavigationResolver resolver, StackRouter router) {
+    if (!_destinationRoutes.contains(resolver.route.name)) {
+      return false;
+    }
+
+    final stack = router.stack;
+    final pathNavIndex = stack.lastIndexWhere((e) => e.name == PathNavRoute.name);
+    if (pathNavIndex < 0) {
+      return false;
+    }
+
+    return stack.skip(pathNavIndex + 1).any((e) => _searchRoutes.contains(e.name));
+  }
+
+  Future<void> _stopNavigation(RoutingController router) async {
+    await ref.read(dgisControllerProvider).value?.stopNavigation();
+    await _waitForRoute(router, BottomMenuRoute.name);
   }
 
   Future<void> _waitForRoute(RoutingController router, String routeName) {

@@ -294,6 +294,17 @@ void _onDirectionsTap(
   WidgetRef ref, {
   List<RouteParamsPointWithLabel>? intermediatePoints,
 }) {
+  Metrics.logEventAdvanced(
+    MetricsConstants.poiKeys.makeRoute,
+    group: MetricsConstants.poiTag,
+    action: MetricAction.tap.toString(),
+    props: {
+      'object_id': objectId,
+      'finish_point': finishPoint.latLngToString(),
+      'intermediate_points': '${intermediatePoints?.latLngToString()}',
+    },
+  );
+
   openRoutingRoutes(context, objectId, title, finishPoint, ref, intermediatePoints: intermediatePoints);
 }
 
@@ -401,6 +412,13 @@ Future<void> _onFavoriteTap({
       .authOrOpen(
         context,
         callback: () {
+          Metrics.logEventAdvanced(
+            MetricsConstants.poiKeys.addToFavorite,
+            group: MetricsConstants.poiTag,
+            action: MetricAction.tap.toString(),
+            props: {'objectId': data.id?.objectId},
+          );
+
           toggleFavoriteDirectoryObject(context: context, ref: ref, data: data, favouriteItem: favouriteItem);
         },
       );

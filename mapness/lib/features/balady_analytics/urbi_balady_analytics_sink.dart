@@ -26,4 +26,9 @@ class UrbiBaladyAnalyticsSink implements BaladyAnalyticsSink {
   void identify(String? userId, Map<String, dynamic> traits) {
     // The Urbi stream is anonymous; identity stays with the `ours` sink.
   }
+
+  @override
+  void setSessionProperty(String key, Object? value) {
+    // No-op: session properties ride along inside each event's properties.
+  }
 }

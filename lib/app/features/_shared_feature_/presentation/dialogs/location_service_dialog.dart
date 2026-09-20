@@ -36,7 +36,7 @@ class LocationServiceDialog extends StatelessWidget {
                     ),
                   ],
                 ),
-                Image.asset("assets/images/emptyState@3x.png", height: 80.0, width: 128.0),
+                Image.asset("assets/images/emptyState@3x.webp", height: 80.0, width: 128.0),
                 Constants.verticalSpaceMedium,
                 CustomTextWidget(
                   ("gps_error_3").tr(),

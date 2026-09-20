@@ -64,7 +64,7 @@ class AccessibilityInfo extends StatelessWidget {
                         label: 'a11yImage'.tr(),
                         image: true,
                         child: ExcludeSemantics(
-                          child: Image(image: const AssetImage('assets/images/voice_reader.png')),
+                          child: Image(image: const AssetImage('assets/images/voice_reader.webp')),
                         ),
                       ),
                     ),

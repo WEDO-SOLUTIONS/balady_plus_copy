@@ -2,10 +2,12 @@ import 'package:dgis_map/library.dart';
 import 'package:flutter/services.dart';
 import 'package:mapness/app/auto_route/app_routes.dart';
 import 'package:mapness/features/landing/map_controls.dart';
+import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/entities/coordinates.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/lib/common_functions.dart';
 import 'package:mapness/shared/lib/share_util.dart';
+import 'package:mapness/features/balady_analytics/metrics.dart';
 import 'package:mapness/shared/providers/map/camera_position.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:mapness/shared/providers/map/highlight.dart';
@@ -120,6 +122,13 @@ class PoiCardActions extends _$PoiCardActions {
     final entranceKeys = entranceIds.map((id) => id.entranceId).toSet();
     final entrancesAreShown = currentHighlights.any(
       (h) => entranceKeys.contains(h.entranceId),
+    );
+
+    Metrics.logEventAdvanced(
+      MetricsConstants.poiKeys.entrances,
+      group: MetricsConstants.poiTag,
+      action: MetricAction.tap.toString(),
+      props: {'poi_id': data.id?.objectId, 'show_entrances': !entrancesAreShown},
     );
 
     if (entrancesAreShown) {

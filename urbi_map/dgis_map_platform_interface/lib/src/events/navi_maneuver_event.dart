@@ -200,4 +200,14 @@ enum ManeuverInstruction {
         throw Exception("Unknown instruction type: $s");
     }
   }
+
+  /// Non-throwing variant for event-channel payloads: an unknown or missing
+  /// instruction is a display no-op, not an error worth reporting per event.
+  static ManeuverInstruction? tryFromString(String s) {
+    try {
+      return ManeuverInstruction.fromString(s);
+    } on Exception {
+      return null;
+    }
+  }
 }

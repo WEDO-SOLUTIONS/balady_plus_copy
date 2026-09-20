@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/_generated/assets/assets.gen.dart';
 import 'package:mapness/app/auto_route/app_routes.dart';
+import 'package:mapness/features/balady_analytics/events/tifo_events.dart';
 import 'package:mapness/features/tifo/data/tifo_activity_log.dart';
 import 'package:mapness/features/tifo/data/tifo_api.dart';
 import 'package:mapness/features/tifo/data/tifo_models.dart';
@@ -16,10 +17,18 @@ import 'package:mapness/features/tifo/ui/tifo_theme.dart';
 import 'package:mapness/l10n/generated/app_localizations.dart';
 import 'package:mapness/shared/utils/detach.dart';
 
+/// Round-trip and parse-completion of the `/leaderboards` fetch behind the rows the Table tab
+/// is showing, or null before the first one. Module-level because [tifoLeaderboardProvider]
+/// is `autoDispose` and must keep returning plain rows; read once per sheet, never logged.
+({Duration? api, DateTime parsedAt})? _lastLeaderboardTiming;
+
 /// Club standings, fetched fresh each time the sheet opens.
-final tifoLeaderboardProvider = FutureProvider.autoDispose<List<TifoLeaderRow>>(
-  (ref) => ref.read(tifoApiProvider).getLeaderboards(),
-);
+final tifoLeaderboardProvider = FutureProvider.autoDispose<List<TifoLeaderRow>>((ref) async {
+  final timing = TifoRequestTiming();
+  final rows = await ref.read(tifoApiProvider).getLeaderboards(timing: timing);
+  _lastLeaderboardTiming = (api: timing.total, parsedAt: DateTime.now());
+  return rows;
+});
 
 /// Guards [showTifoLeaderboardSheet] against a rapid double-tap on the
 /// trophy control stacking two `ModalBottomSheetRoute`s (seen as the
@@ -59,6 +68,12 @@ class _LeaderboardSheetState extends ConsumerState<_LeaderboardSheet> {
   /// Guards the standings-load-error dialog against re-firing on every
   /// rebuild while the error state persists (e.g. a sibling tab switch).
   bool _standingsErrorShown = false;
+
+  /// `tifo_surface_viewed` is decided inside `build()`-time branches, which run
+  /// on every rebuild — these keep it to one report per sheet. The
+  /// once-per-session cap itself lives in [TifoEvents].
+  bool _tableViewedReported = false;
+  bool _dashboardViewedReported = false;
 
   @override
   void initState() {
@@ -119,10 +134,11 @@ class _LeaderboardSheetState extends ConsumerState<_LeaderboardSheet> {
                 // opened. Refresh it on every switch to Profile so a signed-in
                 // player sees the current countdown, not a stale one.
                 if (t == 1 && !ref.read(tifoSessionProvider).isGuest) {
-                  detach(
-                    ref.read(tifoSessionProvider.notifier).refreshProfile(),
-                    tag: 'leaderboardSheet.refreshProfile',
-                  );
+                  detach(_refreshProfileForDashboard(), tag: 'leaderboardSheet.refreshProfile');
+                } else if (t == 1) {
+                  // Signed out: nothing is fetched, so the surface is reported
+                  // without an `api_ms` rather than with a fake 0.
+                  _reportDashboardViewed(api: null, parsedAt: null);
                 }
               },
             ),
@@ -146,7 +162,8 @@ class _LeaderboardSheetState extends ConsumerState<_LeaderboardSheet> {
                 if (gateCtx == null) {
                   return;
                 }
-                final ready = await TifoJourney(ref).ensurePlayReady(gateCtx);
+                const source = TifoActivationSource.leaderboard;
+                final ready = await TifoJourney(ref).ensurePlayReady(gateCtx, source: source);
                 if (ready && mounted) {
                   Navigator.of(context).pop();
                 }
@@ -158,9 +175,47 @@ class _LeaderboardSheetState extends ConsumerState<_LeaderboardSheet> {
     ),
   );
 
+  /// `/me` behind the Profile tab, timed for `tifo_surface_viewed`.
+  Future<void> _refreshProfileForDashboard() async {
+    final timing = TifoRequestTiming();
+    await ref.read(tifoSessionProvider.notifier).refreshProfile(timing: timing);
+    _reportDashboardViewed(api: timing.total, parsedAt: DateTime.now());
+  }
+
+  /// First open of the Profile tab in this session.
+  void _reportDashboardViewed({required Duration? api, required DateTime? parsedAt}) {
+    if (_dashboardViewedReported) {
+      return;
+    }
+    _dashboardViewedReported = true;
+    _reportSurface(TifoSurface.dashboard, api: api, parsedAt: parsedAt);
+  }
+
+  /// Posts [surface] once the frame carrying its data is on screen — the same
+  /// "parse → next frame" render clock the map layer uses.
+  void _reportSurface(TifoSurface surface, {required Duration? api, required DateTime? parsedAt}) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final renderMs = parsedAt == null ? null : DateTime.now().difference(parsedAt).inMilliseconds;
+      unawaited(
+        TifoEvents.surfaceViewed(
+          surface: surface,
+          apiMs: api?.inMilliseconds,
+          renderMs: renderMs == null ? null : (renderMs < 0 ? 0 : renderMs),
+        ),
+      );
+    });
+  }
+
   Widget _buildTable() {
     final rows = ref.watch(tifoLeaderboardProvider);
     final session = ref.watch(tifoSessionProvider);
+    // First build that actually carries standings — the Table tab is the
+    // sheet's default, so this is "the leaderboard was opened".
+    if (rows.hasValue && !_tableViewedReported) {
+      _tableViewedReported = true;
+      final timing = _lastLeaderboardTiming;
+      _reportSurface(TifoSurface.leaderboard, api: timing?.api, parsedAt: timing?.parsedAt);
+    }
     return rows.when(
       loading: () => const Padding(
         padding: EdgeInsets.all(32),
@@ -169,6 +224,7 @@ class _LeaderboardSheetState extends ConsumerState<_LeaderboardSheet> {
       error: (e, _) {
         if (!_standingsErrorShown) {
           _standingsErrorShown = true;
+          unawaited(TifoEvents.blocked(reason: TifoBlockReason.error, surface: TifoSurface.leaderboard));
           WidgetsBinding.instance.addPostFrameCallback((_) {
             Navigator.of(context).pop();
             final ctx = rootNavigatorKey.currentContext;

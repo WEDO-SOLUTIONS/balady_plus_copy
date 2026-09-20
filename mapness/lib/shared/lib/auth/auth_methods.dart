@@ -4,7 +4,9 @@ import 'package:balady_plus/app/core/utils/balady_route_observer.dart';
 import 'package:balady_plus/app/core/utils/common_functions.dart';
 import 'package:balady_plus/app/features/entry_point/presentation/cubit/auth_cubit.dart';
 import 'package:flutter/widgets.dart';
+import 'package:mapness/features/balady_analytics/metrics.dart';
 import 'package:mapness/features/sso_auth/data/auth_provider.dart';
+import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/utils/detach.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -92,6 +94,12 @@ class AuthMethods extends _$AuthMethods {
           }
         }
       }
+
+      Metrics.logEventAdvanced(
+        MetricsConstants.loginKeys.signIn,
+        group: MetricsConstants.loginTag,
+        action: MetricAction.tap.toString(),
+      );
 
       await ref.read(authProvider.notifier).doAuth();
       if (!context.mounted) {

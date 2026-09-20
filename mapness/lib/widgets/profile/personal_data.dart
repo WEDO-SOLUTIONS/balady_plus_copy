@@ -90,7 +90,6 @@ class _PersonalDataState extends ConsumerState<PersonalData> {
     _activeEmail = userInfo.mail?.trim() ?? '';
     _emailController.text = _activeEmail;
     _isEmailVerified = userInfo.isEmailVerified;
-
     _selectedGender = int.tryParse(userInfo.sex ?? '') ?? 0;
     _initialGender = _selectedGender;
     _selectedBirthDate = _parseBirthDate(userInfo.dob);
@@ -607,6 +606,10 @@ class _PersonalDataState extends ConsumerState<PersonalData> {
   }
 
   void _showOtpBottomSheet() {
+    final pendingEmail = _pendingEmail ?? _emailController.text.trim();
+    if (pendingEmail.isEmpty) {
+      return;
+    }
     // Use listen:false — this runs from async save / post-frame callbacks.
     final colors = context.themeRead.colors;
     final sheetBackground = context.profileCardColor;
@@ -619,7 +622,7 @@ class _PersonalDataState extends ConsumerState<PersonalData> {
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
       builder: (context) => OtpBottomSheetWidget(
-        pendingEmail: _pendingEmail!,
+        pendingEmail: pendingEmail,
         onVerify: _verifyOtp,
         onResend: _resendOtp,
         onCancel: _cancelOtpVerification,
@@ -1435,6 +1438,7 @@ class OtpBottomSheetWidget extends StatefulWidget {
     this.initialFailureCount = 0,
     this.initialSecondsRemaining = 60,
     this.maxVerifyAttempts = 3,
+    super.key,
   });
 
   @override
