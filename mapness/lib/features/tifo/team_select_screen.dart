@@ -239,7 +239,7 @@ class _TifoTeamSelectScreenState extends ConsumerState<TifoTeamSelectScreen> {
             if (_step == 1) ...[
               const SizedBox(height: 4),
               TifoGhostButton(
-                label: AppLocalizations.of(context).maybeLater,
+                label: AppLocalizations.of(context).tifoMaybeLater,
                 onPressed: _isBusy ? null : () => _pop(false),
               ),
             ],
