@@ -213,11 +213,18 @@ still and every element is laid out once.
 
 ## Friends & invitations
 
-There is no "friends on map" feature in this repository. The closest existing
-thing is the friends list inside the Balady Challenge gamification (add by player
-number, gifts, leaderboards — see the `friends_*` / `game_friends` keys in
-`assets/langs/`), so the invite flow is modelled on it and integrates through a
-host bridge.
+"Friends on map" exists as a prototype on `feat/BE-213/friends-on-map`
+(`mapness/lib/features/friends_on_map/`, one commit on top of `development`,
+not merged): a `FriendsDataSource` with a one-shot `getFriendLocations()` and an
+incremental `watchFriendLocationUpdates()` stream, a mock source behind a debug
+panel, clustered markers on the native map and a `LayerType.friends` toggle in
+the layers sheet. It carries no identities yet — `FriendLocation` is a user id,
+a point, a timestamp and a battery level — so the invite flow here is modelled
+on the shipped friends list inside the Balady Challenge gamification (add by
+player number, gifts, leaderboards — the `friends_*` / `game_friends` keys in
+`assets/langs/`) and integrates through a host bridge. If BE-213 lands, the same
+bridge can carry a friend's presence: `onFriends` already takes a list, and
+`invite` already goes back to the host.
 
 What works with no host at all: a room code, a share link, the native share
 sheet / clipboard, and adding friends by player number (kept in `localStorage`).
