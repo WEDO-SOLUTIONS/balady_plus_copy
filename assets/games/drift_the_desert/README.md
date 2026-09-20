@@ -172,6 +172,32 @@ the shadow line, which was most of what made the new sprite look like it was
 hovering. The tail-lamp glow positions are measured off the sprite rather than
 guessed — the red clusters sit at 0.055 and 0.936 of its width, halfway up.
 
+**It rides on two wheels, and the pivot is what makes that work.** Rolled about
+the car's *centre* — which is what the code did — a lean lifts both wheel sets
+off the ground at once: at `-0.30` the tyres swung up to 51 px clear of the
+shadow line and the car simply hovered, which is why it had to be flattened to
+`-0.07`, and flat it read as driving on all four. Rolling about the **contact
+tyre** is what the pose actually is: the down-side wheels stay planted and the
+up-side wheels lift. So the lean can go back to something you can see —
+`CAR_LEAN` is `-0.26`, and steering is worth `0.15` rather than `0.24`, which
+used to cancel the lean at full lock and set the car back down. The roll now
+runs 23° to 6° and it is never on four wheels. Negative rolls anticlockwise on
+a y-down canvas, so the left flank drops and the left tyre is the pivot;
+measured off the sprite, its contact patch centres on 0.126 of the width and
+the right one on 0.848.
+
+The cast shadow is rolled about the same tyre *before* it is sheared, so what
+gets projected is the car in the pose it is actually in and the shadow narrows
+as the far wheels come up. On its own that still read as hovering: the shear
+carries the ink away to the right and leaves bright sand at the contact itself,
+which is exactly where a real shadow is darkest. A tight pool of dark sits on
+the pivot to fix that, and tracks whichever way the car is rolled.
+
+The car is also smaller and lower than it was — `0.46 / 0.22` of the frame
+instead of `0.52 / 0.25`, at `0.700` of its height instead of `0.655`. The
+Patrol crop fills more of its own sprite than the old three-quarter one did, so
+the old numbers put a bigger car higher up the frame than they used to.
+
 **The driver is out of the window for now.** Both paths lost him, the photo
 composite and the painted fallback; `img/driver.png` is no longer loaded and
 `drawDriver` and the SEAT / LIFT / DRIVER constants are kept, unused, so that

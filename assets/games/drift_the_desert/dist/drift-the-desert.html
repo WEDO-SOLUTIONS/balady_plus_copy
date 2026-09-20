@@ -2501,11 +2501,20 @@ window.DRIFT_PLATES = {"samples":1024,"plates":{"sky":{"size":[2048,1024]},"far"
 
   /* Resting lean of a two-wheel drift. The hero sprite is a rear shot of a car
      sitting flat, so the whole pose is applied here. */
-  // Was -0.30, which is seventeen degrees. That read as a drift lean on the
-  // old three-quarter crop; on a dead-on rear view it reads as the car tipping
-  // over, and it swings the tyres up to 51 px off the shadow line — which was
-  // most of what made the new sprite look like it was hovering.
-  var CAR_LEAN = -0.07;
+  /* The two-wheel drift. Rolled about the car's *centre* this had to be kept
+     tiny — at -0.30 it swung the tyres up to 51 px clear of the shadow line and
+     the car simply hovered, which is why it was flattened to -0.07 and then
+     read as driving on all four.
+
+     Rolling about the contact tyre instead is what the pose actually is: the
+     down-side wheels stay planted and the up-side wheels lift. So the lean can
+     go back to something you can see. Negative rolls anticlockwise on a
+     y-down canvas, which drops the left flank — so the left tyre is the pivot.
+     Measured off the sprite: its contact patch centres on 0.126 of the width,
+     the right one on 0.848. */
+  var CAR_LEAN = -0.26;
+  var CAR_PIVOT_X = 0.126;   // fraction of the sprite's width
+  var CAR_PIVOT_Y = 1.000;   // fraction of its height — the contact line
 
   /* Unused since the driver was taken out of the window; kept because the
      art for him is still in img/ and the numbers are what put him back.
@@ -3986,6 +3995,20 @@ window.DRIFT_PLATES = {"samples":1024,"plates":{"sky":{"size":[2048,1024]},"far"
       var img = IMG.car;
       var w = size * 1.18;
       var h = w * (img.height / img.width);
+      // Dead-on rear, so the sprite pivots on its middle rather than the 0.46
+      // the old three-quarter crop needed. The vertical anchor puts the tyres
+      // on the shadow line: the sprite's foot lands at h * (1 - 0.674) = 0.345
+      // of `size` below the car's centre.
+      var x0 = -w * 0.50;
+      var y0 = -h * 0.674;
+      // Steering was worth 0.24 of a radian, which at full lock cancelled the
+      // lean and set the car back down on all four wheels — losing the pose
+      // entirely at one end of the range. At 0.15 the roll runs 23 degrees to
+      // 6 and it is always up on two.
+      var roll = CAR_LEAN + tilt * 0.15 + Math.sin(wobble) * 0.012;
+      // The contact tyre, in the sprite's frame relative to (cx, cy).
+      var px = x0 + w * CAR_PIVOT_X;
+      var py = y0 + h * CAR_PIVOT_Y;
 
       // The car's own outline, like the roadside props. The old sprite could
       // not do this — it was a photo crop with 76% of it fully opaque, so its
@@ -3997,24 +4020,46 @@ window.DRIFT_PLATES = {"samples":1024,"plates":{"sky":{"size":[2048,1024]},"far"
       // A high sun, so it stays a contact shadow. At 0.42 the roof's shadow
       // landed ninety pixels out and the whole thing read as a slab again.
       ctx.transform(1, 0, -0.20, 0.10, 0, 0);
+      // Rolled about the same tyre, before the shear — so what is projected is
+      // the car in the pose it is actually in, and the shadow narrows as the
+      // far wheels come up instead of staying flat under a tilted car.
+      ctx.translate(px, 0);
+      ctx.rotate(roll);
+      ctx.translate(-px, 0);
       ctx.globalAlpha = 0.32;
       ctx.drawImage(silhouette(img, '#34200F'), -w * 0.5, -h, w, h);
       ctx.restore();
 
+      // A tight pool of dark right where the planted tyre meets the sand. The
+      // cast shadow above shears away to the right, so it leaves bright sand
+      // at the contact itself — which is exactly where a real one is darkest,
+      // and without it the tyre reads as hovering however correct its
+      // geometry is. It sits on the pivot, so it tracks whichever way the car
+      // is rolled.
+      var contactX = cx + tilt * size * 0.10 + px;
+      var contactY = cy + size * 0.345;
+      var pool = ctx.createRadialGradient(contactX, contactY, 1,
+                                          contactX, contactY, size * 0.13);
+      pool.addColorStop(0, 'rgba(40, 24, 10, 0.55)');
+      pool.addColorStop(0.5, 'rgba(40, 24, 10, 0.26)');
+      pool.addColorStop(1, 'rgba(40, 24, 10, 0)');
+      ctx.save();
+      ctx.fillStyle = pool;
+      ctx.beginPath();
+      ctx.ellipse(contactX, contactY, size * 0.13, size * 0.036, 0, 0, TAU);
+      ctx.fill();
+      ctx.restore();
+
       ctx.save();
       ctx.translate(cx, cy + Math.sin(wobble) * size * 0.012);
-      ctx.rotate(CAR_LEAN + tilt * 0.24 + Math.sin(wobble) * 0.012);
+      ctx.translate(px, py);
+      ctx.rotate(roll);
+      ctx.translate(-px, -py);
 
       if (danger > 0) {
         ctx.shadowColor = 'rgba(255, 70, 70, ' + (danger * 0.9).toFixed(2) + ')';
         ctx.shadowBlur = 26 * danger;
       }
-      // Dead-on rear, so the pivot is the middle of the sprite rather than
-      // the 0.46 the old three-quarter crop needed. The vertical anchor puts
-      // the tyres on the shadow line above: the sprite's foot lands at
-      // h * (1 - 0.674) = 0.345 of `size` below the car's centre.
-      var x0 = -w * 0.50;
-      var y0 = -h * 0.674;
       ctx.drawImage(img, x0, y0, w, h);
 
       // Tail lights, always faintly lit and flaring when the car is in trouble
@@ -4211,8 +4256,11 @@ window.DRIFT_PLATES = {"samples":1024,"plates":{"sky":{"size":[2048,1024]},"far"
       }
 
       // Hero car.
-      var carY = this.h * 0.655;
-      var carSize = Math.min(this.w * 0.52, this.h * 0.25);
+      // Smaller and lower than it was (0.655 / 0.52 / 0.25): the Patrol crop
+      // fills more of its own sprite than the old three-quarter one did, so
+      // the same numbers put a bigger car higher up the frame than intended.
+      var carY = this.h * 0.700;
+      var carSize = Math.min(this.w * 0.46, this.h * 0.22);
       var carX = this.w * 0.5 + (state.tilt || 0) * this.w * 0.085;
 
       // Dust plume trailing the rear wheels.
