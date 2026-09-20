@@ -97,9 +97,31 @@ extension FeedbackDashboard on CityEventType? {
         Color(0xFFEEC230),
       ],
     ],
+    // Saudi National Day — green/teal shaders drawn from the flag palette.
+    CityEventType.saudiNationalDay => const [
+      [
+        Color(0xFF014850),
+        Color(0xFF00343A),
+      ],
+      [
+        Color(0xFF00343A),
+        Color(0xFF014850),
+      ],
+      [
+        Color(0xFF00843D),
+        Color(0xFF014850),
+      ],
+      [
+        Color(0xFFC5FFD6),
+        Color(0xFF00843D),
+      ],
+    ],
+    // Every entry must hold at least two colours: each inner list becomes a
+    // LinearGradient, which asserts on a single-colour list. The previous
+    // default was two one-colour lists and crashed on paint.
     _ => const [
-      [Color(0xFF4EC9C0)],
-      [Color(0xFF2AB3A9)],
+      [Color(0xFF4EC9C0), Color(0xFF2AB3A9)],
+      [Color(0xFF2AB3A9), Color(0xFF4EC9C0)],
     ],
   };
 }

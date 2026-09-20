@@ -15,8 +15,9 @@ publish_to: "none" # Remove this line if you wish to publish to pub.dev
 # In iOS, build-name is used as CFBundleShortVersionString while build-number used as CFBundleVersion.
 # Read more about iOS versioning at
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
-#version: 3.30.3+881
-version: 3.13.5+466
+
+# version: 3.30.3+896
+version: 3.13.6+467
 
 environment:
   sdk: ">=3.8.0 <4.0.0"
@@ -199,14 +200,14 @@ dependencies:
   balady_authorization:
     # path: /Users/hashemalkhateeb/Development/flutter_projects/nhc_projects/packages//BaladyAuthorization
     hosted: https://unpub.balady.gov.sa/
-    version: 1.0.18
+    version: 1.0.19
   #path: /Users/mhamed/work/projects/Balady/BaladyAuthorization
   # git:
   #   url: https://tfs.momra.gov.sa/tfs/MOMRACollection/MobileApps/_git/BaladyAuthorization
   #      ref: master
   #      path: packages/firebase_messaging/firebase_messaging
 
-
+  html: 0.15.6
   ############################################################
   balady_design_system:
 #    path: /Users/hashemalkhateeb/Development/flutter_projects/nhc_projects/packages/balady_design_system
@@ -240,6 +241,7 @@ dependencies:
   timezone: ^0.10.0
   dotted_border: ^3.1.0
   dotted_line: ^3.2.3
+  flutter_dynamic_icon_plus: ^1.4.1
 
 dev_dependencies:
   build_runner: ^2.10.3

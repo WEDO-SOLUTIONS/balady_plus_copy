@@ -29,6 +29,13 @@ class NeedLoginWidget extends StatefulWidget {
 
 class _NeedLoginWidgetState extends State<NeedLoginWidget> {
   @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    CommonFunctions.onLogin(isMunicipality: true, mainPage: RouteName.miniAppsMainScreen);
+  }
+
+  @override
   Widget build(BuildContext context) {
     return BlocListener<EntryPointCubit, EntryPointState>(
       listener: (context, state) {
@@ -57,9 +64,12 @@ class _NeedLoginWidgetState extends State<NeedLoginWidget> {
                 fontColor: AppColor.blackModern600Light,
                 fontWeight: AppFontWeight.bold,
                 fontSize: 20,
+                maxLines: 3,
+                textAlign: TextAlign.center,
+                height: 1.3,
               ),
 
-              const SizedBox(height: 8),
+              const SizedBox(height: 12),
               CustomTextWidget(
                 widget.desc ?? ('not_register_desc').tr(),
                 fontColor: AppColor.blackModern500Light,

@@ -66,6 +66,8 @@ import 'package:mapness/features/poi_card/domain/model/poi_camera_config.dart';
 import 'package:mapness/features/search/providers/search_region.dart' show initializeSearchRegionServiceProvider;
 import 'package:mapness/features/share_eta/helpers/utils.dart';
 import 'package:mapness/features/share_eta/providers/share_my_location_launch_intent.dart';
+import 'package:mapness/features/special_themes/modes/saudi_national_day/saudi_national_day_app_icon.dart';
+import 'package:mapness/features/special_themes/modes/saudi_national_day/saudi_national_day_resolved_config.dart';
 import 'package:mapness/features/stories/models/story_types.dart';
 import 'package:mapness/features/stories/providers/stories_open_state.dart';
 import 'package:mapness/l10n/generated/app_localizations.dart';
@@ -196,6 +198,15 @@ class MapnessEntryPoint extends ConsumerStatefulWidget {
 }
 
 class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> with WidgetsBindingObserver {
+  /// Latches once the launcher icon has been evaluated this session, so a
+  /// rebuild cannot swap the launcher entry while the user is in the app.
+  ///
+  /// Only set once the resolved config is backed by real environment data —
+  /// see [_maybeApplyNationalDayIcon]. Latching on the first build instead
+  /// would freeze the bundled-default window, which is what made a fresh
+  /// install keep the default icon until the next cold start.
+  bool _nationalDayIconApplied = false;
+
   late OverlayEntry? _debugOverlay;
   late AppLinks _appLinks;
   StreamSubscription<Uri>? _linkSubscription;
@@ -560,6 +571,46 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> with Widg
     }
   }
 
+  /// Applies the National Day launcher icon once per cold start, but only
+  /// after the environment config has actually resolved.
+  ///
+  /// [dgisEnvironmentProvider] is an async notifier that awaits Hive, so on
+  /// the first frame it is still `AsyncLoading` and
+  /// [saudiNationalDayResolvedConfigProvider] falls back to
+  /// [SaudiNationalDayRemoteConfig.bundledDefault]. Latching on that first
+  /// build pinned the decision to the bundled window and ignored the window
+  /// configured in Firebase — on a fresh install the icon stayed default
+  /// until the user killed and relaunched the app (by which point Hive was
+  /// warm enough to resolve synchronously).
+  ///
+  /// Waiting for the env provider costs nothing on a normal start: the fetch
+  /// is already awaited in `runMapnessApp()` before `main()`, so this
+  /// resolves within the first few frames. If it errors we still apply, so a
+  /// broken config degrades to the bundled window rather than to no icon
+  /// swap at all.
+  ///
+  /// Still applied at most once per session — the launcher entry must not
+  /// change under a user who is mid-session.
+  void _maybeApplyNationalDayIcon() {
+    if (_nationalDayIconApplied) {
+      return;
+    }
+
+    final env = ref.watch(dgisEnvironmentProvider);
+    if (env.isLoading) {
+      // Not resolved yet — this method re-runs on the rebuild that lands the
+      // value, so the decision is simply deferred rather than dropped.
+      return;
+    }
+
+    _nationalDayIconApplied = true;
+
+    final isActive = ref.read(saudiNationalDayResolvedConfigProvider).isAppIconActiveAt(DateTime.now());
+
+    // Not awaited — a launcher-icon failure must never affect the UI.
+    unawaited(SaudiNationalDayAppIcon.apply(shouldUseNationalDay: isActive));
+  }
+
   @override
   Widget build(BuildContext context) {
     ref
@@ -585,6 +636,11 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> with Widg
     final isNationalDay = activeEvent?.isSaudiNationalDay ?? false;
     final specialThemeMode = ref.watch(specialThemeModeProvider);
     final baladyTheme = context.watch<BaladyThemeNotifier>();
+
+    // Launcher-icon swap. Watched here rather than in runMapnessApp() because
+    // the window comes from `saudiNationalDayDateRange` in app_env_config,
+    // which is only available once the env provider has resolved.
+    _maybeApplyNationalDayIcon();
 
     // Track theme changes for analytics
     ref
@@ -1004,6 +1060,10 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> with Widg
     final serviceKey = url.path; //queryParameters[BaldayDeeplink.serviceKey];
     final path = url.queryParameters[BaldayDeeplink.miniAppPath];
     final dtId = url.queryParameters[BaldayDeeplink.miniAppItemId];
+    final shouldNavigate = BaldayDeeplink.isNavigateEnabled(
+      url.queryParameters[BaldayDeeplink.navigateKey],
+    );
+    final searchText = url.queryParameters[BaldayDeeplink.searchTextKey]?.trim();
 
     double? latitude;
     double? longitude;
@@ -1045,8 +1105,18 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> with Widg
         await _poiDeeplinkById(id, location);
       }
     } else if (latitude != null && longitude != null) {
-      // we agreed to treat absence of objectId as it is My location and open the point immediately
-      _myLocationDeepLinkHandler(latitude, longitude);
+      await _delayIfFirstRun(isFirstRun: isFirstRun);
+      if (shouldNavigate) {
+        // `?q=<lat>,<lon>&navigate=yes` - build a route from the current location to the point
+        await _routeToPointDeepLinkHandler(latitude, longitude);
+      } else {
+        // we agreed to treat absence of objectId as it is My location and open the point immediately
+        _myLocationDeepLinkHandler(latitude, longitude);
+      }
+    } else if (searchText != null && searchText.isNotEmpty) {
+      // `?s=<text>` - addresses coming from other apps (e.g. a contact's address)
+      await _delayIfFirstRun(isFirstRun: isFirstRun);
+      await _searchTextDeepLinkHandler(searchText);
     } else if (momrahId != null) {
       await _momrahDeepLinkHandler(momrahId);
     } else if (homeWidget != null) {
@@ -1481,6 +1551,69 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> with Widg
             cameraConfig: const PoiCameraConfig(zoom: 17),
           ),
         );
+  }
+
+  /// `?q=<lat>,<lon>&navigate=yes` - draws a route from the current location to
+  /// the requested point. Falls back to showing the point when the current
+  /// location is not available (permission denied, timeout, ...).
+  Future<void> _routeToPointDeepLinkHandler(double latitude, double longitude) async {
+    try {
+      final l10n = ref.read(appLocaleProvider);
+      final location = await ref.read(getLocationSyncProvider().future);
+      if (!mounted) {
+        return;
+      }
+
+      final startPoint = RouteParamsPointWithLabel(
+        label: l10n.myLocation,
+        value: RouteParamsPoint(latitude: location.latitude, longitude: location.longitude),
+      );
+      final finishPoint = RouteParamsPointWithLabel(
+        label: 'B',
+        value: RouteParamsPoint(latitude: latitude, longitude: longitude),
+      );
+
+      ref
+          .read(appRouterProvider)
+          .replaceOrPush(
+            route: RoutingRoutesRoute(points: [startPoint, finishPoint]),
+            shouldPopAndPush: true,
+            toCompareRoutes: [RoutingRoutesRoute.page, PoiCardWidgetRoute.page],
+          );
+    } catch (e) {
+      logger.log('failed to build route from deeplink: $e', logLevel: MapnessLogLevel.error);
+      if (mounted) {
+        _myLocationDeepLinkHandler(latitude, longitude);
+      }
+    }
+  }
+
+  /// `?s=<text>` - opens the search sheet with the query prefilled and runs it,
+  /// used for free-text addresses shared from other apps.
+  Future<void> _searchTextDeepLinkHandler(String query) async {
+    final AppRouter router = await ref.watch(appRouterProvider);
+
+    unawaited(
+      BssService.instance.sendEvent(
+        BssRequest(
+          eventType: BSSEventType.action,
+          actionType: BSSActionType.deeplink,
+          uiElement: const BssUIElement(
+            name: BssUIElementNames.searchStart,
+            ownerName: BssUIElementNames.searchBar,
+          ),
+          payload: BssPayload(searchRequest: BssSearchRequest(text: query)),
+        ),
+      ),
+    );
+
+    unawaited(router.push(SearchRoute(requestFocus: false)));
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) {
+        return;
+      }
+      ref.read(searchProvider(SearchScopeEnum.map.value).notifier).searchByText(query);
+    });
   }
 
   Future<void> _momrahDeepLinkHandler(String momrahId) async {
