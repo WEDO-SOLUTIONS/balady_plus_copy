@@ -15,8 +15,10 @@ mini_apps/baloot/
   ardah.mp3                  optional: an Ardah recording to loop instead of the synthesised drums
   baloot-standalone.html     the same game as one file, assets inlined
   demo/index.html            a mock Balady+ shell that drives this game over the bridge
+  baloot-demo-standalone.html  the demo and the game folded into one file
   tools/extract-assets.py    re-cuts the images from the source mock-up
   tools/build-standalone.py  folds the images into the single-file build
+  tools/build-demo-standalone.py  folds the game into the demo, for one sendable file
   README.md                  this file
 ```
 
@@ -293,7 +295,11 @@ the app would have to implement is visible rather than described.
 | 3 · the quorum on the map | a readiness chip on the layer, a table forming at 3/4, and the fourth seat taken from the map itself |
 | 4 · start now, swap the bot later | start with one friend and two labelled bots, then hand a bot seat to a friend who arrives |
 
-Open it directly (`demo/index.html`) or through the mini-app server. What is
+Open it directly (`demo/index.html`) or through the mini-app server. For
+sending it on, `python3 tools/build-demo-standalone.py` folds the game into the
+page as one 461 KB `baloot-demo-standalone.html` — the frame is fed from a blob,
+so the bridge still runs between two documents. Rebuild `baloot-standalone.html`
+first, since the demo build reads it. What is
 mocked: the map, the friends data and other players' acceptances. What is real:
 the game, the bridge, the seats, the `Bot` labels and the swap. What is *not*
 in it: live play between two devices — that needs a transport and a rooms

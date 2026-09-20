@@ -356,10 +356,17 @@ const hidePush = () => $('#push').classList.remove('on');
 const frame = $('#game');
 let room = null, gameReady = false;
 const pending = [];
+/* the game is the file next door — or, in the one-file build, an inlined copy */
+let inlineUrl = null;
+function gameSrc(){
+  if (!window.BALOOT_INLINE) return '../index.html?room=' + room;
+  if (!inlineUrl) inlineUrl = URL.createObjectURL(new Blob([window.BALOOT_INLINE], {type:'text/html'}));
+  return inlineUrl;                      // a blob takes no query: the room arrives over the bridge
+}
 function openGame(){
   room = Array.from({length:6}, () => 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'[Math.floor(Math.random()*32)]).join('');
   gameReady = false; pending.length = 0;
-  frame.src = '../index.html?room=' + room;
+  frame.src = gameSrc();
   frame.classList.add('on');
   say('the app opens the mini-app with room ' + room);
 }
