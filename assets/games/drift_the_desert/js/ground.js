@@ -41,9 +41,17 @@
 (function (global) {
   'use strict';
 
-  // How many tiles span the screen width at the bottom of the frame. With the
-  // baked texture's ripple spacing this puts them about 14 cm apart, which is
-  // what the real ones measure.
+  // How many screen widths one tile spans at the bottom of the frame — the
+  // other way round from what this comment used to claim. A0 works out to
+  // TILE_ACROSS * w / size, so one tile (size texels) covers TILE_ACROSS * w
+  // pixels at t = 1, which is 2.1 screens, not a fifth of one. With the baked
+  // texture's ripple spacing that puts the ripples about 14 cm apart, which is
+  // what the real ones measure — and that only works out at this reading.
+  //
+  // Real-world scale, for anyone porting this: the road spans
+  // 2 * TRACK_HALF * TILE_ACROSS = 0.949 of the screen width at the car,
+  // whatever the texture size. So a 4 m track makes the screen 4.2 m across
+  // there and one tile about 8.8 m.
   var TILE_ACROSS = 2.1;
 
   // Texels of travel per unit of `scroll`. Tuned against the roadside props,

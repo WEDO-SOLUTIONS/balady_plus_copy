@@ -1,5 +1,11 @@
 # Drift the Desert — Balady+ Maps mini game
 
+
+> **Porting this to Unity?** Read `UNITY_PORT.md` first. Most of what is
+> described below is a camera being emulated in Canvas, and should not be
+> ported at all; that file separates the design and the art, which do
+> transfer, from the machinery, which does not.
+
 A self-contained HTML/CSS/JS game ("Arabic drift" / *hajwalah*): keep the SUV
 balanced on two wheels for 60 seconds, collect coins, build a combo, earn
 tokens. Built to run inside the Balady+ WebView and, unchanged, in a desktop
@@ -320,9 +326,9 @@ That puts a limit on how far off the road a landmark can stand. Its inner edge
 leaves the frame when `(distance − width) × scale` passes the half-width, so a
 taller rock at the same distance stays in view far longer; push one out until
 it is gone before the haze releases it and it is never seen as rock at all.
-The outcrops sit at twenty-three to thirty-four metres and stand twenty-five to
-forty tall, which is the ratio that lets them come clear of the dust while
-there is still a second or two of them left. The ground's own far field is
+The outcrops are no longer placed in metres at all — distance and height are
+chosen as one quantity (`tExit`, `tall`), described under the roadside sprites
+below, which is what stopped the pairing from ever producing a wall. The ground's own far field is
 biased several mip levels coarser, because a few rows below the skyline one
 screen pixel covers thousands of texels and whichever of them the filter lands
 on changes fast enough to crawl.
