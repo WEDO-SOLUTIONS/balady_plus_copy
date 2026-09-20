@@ -6,6 +6,7 @@ import 'package:mapness/features/balady_analytics/events/tifo_events.dart';
 import 'package:mapness/features/tifo/data/tifo_api.dart';
 import 'package:mapness/features/tifo/data/tifo_models.dart';
 import 'package:mapness/features/tifo/tifo_buildings_map_layer.dart';
+import 'package:mapness/shared/providers/app_language.dart';
 import 'package:mapness/shared/utils/logger/logger.dart';
 
 @immutable
@@ -81,6 +82,12 @@ class TifoDistrictsController extends Notifier<TifoDistrictsState> {
 
   DateTime? _lastDataAt;
 
+  /// Backend locale the cached geometry was fetched with. District *names*
+  /// ride inside that otherwise once-per-run payload, so without this the
+  /// sheet keeps showing the previous language until an app restart
+  /// (BALADY-3959). Compared against [_locale] on every [ensureGeometry].
+  String? _geometryLocale;
+
   /// See [_timing].
   Duration? get requestDuration => _timing.total;
 
@@ -94,10 +101,16 @@ class TifoDistrictsController extends Notifier<TifoDistrictsState> {
 
   TifoApi get _api => ref.read(tifoApiProvider);
 
-  /// Loads the district geometry unless it is already cached. Cheap to call on
-  /// every viewport event — a warm cache returns without touching the network.
+  /// Same code `TifoApi` puts on the query string — read per call, never
+  /// watched, so a language switch does not rebuild the notifier (and wipe
+  /// the geometry cache) behind the map's back.
+  String get _locale => ref.read(appLanguageProvider).baladyCompat;
+
+  /// Loads the district geometry unless it is already cached in the current
+  /// app language. Cheap to call on every viewport event — a warm cache
+  /// returns without touching the network.
   Future<void> ensureGeometry() {
-    if (state.hasGeometry) {
+    if (state.hasGeometry && _geometryLocale == _locale) {
       return Future<void>.value();
     }
     return _geometryRequest ??= _loadGeometry();
@@ -111,15 +124,34 @@ class TifoDistrictsController extends Notifier<TifoDistrictsState> {
   /// player pinches out to the district tier, geometry is already in memory.
   Future<void> prefetch() => Future.wait([ensureGeometry(), refreshSummaries()]);
 
+  /// Re-fetches both halves in the app's current language, called from
+  /// `AppLanguage.update` alongside the roster refresh. Named strings only
+  /// live in the payloads, so nothing short of a refetch re-localizes them.
+  /// No-op until something has been loaded: an untouched cache is filled by
+  /// the next [ensureGeometry] in the new locale anyway.
+  Future<void> forceRefresh() {
+    if (!state.hasGeometry && state.summaries.isEmpty) {
+      return Future<void>.value();
+    }
+    // Polygons stay on screen while the new payload lands — only the names
+    // are stale, the rings and the standings are locale-independent.
+    return Future.wait([ensureGeometry(), refreshSummaries()]);
+  }
+
   Future<void> _loadGeometry() async {
+    // Captured before the round-trip: a switch made while it is in flight must
+    // leave the cache marked with the locale the response actually carries, so
+    // the next `ensureGeometry` refetches instead of trusting it.
+    final locale = _locale;
     state = state.copyWith(isLoadingGeometry: true, error: null);
     try {
       final districts = await _api.getDistricts(timing: _timing);
       if (!ref.mounted) {
         return;
       }
-      logger.log('[tifo] districts geometry loaded: ${districts.length}');
+      logger.log('[tifo] districts geometry loaded: ${districts.length} (locale: $locale)');
       _lastDataAt = DateTime.now();
+      _geometryLocale = locale;
       state = state.copyWith(districts: districts, isLoadingGeometry: false);
     } catch (e) {
       if (!ref.mounted) {

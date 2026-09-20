@@ -32,6 +32,15 @@ lives in `penalty/` — everything else in this folder is the map/BRD layer.
   `POST /buildings/{id}/play`.
 - Play submit `events` shape is `{kick: <1-based index>, result: 'goal'|'miss'}`
   — anything else gets the session **voided** server-side.
+- Every request carries `?locale=en|ar` from `appLanguageProvider`, so club,
+  building and district names come back localized. Anything cached across
+  requests therefore has to be re-fetched on a language switch — see
+  `AppLanguage.update`, which calls `tifoSessionProvider.forceRefresh()`
+  (roster) and `tifoDistrictsProvider.forceRefresh()` (district names, which
+  ride inside the otherwise once-per-run `/districts` geometry payload —
+  BALADY-3959). `TifoDistrictsController` also tags its geometry cache with
+  the locale it was fetched with, so `ensureGeometry()` self-heals. Buildings
+  need no hook: the 20 s `by-ids` poller and every bbox fetch overwrite them.
 - `TifoApi` owns a private `Dio`, so its traffic does NOT appear in the app's
   http logger. All TIFO diagnostics go through `logger.log` with a `[tifo]` /
   `[tifo-map]` prefix — grep the console for that.
