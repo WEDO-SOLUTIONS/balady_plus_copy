@@ -6,8 +6,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 /// Zoom thresholds the TIFO map layer picks its level of detail at
 /// (`TifoBuildingsMapLayer._lodFor`), exposed as a debug knob so QA can move
 /// the cluster/districts/buildings switch points live instead of needing a
-/// build per experiment. The defaults reproduce the constants the layer used
-/// to hardcode: cluster ≤ 11, districts 12–14, buildings ≥ 15.
+/// build per experiment. Defaults: cluster ≤ 9, districts 10–15,
+/// buildings ≥ 16.
 ///
 /// The three tiers are ONE ordered axis, so there are only two free
 /// boundaries: [buildingMinZoom] is always [districtMaxZoom] + [tierGap].
@@ -20,7 +20,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 /// own zoom on this map — see the layer's own note on that.
 @immutable
 class TifoLodZoomThresholds {
-  const TifoLodZoomThresholds({this.clusterMaxZoom = 11, this.districtMaxZoom = 14});
+  const TifoLodZoomThresholds({this.clusterMaxZoom = 9, this.districtMaxZoom = 15});
 
   /// Cluster tier (one region silhouette) is drawn at `zoom <= this`.
   final double clusterMaxZoom;

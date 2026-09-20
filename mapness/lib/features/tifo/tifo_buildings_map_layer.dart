@@ -166,16 +166,15 @@ class TifoBuildingsMapLayer extends Notifier<bool> {
     return true;
   }
 
-  /// Zoom thresholds the three tiers switch at. Defaults (cluster ≤ 11,
-  /// districts 12–14, buildings ≥ 15) reproduce the constants this layer used
-  /// to hardcode; the debug panel can move them at runtime, which is why this
-  /// is a cached field rather than a `ref.read` in [_lodFor] — the tier is
-  /// asked for on the viewport stream and from teardown paths, where reading
-  /// a provider is either hot or unsafe.
+  /// Zoom thresholds the three tiers switch at (defaults: cluster ≤ 9,
+  /// districts 10–15, buildings ≥ 16). The debug panel can move them at
+  /// runtime, which is why this is a cached field rather than a `ref.read` in
+  /// [_lodFor] — the tier is asked for on the viewport stream and from
+  /// teardown paths, where reading a provider is either hot or unsafe.
   ///
-  /// The buildings threshold is 15 and not the API's §3 value of 16 because
-  /// this map's `visibleRectEvent.zoom` reads ~1 lower than the camera's own
-  /// zoom, so 16 is effectively unreachable on that stream.
+  /// These are read against `visibleRectEvent.zoom`, which on this map reads
+  /// ~1 lower than the camera's own zoom: the buildings tier opening at 16
+  /// here means the camera is at roughly 17.
   TifoLodZoomThresholds _lodZooms = const TifoLodZoomThresholds();
 
   /// Fallback district fill when nobody leads it (or the server sent no
@@ -718,7 +717,7 @@ class TifoBuildingsMapLayer extends Notifier<bool> {
     return _Bounds(minLat: minLat, maxLat: maxLat, minLng: minLng, maxLng: maxLng);
   }
 
-  /// Whether [district] is worth putting on the map right now. At z12–14 the
+  /// Whether [district] is worth putting on the map right now. At z10–15 the
   /// visible rect holds a fraction of the ~405 districts, and the ones outside
   /// it cost bridge time and render time for something nobody can see.
   bool _districtInView(TifoDistrict district) {

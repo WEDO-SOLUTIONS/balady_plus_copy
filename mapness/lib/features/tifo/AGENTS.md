@@ -38,13 +38,15 @@ lives in `penalty/` — everything else in this folder is the map/BRD layer.
 
 ## Map layer (`tifo_buildings_map_layer.dart`)
 
-- Zoom LOD, three tiers: region silhouette ≤ 11, district mosaic 12–14,
-  buildings ≥ 15. Those are the DEFAULTS of `TifoLodZoomThresholds`
+- Zoom LOD, three tiers: region silhouette ≤ 9, district mosaic 10–15,
+  buildings ≥ 16. Those are the DEFAULTS of `TifoLodZoomThresholds`
   (`data/tifo_debug_lod_zoom.dart`) — the debug panel ("Map LOD zoom levels")
   moves the two switch points at runtime, in memory, and the class keeps the
-  tiers ordered and non-overlapping. NB: `visibleRectEvent.zoom` reads ~1 lower
-  than `getCameraPosition().zoom`, which is why the buildings threshold is 15
-  and not the API-spec 16. Full breakdown of every zoom value the layer keys
+  tiers ordered and non-overlapping. NB: the thresholds are compared against
+  `visibleRectEvent.zoom`, which reads ~1 lower than
+  `getCameraPosition().zoom`, so buildings open at a camera zoom of ~17 — any
+  `moveCamera` meant to land in buildings mode has to account for that (see
+  `district_sheet.dart`). Full breakdown of every zoom value the layer keys
   off: [ZOOM_LEVELS.md](ZOOM_LEVELS.md).
 - Buildings **accumulate**: polygons are never removed on pan, only added and
   pointwise-recolored (owner change via 20 s poller `tifo_buildings_poller.dart`
