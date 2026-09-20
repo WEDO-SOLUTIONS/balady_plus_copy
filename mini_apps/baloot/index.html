@@ -2211,10 +2211,26 @@ const Game = {
    ============================================================ */
 const UI = {
   show(sel){ $(sel).hidden = false; },
-  hide(sel){ $(sel).hidden = true; },
+  hide(sel){ $(sel).hidden = true; this.guardScreen(); },
+
+  /* Panels opened from the lobby hide it first, so closing one of them — with
+     the backdrop, Escape or a close button — could leave the bare table with
+     nothing to press. If no match is running and every panel is shut, the
+     lobby is where you belong. Deferred, because hide() is also the first half
+     of "hide this, open that". */
+  guardScreen(){
+    if (this._guard) return;
+    this._guard = true;
+    requestAnimationFrame(() => {
+      this._guard = false;
+      if (Game.G) return;                                   // a match is on the table
+      if ([...document.querySelectorAll(".scrim")].some(n => !n.hidden)) return;
+      Lobby.open();
+    });
+  },
 
   refreshAll(){
-    this.renderSeats(); this.renderScores(); this.renderHand();
+    this.renderSeats(); this.renderScores(); this.renderHand(); this.renderRail();
     if (!$("#m-lobby").hidden) Lobby.open();
     if (!$("#m-menu").hidden) this.openMenu();
     if (!$("#m-friends").hidden) this.openFriends();
@@ -3088,7 +3104,7 @@ document.querySelectorAll(".scrim").forEach(s => {
   s.addEventListener("click", ev => {
     if (ev.target !== s) return;
     if (s.id === "m-bid" || s.id === "m-round" || s.id === "m-lobby") return;  // must be answered
-    s.hidden = true;
+    UI.hide("#" + s.id);              // through UI, so the screen guard runs
   });
 });
 window.addEventListener("keydown", e => {
@@ -3176,6 +3192,7 @@ Fullscreen.sync();
 setLang(LANG);
 Lobby.init();
 Lobby.open();
+UI.renderRail();                    // the rail always says what it does
 Bridge.send("ready", {version:1, room:Lobby.room});
 
 /* ---- self-check (open with ?test=1) ---- */
