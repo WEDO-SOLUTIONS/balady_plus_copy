@@ -539,7 +539,10 @@ function m1(){
 
   function inviteSheet(seedId){
     step(2);
-    const picked = new Set(PEOPLE.filter(p => p.online).slice(0, 6).map(p => p.id));
+    /* the six nearest, online first — a surplus is the point of this one */
+    const near = PEOPLE.slice().sort((a, b) =>
+      (a.online === b.online ? a.km - b.km : (a.online ? -1 : 1)));
+    const picked = new Set(near.slice(0, 6).map(p => p.id));
     picked.add(seedId);
     const render = () => {
       sheet(`<div class="grab"></div>
