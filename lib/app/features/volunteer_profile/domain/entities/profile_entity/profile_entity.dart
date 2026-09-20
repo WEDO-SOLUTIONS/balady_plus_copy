@@ -1,4 +1,5 @@
 import 'base_entity.dart';
+import 'domain_service_entity.dart';
 
 class Profile {
   final String? id;
@@ -28,12 +29,14 @@ class Profile {
   final List<BaseEntity>? skills;
   final BaseEntity? specialization;
   final List<BaseEntity>? volunteeringFields;
+  final List<DomainServiceEntity>? volunteeringDomainServices;
   final BaseEntity? volunteeringLevel;
   final BaseEntity? volunteeringType;
   final String? xAccount;
   final String? phone;
   final String? relativePhone;
   final String? scientificExpertise;
+  final String? fieldRegisterInterest;
 
   const Profile({
     required this.id,
@@ -56,6 +59,7 @@ class Profile {
     required this.nationality,
     required this.skills,
     required this.volunteeringFields,
+    required this.volunteeringDomainServices,
     required this.xAccount,
     required this.bloodType,
     required this.city,
@@ -69,5 +73,6 @@ class Profile {
     required this.phone,
     required this.relativePhone,
     required this.scientificExpertise,
+    required this.fieldRegisterInterest,
   });
 }

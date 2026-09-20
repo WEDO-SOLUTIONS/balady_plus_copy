@@ -1,4 +1,3 @@
-import 'package:mapness/features/special_themes/modes/saudi_national_day/saudi_national_day.dart';
 import 'package:mapness/shared/utils/logger/logger.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -82,16 +81,23 @@ class ThemeSplashMigration {
     }
   }
 
-  /// Generates the new SharedPreferences key for Saudi National Day.
+  /// The 2025 activation window these legacy keys belong to.
+  ///
+  /// Deliberately frozen rather than read from remote config: this migration
+  /// only ever rewrites the one-off `is_saudi_day_shown` flag left by the
+  /// 2025 release, so it must land on the 2025 key. Pointing it at the
+  /// current window would mark the *upcoming* splash as already seen and
+  /// suppress it.
+  static final DateTime _legacySaudiDayStart = DateTime(2025, 9, 18);
+  static final DateTime _legacySaudiDayEnd = DateTime(2025, 9, 27, 23, 59, 59);
+
+  /// Generates the legacy-period SharedPreferences key for Saudi National Day.
   ///
   /// Format: `theme_splash_shown_nationalDay_{startDate}_{endDate}`
   /// Example: `theme_splash_shown_nationalDay_2025-09-18_2025-09-27`
   static String _generateSaudiDayKey() {
-    final startDate = SaudiNationalDayConfig.startDate;
-    final endDate = SaudiNationalDayConfig.endDate;
-
-    final start = _formatDate(startDate);
-    final end = _formatDate(endDate);
+    final start = _formatDate(_legacySaudiDayStart);
+    final end = _formatDate(_legacySaudiDayEnd);
 
     return '${_newKeyPrefix}nationalDay_${start}_$end';
   }

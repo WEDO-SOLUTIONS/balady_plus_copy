@@ -65,7 +65,7 @@ class SearchInRect extends _$SearchInRect {
     final dgisController = ref.read(dgisControllerProvider.notifier);
 
     state = SearchInRectState(
-      rect: dgisController.visibleRectSubject.value?.visibleRect.geoRectMessage(),
+      rect: dgisController.visibleRectSubject.valueOrNull?.visibleRect.geoRectMessage(),
       isButtonVisible: false,
     );
   }

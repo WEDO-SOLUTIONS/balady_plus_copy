@@ -60,6 +60,7 @@ class VolunteerProfileState extends Equatable {
   final bool isLoadingLvls;
   final bool isLoadingInterests;
   final bool isLoadingVolunteeringFields;
+  final bool isLoadingVolunteeringServices;
   final bool isLoadingBloodTypes;
   final bool isLoadingDiseases;
   final List<VolunteerLookup> regionsList;
@@ -71,6 +72,7 @@ class VolunteerProfileState extends Equatable {
   final List<VolunteerLookup> lvlsList;
   final List<VolunteerLookup> interestsList;
   final List<VolunteerLookup> volunteeringFieldsList;
+  final List<VolunteerLookup> volunteeringServicesList;
   final List<VolunteerLookup> bloodTypesList;
   final List<VolunteerLookup> diseasesList;
 
@@ -90,10 +92,14 @@ class VolunteerProfileState extends Equatable {
   final String? volunteeringLevelId;
   final String? volunteeringWorkField;
   final String? volunteeringWorkFieldId;
+  final String? volunteeringService;
+  final String? volunteeringServiceId;
   final String? volunteeringType; // 'individual' or 'group' or combined
   final String? volunteeringTypeId;
   final bool isIndividualSelected; // New: track individual selection
   final bool isGroupSelected; // New: track group selection
+  final List<String> volunteeringDomainServiceNames;
+  final String? volunteeringDomainServiceId;
   final List<String> skillsIds; // Store skill IDs for submission
 
   // Medical Info fields
@@ -174,6 +180,7 @@ class VolunteerProfileState extends Equatable {
     this.isLoadingLvls = false,
     this.isLoadingInterests = false,
     this.isLoadingVolunteeringFields = false,
+    this.isLoadingVolunteeringServices = false,
     this.isLoadingBloodTypes = false,
     this.isLoadingDiseases = false,
     this.regionsList = const [],
@@ -185,6 +192,7 @@ class VolunteerProfileState extends Equatable {
     this.lvlsList = const [],
     this.interestsList = const [],
     this.volunteeringFieldsList = const [],
+    this.volunteeringServicesList = const [],
     this.bloodTypesList = const [],
     this.diseasesList = const [],
 
@@ -204,10 +212,14 @@ class VolunteerProfileState extends Equatable {
     this.volunteeringLevelId,
     this.volunteeringWorkField,
     this.volunteeringWorkFieldId,
+    this.volunteeringService,
+    this.volunteeringServiceId,
     this.volunteeringType,
     this.volunteeringTypeId,
     this.isIndividualSelected = false,
     this.isGroupSelected = false,
+    this.volunteeringDomainServiceNames = const [],
+    this.volunteeringDomainServiceId,
     this.skillsIds = const [],
 
     // Medical Info fields
@@ -275,6 +287,8 @@ class VolunteerProfileState extends Equatable {
       volunteeringLevelId: null,
       volunteeringWorkField: null,
       volunteeringWorkFieldId: null,
+      volunteeringService: null,
+      volunteeringServiceId: null,
       volunteeringType: null,
       volunteeringTypeId: null,
       isIndividualSelected: false,
@@ -314,6 +328,7 @@ class VolunteerProfileState extends Equatable {
       isLoadingLvls: false,
       isLoadingInterests: false,
       isLoadingVolunteeringFields: false,
+      isLoadingVolunteeringServices: false,
       isLoadingBloodTypes: false,
       isLoadingDiseases: false,
       // Lists reset
@@ -326,6 +341,7 @@ class VolunteerProfileState extends Equatable {
       lvlsList: [],
       interestsList: [],
       volunteeringFieldsList: [],
+      volunteeringServicesList: [],
       bloodTypesList: [],
       diseasesList: [],
     );
@@ -379,6 +395,7 @@ class VolunteerProfileState extends Equatable {
     bool? isLoadingLvls,
     bool? isLoadingInterests,
     bool? isLoadingVolunteeringFields,
+    bool? isLoadingVolunteeringServices,
     bool? isLoadingBloodTypes,
     bool? isLoadingDiseases,
     List<VolunteerLookup>? regionsList,
@@ -390,6 +407,7 @@ class VolunteerProfileState extends Equatable {
     List<VolunteerLookup>? lvlsList,
     List<VolunteerLookup>? interestsList,
     List<VolunteerLookup>? volunteeringFieldsList,
+    List<VolunteerLookup>? volunteeringServicesList,
     List<VolunteerLookup>? bloodTypesList,
     List<VolunteerLookup>? diseasesList,
     String? educationalQualification,
@@ -405,10 +423,14 @@ class VolunteerProfileState extends Equatable {
     String? volunteeringLevelId,
     String? volunteeringWorkField,
     String? volunteeringWorkFieldId,
+    String? volunteeringService,
+    String? volunteeringServiceId,
     String? volunteeringType,
     String? volunteeringTypeId,
     bool? isIndividualSelected,
     bool? isGroupSelected,
+    List<String>? volunteeringDomainServiceNames,
+    String? volunteeringDomainServiceId,
     List<String>? skillsIds,
     String? bloodType,
     String? bloodTypeId,
@@ -480,6 +502,8 @@ class VolunteerProfileState extends Equatable {
         isLoadingInterests: isLoadingInterests ?? this.isLoadingInterests,
         isLoadingVolunteeringFields:
             isLoadingVolunteeringFields ?? this.isLoadingVolunteeringFields,
+        isLoadingVolunteeringServices:
+            isLoadingVolunteeringServices ?? this.isLoadingVolunteeringServices,
         isLoadingBloodTypes: isLoadingBloodTypes ?? this.isLoadingBloodTypes,
         isLoadingDiseases: isLoadingDiseases ?? this.isLoadingDiseases,
         regionsList: regionsList ?? this.regionsList,
@@ -492,6 +516,8 @@ class VolunteerProfileState extends Equatable {
         interestsList: interestsList ?? this.interestsList,
         volunteeringFieldsList:
             volunteeringFieldsList ?? this.volunteeringFieldsList,
+        volunteeringServicesList:
+            volunteeringServicesList ?? this.volunteeringServicesList,
         bloodTypesList: bloodTypesList ?? this.bloodTypesList,
         diseasesList: diseasesList ?? this.diseasesList,
         educationalQualification:
@@ -512,10 +538,15 @@ class VolunteerProfileState extends Equatable {
             volunteeringWorkField ?? this.volunteeringWorkField,
         volunteeringWorkFieldId:
             volunteeringWorkFieldId ?? this.volunteeringWorkFieldId,
+        volunteeringService: volunteeringService ?? this.volunteeringService,
+        volunteeringServiceId:
+            volunteeringServiceId ?? this.volunteeringServiceId,
         volunteeringType: volunteeringType ?? this.volunteeringType,
         volunteeringTypeId: volunteeringTypeId ?? this.volunteeringTypeId,
         isIndividualSelected: isIndividualSelected ?? this.isIndividualSelected,
         isGroupSelected: isGroupSelected ?? this.isGroupSelected,
+        volunteeringDomainServiceNames: volunteeringDomainServiceNames ?? this.volunteeringDomainServiceNames,
+        volunteeringDomainServiceId: volunteeringDomainServiceId ?? this.volunteeringDomainServiceId,
         skillsIds: skillsIds ?? this.skillsIds,
         bloodType: bloodType ?? this.bloodType,
         bloodTypeId: bloodTypeId ?? this.bloodTypeId,
@@ -584,6 +615,7 @@ class VolunteerProfileState extends Equatable {
         isLoadingLvls,
         isLoadingInterests,
         isLoadingVolunteeringFields,
+        isLoadingVolunteeringServices,
         isLoadingBloodTypes,
         isLoadingDiseases,
         regionsList,
@@ -595,6 +627,7 @@ class VolunteerProfileState extends Equatable {
         lvlsList,
         interestsList,
         volunteeringFieldsList,
+        volunteeringServicesList,
         bloodTypesList,
         diseasesList,
         educationalQualification,
@@ -610,10 +643,14 @@ class VolunteerProfileState extends Equatable {
         volunteeringLevelId,
         volunteeringWorkField,
         volunteeringWorkFieldId,
+        volunteeringService,
+        volunteeringServiceId,
         volunteeringType,
         volunteeringTypeId,
         isIndividualSelected,
         isGroupSelected,
+        volunteeringDomainServiceNames,
+        volunteeringDomainServiceId,
         skillsIds,
         bloodType,
         bloodTypeId,

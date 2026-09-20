@@ -131,6 +131,9 @@ class MainActivity : AudioServiceFragmentActivity() {
 
         AppIconQuickActionChannel.register(flutterEngine.dartExecutor.binaryMessenger)
 
+        // Saudi National Day launcher-icon swap (activity-alias toggle).
+        LauncherIconChannel.register(applicationContext, flutterEngine.dartExecutor.binaryMessenger)
+
         // MBC live-radio wake / Wi-Fi lock bridge — keeps the foreground
         // streaming service alive while the screen is off so HLS doesn't stall
         // on Wi-Fi throttling / Doze.

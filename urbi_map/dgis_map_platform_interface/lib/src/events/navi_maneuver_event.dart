@@ -1,3 +1,5 @@
+// ignore_for_file: public_member_api_docs
+
 abstract class NaviManeuverEvent {
   const NaviManeuverEvent();
 }
@@ -9,12 +11,7 @@ class ManeuverEventHidden extends NaviManeuverEvent {
 }
 
 class ManeuverEvent extends NaviManeuverEvent {
-  const ManeuverEvent({
-    required this.distance,
-    required this.unit,
-    required this.roadName,
-    required this.instruction,
-  });
+  const ManeuverEvent({required this.distance, required this.unit, required this.roadName, required this.instruction});
 
   final String distance;
   final String unit;
@@ -124,6 +121,16 @@ enum ManeuverInstruction {
         return ManeuverInstruction.road_crossing;
       default:
         throw Exception("Unknown instruction type: $s");
+    }
+  }
+
+  /// Non-throwing variant for event-channel payloads: an unknown or missing
+  /// instruction is a display no-op, not an error worth reporting per event.
+  static ManeuverInstruction? tryFromString(String s) {
+    try {
+      return ManeuverInstruction.fromString(s);
+    } on Exception {
+      return null;
     }
   }
 }

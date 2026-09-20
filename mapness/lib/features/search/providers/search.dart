@@ -19,6 +19,7 @@ import 'package:mapness/shared/constants/advanced_metrics_constants.dart';
 import 'package:mapness/shared/constants/constants.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/lib/geo_point_ext.dart';
+import 'package:mapness/features/balady_analytics/metrics.dart';
 import 'package:mapness/shared/lib/urbi_metrics_utils.dart';
 import 'package:mapness/shared/providers/app_language.dart';
 import 'package:mapness/shared/providers/map/camera_position.dart';
@@ -123,6 +124,15 @@ class Search extends _$Search {
 
   @override
   SearchState build(String scope) {
+    // Closing the search sheet disposes this autoDispose notifier while an
+    // in-flight suggest / fallback timer may still be pending; cancel them so
+    // they can't write `state` on a dead notifier.
+    ref.onDispose(() {
+      _searchOperation?.cancel();
+      _fullSearchTimer?.cancel();
+      _fullSearchTimer = null;
+    });
+
     if (_result != null && _previousQuery != null) {
       return SearchStateResults(results: _result!, searchText: _previousQuery!);
     }
@@ -287,6 +297,11 @@ class Search extends _$Search {
     // for an older query can detect it went stale even before this keystroke's
     // own debounced call fires.
     _latestTypedQuery = query;
+    Metrics.logEvent(
+      'SearchQuery',
+      object: runtimeType,
+      extras: {'value': query},
+    );
     _searchQueryDebounce?.cancel();
     // A fresh keystroke must cancel the 1s BSA-1931 fallback armed for an older,
     // partial query — otherwise it fires searchByText() mid-typing.
@@ -355,12 +370,21 @@ class Search extends _$Search {
     // false-positive on it.
     _latestTypedQuery = query;
     try {
+      if (!ref.mounted) {
+        return;
+      }
       await _searchOperation?.cancel();
+      if (!ref.mounted) {
+        return;
+      }
       if (query.isEmpty) {
         state = const SearchStateHistory();
         return;
       }
       await _setUpLocale(query);
+      if (!ref.mounted) {
+        return;
+      }
 
       _updateSearchText(query);
       _previousType = SearchType.fetchSuggest;
@@ -377,6 +401,10 @@ class Search extends _$Search {
       AdvancedMetrics.instance.startSearchResponse(
         queryType: _previousType!.name,
         searchQuery: query,
+      );
+      Metrics.logEvent(
+        'fetchSuggest',
+        object: runtimeType,
       );
       mixpanel?.timeEvent('Search: fetchSuggest');
       // -- Analytics
@@ -398,6 +426,9 @@ class Search extends _$Search {
       );
       _searchOperation = searchOperation;
       final result = await searchOperation.value;
+      if (!ref.mounted) {
+        return;
+      }
 
       // BALADY-3779: the user typed/searched something else while this
       // suggest was in flight — drop it instead of overwriting newer state.
@@ -438,7 +469,7 @@ class Search extends _$Search {
       // -- Analytics
     } on Exception catch (_) {
       // Don't report an error for a query the user has already moved past.
-      if (_latestTypedQuery == null || _latestTypedQuery == query) {
+      if (ref.mounted && (_latestTypedQuery == null || _latestTypedQuery == query)) {
         state = SearchStateError(searchText: query);
       }
       rethrow;
@@ -487,6 +518,11 @@ class Search extends _$Search {
       AdvancedMetrics.instance.startSearchResponse(
         queryType: _previousType!.name,
         searchQuery: searchQuery,
+      );
+      Metrics.logEvent(
+        'quickSearch',
+        object: runtimeType,
+        extras: {'query': searchQuery},
       );
       mixpanel?.timeEvent('Search: quickSearch');
       // -- Analytics
@@ -550,6 +586,11 @@ class Search extends _$Search {
       AdvancedMetrics.instance.startSearchResponse(
         queryType: _previousType!.name,
         searchQuery: query,
+      );
+      Metrics.logEvent(
+        'searchByText',
+        object: runtimeType,
+        extras: {'query': query},
       );
       mixpanel?.timeEvent('Search: searchByText');
       // -- Analytics
@@ -631,6 +672,11 @@ class Search extends _$Search {
       AdvancedMetrics.instance.startSearchResponse(
         queryType: _previousType!.name,
         searchQuery: text,
+      );
+      Metrics.logEvent(
+        'Search/searchByQuery',
+        object: runtimeType,
+        extras: {'query_id': query.id},
       );
       mixpanel?.timeEvent('Search: searchByQuery');
       // -- Analytics

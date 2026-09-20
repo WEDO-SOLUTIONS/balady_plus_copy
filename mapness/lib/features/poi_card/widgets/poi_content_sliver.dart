@@ -32,7 +32,9 @@ import 'package:mapness/features/special_themes/core/places_activation_config.da
 import 'package:mapness/features/special_themes/core/special_theme_mode.dart';
 import 'package:mapness/pages/feedback/quick_feedback_page.dart';
 import 'package:mapness/pages/poi_card/scroll_paper_about_widget.dart';
+import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
+import 'package:mapness/features/balady_analytics/metrics.dart';
 import 'package:mapness/shared/providers/analytic/bss_service.dart';
 import 'package:mapness/shared/providers/analytic/models/bss_request.dart';
 import 'package:mapness/shared/providers/analytic/models/extensions/directory_obj_ext.dart';
@@ -172,6 +174,12 @@ class PoiContentSliver extends ConsumerWidget {
     // Favourite
     final favouritesState = ref.watch(favouriteCacheProvider);
     final void Function() onFavouritePressed = () {
+      Metrics.logEventAdvanced(
+        MetricsConstants.poiKeys.favorites,
+        group: MetricsConstants.poiTag,
+        action: MetricAction.tap.toString(),
+      );
+
       context.router.push(const FavouritesRoute());
     };
     final favourites = data.getFavourites(favouritesState, context.l10n, onFavouritePressed);

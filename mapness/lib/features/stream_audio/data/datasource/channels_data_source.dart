@@ -1,4 +1,5 @@
 import 'package:balady_plus/app/core/dependency_injection/injection_container.dart';
+import 'package:balady_plus/app/core/errors/exceptions.dart';
 import 'package:balady_plus/app/core/services/global/web_service.dart';
 import 'package:balady_plus/app/core/utils/common_functions.dart';
 import 'package:dio/dio.dart';
@@ -58,6 +59,18 @@ class ChannelsDataSource {
 
       debugPrint('ChannelsDataSource: Successfully parsed ${channels.length} channels');
       return channels;
+    } on NoInternetConnectionException {
+      // Being offline is a normal state for the radio, not a defect. Returning
+      // empty lets the UI show its offline/empty state; throwing here escaped
+      // as an unawaited zone error and billed ~40k telemetry events a week
+      // (grouped per locale, because the exception's toString is the localized
+      // user-facing message).
+      debugPrint('ChannelsDataSource: offline, returning no channels');
+      return const [];
+    } on DeadlineExceededException {
+      // A 30s timeout on a dead network is the same user situation.
+      debugPrint('ChannelsDataSource: timeout, returning no channels');
+      return const [];
     } catch (e) {
       debugPrint('ChannelsDataSource: Error fetching channels: $e');
       throw Exception('Error fetching channels: $e');

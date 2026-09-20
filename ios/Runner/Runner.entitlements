@@ -13,6 +13,8 @@
 		<string>applinks:apps.balady.gov.sa?mode=developer</string>
 		<string>applinks:go.balady.gov.sa</string>
 		<string>applinks:go.balady.gov.sa?mode=developer</string>
+		<string>applinks:baladyplus.sa</string>
+		<string>applinks:www.baladyplus.sa</string>
 	</array>
 	<key>com.apple.developer.carplay-maps</key>
 	<true/>

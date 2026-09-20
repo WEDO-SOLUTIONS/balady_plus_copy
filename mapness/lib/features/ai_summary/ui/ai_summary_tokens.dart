@@ -149,13 +149,11 @@ class AiSummaryPalette {
     ),
     // Dark amber on the gold gradient — matches Figma 1777:23840 icon tint.
     sparkleColor: const Color(0xFF9D6808),
-    labelTextStyle: const TextStyle(
-      fontSize: 16,
-      fontWeight: FontWeight.w600,
-      height: 20 / 16,
-      color: MakkahPoiConstants.primaryTextColor,
-      fontFamily: _aiSummaryFont,
-    ),
+    // Only the color is consumed here: the header pulls its font from the
+    // locale-aware context.textStyles (Golos / IBMPlexSansArabic), which a
+    // const palette cannot resolve — see BALADY-3626. Color matches the
+    // address-section title (foregroundDefault) instead of the Makkah brown.
+    labelTextStyle: const TextStyle(color: Color(0xFF1B1B1B)),
     descriptionTextStyle: TextStyle(
       fontFamily: _aiSummaryFont,
       fontSize: 14,
@@ -221,13 +219,9 @@ class AiSummaryPalette {
       color: MakkahPoiConstants.darkPrimaryTextColor.withOpacity(0.8),
     ),
     sparkleColor: MakkahPoiConstants.darkPrimaryTextColor.withOpacity(0.8),
-    labelTextStyle: const TextStyle(
-      fontSize: 16,
-      fontWeight: FontWeight.w600,
-      height: 20 / 16,
-      color: MakkahPoiConstants.darkPrimaryTextColor,
-      fontFamily: _aiSummaryFont,
-    ),
+    // Only the color is consumed — see the light palette note (BALADY-3626).
+    // Dark color unchanged: it was already correct per the ticket.
+    labelTextStyle: const TextStyle(color: MakkahPoiConstants.darkPrimaryTextColor),
     descriptionTextStyle: TextStyle(
       fontFamily: _aiSummaryFont,
       fontSize: 14,
