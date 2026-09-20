@@ -736,7 +736,7 @@ class Search extends _$Search {
       await searchByText(previousQuery, isGoogle: true);
     } else if (_previousType == SearchType.quickSearch && _previousQuickSearch != null) {
       state = SearchStateLoading(
-        searchText: _previousQuickSearch!.query[ref.read(appLanguageProvider).languageCode] ?? '',
+        searchText: _previousQuickSearch!.query[ref.read(appLanguageProvider)] ?? '',
       );
       await quickSearch(_previousQuickSearch!, isGoogle: true);
     }

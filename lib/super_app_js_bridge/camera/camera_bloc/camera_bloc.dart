@@ -12,7 +12,6 @@ import 'package:image/image.dart' as my_image;
 import 'package:http/http.dart' as http;
 
 import '../entities/camera/attachment_item.dart';
-import 'package:flutter/foundation.dart';
 
 part 'camera_event.dart';
 

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
 class AccessibilitySettings {
   double textScale = 1.0;
   double lineHeight = 1.2;
@@ -98,7 +99,4 @@ class AccessibilitySettings {
       'followSystemSettings': followSystemSettings,
     };
   }
-
-
-
 }
