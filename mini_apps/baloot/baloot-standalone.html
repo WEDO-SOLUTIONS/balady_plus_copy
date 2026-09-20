@@ -944,7 +944,7 @@ const I18N = {
     bidTitle:"المزايدة", bidSub:"اختر نوع اللعب على الورقة المكشوفة",
     bidSubR2:"الجولة الثانية — اختر أي حكم تريد أو صن",
     chooseSuit:"اختر نوع الحكم",
-    redeal:"الكل باص — توزيع جديد",
+    redeal:"الكل باص — توزيع جديد", dealing:"يوزّع…",
     trickWon:"أخذها",
     projSra:"سرا", proj50:"خمسين", proj100:"مية", proj400:"أربعمية", projBaloot:"بلوت",
     ashkal:"أشكل", ashkalHint:"صن يشتريه شريكك — هو يأخذ الورقة المكشوفة", ekka:"إكه",
@@ -999,7 +999,7 @@ const I18N = {
     bidTitle:"Bidding", bidSub:"Choose the game type on the face-up card",
     bidSubR2:"Second round — pick any trump suit, or Sun",
     chooseSuit:"Choose the trump suit",
-    redeal:"Everyone passed — redealing",
+    redeal:"Everyone passed — redealing", dealing:"Dealing…",
     trickWon:"takes it",
     projSra:"Sra", proj50:"Fifty", proj100:"Hundred", proj400:"Four Hundred", projBaloot:"Baloot",
     ashkal:"Ashkal", ashkalHint:"A Sun bought for your partner — they take the face-up card", ekka:"Ekka",
@@ -2351,10 +2351,17 @@ const UI = {
     const main = $("#rail-main"), hint = $("#rail-hint");
     hint.style.opacity = Settings.hints ? 1 : .45;
     if (!R || !R.mode){
-      main.textContent = T("takeStage");
-      main.disabled = false;
-      main.classList.remove("idle");
-      main.onclick = () => { if (!Game.R || !Game.R.mode) Lobby.open(); };
+      if (!Game.G){                     // no match yet: the rail is the way in
+        main.textContent = T("takeStage");
+        main.disabled = false;
+        main.classList.remove("idle");
+        main.onclick = () => { if (!Game.G) Lobby.open(); };
+      } else {                          // a match is on, between the deal and the bidding
+        main.textContent = T("dealing");
+        main.disabled = true;
+        main.classList.add("idle");
+        main.onclick = null;
+      }
       return;
     }
     const myTurn = R.turn === 0 && G.seats[0].human && !Game.busy;
