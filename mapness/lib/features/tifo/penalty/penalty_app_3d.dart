@@ -283,6 +283,7 @@ class _Penalty3DPageState extends State<_Penalty3DPage> with WidgetsBindingObser
         timer.cancel();
         if (!_gotReady && mounted) {
           debugPrint('[Penalty3D] no "ready" from Unity after $_readyRetries resets');
+          _loading.value = false; // show whatever Unity has, and the exit button
         }
         return;
       }
@@ -457,9 +458,6 @@ class _Penalty3DPageState extends State<_Penalty3DPage> with WidgetsBindingObser
       body: Stack(
         children: [
           Positioned.fill(child: EmbedUnity(onMessageFromUnity: _onMessageFromUnity)),
-          // Our own stadium as the loading screen until Unity reports "ready":
-          // hides the engine splash and the black frames before the first render.
-          Positioned.fill(child: _LoadingOverlay(loading: _loading)),
           // Same chrome layout as the Flame page: exit control on its own row
           // above the HUD card so the two never overlap. Kept static (no blur,
           // no animation) — overlays over the Unity platform view are where
@@ -487,6 +485,12 @@ class _Penalty3DPageState extends State<_Penalty3DPage> with WidgetsBindingObser
               ),
             ),
           ),
+          // Loading screen until Unity reports "ready", ABOVE the HUD and the
+          // exit button so the score card doesn't sit on the trophy; it also
+          // hides the engine splash and the black frames before the first
+          // render. Released as well when the ready wait gives up, so the
+          // player is never locked behind it.
+          Positioned.fill(child: _LoadingOverlay(loading: _loading)),
         ],
       ),
     ),
