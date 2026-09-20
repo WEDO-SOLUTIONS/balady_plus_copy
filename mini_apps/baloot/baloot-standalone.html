@@ -272,6 +272,8 @@ html[dir="ltr"] .st-deal{text-transform:uppercase}
 }
 .plate .tag.bidder{background:linear-gradient(170deg,#f2d891,#c99a3f);color:#2a1a05}
 .plate .tag.wait{background:var(--warn);color:#fff}
+.plate .tag.bot{background:#5c7f8e;color:#f2f7f9}
+.plate.bot-seat{max-width:clamp(86px, calc(30 * var(--vw)), 118px)}
 .seat.turn .plate{
   border-color:#fff;
   box-shadow:0 3px 10px rgba(0,0,0,.6), 0 0 16px rgba(240,207,114,.85);
@@ -962,8 +964,9 @@ const I18N = {
     nextRound:"الجولة التالية", newGame:"لعبة جديدة", playAgain:"العب مرة أخرى",
     crestTitle:"تحدي البلوت",
     lobbyTitle:"بلوت", lobbySub:"لعبة الورق السعودية — أربعة لاعبين، فريقان، ٨ أوراق لكل لاعب.",
-    startSolo:"العب مع البوتات", inviteFriends:"ادعُ أصدقاءك", rules:"الشرح والقوانين",
+    startSolo:"العب مع البوتات", startTable:"ابدأ المباراة", inviteFriends:"ادعُ أصدقاءك", rules:"الشرح والقوانين",
     seats:"المقاعد", seatN:"شريكك", seatE:"اليمين", seatW:"اليسار", seatS:"أنت",
+    botSwapHint:"مقعد البوت موسوم على الطاولة — اضغط ＋ لتمنحه لصديق.",
     friendsTitle:"ادعُ أصدقاءك", 
     friendsSub:"شارك رمز الغرفة، أو اختر من قائمة أصدقائك في تحدي بلدي. المقاعد الفارغة يملؤها البوت تلقائياً.",
     roomCode:"رمز الغرفة", copy:"نسخ", copied:"تم النسخ ✓", share:"مشاركة",
@@ -1016,8 +1019,9 @@ const I18N = {
     nextRound:"Next round", newGame:"New game", playAgain:"Play again",
     crestTitle:"Baloot Challenge",
     lobbyTitle:"Baloot", lobbySub:"The Saudi card game — four players, two teams, 8 cards each.",
-    startSolo:"Play with bots", inviteFriends:"Invite friends", rules:"How to play",
+    startSolo:"Play with bots", startTable:"Start the game", inviteFriends:"Invite friends", rules:"How to play",
     seats:"Seats", seatN:"Partner", seatE:"Right", seatW:"Left", seatS:"You",
+    botSwapHint:"A bot seat is labelled at the table — tap ＋ to hand it to a friend.",
     friendsTitle:"Invite friends",
     friendsSub:"Share the room code, or pick from your Balady Challenge friends. Empty seats are filled by bots.",
     roomCode:"Room code", copy:"Copy", copied:"Copied ✓", share:"Share",
@@ -2253,6 +2257,10 @@ const UI = {
 
       const plate = el("div", "plate");
       plate.appendChild(el("span", "nm", m.name));
+      if (m.type === "bot"){
+        plate.classList.add("bot-seat");
+        plate.appendChild(el("span", "tag bot", T("bot")));
+      }
       if (R && R.bidder === seat) plate.appendChild(el("span", "tag bidder", "★"));
       else if (m.type === "friend" && !m.joined) plate.appendChild(el("span", "tag wait", "…"));
       else if (R && R.hands) plate.appendChild(el("span", "tag", String(R.hands[seat].length)));
@@ -2731,9 +2739,15 @@ const Lobby = {
 
     body.appendChild(el("h3", null, T("seats")));
     body.appendChild(this.seatList());
+    if (this.seats.some(s => s.type === "bot")){
+      const note = el("div", "hint", T("botSwapHint"));
+      note.style.margin = "2px 0 0";
+      body.appendChild(note);
+    }
 
     const r1 = el("div", "row"); r1.style.marginTop = "12px";
-    const b1 = el("button", "btn gold", "▶︎ " + T("startSolo"));
+    const anyFriend = this.seats.some(s => s.type === "friend");
+    const b1 = el("button", "btn gold", "▶︎ " + T(anyFriend ? "startTable" : "startSolo"));
     b1.onclick = () => this.startGame();
     r1.appendChild(b1);
     body.appendChild(r1);
@@ -2771,6 +2785,12 @@ const Lobby = {
           this.open();
         };
         row.appendChild(x);
+      } else {
+        const plus = el("button", "icon-btn", "＋");
+        plus.style.width = plus.style.height = "26px";
+        plus.setAttribute("aria-label", T("inviteFriends"));
+        plus.onclick = () => { UI.hide("#m-lobby"); this.openFriends(); };
+        row.appendChild(plus);
       }
       wrap.appendChild(row);
     }

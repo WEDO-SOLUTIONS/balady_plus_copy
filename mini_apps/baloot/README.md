@@ -231,6 +231,14 @@ sheet / clipboard, and adding friends by player number (kept in `localStorage`).
 Seats you fill with friends are played by a bot under that friend's name until
 the host reports them as joined, so a game never blocks on an invitation.
 
+A bot never passes for a person. A bot seat carries a `Bot` tag in the lobby
+list and the same tag on its nameplate at the table, in both languages, and the
+lobby says so in a line under the seats. Any bot seat can be handed to a friend
+before the deal with the `＋` button on its row, which opens the invite sheet;
+the primary button reads *Start the game* as soon as one seat is a friend and
+*Play with bots* only when none is. That is what makes "start with one friend
+and fill the rest later" honest rather than a silent stand-in.
+
 Real-time play between devices needs a transport; the bridge below is the seam
 where it plugs in.
 
