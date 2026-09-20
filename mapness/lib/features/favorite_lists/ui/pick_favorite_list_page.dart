@@ -245,7 +245,17 @@ class PickFavoriteListPage extends HookConsumerWidget {
                           ),
                           trailing: ContentRowCustomTrailingOptions(
                             builder: (context) => IgnorePointer(
-                              child: Checkbox(value: isSelected, onChanged: (_) {}),
+                              child: Checkbox(
+                                value: isSelected,
+                                onChanged: (_) {},
+                                fillColor: WidgetStateProperty.resolveWith(
+                                  (states) => states.contains(WidgetState.selected)
+                                      ? context.colors.accentDefault
+                                      : Colors.transparent,
+                                ),
+                                checkColor: context.colors.accentOnAccent,
+                                side: BorderSide(color: context.colors.borderDefault),
+                              ),
                             ),
                           ),
                           onTap: () {
