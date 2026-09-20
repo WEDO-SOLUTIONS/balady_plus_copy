@@ -7,6 +7,7 @@ import 'package:mapness/app/auto_route/app_routes.dart';
 import 'package:mapness/features/tifo/data/tifo_debug_collider_overlay.dart';
 import 'package:mapness/features/tifo/data/tifo_debug_color_override.dart';
 import 'package:mapness/features/tifo/data/tifo_debug_goalkeeper_difficulty.dart';
+import 'package:mapness/features/tifo/penalty/penalty_app_3d.dart';
 import 'package:mapness/features/tifo/penalty/penalty_game.dart';
 import 'package:mapness/shared/providers/app_language.dart';
 import 'package:mapness/shared/providers/map/debug_3d_model.dart';
@@ -177,11 +178,19 @@ class Debug3DModelPanel extends ConsumerWidget {
           ),
           const SizedBox(height: 8),
           DebugButton(
-            label: 'Launch penalty game',
+            label: 'Launch penalty game (Flame)',
             icon: Icons.sports_soccer_rounded,
             gradient: DebugTheme.gradientTeal,
             isCompact: true,
             onPressed: () => _launchPenaltyGame(ref),
+          ),
+          const SizedBox(height: 8),
+          DebugButton(
+            label: 'Launch penalty game (Unity 3D)',
+            icon: Icons.view_in_ar_rounded,
+            gradient: DebugTheme.gradientTeal,
+            isCompact: true,
+            onPressed: () => _launchPenaltyGame(ref, unity: true),
           ),
           if (state.error != null) ...[
             const DebugDivider(),
@@ -197,13 +206,19 @@ class Debug3DModelPanel extends ConsumerWidget {
     );
   }
 
-  /// Debug-only shortcut: pushes [PenaltyApp] directly on the root navigator,
+  /// Debug-only shortcut: pushes [PenaltyApp] — or, with [unity], its
+  /// Unity-backed twin [PenaltyApp3D] — directly on the root navigator,
   /// bypassing every gate (team-select / tutorial / entry / polygon-tap) —
   /// including the building/club lookup in `building_sheet.dart` that
   /// normally resolves kit colors, so the "Kit colors" override in the TIFO
   /// Backend panel must be read here too or it silently does nothing on this
   /// shortcut.
-  void _launchPenaltyGame(WidgetRef ref) {
+  ///
+  /// The two widgets share a constructor, so only the arming handshake
+  /// differs: Unity keeps input locked until the host answers its `ready`
+  /// with `arm()` (`building_sheet.dart` uses that window to open the server
+  /// session), and this shortcut has no session to open, so it arms at once.
+  void _launchPenaltyGame(WidgetRef ref, {bool unity = false}) {
     final navigator = rootNavigatorKey.currentState;
     if (navigator == null) return;
     final colorOverride = ref.read(tifoDebugColorOverrideProvider);
@@ -215,18 +230,33 @@ class Debug3DModelPanel extends ConsumerWidget {
       navigator.push<void>(
         MaterialPageRoute<void>(
           fullscreenDialog: true,
-          builder: (_) => PenaltyApp(
-            strikerColor: strikerColor,
-            keeperColor: keeperColor,
-            showColliderDebug: showColliderDebug,
-            goalkeeperDifficulty: goalkeeperDifficulty,
-            locale: ref.read(appLanguageProvider).locale,
-            onComplete: (_) {
-              Future<void>.delayed(const Duration(seconds: 2), () {
-                rootNavigatorKey.currentState?.pop();
-              });
-            },
-          ),
+          builder: (_) => unity
+              ? PenaltyApp3D(
+                  strikerColor: strikerColor,
+                  keeperColor: keeperColor,
+                  showColliderDebug: showColliderDebug,
+                  goalkeeperDifficulty: goalkeeperDifficulty,
+                  locale: ref.read(appLanguageProvider).locale,
+                  onReady: (arm) => arm(),
+                  onConnectionLost: () => rootNavigatorKey.currentState?.pop(),
+                  onComplete: (_) {
+                    Future<void>.delayed(const Duration(seconds: 2), () {
+                      rootNavigatorKey.currentState?.pop();
+                    });
+                  },
+                )
+              : PenaltyApp(
+                  strikerColor: strikerColor,
+                  keeperColor: keeperColor,
+                  showColliderDebug: showColliderDebug,
+                  goalkeeperDifficulty: goalkeeperDifficulty,
+                  locale: ref.read(appLanguageProvider).locale,
+                  onComplete: (_) {
+                    Future<void>.delayed(const Duration(seconds: 2), () {
+                      rootNavigatorKey.currentState?.pop();
+                    });
+                  },
+                ),
         ),
       ),
     );
