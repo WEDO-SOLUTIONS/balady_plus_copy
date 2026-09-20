@@ -1438,7 +1438,6 @@ class OtpBottomSheetWidget extends StatefulWidget {
     this.initialFailureCount = 0,
     this.initialSecondsRemaining = 60,
     this.maxVerifyAttempts = 3,
-    super.key,
   });
 
   @override

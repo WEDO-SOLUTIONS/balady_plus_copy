@@ -85,7 +85,7 @@ class DynamicStyleDebugController extends _$DynamicStyleDebugController {
     try {
       switch (mode) {
         case DynamicStyleDebugMode.bundled:
-          styleController.resetToBundled();
+          await styleController.resetToBundled();
         case DynamicStyleDebugMode.carBuhanka:
         case DynamicStyleDebugMode.carSport:
         case DynamicStyleDebugMode.carFly:

@@ -543,7 +543,7 @@ class _TifoBuildingSheetState extends ConsumerState<_TifoBuildingSheet> {
             // the run had reached; the guard then keeps a later natural end
             // from reporting a second time.
             onBackgrounded: () => _reportPlayExit(TifoPlayExitReason.backgrounded),
-            onReady: (arm) => unawaited(
+            onReady: (arm) => detach(
               _openSession(container).then((session) {
                 if (session == null) {
                   return; // start failed — the game route is already gone
@@ -688,7 +688,7 @@ class _TifoBuildingSheetState extends ConsumerState<_TifoBuildingSheet> {
       if (ctx != null) {
         _playPhase = TifoPlayPhase.resultShown;
         _reportPlayExit(TifoPlayExitReason.completed, outcome: _analyticsOutcome(result.outcome));
-        unawaited(
+        detach(
           showTifoPenaltyResult(
             ctx,
             result,

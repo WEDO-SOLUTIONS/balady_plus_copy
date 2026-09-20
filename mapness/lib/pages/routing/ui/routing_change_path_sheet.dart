@@ -17,6 +17,7 @@ import 'package:mapness/l10n/generated/app_localizations.dart';
 import 'package:mapness/pages/routing/lib/route_point_extension.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
+import 'package:mapness/shared/utils/detach.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:mapness/widgets/routing/lib/duration_distance_fmt.dart';
 
@@ -68,7 +69,8 @@ class _ChangePathSheetState extends ConsumerState<ChangePathSheet> {
     // a new list is needed to compare to initial point count on close confirmation
     points = List.of(widget.points);
     _updatePoints();
-    _loadEta();
+    // initState cannot await; the ETA lands via setState when it resolves.
+    detach(_loadEta(), tag: 'routingChangePathSheet.loadEta.initState');
   }
 
   // Update [pointsModels] list with the new values from [points] and [labels]
@@ -245,7 +247,7 @@ class _ChangePathSheetState extends ConsumerState<ChangePathSheet> {
       _swap(points, oldIndex, currentIndex);
       _swap(pointsModels, oldIndex, currentIndex);
     });
-    _loadEta();
+    detach(_loadEta(), tag: 'routingChangePathSheet.loadEta.reorder');
   }
 
   /// Swap the items in the list
@@ -336,7 +338,7 @@ class _ChangePathSheetState extends ConsumerState<ChangePathSheet> {
 
         // Don't use setState in [_updatePoints] because it will cause an error during the initState
         setState(() {});
-        _loadEta();
+        await _loadEta();
       }
     }
   }
@@ -353,7 +355,7 @@ class _ChangePathSheetState extends ConsumerState<ChangePathSheet> {
 
       // Don't use setState in [_updatePoints] because it will cause an error during the initState
       setState(() {});
-      _loadEta();
+      detach(_loadEta(), tag: 'routingChangePathSheet.loadEta.deletePoint');
     };
   }
 
