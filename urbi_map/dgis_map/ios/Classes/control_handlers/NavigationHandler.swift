@@ -52,10 +52,9 @@ class NavigationHandler {
 
     private(set) var isNavigating: Bool = false
 
-    /// BALADY-3772: true only while a turn-by-turn session (guidance or its
-    /// simulation) started via `startNavigation`/`startSimulation` is active.
-    /// Unlike `isNavigating` it stays false for free roam and for route
-    /// search outside guidance.
+    /// BALADY-3772/3972: true only while a car-like guidance/simulation
+    /// session (not pedestrian, not public transport) started via
+    /// `startNavigation`/`startSimulation` is active.
     private(set) var isTurnByTurn: Bool = false
 
     /// BALADY-3924: true while a free-roam session started via
@@ -343,8 +342,12 @@ class NavigationHandler {
             return
         }
         
+        // BALADY-3972: pedestrian/public-transport guidance keeps the
+        // standard style pin — only car-like sessions get the custom cursor.
+        let isPublicTransport = options == .publicTransport(PublicTransportRouteSearchOptions())
+        let isPedestrian = options == .pedestrian(PedestrianRouteSearchOptions())
+
         do {
-            let isPublicTransport = options == .publicTransport(PublicTransportRouteSearchOptions())
             if !isPublicTransport {
             setupCamera(speedRangeZoom: speedRangeZoom)
             // TODO: return back
@@ -366,10 +369,8 @@ class NavigationHandler {
             )))
             return
         }
-        
-        // BALADY-3772: a turn-by-turn session is starting — the custom cursor
-        // model may be applied from here until the session ends.
-        isTurnByTurn = true
+
+        isTurnByTurn = !isPedestrian && !isPublicTransport
 
         let oldSource = map.sources.first(where: { $0 is MyLocationMapObjectSource })!
 
@@ -426,14 +427,15 @@ class NavigationHandler {
         }
         
         do {
-            
+
 
             let isPublicTransport = options == .publicTransport(PublicTransportRouteSearchOptions())
+            let isPedestrian = options == .pedestrian(PedestrianRouteSearchOptions())
             if !isPublicTransport {
             setupCamera(speedRangeZoom: speedRangeZoom)
-            // BALADY-3772: simulation is a turn-by-turn session too — the
-            // custom cursor model applies the same way as in real guidance.
-            isTurnByTurn = true
+            // BALADY-3972: same car-like-only gate as startNavigation, so
+            // pedestrian simulation keeps the standard pin too.
+            isTurnByTurn = !isPedestrian
             try self.navigationManager.startSimulation(
                 routeBuildOptions: RouteBuildOptions(
                     finishPoint: finishPoint,
