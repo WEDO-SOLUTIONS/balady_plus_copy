@@ -38,12 +38,19 @@ lives in `penalty/` — everything else in this folder is the map/BRD layer.
 
 ## Map layer (`tifo_buildings_map_layer.dart`)
 
-- Zoom LOD: buildings ≥ 15, districts < 15. NB: `visibleRectEvent.zoom` reads
-  ~1 lower than `getCameraPosition().zoom`, which is why the threshold is 15
-  and not the API-spec 16.
+- Zoom LOD, three tiers: region silhouette ≤ 9, district mosaic 10–15,
+  buildings ≥ 16. Those are the DEFAULTS of `TifoLodZoomThresholds`
+  (`data/tifo_debug_lod_zoom.dart`) — the debug panel ("Map LOD zoom levels")
+  moves the two switch points at runtime, in memory, and the class keeps the
+  tiers ordered and non-overlapping. NB: the thresholds are compared against
+  `visibleRectEvent.zoom`, which reads ~1 lower than
+  `getCameraPosition().zoom`, so buildings open at a camera zoom of ~17 — any
+  `moveCamera` meant to land in buildings mode has to account for that (see
+  `district_sheet.dart`). Full breakdown of every zoom value the layer keys
+  off: [ZOOM_LEVELS.md](ZOOM_LEVELS.md).
 - Buildings **accumulate**: polygons are never removed on pan, only added and
   pointwise-recolored (owner change via 20 s poller `tifo_buildings_poller.dart`
-  → `POST /buildings/by-ids`). Hard cap `_maxRendered = 1000`.
+  → `POST /buildings/by-ids`). Hard cap `_maxRendered = 2000`.
 - The shared dgis `MapObjectManager` uses generalization
   (`logicalPixel=100, maxZoom=18` in the native plugin) — below zoom 18 nearby
   polygons get spatially thinned. That is why "not all polygons show" at

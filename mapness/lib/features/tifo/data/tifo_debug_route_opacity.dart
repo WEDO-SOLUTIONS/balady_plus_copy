@@ -27,7 +27,9 @@ class TifoRouteOpacity {
   static const int defaultDistricts = 10;
   static const int defaultCluster = 20;
 
-  /// Street-level capture polygons (zoom ≥ 15).
+  /// Street-level capture polygons — the buildings tier, whose zoom threshold
+  /// is itself a debug knob (`TifoLodZoomThresholds`), so it is not spelled
+  /// out as a number here.
   final int buildings;
 
   /// The district mosaic (mid zooms).

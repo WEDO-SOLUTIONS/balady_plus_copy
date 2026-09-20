@@ -11,6 +11,7 @@ import 'package:mapness/features/tifo/data/tifo_debug_collider_overlay.dart';
 import 'package:mapness/features/tifo/data/tifo_debug_color_override.dart';
 import 'package:mapness/features/tifo/data/tifo_debug_goalkeeper_difficulty.dart';
 import 'package:mapness/features/tifo/data/tifo_debug_identity.dart';
+import 'package:mapness/features/tifo/data/tifo_debug_lod_zoom.dart';
 import 'package:mapness/features/tifo/data/tifo_debug_route_opacity.dart';
 import 'package:mapness/features/tifo/penalty/penalty_game.dart';
 import 'package:mapness/features/tifo/providers/tifo_session_provider.dart';
@@ -146,9 +147,12 @@ class _TifoBackendDebugPanelState extends ConsumerState<TifoBackendDebugPanel> {
         Consumer(
           builder: (context, ref, _) {
             final enabled = ref.watch(tifoBuildingsMapLayerProvider);
+            final zooms = ref.watch(tifoDebugLodZoomProvider);
             return DebugToggleRow(
               title: 'TIFO map layer',
-              subtitle: 'zoom <16 → districts (tint by leader), ≥16 → buildings (tap to play)',
+              subtitle:
+                  'zoom ${zooms.clusterRangeLabel} → region, ${zooms.districtRangeLabel} → districts '
+                  '(tint by leader), ${zooms.buildingRangeLabel} → buildings (tap to play)',
               value: enabled,
               gradient: DebugTheme.gradientTeal,
               onChanged: (value) {
@@ -164,6 +168,20 @@ class _TifoBackendDebugPanelState extends ConsumerState<TifoBackendDebugPanel> {
             );
           },
         ),
+        const SizedBox(height: 12),
+        Text(
+          'Map LOD zoom levels',
+          style: context.textStyles.bodySmallMedium.copyWith(color: DebugTheme.textSecondary),
+        ),
+        const SizedBox(height: 4),
+        Text(
+          'Where the layer switches between the region silhouette, the district mosaic and individual '
+          'buildings. The three tiers share one zoom axis, so moving a boundary pushes its neighbour — '
+          'the ranges can never overlap.',
+          style: context.textStyles.captionSmallRegular.copyWith(color: DebugTheme.textMuted),
+        ),
+        const SizedBox(height: 8),
+        const _LodZoomSliders(),
         const DebugDivider(),
         Text(
           'In-route opacity',
@@ -601,7 +619,8 @@ class _RouteOpacitySliders extends ConsumerWidget {
       children: [
         _PercentSlider(
           label: 'Buildings',
-          subtitle: 'Street-level capture polygons (zoom ≥ 15) · default '
+          subtitle:
+              'Street-level capture polygons · default '
               '${TifoRouteOpacity.defaultBuildings}%',
           value: opacity.buildings,
           onChanged: controller.setBuildings,
@@ -614,7 +633,8 @@ class _RouteOpacitySliders extends ConsumerWidget {
         ),
         _PercentSlider(
           label: 'Clustering',
-          subtitle: 'Single region silhouette at the far-out zoom · default '
+          subtitle:
+              'Single region silhouette at the far-out zoom · default '
               '${TifoRouteOpacity.defaultCluster}%',
           value: opacity.cluster,
           onChanged: controller.setCluster,
@@ -755,6 +775,66 @@ class _GoalkeeperDifficultySliders extends ConsumerWidget {
   }
 }
 
+/// The three LOD boundaries as one slider per tier. Each slider writes
+/// through [TifoDebugLodZoomController], which re-derives the whole triple —
+/// so dragging one boundary past a neighbour moves that neighbour out of the
+/// way instead of producing two tiers that claim the same zoom levels.
+class _LodZoomSliders extends ConsumerWidget {
+  const _LodZoomSliders();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final zooms = ref.watch(tifoDebugLodZoomProvider);
+    final controller = ref.read(tifoDebugLodZoomProvider.notifier);
+    const gap = TifoLodZoomThresholds.tierGap;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        _DifficultySlider(
+          label: 'Cluster (region silhouette)',
+          subtitle: 'Last zoom that still paints the whole region as one polygon',
+          value: zooms.clusterMaxZoom,
+          min: TifoLodZoomThresholds.minZoom,
+          max: TifoLodZoomThresholds.maxClusterMaxZoom,
+          divisions: (TifoLodZoomThresholds.maxClusterMaxZoom - TifoLodZoomThresholds.minZoom) ~/ gap,
+          valueLabel: 'zoom ${zooms.clusterRangeLabel}',
+          onChanged: controller.setClusterMaxZoom,
+        ),
+        _DifficultySlider(
+          label: 'Districts (mosaic)',
+          subtitle: 'Last zoom that still paints district polygons; buildings start one level above it',
+          value: zooms.districtMaxZoom,
+          min: TifoLodZoomThresholds.minZoom + gap,
+          max: TifoLodZoomThresholds.maxZoom - gap,
+          divisions: (TifoLodZoomThresholds.maxZoom - gap - TifoLodZoomThresholds.minZoom - gap) ~/ gap,
+          valueLabel: 'zoom ${zooms.districtRangeLabel}',
+          onChanged: controller.setDistrictMaxZoom,
+        ),
+        _DifficultySlider(
+          label: 'Buildings (tappable)',
+          subtitle: 'First zoom that paints individual buildings; the district tier ends one level below it',
+          value: zooms.buildingMinZoom,
+          min: TifoLodZoomThresholds.minZoom + 2 * gap,
+          max: TifoLodZoomThresholds.maxZoom,
+          divisions: (TifoLodZoomThresholds.maxZoom - TifoLodZoomThresholds.minZoom - 2 * gap) ~/ gap,
+          valueLabel: 'zoom ${zooms.buildingRangeLabel}',
+          onChanged: controller.setBuildingMinZoom,
+        ),
+        Align(
+          alignment: Alignment.centerLeft,
+          child: DebugOutlinedButton(
+            label: 'Reset to defaults',
+            icon: Icons.restart_alt_rounded,
+            color: DebugTheme.info,
+            isCompact: true,
+            onPressed: controller.reset,
+          ),
+        ),
+      ],
+    );
+  }
+}
+
 class _DifficultySlider extends StatelessWidget {
   const _DifficultySlider({
     required this.label,
@@ -763,6 +843,8 @@ class _DifficultySlider extends StatelessWidget {
     required this.min,
     required this.max,
     required this.onChanged,
+    this.divisions = 100,
+    this.valueLabel,
   });
 
   final String label;
@@ -771,6 +853,14 @@ class _DifficultySlider extends StatelessWidget {
   final double min;
   final double max;
   final ValueChanged<double> onChanged;
+
+  /// Steps the slider snaps to. Whole zoom levels for the LOD sliders; the
+  /// difficulty knobs keep the fine-grained default.
+  final int divisions;
+
+  /// Badge text, when the raw two-decimal number isn't what the tester needs
+  /// to see (the LOD sliders show the resulting zoom RANGE instead).
+  final String? valueLabel;
 
   @override
   Widget build(BuildContext context) => Padding(
@@ -786,7 +876,7 @@ class _DifficultySlider extends StatelessWidget {
                 style: context.textStyles.bodySmallMedium.copyWith(color: DebugTheme.textPrimary),
               ),
             ),
-            DebugBadge(label: value.toStringAsFixed(2), color: DebugTheme.info),
+            DebugBadge(label: valueLabel ?? value.toStringAsFixed(2), color: DebugTheme.info),
           ],
         ),
         Text(
@@ -804,7 +894,7 @@ class _DifficultySlider extends StatelessWidget {
             value: value.clamp(min, max),
             min: min,
             max: max,
-            divisions: 100,
+            divisions: divisions,
             onChanged: onChanged,
           ),
         ),

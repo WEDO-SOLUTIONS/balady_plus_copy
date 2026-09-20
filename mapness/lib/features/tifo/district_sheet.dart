@@ -94,7 +94,7 @@ class _DistrictSheetState extends ConsumerState<_DistrictSheet> {
       await controller.moveCamera(
         CameraPositionMessage(
           point: GeoPointMessage(latitude: target.lat, longitude: target.lng),
-          zoom: 16.5, // buildings mode (LOD threshold is 15 on the rect stream)
+          zoom: 17.5, // buildings mode (LOD threshold is 16 on the rect stream)
           tilt: 0,
           bearing: 0,
         ),
