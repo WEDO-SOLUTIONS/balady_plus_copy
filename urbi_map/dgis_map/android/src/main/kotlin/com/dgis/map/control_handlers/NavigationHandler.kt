@@ -76,10 +76,9 @@ class NavigationHandler(
                 private set
 
         /**
-         * BALADY-3772: true only while a turn-by-turn session (guidance or its
-         * simulation) started via [startNavigation]/[startSimulation] is
-         * active. Unlike [isNavigating] it stays false for free roam and for
-         * route search outside guidance.
+         * BALADY-3772/3972: true only while a car-like guidance/simulation
+         * session (not pedestrian, not public transport) started via
+         * [startNavigation]/[startSimulation] is active.
          */
         var isTurnByTurn: Boolean = false
                 private set
@@ -345,9 +344,9 @@ class NavigationHandler(
 
                 setupCamera(speedRangeZoom = speedRangeZoom)
 
-                // BALADY-3772: a turn-by-turn session is starting — the custom
-                // cursor model may be applied from here until the session ends.
-                isTurnByTurn = true
+                // BALADY-3972: pedestrian/public-transport guidance keeps the
+                // standard style pin — only car-like sessions get the cursor.
+                isTurnByTurn = !options.isPedestrian && !options.isPublicTransport
 
                 if (oldSource == null && map.sources.isNotEmpty()) {
                         oldSource = map.sources.first { it is MyLocationMapObjectSource }
@@ -363,6 +362,10 @@ class NavigationHandler(
                                 )
                         )
                         onMyLocationSourceReplaced()
+                } else if (!isTurnByTurn) {
+                        // BALADY-3972: mode switched mid-session (no intervening
+                        // stopNavigation) — drop a model left from a prior car-like session.
+                        onNavigationSessionEnded()
                 }
 
                 if (!options.isPublicTransport) {
@@ -404,9 +407,9 @@ class NavigationHandler(
 
                 setupCamera(speedRangeZoom = speedRangeZoom)
 
-                // BALADY-3772: simulation is a turn-by-turn session too — the
-                // custom cursor model applies the same way as in real guidance.
-                isTurnByTurn = true
+                // BALADY-3972: same car-like-only gate as startNavigation, so
+                // pedestrian/public-transport simulation keeps the standard pin.
+                isTurnByTurn = !options.isPedestrian && !options.isPublicTransport
 
                 if (!options.isPublicTransport) {
                         navigationManager.startSimulation(
