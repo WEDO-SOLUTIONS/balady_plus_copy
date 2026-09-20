@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'dart:math' as math;
 
 import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_embed_unity/flutter_embed_unity.dart';
 import 'package:mapness/features/tifo/data/tifo_debug_goalkeeper_difficulty.dart';
@@ -159,6 +160,10 @@ class _Penalty3DPageState extends State<_Penalty3DPage> with WidgetsBindingObser
   Timer? _offlineTimer;
   bool _connectionLostReported = false;
 
+  /// True until Unity says "ready": the loading overlay covers the platform
+  /// view (and with it the engine splash and the black first frames).
+  final ValueNotifier<bool> _loading = ValueNotifier<bool>(true);
+
   // ---- Unity -> Flutter -------------------------------------------------
 
   void _onMessageFromUnity(String message) {
@@ -176,6 +181,7 @@ class _Penalty3DPageState extends State<_Penalty3DPage> with WidgetsBindingObser
         }
         _gotReady = true;
         _readyTimer?.cancel();
+        _loading.value = false;
         _configureUnity();
         final onReady = widget.onReady;
         if (onReady != null) {
@@ -434,6 +440,7 @@ class _Penalty3DPageState extends State<_Penalty3DPage> with WidgetsBindingObser
         debugPrint('[Penalty3D] Leave not delivered: $e');
       }
     }
+    _loading.dispose();
     super.dispose();
   }
 
@@ -450,6 +457,9 @@ class _Penalty3DPageState extends State<_Penalty3DPage> with WidgetsBindingObser
       body: Stack(
         children: [
           Positioned.fill(child: EmbedUnity(onMessageFromUnity: _onMessageFromUnity)),
+          // Our own stadium as the loading screen until Unity reports "ready":
+          // hides the engine splash and the black frames before the first render.
+          Positioned.fill(child: _LoadingOverlay(loading: _loading)),
           // Same chrome layout as the Flame page: exit control on its own row
           // above the HUD card so the two never overlap. Kept static (no blur,
           // no animation) — overlays over the Unity platform view are where
@@ -506,4 +516,149 @@ class _ExitButton extends StatelessWidget {
       ),
     ),
   );
+}
+
+/// Full-screen loading card shown over the Unity view until "ready": the
+/// champions-ribbon trophy on its navy with a few confetti flecks, the entry
+/// screen's caption and title, and a spinner. Fades out and removes itself
+/// once loading is over, so nothing stays layered over the platform view
+/// during play.
+class _LoadingOverlay extends StatefulWidget {
+  const _LoadingOverlay({required this.loading});
+
+  final ValueListenable<bool> loading;
+
+  @override
+  State<_LoadingOverlay> createState() => _LoadingOverlayState();
+}
+
+/// One static confetti fleck, positioned as a fraction of the screen.
+class _Fleck extends StatelessWidget {
+  const _Fleck({required this.left, required this.top, required this.size, required this.angle, required this.color});
+
+  final double left, top, size, angle;
+  final Color color;
+
+  @override
+  Widget build(BuildContext context) => Positioned.fill(
+    child: Align(
+      alignment: Alignment(left * 2 - 1, top * 2 - 1),
+      child: Transform.rotate(
+        angle: angle,
+        child: Container(
+          width: size,
+          height: size * 0.62,
+          decoration: BoxDecoration(color: color, borderRadius: BorderRadius.circular(2)),
+        ),
+      ),
+    ),
+  );
+}
+
+class _LoadingOverlayState extends State<_LoadingOverlay> {
+  static const Duration _fade = Duration(milliseconds: 350);
+  static const Color _caption = Color(0xFF5A9B8E);
+  static const Color _title = Color(0xFFE8F5F3);
+  static const Color _accent = Color(0xFF79DCD0);
+
+  bool _gone = false;
+
+  @override
+  void initState() {
+    super.initState();
+    widget.loading.addListener(_onLoadingChanged);
+  }
+
+  @override
+  void dispose() {
+    widget.loading.removeListener(_onLoadingChanged);
+    super.dispose();
+  }
+
+  void _onLoadingChanged() {
+    if (!widget.loading.value) {
+      setState(() {});
+      Future<void>.delayed(_fade, () {
+        if (mounted) {
+          setState(() => _gone = true);
+        }
+      });
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (_gone) {
+      return const SizedBox.shrink();
+    }
+    final l10n = AppLocalizations.of(context);
+    return IgnorePointer(
+      ignoring: !widget.loading.value,
+      child: AnimatedOpacity(
+        opacity: widget.loading.value ? 1 : 0,
+        duration: _fade,
+        child: Directionality(
+          textDirection: TextDirection.ltr,
+          child: DecoratedBox(
+            // Same navy as the champions ribbon, with a few of its teal and
+            // mint flecks; the trophy is the ribbon's own artwork.
+            decoration: const BoxDecoration(color: Color(0xFF141A2E)),
+            child: Stack(
+              fit: StackFit.expand,
+              children: [
+                const _Fleck(left: 0.08, top: 0.18, size: 26, angle: -0.35, color: Color(0xFF45EBA5)),
+                const _Fleck(left: 0.82, top: 0.14, size: 18, angle: 0.5, color: Color(0xFF21ABA5)),
+                const _Fleck(left: 0.16, top: 0.72, size: 22, angle: 0.8, color: Color(0xFF21ABA5)),
+                const _Fleck(left: 0.78, top: 0.66, size: 30, angle: -0.6, color: Color(0xFF1D566E)),
+                const _Fleck(left: 0.62, top: 0.26, size: 12, angle: 0.2, color: Color(0xFFE8F5EE)),
+                const _Fleck(left: 0.30, top: 0.60, size: 10, angle: -1.1, color: Color(0xFF45EBA5)),
+                SafeArea(
+                  child: Column(
+                    children: [
+                      const Spacer(flex: 4),
+                      Image.asset(
+                        'packages/mapness/assets/tifo/images/champion_trophy.webp',
+                        height: 168,
+                        filterQuality: FilterQuality.high,
+                        errorBuilder: (_, __, ___) => const SizedBox(height: 168),
+                      ),
+                      const SizedBox(height: 28),
+                      Text(
+                        l10n.tifoPenaltyChallenge.toUpperCase(),
+                        style: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 11,
+                          letterSpacing: 1.8,
+                          color: _caption,
+                        ),
+                      ),
+                      const SizedBox(height: 6),
+                      const Text(
+                        'PENALTY KICK',
+                        style: TextStyle(
+                          fontFamily: 'Orbitron',
+                          package: 'mapness',
+                          fontWeight: FontWeight.w900,
+                          fontSize: 26,
+                          letterSpacing: 0.6,
+                          color: _title,
+                        ),
+                      ),
+                      const Spacer(flex: 5),
+                      const SizedBox(
+                        width: 28,
+                        height: 28,
+                        child: CircularProgressIndicator(strokeWidth: 2.5, color: _accent),
+                      ),
+                      const SizedBox(height: 48),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
 }
