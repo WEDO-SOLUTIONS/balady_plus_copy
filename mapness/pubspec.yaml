@@ -165,6 +165,7 @@ dependencies:
   thermal: ^1.1.12
   battery_plus: ^7.0.0
   dart_suncalc: ^0.2.1
+  flutter_dynamic_icon_plus: ^1.4.1
 
 dev_dependencies:
   flutter_test:

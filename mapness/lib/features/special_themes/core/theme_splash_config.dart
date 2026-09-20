@@ -72,11 +72,13 @@ extension SpecialThemeModeSplashExtension on SpecialThemeMode {
   ThemeSplashConfig get splashConfig {
     switch (this) {
       case SpecialThemeMode.nationalDay:
-        // Saudi National Day: Show splash once per activation period (Sept 18-27)
+        // Saudi National Day: show the splash on every app open while the
+        // theme is active. `always` never persists a "shown" flag, so the
+        // guard re-shows it on each cold start.
         return const ThemeSplashConfig(
           enabled: true,
           storyType: StoryTypes.saudiDay,
-          persistenceStrategy: SplashPersistenceStrategy.oncePerActivationPeriod,
+          persistenceStrategy: SplashPersistenceStrategy.always,
         );
 
       case SpecialThemeMode.mekkahBase:

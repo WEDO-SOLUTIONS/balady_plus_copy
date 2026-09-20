@@ -697,6 +697,8 @@ class ApiUrl {
       'v1/volunteer-platform-services/lookups/interests';
   static const getVolunteeringFields =
       'v1/volunteer-platform-services/lookups/volunteering/fields';
+  static const getVolunteeringServices =
+      'v1/volunteer-platform-services/lookups/volunteering/fields';
   static const uploadVolunteerCV =
       'v1/volunteer-platform-services/upload/cv-files';
 

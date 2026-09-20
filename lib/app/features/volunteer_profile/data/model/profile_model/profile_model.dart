@@ -1,6 +1,7 @@
 
 import '../../../domain/entities/profile_entity/profile_entity.dart';
 import 'base_model.dart';
+import 'domain_service_model.dart';
 
 class ProfileModel extends Profile {
   ProfileModel({
@@ -24,6 +25,7 @@ class ProfileModel extends Profile {
     super.nationality,
     super.skills,
     super.volunteeringFields,
+    super.volunteeringDomainServices,
     super.xAccount,
     super.bloodType,
     super.city,
@@ -37,6 +39,7 @@ class ProfileModel extends Profile {
     super.phone,
     super.relativePhone,
     super.scientificExpertise,
+    super.fieldRegisterInterest,
   });
 
   factory ProfileModel.fromJson(Map<String, dynamic> json) => ProfileModel(
@@ -85,6 +88,9 @@ class ProfileModel extends Profile {
         volunteeringFields: (json['volunteeringFields'] as List?)
             ?.map((e) => BaseModel.fromJson(e))
             .toList(),
+        volunteeringDomainServices: (json['volunteeringDomainServices'] as List?)
+            ?.map((e) => DomainServiceModel.fromJson(e))
+            .toList(),
         volunteeringLevel: json['volunteeringLevel'] != null
             ? BaseModel.fromJson(json['volunteeringLevel'])
             : null,
@@ -95,5 +101,6 @@ class ProfileModel extends Profile {
         phone: json['phone'],
         relativePhone: json['relativePhone'],
         scientificExpertise: json['scientificExpertise'],
+        fieldRegisterInterest: json['fieldRegisterInterest'],
       );
 }

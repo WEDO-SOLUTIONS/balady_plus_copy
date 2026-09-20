@@ -16,6 +16,7 @@ import '../../domain/use_cases/get_regions.dart';
 import '../../domain/use_cases/get_skills.dart';
 import '../../domain/use_cases/get_specializations.dart';
 import '../../domain/use_cases/get_volunteering_fields.dart';
+import '../../domain/use_cases/get_volunteering_services.dart';
 import '../../domain/use_cases/submit_profile.dart';
 import '../../domain/use_cases/upload_cv.dart';
 
@@ -34,6 +35,7 @@ class VolunteerProfileBloc
   final GetLvls getLvls;
   final GetInterests getInterests;
   final GetVolunteeringFields getVolunteeringFields;
+  final GetVolunteeringServices getVolunteeringServices;
   final GetBloodTypes getBloodTypes;
   final GetDiseases getDiseases;
   final UploadCV uploadCV;
@@ -50,6 +52,7 @@ class VolunteerProfileBloc
     required this.getLvls,
     required this.getInterests,
     required this.getVolunteeringFields,
+    required this.getVolunteeringServices,
     required this.getBloodTypes,
     required this.getDiseases,
     required this.uploadCV,
@@ -73,12 +76,20 @@ class VolunteerProfileBloc
     on<FetchLvls>(_onFetchLvls);
     on<FetchInterests>(_onFetchInterests);
     on<FetchVolunteeringFields>(_onFetchVolunteeringFields);
+    on<FetchVolunteeringServices>(_onFetchVolunteeringServices);
     on<FetchBloodTypes>(_onFetchBloodTypes);
     on<FetchDiseases>(_onFetchDiseases);
     on<UpdateMedicalInfo>(_onUpdateMedicalInfo);
     on<UpdateSocialMediaInfo>(_onUpdateSocialMediaInfo);
     on<SwitchToPresentationMode>(_onSwitchToPresentationMode);
     on<UploadCVFile>(_onUploadCVFile);
+  }
+
+  // Prepends '0' when the API returns a 9-digit Saudi mobile without the leading zero
+  String _normalizePhone(String phone) {
+    final digits = phone.trim();
+    if (RegExp(r'^5[0-9]{8}$').hasMatch(digits)) return '0$digits';
+    return digits;
   }
 
   /// Resets all profile data to initial state
@@ -129,16 +140,17 @@ class VolunteerProfileBloc
           // Map volunteering fields
           String? volunteeringLevelId;
           String? volunteeringWorkFieldId;
+          String? volunteeringServiceId;
           String? volunteeringTypeId;
           List<String> skillsIds = [];
           if (profile.volunteeringLevel?.id != null) {
             volunteeringLevelId = profile.volunteeringLevel!.id.toString();
           }
-          if (profile.volunteeringFields != null &&
-              profile.volunteeringFields!.isNotEmpty &&
-              profile.volunteeringFields!.first.id != null) {
-            volunteeringWorkFieldId =
-                profile.volunteeringFields!.first.id.toString();
+          // volunteeringDomainServices carries both the field (parentId/parentName) and service (id/name)
+          if (profile.volunteeringDomainServices?.isNotEmpty == true) {
+            final ds = profile.volunteeringDomainServices!.first;
+            if (ds.parentId != null) volunteeringWorkFieldId = ds.parentId.toString();
+            if (ds.id != null) volunteeringServiceId = ds.id.toString();
           }
           if (profile.volunteeringType?.id != null) {
             volunteeringTypeId = profile.volunteeringType!.id.toString();
@@ -204,7 +216,8 @@ class VolunteerProfileBloc
             lastName: profile.lastName,
             fullName: profile.fullName,
             email: profile.email ?? '',
-            phoneNumber: profile.phone ?? '',
+            // API omits the leading 0; normalize to local Saudi format (05XXXXXXXX)
+            phoneNumber: _normalizePhone(profile.phone ?? ''),
             nationalId: profile.nationalId ?? '',
             dateOfBirth: profile.birthDate,
             nationality: profile.nationality,
@@ -238,15 +251,28 @@ class VolunteerProfileBloc
             skillsIds: skillsIds,
             volunteeringLevel: profile.volunteeringLevel?.name,
             volunteeringLevelId: volunteeringLevelId,
-            volunteeringWorkField:
-                profile.volunteeringFields?.isNotEmpty == true
-                    ? profile.volunteeringFields!.first.name
-                    : null,
+            volunteeringWorkField: profile.volunteeringDomainServices?.isNotEmpty == true
+                ? profile.volunteeringDomainServices!.first.parentName
+                : null,
             volunteeringWorkFieldId: volunteeringWorkFieldId,
+            volunteeringService: profile.volunteeringDomainServices?.isNotEmpty == true
+                ? profile.volunteeringDomainServices!.first.name
+                : null,
+            volunteeringServiceId: volunteeringServiceId,
             volunteeringType: profile.volunteeringType?.name,
             volunteeringTypeId: volunteeringTypeId,
             isIndividualSelected: isIndividualSelected,
             isGroupSelected: isGroupSelected,
+            volunteeringDomainServiceNames: profile.volunteeringDomainServices
+                    ?.where((s) => s.parentName != null)
+                    .map((s) => s.parentName!)
+                    .toList() ??
+                [],
+            volunteeringDomainServiceId: profile.volunteeringDomainServices
+                    ?.isNotEmpty ==
+                true
+                ? profile.volunteeringDomainServices!.first.parentId?.toString()
+                : null,
             interests: profile.interests?.name != null
                 ? [profile.interests!.name!]
                 : [],
@@ -280,6 +306,11 @@ class VolunteerProfileBloc
           add(const FetchVolunteeringFields());
           add(const FetchBloodTypes());
           add(const FetchDiseases());
+          // Fetch child services for the pre-selected domain so the dropdown pre-selects correctly
+          final domainId = profile.volunteeringDomainServices?.isNotEmpty == true
+              ? profile.volunteeringDomainServices!.first.parentId?.toString()
+              : null;
+          if (domainId != null) add(FetchVolunteeringServices(domainId));
         },
       );
     } catch (e) {
@@ -492,6 +523,20 @@ class VolunteerProfileBloc
     );
   }
 
+  Future<void> _onFetchVolunteeringServices(
+    FetchVolunteeringServices event,
+    Emitter<VolunteerProfileState> emit,
+  ) async {
+    emit(state.copyWith(isLoadingVolunteeringServices: true, volunteeringServicesList: []));
+    final result = await getVolunteeringServices(event.parentId);
+    result.fold(
+      (failure) => emit(
+        state.copyWith(isLoadingVolunteeringServices: false, errorMessage: 'failed_to_load_volunteering_services'.tr()),
+      ),
+      (services) => emit(state.copyWith(isLoadingVolunteeringServices: false, volunteeringServicesList: services)),
+    );
+  }
+
   void _onUpdatePersonalInfo(
     UpdatePersonalInfo event,
     Emitter<VolunteerProfileState> emit,
@@ -584,9 +629,17 @@ class VolunteerProfileBloc
       volunteeringLevelId:
           event.volunteeringLevelId ?? state.volunteeringLevelId,
       volunteeringWorkField:
-          event.volunteeringWorkField ?? state.volunteeringWorkField,
+          event.volunteeringWorkField == null && event.volunteeringDomainServiceId != null
+              ? null
+              : event.volunteeringWorkField ?? state.volunteeringWorkField,
       volunteeringWorkFieldId:
-          event.volunteeringWorkFieldId ?? state.volunteeringWorkFieldId,
+          event.volunteeringWorkFieldId == null && event.volunteeringDomainServiceId != null
+              ? null
+              : event.volunteeringWorkFieldId ?? state.volunteeringWorkFieldId,
+        volunteeringService: event.volunteeringService ?? state.volunteeringService,
+        volunteeringServiceId: event.volunteeringServiceId ?? state.volunteeringServiceId,
+        volunteeringDomainServiceId: event.volunteeringDomainServiceId ?? state.volunteeringDomainServiceId,
+        volunteeringDomainServiceNames: event.volunteeringDomainServiceNames ?? state.volunteeringDomainServiceNames,
       volunteeringType: volunteeringType,
       volunteeringTypeId: volunteeringTypeId,
       isIndividualSelected: isIndividualSelected,
@@ -727,7 +780,7 @@ class VolunteerProfileBloc
         'skills': state.skillsIds.isNotEmpty
             ? state.skillsIds.first
             : null, // Use ID instead of name
-        'volunteering': state.volunteeringWorkFieldId, // Use ID instead of name
+        'volunteering': state.volunteeringServiceId, // Use ID instead of name
         'volunteerCV': state.cvFileId?.toString(),
       };
 

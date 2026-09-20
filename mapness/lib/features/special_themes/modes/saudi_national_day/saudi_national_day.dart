@@ -1,125 +1,109 @@
 import 'dart:async';
 
+import 'package:mapness/features/special_themes/modes/saudi_national_day/saudi_national_day_config.dart';
 import 'package:mapness/features/special_themes/modes/saudi_national_day/saudi_national_day_debug.dart';
+import 'package:mapness/features/special_themes/modes/saudi_national_day/saudi_national_day_resolved_config.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'saudi_national_day.g.dart';
 
-/// Configuration for the Saudi National Day date range
-class SaudiNationalDayConfig {
-  /// Start date for Saudi National Day (September 23rd)
-  static DateTime get startDate => DateTime(2025, 9, 18);
-
-  /// End date for Saudi National Day (September 23rd)
-  static DateTime get endDate => DateTime(2025, 9, 27, 23, 59, 59);
-
-  /// Update interval for the provider (15 minutes)
-  static const Duration updateInterval = Duration(minutes: 15);
-}
-
-/// Provider that checks if the current time is between two specified dates
-/// and updates every 15 minutes.
+/// How often the provider re-checks whether the activation window is open.
 ///
-/// Returns `true` if the current time is between the start and end dates,
-/// `false` otherwise.
+/// The window is only a few days long, so a coarse tick is enough to flip the
+/// theme within the same session without burning wakeups.
+const Duration kSaudiNationalDayUpdateInterval = Duration(minutes: 15);
+
+/// Whether the Saudi National Day theme is currently active.
+///
+/// Dates, the master switch and the banner copy all come from remote config
+/// — see [saudiNationalDayResolvedConfigProvider] for the Firebase → OCI →
+/// bundled-default priority chain. Nothing here is hard-coded to a year, so
+/// moving the window is a Console edit rather than a release.
 @riverpod
 class SaudiNationalDay extends _$SaudiNationalDay {
   Timer? _timer;
 
   @override
   bool build() {
-    // Check if debug override is enabled
-    final debugOverride = ref.watch(saudiNationalDayDebugProvider);
-    if (debugOverride) {
+    // Debug override short-circuits everything, including the timer.
+    if (ref.watch(saudiNationalDayDebugProvider)) {
       return true;
     }
 
-    // Start the periodic timer to update the state every 15 minutes
-    _startPeriodicUpdate();
+    final config = ref.watch(saudiNationalDayResolvedConfigProvider);
 
-    // Set up cleanup when the provider is disposed
     ref.onDispose(() {
       _timer?.cancel();
+      _timer = null;
     });
 
-    // Return the initial state
-    return _isCurrentTimeInRange();
+    _startPeriodicUpdate(config);
+
+    return config.isActiveAt(DateTime.now());
   }
 
-  /// Starts a periodic timer that updates the state every 15 minutes
-  void _startPeriodicUpdate() {
+  /// Starts the recheck timer, but only around the activation window.
+  ///
+  /// Outside a 2-hour margin there is nothing to observe, so the timer is
+  /// skipped entirely rather than ticking all year.
+  void _startPeriodicUpdate(SaudiNationalDayRemoteConfig config) {
     _timer?.cancel();
+    _timer = null;
+
+    if (!config.enabled) {
+      return;
+    }
 
     final now = DateTime.now();
-
-    // If the current time is more than 2 hours before the start or after end date, don't start the timer
-    final isBeforeStart = now.isBefore(SaudiNationalDayConfig.startDate.subtract(const Duration(hours: 2)));
-    final isAfterEnd = now.isAfter(SaudiNationalDayConfig.endDate.add(const Duration(hours: 2)));
+    final isBeforeStart = now.isBefore(config.startDate.subtract(const Duration(hours: 2)));
+    final isAfterEnd = now.isAfter(config.endDate.add(const Duration(hours: 2)));
     if (isBeforeStart || isAfterEnd) {
       return;
     }
 
-    _timer = Timer.periodic(
-      SaudiNationalDayConfig.updateInterval,
-      (_) {
-        // Update the state with the current check result
-        state = _isCurrentTimeInRange();
-      },
-    );
+    _timer = Timer.periodic(kSaudiNationalDayUpdateInterval, (_) {
+      final latest = ref.read(saudiNationalDayResolvedConfigProvider);
+      state = latest.isActiveAt(DateTime.now());
+    });
   }
 
-  /// Checks if the current time is within the specified date range
-  bool _isCurrentTimeInRange() {
-    final now = DateTime.now();
-    return now.isAfter(SaudiNationalDayConfig.startDate) && now.isBefore(SaudiNationalDayConfig.endDate);
-  }
-
-  /// Manually triggers an update of the state
+  /// Manually re-evaluates the activation window.
   void refresh() {
-    state = _isCurrentTimeInRange();
+    final config = ref.read(saudiNationalDayResolvedConfigProvider);
+    state = config.isActiveAt(DateTime.now());
   }
 
-  /// Stops the periodic timer
-  void stopTimer() {
-    _timer?.cancel();
-    _timer = null;
-  }
-
-  /// Restarts the periodic timer
-  void restartTimer() {
-    _startPeriodicUpdate();
-  }
-
-  /// Simple provider that returns the current status without periodic updates
-  /// Use this if you only need a one-time check
+  /// Synchronous check for widget `build()` methods that only need a colour
+  /// or icon variant and have no [Ref] to hand.
+  ///
+  /// Prefer watching this provider where a [WidgetRef] is available, so the
+  /// widget rebuilds when the window opens or closes. This reads the config
+  /// last published by [saudiNationalDayResolvedConfigProvider].
   static bool isNow() {
-    // Check if debug override is enabled
     if (saudiNationalDayDebugOverride) {
       return true;
     }
+    return SaudiNationalDayRemoteConfig.isNowActive();
+  }
+}
 
-    final now = DateTime.now();
-    return now.isAfter(SaudiNationalDayConfig.startDate) && now.isBefore(SaudiNationalDayConfig.endDate);
+/// Time remaining until the activation window opens, or `null` once it has
+/// started (or when the theme is disabled entirely).
+@riverpod
+Duration? saudiNationalDayCountdown(Ref ref) {
+  if (ref.watch(saudiNationalDayDebugProvider)) {
+    return null;
   }
 
-  /// Provider that returns the remaining time until Saudi National Day
-  /// Returns null if the date has passed or is not this year
-  static Duration? countdown() {
-    final now = DateTime.now();
-    return countdownFromDate(now);
+  final config = ref.watch(saudiNationalDayResolvedConfigProvider);
+  if (!config.enabled) {
+    return null;
   }
 
-  static Duration? countdownFromDate(DateTime now) {
-    // If debug override is enabled, return null (no countdown needed)
-    if (saudiNationalDayDebugOverride) {
-      return null;
-    }
-
-    // If we're past the current year's date, return null
-    if (now.isAfter(SaudiNationalDayConfig.startDate)) {
-      return null;
-    }
-
-    return SaudiNationalDayConfig.startDate.difference(now);
+  final now = DateTime.now();
+  if (!now.isBefore(config.startDate)) {
+    return null;
   }
+
+  return config.startDate.difference(now);
 }
