@@ -22,8 +22,14 @@
      y-down canvas, which drops the left flank — so the left tyre is the pivot.
      Measured off the sprite: its contact patch centres on 0.126 of the width,
      the right one on 0.848. */
-  var CAR_LEAN = -0.26;
-  var CAR_PIVOT_X = 0.126;   // fraction of the sprite's width
+  var CAR_LEAN = -0.785;   // 45 degrees to the ground
+  // The OUTER edge of the planted tread, not its centre. Seen from behind a
+  // wheel is a tread, not a circle, and rolling anticlockwise the point that
+  // goes lowest is its outer shoulder — which is also what a car actually
+  // rolls onto when it comes up on two. Pinned at the tread centre (0.126)
+  // the real contact slid up to 29 px away from it across the steering range
+  // and the contact pool ended up beside the tyre rather than under it.
+  var CAR_PIVOT_X = 0.053;   // fraction of the sprite's width
   var CAR_PIVOT_Y = 1.000;   // fraction of its height — the contact line
 
   /* Unused since the driver was taken out of the window; kept because the
@@ -1520,13 +1526,22 @@
       var px = x0 + w * CAR_PIVOT_X;
       var py = y0 + h * CAR_PIVOT_Y;
 
+      // Rolling about a tyre swings the body sideways as well as up, and at
+      // this angle that walks the car off the side of the frame: at 45 degrees
+      // its box ran from -37 to 247 across a 390-wide screen. So the whole
+      // draw is slid back by however far the rotation moved the sprite's
+      // centre, which re-centres it without moving the pivot off the ground —
+      // a horizontal shift cannot lift the tyre.
+      var ca = Math.cos(roll), sa = Math.sin(roll);
+      var ox = -(px + (0 - px) * ca - (y0 + h * 0.5 - py) * sa);
+
       // The car's own outline, like the roadside props. The old sprite could
       // not do this — it was a photo crop with 76% of it fully opaque, so its
       // alpha described a rectangle rather than a car — but this one is a
       // clean cut-out with real daylight between the wheels, which also means
       // the shadow is now the only thing holding it on the ground.
       ctx.save();
-      ctx.translate(cx + tilt * size * 0.10, cy + size * 0.345);
+      ctx.translate(cx + tilt * size * 0.10 + ox, cy + size * 0.345);
       // A high sun, so it stays a contact shadow. At 0.42 the roof's shadow
       // landed ninety pixels out and the whole thing read as a slab again.
       ctx.transform(1, 0, -0.20, 0.10, 0, 0);
@@ -1546,7 +1561,7 @@
       // and without it the tyre reads as hovering however correct its
       // geometry is. It sits on the pivot, so it tracks whichever way the car
       // is rolled.
-      var contactX = cx + tilt * size * 0.10 + px;
+      var contactX = cx + tilt * size * 0.10 + ox + px;
       var contactY = cy + size * 0.345;
       var pool = ctx.createRadialGradient(contactX, contactY, 1,
                                           contactX, contactY, size * 0.13);
@@ -1561,7 +1576,7 @@
       ctx.restore();
 
       ctx.save();
-      ctx.translate(cx, cy + Math.sin(wobble) * size * 0.012);
+      ctx.translate(cx + ox, cy + Math.sin(wobble) * size * 0.012);
       ctx.translate(px, py);
       ctx.rotate(roll);
       ctx.translate(-px, -py);

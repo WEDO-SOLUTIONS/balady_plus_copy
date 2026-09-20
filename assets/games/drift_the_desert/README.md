@@ -179,12 +179,24 @@ shadow line and the car simply hovered, which is why it had to be flattened to
 `-0.07`, and flat it read as driving on all four. Rolling about the **contact
 tyre** is what the pose actually is: the down-side wheels stay planted and the
 up-side wheels lift. So the lean can go back to something you can see —
-`CAR_LEAN` is `-0.26`, and steering is worth `0.15` rather than `0.24`, which
-used to cancel the lean at full lock and set the car back down. The roll now
-runs 23° to 6° and it is never on four wheels. Negative rolls anticlockwise on
-a y-down canvas, so the left flank drops and the left tyre is the pivot;
-measured off the sprite, its contact patch centres on 0.126 of the width and
-the right one on 0.848.
+`CAR_LEAN` is `-0.785` — **45° to the ground** — and steering is worth `0.15`
+rather than `0.24`, which used to cancel the lean at full lock and set the car
+back down. The roll runs 54° to 36° and it is never on four wheels.
+
+Two things follow from an angle that steep. Rolling about a tyre swings the
+body *sideways* as well as up, and at 45° that walked the car off the screen —
+its box ran from −37 to 247 across a 390-wide frame. The whole draw is slid
+back by however far the rotation moved the sprite's centre, which re-centres it
+without lifting the tyre, because a horizontal shift cannot change a height.
+
+And the pivot is the **outer edge** of the planted tread, not its centre. Seen
+from behind a wheel is a tread, not a circle, and under an anticlockwise roll
+the point that goes lowest is its outer shoulder — which is also what a car
+rolls onto when it comes up on two. Pinned at the tread's centre the real
+contact slid up to 29 px away from the pivot across the steering range and the
+contact pool sat beside the tyre instead of under it. Measured off the sprite:
+the left tread runs 0.053 to 0.199 of the width, the right one centres on
+0.848, and both tyres bottom out on the same row.
 
 The cast shadow is rolled about the same tyre *before* it is sheared, so what
 gets projected is the car in the pose it is actually in and the shadow narrows
