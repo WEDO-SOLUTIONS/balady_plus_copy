@@ -120,8 +120,8 @@ than as an approximation of it:
 
 | Asset | Where it comes from | Where it is used |
 |-------|--------------------|------------------|
-| `car.png` | the results screen's rear shot, super-resolved | the car you steer, and the how-to screen |
-| `driver.png` | the countdown screen's driver, matted separately | composited into the car's right-hand window at draw time |
+| `car.png` | a supplied studio rear shot of a Nissan Patrol, cut off its white | the car you steer, and the how-to screen |
+| `driver.png` | the countdown screen's driver, matted separately | **not loaded** — the driver is out of the window for now |
 | `coin.png` | a floating token on the danger screen | collectibles and the HUD coin pill |
 | `sky.jpg` | a clean column of the splash sky, mirror-tiled | the scrolling sky |
 | `ridge.png` | the splash mesas, mirror-tiled, both edges feathered | the parallax horizon |
@@ -152,18 +152,35 @@ The cut-outs are alpha-matted with `rembg`; the marks and icons are pulled off
 their dark backgrounds with a luminance key; the scenery strips are clean
 rectangles widened by mirroring.
 
-The hero sprite is a composite. The camera sits behind the car — which is what
-the receding track always implied — so the body comes from the results
-screen's rear shot. That shot's driver faces away, so the countdown screen's
-driver, who is turned towards the camera, is matted separately and hung out of
-the right-hand window: the car leans left, so its right flank is the one in
-the air, which is the side a drifter hangs out of. He is cropped above the
-countdown car's roof line and faded out at the waist so he reads as continuing
-down into the cabin. The two ship as separate sprites and are composited by `js/scene.js` at draw
-time, using the SEAT / LIFT / SCALE constants the extractor documents. Baked
-into one image they cost the car 15% of its resolution: his outstretched arms
-widened the sprite's bounding box, and the sprite is normalised to a fixed
-width, so a seventh of those pixels went to empty sky around his hands.
+The hero sprite is **a supplied studio photograph** of a Nissan Patrol Super
+Safari, dead-on from behind, cut off its white background — not the mockup crop
+it used to be. That crop was 90×88, which is why rembg returned a rounded
+rectangle for it and the sprite carried a block of the original desert inside
+its alpha; the slab that leaned out from under the car in play was that block,
+and it is gone. The replacement is a genuine outline, with daylight between the
+wheels, so the car now casts its **own silhouette** as a shadow the way the
+roadside props do, and that shadow is the only thing holding it on the ground.
+
+Three constants had to move with it. `x0` goes from `-w * 0.46` to `-w * 0.50`,
+because a dead-on rear pivots on its middle and a three-quarter crop did not.
+`y0` becomes `-h * 0.674`, which is what puts the tyres on the shadow line for
+the new aspect — the sprite's foot lands `0.345 × size` below the car's centre,
+exactly where it did before. And `CAR_LEAN` drops from `-0.30` to `-0.07`:
+seventeen degrees of roll read as a drift lean on a three-quarter view, but on
+a dead-on rear it reads as tipping over, and it swung the tyres up to 51 px off
+the shadow line, which was most of what made the new sprite look like it was
+hovering. The tail-lamp glow positions are measured off the sprite rather than
+guessed — the red clusters sit at 0.055 and 0.936 of its width, halfway up.
+
+**The driver is out of the window for now.** Both paths lost him, the photo
+composite and the painted fallback; `img/driver.png` is no longer loaded and
+`drawDriver` and the SEAT / LIFT / DRIVER constants are kept, unused, so that
+putting him back is a line rather than a rewrite.
+
+> A trap worth knowing: `build_standalone.py` rewrites **every** `img/…` string
+> it finds in the sources, comments included. A comment saying which sprite is
+> no longer loaded embedded 40 KB of base64 for a sprite nobody draws. Write
+> the bare filename in prose, not the path.
 
 ### The resolution ceiling
 

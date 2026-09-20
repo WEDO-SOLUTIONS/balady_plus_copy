@@ -11,9 +11,16 @@
 
   /* Resting lean of a two-wheel drift. The hero sprite is a rear shot of a car
      sitting flat, so the whole pose is applied here. */
-  var CAR_LEAN = -0.30;
+  // Was -0.30, which is seventeen degrees. That read as a drift lean on the
+  // old three-quarter crop; on a dead-on rear view it reads as the car tipping
+  // over, and it swings the tyres up to 51 px off the shadow line — which was
+  // most of what made the new sprite look like it was hovering.
+  var CAR_LEAN = -0.07;
 
-  /* Where the driver sits on the car, in car-sprite units — the geometry
+  /* Unused since the driver was taken out of the window; kept because the
+     art for him is still in img/ and the numbers are what put him back.
+
+     Where the driver sits on the car, in car-sprite units — the geometry
      tools/extract_assets.py worked out with the crops. The two are shipped as
      separate sprites and composited here: baked into one image, his arm span
      widened the bounding box and cost the car 15% of its resolution. */
@@ -1468,9 +1475,6 @@
       ctx.textAlign = 'center';
       ctx.fillText('BALADY+', 0, 14.4);
 
-      // --- driver hanging out of the window ---------------------------------
-      drawDriver(ctx, 40, -30, wobble);
-
       // Danger rim light
       if (danger > 0) {
         ctx.globalAlpha = danger * 0.7;
@@ -1493,40 +1497,34 @@
       var w = size * 1.18;
       var h = w * (img.height / img.width);
 
-      // The car's footprint rather than an ellipse: wide across the rear,
-      // narrower under the nose, and leaned away from the sun. It cannot be
-      // the sprite's own outline the way the roadside props now are —
-      // car.png is a photo crop, 76% of it fully opaque, so its alpha
-      // describes a rectangle and not a car.
-      var sox = tilt * size * 0.10;
-      var nearY = cy + size * 0.345, farY = cy + size * 0.185;
-      var nearHalf = size * 0.40, farHalf = size * 0.28, lean = size * 0.11;
-      var sg = ctx.createLinearGradient(0, farY, 0, nearY + size * 0.05);
-      sg.addColorStop(0, 'rgba(58, 36, 19, 0.04)');
-      sg.addColorStop(0.55, 'rgba(58, 36, 19, 0.26)');
-      sg.addColorStop(1, 'rgba(58, 36, 19, 0)');
+      // The car's own outline, like the roadside props. The old sprite could
+      // not do this — it was a photo crop with 76% of it fully opaque, so its
+      // alpha described a rectangle rather than a car — but this one is a
+      // clean cut-out with real daylight between the wheels, which also means
+      // the shadow is now the only thing holding it on the ground.
       ctx.save();
-      ctx.fillStyle = sg;
-      ctx.beginPath();
-      ctx.moveTo(cx + sox - nearHalf, nearY);
-      ctx.lineTo(cx + sox + nearHalf, nearY);
-      ctx.lineTo(cx + sox + farHalf + lean, farY);
-      ctx.lineTo(cx + sox - farHalf + lean, farY);
-      ctx.closePath();
-      ctx.fill();
+      ctx.translate(cx + tilt * size * 0.10, cy + size * 0.345);
+      // A high sun, so it stays a contact shadow. At 0.42 the roof's shadow
+      // landed ninety pixels out and the whole thing read as a slab again.
+      ctx.transform(1, 0, -0.20, 0.10, 0, 0);
+      ctx.globalAlpha = 0.32;
+      ctx.drawImage(silhouette(img, '#34200F'), -w * 0.5, -h, w, h);
       ctx.restore();
 
       ctx.save();
       ctx.translate(cx, cy + Math.sin(wobble) * size * 0.012);
-      ctx.rotate(CAR_LEAN + tilt * 0.42 + Math.sin(wobble) * 0.012);
+      ctx.rotate(CAR_LEAN + tilt * 0.24 + Math.sin(wobble) * 0.012);
 
       if (danger > 0) {
         ctx.shadowColor = 'rgba(255, 70, 70, ' + (danger * 0.9).toFixed(2) + ')';
         ctx.shadowBlur = 26 * danger;
       }
-      // The sprite is the car alone now, so the pivot is back on its centre.
-      var x0 = -w * 0.46;
-      var y0 = -h * 0.72;
+      // Dead-on rear, so the pivot is the middle of the sprite rather than
+      // the 0.46 the old three-quarter crop needed. The vertical anchor puts
+      // the tyres on the shadow line above: the sprite's foot lands at
+      // h * (1 - 0.674) = 0.345 of `size` below the car's centre.
+      var x0 = -w * 0.50;
+      var y0 = -h * 0.674;
       ctx.drawImage(img, x0, y0, w, h);
 
       // Tail lights, always faintly lit and flaring when the car is in trouble
@@ -1534,9 +1532,12 @@
       var lamp = Math.max(0.18, Math.max(danger, this.lastDusk || 0) * 0.9);
       ctx.globalCompositeOperation = 'lighter';
       for (var side = 0; side < 2; side++) {
-        var lx = x0 + w * (side ? 0.845 : 0.155);
-        var ly = y0 + h * 0.615;
-        var r = w * 0.17;
+        // Measured off the sprite: the red clusters sit at 0.055 and 0.936 of
+        // its width, halfway up it. The right one reads as two blobs because
+        // a clear section splits it, so its centre is the pair's.
+        var lx = x0 + w * (side ? 0.936 : 0.055);
+        var ly = y0 + h * 0.500;
+        var r = w * 0.12;
         var g = ctx.createRadialGradient(lx, ly, 1, lx, ly, r);
         g.addColorStop(0, 'rgba(255, 90, 70, ' + (0.55 * lamp).toFixed(3) + ')');
         g.addColorStop(0.45, 'rgba(255, 40, 30, ' + (0.22 * lamp).toFixed(3) + ')');
@@ -1547,32 +1548,6 @@
         ctx.fill();
       }
       ctx.globalCompositeOperation = 'source-over';
-
-      // The driver, hung out of the right-hand window — the flank that is in
-      // the air. He rides inside the car's rotation, with a little extra sway.
-      if (IMG.driver) {
-        var dh = h * DRIVER;
-        var dw = dh * (IMG.driver.width / IMG.driver.height);
-        var dx = x0 + w * SEAT - dw / 2;
-        var dy = y0 - dh + dh * LIFT;
-        ctx.save();
-        ctx.translate(dx + dw / 2, dy + dh);
-        ctx.rotate(Math.sin(wobble * 0.5) * 0.03 - tilt * 0.05);
-
-        var sx = -dw * 0.16;
-        var sy = -dh * 0.10;
-        var cast = ctx.createRadialGradient(sx, sy, 1, sx, sy, dw * 0.30);
-        cast.addColorStop(0, 'rgba(24, 14, 8, 0.30)');
-        cast.addColorStop(1, 'rgba(24, 14, 8, 0)');
-        ctx.fillStyle = cast;
-        ctx.beginPath();
-        ctx.ellipse(sx, sy, dw * 0.30, dh * 0.11, 0, 0, TAU);
-        ctx.fill();
-
-        ctx.drawImage(IMG.driver, -dw / 2, -dh, dw, dh);
-        ctx.restore();
-      }
-
       ctx.restore();
     },
 
@@ -1940,7 +1915,9 @@
     ctx.closePath();
   }
 
-  /** The celebrating driver in thobe + shemagh leaning out of the window. */
+  /** The celebrating driver in thobe + shemagh leaning out of the window.
+      Unused since he was taken out; kept alongside SEAT/LIFT/DRIVER above so
+      that putting him back is a one-line call rather than a rewrite. */
   function drawDriver(ctx, x, y, wobble) {
     var sway = Math.sin(wobble * 0.5) * 0.07;
     ctx.save();

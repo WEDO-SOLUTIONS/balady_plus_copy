@@ -557,7 +557,11 @@
 
     Scene.loadImages([
       ['car', 'img/car.png'],
-      ['driver', 'img/driver.png'],
+      // The driver is out of the window for now, so his sprite is not loaded.
+      // The file is still there — note the path is written without its folder
+      // on purpose, because build_standalone.py inlines every img/… string it
+      // finds, comments included, and would embed 40 KB nobody draws.
+      //   driver.png  ->  put the entry back here to restore him
       ['coin', 'img/coin.png'],
       ['sky', 'img/sky.jpg'],
       ['ridge', 'img/ridge.png']
