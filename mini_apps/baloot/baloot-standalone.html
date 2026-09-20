@@ -968,10 +968,10 @@ const I18N = {
     seats:"المقاعد", seatN:"شريكك", seatE:"اليمين", seatW:"اليسار", seatS:"أنت",
     botSwapHint:"مقعد البوت موسوم على الطاولة — اضغط ＋ لتمنحه لصديق.",
     friendsTitle:"ادعُ أصدقاءك", 
-    friendsSub:"شارك رمز الغرفة، أو اختر من قائمة أصدقائك في تحدي بلدي. المقاعد الفارغة يملؤها البوت تلقائياً.",
+    friendsSub:"شارك رمز الغرفة، أو اختر من قائمة أصدقائك في تحدي بلدي. المقعد الشاغر يحمله بوت موسوم حتى يأخذه صديق.",
     roomCode:"رمز الغرفة", copy:"نسخ", copied:"تم النسخ ✓", share:"مشاركة",
-    myFriends:"أصدقائي", addByNumber:"إضافة برقم اللاعب", addHint:"# اكتب رقم صديقك هنا",
-    add:"إضافة", noFriends:"لا يوجد أصدقاء بعد.\nأضف صديقاً برقم اللاعب أو شارك رمز الغرفة.",
+    myFriends:"أصدقائي",
+    noFriends:"لا يوجد أصدقاء بعد.\nشارك رمز الغرفة، أو ابدأ والمقاعد الشاغرة يملؤها بوت موسوم.",
     seatThem:"إجلاسهم وبدء اللعب", inviteSent:"أُرسلت الدعوة إلى {n}",
     remove:"إزالة", loadingFriends:"جاري تحميل قائمة الأصدقاء…",
     menuTitle:"الإعدادات", language:"اللغة", speed:"سرعة اللعب",
@@ -1023,10 +1023,10 @@ const I18N = {
     seats:"Seats", seatN:"Partner", seatE:"Right", seatW:"Left", seatS:"You",
     botSwapHint:"A bot seat is labelled at the table — tap ＋ to hand it to a friend.",
     friendsTitle:"Invite friends",
-    friendsSub:"Share the room code, or pick from your Balady Challenge friends. Empty seats are filled by bots.",
+    friendsSub:"Share the room code, or pick from your Balady Challenge friends. An empty seat is held by a labelled bot until a friend takes it.",
     roomCode:"Room code", copy:"Copy", copied:"Copied ✓", share:"Share",
-    myFriends:"My friends", addByNumber:"Add by player number", addHint:"# Type your friend's number",
-    add:"Add", noFriends:"No friends yet.\nAdd one by player number or share the room code.",
+    myFriends:"My friends",
+    noFriends:"No friends yet.\nShare the room code, or start and let a labelled bot hold the empty seats.",
     seatThem:"Seat them & start", inviteSent:"Invite sent to {n}",
     remove:"Remove", loadingFriends:"Loading friends…",
     menuTitle:"Settings", language:"Language", speed:"Game speed",
@@ -1477,19 +1477,15 @@ window.addEventListener("message", ev => {
   if (!d || d.source !== "balady-host") return;
   if (d.action === "friends") window.Baloot.onFriends(d.payload);
   if (d.action === "friendJoined") window.Baloot.onFriendJoined(d.payload);
+  if (d.action === "room") window.Baloot.onRoom(d.payload);
   if (d.action === "lang") window.Baloot.setLang(d.payload);
 });
 
 /* ============================================================
-   4. Friends store (host list + locally added player numbers)
+   4. Friends store (the host's list — the only source of friends)
    ============================================================ */
 const Friends = (() => {
-  const LS = "baloot.friends";
   let hostList = null;                 // null = not answered yet
-  let local = [];
-  try{ local = JSON.parse(localStorage.getItem(LS) || "[]"); }catch(e){ local = []; }
-
-  const save = () => { try{ localStorage.setItem(LS, JSON.stringify(local)); }catch(e){} };
 
   return {
     requested:false,
@@ -1508,17 +1504,8 @@ const Friends = (() => {
       })).filter(f => f.id);
       UI.renderFriends();
     },
-    all(){ return [...(hostList || []), ...local]; },
-    loaded(){ return hostList !== null; },
-    addLocal(num, name){
-      num = String(num || "").trim().replace(/[^\w-]/g, "");
-      if (!num) return null;
-      if (this.all().some(f => f.id === num)) return null;
-      const f = {id:num, name: name || ("#" + num), online:false, host:false};
-      local.push(f); save();
-      return f;
-    },
-    removeLocal(id){ local = local.filter(f => f.id !== id); save(); }
+    all(){ return hostList || []; },
+    loaded(){ return hostList !== null; }
   };
 })();
 
@@ -2865,21 +2852,6 @@ const Lobby = {
       }
     }
     body.appendChild(list);
-
-    // add by player number — mirrors the in-app "تحدي بلدي" friends flow
-    body.appendChild(el("h3", null, T("addByNumber")));
-    const addRow = el("div", "row");
-    const inp = el("input", "field");
-    inp.placeholder = T("addHint");
-    inp.setAttribute("inputmode", "numeric");
-    const bAdd = el("button", "btn sm gold", T("add"));
-    bAdd.onclick = () => {
-      const f = Friends.addLocal(inp.value);
-      if (f){ inp.value = ""; this.renderFriendsList(); }
-      else toast(LANG === "ar" ? "رقم غير صالح أو مضاف مسبقاً" : "Invalid or already added");
-    };
-    addRow.appendChild(inp); addRow.appendChild(bAdd);
-    body.appendChild(addRow);
 
     if (Bridge.hasHost()){
       const bHost = el("button", "btn ghost wide", T("hostInvite"));

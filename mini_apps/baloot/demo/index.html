@@ -1,0 +1,806 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Baloot × Friends on map — mechanics demo</title>
+<style>
+/* A working demo of the four gathering mechanics. The phone on the left is a
+   mock Balady+ shell; the game inside it is the real mini-app, driven over the
+   documented bridge. Everything that crosses is printed in the log. */
+:root{
+  --gold:#f0cf72; --gold-hi:#ffe9a4; --cream:#f5efe4; --mute:#a8c0b2;
+  --ink:#06251a; --card:#0c3b27; --line:rgba(240,207,114,.28);
+  --sheet-1:#14604a; --sheet-2:#0c4232; --sheet-3:#06251b;
+  --ok:#35fb7d;
+  --safe-t:42px; --safe-b:18px;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;min-height:100%}
+body{
+  background:radial-gradient(120% 90% at 50% 0%,#0d3a27 0%,#061c13 60%,#03120b 100%) fixed,#03120b;
+  font-family:"SF Pro Text","Segoe UI",system-ui,-apple-system,sans-serif;color:var(--cream);
+  padding:22px;
+}
+h1,h2,h3{font-family:Cambria,Georgia,serif;margin:0}
+a{color:var(--gold)}
+
+#wrap{max-width:1360px;margin:0 auto;display:flex;gap:26px;align-items:flex-start}
+@media (max-width:1040px){ #wrap{flex-direction:column;align-items:center} }
+
+/* ---------------- the phone ---------------- */
+#device{
+  flex:0 0 auto;width:min(420px,92vw);
+  border-radius:44px;padding:11px;background:#0a0a0c;
+  box-shadow:0 0 0 1.5px rgba(240,207,114,.28), 0 28px 70px rgba(0,0,0,.6);
+  position:sticky;top:22px;
+}
+@media (max-width:1040px){ #device{position:static} }
+#screen{
+  position:relative;width:100%;aspect-ratio:480/1000;border-radius:34px;overflow:hidden;
+  background:#dde3d8;display:flex;flex-direction:column;
+}
+#screen::after{ /* punch hole */
+  content:"";position:absolute;left:50%;top:9px;width:11px;height:11px;margin-left:-5.5px;
+  border-radius:50%;background:#07070a;z-index:40;
+}
+#map{position:absolute;inset:0}
+#map svg{width:100%;height:100%;display:block}
+#top{position:relative;z-index:5;padding:calc(var(--safe-t) + 8px) 12px 0;display:flex;gap:7px}
+.searchbar{
+  flex:1;height:38px;border-radius:12px;background:#fff;display:flex;align-items:center;gap:8px;
+  padding:0 12px;font-size:13px;color:#7c867f;box-shadow:0 5px 15px rgba(20,40,30,.18);
+}
+.iconbtn{
+  width:38px;height:38px;border-radius:12px;background:#fff;display:grid;place-items:center;
+  font-size:16px;box-shadow:0 5px 15px rgba(20,40,30,.18);color:#17231d;cursor:pointer;
+}
+.iconbtn.on{background:linear-gradient(170deg,#1d7a49,#0f5433);color:#fff}
+
+.pin{position:absolute;transform:translate(-50%,-100%);z-index:4;text-align:center;cursor:pointer}
+.pin .bubble{
+  position:relative;width:38px;height:38px;border-radius:50%;border:3px solid #fff;
+  box-shadow:0 5px 14px rgba(10,30,20,.35);display:grid;place-items:center;
+  font-weight:800;font-size:14px;color:#fff;background:linear-gradient(170deg,#2f9d63,#14603c);
+}
+.pin .tail{width:10px;height:10px;background:#fff;transform:rotate(45deg);margin:-6px auto 0;
+  box-shadow:0 4px 8px rgba(10,30,20,.18);position:relative;z-index:-1}
+.pin.me .bubble{background:linear-gradient(170deg,#3b82f6,#1d4ed8);width:20px;height:20px}
+.pin.cluster .bubble{background:linear-gradient(170deg,#0f5433,#08351f)}
+.pin.table .bubble{width:48px;height:48px;font-size:12px;line-height:1.05;
+  background:linear-gradient(170deg,#1d7a49,#08351f);border-color:var(--gold)}
+.pin.sel .bubble{outline:4px solid rgba(240,207,114,.9);outline-offset:2px}
+.pin.ready .bubble{box-shadow:0 5px 14px rgba(10,30,20,.35), 0 0 0 4px rgba(53,251,125,.55)}
+.pin .flag{position:absolute;right:-6px;top:-6px;width:17px;height:17px;border-radius:50%;
+  background:var(--ok);color:#06230f;font-size:9px;font-weight:900;display:grid;place-items:center;border:2px solid #fff}
+.pin .cap{margin-top:4px;display:inline-block;background:rgba(255,255,255,.95);border-radius:999px;
+  padding:2px 8px;font-size:10px;font-weight:700;box-shadow:0 3px 8px rgba(10,30,20,.2);white-space:nowrap;color:#17231d}
+
+.quorum{
+  position:absolute;left:12px;top:calc(var(--safe-t) + 54px);z-index:5;
+  background:rgba(9,42,27,.94);border:1px solid rgba(240,207,114,.5);border-radius:999px;
+  padding:6px 12px;font-size:11px;font-weight:800;color:var(--gold-hi);
+  box-shadow:0 6px 18px rgba(0,0,0,.35);display:flex;align-items:center;gap:6px;
+}
+.quorum i{width:7px;height:7px;border-radius:50%;background:var(--ok);box-shadow:0 0 8px var(--ok);font-style:normal}
+
+#sheet{
+  position:relative;z-index:6;margin-top:auto;
+  background:linear-gradient(168deg,var(--sheet-1) 0%,var(--sheet-2) 52%,var(--sheet-3) 100%);
+  border-radius:22px 22px 0 0;border-top:1px solid rgba(240,207,114,.4);
+  box-shadow:0 -14px 44px rgba(0,0,0,.45);color:var(--cream);
+  padding:9px 15px calc(14px + var(--safe-b));
+}
+#sheet:empty{display:none}
+#sheet .grab{width:40px;height:4px;border-radius:99px;background:rgba(255,255,255,.28);margin:0 auto 11px}
+.sheet-h{font-size:13.5px;font-weight:800;color:var(--gold);margin:0 0 9px}
+.tiles{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.tile{background:rgba(255,255,255,.07);border:1px solid rgba(240,207,114,.22);border-radius:12px;
+  padding:9px 3px 7px;text-align:center;font-size:10px;font-weight:700;color:#dfe9e2;cursor:pointer}
+.tile i{display:block;font-size:17px;font-style:normal;margin-bottom:4px}
+.tile.on{background:linear-gradient(180deg,#3c7a5a,#215038);border-color:rgba(240,207,114,.9);color:#fff}
+.tile .badge{display:inline-block;margin-top:3px;font-size:8px;background:var(--gold);color:#2a1a05;
+  border-radius:99px;padding:1px 5px;font-weight:900}
+.friend{display:flex;align-items:center;gap:11px}
+.friend .av{width:44px;height:44px;border-radius:50%;display:grid;place-items:center;font-size:17px;
+  font-weight:800;color:#fff;background:linear-gradient(170deg,#2f9d63,#14603c);border:2px solid rgba(240,207,114,.6)}
+.friend .nm{font-size:16px;font-weight:800}
+.friend .meta{font-size:11px;color:var(--mute);margin-top:2px}
+.friend .meta b{color:var(--ok);font-weight:700}
+.prow{display:flex;gap:8px;margin-top:12px}
+.btn{
+  flex:1;min-height:42px;border-radius:12px;display:flex;align-items:center;justify-content:center;gap:6px;
+  font-size:13.5px;font-weight:800;border:1px solid rgba(10,26,17,.9);cursor:pointer;
+  background:linear-gradient(180deg,#3c7a5a 0%,#2d6247 44%,#215038 100%);color:var(--gold-hi);
+  box-shadow:inset 0 0 0 1.5px rgba(240,207,114,.9), inset 0 3px 0 rgba(255,248,196,.3), 0 4px 12px rgba(0,0,0,.4);
+}
+.btn.gold{color:#2a1a05;border-color:rgba(74,42,6,.9);
+  background:linear-gradient(180deg,#FFF7B8 0%,#EDCD6F 7%,#F0C767 15%,#EFC065 24%,#E5B459 32%,
+    #DCA851 41%,#D49D49 47%,#C18736 53%,#BE8534 64%,#C08635 75%,#C38A37 83%,#C8923C 88%,#F9D071 92%,#FFEE9C 100%);
+  box-shadow:inset 0 0 0 1.5px rgba(255,244,200,.55), 0 4px 12px rgba(0,0,0,.42)}
+.btn.sm{flex:0 0 auto;min-width:86px}
+.btn[disabled]{opacity:.5;pointer-events:none}
+.when{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:2px}
+.when div{background:rgba(255,255,255,.07);border:1px solid rgba(240,207,114,.25);border-radius:12px;
+  padding:11px 5px;text-align:center;font-size:11px;font-weight:700;color:#dfe9e2;line-height:1.25;cursor:pointer}
+.when div.on{background:linear-gradient(180deg,#3c7a5a,#215038);border-color:rgba(240,207,114,.95);color:#fff}
+.when div b{display:block;font-size:13px;margin-bottom:2px}
+.seats{display:flex;gap:7px;margin-top:11px}
+.seat{flex:1;background:rgba(255,255,255,.06);border:1px solid rgba(240,207,114,.2);border-radius:11px;
+  padding:8px 4px;text-align:center;font-size:10px;font-weight:700;color:#dfe9e2}
+.seat .av2{width:26px;height:26px;border-radius:50%;margin:0 auto 5px;display:grid;place-items:center;
+  font-size:11px;font-weight:800;color:#fff;background:linear-gradient(170deg,#2f9d63,#14603c)}
+.seat.free{border-style:dashed;border-color:rgba(240,207,114,.6);color:var(--gold)}
+.seat.free .av2{background:rgba(240,207,114,.16);color:var(--gold);font-size:15px}
+.bar{height:6px;border-radius:99px;background:rgba(255,255,255,.12);overflow:hidden;margin:11px 0 5px}
+.bar i{display:block;height:100%;background:linear-gradient(90deg,#3ddb73,#f0cf72);transition:width .5s ease}
+.note{margin-top:10px;font-size:10.5px;color:#9db3a6;text-align:center;line-height:1.4}
+.flist{max-height:188px;overflow:auto;margin:2px -2px 0;padding:0 2px}
+.fitem{display:flex;align-items:center;gap:9px;padding:7px 9px;border-radius:11px;cursor:pointer;
+  background:rgba(255,255,255,.05);border:1px solid rgba(240,207,114,.14);margin-bottom:6px}
+.fitem.on{border-color:rgba(240,207,114,.85);background:rgba(240,207,114,.12)}
+.fitem .av3{width:28px;height:28px;border-radius:50%;display:grid;place-items:center;font-size:12px;
+  font-weight:800;color:#fff;background:linear-gradient(170deg,#2f9d63,#14603c)}
+.fitem .n{font-size:12.5px;font-weight:700}
+.fitem .s{font-size:10px;color:var(--mute)}
+.fitem .pick{margin-inline-start:auto;font-size:13px;color:var(--gold)}
+.fitem .st{margin-inline-start:auto;font-size:9.5px;font-weight:800;border-radius:99px;padding:2px 7px;
+  background:rgba(255,255,255,.12);color:#dfe9e2}
+.fitem .st.ok{background:var(--ok);color:#06230f}
+.fitem .st.late{background:rgba(240,207,114,.24);color:var(--gold-hi)}
+
+/* the game, in the same phone */
+#game{position:absolute;inset:0;z-index:20;border:0;width:100%;height:100%;background:#06251a;display:none}
+#game.on{display:block}
+
+/* a push notification */
+#push{
+  position:absolute;z-index:30;left:10px;right:10px;top:calc(var(--safe-t) - 8px);
+  background:rgba(8,32,22,.97);border:1px solid rgba(240,207,114,.55);border-radius:16px;
+  padding:11px 13px;box-shadow:0 14px 40px rgba(0,0,0,.55);display:none;
+  animation:drop .42s cubic-bezier(.2,1.2,.3,1);
+}
+#push.on{display:block}
+@keyframes drop{from{transform:translateY(-130%);opacity:0}to{transform:none;opacity:1}}
+#push .ph{font-size:10px;font-weight:900;letter-spacing:1.4px;color:var(--gold);margin-bottom:3px}
+#push .pt{font-size:13px;font-weight:800}
+#push .ps{font-size:11px;color:var(--mute);margin-top:3px}
+#push .btn{margin-top:9px;min-height:36px;font-size:12.5px}
+
+/* ---------------- the panel ---------------- */
+#panel{flex:1;min-width:0;max-width:800px}
+.eyebrow{font-size:11px;font-weight:800;letter-spacing:2.4px;color:var(--gold);margin-bottom:6px}
+h1{font-size:32px;font-weight:700;color:var(--gold-hi);line-height:1.08}
+.lede{font-size:14px;color:var(--mute);line-height:1.55;margin:10px 0 18px;max-width:64ch}
+.mechs{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+@media (max-width:620px){ .mechs{grid-template-columns:1fr} }
+.mech{
+  text-align:start;border:1px solid var(--line);border-radius:14px;padding:12px 13px;cursor:pointer;
+  background:rgba(12,59,39,.55);color:var(--cream);font:inherit;
+}
+.mech:hover{border-color:rgba(240,207,114,.6);background:rgba(12,59,39,.8)}
+.mech.on{border-color:var(--gold);box-shadow:0 0 0 1px rgba(240,207,114,.5) inset}
+.mech b{display:block;font-size:14px;color:var(--gold);margin-bottom:4px}
+.mech span{font-size:12px;color:var(--mute);line-height:1.45}
+.mech em{display:block;font-style:normal;font-size:10.5px;color:#7f9a8a;margin-top:6px}
+
+.steps{margin:18px 0 0;padding:0;list-style:none;border:1px solid var(--line);border-radius:14px;overflow:hidden}
+.steps li{display:flex;gap:10px;padding:10px 13px;font-size:12.5px;color:var(--mute);
+  border-bottom:1px solid rgba(240,207,114,.14);line-height:1.45}
+.steps li:last-child{border-bottom:0}
+.steps li i{font-style:normal;flex:0 0 18px;height:18px;border-radius:50%;background:rgba(255,255,255,.1);
+  color:#8fae9c;font-size:10px;font-weight:900;display:grid;place-items:center;margin-top:1px}
+.steps li.done{color:var(--cream)}
+.steps li.done i{background:var(--ok);color:#06230f}
+.steps li.now{color:var(--gold-hi);background:rgba(240,207,114,.08)}
+.steps li.now i{background:var(--gold);color:#2a1a05}
+
+.tools{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+.tool{border:1px solid var(--line);border-radius:10px;background:rgba(12,59,39,.55);color:var(--gold-hi);
+  font:inherit;font-size:12px;font-weight:700;padding:8px 12px;cursor:pointer}
+.tool:hover{border-color:rgba(240,207,114,.6)}
+.tool[disabled]{opacity:.4;pointer-events:none}
+
+.logwrap{margin-top:18px;border:1px solid var(--line);border-radius:14px;overflow:hidden}
+.logwrap h3{font-size:13px;color:var(--gold);padding:10px 13px;border-bottom:1px solid var(--line);
+  font-family:inherit;font-weight:800;letter-spacing:.3px;display:flex;justify-content:space-between;align-items:center}
+.logwrap h3 span{font-size:10.5px;font-weight:600;color:var(--mute);letter-spacing:0}
+#log{margin:0;padding:10px 13px;max-height:260px;overflow:auto;font-family:ui-monospace,Menlo,Consolas,monospace;
+  font-size:11.5px;line-height:1.6;color:#bcd3c4}
+#log div{white-space:pre-wrap;word-break:break-word}
+#log .to{color:#9fd7ff}
+#log .from{color:#ffd79f}
+#log .say{color:#8fae9c;font-style:italic}
+#log b{color:var(--gold-hi);font-weight:700}
+.foot{font-size:11.5px;color:#7f9a8a;margin-top:14px;line-height:1.6}
+.foot b{color:var(--mute);font-weight:700}
+</style>
+</head>
+<body>
+<div id="wrap">
+
+  <div id="device">
+    <div id="screen">
+      <div id="map"></div>
+      <div id="top">
+        <div class="searchbar">🔍 <span>Search Riyadh</span></div>
+        <div class="iconbtn on" title="Map layers">◈</div>
+      </div>
+      <div id="pins"></div>
+      <div id="sheet"></div>
+      <div id="push"></div>
+      <iframe id="game" title="Baloot" allow="autoplay"></iframe>
+    </div>
+  </div>
+
+  <div id="panel">
+    <div class="eyebrow">BALADY+ · CONCEPT DEMO · BE-213 × BALOOT</div>
+    <h1>Four ways to fill a table</h1>
+    <p class="lede">
+      The phone is a mock of the Balady+ shell — the map, the friends layer and the sheets.
+      The game inside it is the real mini-app, driven over the documented bridge:
+      every message between the two is printed below, so what the app would have to
+      implement is visible rather than described. Pick a mechanism to run it.
+    </p>
+
+    <div class="mechs" id="mechs"></div>
+
+    <ol class="steps" id="steps"></ol>
+
+    <div class="tools" id="tools"></div>
+
+    <div class="logwrap">
+      <h3>Bridge log <span>app → game in blue, game → app in amber</span></h3>
+      <div id="log"></div>
+    </div>
+
+    <p class="foot">
+      <b>What never crosses:</b> a coordinate. The game is handed an id, a name, a presence flag
+      and a distance in kilometres — the map keeps the position.
+      <br><b>What is mocked:</b> the map screens, the friends data and the acceptances of other
+      players. <b>What is real:</b> the game, the bridge, the seats, the labelled bot and the swap.
+      <br><b>Not in the demo:</b> live play between two devices — that needs the transport and a
+      rooms service (stage two). Here every seat is played out on this one device.
+    </p>
+  </div>
+</div>
+
+<script>
+/* ============================================================
+   the schematic city under the pins
+   ============================================================ */
+function drawMap(){
+  const W = 480, H = 1000, s = [];
+  let seed = 11;
+  const rnd = () => (seed = (seed * 1103515245 + 12345) % 2147483648) / 2147483648;
+  s.push(`<rect width="${W}" height="${H}" fill="#dde3d8"/>`);
+  for (let y = -60; y < H + 60; y += 84){
+    for (let x = -60; x < W + 60; x += 76){
+      const w = 40 + rnd() * 26, h = 40 + rnd() * 30;
+      s.push(`<rect x="${x + 10 + rnd()*8}" y="${y + 10 + rnd()*8}" width="${w}" height="${h}" rx="3"
+               fill="${rnd() > 0.88 ? '#cfe3c0' : '#f1f4ed'}"/>`);
+      if (rnd() > 0.7)
+        s.push(`<rect x="${x + 14 + rnd()*30}" y="${y + 52 + rnd()*20}" width="${22 + rnd()*20}"
+                 height="${16 + rnd()*14}" rx="3" fill="#f1f4ed"/>`);
+    }
+  }
+  s.push(`<rect x="24" y="264" width="178" height="150" rx="20" fill="#bfdcab"/>`);
+  s.push(`<circle cx="70" cy="320" r="16" fill="#aed197"/><circle cx="150" cy="370" r="21" fill="#aed197"/>`);
+  s.push(`<path d="M-30 660 C 110 630, 190 756, 320 712 S 470 646, 530 678 L 530 762
+            C 440 740, 330 810, 196 788 S 46 760, -30 770 Z" fill="#c3dceb"/>`);
+  const road = (d, w) => {
+    s.push(`<path d="${d}" stroke="#c6cfbe" stroke-width="${w + 3.5}" fill="none" stroke-linecap="round"/>`);
+    s.push(`<path d="${d}" stroke="#ffffff" stroke-width="${w}" fill="none" stroke-linecap="round"/>`);
+  };
+  for (let y = 46; y < H; y += 84) road(`M-10 ${y} H ${W + 10}`, (y - 46) % 168 === 0 ? 12 : 7);
+  for (let x = 34; x < W; x += 76) road(`M${x} -10 V ${H + 10}`, (x - 34) % 152 === 0 ? 11 : 6);
+  road(`M-20 230 L ${W + 20} 540`, 13);
+  road(`M-10 850 C 150 828, 250 916, ${W + 10} 878`, 15);
+  for (let i = 0; i < 26; i++)
+    s.push(`<circle cx="${rnd() * W}" cy="${rnd() * H}" r="2.6" fill="#b9c3b5"/>`);
+  document.querySelector('#map').innerHTML =
+    `<svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="xMidYMid slice">${s.join('')}</svg>`;
+}
+drawMap();
+
+/* ============================================================
+   the people the map knows about
+   ============================================================ */
+const PEOPLE = [
+  {id:'104233', name:'Abu Mohammed', online:true,  km:1.2, x:22, y:32, c:'#2f9d63'},
+  {id:'910044', name:'Meshal',       online:true,  km:1.8, x:64, y:27, c:'#3f7fd6'},
+  {id:'552019', name:'Sultan',       online:true,  km:2.0, x:79, y:46, c:'#c9843a'},
+  {id:'330871', name:'Abdulaziz',    online:true,  km:2.4, x:33, y:56, c:'#8a5fd0'},
+  {id:'447120', name:'Nasser',       online:false, km:3.1, x:14, y:62, c:'#4f9a94'},
+  {id:'661903', name:'Turki',        online:true,  km:3.6, x:70, y:64, c:'#b5644f'}
+];
+const P = id => PEOPLE.find(p => p.id === id);
+const initial = n => n.trim().charAt(0).toUpperCase();
+
+const $  = q => document.querySelector(q);
+const el = (t, c, h) => { const n = document.createElement(t); if (c) n.className = c;
+                          if (h != null) n.innerHTML = h; return n; };
+
+/* ============================================================
+   the phone: pins, sheet, push, and the game frame
+   ============================================================ */
+function pins(list){
+  $('#pins').innerHTML = list.map(p => `
+    <div class="pin ${p.me?'me':''} ${p.cluster?'cluster':''} ${p.table?'table':''}
+                ${p.sel?'sel':''} ${p.ready?'ready':''}" data-id="${p.id||''}"
+         style="left:${p.x}%;top:${p.y}%">
+      <div class="bubble" ${p.c?`style="background:linear-gradient(170deg,${p.c},#14603c)"`:''}>${
+        p.t != null ? p.t : (p.name ? initial(p.name) : '')
+      }${p.ready?'<span class="flag">✋</span>':''}</div>
+      <div class="tail"></div>
+      ${p.cap ? `<div class="cap">${p.cap}</div>` : ''}
+    </div>`).join('');
+}
+const ME = {x:50, y:43, me:true};
+const peoplePins = (opt = {}) => PEOPLE.slice(0, opt.n || 5).map(p => ({
+  id:p.id, x:p.x, y:p.y, c:p.c, name:p.name,
+  cap: opt.caps === false ? null : p.name,
+  ready: (opt.ready || []).includes(p.id),
+  sel: opt.sel === p.id
+})).concat([ME]);
+
+function sheet(html){ $('#sheet').innerHTML = html || ''; }
+function showPush(head, title, sub, label, fn){
+  const p = $('#push');
+  p.innerHTML = `<div class="ph">${head}</div><div class="pt">${title}</div><div class="ps">${sub}</div>`;
+  const b = el('div', 'btn gold', label); b.onclick = () => { p.classList.remove('on'); fn(); };
+  p.appendChild(b); p.classList.add('on');
+}
+const hidePush = () => $('#push').classList.remove('on');
+
+const frame = $('#game');
+let room = null, gameReady = false;
+const pending = [];
+function openGame(){
+  room = Array.from({length:6}, () => 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'[Math.floor(Math.random()*32)]).join('');
+  gameReady = false; pending.length = 0;
+  frame.src = '../index.html?room=' + room;
+  frame.classList.add('on');
+  say('the app opens the mini-app with room ' + room);
+}
+function closeGame(){ frame.classList.remove('on'); frame.src = 'about:blank'; room = null;
+  gameReady = false; pending.length = 0; }
+
+/* the host may speak before the mini-app has booted; hold it until ready */
+function toGameReady(action, payload){
+  if (gameReady) toGame(action, payload);
+  else pending.push([action, payload]);
+}
+
+/* ============================================================
+   the bridge — exactly what a host has to speak
+   ============================================================ */
+function toGame(action, payload){
+  try{ frame.contentWindow.postMessage({source:'balady-host', action, payload}, '*'); }catch(e){}
+  log('to', action, payload);
+}
+window.addEventListener('message', ev => {
+  const d = ev.data;
+  if (!d || d.source !== 'baloot') return;
+  log('from', d.action, d.payload);
+  const h = HOST[d.action];
+  if (h) h(d.payload || {});
+});
+
+/* what the app answers, per action the game can send */
+const HOST = {
+  ready(){ gameReady = true; while (pending.length) toGame(...pending.shift()); },
+  getFriends(){ toGame('friends', friendsPayload()); },
+  invite(p){ if (SC.onInvite) SC.onInvite(p); },
+  share(){ say('the app would open the native share sheet'); },
+  matchResult(p){ say('match result kept by the app: ' + JSON.stringify(p.scores || p)); }
+};
+/* the payload BE-213 could carry: identity, presence, distance — never a point */
+const friendsPayload = () => PEOPLE.map(p =>
+  ({ id:p.id, name:p.name, online:p.online, distanceKm:p.km, handUp:!!HANDS[p.id] }));
+
+function seatsPayload(seats){
+  /* seats[1..3]; a friend is {id}, a bot is null */
+  return { room, seats: seats.map(s => s == null ? {bot:true}
+    : {id:s.id, name:P(s.id).name, bot:false, joined:!!s.joined}) };
+}
+
+/* ============================================================
+   the log
+   ============================================================ */
+function log(dir, action, payload){
+  const box = $('#log');
+  const arrow = dir === 'to' ? 'app → game' : 'game → app';
+  const body = payload && Object.keys(payload).length
+    ? ' ' + JSON.stringify(payload, null, 0).replace(/","/g, '", "')
+    : '';
+  const line = el('div', dir === 'to' ? 'to' : 'from',
+    `<b>${arrow}</b>  ${action}${escapeHtml(body)}`);
+  box.appendChild(line); box.scrollTop = box.scrollHeight;
+}
+function say(text){
+  const box = $('#log');
+  box.appendChild(el('div', 'say', '· ' + text));
+  box.scrollTop = box.scrollHeight;
+}
+function escapeHtml(s){ return String(s).replace(/[&<>]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;'}[c])); }
+function clearLog(){ $('#log').innerHTML = ''; }
+
+/* ============================================================
+   scenario plumbing
+   ============================================================ */
+const SC = { id:null, onInvite:null, timers:[] };
+const HANDS = {};                       // id -> window, for the raised-hand demo
+const wait = (ms, fn) => { const t = setTimeout(fn, ms); SC.timers.push(t); return t; };
+function resetScenario(){
+  SC.timers.forEach(clearTimeout); SC.timers = []; SC.onInvite = null;
+  for (const k in HANDS) delete HANDS[k];
+  hidePush(); closeGame(); sheet(''); pins([]); $('#tools').innerHTML = '';
+  const q = $('.quorum'); if (q) q.remove();
+}
+function steps(list){
+  $('#steps').innerHTML = list.map((t, i) => `<li data-i="${i}"><i>${i+1}</i><span>${t}</span></li>`).join('');
+}
+function step(i, state){
+  [...$('#steps').children].forEach((li, n) => {
+    li.classList.toggle('done', n < i);
+    li.classList.toggle('now', n === i && state !== 'done');
+    if (n === i && state === 'done') li.classList.add('done');
+  });
+}
+function tool(label, fn, id){
+  const b = el('button', 'tool', label); if (id) b.id = id;
+  b.onclick = () => fn(b); $('#tools').appendChild(b); return b;
+}
+
+/* ============================================================
+   mechanism 1 — invite with a surplus
+   ============================================================ */
+function m1(){
+  steps([
+    'The friends layer is on: who is nearby, who is online.',
+    'Open a friend, and the card carries one more action: play Baloot.',
+    'The app invites the six nearest, not three — a surplus costs nothing.',
+    'The first three to accept take the seats; the rest are told the table filled.',
+    'The table exists because three people accepted, not because a room was opened.'
+  ]);
+  step(0);
+  pins(peoplePins({n:5}));
+  sheet(`<div class="grab"></div>
+    <div class="sheet-h">Map layers</div>
+    <div class="tiles">
+      <div class="tile"><i>🚦</i>Traffic</div>
+      <div class="tile"><i>🅿️</i>Parking</div>
+      <div class="tile"><i>🏙</i>3D</div>
+      <div class="tile on"><i>👥</i>Friends<span class="badge">6 nearby</span></div>
+    </div>
+    <div class="note">Tap a friend on the map to open their card.</div>`);
+  $('#pins').onclick = ev => {
+    const pin = ev.target.closest('.pin[data-id]'); if (!pin) return;
+    friendCard(pin.dataset.id);
+  };
+  tool('Open Abu Mohammed', () => friendCard('104233'));
+
+  function friendCard(id){
+    const f = P(id); if (!f) return;
+    step(1);
+    pins(peoplePins({n:5, sel:id}));
+    sheet(`<div class="grab"></div>
+      <div class="friend">
+        <div class="av">${initial(f.name)}</div>
+        <div><div class="nm">${f.name}</div>
+        <div class="meta">#${f.id} · <b>${f.online ? 'online' : 'offline'}</b> · ${f.km} km away</div></div>
+      </div>
+      <div class="prow"><div class="btn sm">🧭 Route</div><div class="btn gold" id="play">🃏 Play Baloot</div></div>
+      <div class="note">One action added to a card the pin already opens.</div>`);
+    $('#play').onclick = () => inviteSheet(id);
+  }
+
+  function inviteSheet(seedId){
+    step(2);
+    const picked = new Set(PEOPLE.filter(p => p.online).slice(0, 6).map(p => p.id));
+    picked.add(seedId);
+    const render = () => {
+      sheet(`<div class="grab"></div>
+        <div class="sheet-h">Invite to a table — ${picked.size} selected</div>
+        <div class="flist">${PEOPLE.map(p => `
+          <div class="fitem ${picked.has(p.id) ? 'on' : ''}" data-id="${p.id}">
+            <div class="av3">${initial(p.name)}</div>
+            <div><div class="n">${p.name}</div><div class="s">${p.km} km · ${p.online ? 'online' : 'offline'}</div></div>
+            <div class="pick">${picked.has(p.id) ? '✓' : ''}</div>
+          </div>`).join('')}</div>
+        <div class="prow"><div class="btn gold" id="send">Invite ${picked.size} for 3 seats</div></div>
+        <div class="note">Three seats, more invitations than seats. A seat is reserved by an
+        acceptance — nobody is holding an empty chair meanwhile.</div>`);
+      $('#sheet').querySelectorAll('.fitem').forEach(n => n.onclick = () => {
+        picked.has(n.dataset.id) ? picked.delete(n.dataset.id) : picked.add(n.dataset.id);
+        render();
+      });
+      $('#send').onclick = () => send([...picked]);
+    };
+    render();
+  }
+
+  function send(ids){
+    if (ids.length < 3) return;
+    step(3);
+    openGame();
+    say('invitation delivered to ' + ids.length + ' friends: ' + ids.map(i => P(i).name).join(', '));
+    const seats = [null, null, null, null];          // seat 0 is you
+    const accepted = [], declined = [];
+    const order = ids.slice().sort(() => Math.random() - 0.5);
+    order.forEach((id, i) => wait(900 + i * 1100, () => {
+      if (accepted.length < 3){
+        accepted.push(id);
+        const seat = [2,1,3][accepted.length - 1];
+        seats[seat] = {id, joined:true};
+        toGameReady('room', seatsPayload(seats));
+        say(P(id).name + ' accepted — seat created');
+        if (accepted.length === 3){
+          step(4, 'done');
+          say('three acceptances, three seats. The rest get "the table filled, next time".');
+          tool('Show what the others saw', () => say(
+            order.slice(accepted.length).map(x => P(x).name).join(', ') +
+            ' → "the table filled — start your own?"'));
+        }
+      } else {
+        declined.push(id);
+        say(P(id).name + ' was too late — the app tells them the table filled');
+      }
+    }));
+  }
+}
+
+/* ============================================================
+   mechanism 2 — a raised hand instead of a lobby
+   ============================================================ */
+function m2(){
+  steps([
+    'One tap says "I am up for a game", with a window.',
+    'You close the app. Nobody sits on a lobby screen.',
+    'Other hands go up nearby while you are away.',
+    'The fourth hand turns the gathering into a table — everyone gets a push.',
+    'Open it, and the seats are already people.'
+  ]);
+  step(0);
+  pins(peoplePins({n:5}));
+  let window_ = 'now';
+  const render = () => {
+    sheet(`<div class="grab"></div>
+      <div class="sheet-h">Up for a game of Baloot?</div>
+      <div class="when">
+        <div class="${window_==='now'?'on':''}" data-w="now"><b>Now</b>next 20 min</div>
+        <div class="${window_==='hour'?'on':''}" data-w="hour"><b>Within an hour</b>ping me</div>
+        <div class="${window_==='evening'?'on':''}" data-w="evening"><b>This evening</b>after 8 pm</div>
+      </div>
+      <div class="prow"><div class="btn gold" id="raise">✋ Raise my hand</div></div>
+      <div class="note">The window is the whole interface. There is no room to sit in
+      and no list to watch.</div>`);
+    $('#sheet').querySelectorAll('.when div').forEach(n =>
+      n.onclick = () => { window_ = n.dataset.w; render(); });
+    $('#raise').onclick = raise;
+  };
+  render();
+
+  function raise(){
+    step(1);
+    HANDS.me = window_;
+    say('you raised a hand · window: ' + window_ + ' — the app holds it, the screen is free');
+    sheet(`<div class="grab"></div>
+      <div class="friend"><div class="av">✋</div>
+        <div><div class="nm">Your hand is up</div>
+        <div class="meta">window: <b>${window_ === 'now' ? 'the next 20 minutes' :
+          window_ === 'hour' ? 'within an hour' : 'this evening'}</b> · you can close the app</div></div>
+      </div>
+      <div class="bar"><i style="width:25%"></i></div>
+      <div class="seats">
+        <div class="seat"><div class="av2">✋</div>You</div>
+        <div class="seat free"><div class="av2">·</div>waiting</div>
+        <div class="seat free"><div class="av2">·</div>waiting</div>
+        <div class="seat free"><div class="av2">·</div>waiting</div>
+      </div>
+      <div class="note">1 of 4 hands up within 2 km.</div>`);
+    step(2);
+    const queue = [
+      {id:'910044', at:1400, t:'18:41'},
+      {id:'552019', at:3000, t:'18:47'},
+      {id:'104233', at:4600, t:'18:52'}
+    ];
+    /* the same sheet at every count, so skipping ahead looks like waiting it out */
+    function handSheet(){
+      const up = Object.keys(HANDS).length;
+      const done = queue.filter(q => HANDS[q.id]).map(q => P(q.id));
+      sheet(`<div class="grab"></div>
+        <div class="friend"><div class="av">${up === 1 ? '✋' : up + '/4'}</div>
+          <div><div class="nm">${up === 1 ? 'Your hand is up' :
+                up < 4 ? 'Hands are going up' : 'Four hands are up'}</div>
+          <div class="meta">${up === 1
+            ? 'window: <b>' + (window_ === 'now' ? 'the next 20 minutes'
+              : window_ === 'hour' ? 'within an hour' : 'this evening') + '</b> · you can close the app'
+            : up + ' ready to play within 2 km' + (up < 4 ? ' · <b>one short</b>' : ' · <b>that is a table</b>')}</div></div>
+        </div>
+        <div class="bar"><i style="width:${up * 25}%"></i></div>
+        <div class="seats">
+          <div class="seat"><div class="av2">✋</div>You</div>
+          ${[0,1,2].map(n => done[n]
+            ? `<div class="seat"><div class="av2">${initial(done[n].name)}</div>${done[n].name.split(' ')[0]}</div>`
+            : `<div class="seat free"><div class="av2">·</div>waiting</div>`).join('')}
+        </div>
+        <div class="note">${up < 4 ? 'Nobody is on a screen while this happens.'
+          : 'Everyone gets a push — the table opens already full.'}</div>`);
+    }
+    handSheet();
+    function quorum(){
+      step(3);
+      showPush('BALADY+  ·  NOW', 'Your table is ready',
+        'Four hands up within 2 km — Abu Mohammed, Meshal, Sultan and you.',
+        '🃏 Open the table', openIt);
+    }
+    queue.forEach((q, i) => wait(q.at, () => {
+      HANDS[q.id] = 'now';
+      say(q.t + ' · ' + P(q.id).name + ' raised a hand nearby — ' +
+          Object.keys(HANDS).length + ' of 4');
+      pins(peoplePins({n:5, ready:Object.keys(HANDS)}));
+      handSheet();
+      if (Object.keys(HANDS).length === 4) wait(700, quorum);
+    }));
+    tool('Skip the waiting', b => {
+      b.disabled = true;
+      SC.timers.forEach(clearTimeout); SC.timers = [];
+      queue.forEach(q => HANDS[q.id] = 'now');
+      pins(peoplePins({n:5, ready:Object.keys(HANDS)}));
+      handSheet();
+      say('(demo) the three hands go up at once');
+      quorum();
+    });
+  }
+
+  function openIt(){
+    step(4, 'done');
+    openGame();
+    const seats = [null, {id:'910044', joined:true}, {id:'104233', joined:true}, {id:'552019', joined:true}];
+    wait(900, () => { toGameReady('room', seatsPayload(seats));
+      say('the table opens already full — four people who never watched a lobby'); });
+  }
+}
+
+/* ============================================================
+   mechanism 3 — the quorum, visible on the map
+   ============================================================ */
+function m3(){
+  steps([
+    'The layer shows readiness, not only presence.',
+    'A table forming is a thing you can see: three of four, one seat short.',
+    'You take the fourth seat from the map itself.',
+    'The table is created the moment the fourth confirms.'
+  ]);
+  step(0);
+  const ready = ['104233','910044','552019'];
+  pins(peoplePins({n:5, ready}));
+  $('#screen').insertAdjacentHTML('beforeend',
+    '<div class="quorum"><i></i>3 ready to play within 2 km</div>');
+  sheet(`<div class="grab"></div>
+    <div class="sheet-h">Map layers</div>
+    <div class="tiles">
+      <div class="tile"><i>🚦</i>Traffic</div>
+      <div class="tile"><i>🅿️</i>Parking</div>
+      <div class="tile"><i>🏙</i>3D</div>
+      <div class="tile on"><i>👥</i>Friends<span class="badge">3 ready</span></div>
+    </div>
+    <div class="note">The chip and the ✋ marks are the only new thing on the layer.</div>`);
+  tool('Open the forming table', forming);
+  wait(1600, forming);
+
+  function forming(){
+    step(1);
+    pins([{x:47, y:36, table:true, t:'3/4', cap:'Baloot · 800 m', sel:true},
+          ...peoplePins({n:3, ready, caps:false})]);
+    sheet(`<div class="grab"></div>
+      <div class="friend"><div class="av">3/4</div>
+        <div><div class="nm">A table is forming</div>
+        <div class="meta">three hands up nearby · <b>one seat short</b> · 800 m</div></div>
+      </div>
+      <div class="bar"><i style="width:75%"></i></div>
+      <div class="seats">
+        <div class="seat"><div class="av2">A</div>Abu Mohammed</div>
+        <div class="seat"><div class="av2">M</div>Meshal</div>
+        <div class="seat"><div class="av2">S</div>Sultan</div>
+        <div class="seat free"><div class="av2">+</div>You?</div>
+      </div>
+      <div class="prow"><div class="btn gold" id="take">Take the fourth seat</div></div>
+      <div class="note">Until you confirm it is a gathering, not an empty room.</div>`);
+    $('#take').onclick = () => {
+      step(2);
+      openGame();
+      const seats = [null, {id:'910044', joined:true}, {id:'104233', joined:true}, {id:'552019', joined:true}];
+      wait(900, () => { toGameReady('room', seatsPayload(seats));
+        step(3, 'done');
+        say('the fourth seat was taken from the map — no invitation, no lobby'); });
+    };
+  }
+}
+
+/* ============================================================
+   mechanism 4 — start now, swap the bot later
+   ============================================================ */
+function m4(){
+  steps([
+    'Only one friend is around. Start anyway.',
+    'The empty chairs are held by bots — and they say so, in the lobby and at the table.',
+    'A friend arrives and takes a bot seat; the label goes with it.',
+    'What is ranked is still a table of four people.'
+  ]);
+  step(0);
+  pins(peoplePins({n:5, sel:'104233'}));
+  sheet(`<div class="grab"></div>
+    <div class="friend"><div class="av">A</div>
+      <div><div class="nm">Abu Mohammed</div>
+      <div class="meta">#104233 · <b>online</b> · 1.2 km away · the only one free tonight</div></div>
+    </div>
+    <div class="prow"><div class="btn sm">🧭 Route</div><div class="btn gold" id="play">🃏 Play Baloot</div></div>
+    <div class="note">Two people, four chairs. The other two are held, in the open.</div>`);
+  $('#play').onclick = start;
+
+  function start(){
+    step(1);
+    openGame();
+    const seats = [null, null, {id:'104233', joined:true}, null];   // partner is the friend
+    wait(900, () => {
+      toGameReady('room', seatsPayload(seats));
+      say('one friend seated, two chairs held by bots — tagged Bot in the lobby list and on the plate');
+      tool('Meshal arrives and takes the right seat', b => {
+        b.disabled = true;
+        step(2);
+        seats[1] = {id:'910044', joined:true};
+        toGameReady('room', seatsPayload(seats));
+        say('the bot seat became a person — nothing was hidden, nothing was lost');
+        tool('Sultan takes the last one', b2 => {
+          b2.disabled = true;
+          seats[3] = {id:'552019', joined:true};
+          toGameReady('room', seatsPayload(seats));
+          step(3, 'done');
+          say('four humans: this is the table that counts for points');
+        });
+      });
+      tool('Language: عربي', b => {
+        const ar = b.textContent.indexOf('عربي') >= 0;
+        toGame('lang', ar ? 'ar' : 'en');
+        b.textContent = ar ? 'Language: English' : 'Language: عربي';
+      });
+    });
+  }
+}
+
+/* ============================================================
+   the mechanism picker
+   ============================================================ */
+const MECHS = [
+  {k:'m1', t:'1 · Invite with a surplus',
+   d:'Invite six of the nearest for three seats. The first three to accept are in; a seat exists only because somebody accepted.',
+   e:'Needs: invitation fan-out and a race-free seat. Cheapest of the four.', run:m1},
+  {k:'m2', t:'2 · A raised hand, not a lobby',
+   d:'One tap and a window, then close the app. When four hands are up nearby, everyone gets a push and the table opens full.',
+   e:'Needs: a queue service and push. The heart of the idea.', run:m2},
+  {k:'m3', t:'3 · The quorum on the map',
+   d:'The layer shows who is ready, not just who is there — and a table forming, one seat short, that you can complete.',
+   e:'Needs: an aggregate on the layer. Changes what the map is for.', run:m3},
+  {k:'m4', t:'4 · Start now, swap the bot later',
+   d:'Play with whoever is here; the rest of the chairs are held by bots that say so, and a friend takes one over on arrival.',
+   e:'Needs: nothing new — this one is already in the build.', run:m4}
+];
+const picker = $('#mechs');
+MECHS.forEach(m => {
+  const b = el('button', 'mech', `<b>${m.t}</b><span>${m.d}</span><em>${m.e}</em>`);
+  b.onclick = () => {
+    [...picker.children].forEach(c => c.classList.remove('on'));
+    b.classList.add('on');
+    resetScenario(); clearLog();
+    say('mechanism ' + m.t.charAt(0) + ' — ' + m.t.slice(4));
+    SC.id = m.k; m.run();
+  };
+  picker.appendChild(b);
+});
+picker.firstChild.click();
+</script>
+</body>
+</html>

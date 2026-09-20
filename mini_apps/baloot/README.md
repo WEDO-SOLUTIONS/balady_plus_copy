@@ -14,6 +14,7 @@ mini_apps/baloot/
   corner-{tl,tr,bl,br}.webp  the gold arabesque, one file per corner
   ardah.mp3                  optional: an Ardah recording to loop instead of the synthesised drums
   baloot-standalone.html     the same game as one file, assets inlined
+  demo/index.html            a mock Balady+ shell that drives this game over the bridge
   tools/extract-assets.py    re-cuts the images from the source mock-up
   tools/build-standalone.py  folds the images into the single-file build
   README.md                  this file
@@ -220,16 +221,18 @@ incremental `watchFriendLocationUpdates()` stream, a mock source behind a debug
 panel, clustered markers on the native map and a `LayerType.friends` toggle in
 the layers sheet. It carries no identities yet — `FriendLocation` is a user id,
 a point, a timestamp and a battery level — so the invite flow here is modelled
-on the shipped friends list inside the Balady Challenge gamification (add by
-player number, gifts, leaderboards — the `friends_*` / `game_friends` keys in
-`assets/langs/`) and integrates through a host bridge. If BE-213 lands, the same
+on the shipped friends list inside the Balady Challenge gamification (the
+`friends_*` / `game_friends` keys in `assets/langs/`) and integrates through a
+host bridge. The friends list comes from the host only — there is no way to add
+a player by number inside the mini-app, because the app owns who your friends
+are. If BE-213 lands, the same
 bridge can carry a friend's presence: `onFriends` already takes a list, and
 `invite` already goes back to the host.
 
-What works with no host at all: a room code, a share link, the native share
-sheet / clipboard, and adding friends by player number (kept in `localStorage`).
-Seats you fill with friends are played by a bot under that friend's name until
-the host reports them as joined, so a game never blocks on an invitation.
+What works with no host at all: a room code, a share link and the native share
+sheet / clipboard. Seats you fill with friends are played by a bot under that
+friend's name until the host reports them as joined, so a game never blocks on
+an invitation.
 
 A bot never passes for a person. A bot seat carries a `Bot` tag in the lobby
 list and the same tag on its nameplate at the table, in both languages, and the
@@ -268,11 +271,33 @@ Call these from Dart, e.g.
 | `window.Baloot.onRoom(r)` | `{room, seats:[{id,name,bot,joined}]}` |
 | `window.Baloot.setLang(l)` | `"ar"` \| `"en"` |
 
-`window.postMessage({source:"balady-host", action:"friends"|"friendJoined"|"lang", payload})`
-works too, for an iframe host.
+`window.postMessage({source:"balady-host", action:"friends"|"friendJoined"|"room"|"lang", payload})`
+works too, for an iframe host — `demo/index.html` is exactly such a host.
 
 If nothing answers `getFriends` within 1.5 s the game falls back to the local
 list, so an unaware host degrades gracefully instead of hanging.
+
+## Concept demo — how a table gets gathered
+
+`demo/index.html` runs the four gathering mechanics from the
+*Friends on map × Baloot* concept, end to end, in a browser. The phone on the
+left is a mock of the Balady+ shell — the schematic map, the friends layer, the
+sheets; the game inside it is this mini-app, unmodified, driven over the bridge
+above. Every message in either direction is printed in a log beside it, so what
+the app would have to implement is visible rather than described.
+
+| mechanism | what the demo does |
+|---|---|
+| 1 · invite with a surplus | six invitations for three seats; acceptances land one by one and each one creates a seat, the late ones are told the table filled |
+| 2 · a raised hand, not a lobby | pick a window, raise a hand, close the sheet; other hands go up nearby, the fourth triggers a push and the table opens full |
+| 3 · the quorum on the map | a readiness chip on the layer, a table forming at 3/4, and the fourth seat taken from the map itself |
+| 4 · start now, swap the bot later | start with one friend and two labelled bots, then hand a bot seat to a friend who arrives |
+
+Open it directly (`demo/index.html`) or through the mini-app server. What is
+mocked: the map, the friends data and other players' acceptances. What is real:
+the game, the bridge, the seats, the `Bot` labels and the swap. What is *not*
+in it: live play between two devices — that needs a transport and a rooms
+service, and every seat here is played out on one device.
 
 ## Verification
 
