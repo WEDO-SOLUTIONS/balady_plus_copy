@@ -50,7 +50,14 @@ const SQUARE = [
   { name: 'track', layer: 6, w: 2048, h: 2048, dusk: 0.0 },
   // The outcrops the track runs between: ten of them, 1024 px each, two
   // columns by five rows.
-  { name: 'cliffs', layer: 7, w: 2048, h: 5120, dusk: 0.0 }
+  { name: 'cliffs', layer: 7, w: 2048, h: 5120, dusk: 0.0 },
+  // The coin, solved as a real cylinder: 24 frames of a turn, 6 by 4, 128 px
+  // each. The game drops a coin at d >= 0.95, so one never gets closer than
+  // that: at the speed cap, on the last frame before it goes, the largest
+  // cell the draw code asks for is 113 device pixels, on each of the three
+  // viewports this is checked at. A 192 px cell — the first cut of this —
+  // was half a megabyte of sheet nothing would ever sample at 1:1.
+  { name: 'coin3d', layer: 8, w: 768, h: 512, dusk: 0.0 }
 ];
 
 (async () => {

@@ -1172,6 +1172,142 @@ vec4 bakeProps(vec2 uv, float dusk) {
   return id < 5.0 ? rockSprite(p, id, dusk) : plantSprite(p, id - 5.0, dusk);
 }
 
+
+/* ------------------------------------------------------------------ coin
+
+   A real coin rather than a picture of one: a cylinder of radius R and half
+   thickness T, spun about the screen-vertical axis and intersected
+   analytically under an orthographic ray. What this replaces was a flat PNG
+   squashed horizontally by |cos(spin)|, which has no edge at all — a quarter
+   turn in it is a one-pixel sliver, and the thing reads as a decal on the
+   sand rather than as an object lying on it.
+
+   Solving it is cheap because both bounds are slabs along the ray. In the
+   coin's own frame the ray runs (s, 0, -c) from (x*c, y, x*s): the disc gives
+   |qx| <= sqrt(R^2 - y^2), the thickness gives |qz| <= T, and the near hit is
+   the later of the two entries. Which of them was the later one also says
+   whether the pixel is looking at a face or at the milled edge, which is the
+   normal — no epsilon comparison needed. */
+
+bool coinSlab(float o, float d, float lo, float hi, out float t0, out float t1) {
+  if (abs(d) < 1e-5) { t0 = -9.0; t1 = 9.0; return (o >= lo && o <= hi); }
+  float ta = (lo - o) / d;
+  float tb = (hi - o) / d;
+  t0 = min(ta, tb);
+  t1 = max(ta, tb);
+  return true;
+}
+
+/* The struck relief, as a height over the face in arbitrary units. It is
+   read back as a gradient rather than painted as a highlight, so the devices
+   turn with the coin. The field is domed by a hair: a dead-flat face reflects
+   one flat colour whatever is around it, and the first cut of this baked out
+   as a single washed pale disc for exactly that reason. */
+float coinRelief(vec2 u) {
+  float rr = length(u);
+  float ang = atan(u.y, u.x);
+
+  // Raised border, steep on the inside and chamfered back down on the out.
+  float h = smoothstep(0.78, 0.84, rr) * (1.0 - smoothstep(0.93, 0.99, rr));
+  // A ring of beads inside it.
+  float bead = 0.5 + 0.5 * cos(ang * 30.0);
+  h += smoothstep(0.60, 0.65, rr) * (1.0 - smoothstep(0.70, 0.75, rr))
+       * (0.24 + 0.36 * bead);
+  // An eight-point rosette in the middle — the geometry that is on
+  // everything else in this game's part of the world.
+  float pet = 0.30 + 0.105 * cos(ang * 8.0);
+  h += (1.0 - smoothstep(pet - 0.05, pet + 0.02, rr)) * 0.88;
+  return h;
+}
+
+vec4 coinSprite(vec2 p, float frame, float dusk) {
+  float R = 0.80, T = 0.105;
+  float th = frame / 24.0 * 6.28318531;
+  float c = cos(th), s = sin(th);
+
+  float x = (p.x - 0.5) * 2.0;
+  float y = (0.5 - p.y) * 2.0;
+
+  float rho2 = R * R - y * y;
+  if (rho2 <= 0.0) return vec4(0.0);
+  float rho = sqrt(rho2);
+
+  float a0, a1, b0, b1;
+  if (!coinSlab(x * c, s, -rho, rho, a0, a1)) return vec4(0.0);
+  if (!coinSlab(x * s, -c, -T, T, b0, b1)) return vec4(0.0);
+  float t0 = max(a0, b0), t1 = min(a1, b1);
+  if (t1 < t0) return vec4(0.0);
+
+  bool onRim = a0 > b0;             // the disc bound entered last: milled edge
+  float hx = x * c + t0 * s;
+  float hz = x * s - t0 * c;
+  float rr = length(vec2(hx, y)) / R;
+  float ang = atan(y, hx);
+
+  vec3 n;
+  float ao = 1.0;
+
+  if (onRim) {
+    // Milling: the grooves round the edge of a struck coin. Coarse enough to
+    // survive being drawn sixty pixels across, which is the size a coin
+    // actually arrives at.
+    float mill = sin(ang * 44.0);
+    n = normalize(vec3(hx, y, 0.0));
+    n = normalize(n + vec3(-n.y, n.x, 0.0) * mill * 0.42);
+    ao = 0.80 + 0.20 * (0.5 + 0.5 * mill);
+  } else {
+    // Face-local frame: +z outwards, x mirrored on the reverse so the relief
+    // reads the same way round from either side.
+    float fs = hz > 0.0 ? 1.0 : -1.0;
+    vec2 u = vec2(hx * fs, y) / R;
+    float e = 0.010;
+    float hC = coinRelief(u);
+    vec2 g = vec2(coinRelief(u + vec2(e, 0.0)) - coinRelief(u - vec2(e, 0.0)),
+                  coinRelief(u + vec2(0.0, e)) - coinRelief(u - vec2(0.0, e)))
+             / (2.0 * e);
+    // Two slopes, two strengths. The devices are sharp and shallow; the dome
+    // is the opposite, and it is the one that sweeps the sky across the face.
+    vec2 slope = clamp(g * 0.034, -1.1, 1.1) - u * 0.26;
+    vec3 nl = normalize(vec3(-slope, 1.0));
+    n = vec3(nl.x * fs, nl.y, nl.z * fs);
+    // Recesses see less of the sky than the devices standing over them.
+    ao = 0.84 + 0.16 * smoothstep(0.0, 0.7, hC);
+  }
+
+  // Back into world space: q = Ry(-th) p, so p = transpose(Ry(-th)) q.
+  vec3 N = vec3(c * n.x + s * n.z, n.y, -s * n.x + c * n.z);
+
+  vec3 L = normalize(vec3(-0.45, 0.72, 0.52));
+  vec3 V = vec3(0.0, 0.0, 1.0);
+  vec3 Rv = reflect(-V, N);
+
+  // Gold is a metal: nearly all of what you see is the surroundings, so the
+  // base colour is an environment sampled along the reflected ray — the same
+  // sky, haze and sand the rest of the scene is baked against.
+  float up = clamp(Rv.y, -1.0, 1.0);
+  vec3 sky  = vec3(1.00, 0.93, 0.70);
+  vec3 horz = vec3(0.95, 0.74, 0.36);
+  vec3 grnd = vec3(0.42, 0.25, 0.07);
+  vec3 env = mix(grnd, horz, smoothstep(-0.72, 0.02, up));
+  env = mix(env, sky, smoothstep(0.02, 0.78, up));
+  float sun = pow(max(dot(Rv, L), 0.0), 24.0);
+  float dif = max(dot(N, L), 0.0);
+
+  vec3 col = env * vec3(1.00, 0.82, 0.42) * (0.70 + 0.70 * dif) * ao;
+  col += vec3(1.00, 0.95, 0.80) * sun * 1.30;
+  col += vec3(1.00, 0.86, 0.52) * pow(1.0 - max(dot(N, V), 0.0), 3.5) * 0.16;
+
+  col = mix(col, col * vec3(0.62, 0.45, 0.48), dusk * 0.75);
+  return vec4(clamp(col, 0.0, 1.0), 1.0);
+}
+
+vec4 bakeCoin(vec2 uv, float dusk) {
+  // Twenty-four frames of a full turn, six across by four down.
+  vec2 cell = vec2(floor(uv.x * 6.0), floor(uv.y * 4.0));
+  vec2 p = vec2(fract(uv.x * 6.0), fract(uv.y * 4.0));
+  return coinSprite(p, cell.y * 6.0 + cell.x, dusk);
+}
+
 /* ------------------------------------------------------------------ main */
 
 /* One sample of whichever layer is being baked, at plate coordinates
@@ -1200,8 +1336,10 @@ vec4 plate(float u, float v, float dusk) {
     outc = bakeProps(vec2(u, v), dusk);
   } else if (uLayer == 6) {
     outc = bakeTrack(vec2(u, v), dusk);
-  } else {
+  } else if (uLayer == 7) {
     outc = bakeCliffs(vec2(u, v), dusk);
+  } else {
+    outc = bakeCoin(vec2(u, v), dusk);
   }
   return outc;
 }

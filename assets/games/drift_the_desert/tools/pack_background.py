@@ -62,6 +62,10 @@ def skyline(alpha, samples):
     return out
 
 
+# The sheets that stay PNG, and how many columns each is laid out in.
+SPRITE_SHEETS = (('props', 4), ('cliffs', 2), ('coin3d', 6))
+
+
 def main():
     if not BG.is_dir():
         sys.exit('img/bg is missing — run tools/bake_background.js first')
@@ -152,10 +156,10 @@ def main():
         print(f'  {dst.name:18} {im.width}x{im.height} {dst.stat().st_size / 1024:8.1f} KB')
         manifest['plates'][name] = {'size': [im.width, im.height]}
 
-    # The roadside sprite sheet keeps its alpha, so it stays a PNG: splitting
-    # it into a JPEG plus a mask would need getImageData to recombine, and a
+    # The sprite sheets keep their alpha, so they stay PNGs: splitting one
+    # into a JPEG plus a mask would need getImageData to recombine, and a
     # WebView loading the game off file:// taints that canvas.
-    for name, cols in (('props', 4), ('cliffs', 2)):
+    for name, cols in SPRITE_SHEETS:
         src = BG / f'{name}.png'
         if not src.is_file():
             continue
@@ -193,8 +197,13 @@ def main():
     total += out.stat().st_size
     print(f'  {out.name:18} {"":9} {out.stat().st_size / 1024:8.1f} KB')
 
+    # Derived from the list above, not written out again: the cleanup used to
+    # name its two survivors literally, so adding a third sheet wrote it and
+    # then deleted it, and the game 404'd on a file the packer had just
+    # reported writing.
+    keep = {f'{name}.png' for name, _ in SPRITE_SHEETS}
     for p in BG.glob('*.png'):
-        if p.name not in ('props.png', 'cliffs.png'):
+        if p.name not in keep:
             p.unlink()
     print(f'total {total / 1024:.0f} KB (source PNGs removed)')
 

@@ -544,10 +544,12 @@
     var spritesLoaded = 0;
     if (global.DriftSprites) {
       var plates = (global.DRIFT_PLATES && global.DRIFT_PLATES.plates) || {};
-      var sheets = 2;
+      var sheets = 3;   // props, coins, cliffs — keep in step with the loads below
       var done = function () { if (--sheets === 0) spritesLoaded = 1; };
       global.DriftSprites.load('img/bg/props.png', (plates.props || {}).grid, done,
                                (plates.props || {}).foot);
+      global.DriftCoins = global.DriftSprites.create();
+      global.DriftCoins.load('img/bg/coin3d.png', (plates.coin3d || {}).grid, done);
       global.DriftCliffs = global.DriftSprites.create();
       global.DriftCliffs.load('img/bg/cliffs.png', (plates.cliffs || {}).grid, done,
                               (plates.cliffs || {}).foot);

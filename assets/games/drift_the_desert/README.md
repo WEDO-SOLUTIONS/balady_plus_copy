@@ -105,7 +105,7 @@ before load, or append `?lang=ar` to the asset URL.
 | `js/audio.js`   | Procedural engine loop, taps, coins, combo, crash — no audio assets |
 | `js/backdrop.js`| Draws the baked parallax plates |
 | `js/ground.js`  | The WebGL ground plane: sand, road, motion blur, dusk |
-| `js/sprites.js` | Draws a baked sprite sheet — props, cliffs — with haze and dusk |
+| `js/sprites.js` | Draws a baked sprite sheet — props, cliffs, coins — with haze and dusk |
 | `js/plates.js`  | Generated: plate sizes and skyline curves |
 | `js/scene.js`   | Canvas renderer: perspective track, the car, dust, coins, FX |
 | `js/game.js`    | Rules only, no DOM: balance physics, scoring, combo, coins, run lifecycle |
@@ -128,7 +128,7 @@ than as an approximation of it:
 |-------|--------------------|------------------|
 | `car.png` | a supplied studio rear shot of a Nissan Patrol, cut off its white | the car you steer, and the how-to screen |
 | `driver.png` | the countdown screen's driver, matted separately | **not loaded** — the driver is out of the window for now |
-| `coin.png` | a floating token on the danger screen | collectibles and the HUD coin pill |
+| `coin.png` | a floating token on the danger screen | the HUD coin pill, and the collectible if the baked sheet fails |
 | `sky.jpg` | a clean column of the splash sky, mirror-tiled | the scrolling sky |
 | `ridge.png` | the splash mesas, mirror-tiled, both edges feathered | the parallax horizon |
 | `results-art.jpg` | the results screen's sunset strip | the results screen |
@@ -625,6 +625,9 @@ move with the car rather than slide sideways under parallax:
   drawn over the sprite — source-over for the haze, multiply for the evening —
   because there is no cheap way to tint a `drawImage`, and the copy is rebuilt
   only when the quantised time of day moves.
+- **The coins** — from a third baked sheet (`img/bg/coin3d.png`, 24 frames of
+  a turn in 128 px cells), and they are a real object rather than a picture of
+  one. See below.
 - **Wind swells and blowing sand**: the painted ripple bands from before, at a
   third of their weight now that the texture has real ones, plus a handful of
   soft sheets crossing on the wind instead of rushing at the camera.
@@ -660,6 +663,54 @@ rather than fixed by index — nine of them alternating sides on `i % 2` at one
 shared rate came past in the same order all run — and the two-depth projection,
 so they lean out harder the closer they get instead of holding one angle the
 whole way down the frame.
+
+### The coin is a cylinder, not a picture of one
+
+The collectible used to be `img/coin.png` squashed horizontally by
+`|cos(spin)|`. That has no edge: a quarter turn in it is a one-pixel sliver
+with nothing behind it, so the thing read as a decal lying on the sand rather
+than as an object standing in it. It is now baked as **24 frames of a full
+turn**, solved as an actual cylinder.
+
+The solve is cheap because under an orthographic ray both bounds are slabs. In
+the coin's own frame the ray runs `(s, 0, -c)` from `(x·c, y, x·s)`: the disc
+gives `|qx| ≤ √(R² − y²)`, the thickness gives `|qz| ≤ T`, and the near hit is
+the later of the two entries. **Which** of them was the later one is also what
+says whether the pixel is looking at a face or at the milled edge — so the
+normal falls out of the same comparison, with no epsilon anywhere.
+
+What took two passes was the shading, and the reason is worth keeping:
+
+- **A dead-flat face reflects one flat colour.** Gold is a metal, so nearly
+  all of what you see is its surroundings, sampled along the reflected ray.
+  But the reflected ray off a flat face is the same ray at every pixel, and
+  the first cut baked out as a single washed pale disc for exactly that
+  reason — the relief was there, and it was modulating brightness by a tenth,
+  which is invisible. The field is now **domed by a hair**, which is what
+  sweeps the sky gradient across the face and makes it read as metal.
+- **Relief has to be a tilt, not a highlight.** The devices — raised border,
+  a ring of beads, an eight-point rosette, the geometry that is on everything
+  else in this part of the world — are a height field read back as a gradient
+  and used to tilt the normal, so they turn with the coin instead of sitting
+  on top of it. Recesses see less sky than the devices standing over them,
+  which is the rest of the contrast.
+- **Gold at dusk is not rock at dusk.** The roadside sheet multiplies by a
+  cold slate at full weight; through that the coin went to mud. It gets a warm
+  multiply at 0.6 instead, so it darkens and stays gold — it is the thing the
+  player is reaching for, and it has to stay readable against a red-violet
+  scene.
+
+The sheet is **128 px cells**, not the 192 the first cut used. The game drops
+a coin at `d ≥ 0.95`, so one never gets closer than that: measured at the
+speed cap on the last frame before it goes, the largest cell the draw code
+asks for is **113 device pixels**, on each of the three viewports this is
+checked at. Nothing is ever upscaled, and the sheet costs 388 KB rather than
+780.
+
+If it fails to load, `drawCoin` falls back to the flat `img/coin.png` and past
+that to the painted one. Both paths are live: blocking the sheet and then both
+images still puts ~9 000 changed pixels into the 40 000-pixel patch the coin
+lands in.
 
 If a plate fails to decode, `backdrop.ready` stays false and `js/scene.js`
 falls back to drawing its own sky, mesas and dunes from the mockup strips —

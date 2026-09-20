@@ -26,6 +26,7 @@ Delete these problems rather than solve them again.
 | Horizon-relative placement and the "hold still when the horizon moves" work | The horizon was a number that other things were derived from | The camera moves; the world does not care |
 | Haze as a flat-coloured sprite copy composited per object | No cheap tint for `drawImage` | Fog, or a shader property |
 | `Sheet.drawShadow`, contact pools, footprint trapezoids | No shadow casting | Real shadows, or a projector / blob shadow |
+| The coin as 24 baked frames of a turn, solved analytically as a ray against a cylinder | No 3D at runtime | A coin mesh with a metallic material, spun by `transform.Rotate` |
 | `build_standalone.py`, the plate fallback path, `img/` inlining | A single-file WebView deliverable | n/a |
 
 **Do not port the 45° car lean as a sprite rotation either.** In Unity the car
@@ -75,11 +76,12 @@ which is a bug the web build already made and fixed.
 ## 3. What transfers as art
 
 The baked textures are ordinary PNG/JPEG and drop straight into Unity. `img/`
-holds 27 files totalling 11 MB, 26 of which are loaded; the 12 in `img/bg/` are
+holds 28 files totalling 11 MB, 27 of which are loaded; the 13 in `img/bg/` are
 the baked ones and account for nearly all of that:
 
 - `cliffs.png` 2048×5120 — **10 landforms**, 2 cols × 5 rows, 1024 px cells
 - `props.png` 2048×1536 — 12 roadside objects, 4×3, 512 px cells
+- `coin3d.png` 768×512 — 24 frames of a coin's turn, 6×4, 128 px cells
 - `sand.jpg`, `track.jpg` 2048² — tiling ground
 - 8 backdrop plates (sky / far range / near range / dunes × golden-hour and dusk)
 - `car.png` 752×674 — the Patrol rear shot, cut off its studio white
@@ -147,6 +149,18 @@ first four laps — which is most of a 60-second session. An integer mix covers
 all of them. Any per-spawn randomness needs checking over the run length a
 player actually sees, not over a million samples.
 
+**A flat metal face reflects one flat colour.** The coin's first cut baked out
+as a single washed pale disc: gold is a metal, so nearly all of what you see is
+its surroundings sampled along the reflected ray — and off a dead-flat face
+that ray is the same ray at every pixel. The struck relief was present and was
+modulating brightness by a tenth, which is invisible. Doming the field by a
+hair is what makes it read as metal, because that is what sweeps the
+environment across it. In Unity this is a normal map plus a real reflection
+probe, and the same rule decides whether it works: **if the normal does not
+vary, neither does the metal.** The matching half is that relief must be a
+tilt of the normal rather than a painted highlight, or it will not turn with
+the object.
+
 **Ellipse shadows make everything the same object.** A thorn bush and a boulder
 cast the same blob. The fix was the object's own silhouette, squashed and
 sheared. In Unity, real shadows do this — but if blob shadows are used for
@@ -198,6 +212,16 @@ read numbers back. Examples that caught real bugs:
   looked identical. Verify a bisect harness actually removes something obvious
   before trusting it.
 
+**A second caution, from this session.** A screenshot is a different path out
+of the browser than the canvas is, and twice it lied: once because a frame was
+already queued when `requestAnimationFrame` was stubbed, so the game repainted
+over the test before the shot was taken, and once because a draw made outside
+any frame had not reached the compositor when the shot was. Both times the
+picture was of something real, just not of what had been drawn. Reading the
+canvas back with `getImageData` and counting changed pixels settled it in one
+run. Prefer the number over the picture when the question is "did this draw at
+all".
+
 The scratch harnesses are not in the repo (they live in the session's scratch
 directory), but they are twenty-line Playwright scripts and rebuilding one is
 minutes of work.
@@ -206,10 +230,11 @@ minutes of work.
 
 ## 6. State of the web build
 
-Branch `claude/pensive-clarke-av24br`, 13 commits in this session on top of
+Branch `claude/pensive-clarke-av24br`, 14 commits in this session on top of
 `52b9b83e`. Verified clean at 390×844, 360×640 DPR3 and 412×915, in the painted
 no-plates fallback, with `car.png` blocked so the painted fallback car draws,
-and in the standalone build (15.4 MB, no external requests).
+with the coin sheet blocked so its two fallbacks draw, and in the standalone
+build (15.9 MB, no external requests).
 
 **Known defects and open questions, carried over honestly:**
 

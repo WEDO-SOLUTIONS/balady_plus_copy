@@ -147,6 +147,7 @@
   /* The cliff sheet is made at load time by js/main.js, which runs after
      this file, so it cannot be captured here the way the props sheet is. */
   function cliffSheet() { return global.DriftCliffs || NO_SHEET; }
+  function coinSheet() { return global.DriftCoins || NO_SHEET; }
 
   /* World travel per unit of the game's speed. See render(). */
   var WORLD_SCALE = 0.48;
@@ -1613,8 +1614,31 @@
 
     /* ----------------------------------------------------------- coins */
 
-    drawCoin: function (x, y, r, spin) {
+    drawCoin: function (x, y, r, spin, dusk) {
       var ctx = this.ctx;
+
+      // A real coin, baked as 24 frames of a turn — see tools/bake_background
+      // .html. The frame is picked from the same `spin` the flat version used
+      // to squash by, so nothing upstream changes.
+      var sheet = coinSheet();
+      if (sheet.ready) {
+        var n = sheet.cols * sheet.rows;
+        var k = Math.floor(spin / TAU * n) % n;
+        if (k < 0) k += n;
+        // The coin fills 0.8 of its cell (R = 0.80 in the shader's ±1 frame),
+        // so one of radius r wants a cell 2.5 r across. Gold at dusk is not
+        // rock at dusk, either: the roadside sheet multiplies by a cold slate
+        // at full weight and that takes the coin to mud, where a metal
+        // reflects whatever sky there is. This one goes warm and a little
+        // darker instead, and stays readable — it is the thing the player is
+        // reaching for.
+        sheet.draw(ctx, k, x, y, r * 2.5, {
+          mid: true, fog: 0,
+          dusk: clamp(dusk || 0, 0, 1) * 0.60, duskColour: '#C58A63'
+        });
+        return;
+      }
+
       var squash = Math.abs(Math.cos(spin));
 
       if (IMG.coin) {
@@ -1776,7 +1800,8 @@
         var cp = this.place(coinFar + (this.world.TD - coinFar) * c.d,
                             c.lane * this.w * 0.26 / this.world.A0, state.tilt || 0);
         ctx.globalAlpha = clamp(c.d / 0.08, 0, 1);
-        this.drawCoin(cp.x, cp.y - 150 * cp.t - this.h * 0.02, Math.max(2, 26 * cp.t), c.spin);
+        this.drawCoin(cp.x, cp.y - 150 * cp.t - this.h * 0.02,
+                      Math.max(2, 26 * cp.t), c.spin, dusk);
         ctx.globalAlpha = 1;
       }
 

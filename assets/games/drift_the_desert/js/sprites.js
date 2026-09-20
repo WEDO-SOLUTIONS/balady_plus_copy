@@ -1,7 +1,6 @@
-/* Drift the Desert — the baked roadside sprite sheet.
+/* Drift the Desert — the baked sprite sheets.
 
-   Four rocks and four dry bushes, 512 px each in a 4x2 grid, lit in the same
-   bake as the background. They replace the canvas paths that drew them
+   Rocks and dry bushes, 512 px each, lit in the same bake as the background. They replace the canvas paths that drew them
    before: a flat blob with an ellipse of highlight on it passed well enough
    over a painted floor and stopped passing the moment the sand underneath
    became a photograph.
@@ -15,8 +14,9 @@
 (function (global) {
   'use strict';
 
-  /* One sheet. Two ship: the roadside props, and the cliffs that stand
-     further out, which are the same thing at ten times the size. */
+  /* One sheet. Three ship: the roadside props; the cliffs that stand further
+     out, which are the same thing at ten times the size; and the coin, which
+     is the same thing turning on the spot. */
   function Sheet() {
     this.ready = false;
     this.img = null;
@@ -130,28 +130,32 @@
       var sy = Math.floor(i / this.cols) * this.cell;
 
       // The sprite is square and its subject stands on the cell's baseline.
-      var f = this.foot;
+      // `mid` anchors the cell on its centre rather than on the subject's
+      // feet, for something that does not stand on the ground — a spinning
+      // coin has no foot, and `height` is then the whole cell.
+      var mid = !!(o && o.mid);
+      var f = mid ? 1 : this.foot;
       var size = height / f;
       // Mirrored and stretched per instance. Six baked landforms go a long
       // way, but the same one coming past the same way round is still the
       // same one; this is two more axes of variation for no extra texture.
       var wide = size * ((o && o.wide) || 1);
       var dx = x - wide * 0.5;
-      var dy = y - size * f;
+      var dy = mid ? y - size * 0.5 : y - size * f;
       var was = ctx.globalAlpha;
       var flip = !!(o && o.flip);
       if (flip) { ctx.save(); ctx.translate(x * 2, 0); ctx.scale(-1, 1); }
 
       ctx.drawImage(this.img, sx, sy, this.cell, this.cell, dx, dy, wide, size);
 
-      if (o.dusk > 0.02 && o.duskColour) {
+      if (o && o.dusk > 0.02 && o.duskColour) {
         ctx.globalCompositeOperation = 'multiply';
         ctx.globalAlpha = was * o.dusk;
         ctx.drawImage(this.tintSheet(o.duskColour), sx, sy, this.cell, this.cell, dx, dy, wide, size);
         ctx.globalCompositeOperation = 'source-over';
       }
 
-      if (o.fog > 0.01 && o.hazeColour) {
+      if (o && o.fog > 0.01 && o.hazeColour) {
         ctx.globalAlpha = was * o.fog;
         ctx.drawImage(this.tintSheet(o.hazeColour), sx, sy, this.cell, this.cell, dx, dy, wide, size);
       }
