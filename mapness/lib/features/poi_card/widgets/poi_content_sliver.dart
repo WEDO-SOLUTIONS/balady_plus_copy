@@ -34,6 +34,7 @@ import 'package:mapness/features/special_themes/core/special_theme_mode.dart';
 import 'package:mapness/pages/feedback/quick_feedback_page.dart';
 import 'package:mapness/pages/poi_card/scroll_paper_about_widget.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
+import 'package:mapness/shared/lib/auth/auth_methods.dart';
 import 'package:mapness/shared/providers/analytic/bss_service.dart';
 import 'package:mapness/shared/providers/analytic/models/bss_request.dart';
 import 'package:mapness/shared/providers/analytic/models/extensions/directory_obj_ext.dart';
@@ -175,7 +176,14 @@ class PoiContentSliver extends ConsumerWidget {
     final objectId = data.id?.objectId;
     final isFavorited = objectId != null && ref.watch(isPlaceFavoritedByObjectIdProvider(objectId));
     final void Function() onFavouritePressed = () {
-      context.router.push(const FavoriteListsRoute());
+      // Route through the auth gate instead of pushing directly, so this can't race the
+      // sign-in flow and hit favorite_lists endpoints before a valid token is attached.
+      ref
+          .read(authMethodsProvider.notifier)
+          .authAndOpen(
+            context,
+            callback: () => context.router.push(const FavoriteListsRoute()),
+          );
     };
     final favourites = data.getFavourites(homeWorkState, context.l10n, onFavouritePressed, isFavorited: isFavorited);
 

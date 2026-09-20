@@ -9,6 +9,7 @@ import 'package:mapness/features/favorite_lists/providers/favorite_list_place_po
 import 'package:mapness/features/favourites/helpers/favourite_entity_id.dart';
 import 'package:mapness/features/favourites/mappers/directory_object_message_mapper.dart';
 import 'package:mapness/features/sso_auth/data/auth_provider.dart';
+import 'package:mapness/features/sso_auth/data/token_provider.dart';
 import 'package:mapness/l10n/generated/app_localizations.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -49,6 +50,7 @@ class HomeWorkFavorites {
 }
 
 Future<String> _getOrCreateSystemListId(
+  Ref ref,
   FavoriteListsRemoteDataSource dataSource,
   String name, {
   required MarkerColorCode markerColorCode,
@@ -58,6 +60,20 @@ Future<String> _getOrCreateSystemListId(
   if (existing != null) {
     return existing.id;
   }
+
+  // The GET above can come back without the existing system list if it ran with no/an
+  // expired auth token attached (cold-start race, token not ready yet) rather than because
+  // the list genuinely doesn't exist. Refuse to create a new one in that case — silently
+  // creating here would orphan the user's real Home/Work slot on the backend. `watch` (not
+  // `read`) so this provider rebuilds and retries on its own once a real token shows up via
+  // the EntryPointCubit stream, instead of needing a manual invalidate or a timeout: neither
+  // an anonymous user (no token, no network call — see checkifTokenExpired) nor an
+  // already-authenticated one (no active refresh path currently) can leave this hanging.
+  final token = await ref.watch(tokenProvider.future);
+  if (token.isEmpty) {
+    throw StateError('Refusing to create system list "$name": no valid auth token yet.');
+  }
+
   try {
     final created = await dataSource.createFavoriteList(
       FavoriteListRequestDto(name: name, markerColorCode: markerColorCode, iconType: iconType),
@@ -82,6 +98,7 @@ Future<String> homeListId(Ref ref) async {
   await ref.watch(authProvider.future);
   final dataSource = await ref.watch(favoriteListsRemoteDataSourceProvider.future);
   return _getOrCreateSystemListId(
+    ref,
     dataSource,
     systemHomeListName,
     markerColorCode: MarkerColorCode.green,
@@ -94,6 +111,7 @@ Future<String> workListId(Ref ref) async {
   await ref.watch(authProvider.future);
   final dataSource = await ref.watch(favoriteListsRemoteDataSourceProvider.future);
   return _getOrCreateSystemListId(
+    ref,
     dataSource,
     systemWorkListName,
     markerColorCode: MarkerColorCode.green,
