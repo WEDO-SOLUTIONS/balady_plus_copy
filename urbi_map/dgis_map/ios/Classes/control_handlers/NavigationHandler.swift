@@ -324,6 +324,16 @@ class NavigationHandler {
         self.navigationManager.mapFollowController.followReturnDelay = 0.0
     }
     
+    /// BALADY-3972: matched by case, not by equality against a default-valued
+    /// options struct, so it stays correct regardless of the options' other
+    /// fields. Only gates the custom cursor — not `navigationManager.start`.
+    private func isPedestrianOrPublicTransport(_ options: RouteSearchOptions) -> Bool {
+        switch options {
+        case .pedestrian, .publicTransport: return true
+        default: return false
+        }
+    }
+
     func startNavigation(
         finishPoint: RouteSearchPoint?,
         options: RouteSearchOptions?,
@@ -342,12 +352,8 @@ class NavigationHandler {
             return
         }
         
-        // BALADY-3972: pedestrian/public-transport guidance keeps the
-        // standard style pin — only car-like sessions get the custom cursor.
-        let isPublicTransport = options == .publicTransport(PublicTransportRouteSearchOptions())
-        let isPedestrian = options == .pedestrian(PedestrianRouteSearchOptions())
-
         do {
+            let isPublicTransport = options == .publicTransport(PublicTransportRouteSearchOptions())
             if !isPublicTransport {
             setupCamera(speedRangeZoom: speedRangeZoom)
             // TODO: return back
@@ -369,8 +375,10 @@ class NavigationHandler {
             )))
             return
         }
-
-        isTurnByTurn = !isPedestrian && !isPublicTransport
+        
+        // BALADY-3972: pedestrian/public-transport guidance keeps the
+        // standard style pin — only car-like sessions get the custom cursor.
+        isTurnByTurn = !isPedestrianOrPublicTransport(options)
 
         let oldSource = map.sources.first(where: { $0 is MyLocationMapObjectSource })!
 
@@ -427,15 +435,11 @@ class NavigationHandler {
         }
         
         do {
-
+            
 
             let isPublicTransport = options == .publicTransport(PublicTransportRouteSearchOptions())
-            let isPedestrian = options == .pedestrian(PedestrianRouteSearchOptions())
             if !isPublicTransport {
             setupCamera(speedRangeZoom: speedRangeZoom)
-            // BALADY-3972: same car-like-only gate as startNavigation, so
-            // pedestrian simulation keeps the standard pin too.
-            isTurnByTurn = !isPedestrian
             try self.navigationManager.startSimulation(
                 routeBuildOptions: RouteBuildOptions(
                     finishPoint: finishPoint,
@@ -453,7 +457,11 @@ class NavigationHandler {
             )))
             return
         }
-        
+
+        // BALADY-3972: same car-like-only gate as startNavigation, so
+        // pedestrian/public-transport simulation keeps the standard pin.
+        isTurnByTurn = !isPedestrianOrPublicTransport(options)
+
         completion(Result.success(()))
     }
     
