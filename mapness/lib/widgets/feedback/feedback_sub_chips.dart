@@ -6,6 +6,7 @@ import 'package:balady_uikit/core/widgets/dragger.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:mapness/widgets/common/network_svg.dart';
 import 'package:mapness/entities/feedback/feedback_base_entity.dart';
 import 'package:mapness/entities/feedback/fields_entity/feedback_text_type_entity.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
@@ -159,7 +160,7 @@ class _FeedbackSubChipsSelectorState extends State<_FeedbackSubChipsSelector> {
                         ContentRow(
                           onTap: () => Navigator.pop(context, item),
                           leadingPadding: const EdgeInsetsDirectional.symmetric(vertical: Spacing.$3x),
-                          leading: SvgPicture.network(
+                          leading: NetworkSvg(
                             entry.key.icon,
                             width: 24,
                             height: 24,
@@ -173,7 +174,7 @@ class _FeedbackSubChipsSelectorState extends State<_FeedbackSubChipsSelector> {
                         padding: const EdgeInsetsDirectional.symmetric(vertical: Spacing.$2x),
                         child: Row(
                           children: [
-                            SvgPicture.network(
+                            NetworkSvg(
                               entry.key.icon,
                               width: 24,
                               height: 24,

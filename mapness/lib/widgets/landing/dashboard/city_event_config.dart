@@ -1,3 +1,4 @@
+import 'package:balady_uikit/balady_uikit.dart';
 import 'package:dgis_map/library.dart' as sdk;
 import 'package:flutter/material.dart';
 import 'package:mapness/_generated/assets/assets.gen.dart';
@@ -48,6 +49,53 @@ abstract class CityEventConfig {
 
   /// Vertical offset for the banner
   double get verticalOffset;
+  /// Height of the box the banner is laid out in — the space it claims above
+  /// the sheet, which is what separates it from the map controls.
+  ///
+  /// Distinct from the banner's own drawn height: the shell draws taller than
+  /// this and lets the surplus tuck under the sheet. Shrinking the box pulls
+  /// the banner closer to the buttons without making the visible band any
+  /// thinner. Defaults to what every existing event has always used.
+  double get bannerBoxHeight => Spacing.$10x;
+
+  /// How tall the banner is drawn, as opposed to the box it claims.
+  ///
+  /// Null means "same as [bannerBoxHeight]", which is what the shell used to
+  /// force on everyone — and that coupled two things that should be separate:
+  /// the banner could only reach under the sheet by exactly as much as it left
+  /// empty above itself. Setting this larger than the box lets a banner tuck
+  /// under the sheet while still sitting flush against the map controls.
+  double? get bannerDrawHeight => null;
+
+  /// Where the banner's text sits inside the drawn body.
+  ///
+  /// Measured against [bannerDrawHeight], not the visible band — so a banner
+  /// that tucks a long tail under the sheet has to pull its text up by hand,
+  /// or it lands near the middle of the whole body and therefore low in the
+  /// part anyone can see. The default is what every existing banner uses.
+  Alignment get textAlignment => const Alignment(1, -0.2);
+
+  /// Decoration painted over [getBackgroundColor] and under the banner's text.
+  ///
+  /// Null for every event that ships a flat banner, which is all of them bar
+  /// the TIFO champions ribbon — so this changes nothing for the existing
+  /// events. The banner clips it to its own rounded top, so an overlay can
+  /// paint beyond the banner's bounds without spilling out of it.
+  ///
+  /// A widget rather than an asset path: the champions ribbon's confetti
+  /// drifts, and an animation needs its own [State] to own the ticker. Keeping
+  /// that on the event's side leaves this shell free of animation lifecycle.
+  Widget? backgroundOverlay(BuildContext context) => null;
+
+  /// Wordmark appended after [getText] when no formatted date is shown.
+  ///
+  /// Defaults to the LEAP wordmark, which used to be hard-coded in the banner
+  /// itself — so every event without a date rendered ", LEAP 2026", Founding
+  /// Day included. Kept as the default so that behaviour is unchanged;
+  /// override with null for a banner that is just its own sentence. It really
+  /// belongs on the LEAP config alone, which is a cleanup worth doing.
+  String? get trailingWordmark => 'LEAP 2026';
+
 
   // ========== Map Resources ==========
 

@@ -41,6 +41,14 @@ class App extends StatelessWidget {
       ),
     );
 
+    // UXCam session recording: an always-on channel, so every facade event,
+    // screen tag and identity lands on the recording. No-op on flavors with an
+    // empty key (dev, urbiPre). Registered before `configure`, which is what
+    // flushes events buffered during startup — otherwise those would miss it.
+    final uxcam = UxcamBaladyAnalyticsSink.tryCreate(appKey: RemoteConfig.uxCamKey);
+    if (uxcam != null) {
+      BaladyAnalytics.instance.registerChannel(BaladyAnalyticsChannel.uxcam, uxcam, alwaysOn: true);
+    }
     // Idempotent: mapness `entry_point` calls configure too, first one wins.
     BaladyAnalytics.instance.configure(
       mode: BaladyAnalyticsMode.parse(RemoteConfig.baladyAnalyticsMode),
@@ -49,6 +57,11 @@ class App extends StatelessWidget {
         apiKey: RemoteConfig.baladyAnalyticsKey,
       ),
     );
+    try {
+      BaladyAnalytics.instance.setSessionProperty('environment', RemoteConfig.env.name);
+    } catch (_) {
+      // EnvType not registered yet — build() can run before DI setup.
+    }
 
     return MultiProvider(
       providers: [

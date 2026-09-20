@@ -328,6 +328,11 @@ jobs:
               git:
                 url: https://github.com/WEDO-SOLUTIONS/map_styles.git
                 ref: development
+            # BALADY-3923: this file replaces the whole dependency_overrides block of
+            # pubspec.yaml, dropping the vendored sheetify — without it the analyzer
+            # reads third_party/sheetify against the pub.dev copy and its parts break.
+            sheetify:
+              path: third_party/sheetify
           EOF
 
           cat > mapness/pubspec_overrides.yaml <<'EOF'
@@ -384,6 +389,11 @@ jobs:
               git:
                 url: https://github.com/WEDO-SOLUTIONS/map_styles.git
                 ref: development
+            # BALADY-3923: this file replaces the whole dependency_overrides block of
+            # pubspec.yaml, dropping the vendored sheetify — without it the analyzer
+            # reads third_party/sheetify against the pub.dev copy and its parts break.
+            sheetify:
+              path: ../third_party/sheetify
           EOF
 
       - name: Setup Flutter

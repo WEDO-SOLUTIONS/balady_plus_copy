@@ -3,9 +3,14 @@ import 'dart:async';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:lottie/lottie.dart';
 import 'package:mapness/_features/common/providers/ui_direction.dart';
 import 'package:mapness/_generated/assets/assets.gen.dart';
 import 'package:mapness/app/auto_route/app_routes.dart';
+// `show`: `tifo_events.dart` also declares a `TifoSurface`, and this file uses
+// the visible-route snapshot of that name from `tifo_surface.dart`.
+import 'package:mapness/features/balady_analytics/events/tifo_events.dart'
+    show TifoActivationSource, TifoEntryAction, TifoEvents;
 import 'package:mapness/features/tifo/entry_screen.dart';
 import 'package:mapness/features/tifo/leaderboard_sheet.dart';
 import 'package:mapness/features/tifo/tifo_buildings_map_layer.dart';
@@ -13,6 +18,7 @@ import 'package:mapness/features/tifo/tifo_flow_provider.dart';
 import 'package:mapness/features/tifo/tifo_journey.dart';
 import 'package:mapness/features/tifo/tifo_surface.dart';
 import 'package:mapness/features/tifo/tutorial/tifo_guided_tutorial.dart';
+import 'package:mapness/features/tifo/tutorial/tifo_spotlight.dart';
 import 'package:mapness/features/tifo/ui/tifo_theme.dart';
 import 'package:mapness/l10n/generated/app_localizations.dart';
 import 'package:mapness/shared/ui/buttons/map_button.dart';
@@ -90,6 +96,9 @@ class TifoControl extends ConsumerWidget {
       }
       proceed = await entry;
       logger.log('[tifo] entry popup result: $proceed');
+      // Once per app run — the `hasSeenEntry` gate above is what shows this
+      // popup at most once, so the event inherits that cap.
+      TifoEvents.entryOutcome(action: proceed ? TifoEntryAction.cta : TifoEntryAction.close);
       flow.markEntrySeen();
     } else {
       await layer.enable();
@@ -101,7 +110,7 @@ class TifoControl extends ConsumerWidget {
     if (proceed) {
       final journeyCtx = rootNavigatorKey.currentContext;
       if (journeyCtx != null) {
-        await journey.ensurePlayReady(journeyCtx, from: surface);
+        await journey.ensurePlayReady(journeyCtx, source: TifoActivationSource.banner, from: surface);
       }
     }
   }
@@ -162,17 +171,83 @@ class TifoLeaderboardControl extends StatelessWidget {
 /// same tour the play-gate autoruns for a first-time player
 /// ([TifoJourney.ensurePlayReady]). Shown only while the TIFO layer is on: a
 /// disabled game has no rules screen to explain.
-class TifoHelpControl extends StatelessWidget {
+class TifoHelpControl extends ConsumerWidget {
   const TifoHelpControl({super.key});
 
+  /// Width of the label box inside the 48-wide button (Figma 1872:93850).
+  /// Pinning it keeps the control square: `MapButton` only sets a *minimum*
+  /// width, so an unconstrained label would stretch it past its neighbours.
+  static const double _labelWidth = 41;
+
   @override
-  Widget build(BuildContext context) => MapButton(
-    onTap: () => unawaited(showTifoGuidedTutorial(context, initialStep: TifoGuidedTutorial.lastStep)),
-    child: Assets.imagesSvg.tifoHelp.svg(
-      width: 24,
-      height: 24,
-      colorFilter: ColorFilter.mode(context.colors.foregroundDefault, BlendMode.srcIn),
-    ),
+  Widget build(BuildContext context, WidgetRef ref) {
+    final dark = tifoIsDarkTheme(context);
+    final label = AppLocalizations.of(context).gameTutorial;
+
+    return MapButton(
+      // The tour's closing step dims the dashboard and cuts a window around
+      // this button; the key is how [TifoSpotlight] finds where it landed.
+      key: tifoHelpControlKey,
+      semanticsLabel: label,
+      // Always worn, tapped or not: the control is meant to read as the live
+      // green game button for the whole time the TIFO layer is on, not just
+      // until a first-time player has noticed it.
+      background: _Highlight(dark: dark),
+      onTap: () => unawaited(_open(context, ref)),
+      child: SizedBox(
+        width: _labelWidth,
+        child: Text(
+          label,
+          textAlign: TextAlign.center,
+          // Two lines by design ("Game" / "Tutorial"); a longer translation
+          // ellipsises rather than overflowing the map control.
+          maxLines: 2,
+          overflow: TextOverflow.ellipsis,
+          // White in both variants: the label sits on the animation's green
+          // body, which `foregroundDefault` would not read against in light
+          // theme.
+          style: TifoText.captionMedium.copyWith(color: Colors.white),
+        ),
+      ),
+    );
+  }
+
+  /// Stamps the persisted "seen" flag before opening the tour.
+  ///
+  /// The flag no longer gates the animation — the control stays green either
+  /// way — but it still records that this player has opened the tour, which is
+  /// what a future first-run treatment would key off.
+  Future<void> _open(BuildContext context, WidgetRef ref) async {
+    await ref.read(tifoTutorialControlTappedProvider.notifier).markTapped();
+    if (!context.mounted) {
+      return;
+    }
+    await showTifoGuidedTutorial(context, initialStep: TifoGuidedTutorial.lastStep);
+  }
+}
+
+/// The designed "gold and ivory" animation worn by [TifoHelpControl]: ivory
+/// and gold waves breathing in counter-phase over a green body, on a seamless
+/// six-second loop. Runs for as long as the control is on screen.
+///
+/// Shipped as the design's own Lottie rather than rebuilt as a Flutter
+/// gradient — the earlier hand-rolled sheen could only approximate its timing.
+/// The composition's baked "Game Tutorial" wordmark is stripped from the
+/// asset: the label has to stay a real widget or it could not be localised,
+/// and dropping those outlines also took the file from 27KB to 5.6KB.
+class _Highlight extends StatelessWidget {
+  const _Highlight({required this.dark});
+
+  final bool dark;
+
+  @override
+  Widget build(BuildContext context) => Lottie.asset(
+    dark ? Assets.tifo.tutorial.gameTutorialDark : Assets.tifo.tutorial.gameTutorialLight,
+    fit: BoxFit.cover,
+    repeat: true,
+    // Honour the platform's reduce-motion setting: the body still shows, it
+    // just holds its first frame.
+    animate: !MediaQuery.disableAnimationsOf(context),
   );
 }
 
@@ -210,7 +285,7 @@ class TifoJoinPill extends ConsumerWidget {
             if (gateCtx == null) {
               return;
             }
-            unawaited(TifoJourney(ref).ensurePlayReady(gateCtx));
+            unawaited(TifoJourney(ref).ensurePlayReady(gateCtx, source: TifoActivationSource.mapPill));
           },
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 14),

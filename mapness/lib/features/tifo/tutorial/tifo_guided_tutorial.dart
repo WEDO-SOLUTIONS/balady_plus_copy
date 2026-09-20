@@ -3,28 +3,39 @@ import 'dart:async';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:lottie/lottie.dart';
+import 'package:mapness/_generated/assets/assets.gen.dart';
+import 'package:mapness/features/balady_analytics/events/tifo_events.dart';
 import 'package:mapness/features/tifo/tifo_flow_provider.dart';
-import 'package:mapness/features/tifo/tifo_tutorial_sheet.dart';
+import 'package:mapness/features/tifo/tutorial/tifo_spotlight.dart';
 import 'package:mapness/features/tifo/tutorial/tifo_tutorial_demos.dart';
 import 'package:mapness/features/tifo/ui/tifo_message_card.dart';
 import 'package:mapness/features/tifo/ui/tifo_theme.dart';
 import 'package:mapness/l10n/generated/app_localizations.dart';
 
-/// The four-screen guided TIFO tutorial (Figma 848:9497, 848:9982, 848:10725,
-/// 879:10224). Two overlay styles over demo content:
-///  * bottom coach sheet — title + dots + paragraph + [back | Next];
-///  * top tooltip card — paragraph + Previous / Next links.
+/// The guided TIFO tutorial, rebuilt against the Figma page "Tutorial"
+/// (row "Tutorial - Confirmed ENG" and its dark twin).
 ///
-/// Map steps have no background of their own: the route is transparent, so the
-/// live map (with the TIFO layer on) stays visible behind the coach. Every
-/// other step paints a canned demo replica — the tour never hits the backend.
+/// Six screens in two alternating overlay styles:
+///  * a **coach sheet** pinned to the bottom — dragger, title + close, the
+///    progress pills, a paragraph, an optional graphic, then back + `Next`;
+///  * a **tooltip card** pinned to the top — a paragraph plus `Cancel` /
+///    `Previous` and `Next` text links.
+///
+/// Only the three coach sheets carry a progress pill; the tooltips between
+/// them do not, which is why [TifoCoachDots.total] is 3 and not 6.
+///
+/// Steps that explain the map paint no background of their own: the route is
+/// transparent, so the live map (with the TIFO layer on) stays visible behind
+/// the overlay. The rest render a canned demo replica, so the tour never hits
+/// the backend.
 class TifoGuidedTutorial extends ConsumerStatefulWidget {
   const TifoGuidedTutorial({super.key, this.initialStep = 0});
 
-  /// Index of the tour's closing screen (879:10224, the support/"Need help" step).
+  /// Index of the tour's closing screen — the "Need help?" sheet over Support.
   static const int lastStep = _TifoGuidedTutorialState._stepCount - 1;
 
-  /// Which of the 4 tour screens to open on.
+  /// Which of the 6 tour screens to open on.
   final int initialStep;
 
   @override
@@ -35,7 +46,7 @@ class TifoGuidedTutorial extends ConsumerStatefulWidget {
 /// when the player reaches the last screen — BRD V2 US-03 BR-06 treats an
 /// abandoned tutorial as never started, and the journey gates on that.
 ///
-/// [initialStep] opens the tour on a specific screen (e.g. the ⚽-⋮ "?"
+/// [initialStep] opens the tour on a specific screen (e.g. the ball-menu "?"
 /// control jumps straight to the closing support screen instead of replaying
 /// the whole tour from screen 1).
 Future<bool> showTifoGuidedTutorial(BuildContext context, {int initialStep = 0}) async {
@@ -52,64 +63,90 @@ Future<bool> showTifoGuidedTutorial(BuildContext context, {int initialStep = 0})
   return done ?? false;
 }
 
-enum _OverlayKind { coachSheet, tooltip, none }
+enum _OverlayKind { coachSheet, tooltip }
 
 class _TourStep {
   const _TourStep({
-    required this.dot,
+    required this.overlay,
+    this.dot,
     this.background,
     this.bottomPanel,
-    this.overlay = _OverlayKind.tooltip,
     this.title,
     this.text,
+    this.graphic,
   });
 
-  /// Which of the 4 progress dots is lit while on this step.
-  final int dot;
+  /// Which progress pill is lit. Null on the tooltip steps — the design gives
+  /// them no pills at all, so the row is hidden rather than dimmed.
+  final int? dot;
 
   /// Fullscreen background; null → transparent (live map shows through).
   final Widget? background;
 
-  /// Demo sheet pinned above the overlay controls (district/building/board).
+  /// Demo sheet pinned above the overlay controls (the standings replica).
   final Widget? bottomPanel;
 
   final _OverlayKind overlay;
   final String? title;
   final String? text;
+
+  /// Optional artwork under the coach sheet's paragraph.
+  final Widget? graphic;
 }
 
 class _TifoGuidedTutorialState extends ConsumerState<TifoGuidedTutorial> {
-  /// Four screens, in the order design numbered them (Figma 848:9497,
-  /// 848:9982, 848:10725, 879:10224) — down from the 13-step sequence that
-  /// walked every sheet. The four progress dots finally match the step count.
-  static const int _stepCount = 4;
+  /// Six screens: tooltip → sheet → tooltip → sheet → tooltip → sheet.
+  static const int _stepCount = 6;
 
-  List<_TourStep> _steps(BuildContext context) => [
-    // 1 — 848:9497: standings behind a top tooltip.
-    _TourStep(
-      dot: 0,
-      bottomPanel: const TifoDemoLeaderboard(),
-      text: AppLocalizations.of(context).tifoTutorialPickTeam,
-    ),
-    // 2 — 848:9982: the penalty preview drives itself, START advances
-    // (rendered by the overlay-none branch so it gets the tour callback).
-    const _TourStep(dot: 1, overlay: _OverlayKind.none),
-    // 3 — 848:10725: intro sheet over the live map.
-    _TourStep(
-      dot: 2,
-      overlay: _OverlayKind.coachSheet,
-      title: AppLocalizations.of(context).tifoTutorialTitle,
-      text: AppLocalizations.of(context).tifoTutorialIntro,
-    ),
-    // 4 — 879:10224: support screen behind the closing coach sheet.
-    _TourStep(
-      dot: 3,
-      background: TifoDemoSupport(onReplayTutorial: _replay, replayBusy: _replaying),
-      overlay: _OverlayKind.coachSheet,
-      title: AppLocalizations.of(context).needHelp,
-      text: AppLocalizations.of(context).visitSupportAnytimeToReviewTheRulesPenaltyMatchMechanicsScoring,
-    ),
-  ];
+  List<_TourStep> _steps(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    return [
+      // 1 — standings behind a top tooltip.
+      _TourStep(
+        overlay: _OverlayKind.tooltip,
+        bottomPanel: const TifoDemoLeaderboard(),
+        text: l10n.tifoTutorialPickTeam,
+      ),
+      // 2 — long-press coaching over the live map.
+      _TourStep(
+        overlay: _OverlayKind.coachSheet,
+        dot: 0,
+        title: l10n.tifoTutorialLongPressTitle,
+        text: l10n.tifoTutorialLongPressBody,
+        graphic: const _LongPressGraphic(),
+      ),
+      // 3 — penalty preview behind a top tooltip. The preview is scenery
+      // here: the tour advances from the tooltip, so it gets no callbacks.
+      _TourStep(
+        overlay: _OverlayKind.tooltip,
+        background: const IgnorePointer(child: TifoDemoPenaltyPreview()),
+        text: l10n.tifoTutorialPenaltyHint,
+      ),
+      // 4 — token economy over the live map.
+      _TourStep(
+        overlay: _OverlayKind.coachSheet,
+        dot: 1,
+        title: l10n.tifoTutorialTokensTitle,
+        text: l10n.tifoTutorialTokensBody,
+        graphic: const _TokenFlowGraphic(),
+      ),
+      // 5 — the live dashboard dimmed down to the one control the tooltip
+      // talks about, exactly as the design frames it.
+      _TourStep(
+        overlay: _OverlayKind.tooltip,
+        background: TifoSpotlight(target: tifoHelpControlKey),
+        text: l10n.tifoTutorialSupportHint,
+      ),
+      // 6 — support screen behind the closing coach sheet.
+      _TourStep(
+        overlay: _OverlayKind.coachSheet,
+        dot: 2,
+        background: TifoDemoSupport(onReplayTutorial: _replay, replayBusy: _replaying),
+        title: l10n.needHelp,
+        text: l10n.visitSupportAnytimeToReviewTheRulesPenaltyMatchMechanicsScoring,
+      ),
+    ];
+  }
 
   late int _index = widget.initialStep.clamp(0, _stepCount - 1);
 
@@ -119,6 +156,20 @@ class _TifoGuidedTutorialState extends ConsumerState<TifoGuidedTutorial> {
 
   /// Guards the async flag reset against a double tap on "Replay tutorial".
   bool _replaying = false;
+
+  /// Exactly one `tifo_tutorial_outcome` per run of this route. A "Replay tutorial" from
+  /// Support rewinds the SAME route rather than opening a new one — the outcome that
+  /// eventually fires describes the replayed run, with its own `last_step`.
+  bool _outcomeReported = false;
+
+  void _reportOutcome(TifoTutorialResult result) {
+    if (_outcomeReported) {
+      return;
+    }
+    _outcomeReported = true;
+    // 1-based: the step the player was looking at when they left.
+    TifoEvents.tutorialOutcome(result: result, lastStep: _index + 1);
+  }
 
   bool get _isLast => _index == _stepCount - 1;
 
@@ -156,6 +207,10 @@ class _TifoGuidedTutorialState extends ConsumerState<TifoGuidedTutorial> {
   /// skipped) — otherwise the next play attempt, or a later sign-in that mints
   /// a fresh profile, would push the tour again unasked.
   Future<void> _finish({required bool completed}) async {
+    // The only two DELIBERATE exits: Next on the last screen, and a confirmed
+    // Skip. Anything else that pops this route is `abandoned` (see [PopScope]
+    // in `build`).
+    _reportOutcome(completed ? TifoTutorialResult.completed : TifoTutorialResult.skipped);
     if (_replayedFromSupport) {
       await ref.read(tifoFlowProvider.notifier).markTutorialCompletedOnDevice();
     }
@@ -171,9 +226,9 @@ class _TifoGuidedTutorialState extends ConsumerState<TifoGuidedTutorial> {
     }
   }
 
-  /// The coach sheet's close `X` is the tour's only exit — confirm first
-  /// (Figma "Skip the tutorial" message state) since it reads as skipping
-  /// the whole thing, not just closing an overlay.
+  /// The close control on either overlay is the tour's only exit — confirm
+  /// first (Figma "Skip the tutorial" message state) since it reads as
+  /// skipping the whole thing, not just closing an overlay.
   Future<void> _exit() async {
     final l10n = AppLocalizations.of(context);
     final skip = await showTifoMessageDialog<bool>(
@@ -198,61 +253,67 @@ class _TifoGuidedTutorialState extends ConsumerState<TifoGuidedTutorial> {
   @override
   Widget build(BuildContext context) {
     final step = _steps(context)[_index];
-    return Scaffold(
-      backgroundColor: Colors.transparent,
-      body: Stack(
-        fit: StackFit.expand,
-        children: [
-          // Swallow taps so the live map behind the transparent route stays
-          // inert while the tour is up.
-          const ModalBarrier(dismissible: false, color: Colors.transparent),
-          if (step.background != null) step.background!,
-          if (step.bottomPanel != null)
-            Align(
-              alignment: Alignment.bottomCenter,
-              child: SingleChildScrollView(reverse: true, child: step.bottomPanel),
-            ),
-          switch (step.overlay) {
-            _OverlayKind.coachSheet => Align(
-              alignment: Alignment.bottomCenter,
-              child: _CoachSheet(
-                title: step.title ?? '',
-                text: step.text ?? '',
-                dot: step.dot,
-                showBack: _index > 0,
-                onBack: _previous,
-                onNext: _next,
-                onClose: _exit,
-                bgColor: _index < 1 ? context.colors.backgroundSurface1 : context.colors.foregroundSurfacePush,
+    return PopScope(
+      // Not a block — the tour stays dismissable. This only catches exits `_finish` never
+      // sees (system back, a programmatic pop) so every run produces exactly one outcome;
+      // [_reportOutcome]'s guard makes the deliberate exits win.
+      onPopInvokedWithResult: (didPop, _) {
+        if (didPop) {
+          _reportOutcome(TifoTutorialResult.abandoned);
+        }
+      },
+      child: Scaffold(
+        backgroundColor: Colors.transparent,
+        body: Stack(
+          fit: StackFit.expand,
+          children: [
+            // Swallow taps so the live map behind the transparent route stays
+            // inert while the tour is up.
+            const ModalBarrier(dismissible: false, color: Colors.transparent),
+            if (step.background != null) step.background!,
+            if (step.bottomPanel != null)
+              Align(
+                alignment: Alignment.bottomCenter,
+                child: SingleChildScrollView(reverse: true, child: step.bottomPanel),
               ),
-            ),
-            _OverlayKind.tooltip => Align(
-              alignment: Alignment.topCenter,
-              child: _CoachTooltip(
-                text: step.text ?? '',
-                showPrevious: _index > 0,
-                onPrevious: _previous,
-                onNext: _next,
-                onClose: _exit,
+            switch (step.overlay) {
+              _OverlayKind.coachSheet => Align(
+                alignment: Alignment.bottomCenter,
+                child: _CoachSheet(
+                  title: step.title ?? '',
+                  text: step.text ?? '',
+                  dot: step.dot ?? 0,
+                  graphic: step.graphic,
+                  showBack: _index > 0,
+                  onBack: _previous,
+                  onNext: _next,
+                  onClose: _exit,
+                ),
               ),
-            ),
-            _OverlayKind.none => Positioned.fill(
-              // Preview step drives itself: START advances the tour, back
-              // returns to the previous step (only when one exists).
-              child: TifoDemoPenaltyPreview(
-                onStart: _next,
-                onBack: _index > 0 ? _previous : null,
-                onClose: _exit,
+              _OverlayKind.tooltip => Align(
+                alignment: Alignment.topCenter,
+                child: _CoachTooltip(
+                  text: step.text ?? '',
+                  showPrevious: _index > 0,
+                  onPrevious: _previous,
+                  onNext: _next,
+                  onClose: _exit,
+                ),
               ),
-            ),
-          },
-        ],
+            },
+          ],
+        ),
       ),
     );
   }
 }
 
-/// Bottom coach sheet: dragger, title + close, dots, paragraph, [back | Next].
+/// Bottom coach sheet: dragger, title + close, pills, paragraph, optional
+/// graphic, then back + `Next`.
+///
+/// The light body is the design's diagonal wash; dark is a flat
+/// `backgroundSurface2`, which is also what the uikit uses for elevated
+/// surfaces, so the sheet sits correctly against a dark map.
 class _CoachSheet extends StatelessWidget {
   const _CoachSheet({
     required this.title,
@@ -262,111 +323,124 @@ class _CoachSheet extends StatelessWidget {
     required this.onBack,
     required this.onNext,
     required this.onClose,
-    required this.bgColor,
+    this.graphic,
   });
 
   final String title;
-  final Color bgColor;
   final String text;
   final int dot;
+  final Widget? graphic;
   final bool showBack;
   final VoidCallback onBack;
   final VoidCallback onNext;
   final VoidCallback onClose;
 
   @override
-  Widget build(BuildContext context) => Container(
-    width: double.infinity,
-    decoration: BoxDecoration(
-      color: bgColor,
-      borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
-      boxShadow: const [
-        BoxShadow(
-          color: Color(0x40000000),
-          offset: Offset(0, -12),
-          blurRadius: 60,
-        ),
-      ],
-    ),
-    child: SafeArea(
-      top: false,
-      child: Padding(
-        padding: const EdgeInsets.fromLTRB(20, 12, 20, 16),
+  Widget build(BuildContext context) {
+    final dark = tifoIsDarkTheme(context);
+    return Container(
+      width: double.infinity,
+      decoration: BoxDecoration(
+        color: dark ? context.colors.backgroundSurface2 : null,
+        gradient: dark
+            ? null
+            : const LinearGradient(
+                // The Figma handles tilt the wash slightly off vertical.
+                begin: Alignment(-0.36, -1),
+                end: Alignment(0.36, 1),
+                colors: [TifoTutorialTokens.sheetWashStart, TifoTutorialTokens.sheetWashEnd],
+              ),
+        borderRadius: const BorderRadius.vertical(top: Radius.circular(TifoTutorialTokens.sheetRadius)),
+        boxShadow: const [TifoTutorialTokens.sheetShadow],
+      ),
+      child: SafeArea(
+        top: false,
         child: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Center(
-              child: Container(
-                width: 40,
-                height: 4,
-                decoration: BoxDecoration(
-                  color: context.colors.foregroundMuted,
-                  borderRadius: BorderRadius.circular(2),
+            const Padding(
+              padding: EdgeInsets.only(top: 12, bottom: 4),
+              child: Center(
+                child: SizedBox(
+                  width: 40,
+                  height: 4,
+                  child: DecoratedBox(
+                    decoration: BoxDecoration(
+                      color: TifoTutorialTokens.hairline,
+                      borderRadius: BorderRadius.all(Radius.circular(2)),
+                    ),
+                  ),
                 ),
               ),
             ),
-            const SizedBox(height: 14),
-            Row(
-              children: [
-                Expanded(
-                  child: Text(title, style: TifoText.h3.copyWith(color: context.colors.foregroundDefault)),
-                ),
-                GestureDetector(
-                  behavior: HitTestBehavior.opaque,
-                  onTap: onClose,
-                  child: Container(
-                    width: 34,
-                    height: 34,
-                    decoration: BoxDecoration(
-                      color: context.colors.neutralContainerDefault,
-                      borderRadius: BorderRadius.circular(TifoRadii.m),
-                    ),
-                    child: Icon(Icons.close_rounded, size: 18, color: context.colors.neutralOnContainer),
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 12),
-            TifoCoachDots(active: dot),
-            const SizedBox(height: 18),
-            Text(text, style: TifoText.bodyL.copyWith(height: 1.35, color: context.colors.foregroundDefault)),
-            const SizedBox(height: 22),
-            Row(
-              children: [
-                if (showBack) ...[
-                  GestureDetector(
-                    behavior: HitTestBehavior.opaque,
-                    onTap: onBack,
-                    child: Container(
-                      width: 48,
-                      height: 48,
-                      decoration: BoxDecoration(
-                        color: context.colors.neutralContainerDefault,
-                        borderRadius: BorderRadius.circular(TifoRadii.l),
-                      ),
-                      child: Icon(Icons.arrow_back_ios_new_rounded, size: 16, color: context.colors.neutralOnContainer),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(20, 8, 20, 16),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Text(
+                      title,
+                      style: TifoTutorialTokens.title.copyWith(color: context.colors.foregroundDefault),
                     ),
                   ),
                   const SizedBox(width: 12),
-                ],
-                Expanded(
-                  child: TifoPrimaryButton(
-                    label: AppLocalizations.of(context).next,
-                    trailingArrow: true,
-                    onPressed: onNext,
+                  _IconButtonBox(
+                    size: 36,
+                    onTap: onClose,
+                    child: const Icon(Icons.close_rounded, size: 16, color: TifoTutorialTokens.closeStroke),
                   ),
-                ),
-              ],
+                ],
+              ),
+            ),
+            TifoCoachDots(active: dot),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(20, 16, 20, 0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.only(top: 6),
+                    child: Text(
+                      text,
+                      style: TifoTutorialTokens.body.copyWith(color: context.colors.foregroundDefault),
+                    ),
+                  ),
+                  if (graphic != null) ...[const SizedBox(height: 16), graphic!],
+                ],
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(20, 20, 20, 12),
+              child: Row(
+                children: [
+                  if (showBack) ...[
+                    _IconButtonBox(
+                      size: 44,
+                      // Dark flips the wash for a solid neutral, so the button
+                      // stays visible on the near-black sheet.
+                      color: dark ? context.colors.neutralMuted : null,
+                      onTap: onBack,
+                      child: const Icon(
+                        Icons.arrow_back_ios_new_rounded,
+                        size: 18,
+                        color: TifoTutorialTokens.backStroke,
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                  ],
+                  Expanded(child: _NextButton(onPressed: onNext)),
+                ],
+              ),
             ),
           ],
         ),
       ),
-    ),
-  );
+    );
+  }
 }
 
-/// Top tooltip card: paragraph + Previous / Next text links.
+/// Top tooltip card: a paragraph plus `Cancel` / `Previous` and `Next` links.
 class _CoachTooltip extends StatelessWidget {
   const _CoachTooltip({
     required this.text,
@@ -383,68 +457,231 @@ class _CoachTooltip extends StatelessWidget {
   final VoidCallback onClose;
 
   @override
-  Widget build(BuildContext context) => SafeArea(
-    bottom: false,
-    child: Container(
-      margin: const EdgeInsets.fromLTRB(16, 8, 16, 0),
-      padding: const EdgeInsets.fromLTRB(16, 16, 16, 12),
-      decoration: BoxDecoration(
-        color: context.colors.foregroundSurfacePush,
-        borderRadius: BorderRadius.circular(TifoRadii.l),
-        boxShadow: const [BoxShadow(color: Color(0x33000000), blurRadius: 16, offset: Offset(0, 6))],
-      ),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Expanded(
-                child: Text(
-                  text,
-                  style: TifoText.bodyL.copyWith(fontSize: 15, height: 1.35, color: context.colors.foregroundDefault),
+  Widget build(BuildContext context) {
+    final dark = tifoIsDarkTheme(context);
+    final l10n = AppLocalizations.of(context);
+    return SafeArea(
+      bottom: false,
+      // 359 wide on the design's 393 board — 17 a side.
+      child: Container(
+        margin: const EdgeInsets.fromLTRB(17, 8, 17, 0),
+        padding: const EdgeInsets.symmetric(horizontal: 16),
+        decoration: BoxDecoration(
+          // `backgroundSurface1` is #FFFFFF in light but #111927 in dark,
+          // where the design asks for #0D121C — hence the explicit pair.
+          color: dark ? context.colors.backgroundSurface2 : context.colors.backgroundSurface1,
+          borderRadius: BorderRadius.circular(TifoTutorialTokens.tooltipRadius),
+          boxShadow: TifoTutorialTokens.tooltipShadow,
+        ),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.only(top: 12),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      text,
+                      style: TifoTutorialTokens.body.copyWith(color: context.colors.foregroundDefault),
+                    ),
+                    Row(
+                      children: [
+                        _TooltipLink(
+                          // Screen 1 has nothing to go back to, so the design
+                          // offers "Cancel" there and "Previous" afterwards.
+                          label: showPrevious ? l10n.previous : l10n.cancel,
+                          color: context.colors.foregroundSoft,
+                          onTap: showPrevious ? onPrevious : onClose,
+                        ),
+                        const SizedBox(width: 24),
+                        _TooltipLink(label: l10n.next, color: context.colors.accentDefault, onTap: onNext),
+                      ],
+                    ),
+                  ],
                 ),
               ),
-              const SizedBox(width: 12),
-              GestureDetector(
+            ),
+            const SizedBox(width: 8),
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 11),
+              child: GestureDetector(
                 behavior: HitTestBehavior.opaque,
                 onTap: onClose,
-                child: Container(
-                  width: 34,
-                  height: 34,
-                  decoration: BoxDecoration(
-                    color: context.colors.neutralContainerDefault,
-                    borderRadius: BorderRadius.circular(TifoRadii.m),
-                  ),
-                  child: Icon(Icons.close_rounded, size: 18, color: context.colors.neutralOnContainer),
-                ),
+                child: Icon(Icons.close_rounded, size: 24, color: context.colors.foregroundDefault),
               ),
-            ],
-          ),
-          const SizedBox(height: 12),
-          Row(
-            children: [
-              if (showPrevious) ...[
-                GestureDetector(
-                  behavior: HitTestBehavior.opaque,
-                  onTap: onPrevious,
-                  child: Text('Previous', style: TifoText.bodyLSemi.copyWith(color: context.colors.foregroundSoft)),
-                ),
-                const SizedBox(width: 24),
-              ],
-              GestureDetector(
-                behavior: HitTestBehavior.opaque,
-                onTap: onNext,
-                child: Text(
-                  AppLocalizations.of(context).next,
-                  style: TifoText.bodyLSemi.copyWith(color: TifoColors.accent),
-                ),
-              ),
-            ],
-          ),
-        ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+/// A tooltip's text link. Sits in a 48-high hit box, as the design specifies.
+class _TooltipLink extends StatelessWidget {
+  const _TooltipLink({required this.label, required this.color, required this.onTap});
+
+  final String label;
+  final Color color;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) => GestureDetector(
+    behavior: HitTestBehavior.opaque,
+    onTap: onTap,
+    child: SizedBox(
+      height: 48,
+      child: Center(
+        child: Text(label, style: TifoTutorialTokens.link.copyWith(color: color)),
       ),
     ),
   );
+}
+
+/// The sheet's square glyph buttons — 36 for close, 44 for back.
+class _IconButtonBox extends StatelessWidget {
+  const _IconButtonBox({required this.size, required this.onTap, required this.child, this.color});
+
+  final double size;
+  final Color? color;
+  final VoidCallback onTap;
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) => GestureDetector(
+    behavior: HitTestBehavior.opaque,
+    onTap: onTap,
+    child: Container(
+      width: size,
+      height: size,
+      alignment: Alignment.center,
+      decoration: BoxDecoration(
+        color: color ?? TifoTutorialTokens.buttonWash,
+        borderRadius: BorderRadius.circular(TifoTutorialTokens.buttonRadius),
+      ),
+      child: child,
+    ),
+  );
+}
+
+/// The sheet's `Next` CTA. Shorter and squarer than [TifoPrimaryButton], and
+/// without its green glow — the tutorial draws it as a plain 44/r14 pill.
+class _NextButton extends StatelessWidget {
+  const _NextButton({required this.onPressed});
+
+  final VoidCallback onPressed;
+
+  @override
+  Widget build(BuildContext context) => Material(
+    color: context.colors.accentDefault,
+    borderRadius: BorderRadius.circular(TifoTutorialTokens.buttonRadius),
+    child: InkWell(
+      borderRadius: BorderRadius.circular(TifoTutorialTokens.buttonRadius),
+      onTap: onPressed,
+      child: SizedBox(
+        height: 44,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(AppLocalizations.of(context).next, style: TifoTutorialTokens.cta),
+            const SizedBox(width: 8),
+            const Icon(Icons.arrow_forward_ios_rounded, size: 16, color: Colors.white),
+          ],
+        ),
+      ),
+    ),
+  );
+}
+
+/// Screen 2's artwork: a looping Lottie of a finger pressing and holding a
+/// building.
+///
+/// The only asset in the tour that the design draws twice: light strokes the
+/// hand `#1B1B1B` over a white fill, dark inverts it to a white stroke over
+/// `#111927`. The three token icons are byte-identical across themes, so they
+/// are exported once.
+class _LongPressGraphic extends StatelessWidget {
+  const _LongPressGraphic();
+
+  /// The composition's own canvas (135x142 at 60fps, 3s). Given to Lottie
+  /// verbatim so the artwork is never resampled.
+  static const double _width = 135;
+  static const double _height = 142;
+
+  @override
+  Widget build(BuildContext context) {
+    final art = tifoIsDarkTheme(context) ? Assets.tifo.tutorial.longPressDark : Assets.tifo.tutorial.longPress;
+    return Center(
+      child: Lottie.asset(
+        art,
+        width: _width,
+        height: _height,
+        // The coach sheet stays up until the player taps Next, so the hint
+        // has to keep cycling rather than freeze on its last frame.
+        repeat: true,
+      ),
+    );
+  }
+}
+
+/// Screen 4's artwork: the token loop — daily grant, then trips, then claims.
+class _TokenFlowGraphic extends StatelessWidget {
+  const _TokenFlowGraphic();
+
+  static const double _tile = 48;
+  static const double _icon = 28;
+  static const double _arrow = 24;
+
+  List<(AssetGenImage, String)> _steps(AppLocalizations l10n) => [
+    (Assets.tifo.tutorial.tokenCoin, l10n.tifoTutorialTokensStepDaily),
+    (Assets.tifo.tutorial.tokenCar, l10n.tifoTutorialTokensStepTrips),
+    (Assets.tifo.tutorial.tokenBuilding, l10n.tifoTutorialTokensStepClaim),
+  ];
+
+  @override
+  Widget build(BuildContext context) {
+    final steps = _steps(AppLocalizations.of(context));
+    final tile = tifoIsDarkTheme(context) ? TifoTutorialTokens.tileWashDark : TifoTutorialTokens.tileWash;
+    return Row(
+      // Tile and caption share one cell, so the caption is centred on its own
+      // tile by construction. Laying them out as two independent rows — the
+      // tiles inset, the captions full-width — drifts them out of line.
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        for (var i = 0; i < steps.length; i++) ...[
+          if (i > 0)
+            const Padding(
+              // Centre the arrow on the tile, not on the whole cell.
+              padding: EdgeInsets.only(top: (_tile - _arrow) / 2),
+              child: Icon(Icons.arrow_forward_rounded, size: _arrow, color: TifoColors.textSoft),
+            ),
+          Expanded(
+            child: Column(
+              children: [
+                Container(
+                  width: _tile,
+                  height: _tile,
+                  alignment: Alignment.center,
+                  decoration: BoxDecoration(
+                    color: tile,
+                    borderRadius: BorderRadius.circular(TifoRadii.m),
+                  ),
+                  child: steps[i].$1.image(width: _icon, height: _icon),
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  steps[i].$2,
+                  textAlign: TextAlign.center,
+                  style: TifoTutorialTokens.body.copyWith(color: context.colors.foregroundDefault),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ],
+    );
+  }
 }

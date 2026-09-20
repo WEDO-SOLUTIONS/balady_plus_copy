@@ -32,6 +32,17 @@ final class NavigationGuard extends AutoRouteGuard {
   @override
   Future<void> onNavigation(NavigationResolver resolver, StackRouter router) async {
     if (_explicitNaviRoutes.routeMatches(resolver, router)) {
+      // One question at a time. Every blocked navigation attempt used to push
+      // its own sheet, and during a drive they arrive in bursts — a tap lands
+      // while the previous sheet is still animating in, or several map objects
+      // sit under one finger — so the player ended up dismissing a stack of
+      // identical "Exit current navigation?" sheets, each with its own pending
+      // resolver and its own 4-second auto-cancel. Later attempts are simply
+      // refused while one is open; the sheet already on screen speaks for them.
+      if (router.stack.any((entry) => entry.name == ExitNavigationRoute.name)) {
+        resolver.next(false);
+        return;
+      }
       // stop navigation after user confirmation
       router.push(
         ExitNavigationRoute(

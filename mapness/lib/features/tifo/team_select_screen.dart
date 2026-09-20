@@ -1,8 +1,12 @@
+import 'dart:async';
+
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mapness/features/balady_analytics/events/tifo_events.dart';
 import 'package:mapness/features/tifo/data/tifo_models.dart';
 import 'package:mapness/features/tifo/providers/tifo_session_provider.dart';
+import 'package:mapness/features/tifo/ui/tifo_message_card.dart';
 import 'package:mapness/features/tifo/ui/tifo_theme.dart';
 import 'package:mapness/l10n/generated/app_localizations.dart';
 import 'package:mapness/shared/utils/logger/logger.dart';
@@ -11,7 +15,9 @@ import 'package:mapness/shared/utils/logger/logger.dart';
 ///   STEP 1 — Choose your team (roster data-driven from `GET /clubs`, rendered
 ///            as solid team-color cards; season-lock banner);
 ///   STEP 2 — Your Tokens (welcome-bonus acknowledgement).
-/// Confirming calls `POST /clubs/select` (grants the welcome bonus) then shows
+/// Confirming opens the "Team confirmation" bottom sheet first — the pick is a
+/// one-time season commitment, so it does not fire on a single tap — and only
+/// on Confirm calls `POST /clubs/select` (grants the welcome bonus) and shows
 /// step 2; "Claim the map" pops `true`. On step 1 "Maybe Later"/back pop
 /// `false` (browse-only).
 ///
@@ -22,7 +28,11 @@ import 'package:mapness/shared/utils/logger/logger.dart';
 /// choice that cannot be remade, where picking a different team just failed
 /// against the server.
 class TifoTeamSelectScreen extends ConsumerStatefulWidget {
-  const TifoTeamSelectScreen({super.key});
+  const TifoTeamSelectScreen({required this.source, super.key});
+
+  /// Entry point the play-gate walk started from — reported as `tifo_activated`'s `source`.
+  /// Must describe the TAP, not this screen — that answers "which door actually converts".
+  final TifoActivationSource source;
 
   @override
   ConsumerState<TifoTeamSelectScreen> createState() => _TifoTeamSelectScreenState();
@@ -44,6 +54,36 @@ class _TifoTeamSelectScreenState extends ConsumerState<TifoTeamSelectScreen> {
 
   void _pop(bool result) => Navigator.of(context).pop(result);
 
+  /// Team confirmation prompt (Figma "Team confirmation"): the season lock is
+  /// irreversible until the next season, so `POST /clubs/select` is only sent
+  /// after an explicit Confirm. Cancel / close / swipe-away leave the pick
+  /// selected but uncommitted, so the player can switch cards and try again.
+  Future<void> _promptConfirm() async {
+    if (_selectedId == null || _isBusy) {
+      return;
+    }
+    final l10n = AppLocalizations.of(context);
+    final confirmed = await showTifoMessageDialog<bool>(
+      context,
+      card: TifoMessageCard(
+        title: l10n.tifoTeamConfirmationTitle,
+        body: l10n.tifoTeamConfirmationBody,
+        titleIcon: Icons.warning_rounded,
+        onClose: () => Navigator.of(context).pop(false),
+        // `tifoCancel`, not the app-wide `cancel`: the TIFO copy spells it
+        // الغاء, and changing the shared key would touch every other screen.
+        secondaryAction: TifoMessageAction(label: l10n.tifoCancel, onPressed: () => Navigator.of(context).pop(false)),
+        primaryAction: TifoMessageAction(label: l10n.confirm, onPressed: () => Navigator.of(context).pop(true)),
+      ),
+    );
+    // The sheet is a route: by the time it pops the screen may be gone (back
+    // out of the flow while it was open), so re-check before touching state.
+    if (!(confirmed ?? false) || !mounted) {
+      return;
+    }
+    await _confirm();
+  }
+
   Future<void> _confirm() async {
     final clubId = _selectedId;
     if (clubId == null) {
@@ -55,6 +95,10 @@ class _TifoTeamSelectScreenState extends ConsumerState<TifoTeamSelectScreen> {
     });
     try {
       await ref.read(tifoSessionProvider.notifier).selectClub(clubId);
+      // The moment the user becomes a player (BRD US-04). Once per install —
+      // the cap lives in TifoEvents; `/clubs/select` is the server's own
+      // one-time gate.
+      unawaited(TifoEvents.activated(clubId: clubId, source: widget.source));
       if (mounted) {
         setState(() {
           _isBusy = false;
@@ -91,7 +135,7 @@ class _TifoTeamSelectScreenState extends ConsumerState<TifoTeamSelectScreen> {
             // live-looking choice whose confirm hit `POST /clubs/select` a
             // second time and failed — the player could neither change teams
             // nor understand why.
-            onBack: () => _pop(_step != 1),
+            onBack: _step != 2 ? () => _pop(_step != 1) : null,
           ),
           Expanded(child: _step == 1 ? _buildTeamList(clubs) : _buildWelcomeBonus()),
           _buildBottom(),
@@ -185,7 +229,7 @@ class _TifoTeamSelectScreenState extends ConsumerState<TifoTeamSelectScreen> {
               TifoPrimaryButton(
                 label: AppLocalizations.of(context).confirmTeam,
                 busy: _isBusy,
-                onPressed: _selectedId != null ? _confirm : null,
+                onPressed: _selectedId != null ? _promptConfirm : null,
               )
             else
               TifoPrimaryButton(label: AppLocalizations.of(context).claimTheMap, onPressed: () => _pop(true)),

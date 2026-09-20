@@ -23,6 +23,8 @@ import 'package:mapness/widgets/debug_overlay/slider_speed.dart';
 import 'package:mapness/widgets/debug_overlay/special_theme_debug_panel.dart';
 import 'package:mapness/widgets/debug_overlay/sso_credential_view.dart';
 import 'package:mapness/widgets/debug_overlay/tifo_backend_debug_panel.dart';
+import 'package:mapness/widgets/debug_overlay/tifo_champion_ribbon_debug_switcher.dart';
+import 'package:mapness/widgets/debug_overlay/tifo_screens_debug_panel.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
 class DebugSheet extends ConsumerStatefulWidget {
@@ -80,6 +82,9 @@ class _DebugSheetState extends ConsumerState<DebugSheet> {
                   children: [
                     const Debug3DModelPanel(),
                     const TifoBackendDebugPanel(),
+                    TifoScreensDebugPanel(
+                      draggableController: widget._draggableController,
+                    ),
 
                     _AppInfoCard(packageInfo: _packageInfo),
                     const SpecialThemeDebugPanel(),
@@ -93,6 +98,7 @@ class _DebugSheetState extends ConsumerState<DebugSheet> {
                     const SsoCredentialView(),
                     const CityscapeDebugSwitcher(),
                     const SatelliteDebugSwitcher(),
+                    const TifoChampionRibbonDebugSwitcher(),
                     const BetterRouteSettingsWidget(),
                     const SliderSpeed(),
                     const DebugNavigationControll(),

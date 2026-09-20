@@ -8,7 +8,9 @@ import 'package:mapness/features/lifestyle_layers/providers/layers_controls.dart
 import 'package:mapness/features/lifestyle_layers/providers/layers_state.dart';
 import 'package:mapness/features/special_themes/modes/saudi_national_day/saudi_national_day.dart';
 import 'package:mapness/shared/constants/constants.dart';
+import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
+import 'package:mapness/features/balady_analytics/metrics.dart';
 import 'package:mapness/shared/providers/map/navigator_auto_enable_parking.dart';
 import 'package:mapness/shared/providers/map/parking_autoenabled_sheet_provider.dart';
 import 'package:mapness/shared/providers/map/parking_state.dart';
@@ -84,7 +86,7 @@ class _TrafficParkingState extends ConsumerState<TrafficParkingControl> {
                   },
                 );
               },
-            ),
+            )
         ],
       ),
     );
@@ -104,30 +106,32 @@ class _ParkingWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => MapButton(
-    semanticsLabel: context.l10n.layersParking,
-    borderRadius: isNoTopBorderRadius
-        ? const BorderRadius.only(
-            bottomLeft: Radius.circular(RadiusBorder.ml),
-            bottomRight: Radius.circular(RadiusBorder.ml),
-          )
-        : null,
-    onTap: onParkingTap,
-    child: SizedBox(
-      width: 24,
-      height: 24,
-      child: Icon(
-        TransportIcons.parkingEnable,
-        color: isEnabled
-            ? SaudiNationalDay.isNow()
-                  ? context.colors.accentDefault
-                  : context.colors.foregroundDefault
-            : context.colors.foregroundDefault,
-      ),
-    ),
-  );
+        semanticsLabel: context.l10n.layersParking,
+        borderRadius: isNoTopBorderRadius
+            ? const BorderRadius.only(
+                bottomLeft: Radius.circular(RadiusBorder.ml),
+                bottomRight: Radius.circular(RadiusBorder.ml),
+              )
+            : null,
+        onTap: onParkingTap,
+        child: SizedBox(
+          width: 24,
+          height: 24,
+          child: Icon(
+            TransportIcons.parkingEnable,
+            color: isEnabled
+                ? SaudiNationalDay.isNow()
+                    ? context.colors.accentDefault
+                    : context.colors.foregroundDefault
+                : context.colors.foregroundDefault,
+          ),
+        ),
+      );
 }
 
 class _TrafficControl extends StatelessWidget {
+  static const _tag = MetricsConstants.exploreTag;
+
   final bool isEnabled;
   final bool isVisable;
   final TrafficState trafficState;
@@ -143,17 +147,23 @@ class _TrafficControl extends StatelessWidget {
   @override
   Widget build(
     BuildContext context,
-  ) => TrafficControlWidget(
-    opacity: isVisable ? 1 : 0,
-    isEnabled: isEnabled,
-    borderRadius: BorderRadius.only(
-      topLeft: const Radius.circular(RadiusBorder.ml),
-      topRight: const Radius.circular(RadiusBorder.ml),
-      bottomRight: parkingVisible ? Radius.zero : const Radius.circular(RadiusBorder.ml),
-      bottomLeft: parkingVisible ? Radius.zero : const Radius.circular(RadiusBorder.ml),
-    ),
-    onTap: () {
-      trafficState.onTrafficTap();
-    },
-  );
+  ) =>
+      TrafficControlWidget(
+        opacity: isVisable ? 1 : 0,
+        isEnabled: isEnabled,
+        borderRadius: BorderRadius.only(
+          topLeft: const Radius.circular(RadiusBorder.ml),
+          topRight: const Radius.circular(RadiusBorder.ml),
+          bottomRight: parkingVisible ? Radius.zero : const Radius.circular(RadiusBorder.ml),
+          bottomLeft: parkingVisible ? Radius.zero : const Radius.circular(RadiusBorder.ml),
+        ),
+        onTap: () {
+          Metrics.logEventAdvanced(
+            MetricsConstants.exploreKeys.trafficLightButton,
+            group: _tag,
+            action: MetricAction.tap.name,
+          );
+          trafficState.onTrafficTap();
+        },
+      );
 }

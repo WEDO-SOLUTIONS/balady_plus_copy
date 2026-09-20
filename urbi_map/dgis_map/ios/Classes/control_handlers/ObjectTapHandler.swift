@@ -207,7 +207,10 @@ class ObjectTapHandler {
                 self.onRoadEventTap(tappedObject as! RoadEventMapObject)
                 return
             default:
-                self.eventChannel.error(code: Events.objectTapError)
+                // No handler for this object type is a normal tap, not an
+                // error: reporting it billed one telemetry event per ordinary
+                // POI tap (BALADY-3941).
+                return
             }
         }
 
@@ -241,7 +244,9 @@ class ObjectTapHandler {
             return
 
         default:
-            self.eventChannel.error(code: Events.objectTapError)
+            // No handler for this object type is a normal tap, not an error
+            // (BALADY-3941).
+            return
         }
     }
     
@@ -271,6 +276,27 @@ class ObjectTapHandler {
             self.getManager(managerId).removeAll()
             completion(Result.success(()))
         }
+    }
+    
+    /// Detaches whatever object was registered under [id] before re-registering
+    /// that id.
+    ///
+    /// `MapObjectManager.addObject(s)` appends — it does NOT replace by id, and
+    /// the ids here are ours, not the SDK's. Without this the previous object
+    /// stays on the map forever AND becomes unreachable, because the dictionary
+    /// that `remove*` looks through now points at the new object. Stacked
+    /// translucent fills then read as one solid colour (TIFO districts), and
+    /// re-added markers pile up invisibly.
+    ///
+    /// Removal goes through the manager the object was ADDED to, which is not
+    /// necessarily the one it is being re-added to.
+    ///
+    /// Must be called on `objectsQueue`.
+    private func evictExisting<T: DGis.SimpleMapObject>(_ id: String, from objects: inout Dictionary<String, (T, String?)>) {
+        guard let previous = objects.removeValue(forKey: id) else {
+            return
+        }
+        self.getManager(previous.1).removeObject(item: previous.0)
     }
     
     // MARK: Marker
@@ -410,6 +436,7 @@ class ObjectTapHandler {
         }
         
         self.objectsQueue.async {
+            self.evictExisting(marker.id, from: &self.markers)
             self.markers[marker.id] = (markerObject, managerId)
             self.getManager(managerId).addObject(item: markerObject)
             completion(Result.success(()))
@@ -486,6 +513,7 @@ class ObjectTapHandler {
             }
             
             markerObjects.forEach { id, object in
+                self.evictExisting(id, from: &self.markers)
                 self.markers[id] = (object, managerId)
             }
             self.getManager(managerId).addObjects(objects: Array(markerObjects.values))
@@ -495,10 +523,14 @@ class ObjectTapHandler {
     
     func removeMarker(_ id: String, from managerId: String?, completion: @escaping (Result<Void, any Error>) -> Void) {
         self.objectsQueue.async {
+            // Unknown ids are not an error (a diff repaint can ask twice), but
+            // the callback MUST still fire: Pigeon keeps the Dart Future pending
+            // until it does, and a caller awaiting a batch of removals before
+            // re-adding would hang there forever, leaving the old objects up.
             if let markerObject = self.markers.removeValue(forKey: id) {
-                self.getManager(managerId).removeObject(item: markerObject.0)
-                completion(Result.success(()))
+                self.getManager(markerObject.1).removeObject(item: markerObject.0)
             }
+            completion(Result.success(()))
         }
     }
     
@@ -575,6 +607,9 @@ class ObjectTapHandler {
         }
         
         self.objectsQueue.async {
+            if let previous = self.models.removeValue(forKey: model.id) {
+                self.modelManager.removeObject(item: previous.0) // see `evictExisting`
+            }
             self.models[model.id] = (modelObject, managerId)
             self.modelManager.addObject(item: modelObject)
             completion(Result.success(()))
@@ -626,6 +661,9 @@ class ObjectTapHandler {
             }
             
             modelObjects.forEach { id, object in
+                if let previous = self.models.removeValue(forKey: id) {
+                    self.modelManager.removeObject(item: previous.0) // see `evictExisting`
+                }
                 self.models[id] = (object, managerId)
             }
             self.modelManager.addObjects(objects: Array(modelObjects.values))
@@ -811,6 +849,7 @@ class ObjectTapHandler {
         }
         
         self.objectsQueue.async {
+            self.evictExisting(polygon.id, from: &self.polygons)
             self.polygons[polygon.id] = (polygonObject, managerId)
             self.getManager(managerId).addObject(item: polygonObject)
             completion(Result.success(()))
@@ -828,6 +867,7 @@ class ObjectTapHandler {
         
         self.objectsQueue.async {
             polygonObjects.forEach { id, object in
+                self.evictExisting(id, from: &self.polygons)
                 self.polygons[id] = (object, managerId)
             }
             self.getManager(managerId).addObjects(objects: Array(polygonObjects.values))
@@ -837,10 +877,14 @@ class ObjectTapHandler {
     
     func removePolygon(_ id: String, from managerId: String?, completion: @escaping (Result<Void, any Error>) -> Void) {
         self.objectsQueue.async {
+            // Unknown ids are not an error (a diff repaint can ask twice), but
+            // the callback MUST still fire: Pigeon keeps the Dart Future pending
+            // until it does, and a caller awaiting a batch of removals before
+            // re-adding would hang there forever, leaving the old objects up.
             if let polygonObject = self.polygons.removeValue(forKey: id) {
-                self.getManager(managerId).removeObject(item: polygonObject.0)
-                completion(Result.success(()))
+                self.getManager(polygonObject.1).removeObject(item: polygonObject.0)
             }
+            completion(Result.success(()))
         }
     }
     
@@ -889,6 +933,7 @@ class ObjectTapHandler {
         }
         
         self.objectsQueue.async {
+            self.evictExisting(circle.id, from: &self.circles)
             self.circles[circle.id] = (circleObject, managerId)
             self.getManager(managerId).addObject(item: circleObject)
             completion(Result.success(()))
@@ -906,6 +951,7 @@ class ObjectTapHandler {
         
         self.objectsQueue.async {
             circleObjects.forEach { id, object in
+                self.evictExisting(id, from: &self.circles)
                 self.circles[id] = (object, managerId)
             }
             self.getManager(managerId).addObjects(objects: Array(circleObjects.values))
@@ -915,10 +961,14 @@ class ObjectTapHandler {
     
     func removeCircle(_ id: String, from managerId: String?, completion: @escaping (Result<Void, any Error>) -> Void) {
         self.objectsQueue.async {
+            // Unknown ids are not an error (a diff repaint can ask twice), but
+            // the callback MUST still fire: Pigeon keeps the Dart Future pending
+            // until it does, and a caller awaiting a batch of removals before
+            // re-adding would hang there forever, leaving the old objects up.
             if let circleObject = self.circles.removeValue(forKey: id) {
-                self.getManager(managerId).removeObject(item: circleObject.0)
-                completion(Result.success(()))
+                self.getManager(circleObject.1).removeObject(item: circleObject.0)
             }
+            completion(Result.success(()))
         }
     }
     
@@ -976,6 +1026,7 @@ class ObjectTapHandler {
         }
         
         self.objectsQueue.async {
+            self.evictExisting(polyline.id, from: &self.polylines)
             self.polylines[polyline.id] = (polylineObject, managerId)
             self.getManager(managerId).addObject(item: polylineObject)
             completion(Result.success(()))
@@ -993,6 +1044,7 @@ class ObjectTapHandler {
         
         self.objectsQueue.async {
             polylineObjects.forEach { id, object in
+                self.evictExisting(id, from: &self.polylines)
                 self.polylines[id] = (object, managerId)
             }
             self.getManager(managerId).addObjects(objects: Array(polylineObjects.values))
@@ -1002,10 +1054,14 @@ class ObjectTapHandler {
     
     func removePolyline(_ id: String, from managerId: String?, completion: @escaping (Result<Void, any Error>) -> Void) {
         self.objectsQueue.async {
+            // Unknown ids are not an error (a diff repaint can ask twice), but
+            // the callback MUST still fire: Pigeon keeps the Dart Future pending
+            // until it does, and a caller awaiting a batch of removals before
+            // re-adding would hang there forever, leaving the old objects up.
             if let polylineObject = self.polylines.removeValue(forKey: id) {
-                self.getManager(managerId).removeObject(item: polylineObject.0)
-                completion(Result.success(()))
+                self.getManager(polylineObject.1).removeObject(item: polylineObject.0)
             }
+            completion(Result.success(()))
         }
     }
     

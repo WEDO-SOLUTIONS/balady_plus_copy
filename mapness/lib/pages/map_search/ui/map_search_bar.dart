@@ -14,16 +14,12 @@ import 'package:mapness/features/search/providers/search_history.dart';
 import 'package:mapness/features/search/ui/search_scope.dart' as scope;
 import 'package:mapness/shared/constants/metrics_constants.dart' as metric_const;
 import 'package:mapness/shared/extensions/build_context_ext.dart';
+import 'package:mapness/features/balady_analytics/metrics.dart' as metrics;
 import 'package:mapness/shared/providers/analytic/bss_service.dart';
 import 'package:mapness/shared/providers/analytic/models/bss_request.dart';
 import 'package:mapness/shared/providers/analytic/models/payload/bss_payload.dart';
 import 'package:mapness/shared/providers/urbi_analytics.dart';
 import 'package:provider/provider.dart';
-
-/// Exposes listener notification for uikit sync when [BaladyTextInput] is recreated but text is unchanged.
-class _MapSearchTextEditingController extends TextEditingController {
-  void notifySuffixSync() => notifyListeners();
-}
 
 /// Search field for map / navi / favourites. Owns [TextEditingController] and [FocusNode]
 /// so the parent sheet must not create or dispose them — avoids use-after-dispose races.
@@ -57,7 +53,7 @@ class MapSearchBar extends ConsumerStatefulWidget {
 }
 
 class _MapSearchBarState extends ConsumerState<MapSearchBar> {
-  late final _MapSearchTextEditingController _controller;
+  late final TextEditingController _controller;
   late final FocusNode _focusNode;
   ProviderSubscription<SearchState>? _searchSubscription;
   final _scope = scope.SearchScopeEnum.map.value;
@@ -76,7 +72,9 @@ class _MapSearchBarState extends ConsumerState<MapSearchBar> {
   /// Guards against `search_box_click` firing twice for the same activation
   /// (focus listener + `onTap`). Reset whenever the box loses focus, so the
   /// next genuine activation reports again.
-  // bool _boxClickFiredThisFocus = false;
+ // bool _boxClickFiredThisFocus = false;
+
+
 
   void _safeControllerWrite(VoidCallback action) {
     try {
@@ -97,7 +95,7 @@ class _MapSearchBarState extends ConsumerState<MapSearchBar> {
   @override
   void initState() {
     super.initState();
-    _controller = _MapSearchTextEditingController();
+    _controller = TextEditingController();
     _focusNode = FocusNode();
     // DataFinder: fire `search_box_click` whenever the box GAINS FOCUS, not just
     // on a manual tap — this covers programmatic auto-focus on open (BRD:
@@ -134,7 +132,6 @@ class _MapSearchBarState extends ConsumerState<MapSearchBar> {
         }
       }
     }
-
     _routeAnimation = animation;
     _routeAnimationStatusListener = listener;
     animation.addStatusListener(listener);
@@ -165,9 +162,7 @@ class _MapSearchBarState extends ConsumerState<MapSearchBar> {
     // }
     // _boxClickFiredThisFocus = true;
     final searcher = ref.read(searchProvider(_scope).notifier);
-    ref
-        .read(appAnalyticsProvider)
-        .searchBoxClick(
+    ref.read(appAnalyticsProvider).searchBoxClick(
           eventSource: searcher.dataFinderEventSource,
           isFirstClick: !_searchBoxClicked,
         );
@@ -228,17 +223,10 @@ class _MapSearchBarState extends ConsumerState<MapSearchBar> {
 
   void _updateText(String text) {
     _safeControllerWrite(() {
-      final unchanged = text == _controller.text;
-      if (!unchanged) {
+      if (text != _controller.text) {
         _controller
           ..text = text
           ..selection = TextSelection.collapsed(offset: _controller.text.length);
-      } else if (text.isNotEmpty) {
-        // Programmatic text already matches, but BaladyTextInput may have been recreated (e.g. toggling
-        // more-filters changes BaladySearchWithBackButtonV2 layout: option null vs Row). New State starts
-        // with _showClearButton=false and only the controller listener updates it — no notification if text
-        // did not change. Ping listeners so the in-field clear icon syncs.
-        _controller.notifySuffixSync();
       }
     });
   }
@@ -283,6 +271,12 @@ class _MapSearchBarState extends ConsumerState<MapSearchBar> {
                 payload: BssPayload(searchRequest: BssSearchRequest(text: query)),
               ),
             );
+            metrics.Metrics.logEventAdvanced(
+              metric_const.MetricsConstants.searchKeys.searchField,
+              group: metric_const.MetricsConstants.searchTag,
+              action: metrics.MetricAction.type.toString(),
+              props: {'query': query},
+            );
           },
           onTap: () {
             ref.read(advertMetricsProvider.notifier).sendEvent(AdvertMetricsKeys.journeySearch);
@@ -305,6 +299,12 @@ class _MapSearchBarState extends ConsumerState<MapSearchBar> {
             );
           },
           onSubmitted: (query) {
+            metrics.Metrics.logEventAdvanced(
+              metric_const.MetricsConstants.searchKeys.searchField,
+              group: metric_const.MetricsConstants.searchTag,
+              action: metrics.MetricAction.type.toString(),
+              props: {'query': query},
+            );
             BssService.instance.sendEvent(
               BssRequest(
                 eventType: BSSEventType.action,

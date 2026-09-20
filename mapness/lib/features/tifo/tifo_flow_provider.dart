@@ -97,14 +97,20 @@ class TifoFlowController extends Notifier<TifoFlowState> {
     return true;
   }
 
-  /// Device-side record that the guided tutorial has been COMPLETED at least
-  /// once (BRD V2 US-03: only a finished run clears the gate). The server
-  /// flag lives per profile, and the profile changes when a guest signs in
-  /// (the bearer IS the identity on staging) — without this the player would
-  /// be re-gated into the tour right after logging in.
+  /// Device-side record that the guided tutorial has been COMPLETED. The
+  /// server flag lives per profile, and the profile changes when a guest signs
+  /// in (the bearer IS the identity on staging) — without this the player
+  /// would be re-gated into the tour right after logging in.
+  ///
+  /// **Defaults to completed.** The tour is opt-in: players reach it from the
+  /// "Game Tutorial" map control or Support → "Replay tutorial", and the
+  /// play-gate no longer pushes it at anyone. Only an explicit `false` — which
+  /// nothing writes today — would gate a player into it again, so a fresh
+  /// install starts unblocked. The backend defaults its per-profile flag the
+  /// same way; this keeps the device side from disagreeing.
   Future<bool> hasCompletedTutorialOnDevice() async {
     final box = await ref.read(hiveProvider('tifo').future);
-    return box.get('tutorialCompleted') == true;
+    return box.get('tutorialCompleted') != false;
   }
 
   Future<void> markTutorialCompletedOnDevice() async {
@@ -116,10 +122,12 @@ class TifoFlowController extends Notifier<TifoFlowState> {
   /// tutorial has already been seen, so the guided tour can run again from
   /// screen 1 exactly as it does on a first launch.
   ///
-  /// The per-profile server flag has no reset endpoint (`/tutorial/complete`
-  /// is one-way), and a replay is an explicit user action rather than an
-  /// unmet gate — so the tour re-stamps [markTutorialCompletedOnDevice] when
-  /// the replayed run ends and the player is never re-gated into it.
+  /// Clearing the key returns it to its default, which is now *completed* — so
+  /// a replay the player abandons half-way leaves them unblocked rather than
+  /// gated into the tour on their next play-intent tap. The per-profile server
+  /// flag has no reset endpoint (`/tutorial/complete` is one-way) anyway, and
+  /// the tour still re-stamps [markTutorialCompletedOnDevice] when a replayed
+  /// run reaches the end.
   Future<void> resetTutorial() async {
     final box = await ref.read(hiveProvider('tifo').future);
     await box.delete('tutorialCompleted');
@@ -129,3 +137,39 @@ class TifoFlowController extends Notifier<TifoFlowState> {
 }
 
 final tifoFlowProvider = NotifierProvider<TifoFlowController, TifoFlowState>(TifoFlowController.new);
+
+/// Persisted record that the "Game Tutorial" map control has been tapped at
+/// least once.
+///
+/// Until it has, the control wears a green gradient so a new player notices
+/// the tour exists; from the first tap on it settles into the ordinary map
+/// button surface. Deliberately separate from [TifoFlowState], which is built
+/// synchronously and cannot await Hive.
+///
+/// No `keepAlive`: [build] re-reads the flag, so a disposed-and-rebuilt
+/// provider resolves to the same answer as the one that stamped it.
+class TifoTutorialControlTapped extends AsyncNotifier<bool> {
+  static const String _key = 'gameTutorialControlTapped';
+
+  @override
+  Future<bool> build() async {
+    final box = await ref.read(hiveProvider('tifo').future);
+    return box.get(_key) == true;
+  }
+
+  Future<void> markTapped() async {
+    if (state.value ?? false) {
+      return;
+    }
+    // Flip the UI first: the control is about to be covered by the tour, and
+    // the gradient must not still be there when the player comes back.
+    state = const AsyncValue.data(true);
+    final box = await ref.read(hiveProvider('tifo').future);
+    await box.put(_key, true);
+  }
+}
+
+final tifoTutorialControlTappedProvider = AsyncNotifierProvider<TifoTutorialControlTapped, bool>(
+  TifoTutorialControlTapped.new,
+);
+

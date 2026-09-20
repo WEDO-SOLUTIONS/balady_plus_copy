@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:async/async.dart';
 import 'package:dgis_map/library.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/legacy.dart';
 import 'package:mapness/_features/common/providers/network_status.dart';
 import 'package:mapness/_features/common/providers/shared_prefs.dart';
@@ -376,3 +377,57 @@ class BetterRouteSettings extends _$BetterRouteSettings {
 }
 
 final currentNavigationDestinationProvider = StateProvider<RouteParamsPoint?>((ref) => null);
+
+/// True while a driving screen owns the map — turn-by-turn navigation
+/// (`PathNavPage`) or Free Roam (`FreeRoamPage`).
+///
+/// Driven by `PathNavPage`'s own widget lifecycle rather than derived from
+/// `currentRouteProvider`: navigation can be left WITHOUT going through
+/// "end trip" (system back, swipe back, a `popUntil` from elsewhere), and those
+/// exits leave the route state set — so anything that changes how the map looks
+/// during navigation would stay changed for the rest of the session. A widget's
+/// `dispose` covers every exit there is.
+///
+/// Derived from [navigationOwnersProvider] rather than being a bool anyone can
+/// set: the two writers overlap in TIME even though they never overlap in
+/// intent. A page swap builds the incoming page before disposing the outgoing
+/// one, so `dispose`'s "navigation is over" landed AFTER the new screen's
+/// "navigation has started" and left this false for the whole drive — which is
+/// how the TIFO overlay ended up painted at its full, solid alpha over a live
+/// route. Claims are per-owner, so the order the two pages run in stops
+/// mattering.
+final navigationActiveProvider = Provider<bool>((ref) => ref.watch(navigationOwnersProvider).isNotEmpty);
+
+/// The screens currently holding a claim on the map, keyed by the `State` that
+/// claimed it — a page can only ever release its own claim.
+class ScreenOwners extends Notifier<Set<Object>> {
+  @override
+  Set<Object> build() => const {};
+
+  void acquire(Object owner) {
+    if (state.contains(owner)) {
+      return;
+    }
+    state = {...state, owner};
+  }
+
+  void release(Object owner) {
+    if (!state.contains(owner)) {
+      return;
+    }
+    state = {...state}..remove(owner);
+  }
+}
+
+/// Claimed by `PathNavPage` and `FreeRoamPage`.
+final navigationOwnersProvider = NotifierProvider<ScreenOwners, Set<Object>>(ScreenOwners.new);
+
+/// True while the player is building or comparing a route (`RoutingRoutesPage`).
+///
+/// Same construction as [navigationActiveProvider], and read for the same
+/// reason: route planning owns the map, and anything heavy drawn on top of it
+/// competes with route search for this isolate.
+final routePlanningActiveProvider = Provider<bool>((ref) => ref.watch(routePlanningOwnersProvider).isNotEmpty);
+
+/// Claimed by `RoutingRoutesPage`.
+final routePlanningOwnersProvider = NotifierProvider<ScreenOwners, Set<Object>>(ScreenOwners.new);

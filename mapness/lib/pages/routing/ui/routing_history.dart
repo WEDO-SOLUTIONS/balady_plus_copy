@@ -8,7 +8,9 @@ import 'package:mapness/entities/routing/route_point.dart';
 import 'package:mapness/features/search/providers/search_history.dart';
 import 'package:mapness/features/search/ui/search_scope.dart';
 import 'package:mapness/pages/routing/ui/routing_history_empty.dart';
+import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
+import 'package:mapness/features/balady_analytics/metrics.dart';
 import 'package:mapness/shared/providers/analytic/bss_service.dart';
 import 'package:mapness/shared/providers/analytic/models/bss_request.dart';
 import 'package:mapness/shared/providers/analytic/models/extensions/search_type_ext.dart';
@@ -24,6 +26,14 @@ class RoutingHistory extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    // Captured synchronously: the onTap flow awaits, and both host screens pop
+    // this sheet in updatePoint — the error-sheet callbacks below then run with
+    // this widget's element already defunct, so touching `context` there threw.
+    // The router and the notifier objects outlive the widget.
+    final router = AutoRouter.of(context);
+    final tryAgainLabel = context.l10n.tryAgain;
+    final historyNotifier = ref.read(searchHistoryProvider(SearchScopeEnum.routes.value).notifier);
+
     final history = ref.watch(searchHistoryProvider(SearchScopeEnum.routes.value))
       ..where((e) => e.id?.objectId != null);
 
@@ -35,12 +45,30 @@ class RoutingHistory extends ConsumerWidget {
       history: history,
       iconColor: context.colors.foregroundSoft,
       onClear: () {
-        ref.read(searchHistoryProvider(SearchScopeEnum.routes.value).notifier).clear();
+        Metrics.logEventAdvanced(
+          MetricsConstants.routesKeys.searchClearButton,
+          group: MetricsConstants.routesTag,
+          action: MetricAction.tap.toString(),
+        );
+        historyNotifier.clear();
       },
       onDelete: (item, index) {
-        ref.read(searchHistoryProvider(SearchScopeEnum.routes.value).notifier).delete(index);
+        Metrics.logEventAdvanced(
+          MetricsConstants.routesKeys.searchOnDelete,
+          group: MetricsConstants.routesTag,
+          action: MetricAction.tap.toString(),
+          props: {'item': item.id?.objectId},
+        );
+
+        historyNotifier.delete(index);
       },
       onTap: (item, index, historyList) async {
+        Metrics.logEventAdvanced(
+          MetricsConstants.routesKeys.routeSelectionChangeNavType,
+          group: MetricsConstants.routesTag,
+          action: MetricAction.tap.toString(),
+          props: {'item': item.id?.objectId},
+        );
         final dgisController = await ref.read(dgisControllerProvider.future);
         try {
           final object = await dgisController.searchByObjectId(
@@ -53,15 +81,17 @@ class RoutingHistory extends ConsumerWidget {
           final point = RoutePointDirectoryObject(object);
           updatePoint(point);
         } catch (e) {
-          final result = await context.router.push(
+          final result = await router.push(
             ErrorSheetDialogRoute(
-              buttonLabel: context.l10n.tryAgain,
-              onRetry: () => context.router.pop(true),
-              onClose: (_) => context.router.pop(true),
-              onBarrierTap: () => context.router.pop(true),
+              buttonLabel: tryAgainLabel,
+              // maybePop: retry/close/barrier can each fire for one dismissal;
+              // the second pop must not target an already-removed route.
+              onRetry: () => router.maybePop(true),
+              onClose: (_) => router.maybePop(true),
+              onBarrierTap: () => router.maybePop(true),
             ),
           );
-          await ref.read(searchHistoryProvider(SearchScopeEnum.routes.value).notifier).delete(index);
+          await historyNotifier.delete(index);
           if (result != null && result as bool) {
             searchByQuery(item.title);
           }

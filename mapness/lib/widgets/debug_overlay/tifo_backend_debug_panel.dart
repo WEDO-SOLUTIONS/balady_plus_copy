@@ -11,6 +11,7 @@ import 'package:mapness/features/tifo/data/tifo_debug_collider_overlay.dart';
 import 'package:mapness/features/tifo/data/tifo_debug_color_override.dart';
 import 'package:mapness/features/tifo/data/tifo_debug_goalkeeper_difficulty.dart';
 import 'package:mapness/features/tifo/data/tifo_debug_identity.dart';
+import 'package:mapness/features/tifo/data/tifo_debug_route_opacity.dart';
 import 'package:mapness/features/tifo/penalty/penalty_game.dart';
 import 'package:mapness/features/tifo/providers/tifo_session_provider.dart';
 import 'package:mapness/features/tifo/tifo_buildings_map_layer.dart';
@@ -163,6 +164,19 @@ class _TifoBackendDebugPanelState extends ConsumerState<TifoBackendDebugPanel> {
             );
           },
         ),
+        const DebugDivider(),
+        Text(
+          'In-route opacity',
+          style: context.textStyles.bodySmallMedium.copyWith(color: DebugTheme.textSecondary),
+        ),
+        const SizedBox(height: 4),
+        Text(
+          'How visible each tier stays WHILE a route is being driven — the capture layer draws over '
+          'the basemap, so at full colour it buries the route line. No effect outside navigation.',
+          style: context.textStyles.captionSmallRegular.copyWith(color: DebugTheme.textMuted),
+        ),
+        const SizedBox(height: 8),
+        const _RouteOpacitySliders(),
         const DebugDivider(),
         Text(
           'Goalkeeper difficulty',
@@ -569,6 +583,104 @@ class _ColorOverrideSwitcher extends ConsumerWidget {
                 onPressed: () => onSelect(color),
               ),
     ],
+  );
+}
+
+/// Per-tier opacity of the TIFO capture layer during navigation (see
+/// [TifoRouteOpacity]). Live: dragging a slider repaints whatever tier is on
+/// screen, so a tester can dial the value in from inside a running route.
+class _RouteOpacitySliders extends ConsumerWidget {
+  const _RouteOpacitySliders();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final opacity = ref.watch(tifoDebugRouteOpacityProvider);
+    final controller = ref.read(tifoDebugRouteOpacityProvider.notifier);
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        _PercentSlider(
+          label: 'Buildings',
+          subtitle: 'Street-level capture polygons (zoom ≥ 15) · default '
+              '${TifoRouteOpacity.defaultBuildings}%',
+          value: opacity.buildings,
+          onChanged: controller.setBuildings,
+        ),
+        _PercentSlider(
+          label: 'Districts',
+          subtitle: 'District mosaic at mid zooms · default ${TifoRouteOpacity.defaultDistricts}%',
+          value: opacity.districts,
+          onChanged: controller.setDistricts,
+        ),
+        _PercentSlider(
+          label: 'Clustering',
+          subtitle: 'Single region silhouette at the far-out zoom · default '
+              '${TifoRouteOpacity.defaultCluster}%',
+          value: opacity.cluster,
+          onChanged: controller.setCluster,
+        ),
+        Align(
+          alignment: Alignment.centerLeft,
+          child: DebugOutlinedButton(
+            label: 'Reset to defaults',
+            icon: Icons.restart_alt_rounded,
+            color: DebugTheme.info,
+            isCompact: true,
+            onPressed: controller.reset,
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+/// A 0–100% slider in 5% steps, reported as an int so the value shown is the
+/// value applied.
+class _PercentSlider extends StatelessWidget {
+  const _PercentSlider({required this.label, required this.subtitle, required this.value, required this.onChanged});
+
+  final String label;
+  final String subtitle;
+  final int value;
+  final ValueChanged<int> onChanged;
+
+  @override
+  Widget build(BuildContext context) => Padding(
+    padding: const EdgeInsets.only(bottom: 8),
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          children: [
+            Expanded(
+              child: Text(
+                label,
+                style: context.textStyles.bodySmallMedium.copyWith(color: DebugTheme.textPrimary),
+              ),
+            ),
+            DebugBadge(label: '$value%', color: DebugTheme.info),
+          ],
+        ),
+        Text(
+          subtitle,
+          style: context.textStyles.captionSmallRegular.copyWith(color: DebugTheme.textMuted),
+        ),
+        SliderTheme(
+          data: SliderTheme.of(context).copyWith(
+            activeTrackColor: DebugTheme.accent,
+            inactiveTrackColor: DebugTheme.surfaceLight,
+            thumbColor: DebugTheme.accentLight,
+            overlayColor: DebugTheme.accent.withOpacity(0.2),
+          ),
+          child: Slider(
+            value: value.clamp(0, 100).toDouble(),
+            max: 100,
+            divisions: 20,
+            onChanged: (raw) => onChanged(raw.round()),
+          ),
+        ),
+      ],
+    ),
   );
 }
 

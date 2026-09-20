@@ -9,6 +9,7 @@ import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:flutter_riverpod/legacy.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:mapness/_features/common/providers/shared_prefs.dart';
 import 'package:mapness/_generated/assets/assets.gen.dart';
@@ -33,19 +34,21 @@ import 'package:mapness/features/routing/providers/current_route.dart';
 import 'package:mapness/features/routing/providers/routes.dart';
 import 'package:mapness/features/search/providers/search.dart';
 import 'package:mapness/features/search/ui/search_scope.dart';
-import 'package:mapness/features/tifo/tifo_trip_rewards.dart';
 import 'package:mapness/features/share_eta/entities/route_params_point_mapper.dart';
 import 'package:mapness/features/share_eta/models/eta_route_info.dart';
 import 'package:mapness/features/share_eta/providers/eta_route_info_provider.dart';
 import 'package:mapness/features/share_eta/providers/share_eta_provider.dart';
 import 'package:mapness/features/stream_audio/ui/providers/stream_audio_prov.dart';
+import 'package:mapness/features/tifo/tifo_trip_rewards.dart';
 import 'package:mapness/pages/path_nav/path_nav_wrapper.dart';
 import 'package:mapness/pages/routing/route_details_sheet.dart';
 import 'package:mapness/shared/constants/constants.dart';
+import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/constants/navigation_constants.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/hooks/toggle_sheet_controller_hook.dart';
 import 'package:mapness/shared/lib/common_functions.dart' as cf;
+import 'package:mapness/features/balady_analytics/metrics.dart';
 import 'package:mapness/shared/providers/car_connection.dart';
 import 'package:mapness/shared/providers/location.dart';
 import 'package:mapness/shared/providers/map/camera_padding.dart';
@@ -114,6 +117,10 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
 
   late ToggleSheetController sheetController;
 
+  /// Captured in `initState` so `dispose` doesn't have to touch `ref` while
+  /// this element is being unmounted.
+  late final ScreenOwners _navigationOwners;
+
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     _checkBackgroundNavigationSound(state);
@@ -146,6 +153,10 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
   @override
   void initState() {
     super.initState();
+    _navigationOwners = ref.read(navigationOwnersProvider.notifier);
+    // Deferred: Riverpod forbids writing to a provider while the widget tree
+    // is building, and `initState` runs inside that phase.
+    _setNavigationActive(active: true);
     WidgetsBinding.instance
       ..addPostFrameCallback((_) async {
         await SystemChrome.setPreferredOrientations([
@@ -187,6 +198,9 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
 
   @override
   void dispose() {
+    // Whatever ended the trip — arrival, cancel, back, an outside `popUntil` —
+    // navigation is over once this page is gone.
+    _setNavigationActive(active: false);
     SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
 
     WidgetsBinding.instance.removeObserver(this);
@@ -213,6 +227,26 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
 
     await ref.read(sharedPrefsProvider).setString(MapnessConstants.navigatorStateKey, base64.encode(state));
     await ref.read(sharedPrefsProvider).setString(MapnessConstants.navigatorStateTypeKey, widget.navType.name);
+  }
+
+  /// Claims / releases this page's hold on the driving camera, outside the
+  /// current build phase — see the `initState` call site for why a provider
+  /// can't be written directly, and `navigationActiveProvider` for what reads
+  /// it. The claim is keyed on this State, so a page swap releasing the
+  /// outgoing screen after the incoming one has claimed cannot cancel it.
+  void _setNavigationActive({required bool active}) {
+    final owners = _navigationOwners;
+    Future.microtask(() {
+      try {
+        if (active) {
+          owners.acquire(this);
+        } else {
+          owners.release(this);
+        }
+      } catch (_) {
+        // Provider container already gone (app shutting down).
+      }
+    });
   }
 
   Future<bool> restoreNavigationState() async {
@@ -678,7 +712,10 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
     await mapObjectProvider.setMapObjectManagerIsVisible(isVisible: true);
 
     if (isLandscape) {
-      await context.router.push(const FlipsContinueRoute());
+      // ~6 awaits above; the page can be gone by now.
+      if (mounted) {
+        await context.router.push(const FlipsContinueRoute());
+      }
       action?.call();
       return;
     }
@@ -713,6 +750,12 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
 
   // Show the route page after the trip is finished
   Future<void> _endTripAndBuildAnotherRoute() async {
+    Metrics.logEventAdvanced(
+      MetricsConstants.navigationKeys.endTripAndBuildAnother,
+      group: MetricsConstants.navigationTag,
+      action: MetricAction.tap.toString(),
+    );
+
     await _endTrip(
       action: () {
         if (context.mounted) {
@@ -724,6 +767,17 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
 
   // Show the home page after the trip is finished
   Future<void> _endTripAndShowHome() async {
+    // Resolved while this State is still mounted: the action below pops
+    // PathNavPage, so by the post-frame callback `State.context` is gone —
+    // touching it there (even for l10n) is the crash. The callback must run
+    // entirely on the root context.
+    final arrivedTitle = context.l10n.youArrived;
+
+    Metrics.logEventAdvanced(
+      MetricsConstants.navigationKeys.endTripAndShowHome,
+      group: MetricsConstants.navigationTag,
+      action: MetricAction.tap.toString(),
+    );
     await ref.read(urbiAnalyticsProvider).track(MapnessConstants.analyticsTripStopped);
 
     await _endTrip(
@@ -738,16 +792,23 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
     if (!_arrivalToastShown) {
       _arrivalToastShown = true;
       WidgetsBinding.instance.addPostFrameCallback((_) {
-        final toastCtx = rootNavigatorKey.currentContext ?? context;
-        if (toastCtx.mounted) {
-          ToastOverlay.of(toastCtx).show(title: context.l10n.youArrived);
+        final toastCtx = rootNavigatorKey.currentContext;
+        if (toastCtx == null || !toastCtx.mounted) {
+          return;
         }
+        toastCtx.findAncestorStateOfType<ToastOverlayState>()?.show(title: arrivedTitle);
       });
     }
   }
 
   // Show the feedback page after the trip is finished manually
   Future<void> _endTripAndShowFeedback(BuildContext ctx) async {
+    Metrics.logEventAdvanced(
+      MetricsConstants.navigationKeys.endTripAndShowHome,
+      group: MetricsConstants.navigationTag,
+      action: MetricAction.tap.toString(),
+    );
+
     await ref.read(urbiAnalyticsProvider).track(MapnessConstants.analyticsTripStopped);
 
     await _parkingCheck();
@@ -839,6 +900,11 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
 
   // Show the pause state
   Future<void> _onShowRoutePressed() async {
+    Metrics.logEventAdvanced(
+      MetricsConstants.navigationKeys.showRoute,
+      group: MetricsConstants.navigationTag,
+      action: MetricAction.tap.toString(),
+    );
     ref.read(parkingAutoenabledSheetProvider.notifier).showParkingAutoEnableSheet(value: false);
     sheetController.close();
 

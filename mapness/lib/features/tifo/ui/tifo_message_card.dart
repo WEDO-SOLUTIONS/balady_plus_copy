@@ -24,6 +24,7 @@ class TifoMessageCard extends ConsumerWidget {
     required this.title,
     required this.body,
     super.key,
+    this.titleIcon,
     this.showIllustration = false,
     this.onClose,
     this.primaryAction,
@@ -32,6 +33,11 @@ class TifoMessageCard extends ConsumerWidget {
 
   final String title;
   final String body;
+
+  /// Optional glyph in front of the title — the Figma confirm prompts put a
+  /// warning triangle there (Team confirmation). Null renders the title alone,
+  /// which is what every other message state does.
+  final IconData? titleIcon;
 
   /// Shows the error/empty-state illustration above the title (light / dark
   /// theme aware; TIFO-green-tinted variant of the app's shared
@@ -97,6 +103,10 @@ class TifoMessageCard extends ConsumerWidget {
           ],
           Row(
             children: [
+              if (titleIcon != null && !showIllustration) ...[
+                Icon(titleIcon, size: 24, color: context.colors.foregroundDefault),
+                const SizedBox(width: 10),
+              ],
               Expanded(
                 child: Text(
                   title,
@@ -159,10 +169,10 @@ class TifoMessageCard extends ConsumerWidget {
 }
 
 /// Presents [card] as a full-width bottom sheet — the same shape as every
-/// other TIFO sheet in the app (`showTifoTutorialSheet`, the guided tour's
-/// coach sheet): flush to the screen edges, rounded top corners only, a
-/// centered dragger. Shared shell behind every state in the Figma "Messages"
-/// frame (noticeCard / Not enough tokens / Idle prompt / sheet / system).
+/// other TIFO sheet in the app (the guided tour's coach sheet): flush to the
+/// screen edges, rounded top corners only, a centered dragger. Shared shell
+/// behind every state in the Figma "Messages" frame (noticeCard / Not enough
+/// tokens / Idle prompt / sheet / system).
 Future<T?> showTifoMessageDialog<T>(
   BuildContext context, {
   required Widget card,

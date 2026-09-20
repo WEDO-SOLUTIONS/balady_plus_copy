@@ -6,6 +6,7 @@ import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/legacy.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/entities/path_nav/models/path_nav_message_state.dart';
 import 'package:mapness/features/app_analytics/datafinder_source_tracker.dart';
@@ -14,6 +15,7 @@ import 'package:mapness/features/free_roam/free_roam_manager.dart';
 import 'package:mapness/features/path_nav/providers/path_nav_maneuver.dart';
 import 'package:mapness/features/path_nav/providers/path_nav_message.dart';
 import 'package:mapness/features/path_nav/providers/path_nav_speed_info.dart';
+import 'package:mapness/features/routing/providers/routes.dart';
 import 'package:mapness/pages/free_roam/ui/road_panel.dart';
 import 'package:mapness/pages/free_roam/ui/traffic_parking_control.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
@@ -51,7 +53,12 @@ class FreeRoamPageState extends ConsumerState<FreeRoamPage> with WidgetsBindingO
   Timer? timer;
 
   StreamSubscription? _naviEventsListener;
+
+  /// Captured in `initState` so `dispose` doesn't touch `ref` while this
+  /// element is being unmounted.
+  late final ScreenOwners _navigationOwners;
   late final VoidCallback _deactivateFreeRoam;
+  bool _isEndingTrip = false;
 
   late final ToggleSheetController _bottomSheetController = ToggleSheetController(
     onClose: (_) => _bottomSheetController.close,
@@ -60,6 +67,12 @@ class FreeRoamPageState extends ConsumerState<FreeRoamPage> with WidgetsBindingO
   @override
   void initState() {
     super.initState();
+    _navigationOwners = ref.read(navigationOwnersProvider.notifier);
+    // Free Roam is navigation as far as the map is concerned: the camera
+    // follows the driver and the TIFO capture layer has to step back the same
+    // way it does on a route. Deferred for the same reason as the origin
+    // stamp below — a provider can't be written during the build phase.
+    _setNavigationActive(active: true);
     // DataFinder: entering Free Roam sets the journey origin (BRD
     // `Explore-Free Roam`), so a search/favorite from here is attributed to it.
     // Deferred: modifying a provider directly in initState throws in Riverpod.
@@ -108,6 +121,7 @@ class FreeRoamPageState extends ConsumerState<FreeRoamPage> with WidgetsBindingO
 
   @override
   void dispose() {
+    _setNavigationActive(active: false);
     SystemChrome.setPreferredOrientations([
       DeviceOrientation.portraitUp,
       DeviceOrientation.portraitDown,
@@ -117,6 +131,25 @@ class FreeRoamPageState extends ConsumerState<FreeRoamPage> with WidgetsBindingO
     WakelockPlus.disable();
     _naviEventsListener?.cancel();
     super.dispose();
+  }
+
+  /// Claims / releases this page's hold on the driving camera, outside the
+  /// current build phase — see `navigationActiveProvider` for what reads it.
+  /// The claim is keyed on this State, so a page swap releasing the outgoing
+  /// screen after the incoming one has claimed cannot cancel it.
+  void _setNavigationActive({required bool active}) {
+    final owners = _navigationOwners;
+    Future.microtask(() {
+      try {
+        if (active) {
+          owners.acquire(this);
+        } else {
+          owners.release(this);
+        }
+      } catch (_) {
+        // Provider container already gone (app shutting down).
+      }
+    });
   }
 
   Future<void> _listenNavigationEvents() async {
@@ -129,6 +162,21 @@ class FreeRoamPageState extends ConsumerState<FreeRoamPage> with WidgetsBindingO
         ref.read(freeRoamManagerProvider.notifier).endTripAndShowHome(context: context);
       }
     });
+  }
+
+  /// System back must end the free-roam session the same way "End trip" does;
+  /// otherwise the native session keeps running on Explore, with its camera
+  /// and my-location behaviour still applied to the dashboard.
+  Future<void> _onPopInvoked(bool didPop, Object? result) async {
+    if (didPop || _isEndingTrip) {
+      return;
+    }
+    _isEndingTrip = true;
+    try {
+      await ref.read(freeRoamManagerProvider.notifier).endTripAndShowHome(context: context);
+    } finally {
+      _isEndingTrip = false;
+    }
   }
 
   void startControlsDisapearTimer() {
@@ -147,7 +195,7 @@ class FreeRoamPageState extends ConsumerState<FreeRoamPage> with WidgetsBindingO
     final systemDirectionality = Directionality.of(context);
     final isPortrait = MediaQuery.orientationOf(context) == Orientation.portrait;
 
-    return Directionality(
+    final content = Directionality(
       textDirection: TextDirection.ltr,
       child: Stack(
         children: [
@@ -274,6 +322,12 @@ class FreeRoamPageState extends ConsumerState<FreeRoamPage> with WidgetsBindingO
           const ParkingBottomSheetPage(),
         ],
       ),
+    );
+
+    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: _onPopInvoked,
+      child: content,
     );
   }
 }
