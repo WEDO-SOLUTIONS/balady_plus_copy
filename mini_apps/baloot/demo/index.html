@@ -167,6 +167,14 @@ a{color:var(--gold)}
 #push .ps{font-size:11px;color:var(--mute);margin-top:3px}
 #push .btn{margin-top:9px;min-height:36px;font-size:12.5px}
 
+#cue{
+  margin:11px 4px 2px;border:1px solid var(--line);border-radius:14px;
+  background:rgba(12,59,39,.7);padding:10px 13px;display:flex;gap:9px;align-items:flex-start;
+  font-size:12.5px;line-height:1.45;color:var(--cream);min-height:44px;
+}
+#cue i{font-style:normal;color:var(--gold);font-weight:900}
+#cue b{color:var(--gold-hi);font-weight:800}
+
 /* ---------------- the panel ---------------- */
 #panel{flex:1;min-width:0;max-width:800px}
 .eyebrow{font-size:11px;font-weight:800;letter-spacing:2.4px;color:var(--gold);margin-bottom:6px}
@@ -199,6 +207,11 @@ h1{font-size:32px;font-weight:700;color:var(--gold-hi);line-height:1.08}
 .tool{border:1px solid var(--line);border-radius:10px;background:rgba(12,59,39,.55);color:var(--gold-hi);
   font:inherit;font-size:12px;font-weight:700;padding:8px 12px;cursor:pointer}
 .tool:hover{border-color:rgba(240,207,114,.6)}
+.tool.hot{
+  color:#2a1a05;border-color:rgba(74,42,6,.9);
+  background:linear-gradient(180deg,#FFF7B8 0%,#EDCD6F 10%,#E5B459 45%,#C18736 70%,#F9D071 94%,#FFEE9C 100%);
+  box-shadow:inset 0 0 0 1.5px rgba(255,244,200,.55), 0 3px 10px rgba(0,0,0,.4);
+}
 .tool[disabled]{opacity:.4;pointer-events:none}
 
 .logwrap{margin-top:18px;border:1px solid var(--line);border-radius:14px;overflow:hidden}
@@ -231,6 +244,7 @@ h1{font-size:32px;font-weight:700;color:var(--gold-hi);line-height:1.08}
       <div id="push"></div>
       <iframe id="game" title="Baloot" allow="autoplay"></iframe>
     </div>
+    <div id="cue"></div>
   </div>
 
   <div id="panel">
@@ -366,6 +380,7 @@ function gameSrc(){
 function openGame(){
   room = Array.from({length:6}, () => 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'[Math.floor(Math.random()*32)]).join('');
   gameReady = false; pending.length = 0;
+  frame.onload = () => flush();          // a lost "ready" must not strand the queue
   frame.src = gameSrc();
   frame.classList.add('on');
   say('the app opens the mini-app with room ' + room);
@@ -373,7 +388,11 @@ function openGame(){
 function closeGame(){ frame.classList.remove('on'); frame.src = 'about:blank'; room = null;
   gameReady = false; pending.length = 0; }
 
-/* the host may speak before the mini-app has booted; hold it until ready */
+/* the host may speak before the mini-app has booted; hold it until then */
+function flush(){
+  gameReady = true;
+  while (pending.length) toGame(...pending.shift());
+}
 function toGameReady(action, payload){
   if (gameReady) toGame(action, payload);
   else pending.push([action, payload]);
@@ -396,7 +415,7 @@ window.addEventListener('message', ev => {
 
 /* what the app answers, per action the game can send */
 const HOST = {
-  ready(){ gameReady = true; while (pending.length) toGame(...pending.shift()); },
+  ready(){ flush(); },
   getFriends(){ toGame('friends', friendsPayload()); },
   invite(p){ if (SC.onInvite) SC.onInvite(p); },
   share(){ say('the app would open the native share sheet'); },
@@ -442,7 +461,7 @@ const wait = (ms, fn) => { const t = setTimeout(fn, ms); SC.timers.push(t); retu
 function resetScenario(){
   SC.timers.forEach(clearTimeout); SC.timers = []; SC.onInvite = null;
   for (const k in HANDS) delete HANDS[k];
-  hidePush(); closeGame(); sheet(''); pins([]); $('#tools').innerHTML = '';
+  hidePush(); closeGame(); sheet(''); pins([]); $('#tools').innerHTML = ''; cue('');
   const q = $('.quorum'); if (q) q.remove();
 }
 function steps(list){
@@ -455,9 +474,21 @@ function step(i, state){
     if (n === i && state === 'done') li.classList.add('done');
   });
 }
-function tool(label, fn, id){
-  const b = el('button', 'tool', label); if (id) b.id = id;
-  b.onclick = () => fn(b); $('#tools').appendChild(b); return b;
+function tool(label, fn, opts){
+  const b = el('button', 'tool' + (opts && opts.aux ? ' aux' : ''), label);
+  b.onclick = () => { fn(b); markHot(); };
+  $('#tools').appendChild(b); markHot(); return b;
+}
+/* the next thing to press, in gold — side switches never claim it */
+function markHot(){
+  const all = [...$('#tools').children];
+  all.forEach(n => n.classList.remove('hot'));
+  const next = all.find(n => !n.disabled && !n.classList.contains('aux'));
+  if (next) next.classList.add('hot');
+}
+/* one line under the phone: what to do now */
+function cue(text){
+  $('#cue').innerHTML = text ? '<i>▸</i><span>' + text + '</span>' : '';
 }
 
 /* ============================================================
@@ -482,11 +513,12 @@ function m1(){
       <div class="tile on"><i>👥</i>Friends<span class="badge">6 nearby</span></div>
     </div>
     <div class="note">Tap a friend on the map to open their card.</div>`);
+  cue('Tap a friend on the map — or use the gold button below.');
   $('#pins').onclick = ev => {
     const pin = ev.target.closest('.pin[data-id]'); if (!pin) return;
     friendCard(pin.dataset.id);
   };
-  tool('Open Abu Mohammed', () => friendCard('104233'));
+  tool('Open Abu Mohammed', b => { b.disabled = true; friendCard('104233'); });
 
   function friendCard(id){
     const f = P(id); if (!f) return;
@@ -500,6 +532,7 @@ function m1(){
       </div>
       <div class="prow"><div class="btn sm">🧭 Route</div><div class="btn gold" id="play">🃏 Play Baloot</div></div>
       <div class="note">One action added to a card the pin already opens.</div>`);
+    cue('Their card now carries one more action: <b>🃏 Play Baloot</b>, in the phone.');
     $('#play').onclick = () => inviteSheet(id);
   }
 
@@ -524,6 +557,7 @@ function m1(){
         render();
       });
       $('#send').onclick = () => send([...picked]);
+      cue('Six are picked for three seats. Press <b>Invite … for 3 seats</b> in the phone.');
     };
     render();
   }
@@ -532,6 +566,7 @@ function m1(){
     if (ids.length < 3) return;
     step(3);
     openGame();
+    cue('The game is open on the lobby. Watch the seats fill as acceptances arrive.');
     say('invitation delivered to ' + ids.length + ' friends: ' + ids.map(i => P(i).name).join(', '));
     const seats = [null, null, null, null];          // seat 0 is you
     const accepted = [], declined = [];
@@ -545,6 +580,7 @@ function m1(){
         say(P(id).name + ' accepted — seat created');
         if (accepted.length === 3){
           step(4, 'done');
+          cue('Three seats, three people. Press <b>▶︎ Start the game</b> in the phone to play.');
           say('three acceptances, three seats. The rest get "the table filled, next time".');
           tool('Show what the others saw', () => say(
             order.slice(accepted.length).map(x => P(x).name).join(', ') +
@@ -571,7 +607,7 @@ function m2(){
   ]);
   step(0);
   pins(peoplePins({n:5}));
-  let window_ = 'now';
+  let window_ = 'now', raised = false;
   const render = () => {
     sheet(`<div class="grab"></div>
       <div class="sheet-h">Up for a game of Baloot?</div>
@@ -586,11 +622,14 @@ function m2(){
     $('#sheet').querySelectorAll('.when div').forEach(n =>
       n.onclick = () => { window_ = n.dataset.w; render(); });
     $('#raise').onclick = raise;
+    if (!raised) cue('Pick a window in the phone, then press <b>✋ Raise my hand</b>.');
   };
   render();
 
   function raise(){
+    raised = true;
     step(1);
+    cue('Your hand is up and the screen is free. Hands go up nearby — or skip the wait below.');
     HANDS.me = window_;
     say('you raised a hand · window: ' + window_ + ' — the app holds it, the screen is free');
     sheet(`<div class="grab"></div>
@@ -639,6 +678,7 @@ function m2(){
     handSheet();
     function quorum(){
       step(3);
+      cue('Four hands within 2 km. Open the table from the push at the top of the phone.');
       showPush('BALADY+  ·  NOW', 'Your table is ready',
         'Four hands up within 2 km — Abu Mohammed, Meshal, Sultan and you.',
         '🃏 Open the table', openIt);
@@ -665,6 +705,7 @@ function m2(){
   function openIt(){
     step(4, 'done');
     openGame();
+    cue('The table opened already full. Press <b>▶︎ Start the game</b> in the phone.');
     const seats = [null, {id:'910044', joined:true}, {id:'104233', joined:true}, {id:'552019', joined:true}];
     wait(900, () => { toGameReady('room', seatsPayload(seats));
       say('the table opens already full — four people who never watched a lobby'); });
@@ -695,11 +736,13 @@ function m3(){
       <div class="tile on"><i>👥</i>Friends<span class="badge">3 ready</span></div>
     </div>
     <div class="note">The chip and the ✋ marks are the only new thing on the layer.</div>`);
-  tool('Open the forming table', forming);
+  cue('The layer now shows readiness: a chip, and ✋ on the friends who are up for a game.');
+  tool('Open the forming table', b => { b.disabled = true; forming(); });
   wait(1600, forming);
 
   function forming(){
     step(1);
+    cue('Three of four, one seat short. Press <b>Take the fourth seat</b> in the phone.');
     pins([{x:47, y:36, table:true, t:'3/4', cap:'Baloot · 800 m', sel:true},
           ...peoplePins({n:3, ready, caps:false})]);
     sheet(`<div class="grab"></div>
@@ -722,6 +765,7 @@ function m3(){
       const seats = [null, {id:'910044', joined:true}, {id:'104233', joined:true}, {id:'552019', joined:true}];
       wait(900, () => { toGameReady('room', seatsPayload(seats));
         step(3, 'done');
+        cue('Four people, gathered from the map. Press <b>▶︎ Start the game</b> in the phone.');
         say('the fourth seat was taken from the map — no invitation, no lobby'); });
     };
   }
@@ -746,6 +790,7 @@ function m4(){
     </div>
     <div class="prow"><div class="btn sm">🧭 Route</div><div class="btn gold" id="play">🃏 Play Baloot</div></div>
     <div class="note">Two people, four chairs. The other two are held, in the open.</div>`);
+  cue('Only Abu Mohammed is free tonight. Press <b>🃏 Play Baloot</b> in the phone.');
   $('#play').onclick = start;
 
   function start(){
@@ -754,18 +799,21 @@ function m4(){
     const seats = [null, null, {id:'104233', joined:true}, null];   // partner is the friend
     wait(900, () => {
       toGameReady('room', seatsPayload(seats));
+      cue('One friend, two chairs held by bots — see the <b>Bot</b> tags in the lobby. Now press the gold button below.');
       say('one friend seated, two chairs held by bots — tagged Bot in the lobby list and on the plate');
       tool('Meshal arrives and takes the right seat', b => {
         b.disabled = true;
         step(2);
         seats[1] = {id:'910044', joined:true};
         toGameReady('room', seatsPayload(seats));
+        cue('The right-hand bot became Meshal. One chair is still held — swap that one too.');
         say('the bot seat became a person — nothing was hidden, nothing was lost');
         tool('Sultan takes the last one', b2 => {
           b2.disabled = true;
           seats[3] = {id:'552019', joined:true};
           toGameReady('room', seatsPayload(seats));
           step(3, 'done');
+          cue('Four humans, no stand-ins. Press <b>▶︎ Start the game</b> in the phone to play.');
           say('four humans: this is the table that counts for points');
         });
       });
@@ -773,7 +821,7 @@ function m4(){
         const ar = b.textContent.indexOf('عربي') >= 0;
         toGame('lang', ar ? 'ar' : 'en');
         b.textContent = ar ? 'Language: English' : 'Language: عربي';
-      });
+      }, {aux:true});
     });
   }
 }

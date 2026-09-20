@@ -22,6 +22,11 @@ mini_apps/baloot/
   README.md                  this file
 ```
 
+Storage is a convenience, never a dependency: a sandboxed frame, a blob
+document or a browser with site data blocked denies `localStorage` outright, so
+every read and write goes through a small `Store` helper and the game falls back
+to its defaults instead of failing to boot.
+
 `baloot-standalone.html` is `index.html` with every image inlined as a data URI
 — one 398 KB file that opens straight from disk with nothing beside it, handy
 for sending to someone or dropping into a WebView that has no asset directory.
@@ -294,6 +299,9 @@ the app would have to implement is visible rather than described.
 | 2 · a raised hand, not a lobby | pick a window, raise a hand, close the sheet; other hands go up nearby, the fourth triggers a push and the table opens full |
 | 3 · the quorum on the map | a readiness chip on the layer, a table forming at 3/4, and the fourth seat taken from the map itself |
 | 4 · start now, swap the bot later | start with one friend and two labelled bots, then hand a bot seat to a friend who arrives |
+
+Every scenario prints a line under the phone saying what to press next, and the
+button the demo expects next is the gold one beside the log.
 
 Open it directly (`demo/index.html`) or through the mini-app server. For
 sending it on, `python3 tools/build-demo-standalone.py` folds the game into the
