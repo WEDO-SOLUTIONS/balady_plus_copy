@@ -377,13 +377,17 @@ class _RoutingInfoState extends ConsumerState<RoutingInfo> {
           builder: (context, navigatingType, _) {
             final intermediatePoints = widget.points.getIntermediatePoints();
 
+            // BALADY-3737: this is the only native route request for the screen.
+            // Transit draws just the active route (alternatives are picked in the
+            // carousel, which calls setActiveRouteIndex); the other modes draw all
+            // alternatives.
             final routes = ref.watch(
               routesProvider(
                 startPoint: widget.points.first,
                 finishPoint: widget.points.last,
                 navType: navigatingType,
                 intermediatePoints: intermediatePoints,
-                showOnlyActiveRoute: false,
+                showOnlyActiveRoute: navigatingType == RouteSearchOptionsMessage.publicTransport,
               ),
             );
 
