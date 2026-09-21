@@ -585,6 +585,9 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
     private var navigationCursorModel: ModelData?
 
     private func reapplyNavigationCursorModel() {
+        // BALADY-3972: single source of truth — never show the model outside
+        // a session that wants it (e.g. pedestrian/public-transport guidance).
+        guard self.navigationHandler?.usesCustomCursor == true else { return }
         guard let model = self.navigationCursorModel,
               let source = self.map?.sources.first(where: { $0 is MyLocationMapObjectSource }) as? MyLocationMapObjectSource
         else { return }

@@ -61,10 +61,9 @@ class NavigationHandler {
 
     private(set) var isNavigating: Bool = false
 
-    /// BALADY-3772: true only while a turn-by-turn session (guidance or its
-    /// simulation) started via `startNavigation`/`startSimulation` is active.
-    /// Unlike `isNavigating` it stays false for free roam and for route
-    /// search outside guidance.
+    /// BALADY-3772/3972: true only while a car-like guidance/simulation
+    /// session (not pedestrian, not public transport) started via
+    /// `startNavigation`/`startSimulation` is active.
     private(set) var isTurnByTurn: Bool = false
 
     /// BALADY-3924: true while a free-roam session started via
@@ -318,7 +317,11 @@ class NavigationHandler {
         let toDelete = map.sources.first(where: { $0 is MyLocationMapObjectSource})
         
         if toDelete == nil { return }
-        
+
+        // BALADY-3972: the 3D model set via setModelData sticks to this
+        // source past removal — clear it before discarding, or the next
+        // session's fresh source still renders it (see startNavigation's swap).
+        (toDelete as? MyLocationMapObjectSource)?.item.setModelData(data: nil)
         map.removeSource(source: toDelete!)
         map.addSource(source: self.oldSource!)
         self.oldSource = nil
@@ -349,6 +352,16 @@ class NavigationHandler {
         self.navigationManager.mapFollowController.followReturnDelay = 0.0
     }
     
+    /// BALADY-3972: matched by case, not by equality against a default-valued
+    /// options struct, so it stays correct regardless of the options' other
+    /// fields. Only gates the custom cursor — not `navigationManager.start`.
+    private func isPedestrianOrPublicTransport(_ options: RouteSearchOptions) -> Bool {
+        switch options {
+        case .pedestrian, .publicTransport: return true
+        default: return false
+        }
+    }
+
     func startNavigation(
         finishPoint: RouteSearchPoint?,
         options: RouteSearchOptions?,
@@ -391,13 +404,17 @@ class NavigationHandler {
             return
         }
         
-        // BALADY-3772: a turn-by-turn session is starting — the custom cursor
-        // model may be applied from here until the session ends.
-        isTurnByTurn = true
+        // BALADY-3972: pedestrian/public-transport guidance keeps the
+        // standard style pin — only car-like sessions get the custom cursor.
+        isTurnByTurn = !isPedestrianOrPublicTransport(options)
 
         let currentSource = map.sources.first(where: { $0 is MyLocationMapObjectSource })
         if self.oldSource == nil, let currentSource = currentSource {
             self.oldSource = currentSource
+            // BALADY-3972: clear before removal — the model outlives the
+            // source once removed, so a stale car-session model kept
+            // showing on the brand-new source of the next session.
+            (currentSource as? MyLocationMapObjectSource)?.item.setModelData(data: nil)
             map.removeSource(source: currentSource)
 
             // BALADY-3744: bearingThreshold 90° held a stale heading until course
@@ -461,9 +478,6 @@ class NavigationHandler {
             let isPublicTransport = options == .publicTransport(PublicTransportRouteSearchOptions())
             if !isPublicTransport {
             setupCamera(speedRangeZoom: speedRangeZoom)
-            // BALADY-3772: simulation is a turn-by-turn session too — the
-            // custom cursor model applies the same way as in real guidance.
-            isTurnByTurn = true
             try self.navigationManager.startSimulation(
                 routeBuildOptions: RouteBuildOptions(
                     finishPoint: finishPoint,
@@ -481,7 +495,11 @@ class NavigationHandler {
             )))
             return
         }
-        
+
+        // BALADY-3972: same car-like-only gate as startNavigation, so
+        // pedestrian/public-transport simulation keeps the standard pin.
+        isTurnByTurn = !isPedestrianOrPublicTransport(options)
+
         completion(Result.success(()))
     }
     

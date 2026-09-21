@@ -76,10 +76,9 @@ class NavigationHandler(
                 private set
 
         /**
-         * BALADY-3772: true only while a turn-by-turn session (guidance or its
-         * simulation) started via [startNavigation]/[startSimulation] is
-         * active. Unlike [isNavigating] it stays false for free roam and for
-         * route search outside guidance.
+         * BALADY-3772/3972: true only while a car-like guidance/simulation
+         * session (not pedestrian, not public transport) started via
+         * [startNavigation]/[startSimulation] is active.
          */
         var isTurnByTurn: Boolean = false
                 private set
@@ -231,7 +230,13 @@ class NavigationHandler(
                 }
 
                 if (oldSource != null) {
-                        map.sources.firstOrNull { it is MyLocationMapObjectSource }?.let { map.removeSource(it) }
+                        map.sources.firstOrNull { it is MyLocationMapObjectSource }?.let {
+                                // BALADY-3972: the 3D model set via setModelData sticks to this
+                                // source past removal — clear it before discarding, or the next
+                                // session's fresh source still renders it (see startNavigation's swap).
+                                (it as? MyLocationMapObjectSource)?.item?.setModelData(null)
+                                map.removeSource(it)
+                        }
                         map.addSource(oldSource!!)
                         oldSource = null
                 }
@@ -345,13 +350,17 @@ class NavigationHandler(
 
                 setupCamera(speedRangeZoom = speedRangeZoom)
 
-                // BALADY-3772: a turn-by-turn session is starting — the custom
-                // cursor model may be applied from here until the session ends.
-                isTurnByTurn = true
+                // BALADY-3972: pedestrian/public-transport guidance keeps the
+                // standard style pin — only car-like sessions get the cursor.
+                isTurnByTurn = !options.isPedestrian && !options.isPublicTransport
 
                 val currentLocationSource = map.sources.firstOrNull { it is MyLocationMapObjectSource }
                 if (oldSource == null && currentLocationSource != null) {
                         oldSource = currentLocationSource
+                        // BALADY-3972: clear before removal — the model outlives the
+                        // source once removed, so a stale car-session model kept
+                        // showing on the brand-new source of the next session.
+                        (currentLocationSource as? MyLocationMapObjectSource)?.item?.setModelData(null)
                         map.removeSource(currentLocationSource)
                         map.addSource(
                                 MyLocationMapObjectSource(
@@ -360,6 +369,10 @@ class NavigationHandler(
                                 )
                         )
                         onMyLocationSourceReplaced()
+                } else if (!isTurnByTurn) {
+                        // BALADY-3972: mode switched mid-session (no intervening
+                        // stopNavigation) — drop a model left from a prior car-like session.
+                        onNavigationSessionEnded()
                 }
 
                 if (!options.isPublicTransport) {
@@ -403,9 +416,9 @@ class NavigationHandler(
 
                 setupCamera(speedRangeZoom = speedRangeZoom)
 
-                // BALADY-3772: simulation is a turn-by-turn session too — the
-                // custom cursor model applies the same way as in real guidance.
-                isTurnByTurn = true
+                // BALADY-3972: same car-like-only gate as startNavigation, so
+                // pedestrian/public-transport simulation keeps the standard pin.
+                isTurnByTurn = !options.isPedestrian && !options.isPublicTransport
 
                 if (!options.isPublicTransport) {
                         navigationManager.startSimulation(

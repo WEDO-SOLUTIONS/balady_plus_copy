@@ -145,6 +145,9 @@ class DgisMapView(
     private var navigationCursorModel: ModelData? = null
 
     private fun reapplyNavigationCursorModel() {
+        // BALADY-3972: single source of truth — never show the model outside
+        // a session that wants it (e.g. pedestrian/public-transport guidance).
+        if (!(navigationHandlerLazy.isInitialized() && navigationHandler.usesCustomCursor)) return
         val model = navigationCursorModel ?: return
         val source = map?.sources?.firstOrNull { it is MyLocationMapObjectSource }
                 as? MyLocationMapObjectSource ?: return
