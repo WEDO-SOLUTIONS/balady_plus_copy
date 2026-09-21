@@ -16,6 +16,7 @@ import 'package:mapness/features/path_nav/providers/path_nav_message.dart';
 import 'package:mapness/features/path_nav/providers/path_nav_speed_info.dart';
 import 'package:mapness/pages/free_roam/ui/road_panel.dart';
 import 'package:mapness/pages/free_roam/ui/traffic_parking_control.dart';
+import 'package:mapness/pages/navigator_settings/pages/cursors_page/cursors_sheet.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/extensions/path_nav_ext.dart';
 import 'package:mapness/shared/providers/app_language.dart';
@@ -316,6 +317,7 @@ class FreeRoamPageState extends ConsumerState<FreeRoamPage> with WidgetsBindingO
             ),
           ),
           const ParkingBottomSheetPage(),
+          const CursorsSheet(),
         ],
       ),
     );

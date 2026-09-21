@@ -13,8 +13,8 @@ import 'package:mapness/features/search/providers/search.dart';
 import 'package:mapness/features/search/ui/search_scope.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/features/balady_analytics/metrics.dart';
-import 'package:mapness/pages/navigator_settings/pages/cursors_page/cursors_sheet.dart';
 import 'package:mapness/shared/providers/location.dart';
+import 'package:mapness/shared/providers/map/cursors_sheet_visibility_provider.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:mapness/shared/providers/map/selected_marker.dart';
 import 'package:riverpod/riverpod.dart';
@@ -232,10 +232,10 @@ class MapTapHandler extends _$MapTapHandler with GuardTapEventMixin {
     final router = ref.read(appRouterProvider);
     final topRouteName = router.topRoute.name;
     if (topRouteName == PathNavRoute.name || topRouteName == FreeRoamRoute.name) {
-      final sheetContext = rootNavigatorKey.currentContext;
-      if (sheetContext != null) {
-        unawaited(showCursorsSheet(sheetContext));
-      }
+      // BALADY-3960: CursorsSheet is mounted in the page Stack now, not
+      // pushed via showModalBottomSheet — opening it is just a bool flip,
+      // no BuildContext needed (reopen guard lives in CursorsSheet itself).
+      ref.read(cursorsSheetVisibilityProvider.notifier).show(value: true);
       return;
     }
 

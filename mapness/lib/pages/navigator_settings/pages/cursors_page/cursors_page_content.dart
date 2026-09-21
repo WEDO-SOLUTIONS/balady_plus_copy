@@ -270,15 +270,23 @@ class _CursorThumbnail extends StatelessWidget {
   ];
 
   @override
-  Widget build(BuildContext context) => SizedBox(
-    width: _size,
-    height: _size,
-    child: Image.asset(
-      cursor.thumbnailAsset,
-      fit: BoxFit.contain,
-      errorBuilder: (_, __, ___) => _fallback(),
-    ),
-  );
+  Widget build(BuildContext context) {
+    // BALADY-3960: decode near the 28x28 slot instead of the source's full
+    // resolution. Only cacheWidth is set — sources aren't square, and
+    // ResizeImage with both sides set stretches instead of scaling proportionally.
+    final devicePixelRatio = MediaQuery.devicePixelRatioOf(context);
+    final cacheSize = (_size * devicePixelRatio).round();
+    return SizedBox(
+      width: _size,
+      height: _size,
+      child: Image.asset(
+        cursor.thumbnailAsset,
+        fit: BoxFit.contain,
+        cacheWidth: cacheSize,
+        errorBuilder: (_, __, ___) => _fallback(),
+      ),
+    );
+  }
 
   Widget _fallback() {
     final color = _palette[cursor.index % _palette.length];

@@ -2,58 +2,65 @@ import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:mapness/_features/common/widgets/dragger.dart';
+import 'package:mapness/features/map_tap_handler/map_tap_handler_provider.dart';
 import 'package:mapness/pages/navigator_settings/pages/cursors_page/cursors_page_content.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/hooks/toggle_sheet_controller_hook.dart';
+import 'package:mapness/shared/providers/map/cursors_sheet_visibility_provider.dart';
 import 'package:mapness/shared/ui/buttons/app_close_button.dart';
 import 'package:mapness/shared/ui/safe_area_padding.dart';
 import 'package:mapness/widgets/path_nav/ui/navi_sheet_panel.dart';
 import 'package:sheetify/sheetify.dart';
 
-/// BALADY-3923: a tap-and-hold on the navigation cursor delivers more than
-/// one `onMyLocationTap` event natively (long-press plus the tap on
-/// release), and each one used to call [showCursorsSheet] independently,
-/// stacking several sheets. Guard with a single "is open" flag so repeated
-/// calls while the sheet is still up are ignored.
-bool _isCursorsSheetOpen = false;
-
-/// BALADY-3764: Navigator Customization opened from a tap on the navigation
-/// cursor during guidance / free roam. Shown as a modal ToggleSheet over the
-/// map (same pattern as EndTripModal) instead of a full-screen route, so the
-/// driver keeps the route context behind the sheet.
-Future<void> showCursorsSheet(BuildContext context) async {
-  if (_isCursorsSheetOpen) {
-    return;
-  }
-  _isCursorsSheetOpen = true;
-  try {
-    await showModalBottomSheet<void>(
-      backgroundColor: Colors.transparent,
-      barrierColor: Colors.transparent,
-      isScrollControlled: true,
-      // The route must never pop around the ToggleSheetController (barrier tap /
-      // route drag): the controller's AnimationController uses the sheet state's
-      // vsync and an instant unmount mid-animation trips the "disposed with an
-      // active Ticker" assert. All closes go through controller.close() — see
-      // the PopScope in [CursorsSheet].
-      isDismissible: false,
-      enableDrag: false,
-      context: context,
-      builder: (_) => const CursorsSheet(),
-    );
-  } finally {
-    _isCursorsSheetOpen = false;
-  }
-}
-
-class CursorsSheet extends HookWidget {
+/// BALADY-3764/3960: Navigator Customization, opened on a cursor tap during
+/// guidance/free roam. Mounted in the page `Stack` like `ParkingBottomSheetPage`
+/// — not `showModalBottomSheet`, whose barrier blocked the whole screen.
+class CursorsSheet extends HookConsumerWidget {
   const CursorsSheet({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    final sheetController = useToggleSheetController(onClose: (_) => Navigator.of(context).pop());
+  Widget build(BuildContext context, WidgetRef ref) {
     final colors = context.colors;
+    final tapDisableOwner = useRef<Object?>(null);
+
+    void releaseTapDisableOwner() {
+      final owner = tapDisableOwner.value;
+      if (owner == null) {
+        return;
+      }
+      tapDisableOwner.value = null;
+      ref.read(mapTapHandlerProvider.notifier).releaseTapDisableOwner(owner);
+    }
+
+    final sheetController = useToggleSheetController(
+      onClose: (_) {
+        // Fires once the close animation has actually landed — only then is
+        // it safe to let native onMyLocationTap reach the handler again
+        // (BALADY-3923/3960 reopen loop).
+        releaseTapDisableOwner();
+        ref.read(cursorsSheetVisibilityProvider.notifier).show(value: false);
+      },
+    );
+
+    final isOpen = ref.watch(cursorsSheetVisibilityProvider);
+
+    ref.listen(cursorsSheetVisibilityProvider, (_, nextIsOpen) {
+      if (nextIsOpen) {
+        // A tap-and-hold fires more than one native onMyLocationTap
+        // (long-press + tap-on-release); acquiring here, synchronously,
+        // makes isDisabledTapHandler gate the very next one.
+        tapDisableOwner.value ??= ref.read(mapTapHandlerProvider.notifier).acquireTapDisableOwner();
+        sheetController.open();
+      } else if (!sheetController.isClosed) {
+        sheetController.close();
+      }
+    });
+
+    // Safety net: if the page itself gets torn down while the sheet is open
+    // (or still closing), don't leak the tap-disable owner.
+    useEffect(() => releaseTapDisableOwner, const []);
 
     // BALADY-3763: in landscape the sheet is pinned to the leading edge at
     // the standard navi-panel width, like EndTripModal / NaviSheetPanel;
@@ -70,6 +77,14 @@ class CursorsSheet extends HookWidget {
       dragger: SheetDragger(backgroundColor: colors.backgroundSurface2),
       useSafeArea: false,
       scrollController: sheetController,
+      // The sheet is now a permanently mounted widget, not a route builder —
+      // it must start hidden and take no hit-test space until opened (same
+      // as ParkingBottomSheetPage/NaviSheetPanel).
+      startConfig: ToggleSheetStart.closed,
+      // ToggleSheet's own built-in PopScope defaults shouldPop() to true;
+      // unguarded, its Navigator.of(context) now resolves to the *page*
+      // Navigator and would pop the whole screen. Only the outer PopScope reacts.
+      shouldPop: (_) => false,
       // No barrier dimming: the map behind the panel stays at full
       // brightness so the driver can watch the cursor swap live.
       // Figma 2287-3140: pinned header — "Your cursors" + close button, the
@@ -98,7 +113,7 @@ class CursorsSheet extends HookWidget {
           ],
         ),
       ),
-      content: const [
+      content: [
         // Bottom gutter. The sheet is flush with the screen edge
         // (`useSafeArea: false`), and sheetify only *paints* its safeAreaColor
         // strip — `RenderToggleSheet.performLayout` reserves no height for it,
@@ -112,24 +127,32 @@ class CursorsSheet extends HookWidget {
         // like an iPhone SE, while gesture nav and the iPhone 17 Pro Max home
         // indicator report 24–48. $3x is the same stable inset the navi panels
         // use (see NaviSheetPanel.paddingDelegate).
-        SafeAreaPadding(
-          left: false,
-          top: false,
-          right: false,
-          minimum: EdgeInsets.only(bottom: Spacing.$3x),
-          child: CursorsPageContent(scrollable: false, showHeader: false),
+        //
+        // BALADY-3960: the sheet is mounted for the page's whole lifetime now,
+        // so gate the (Riverpod-backed, image-heavy) content on isClosed —
+        // it flips true only once the close animation has fully landed.
+        ListenableBuilder(
+          listenable: sheetController,
+          builder: (context, child) => sheetController.isClosed ? const SizedBox.shrink() : child!,
+          child: const SafeAreaPadding(
+            left: false,
+            top: false,
+            right: false,
+            minimum: EdgeInsets.only(bottom: Spacing.$3x),
+            child: CursorsPageContent(scrollable: false, showHeader: false),
+          ),
         ),
       ],
     );
 
-    // System back must not pop the route instantly (see showCursorsSheet):
-    // divert it into the animated close; onClose then pops for real via
-    // Navigator.pop, which PopScope does not intercept.
+    // System back closes the sheet (animated) instead of leaving the screen,
+    // but only while it's meant to be open; once a close was already
+    // requested, back behaves normally.
     return PopScope(
-      canPop: false,
+      canPop: !isOpen,
       onPopInvokedWithResult: (didPop, _) {
         if (!didPop) {
-          sheetController.close();
+          ref.read(cursorsSheetVisibilityProvider.notifier).show(value: false);
         }
       },
       child: Align(
