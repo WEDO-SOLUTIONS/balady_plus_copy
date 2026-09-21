@@ -42,6 +42,11 @@ class _StreamAudioState extends ConsumerState<StreamAudio> with WidgetsBindingOb
   /// Track previous orientation to handle transitions
   Orientation? _previousOrientation;
 
+  /// Cached in initState: riverpod 3 forbids `ref` inside dispose (unmount
+  /// runs before State.dispose), and the provider is a non-autoDispose global,
+  /// so the instance is stable for the app's lifetime.
+  StreamAudioProvider? _streamAudio;
+
   @override
   void initState() {
     super.initState();
@@ -50,10 +55,15 @@ class _StreamAudioState extends ConsumerState<StreamAudio> with WidgetsBindingOb
     _keyboardVisibilitySubscription = _keyboardVisibilityController.onChange.listen(_onKeyboardToggle);
     WidgetsBinding.instance.addObserver(this);
 
+    _streamAudio = ref.read(streamAudioProvider);
     Future.microtask(() {
-      ref.read(streamAudioProvider).getChannels();
-      // Register the togglePanel callback with the provider
-      ref.read(streamAudioProvider).setTogglePanelCallback(togglePanel);
+      if (!mounted) {
+        return;
+      }
+      _streamAudio
+        ?..getChannels()
+        // Register the togglePanel callback with the provider
+        ..setTogglePanelCallback(togglePanel);
     });
   }
 
@@ -65,8 +75,8 @@ class _StreamAudioState extends ConsumerState<StreamAudio> with WidgetsBindingOb
     _keyboardVisibilitySubscription.cancel();
     WidgetsBinding.instance.removeObserver(this);
 
-    // Unregister the callback when disposing
-    ref.read(streamAudioProvider).setTogglePanelCallback(null);
+    // Unregister the callback when disposing (only if it is still ours)
+    _streamAudio?.clearTogglePanelCallback(togglePanel);
     super.dispose();
   }
 

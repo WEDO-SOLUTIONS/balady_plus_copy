@@ -1,0 +1,21 @@
+<!--
+  Route progress marker for the Live Update progress bar.
+  assets/icons/makkah/directions.svg turned 90° clockwise, filled with
+  accent-950 and outlined with accent/on-container — same as the iOS widget.
+-->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+  <group
+      android:pivotX="12"
+      android:pivotY="12"
+      android:rotation="90">
+    <path
+        android:pathData="M14.1339,5.0861L19.987,17.837C20.6434,19.2675 19.1711,20.7398 17.7422,20.0893L13.3644,18.0965C12.5817,17.7402 11.6912,17.7413 10.9073,18.0876L6.39318,20.0871C4.9619,20.721 3.51195,19.2479 4.15828,17.8281L9.95453,5.09535C10.7707,3.30238 13.3082,3.3038 14.1339,5.0861Z"
+        android:fillColor="#0C3330"
+        android:strokeColor="#249A91"
+        android:strokeWidth="1"/>
+  </group>
+</vector>

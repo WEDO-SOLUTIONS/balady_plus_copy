@@ -25,23 +25,26 @@ class StoryFrameContent extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Expanded(
-                child: Text(
-                  texts.title,
-                  style: storyTheme.titleStyle,
-                  textAlign: texts.titleAlign,
-                ),
+                // A line-limited title shrinks to fit rather than wrapping,
+                // so a title typeset as N fixed lines stays N lines on
+                // narrow phones.
+                child: texts.titleMaxLines != null
+                    ? AutoSizeText(
+                        texts.title,
+                        style: storyTheme.titleStyle,
+                        textAlign: texts.titleAlign,
+                        maxLines: texts.titleMaxLines,
+                        minFontSize: 16,
+                      )
+                    : Text(
+                        texts.title,
+                        style: storyTheme.titleStyle,
+                        textAlign: texts.titleAlign,
+                      ),
               ),
             ],
           ),
         ),
-        if (texts.subTitle != null)
-          Padding(
-            padding: storyTheme.titlePadding,
-            child: Text(
-              texts.subTitle!,
-              style: storyTheme.titleStyle,
-            ),
-          ),
         if (texts.description != null) ...[
           Spacing.$3x.heightBox,
           Padding(

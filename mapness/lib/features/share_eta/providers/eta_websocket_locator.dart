@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'dart:math';
 
+import 'package:mapness/features/share_eta/helpers/constants.dart';
 import 'package:mapness/features/share_eta/models/eta_info_model.dart';
 import 'package:mapness/features/share_eta/models/eta_route_info.dart';
 import 'package:mapness/features/share_eta/models/ws_config.dart';
@@ -28,6 +29,8 @@ class EtaWebsocket {
   static const _xStreamDataKey = 'X-Stream-Data';
   static const _reconnectingAttempts = 3;
   static const _connectionLostMonitorIntervalSec = 3;
+
+  static const _pingIntervalSec = 10;
 
   WsConfig? _config;
 
@@ -81,6 +84,7 @@ class EtaWebsocket {
     if (_lastErrorCode == code) {
       return;
     }
+    _lastErrorCode = code;
 
     for (final listener in _connectionLostListeners) {
       listener(code, reason);
@@ -107,7 +111,8 @@ class EtaWebsocket {
     String? xStreamData,
     WsConfig? config,
   }) async {
-    _config = config ??
+    _config =
+        config ??
         defaultConfig.copyWith(
           subscriptionType: subscriptionType,
           streamId: streamId,
@@ -217,9 +222,11 @@ class EtaWebsocket {
       if (config.xStreamData != null) {
         headers[_xStreamDataKey] = config.xStreamData!;
       }
-      _ws = await WebSocket.connect(baseUrlString, headers: headers);
-      _ws?.pingInterval = const Duration(seconds: _connectionLostMonitorIntervalSec);
-      _subscription = _ws?.listen(
+      final socket = await WebSocket.connect(baseUrlString, headers: headers);
+      _ws = socket;
+      socket.pingInterval = const Duration(seconds: _pingIntervalSec);
+      _lastErrorCode = null;
+      _subscription = socket.listen(
         (data) {
           try {
             final dataJson = jsonDecode(data);
@@ -248,11 +255,11 @@ class EtaWebsocket {
           }
         },
 
-        // First iteration we don't need to handle errors
-        onError: (error) {
-          logger.log(e.toString(), logLevel: MapnessLogLevel.critical);
-          return _stop();
+        onError: (Object error) {
+          logger.log('ETA websocket error: $error', logLevel: MapnessLogLevel.critical);
+          unawaited(_handleUnexpectedClose(socket));
         },
+        onDone: () => unawaited(_handleUnexpectedClose(socket)),
       );
 
       _notifyConnectionStatusListeners(true);
@@ -276,6 +283,18 @@ class EtaWebsocket {
         _notifyConnectionStatusListeners(false);
       }
     }
+  }
+
+  Future<void> _handleUnexpectedClose(WebSocket socket) async {
+    if (!identical(socket, _ws)) {
+      return;
+    }
+
+    final code = socket.closeCode ?? EtaErrorStatusCodes.connectionLost;
+    final reason = socket.closeReason ?? '';
+
+    await _stop();
+    _notifyConnectionLostListeners(code, reason);
   }
 
   String get _streamPath {

@@ -2,6 +2,7 @@ import 'package:mapness/_features/common/providers/shared_prefs.dart';
 import 'package:mapness/features/special_themes/core/places_activation_config.dart';
 import 'package:mapness/features/special_themes/core/special_theme_mode.dart';
 import 'package:mapness/features/special_themes/core/theme_splash_config.dart';
+import 'package:mapness/features/special_themes/modes/saudi_national_day/saudi_national_day_resolved_config.dart';
 import 'package:mapness/features/special_themes/modes/saudi_national_day/saudi_national_day.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -115,13 +116,15 @@ class ThemeSplashState extends _$ThemeSplashState {
         return ref.read(placesActivationMekkahProvider);
 
       case SpecialThemeMode.nationalDay:
-        // Saudi National Day uses hardcoded dates in provider
-        // Return config with dates from SaudiNationalDayConfig
+        // Dates come from remote config (Firebase → OCI → bundled default),
+        // so the per-activation-period splash key changes automatically when
+        // the window is moved from the Console.
+        final nationalDay = ref.read(saudiNationalDayResolvedConfigProvider);
         return ThemeConfig(
-          enabled: true,
+          enabled: nationalDay.enabled,
           forceEnabled: false,
-          startDate: SaudiNationalDayConfig.startDate,
-          endDate: SaudiNationalDayConfig.endDate,
+          startDate: nationalDay.startDate,
+          endDate: nationalDay.endDate,
         );
 
       case SpecialThemeMode.base:

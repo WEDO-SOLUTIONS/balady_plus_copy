@@ -78,6 +78,7 @@ extension AVAudioSession {
     private var overlayView: UIView?
     private var audioCoordinationManager: AudioCoordinationManager?
     private var nativeRadioPlayer: NativeRadioPlayer?
+    private var launcherIconChannel: LauncherIconChannel?
 
     override func application(
         _ application: UIApplication,
@@ -99,6 +100,13 @@ extension AVAudioSession {
         audioCoordinationManager = AudioCoordinationManager(messenger: sharedSingleFlutterEngine.binaryMessenger)
 
         AppIconQuickActionChannel.register(messenger: sharedSingleFlutterEngine.binaryMessenger)
+
+        // Lock-screen navigation Live Activity (metadata channel + native event observers).
+        NavigationLiveUpdatesChannel.register(messenger: sharedSingleFlutterEngine.binaryMessenger)
+
+        // Saudi National Day launcher icon — Dart picks the icon, this applies
+        // it natively on every activation (see LauncherIconChannel.swift).
+        launcherIconChannel = LauncherIconChannel(messenger: sharedSingleFlutterEngine.binaryMessenger)
 
         // Native radio player — bypasses just_audio_background interruption handling.
         nativeRadioPlayer = NativeRadioPlayer(messenger: sharedSingleFlutterEngine.binaryMessenger)

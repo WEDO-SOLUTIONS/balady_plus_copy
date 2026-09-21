@@ -7,6 +7,7 @@ import com.dgis.map.control_handlers.navigation_controls.MessageControlModel
 import com.dgis.map.control_handlers.navigation_controls.SpeedControlModel
 import com.dgis.map.extensions.toMessage
 import com.dgis.map.extensions.toRouteSearchOptionsMessage
+import com.dgis.map.live_updates.LiveUpdatesCoordinator
 import com.dgis.map.map_api.*
 import com.dgis.map.map_api.BetterRouteResponseMessage
 import com.dgis.map.map_api.BetterRouteSettingsMessage
@@ -15,7 +16,6 @@ import com.dgis.map.map_api.SoundToggleType
 import io.flutter.plugin.common.EventChannel
 import ru.dgis.sdk.Context as SdkContext
 import ru.dgis.sdk.Duration
-import ru.dgis.sdk.Meter
 import ru.dgis.sdk.ScreenSize
 import ru.dgis.sdk.coordinates.Bearing
 import ru.dgis.sdk.geometry.ComplexGeometry
@@ -50,13 +50,14 @@ class NavigationHandler(
         // BALADY-3772: the navigation-cursor 3D model is set on the my-location
         // object via setModelData. It has to be re-applied whenever that object
         // may have (re)materialised its model: after guidance swaps the source
-        // in, and once a turn-by-turn session reaches State.NAVIGATION — a
-        // model set while the cursor was still the idle dashboard marker is
-        // not shown.
+        // in, and once a session that uses the custom cursor (turn-by-turn or,
+        // per BALADY-3924, free roam) reaches State.NAVIGATION — a model set
+        // while the cursor was still the idle dashboard marker is not shown.
         private val onMyLocationSourceReplaced: () -> Unit = {},
-        // BALADY-3772 (regression): the custom model is a turn-by-turn-only
-        // visual. Fired when a session ends so the owner resets the
-        // my-location marker back to the standard style default.
+        // BALADY-3772 / BALADY-3924 (regression): the custom model only
+        // applies while a session uses it. Fired when a session ends so the
+        // owner resets the my-location marker back to the standard style
+        // default.
         private val onNavigationSessionEnded: () -> Unit = {},
 ) : AutoCloseable {
         private val context: SdkContext = sdkContext
@@ -78,12 +79,27 @@ class NavigationHandler(
          * BALADY-3772: true only while a turn-by-turn session (guidance or its
          * simulation) started via [startNavigation]/[startSimulation] is
          * active. Unlike [isNavigating] it stays false for free roam and for
-         * route search outside guidance — the custom cursor model must not
-         * replace the standard my-location marker there (free roam auto-starts
-         * right from the Explore dashboard).
+         * route search outside guidance.
          */
         var isTurnByTurn: Boolean = false
                 private set
+
+        /**
+         * BALADY-3924: true while a free-roam session started via
+         * [startFreeRoam] is active. Free roam shows the chosen navigation
+         * cursor too, same as turn-by-turn guidance — see [usesCustomCursor].
+         */
+        var isFreeRoam: Boolean = false
+                private set
+
+        /**
+         * BALADY-3924: whichever kind of session currently wants the custom
+         * navigation cursor instead of the standard my-location marker (route
+         * search outside guidance keeps the standard marker). Single source
+         * of truth so a future session type cannot forget to gate the model.
+         */
+        val usesCustomCursor: Boolean
+                get() = isTurnByTurn || isFreeRoam
 
         // Models to observe channels and send events to Flutter
         private val speedControlModel =
@@ -215,17 +231,15 @@ class NavigationHandler(
                 }
 
                 if (oldSource != null) {
-                        if (map.sources.isNotEmpty()) {
-                                map.removeSource(map.sources.first { it is MyLocationMapObjectSource })
-                        }
+                        map.sources.firstOrNull { it is MyLocationMapObjectSource }?.let { map.removeSource(it) }
                         map.addSource(oldSource!!)
                         oldSource = null
                 }
-
-                // BALADY-3772 (regression): the session is over — drop the custom
-                // cursor model so the marker returns to the standard one. Called
-                // unconditionally: free roam does not swap the source at all.
+                // BALADY-3772 (regression) / BALADY-3924: the session is over — drop
+                // the custom cursor model so the marker returns to the standard one.
+                // Called unconditionally: free roam does not swap the source at all.
                 isTurnByTurn = false
+                isFreeRoam = false
                 onNavigationSessionEnded()
         }
 
@@ -235,9 +249,11 @@ class NavigationHandler(
                 speedControlModel.close()
                 stateClosable.close()
                 routeInfoCloseable.close()
-                speedControlModel.close()
                 maneuverControlModel.close()
                 betterRouteCloseable.close()
+                // Detach the map from the shared NavigationManager so it stops
+                // rendering into a map that is about to be closed.
+                navigationManager.mapManager.removeMap(map)
         }
 
         fun toggleVoiceInstruction(toggleType: SoundToggleType) {
@@ -319,7 +335,8 @@ class NavigationHandler(
                         callback(
                                 Result.failure(
                                         Exception(
-                                                "Not enough data to start navigation. Check RouteHandler documentation"
+                                                "Not enough data to start navigation. Check RouteHandler documentation. " +
+                                                        "finishPoint=$finishPoint, options=$options, route=$route"
                                         )
                                 )
                         )
@@ -332,17 +349,14 @@ class NavigationHandler(
                 // cursor model may be applied from here until the session ends.
                 isTurnByTurn = true
 
-                if (oldSource == null && map.sources.isNotEmpty()) {
-                        oldSource = map.sources.first { it is MyLocationMapObjectSource }
-                        map.removeSource(oldSource!!)
+                val currentLocationSource = map.sources.firstOrNull { it is MyLocationMapObjectSource }
+                if (oldSource == null && currentLocationSource != null) {
+                        oldSource = currentLocationSource
+                        map.removeSource(currentLocationSource)
                         map.addSource(
                                 MyLocationMapObjectSource(
                                         context = this.context,
-                                        controllerSettings =
-                                                MyLocationControllerSettings(
-                                                        coordinatesThreshold = Meter(10.0f),
-                                                        bearingThreshold = Bearing(90.0)
-                                                )
+                                        controllerSettings = MyLocationControllerSettings()
                                 )
                         )
                         onMyLocationSourceReplaced()
@@ -357,6 +371,7 @@ class NavigationHandler(
                                         ),
                                 trafficRoute = route
                         )
+                        LiveUpdatesCoordinator.onSessionStarted(appContext)
                 }
 
                 callback(Result.success(Unit))
@@ -378,7 +393,8 @@ class NavigationHandler(
                         callback(
                                 Result.failure(
                                         Exception(
-                                                "Not enough data to start navigation. Check RouteHandler documentation"
+                                                "Not enough data to start navigation. Check RouteHandler documentation. " +
+                                                        "finishPoint=$finishPoint, options=$options, route=$route"
                                         )
                                 )
                         )
@@ -400,6 +416,7 @@ class NavigationHandler(
                                         ),
                                 trafficRoute = route
                         )
+                        LiveUpdatesCoordinator.onSessionStarted(appContext)
                 }
 
                 callback(Result.success(Unit))
@@ -408,19 +425,32 @@ class NavigationHandler(
         fun stopNavigation() {
                 navigationManager.stop()
                 resetCamera()
+                LiveUpdatesCoordinator.onSessionStopped()
         }
 
         fun startFreeRoam(speedRangeZoom: List<SpeedRangeZoom>) {
                 setupCamera(speedRangeZoom = speedRangeZoom)
-                // BALADY-3772 (regression): free roam is NOT turn-by-turn — no
-                // re-apply here, the standard my-location marker stays (free roam
-                // auto-starts right from the Explore dashboard).
+                // BALADY-3924: arm the flag before the session reaches
+                // State.NAVIGATION so the reapply below picks it up.
+                isFreeRoam = true
                 navigationManager.start()
+                // Free roam gets the same ongoing notification as guidance, minus the route.
+                LiveUpdatesCoordinator.onSessionStarted(appContext)
         }
 
         fun stopFreeRoam() {
+                // Free roam has to leave the camera at the last roaming position instead of
+                // snapping back to the user location (TFS #34904). The behaviour stored by
+                // `setupCamera` may be a following one, so restoring it alone is not enough.
+                val wasActive = navigationManager.uiModel.state != State.DISABLED
                 navigationManager.stop()
+                stopFollowNavigation()
                 resetCamera()
+
+                if (!wasActive) return
+
+                map.camera.setBehaviour(CameraBehaviour(position = null))
+                LiveUpdatesCoordinator.onSessionStopped()
         }
 
         private fun stateChannelListener(state: State) {
@@ -432,11 +462,13 @@ class NavigationHandler(
                                                 "state" to Event.stateDisabled
                                         )
                                 )
+                                LiveUpdatesCoordinator.onNavStateChanged(Event.stateDisabled)
                                 isNavigating = false
-                                // BALADY-3772: defensive — a session that ends without
-                                // passing stopNavigation/stopFreeRoam must not leave the
-                                // turn-by-turn flag (and thus the custom cursor) armed.
+                                // BALADY-3772 / BALADY-3924: defensive — a session that ends
+                                // without passing stopNavigation/stopFreeRoam must not leave
+                                // either custom-cursor flag armed.
                                 isTurnByTurn = false
+                                isFreeRoam = false
                         }
                         State.FINISHED -> {
                                 eventSink.success(
@@ -445,6 +477,7 @@ class NavigationHandler(
                                                 "state" to Event.stateFinished
                                         )
                                 )
+                                LiveUpdatesCoordinator.onNavStateChanged(Event.stateFinished)
                                 stopNavigation()
                                 isNavigating = false
                         }
@@ -455,14 +488,16 @@ class NavigationHandler(
                                                 "state" to Event.stateNavigation
                                         )
                                 )
+                                LiveUpdatesCoordinator.onNavStateChanged(Event.stateNavigation)
                                 isNavigating = true
-                                // BALADY-3772: the my-location object switches to its
-                                // navigation (3D model) representation only once the
-                                // session is actually running — a model pushed earlier is
-                                // not shown. Re-apply it here, but only for turn-by-turn:
-                                // free roam raises the same state and must keep the
+                                // BALADY-3772 / BALADY-3924: the my-location object switches
+                                // to its navigation (3D model) representation only once the
+                                // session is actually running — a model pushed earlier is not
+                                // shown. Re-apply it here for any session that wants the
+                                // custom cursor (turn-by-turn or free roam); route search
+                                // outside guidance also raises this state and must keep the
                                 // standard marker.
-                                if (isTurnByTurn) {
+                                if (usesCustomCursor) {
                                         onMyLocationSourceReplaced()
                                 }
                         }
@@ -473,6 +508,7 @@ class NavigationHandler(
                                                 "state" to Event.stateRouteSearch
                                         )
                                 )
+                                LiveUpdatesCoordinator.onNavStateChanged(Event.stateRouteSearch)
                                 isNavigating = true
                         }
                 }

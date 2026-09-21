@@ -19,6 +19,7 @@ import 'package:mapness/shared/constants/advanced_metrics_constants.dart';
 import 'package:mapness/shared/constants/constants.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/lib/geo_point_ext.dart';
+import 'package:mapness/features/balady_analytics/metrics.dart';
 import 'package:mapness/shared/lib/urbi_metrics_utils.dart';
 import 'package:mapness/shared/providers/app_language.dart';
 import 'package:mapness/shared/providers/map/camera_position.dart';
@@ -105,6 +106,16 @@ class Search extends _$Search {
   // Should be canceled
   Timer? _fullSearchTimer;
 
+  // Debounces fetchSuggest so it doesn't fire on every keystroke while the
+  // user is still typing (e.g. entering coordinates digit by digit).
+  Timer? _searchQueryDebounce;
+  static const _searchQueryDebounceDuration = Duration(milliseconds: 400);
+
+  // BALADY-3779: the query the user actually typed/requested most recently.
+  // fetchSuggest drops its result if this no longer matches after the await —
+  // otherwise a slow suggest response can overwrite newer typing.
+  String? _latestTypedQuery;
+
   bool get isSearchRunning => _previousType != null;
 
   bool get isQuickSearchRunning => _previousType == SearchType.quickSearch;
@@ -113,6 +124,15 @@ class Search extends _$Search {
 
   @override
   SearchState build(String scope) {
+    // Closing the search sheet disposes this autoDispose notifier while an
+    // in-flight suggest / fallback timer may still be pending; cancel them so
+    // they can't write `state` on a dead notifier.
+    ref.onDispose(() {
+      _searchOperation?.cancel();
+      _fullSearchTimer?.cancel();
+      _fullSearchTimer = null;
+    });
+
     if (_result != null && _previousQuery != null) {
       return SearchStateResults(results: _result!, searchText: _previousQuery!);
     }
@@ -132,6 +152,9 @@ class Search extends _$Search {
     _currentQueryLocale = null;
     _fullSearchTimer?.cancel();
     _fullSearchTimer = null;
+    _searchQueryDebounce?.cancel();
+    _searchQueryDebounce = null;
+    _latestTypedQuery = null;
     _suggestionSessionId = null;
     _searchSessionId = null;
     _requestId = '';
@@ -270,11 +293,28 @@ class Search extends _$Search {
   }
 
   Future<void> searchQueryChanged(String query) async {
+    // Record it immediately (before the debounce) so an in-flight fetchSuggest
+    // for an older query can detect it went stale even before this keystroke's
+    // own debounced call fires.
+    _latestTypedQuery = query;
+    Metrics.logEvent(
+      'SearchQuery',
+      object: runtimeType,
+      extras: {'value': query},
+    );
+    _searchQueryDebounce?.cancel();
+    // A fresh keystroke must cancel the 1s BSA-1931 fallback armed for an older,
+    // partial query — otherwise it fires searchByText() mid-typing.
+    _fullSearchTimer?.cancel();
+
     if (query.isEmpty) {
       clear();
+      return;
     }
 
-    await fetchSuggest(query);
+    _searchQueryDebounce = Timer(_searchQueryDebounceDuration, () {
+      fetchSuggest(query);
+    });
   }
 
   Future<void> searchAddress(String query) async {
@@ -325,13 +365,26 @@ class Search extends _$Search {
   }
 
   Future<void> fetchSuggest(String query) async {
+    // A direct call (not via searchQueryChanged, e.g. history tap, initial
+    // state) is itself the latest intent — sync so the guard below doesn't
+    // false-positive on it.
+    _latestTypedQuery = query;
     try {
+      if (!ref.mounted) {
+        return;
+      }
       await _searchOperation?.cancel();
+      if (!ref.mounted) {
+        return;
+      }
       if (query.isEmpty) {
         state = const SearchStateHistory();
         return;
       }
       await _setUpLocale(query);
+      if (!ref.mounted) {
+        return;
+      }
 
       _updateSearchText(query);
       _previousType = SearchType.fetchSuggest;
@@ -348,6 +401,10 @@ class Search extends _$Search {
       AdvancedMetrics.instance.startSearchResponse(
         queryType: _previousType!.name,
         searchQuery: query,
+      );
+      Metrics.logEvent(
+        'fetchSuggest',
+        object: runtimeType,
       );
       mixpanel?.timeEvent('Search: fetchSuggest');
       // -- Analytics
@@ -369,6 +426,16 @@ class Search extends _$Search {
       );
       _searchOperation = searchOperation;
       final result = await searchOperation.value;
+      if (!ref.mounted) {
+        return;
+      }
+
+      // BALADY-3779: the user typed/searched something else while this
+      // suggest was in flight — drop it instead of overwriting newer state.
+      if (_latestTypedQuery != null && _latestTypedQuery != query) {
+        return;
+      }
+
       // BSA-1931: We need to start full search if we don't get any results
       // and user types more than 2 symbols
       if (result.suggests.isNotEmpty) {
@@ -382,6 +449,9 @@ class Search extends _$Search {
             .read(urbiAnalyticsProvider.notifier)
             .trackWithPrint('${MetricsConstants.searchTag}::${MetricsConstants.searchKeys.emptySuggestResult}');
 
+        if (_latestTypedQuery != null && _latestTypedQuery != query) {
+          return;
+        }
         _fullSearchTimer?.cancel();
         _fullSearchTimer = Timer(
           const Duration(seconds: 1),
@@ -398,7 +468,10 @@ class Search extends _$Search {
       await mixpanel?.track('Search: fetchSuggest');
       // -- Analytics
     } on Exception catch (_) {
-      state = SearchStateError(searchText: query);
+      // Don't report an error for a query the user has already moved past.
+      if (ref.mounted && (_latestTypedQuery == null || _latestTypedQuery == query)) {
+        state = SearchStateError(searchText: query);
+      }
       rethrow;
     }
     _searchInThisAreaMetric();
@@ -412,6 +485,9 @@ class Search extends _$Search {
     await _searchOperation?.cancel();
     final language = ref.read(appLanguageProvider);
     final searchQuery = quickSearch.query[language] ?? '';
+    // BALADY-3779: this explicit search is now the latest intent — invalidates
+    // any older in-flight fetchSuggest.
+    _latestTypedQuery = searchQuery;
     if (searchQuery.isEmpty) {
       state = const SearchStateHistory();
       return;
@@ -442,6 +518,11 @@ class Search extends _$Search {
       AdvancedMetrics.instance.startSearchResponse(
         queryType: _previousType!.name,
         searchQuery: searchQuery,
+      );
+      Metrics.logEvent(
+        'quickSearch',
+        object: runtimeType,
+        extras: {'query': searchQuery},
       );
       mixpanel?.timeEvent('Search: quickSearch');
       // -- Analytics
@@ -481,6 +562,9 @@ class Search extends _$Search {
   }
 
   Future<void> searchByText(String query, {bool isGoogle = false}) async {
+    // BALADY-3779: this explicit search is now the latest intent — invalidates
+    // any older in-flight fetchSuggest.
+    _latestTypedQuery = query;
     try {
       await _searchOperation?.cancel();
       state = SearchStateLoading(searchText: query); // for loading only Suggests use (state is! SearchStateSuggest)
@@ -502,6 +586,11 @@ class Search extends _$Search {
       AdvancedMetrics.instance.startSearchResponse(
         queryType: _previousType!.name,
         searchQuery: query,
+      );
+      Metrics.logEvent(
+        'searchByText',
+        object: runtimeType,
+        extras: {'query': query},
       );
       mixpanel?.timeEvent('Search: searchByText');
       // -- Analytics
@@ -557,6 +646,9 @@ class Search extends _$Search {
   // `_previousType` variable. If it was `searchByQuery`, we know that user pressed on suggest category
   // and then pressed on the search result
   Future<void> searchByQuery(SearchQueryMessage query, String text, {List<GeoPointMessage>? spatialRestriction}) async {
+    // BALADY-3779: this explicit search is now the latest intent — invalidates
+    // any older in-flight fetchSuggest.
+    _latestTypedQuery = text;
     try {
       await _searchOperation?.cancel();
       state = SearchStateLoading(searchText: text);
@@ -580,6 +672,11 @@ class Search extends _$Search {
       AdvancedMetrics.instance.startSearchResponse(
         queryType: _previousType!.name,
         searchQuery: text,
+      );
+      Metrics.logEvent(
+        'Search/searchByQuery',
+        object: runtimeType,
+        extras: {'query_id': query.id},
       );
       mixpanel?.timeEvent('Search: searchByQuery');
       // -- Analytics

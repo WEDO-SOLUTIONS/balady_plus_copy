@@ -16,6 +16,32 @@
 	</array>
 	<key>CFBundleDisplayName</key>
 	<string>$(APP_DISPLAY_NAME)</string>
+	<!-- Saudi National Day alternate launcher icon. Selected at runtime by
+	     SaudiNationalDayAppIcon (Dart) when the remote-config window is open.
+	     CFBundlePrimaryIcon must stay pointed at the asset-catalog AppIcon so
+	     reverting to the default icon works. -->
+	<key>CFBundleIcons</key>
+	<dict>
+		<key>CFBundlePrimaryIcon</key>
+		<dict>
+			<key>CFBundleIconName</key>
+			<string>AppIcon</string>
+		</dict>
+		<key>CFBundleAlternateIcons</key>
+		<dict>
+			<key>NationalDay</key>
+			<dict>
+				<key>CFBundleIconFiles</key>
+				<array>
+					<string>NationalDay60x60</string>
+					<string>NationalDay76x76</string>
+					<string>NationalDay83.5x83.5</string>
+				</array>
+				<key>UIPrerenderedIcon</key>
+				<false/>
+			</dict>
+		</dict>
+	</dict>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIdentifier</key>
@@ -39,6 +65,7 @@
 			<array>
 				<string>com.momra.balady</string>
 				<string>com.balady</string>
+				<string>baladyplus</string>
 				<string>apps.balady.gov.sa</string>
 				<string>plus.balady.gov.sa</string>
 				<string>plus.balady.gov.sa</string>
@@ -110,6 +137,10 @@
 	<string>Photo Library is used to choose photos for Reports</string>
 	<key>NSSpeechRecognitionUsageDescription</key>
 	<string>Balady+ uses speech recognition so you can search for places and municipal services by voice instead of typing, for example saying a neighbourhood or facility name to find it on the map.</string>
+	<key>NSSupportsLiveActivities</key>
+	<true/>
+	<key>NSSupportsLiveActivitiesFrequentUpdates</key>
+	<true/>
 	<key>NSUserTrackingUsageDescription</key>
 	<string>Your data will be used to deliver personalized ads to you.</string>
 	<key>UIApplicationSceneManifest</key>

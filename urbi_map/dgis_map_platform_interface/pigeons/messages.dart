@@ -1574,6 +1574,12 @@ abstract class MapApi {
   @async
   void loadStyles(String asset);
 
+  /// Load a compiled `.2gis` style from an absolute filesystem path on the
+  /// device (e.g. a repacked copy written to the app's support directory).
+  /// Use this when the style file isn't bundled as a Flutter asset.
+  @async
+  void loadStylesFromPath(String absolutePath);
+
   @async
   void overrideLocales(List<String> locales);
 

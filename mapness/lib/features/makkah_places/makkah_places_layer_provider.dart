@@ -11,8 +11,10 @@ import 'package:mapness/features/poi_card/domain/model/poi_camera_config.dart';
 import 'package:mapness/features/special_themes/core/special_theme_mode.dart';
 import 'package:mapness/features/special_themes/modes/mekkah_base/makkah_poi_constants.dart';
 import 'package:mapness/shared/constants/constants.dart';
+import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/extensions/change_marker_options_ext.dart';
 import 'package:mapness/shared/extensions/string_ext.dart';
+import 'package:mapness/features/balady_analytics/metrics.dart';
 import 'package:mapness/shared/providers/app_language.dart';
 import 'package:mapness/shared/providers/dark_mode.dart';
 import 'package:mapness/shared/providers/map/camera_position.dart';
@@ -118,6 +120,17 @@ class MakkahPlacesLayer extends _$MakkahPlacesLayer {
           id: markerId,
           onTap: () async {
             ref.read(mapTapHandlerProvider.notifier).notifyMakkahMarkerTapped();
+            // Track marker tap
+            Metrics.logEventAdvanced(
+              MetricsConstants.makkahPlacesKeys.mapMarkerTapped,
+              group: MetricsConstants.makkahPlacesTag,
+              action: MetricAction.tap.name,
+              props: {
+                'placeId': place.placeId ?? '',
+                'dgisId': objectId ?? 0,
+                'title': place.titleEn ?? '',
+              },
+            );
 
             // Zoom to marker location with street-level detail (zoom 18)
             final camera = ref.read(cameraPositionProvider.notifier);
@@ -173,6 +186,13 @@ class MakkahPlacesLayer extends _$MakkahPlacesLayer {
   /// Called automatically when entering Makkah mode, and can be triggered
   /// manually by tapping the theme icon in the dashboard header.
   Future<void> flyToAllPlaces() async {
+    // Track camera animation to all places
+    Metrics.logEventAdvanced(
+      MetricsConstants.makkahPlacesKeys.mapCameraAnimated,
+      group: MetricsConstants.makkahPlacesTag,
+      props: {'action': 'flyToAllPlaces'},
+    );
+
     final places = await ref.read(makkahPlacesRepositoryProvider.future);
     final points = <GeoPointMessage>[];
 

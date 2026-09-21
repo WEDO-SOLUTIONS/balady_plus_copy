@@ -13,6 +13,8 @@ import 'package:mapness/widgets/landing/traffic_control.dart';
 import 'package:mapness/widgets/map_dimensions_control/dimension_contrtol.dart';
 import 'package:mapness/widgets/weather/weather_control.dart';
 
+import '../../../widgets/landing/map_attribution_label.dart';
+
 class RoutingMapControls extends ConsumerWidget {
   const RoutingMapControls({
     @Deprecated('Please use sheetify outside property') this.bottomHeightNotifier,
@@ -74,6 +76,7 @@ class RoutingMapControls extends ConsumerWidget {
                           ],
                         ],
                       ),
+                      const MapAttributionLabel(),
                     ],
                   ),
                   const Spacer(),

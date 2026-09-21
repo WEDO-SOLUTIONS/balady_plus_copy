@@ -100,6 +100,7 @@ class ObjectTapHandler {
     private var modelDataCache: Dictionary<String, ModelData> = [:]
 
     private var selectedPanorama: Marker?
+    private static let overlayPoiSearchRadius = ScreenDistance(value: 5)
     
     init(
         map: Map,
@@ -162,10 +163,12 @@ class ObjectTapHandler {
                 }
             case let polyline as Polyline:
                 if let id = polyline.userData as? PolylineId {
-                    eventChannel.success([
-                        "event": Events.onPolylineTap,
-                        "id": id.id,
-                    ] as [String : Any])
+                    self.dispatchPoiUnderOverlay(objectInfo) { [weak self] in
+                        self?.eventChannel.success([
+                            "event": Events.onPolylineTap,
+                            "id": id.id,
+                        ] as [String : Any])
+                    }
                     return
                 }
             case is GeometryMapObject:
@@ -207,7 +210,10 @@ class ObjectTapHandler {
                 self.onRoadEventTap(tappedObject as! RoadEventMapObject)
                 return
             default:
-                self.eventChannel.error(code: Events.objectTapError)
+                // No handler for this object type is a normal tap, not an
+                // error: reporting it billed one telemetry event per ordinary
+                // POI tap (BALADY-3941).
+                return
             }
         }
 
@@ -246,7 +252,9 @@ class ObjectTapHandler {
             return
 
         default:
-            self.eventChannel.error(code: Events.objectTapError)
+            // No handler for this object type is a normal tap, not an error
+            // (BALADY-3941).
+            return
         }
     }
     
@@ -1371,6 +1379,33 @@ class ObjectTapHandler {
                 "longitude": position.longitude.value,
             ],
         ] as [String : Any?])
+    }
+
+    private func dispatchPoiUnderOverlay(
+        _ objectInfo: DGis.RenderedObjectInfo,
+        onNoObjectFound: @escaping () -> Void
+    ) {
+        guard let screenPoint = map.camera.projection.mapToScreen(point: objectInfo.closestMapPoint) else {
+            onNoObjectFound()
+            return
+        }
+
+        self.cancelable.append(
+            map.getRenderedObjects(
+                centerPoint: screenPoint,
+                radius: Self.overlayPoiSearchRadius
+            ).sink { [weak self] renderedObjects in
+                guard let poi = renderedObjects.first(where: { $0.item.item is DgisMapObject }),
+                      let mapObject = poi.item.item as? DgisMapObject else {
+                    onNoObjectFound()
+                    return
+                }
+
+                self?.onDgisObjectTap(mapObject, poi)
+            } failure: { _ in
+                onNoObjectFound()
+            }
+        )
     }
 
     private func sendDgisMyLocationEvent(_ position: GeoPointWithElevation) {

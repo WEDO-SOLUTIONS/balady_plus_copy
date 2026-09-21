@@ -1,9 +1,11 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:balady_uikit/balady_uikit.dart';
+import 'package:balady_uikit/core/colorsV2/themes.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:balady_uikit/core/extensions/layout_extension.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -13,9 +15,11 @@ import 'package:mapness/entities/routing/route_point.dart';
 import 'package:mapness/features/city_event/active_city_event.dart';
 import 'package:mapness/features/routing/providers/nearest_object.dart';
 import 'package:mapness/pages/routing/ui/routing_map_controls.dart';
+import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/hooks/toggle_sheet_controller_hook.dart';
 import 'package:mapness/shared/lib/geo_point_ext.dart';
+import 'package:mapness/features/balady_analytics/metrics.dart';
 import 'package:mapness/shared/providers/dark_mode.dart';
 import 'package:mapness/shared/providers/map/camera_padding.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
@@ -23,6 +27,7 @@ import 'package:mapness/shared/providers/map/follow_state.dart';
 import 'package:mapness/shared/providers/media_query.dart';
 import 'package:mapness/shared/ui/buttons/app_close_button.dart';
 import 'package:mapness/shared/ui/markers/markers.dart';
+import 'package:provider/provider.dart';
 import 'package:sheetify/sheetify.dart';
 
 @RoutePage()
@@ -73,97 +78,111 @@ class _RoutingMapSelectState extends ConsumerState<RoutingMapSelectPage> {
 
     final activeEvent = ref.watch(activeCityEventProvider);
     final isDark = ref.watch(darkModeProvider).value?.isDark ?? false;
-    return ToggleSheet(
-      scrollController: scrollController,
-      backgroundColor: context.colors.backgroundSurface4,
-      safeAreaColor: context.colors.backgroundSurface4,
-      dragger: SheetDragger(backgroundColor: context.colors.backgroundSurface4),
-      outside: Stack(
-        children: [
-          const RoutingMapControls(),
-          Center(
-            child: Padding(
-              padding: EdgeInsets.only(
-                bottom: additionPadding,
+    return AnnotatedRegion<SystemUiOverlayStyle>(
+      value: context.watch<ThemeController>().systemOverlayStyle,
+      child: ToggleSheet(
+        scrollController: scrollController,
+        backgroundColor: context.colors.backgroundSurface4,
+        safeAreaColor: context.colors.backgroundSurface4,
+        dragger: SheetDragger(backgroundColor: context.colors.backgroundSurface4),
+        outside: Stack(
+          children: [
+            const RoutingMapControls(),
+            Center(
+              child: Padding(
+                padding: EdgeInsets.only(
+                  bottom: additionPadding,
+                ),
+                child: SvgPicture.asset(activeEvent?.defaultPin(isDark: isDark) ?? Markers.defaultPinNew),
               ),
-              child: SvgPicture.asset(activeEvent?.defaultPin(isDark: isDark) ?? Markers.defaultPinNew),
+            ),
+          ],
+        ),
+        header: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      context.l10n.pointToMap,
+                      style: context.textStyles.h4SemiBold.copyWith(color: context.colors.foregroundDefault),
+                    ),
+                    Spacing.$1x.heightBox,
+                    Text(
+                      context.l10n.moveMap,
+                      style: context.textStyles.bodySmallRegular.copyWith(color: context.colors.foregroundSoft),
+                    ),
+                  ],
+                ),
+              ),
+              CustomCloseButton(onClose: () => _onClose(context)),
+            ],
+          ),
+        ),
+        content: [
+          _NearestObject(nearestObject: nearestObject),
+          Padding(
+            padding: const EdgeInsets.only(
+              left: Spacing.$4x,
+              right: Spacing.$4x,
+              top: Spacing.$3x,
+              bottom: Spacing.$3x,
+            ),
+            child: AnimatedSwitcher(
+              duration: Durations.medium1,
+              child: nearestObject.when(
+                loading: () => SizedBox(
+                  key: const ValueKey(ButtonColorScheme.accentSecondary),
+                  width: double.infinity,
+                  child: AppButton(
+                    primaryLabel: context.l10n.done,
+                    buttonColorScheme: ButtonColorScheme.accentSecondary,
+                    buttonType: ButtonType.secondary,
+                    buttonState: ButtonState.loading,
+                    size: ButtonSize.large,
+                    onTap: null,
+                  ),
+                ),
+                data: (data) => SizedBox(
+                  key: const ValueKey(ButtonColorScheme.accent),
+                  width: double.infinity,
+                  child: AppButton(
+                    primaryLabel: context.l10n.done,
+                    buttonColorScheme: ButtonColorScheme.accentSecondary,
+                    size: ButtonSize.large,
+                    onTap: () => _onTap(data, context),
+                  ),
+                ),
+                error: (error, stackTrace) => SizedBox(
+                  key: const ValueKey(ButtonColorScheme.accentSecondary),
+                  width: double.infinity,
+                  child: AppButton(
+                    primaryLabel: context.l10n.done,
+                    buttonColorScheme: ButtonColorScheme.accentSecondary,
+                    buttonState: ButtonState.disabled,
+                    size: ButtonSize.large,
+                    onTap: null,
+                  ),
+                ),
+              ),
             ),
           ),
         ],
       ),
-      header: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    context.l10n.pointToMap,
-                    style: context.textStyles.h4SemiBold.copyWith(color: context.colors.foregroundDefault),
-                  ),
-                  Spacing.$1x.heightBox,
-                  Text(
-                    context.l10n.moveMap,
-                    style: context.textStyles.bodySmallRegular.copyWith(color: context.colors.foregroundSoft),
-                  ),
-                ],
-              ),
-            ),
-            CustomCloseButton(onClose: () => _onClose(context)),
-          ],
-        ),
-      ),
-      content: [
-        _NearestObject(nearestObject: nearestObject),
-        Padding(
-          padding: const EdgeInsets.only(left: Spacing.$4x, right: Spacing.$4x, top: Spacing.$3x, bottom: Spacing.$3x),
-          child: AnimatedSwitcher(
-            duration: Durations.medium1,
-            child: nearestObject.when(
-              loading: () => SizedBox(
-                key: const ValueKey(ButtonColorScheme.accentSecondary),
-                width: double.infinity,
-                child: AppButton(
-                  primaryLabel: context.l10n.done,
-                  buttonColorScheme: ButtonColorScheme.accentSecondary,
-                  buttonType: ButtonType.secondary,
-                  buttonState: ButtonState.loading,
-                  size: ButtonSize.large,
-                  onTap: null,
-                ),
-              ),
-              data: (data) => SizedBox(
-                key: const ValueKey(ButtonColorScheme.accent),
-                width: double.infinity,
-                child: AppButton(
-                  primaryLabel: context.l10n.done,
-                  buttonColorScheme: ButtonColorScheme.accentSecondary,
-                  size: ButtonSize.large,
-                  onTap: () => _onTap(data, context),
-                ),
-              ),
-              error: (error, stackTrace) => SizedBox(
-                key: const ValueKey(ButtonColorScheme.accentSecondary),
-                width: double.infinity,
-                child: AppButton(
-                  primaryLabel: context.l10n.done,
-                  buttonColorScheme: ButtonColorScheme.accentSecondary,
-                  buttonState: ButtonState.disabled,
-                  size: ButtonSize.large,
-                  onTap: null,
-                ),
-              ),
-            ),
-          ),
-        ),
-      ],
     );
   }
 
   void _onTap(NearestObject nearestObject, BuildContext context) {
+    Metrics.logEventAdvanced(
+      MetricsConstants.routesKeys.specifyOnMapDone,
+      group: MetricsConstants.routesTag,
+      action: MetricAction.tap.toString(),
+    );
+
     switch (nearestObject) {
       case DGisNearestObject(nearestPoint: final nearestPoint):
         context.router.pop(
@@ -183,6 +202,12 @@ class _RoutingMapSelectState extends ConsumerState<RoutingMapSelectPage> {
   }
 
   void _onClose(BuildContext context) {
+    Metrics.logEventAdvanced(
+      MetricsConstants.routesKeys.specifyOnMapExit,
+      group: MetricsConstants.routesTag,
+      action: MetricAction.tap.toString(),
+    );
+
     context.router.pop();
   }
 }

@@ -22,8 +22,10 @@ import 'package:mapness/pages/path_nav/path_nav_page.dart';
 import 'package:mapness/pages/routing/ui/routing_change_path_sheet.dart';
 import 'package:mapness/pages/routing/ui/routing_info.dart';
 import 'package:mapness/pages/routing/ui/routing_map_controls.dart';
+import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/hooks/toggle_sheet_controller_hook.dart';
+import 'package:mapness/features/balady_analytics/metrics.dart';
 import 'package:mapness/shared/providers/location.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:mapness/shared/providers/map/object_manager.dart';
@@ -107,7 +109,7 @@ class _RoutingRoutesPageState extends ConsumerState<RoutingRoutesPage> {
     final sheetController = useToggleSheetController(isInteractive: false);
 
     return AnnotatedRegion<SystemUiOverlayStyle>(
-      value: context.read<ThemeController>().systemOverlayStyle,
+      value: context.watch<ThemeController>().systemOverlayStyle,
       child: ToggleSheet(
         shouldPop: (_) => false,
         backgroundColor: colors.backgroundSurface4,
@@ -287,6 +289,12 @@ class _RoutingRoutesPageState extends ConsumerState<RoutingRoutesPage> {
   }
 
   void _onSwipeRoutes() {
+    Metrics.logEventAdvanced(
+      MetricsConstants.routesKeys.routeSelectionReverseRouteDirectionIcon,
+      group: MetricsConstants.routesTag,
+      action: MetricAction.tap.toString(),
+    );
+
     setState(() {
       points = points.reversed.toList();
     });
@@ -304,6 +312,7 @@ class _RoutingRoutesPageState extends ConsumerState<RoutingRoutesPage> {
       scrollControlDisabledMaxHeightRatio: 0.9,
       builder: (modalContext) => ChangePathSheet(
         onConfirm: _onConfirm,
+        navType: _navType ?? RouteSearchOptionsMessage.car,
         myLocation: myLocation == null
             ? null
             : GeoPointMessage(latitude: myLocation.latitude, longitude: myLocation.longitude),
@@ -334,6 +343,12 @@ class _RoutingRoutesPageState extends ConsumerState<RoutingRoutesPage> {
     await ref
         .read(mapObjectManagerProvider(named: mapSetting.name, layerId: mapSetting.layerId).notifier)
         .setMapObjectManagerIsVisible(isVisible: true);
+
+    Metrics.logEventAdvanced(
+      MetricsConstants.routesKeys.routeSelectionBack,
+      group: MetricsConstants.routesTag,
+      action: MetricAction.tap.toString(),
+    );
 
     final navState = await ActiveNavigationHelper.getState(ref.read(dgisControllerProvider).value);
 

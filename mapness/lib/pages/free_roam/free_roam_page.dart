@@ -19,7 +19,9 @@ import 'package:mapness/pages/free_roam/ui/traffic_parking_control.dart';
 import 'package:mapness/pages/navigator_settings/pages/cursors_page/cursors_sheet.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/extensions/path_nav_ext.dart';
+import 'package:mapness/shared/providers/app_language.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
+import 'package:mapness/shared/services/navigation_live_updates.dart';
 import 'package:mapness/widgets/landing/compass_control.dart';
 import 'package:mapness/widgets/landing/follow_control.dart';
 import 'package:mapness/widgets/landing/indoor_control.dart';
@@ -53,6 +55,7 @@ class FreeRoamPageState extends ConsumerState<FreeRoamPage> with WidgetsBindingO
 
   StreamSubscription? _naviEventsListener;
   late final VoidCallback _deactivateFreeRoam;
+  bool _isEndingTrip = false;
 
   late final ToggleSheetController _bottomSheetController = ToggleSheetController(
     onClose: (_) => _bottomSheetController.close,
@@ -89,8 +92,33 @@ class FreeRoamPageState extends ConsumerState<FreeRoamPage> with WidgetsBindingO
     });
     startControlsDisapearTimer();
     _listenNavigationEvents();
+    // Localizations are only readable once the first frame is scheduled.
+    WidgetsBinding.instance.addPostFrameCallback((_) => unawaited(_startLiveUpdates()));
 
     WakelockPlus.enable();
+  }
+
+  /// Free roam has no route, so the widget only carries speed, limit and the
+  /// current road — the same data the on-screen panel shows.
+  Future<void> _startLiveUpdates() async {
+    if (!mounted) {
+      return;
+    }
+    final l10n = context.l10n;
+    await NavigationLiveUpdates.instance.setSessionMetadata(
+      destinationName: null,
+      mode: 'freeRoam',
+      routeType: 'car',
+      language: ref.read(appLanguageProvider).baladyCompat,
+      strings: <String, String>{
+        'free_roam': l10n.freeRoam,
+        'gps_lost': l10n.gpsLost,
+        'km': l10n.km,
+        'm': l10n.meter,
+        'h': l10n.hoursShort,
+        'min': l10n.minutesShort,
+      },
+    );
   }
 
   @override
@@ -104,6 +132,7 @@ class FreeRoamPageState extends ConsumerState<FreeRoamPage> with WidgetsBindingO
   @override
   void deactivate() {
     _deactivateFreeRoam();
+    unawaited(NavigationLiveUpdates.instance.endSession());
     super.deactivate();
   }
 
@@ -132,6 +161,21 @@ class FreeRoamPageState extends ConsumerState<FreeRoamPage> with WidgetsBindingO
     });
   }
 
+  /// System back must end the free-roam session the same way "End trip" does;
+  /// otherwise the native session keeps running on Explore and the custom
+  /// cursor leaks onto the dashboard (BALADY-3772 regression).
+  Future<void> _onPopInvoked(bool didPop, Object? result) async {
+    if (didPop || _isEndingTrip) {
+      return;
+    }
+    _isEndingTrip = true;
+    try {
+      await ref.read(freeRoamManagerProvider.notifier).endTripAndShowHome(context: context);
+    } finally {
+      _isEndingTrip = false;
+    }
+  }
+
   void startControlsDisapearTimer() {
     timer = Timer(const Duration(seconds: 15), () {
       if (mounted) {
@@ -148,7 +192,7 @@ class FreeRoamPageState extends ConsumerState<FreeRoamPage> with WidgetsBindingO
     final systemDirectionality = Directionality.of(context);
     final isPortrait = MediaQuery.orientationOf(context) == Orientation.portrait;
 
-    return Directionality(
+    final content = Directionality(
       textDirection: TextDirection.ltr,
       child: Stack(
         children: [
@@ -276,6 +320,12 @@ class FreeRoamPageState extends ConsumerState<FreeRoamPage> with WidgetsBindingO
           const CursorsSheet(),
         ],
       ),
+    );
+
+    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: _onPopInvoked,
+      child: content,
     );
   }
 }
