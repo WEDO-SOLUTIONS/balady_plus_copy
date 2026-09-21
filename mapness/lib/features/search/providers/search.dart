@@ -111,6 +111,11 @@ class Search extends _$Search {
   Timer? _searchQueryDebounce;
   static const _searchQueryDebounceDuration = Duration(milliseconds: 400);
 
+  // BALADY-3779: the query the user actually typed/requested most recently.
+  // fetchSuggest drops its result if this no longer matches after the await —
+  // otherwise a slow suggest response can overwrite newer typing.
+  String? _latestTypedQuery;
+
   bool get isSearchRunning => _previousType != null;
 
   bool get isQuickSearchRunning => _previousType == SearchType.quickSearch;
@@ -149,6 +154,7 @@ class Search extends _$Search {
     _fullSearchTimer = null;
     _searchQueryDebounce?.cancel();
     _searchQueryDebounce = null;
+    _latestTypedQuery = null;
     _suggestionSessionId = null;
     _searchSessionId = null;
     _requestId = '';
@@ -287,6 +293,10 @@ class Search extends _$Search {
   }
 
   Future<void> searchQueryChanged(String query) async {
+    // Record it immediately (before the debounce) so an in-flight fetchSuggest
+    // for an older query can detect it went stale even before this keystroke's
+    // own debounced call fires.
+    _latestTypedQuery = query;
     Metrics.logEvent(
       'SearchQuery',
       object: runtimeType,
@@ -355,6 +365,10 @@ class Search extends _$Search {
   }
 
   Future<void> fetchSuggest(String query) async {
+    // A direct call (not via searchQueryChanged, e.g. history tap, initial
+    // state) is itself the latest intent — sync so the guard below doesn't
+    // false-positive on it.
+    _latestTypedQuery = query;
     try {
       if (!ref.mounted) {
         return;
@@ -415,6 +429,13 @@ class Search extends _$Search {
       if (!ref.mounted) {
         return;
       }
+
+      // BALADY-3779: the user typed/searched something else while this
+      // suggest was in flight — drop it instead of overwriting newer state.
+      if (_latestTypedQuery != null && _latestTypedQuery != query) {
+        return;
+      }
+
       // BSA-1931: We need to start full search if we don't get any results
       // and user types more than 2 symbols
       if (result.suggests.isNotEmpty) {
@@ -428,6 +449,9 @@ class Search extends _$Search {
             .read(urbiAnalyticsProvider.notifier)
             .trackWithPrint('${MetricsConstants.searchTag}::${MetricsConstants.searchKeys.emptySuggestResult}');
 
+        if (_latestTypedQuery != null && _latestTypedQuery != query) {
+          return;
+        }
         _fullSearchTimer?.cancel();
         _fullSearchTimer = Timer(
           const Duration(seconds: 1),
@@ -444,7 +468,8 @@ class Search extends _$Search {
       await mixpanel?.track('Search: fetchSuggest');
       // -- Analytics
     } on Exception catch (_) {
-      if (ref.mounted) {
+      // Don't report an error for a query the user has already moved past.
+      if (ref.mounted && (_latestTypedQuery == null || _latestTypedQuery == query)) {
         state = SearchStateError(searchText: query);
       }
       rethrow;
@@ -460,6 +485,9 @@ class Search extends _$Search {
     await _searchOperation?.cancel();
     final language = ref.read(appLanguageProvider);
     final searchQuery = quickSearch.query[language] ?? '';
+    // BALADY-3779: this explicit search is now the latest intent — invalidates
+    // any older in-flight fetchSuggest.
+    _latestTypedQuery = searchQuery;
     if (searchQuery.isEmpty) {
       state = const SearchStateHistory();
       return;
@@ -534,6 +562,9 @@ class Search extends _$Search {
   }
 
   Future<void> searchByText(String query, {bool isGoogle = false}) async {
+    // BALADY-3779: this explicit search is now the latest intent — invalidates
+    // any older in-flight fetchSuggest.
+    _latestTypedQuery = query;
     try {
       await _searchOperation?.cancel();
       state = SearchStateLoading(searchText: query); // for loading only Suggests use (state is! SearchStateSuggest)
@@ -615,6 +646,9 @@ class Search extends _$Search {
   // `_previousType` variable. If it was `searchByQuery`, we know that user pressed on suggest category
   // and then pressed on the search result
   Future<void> searchByQuery(SearchQueryMessage query, String text, {List<GeoPointMessage>? spatialRestriction}) async {
+    // BALADY-3779: this explicit search is now the latest intent — invalidates
+    // any older in-flight fetchSuggest.
+    _latestTypedQuery = text;
     try {
       await _searchOperation?.cancel();
       state = SearchStateLoading(searchText: text);
