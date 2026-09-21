@@ -490,9 +490,19 @@ class TifoDemoPenaltyPreview extends StatelessWidget {
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Text(
-                                '🪙 ${AppLocalizations.of(context).tokensNeeded}',
-                                style: TifoText.captionMedium.copyWith(color: TifoColors.warn),
+                              Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  // Design artwork (coins) — multi-color, drawn untinted.
+                                  Assets.imagesSvg.tifoTokens.svg(width: 14, height: 14),
+                                  const SizedBox(width: 4),
+                                  Flexible(
+                                    child: Text(
+                                      AppLocalizations.of(context).tokensNeeded,
+                                      style: TifoText.captionMedium.copyWith(color: TifoColors.warn),
+                                    ),
+                                  ),
+                                ],
                               ),
                               Text('2', style: TifoText.h2.copyWith(color: TifoColors.warnStrong)),
                             ],
@@ -507,9 +517,19 @@ class TifoDemoPenaltyPreview extends StatelessWidget {
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Text(
-                                '🏢 ${AppLocalizations.of(context).claimTheBuilding}',
-                                style: TifoText.captionMedium.copyWith(color: TifoColors.accentMuted),
+                              Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  // Design artwork already inked in accent/muted — drawn untinted.
+                                  Assets.imagesSvg.tifoBuilding.svg(width: 14, height: 14),
+                                  const SizedBox(width: 4),
+                                  Flexible(
+                                    child: Text(
+                                      AppLocalizations.of(context).claimTheBuilding,
+                                      style: TifoText.captionMedium.copyWith(color: TifoColors.accentMuted),
+                                    ),
+                                  ),
+                                ],
                               ),
                               Text('12', style: TifoText.h2.copyWith(color: TifoColors.accentBright)),
                               Text(
