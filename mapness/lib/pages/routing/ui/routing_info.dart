@@ -398,10 +398,10 @@ class _RoutingInfoState extends ConsumerState<RoutingInfo> {
       ..listen<RouteSearchOptionsMessage>(routesUpdateTabProvider, (previous, next) {
         if (previous != next) {
           _navType.value = next;
-          ref
-            ..invalidate(routesProvider)
-            ..invalidate(publicTransportRoutesProvider)
-            ..invalidate(publicTransportVisibilityProvider);
+          // BALADY-3737: routesProvider/publicTransportRoutesProvider are keyed by navType,
+          // so the new tab already gets a fresh instance. Invalidating here only forces the
+          // still-live old-navType instance to re-run setRouteParams, racing the new tab's call.
+          ref.invalidate(publicTransportVisibilityProvider);
         }
       })
       ..listen(locationProvider, (previous, next) {
@@ -426,13 +426,17 @@ class _RoutingInfoState extends ConsumerState<RoutingInfo> {
             final resolvedPoints = _resolvedPointsWithLabel;
             final intermediatePoints = resolvedPoints.getIntermediatePointsWithLabels();
 
+            // BALADY-3737: this is the only native route request for the screen.
+            // Transit draws just the active route (alternatives are picked in the
+            // carousel, which calls setActiveRouteIndex); the other modes draw all
+            // alternatives.
             final routes = ref.watch(
               routesProvider(
                 startPoint: widget.points.first,
                 finishPoint: widget.points.last,
                 navType: navigatingType,
                 intermediatePoints: intermediatePoints,
-                showOnlyActiveRoute: false,
+                showOnlyActiveRoute: navigatingType == RouteSearchOptionsMessage.publicTransport,
               ),
             );
 

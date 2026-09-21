@@ -101,9 +101,10 @@ class Routes extends _$Routes {
     final dgisController = ref.watch(dgisControllerProvider);
     final searchOptions = ref.watch(navigatorRouteSettingsProvider);
 
-    // Transit calculations are tracked by [PublicTransportRoutes]; this
-    // provider never completes for them (no routesInfoChangedEvents) and would
-    // only report bogus timeouts.
+    // Transit calculations are tracked by [PublicTransportRoutes], which owns
+    // the transit result. This provider does complete for them — the shared
+    // native request also emits routesInfoChangedEvents — so tracking here too
+    // would duplicate route_built/route_failed for the same calculation.
     final analytics = navType == RouteSearchOptionsMessage.publicTransport
         ? null
         : _RouteAnalytics(ref, startPoint, finishPoint, navType);
@@ -201,39 +202,25 @@ class PublicTransportRoutes extends _$PublicTransportRoutes {
     Duration? timeout,
     RouteParamsPointList? intermediatePoints,
   }) async {
-    final online = ref.watch(networkStatusProvider);
-    await AdvancedMetrics.instance.startRouteCalculation(
-      startPoint != null ? [startPoint.latitude, startPoint.longitude] : null,
-      finishPoint != null ? [finishPoint.latitude, finishPoint.longitude] : null,
-    );
-
+    // [Routes] is the single owner of the native `setRouteParams` request for
+    // every navType, transit included; this provider only listens for the
+    // transit payload of that same request. The subscription is therefore
+    // registered synchronously, before any `await`, so it cannot miss the event
+    // the request triggers. `showOnlyActiveRoute` is kept only as part of the
+    // provider key — it is passed to the native side by [Routes].
     final dgisController = ref.watch(dgisControllerProvider);
-    final searchOptions = ref.watch(navigatorRouteSettingsProvider);
-
-    // Transit routes carry no overall length, so route_built goes out without
-    // distance_m / distance_bucket for them.
-    final analytics = _RouteAnalytics(ref, startPoint, finishPoint, navType);
-
-    final intermediatePoints = this.intermediatePoints?.points.map((e) => e.value?.pointMessage).nonNulls.toList();
-
-    final params = RouteEditorRouteParamsMessage(
-      startPoint: startPoint?.pointMessage,
-      finishPoint: finishPoint?.pointMessage,
-      options: navType,
-      showOnlyActiveRoute: showOnlyActiveRoute,
-      intermediatePoints: intermediatePoints,
-      searchParams: CarRouteSearchOptionParamsMessage(
-        avoidTollRoads: searchOptions.avoidTollRoads,
-        avoidUnpavedRoads: searchOptions.avoidUnpavedRoads,
-      ),
-    );
-
     final cancelableCompleter = CancelableCompleter<List<BriefPublicTransportModel>>();
     final publicTransportRoutesSubscription = dgisController.value?.publicTransportRoutesChangedEvents.listen((event) {
       if (!cancelableCompleter.isCompleted && navType == RouteSearchOptionsMessage.publicTransport) {
         cancelableCompleter.complete(event.routes);
       }
     });
+
+    final online = ref.watch(networkStatusProvider);
+
+    // Transit routes carry no overall length, so route_built goes out without
+    // distance_m / distance_bucket for them.
+    final analytics = _RouteAnalytics(ref, startPoint, finishPoint, navType);
 
     ref.onDispose(() {
       analytics.abandon();
@@ -245,7 +232,6 @@ class PublicTransportRoutes extends _$PublicTransportRoutes {
       cancelableCompleter.completeError(const NoInternetException());
     }
 
-    await dgisController.value?.setRouteParams(params);
     try {
       final routes = await cancelableCompleter.operation.value.timeout(
         timeout ?? const Duration(seconds: 10),
