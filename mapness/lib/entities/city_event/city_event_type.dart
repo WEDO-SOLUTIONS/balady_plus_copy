@@ -128,7 +128,6 @@ extension FeedbackDashboard on CityEventType? {
 
 extension StyleX on CityEventType? {
   String get stylePath => switch (this) {
-    CityEventType.saudiNationalDay => MapnessConstants.mapStylesSaudiPath,
     CityEventType.foundingDay => MapnessConstants.mapStylesFoundingDayPath,
     _ => MapnessConstants.mapStylesPath,
   };
