@@ -296,9 +296,8 @@ class NavigationHandler {
         if toDelete == nil { return }
 
         // BALADY-3972: the 3D model set via setModelData sticks to this
-        // source's native object past removal — clear it before discarding,
-        // or the next session's fresh source still renders it (see swap
-        // in startNavigation for the matching case).
+        // source past removal — clear it before discarding, or the next
+        // session's fresh source still renders it (see startNavigation's swap).
         (toDelete as? MyLocationMapObjectSource)?.item.setModelData(data: nil)
         map.removeSource(source: toDelete!)
         map.addSource(source: oldSource!)
