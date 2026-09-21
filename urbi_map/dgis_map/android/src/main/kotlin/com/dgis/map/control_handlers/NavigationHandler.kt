@@ -231,7 +231,13 @@ class NavigationHandler(
 
                 if (oldSource != null) {
                         if (map.sources.isNotEmpty()) {
-                                map.removeSource(map.sources.first { it is MyLocationMapObjectSource })
+                                val toDelete = map.sources.first { it is MyLocationMapObjectSource }
+                                // BALADY-3972: the 3D model set via setModelData sticks to this
+                                // source's native object past removal — clear it before discarding,
+                                // or the next session's fresh source still renders it (see swap
+                                // in startNavigation for the matching case).
+                                (toDelete as? MyLocationMapObjectSource)?.item?.setModelData(null)
+                                map.removeSource(toDelete)
                         }
                         map.addSource(oldSource!!)
                         oldSource = null
@@ -350,6 +356,10 @@ class NavigationHandler(
 
                 if (oldSource == null && map.sources.isNotEmpty()) {
                         oldSource = map.sources.first { it is MyLocationMapObjectSource }
+                        // BALADY-3972: clear before removal — the model outlives the
+                        // source once removed, so a stale car-session model kept
+                        // showing on the brand-new source of the next session.
+                        (oldSource as? MyLocationMapObjectSource)?.item?.setModelData(null)
                         map.removeSource(oldSource!!)
                         map.addSource(
                                 MyLocationMapObjectSource(
