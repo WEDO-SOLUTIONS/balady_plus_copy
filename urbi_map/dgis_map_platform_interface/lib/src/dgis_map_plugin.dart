@@ -14,6 +14,7 @@ import 'package:dgis_map_platform_interface/src/control_handlers/object_tap_even
 import 'package:dgis_map_platform_interface/src/control_handlers/package_handler.dart';
 import 'package:dgis_map_platform_interface/src/control_handlers/public_transport_event_handler.dart';
 import 'package:dgis_map_platform_interface/src/control_handlers/traffic_and_parking_event_handler.dart';
+import 'package:dgis_map_platform_interface/src/control_handlers/tunnel_state_event_handler.dart';
 import 'package:dgis_map_platform_interface/src/control_handlers/visible_rect_event_handler.dart';
 import 'package:dgis_map_platform_interface/src/control_handlers/zoom_event_handler.dart';
 import 'package:dgis_map_platform_interface/src/events/object_tap_events.dart';
@@ -52,6 +53,7 @@ class DgisMapPlugin extends FlutterMapApi {
   late final _naviManeuverEventHandler = ManeuverEventHandler();
   late final _trafficAndParkingStateEventHandler = TrafficAndParkingEventHandler();
   late final _packagesHandler = PackageEventHandler();
+  late final _tunnelStateEventHandler = TunnelStateEventHandler();
 
   /// Zoom control enabled events stream.
   Stream<ZoomControlEnabledEvent> get zoomControlEnabledEvents => _zoomEventHandler.zoomControlEnabledEvents;
@@ -148,6 +150,12 @@ class DgisMapPlugin extends FlutterMapApi {
   /// Route options events stream.
   Stream<RouteOptionsEvent> get routeOptionsEvent => _navigationEventHandler.routeOptionEvents;
 
+  /// Tunnel enter/leave events on the active navigation route.
+  Stream<TunnelStateEvent> get tunnelStateEvents => _tunnelStateEventHandler.tunnelStateEvents;
+
+  /// Whether the last event reported the vehicle as being inside a tunnel.
+  bool get isInTunnel => _tunnelStateEventHandler.isInTunnel;
+
   /// isInitialized getter.
   bool get isInitialized => _isInitialized;
 
@@ -190,6 +198,7 @@ class DgisMapPlugin extends FlutterMapApi {
     await _naviManeuverEventHandler.dispose();
     await _trafficAndParkingStateEventHandler.dispose();
     await _publicTransportEventHandler.dispose();
+    await _tunnelStateEventHandler.dispose();
   }
 
   /// On zoom action event.
@@ -218,99 +227,114 @@ class DgisMapPlugin extends FlutterMapApi {
   }
 
   StreamSubscription _initEventChannel() {
-    return EventChannel('com.dgis.map_view_events_$_viewId').receiveBroadcastStream().listen((event) {
-      final map = event as Map<dynamic, dynamic>;
-      switch (map['event']) {
-        case MyLocationTapEvent.name:
-          return _objectTapEventHandler.myLocationTapEvent(map);
-        case ZoomControlEnabledEvent.zoomInEvent:
-          return _zoomEventHandler.zoomInEvent(map);
-        case ZoomControlEnabledEvent.zoomOutEvent:
-          return _zoomEventHandler.zoomOutEvent(map);
-        case LocationEnabledEvent.name:
-          return _locationEventHandler.enabledEvent(map);
-        case LocationFollowEvent.name:
-          return _locationEventHandler.followEvent(map);
-        case IndoorLevelsEvent.name:
-          return _indoorEventHandler.levelNamesEvent(map);
-        case HideIndoorLevelsEvent.name:
-          return _indoorEventHandler.hideLevelsEvent();
-        case IndoorActiveLevelEvent.name:
-          return _indoorEventHandler.activeLevelEvent(map);
-        case ObjectTapEvent.name:
-          return _objectTapEventHandler.objectTapEvent(map);
+    return EventChannel('com.dgis.map_view_events_$_viewId').receiveBroadcastStream().listen(
+      onError: (Object error, StackTrace stackTrace) {
+        // The native tap handlers emit a channel error for every tapped object
+        // type they have no handler for - i.e. every ordinary short tap on a
+        // 2GIS POI since the long-press-only rewrite (~35k telemetry events a
+        // week). Nothing on the Dart side ever consumed it; without this
+        // onError the stream error went straight to the zone reporter.
+        if (error is PlatformException && (error.code == 'ObjectTapError' || error.code == 'ClassCastException')) {
+          return;
+        }
+        Zone.current.handleUncaughtError(error, stackTrace);
+      },
+      (event) {
+        final map = event as Map<dynamic, dynamic>;
+        switch (map['event']) {
+          case MyLocationTapEvent.name:
+            return _objectTapEventHandler.myLocationTapEvent(map);
+          case ZoomControlEnabledEvent.zoomInEvent:
+            return _zoomEventHandler.zoomInEvent(map);
+          case ZoomControlEnabledEvent.zoomOutEvent:
+            return _zoomEventHandler.zoomOutEvent(map);
+          case LocationEnabledEvent.name:
+            return _locationEventHandler.enabledEvent(map);
+          case LocationFollowEvent.name:
+            return _locationEventHandler.followEvent(map);
+          case IndoorLevelsEvent.name:
+            return _indoorEventHandler.levelNamesEvent(map);
+          case HideIndoorLevelsEvent.name:
+            return _indoorEventHandler.hideLevelsEvent();
+          case IndoorActiveLevelEvent.name:
+            return _indoorEventHandler.activeLevelEvent(map);
+          case ObjectTapEvent.name:
+            return _objectTapEventHandler.objectTapEvent(map);
 
-        case RoadEventTapEvent.name:
-          return _objectTapEventHandler.roadEventTapEvent(map);
-        case MarkerTapEvent.name:
-          return _objectTapEventHandler.markerTapEvent(map);
-        case ModelTapEvent.name:
-          return _objectTapEventHandler.modelTapEvent(map);
-        case ClusterTapEvent.name:
-          unawaited(
-            _objectTapEventHandler.clusterTapEvent(map, _api).then((value) async {
-              await _api.releaseCluster(map["cluster"]["id"]);
-            }),
-          );
-          break;
-        case PolygonTapEvent.name:
-          return _objectTapEventHandler.polygonTapEvent(map);
-        case PolylineTapEvent.name:
-          return _objectTapEventHandler.polylineTapEvent(map);
-        case CircleTapEvent.name:
-          return _objectTapEventHandler.circleTapEvent(map);
-        case VisibleRectEvent.name:
-          return _visibleRectEventHandler.visibleRectEvent(map);
-        case "cameraPositionChanged":
-          return _visibleRectEventHandler.cameraPositionEvent(map);
-        case CameraStateEvent.name:
-          return _cameraStateEventHandler.cameraStateEvent(map);
-        case MarkerWithPhotoTapEvent.name:
-          return _markerTapEventHandler.markerWithPhotoTapEvent(map);
-        case ActiveRouteChangedEvent.name:
-          return _routesEventHandler.activeRouteChangedEvent(map);
-        case RoutesInfoChangedEvent.name:
-          return _routesEventHandler.routesInfoChangedEvent(map);
-        case BetterRouteInfoEvent.name:
-          return _routesEventHandler.betterRouteInfoEvent(map);
-        case NavigationEvent.name:
-          return _navigationEventHandler.handleNavigationEvent(map);
-        case CarConnectionEvent.name:
-          return _androidAutoHandler.handleAndroidAutoConnectionEvent(map);
-        case IoTapEvent.name:
-          return _objectTapEventHandler.onIoTap(map);
-        case IdleTapEvent.name:
-          return _objectTapEventHandler.onIdleTap(map);
-        case NaviSpeedEvent.name:
-          return _naviSpeedEventHandler.handleNavigationEvent(map);
-        case NaviDashboardEvent.name:
-          return _naviDashboardEventHandler.handleDashboardEvent(map);
-        case CompassBearingEvent.name:
-          return _compassEventHandler.compassBearingChangedEvent(map);
-        case RouteOptionsEvent.name:
-          return _navigationEventHandler.routeOptionsEvent(map);
-        case SoundOnEvent.name:
-          return _navigationEventHandler.soundOnEvent(map);
-        case NaviMessageEvent.name:
-          return _naviMessageEventHandler.handleMessageEvent(map);
-        case ManeuverEvent.name:
-          return _naviManeuverEventHandler.handleManeuverEvent(map);
-        case ManeuverAdditionalEvent.name:
-          return _naviManeuverEventHandler.handleAdditionalManeuverEvent(map);
-        case ParkingStateEvent.name:
-          return _trafficAndParkingStateEventHandler.parkingStateChanged(map);
-        case TrafficStateEvent.name:
-          return _trafficAndParkingStateEventHandler.trafficStateChanged(map);
-        case PublicTransportRoutesChangedEvent.name:
-          return _publicTransportEventHandler.routesChangedEvent(map);
-        case PublicTransportActiveRouteChanged.name:
-          return _publicTransportEventHandler.activeRouteChangedEvent(map);
-        case PackageProgressEvent.name:
-          return _packagesHandler.packageProgressEvent(map);
-        case PackageInfoChangedEvent.name:
-          return _packagesHandler.packageInfoChangedEvent(map);
-      }
-    });
+          case RoadEventTapEvent.name:
+            return _objectTapEventHandler.roadEventTapEvent(map);
+          case MarkerTapEvent.name:
+            return _objectTapEventHandler.markerTapEvent(map);
+          case ModelTapEvent.name:
+            return _objectTapEventHandler.modelTapEvent(map);
+          case ClusterTapEvent.name:
+            unawaited(
+              _objectTapEventHandler.clusterTapEvent(map, _api).then((value) async {
+                await _api.releaseCluster(map["cluster"]["id"]);
+              }),
+            );
+            break;
+          case PolygonTapEvent.name:
+            return _objectTapEventHandler.polygonTapEvent(map);
+          case PolylineTapEvent.name:
+            return _objectTapEventHandler.polylineTapEvent(map);
+          case CircleTapEvent.name:
+            return _objectTapEventHandler.circleTapEvent(map);
+          case VisibleRectEvent.name:
+            return _visibleRectEventHandler.visibleRectEvent(map);
+          case "cameraPositionChanged":
+            return _visibleRectEventHandler.cameraPositionEvent(map);
+          case CameraStateEvent.name:
+            return _cameraStateEventHandler.cameraStateEvent(map);
+          case MarkerWithPhotoTapEvent.name:
+            return _markerTapEventHandler.markerWithPhotoTapEvent(map);
+          case ActiveRouteChangedEvent.name:
+            return _routesEventHandler.activeRouteChangedEvent(map);
+          case RoutesInfoChangedEvent.name:
+            return _routesEventHandler.routesInfoChangedEvent(map);
+          case BetterRouteInfoEvent.name:
+            return _routesEventHandler.betterRouteInfoEvent(map);
+          case NavigationEvent.name:
+            return _navigationEventHandler.handleNavigationEvent(map);
+          case CarConnectionEvent.name:
+            return _androidAutoHandler.handleAndroidAutoConnectionEvent(map);
+          case IoTapEvent.name:
+            return _objectTapEventHandler.onIoTap(map);
+          case IdleTapEvent.name:
+            return _objectTapEventHandler.onIdleTap(map);
+          case NaviSpeedEvent.name:
+            return _naviSpeedEventHandler.handleNavigationEvent(map);
+          case NaviDashboardEvent.name:
+            return _naviDashboardEventHandler.handleDashboardEvent(map);
+          case CompassBearingEvent.name:
+            return _compassEventHandler.compassBearingChangedEvent(map);
+          case RouteOptionsEvent.name:
+            return _navigationEventHandler.routeOptionsEvent(map);
+          case SoundOnEvent.name:
+            return _navigationEventHandler.soundOnEvent(map);
+          case NaviMessageEvent.name:
+            return _naviMessageEventHandler.handleMessageEvent(map);
+          case ManeuverEvent.name:
+            return _naviManeuverEventHandler.handleManeuverEvent(map);
+          case ManeuverAdditionalEvent.name:
+            return _naviManeuverEventHandler.handleAdditionalManeuverEvent(map);
+          case ParkingStateEvent.name:
+            return _trafficAndParkingStateEventHandler.parkingStateChanged(map);
+          case TrafficStateEvent.name:
+            return _trafficAndParkingStateEventHandler.trafficStateChanged(map);
+          case PublicTransportRoutesChangedEvent.name:
+            return _publicTransportEventHandler.routesChangedEvent(map);
+          case PublicTransportActiveRouteChanged.name:
+            return _publicTransportEventHandler.activeRouteChangedEvent(map);
+          case PackageProgressEvent.name:
+            return _packagesHandler.packageProgressEvent(map);
+          case PackageInfoChangedEvent.name:
+            return _packagesHandler.packageInfoChangedEvent(map);
+          case TunnelStateEvent.name:
+            return _tunnelStateEventHandler.tunnelStateChanged(map);
+        }
+      },
+    );
   }
 
   /// Select indoor level.
@@ -326,6 +350,12 @@ class DgisMapPlugin extends FlutterMapApi {
   /// Load styles from asset.
   Future<void> loadStyles(String asset) {
     return _api.loadStyles(asset);
+  }
+
+  /// Load styles from an absolute filesystem path (e.g. a repacked `.2gis`
+  /// written to the app's support/cache directory).
+  Future<void> loadStylesFromPath(String absolutePath) {
+    return _api.loadStylesFromPath(absolutePath);
   }
 
   /// Override locales.

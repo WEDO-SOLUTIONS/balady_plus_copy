@@ -134,6 +134,7 @@ class VolunteerSuccessDialog extends StatelessWidget {
                 // Action button
                 SizedBox(
                   width: double.infinity,
+                  height: 64,
                   child: ElevatedButton(
                     onPressed: () {
                       Navigator.of(context).pop();
@@ -157,7 +158,7 @@ class VolunteerSuccessDialog extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 16),
-
+   
                 // Skip button
                 TextButton(
                   onPressed: () {

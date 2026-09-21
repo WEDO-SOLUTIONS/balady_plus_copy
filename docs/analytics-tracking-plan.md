@@ -31,6 +31,9 @@ reference (check time/distance) without starting guidance — that is successful
   identified one, so pre-login events of that install follow the user; anonymous ids
   minted by earlier resets stay behind as separate persons.
   Never `identify()` with a device ID: same numbers at 4x the price.
+  TIFO events never send a TIFO-side user id or the bearer token as a property —
+  identity for logged-in players stays on the existing `identify()`/backend join,
+  not a TIFO-specific one.
 - **Session properties on every event** (attached by the facade, not per call site):
   - `$screen_name` — the current route, updated by the navigation observers even while
     the `$screen` event stream is off (Phase 1.5). Deliberate use of PostHog's reserved
@@ -168,8 +171,9 @@ Internal mini-app events are not forwarded (JS bridge forwarding — silenced).
 ### Session properties (attached to every event)
 
 `$app_version`, `$os` etc. are sent by the SDK. Via `setSessionProperty` we add:
-`environment` (flavor — duplicates the per-project split, saves us if a key is misused),
-`app_language`.
+`environment` (flavor: `dev`/`stg`/`pre`/`prod`/`urbiPre`, set at startup — implemented;
+it is the filter that separates `stg`/`pre`/`urbiPre` inside their shared PostHog
+project), `app_language` (still pending).
 
 ## Phase 1.5 — screen tracking (deferred: ~80% of event volume)
 
@@ -188,7 +192,166 @@ anonymous (cheap tier) — roughly $800–1500/mo per the PostHog calculator. Wi
 `$screen` (Phase 1 scope) the total is ~3–5M events/mo. Set the project billing limit
 from these figures, refine after the first month.
 
-## Phase 2 — engagement and transit (transit deadline: before Ramadan 2027, ahead of Hajj)
+## Phase 2 — TIFO (Event Spec v1)
+
+Six events for the whole TIFO game layer, deliberately. The backend already owns the
+entire game loop — `/play/start`, `/play`, `/clubs/select`, token balances, claims,
+seasons — and every player is authenticated, so it is already attributable
+server-side at zero PostHog cost. The client covers only what the server cannot see:
+**attention, friction, drop-off, and device-side timing.** Volume is bounded by
+design (once-per-lifetime, once-per-surface-per-session, or capped by the token
+economy), not by hope; there is no `identify` from TIFO events; numeric properties
+(timings) are sent as buckets, never raw values, to keep property cardinality flat.
+
+### `tifo_activated` — one per user lifetime
+
+| Event | Properties | When |
+|---|---|---|
+| `tifo_activated` | `club_id` (selected club), `source`: `tutorial` \| `banner` \| `map_pill` \| `district_sheet` \| `deeplink` \| `building_sheet`\* \| `leaderboard`\* | Successful club selection — the moment the user becomes a player (`team_select_screen.dart` `_confirm()`, after `selectClub` succeeds) |
+
+\* `building_sheet` and `leaderboard` are **app additions**, not in Event Spec v1 — the
+app has two more entry points into the play gate than the spec enumerated
+(`building_sheet.dart` Challenge CTA, `leaderboard_sheet.dart` footer CTA). `source` is
+the surface that started the gate walk (`TifoJourney.ensurePlayReady`), not whatever
+surface happens to be active at confirmation time.
+
+Metrics: feature penetration (% of audience that becomes players), which entry points
+convert, club balance (dominance mechanics break if one club dominates).
+**Cap:** 1/lifetime. Guard client-side with a persisted flag; the server's one-time
+`/clubs/select` semantics is the source of truth.
+
+### `tifo_tutorial_outcome` — one per user
+
+| Event | Properties | When |
+|---|---|---|
+| `tifo_tutorial_outcome` | `result`: `completed` \| `skipped` \| `abandoned`; `last_step` (int, 1–4) | User leaves the tutorial flow, however that happens (`tutorial/tifo_guided_tutorial.dart`) |
+
+Metrics: completion rate and the exact drop step. The tutorial has been re-cut twice
+(13 → 4 screens) with no way to measure the effect — this closes that gap.
+**Cap:** effectively 1/user (re-runs via "Replay tutorial" also fire; volume trivial).
+
+### `tifo_entry_outcome` — once per session
+
+| Event | Properties | When |
+|---|---|---|
+| `tifo_entry_outcome` | `action`: `cta` \| `close` | The stories-style entry popup (first ⚽ tap of a session) is resolved — CTA "Dominate with your team" → `cta`, close (X) → `close` |
+
+Metrics: entry close rate = close / (cta + close), the top of the activation funnel
+between "layer on" and "tutorial outcome" — after BE-323 (layer opt-in by default)
+this becomes the main loss point.
+**Cap:** one per popup show; the popup shows at most once per app session
+(`hasSeenEntry`).
+
+### `tifo_surface_viewed` — deduped: once per surface per session
+
+| Event | Properties | When |
+|---|---|---|
+| `tifo_surface_viewed` | `surface`: `district` \| `building` \| `leaderboard` \| `dashboard`; `api_ms_bucket`, `render_ms_bucket` (see [Timing buckets](#timing-buckets)); `first_of_day` (bool) | First open of each surface within a session |
+
+`district` / `building` are the **map tiers** — districts tinted / buildings painted
+(`tifo_buildings_map_layer.dart`), not sheet navigation. `leaderboard` / `dashboard`
+are the Table / Profile tabs of the leaderboard sheet (`leaderboard_sheet.dart`).
+`first_of_day` is true on the user's first Tifo surface of the day — a cheap
+DAU-of-Tifo marker.
+
+Metrics: attention funnel (who looks at what), viewers-vs-players split, whether the
+zoom-tier UX works (district views without building views ⇒ users don't cross the LOD
+threshold), and — via the timing buckets — where slowness lives.
+**Cap (the main budget lever):** in-memory per-session set of shown surfaces, reset on
+a new `$session_id`. Max 4 events per session regardless of usage intensity.
+
+### `tifo_blocked` — on user-visible blocking state
+
+| Event | Properties | When |
+|---|---|---|
+| `tifo_blocked` | `reason`: `no_tokens` \| `cooldown` \| `building_locked` \| `not_logged_in` \| `no_club` \| `error`; `surface` (same enum as `tifo_surface_viewed`) | UI refuses a user intent; `reason: error` also fires when the data behind a map tier fails to load while the layer is on |
+
+`not_logged_in` / `no_club` fire when the play gate walk **stops** at that step — the
+user cancelled login, or chose "Maybe later" / backed out of team select — not on
+every gate check.
+
+`reason: error` additionally fires when the data behind a map tier fails to load
+while the layer is on: `surface: building` when the `/buildings` bbox fetch fails,
+`surface: district` when `/districts` geometry fails. A failed `/districts/summary`
+standings poll does not report — the mosaic stays painted. Cancelled (superseded
+viewport) requests do not report either. An empty layer is the biggest refusal a
+player can hit and was invisible before this (observed live: a 404 on `/buildings`
+left the map empty with no event). Debounce unchanged.
+
+Metrics: the economy thermometer. `no_tokens` dominant ⇒ economy too tight (tune via
+server `/config`, no release needed); `cooldown` ⇒ mechanics frustration;
+`not_logged_in` / `no_club` ⇒ losing players at the door.
+**Cap:** bounded by play attempts, which the token economy caps per day. Debounce
+repeat fires of the same reason within a session (min 30 s apart).
+
+### `tifo_play_exit` — one per game session, client view
+
+| Event | Properties | When |
+|---|---|---|
+| `tifo_play_exit` | `phase`: `aiming` \| `result_pending` \| `result_shown`; `reason`: `completed` \| `backgrounded` \| `connection_lost` \| `timeout` \| `user_quit`; `outcome`: `claimed` \| `taken` \| `failed` \| `voided` (present only on `reason: completed` — the server's verdict for that game; omitted otherwise) | Client leaves an active game, however that happens |
+
+Metrics: the server sees a hung play session but not why — this closes the exact
+"was it the network or did the user just background the app?" gap. `outcome` makes
+the activation → first play → win funnel buildable inside PostHog without a backend
+join on user id — zero extra volume, since it is a property on an existing per-game
+event. Deliberately mirrors server data (spec principle 1); accepted as a property,
+not an event.
+**Cap:** bounded by games played (token-capped). Negligible volume.
+
+### Timing buckets
+
+Buckets for `api_ms_bucket` and `render_ms_bucket`: `lt100` | `100_300` | `300_700` |
+`700_1500` | `1500_3000` | `gt3000` (ms). Raw values are never sent.
+
+- `api_ms` — backend round-trip for the surface's data (request sent → response
+  received; `TifoApi` has its own private Dio, no shared interceptor — a `Stopwatch`
+  inside `TifoApi._request` times the dio call only, excluding token resolution and
+  JSON parsing, accumulated per surface in `TifoRequestTiming` — district sums
+  `/districts` + `/districts/summary`, buildings is the `/buildings?bbox` request,
+  leaderboard is `/leaderboards`, dashboard is `/me`).
+- `render_ms` — response parsed → layer painted (for district/building: through the
+  platform bridge — `addPolygons` future + `addPostFrameCallback` for an honest
+  "frame shown").
+- **Caveat:** `render_ms` ends at "SDK accepted geometry + next frame", not GPU paint.
+  Sufficient for comparative diagnostics and release-to-release regressions; not an
+  FPS instrument.
+- A tier painted from the in-memory cache (payload older than 10 s) reports neither
+  `api_ms_bucket` nor `render_ms_bucket` — both properties are omitted rather than
+  sent as 0; the same applies to a signed-out Profile tab (no `/me` fetch).
+
+### Explicitly not instrumented
+
+| Rejected | Why |
+|---|---|
+| Zoom-tier transitions (district↔building) | unbounded volume; answered indirectly by surface funnel |
+| Per-building / per-polygon renders | 413 polygons × poll cycles — quota killer, no decisions served |
+| Penalty mini-game internals (shots, timings) | server gets the result; shot detail drives no decision |
+| Viewport / `/notifications` poll ticks | machine cadence, not user behavior |
+| Partial input states | lesson from `search_performed` logging keystroke prefixes |
+
+### Volume
+
+200k MAU scenario (≈60k DAU): `tifo_activated` 20k–50k/mo (launch month),
+`tifo_tutorial_outcome` 30k–60k/mo, `tifo_entry_outcome` ≤ 1 per session with the
+layer on — order of `tifo_surface_viewed`/4, negligible added cost —
+`tifo_surface_viewed` 360k–1.4M/mo, `tifo_blocked` 50k–200k/mo, `tifo_play_exit`
+30k–150k/mo — **~0.5M–1.9M events/mo** total, mid ≈1.1M (steady state ≈0.8M once
+one-timers burn off). Anonymous-event
+pricing puts TIFO's share at roughly $30–50/month on top of the existing baseline.
+**Sampling lever:** if quota pressure appears, sample `tifo_surface_viewed` at 10%
+client-side (hash of distinct_id, stable cohort) — cuts the dominant term 10× while
+funnels stay valid as shares. The other four events are not sampled — they are cheap
+and carry per-user meaning. Re-measure actual volumes after week 1 and decide on
+sampling then, not before.
+
+### Gating
+
+All five events fire only while the TIFO map layer is on
+(`tifoBuildingsMapLayerProvider` state guards the tier reports; the sheets and the
+play gate are reachable only with the layer on) — no background instrumentation
+once the player has it turned off.
+
+## Phase 2b — engagement and transit (transit deadline: before Ramadan 2027, ahead of Hajj)
 
 | Event | Properties |
 |---|---|
@@ -209,6 +372,19 @@ usage, transit readiness for the Hajj season.
 `share_eta_used`, `feedback_submitted`, quick actions, precise time on key screens
 (screen-leave event), mini-app event allowlist (if purchase conversion is ever needed).
 
+TIFO candidates — names/values reserved in advance so they are fixed if the question
+comes up:
+
+- `tifo_surface_viewed` `surface: building_sheet` — the building details sheet as its
+  own surface (intent step between the buildings tier and a play); once per session
+  like the others.
+- `tifo_tutorial_outcome` property `entry`: `gate` \| `help` \| `replay` — who opens
+  the "?" control and Support → Replay.
+- `tifo_layer_off` — the player turning the layer off, once per session; feature
+  churn signal. Deferred until the first month's numbers say whether it is needed.
+
+Each is added only when a question needs it, per the "fewer is better" principle.
+
 ## Dashboards (built manually in the prod project)
 
 1. **Activity** — DAU/WAU/MAU, Stickiness, Retention, Lifecycle; breakdown by OS,
@@ -222,6 +398,17 @@ usage, transit readiness for the Hajj season.
    service opens, time inside mini-apps.
 5. **App sections** (Phase 1.5) — HogQL insight: approximate time on screen from the
    `$screen` sequence.
+6. **TIFO — activation funnel** — store install → tifo surface seen → entry popup
+   outcome → tutorial outcome → activated (club) → first play (server data, joined
+   on user id for logged-in users).
+7. **TIFO — economy & attention** — `tifo_blocked` reason mix, daily (the live-tuning
+   input for `/config` levers); surface mix per user segment; viewers→players
+   conversion.
+8. **TIFO — perf triage & game-session integrity** — `api_ms_bucket` /
+   `render_ms_bucket` distributions per app version (regression detection per release,
+   LB incidents auto-attributed); `tifo_play_exit` reason mix vs server-side
+   voided/hung sessions; `tifo_blocked(error)` by surface as the silent-failure
+   signal.
 
 ## UXCam-legacy cleanup
 

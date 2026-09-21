@@ -1,5 +1,7 @@
 package com.dgis.map.control_handlers.navigation_controls
 
+import com.dgis.map.live_updates.NavLiveEventBus
+import com.dgis.map.live_updates.NavManeuver
 import io.flutter.plugin.common.EventChannel.EventSink
 import ru.dgis.sdk.navigation.*
 import ru.dgis.sdk.routing.*
@@ -202,6 +204,12 @@ class ManeuverControlModel(
         }
 
         val instructionType = getInstructionManeuver(instruction.extraInstructionInfo)
+
+        NavLiveEventBus.maneuver.value = NavManeuver(
+            distanceMm = distance,
+            roadName = instruction.roadName,
+            instructionName = instructionType.name,
+        )
 
         return eventSink.success(
             mapOf(

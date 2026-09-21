@@ -13,5 +13,6 @@ struct MovingViolationsBundle: WidgetBundle {
     var body: some Widget {
         MovingViolations()
         MovingViolationsLiveActivity()
+        NavigationLiveActivity()
     }
 }

@@ -44,6 +44,12 @@ abstract class BaladyAnalyticsSink {
   /// [userId] is null on logout — the sink must reset identity, mirroring the
   /// BytePlus `setUserUniqueId(null)` contract.
   void identify(String? userId, Map<String, dynamic> traits);
+
+  /// Sticky property for the rest of this app run. The facade also merges its
+  /// session properties into every event, so a sink that has no notion of them
+  /// (PostHog, Urbi) can ignore this; UXCam uses it to make the session itself
+  /// filterable in its dashboard.
+  void setSessionProperty(String key, Object? value) {}
 }
 
 /// Debug-only sink: prints every event so QA can verify the stream in logs.
@@ -61,6 +67,13 @@ class LoggingBaladyAnalyticsSink implements BaladyAnalyticsSink {
   void identify(String? userId, Map<String, dynamic> traits) {
     if (kDebugMode) {
       debugPrint('[BaladyAnalytics] identify ${userId ?? '<reset>'} $traits');
+    }
+  }
+
+  @override
+  void setSessionProperty(String key, Object? value) {
+    if (kDebugMode) {
+      debugPrint('[BaladyAnalytics] session property $key = $value');
     }
   }
 }

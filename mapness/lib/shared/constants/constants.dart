@@ -15,11 +15,11 @@ class MapnessConstants {
   static const roadCamerasPrefsKey = 'road_cameras';
   static const overSpeedingPrefsKey = 'over_speeding';
   static const voicesLanguagePrefsKey = 'voices_language';
-  static const activeNavigationCursorPrefsKey = 'activeNavigationCursor';
   static const camerasOn = 'camerasOn';
   static const analyticsTripStopped = 'tripStopped';
   static const analyticsSearchInThisAreaPressed = 'analyticsSearchInThisAreaPressed';
   static const parkingEnabledFreeRoam = 'parkingEnabledFreeRoam';
+  static const activeNavigationCursorPrefsKey = 'activeNavigationCursor';
 
   ///config region
   static const envConfigBoxKey = 'envConfigKey_4.7.3';

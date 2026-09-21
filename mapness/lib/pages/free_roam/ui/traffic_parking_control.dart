@@ -8,7 +8,9 @@ import 'package:mapness/features/lifestyle_layers/providers/layers_controls.dart
 import 'package:mapness/features/lifestyle_layers/providers/layers_state.dart';
 import 'package:mapness/features/special_themes/modes/saudi_national_day/saudi_national_day.dart';
 import 'package:mapness/shared/constants/constants.dart';
+import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
+import 'package:mapness/features/balady_analytics/metrics.dart';
 import 'package:mapness/shared/providers/map/navigator_auto_enable_parking.dart';
 import 'package:mapness/shared/providers/map/parking_autoenabled_sheet_provider.dart';
 import 'package:mapness/shared/providers/map/parking_state.dart';
@@ -128,6 +130,8 @@ class _ParkingWidget extends StatelessWidget {
 }
 
 class _TrafficControl extends StatelessWidget {
+  static const _tag = MetricsConstants.exploreTag;
+
   final bool isEnabled;
   final bool isVisable;
   final TrafficState trafficState;
@@ -153,6 +157,11 @@ class _TrafficControl extends StatelessWidget {
       bottomLeft: parkingVisible ? Radius.zero : const Radius.circular(RadiusBorder.ml),
     ),
     onTap: () {
+      Metrics.logEventAdvanced(
+        MetricsConstants.exploreKeys.trafficLightButton,
+        group: _tag,
+        action: MetricAction.tap.name,
+      );
       trafficState.onTrafficTap();
     },
   );
