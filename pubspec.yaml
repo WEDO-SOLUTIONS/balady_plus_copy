@@ -17,8 +17,7 @@ publish_to: "none" # Remove this line if you wish to publish to pub.dev
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
 
 version: 3.30.3+898
-# version: 3.13.6+467
-
+# version: 3.13.7+468
 environment:
   sdk: ">=3.8.0 <4.0.0"
   flutter: ">=3.0.0"
