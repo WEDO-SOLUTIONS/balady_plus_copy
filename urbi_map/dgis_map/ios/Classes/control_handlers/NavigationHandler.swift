@@ -294,7 +294,12 @@ class NavigationHandler {
         let toDelete = map.sources.first(where: { $0 is MyLocationMapObjectSource})
         
         if toDelete == nil { return }
-        
+
+        // BALADY-3972: the 3D model set via setModelData sticks to this
+        // source's native object past removal — clear it before discarding,
+        // or the next session's fresh source still renders it (see swap
+        // in startNavigation for the matching case).
+        (toDelete as? MyLocationMapObjectSource)?.item.setModelData(data: nil)
         map.removeSource(source: toDelete!)
         map.addSource(source: oldSource!)
     }
@@ -382,6 +387,10 @@ class NavigationHandler {
 
         let oldSource = map.sources.first(where: { $0 is MyLocationMapObjectSource })!
 
+        // BALADY-3972: clear before removal — the model outlives the
+        // source once removed, so a stale car-session model kept
+        // showing on the brand-new source of the next session.
+        (oldSource as? MyLocationMapObjectSource)?.item.setModelData(data: nil)
         map.removeSource(source: oldSource)
 
         map.addSource(source: MyLocationMapObjectSource(
