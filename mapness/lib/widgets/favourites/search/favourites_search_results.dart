@@ -27,7 +27,6 @@ class FavouritesSearchResults extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final scope = context.read<SearchScope>();
-    final searcher = ref.watch(searchProvider(scope.value).notifier);
     final contentColor = context.colors.backgroundSurface1;
 
     final items = results.firstPage?.items;
@@ -65,8 +64,7 @@ class FavouritesSearchResults extends ConsumerWidget {
                     isDividerEnabled: index != length - 1,
                     onTap: () async {
                       FocusScope.of(context).unfocus();
-                      searcher.clear();
-                      await onSearchTap(ref, context, item);
+                      await onSearchTap(ref, context, item, ref.read(searchProvider(scope.value).notifier));
                     },
                     leading: GeneralIcons.location.icon(color: context.colors.accentActive),
                     text: ContentRowTextOptions(
@@ -84,7 +82,7 @@ class FavouritesSearchResults extends ConsumerWidget {
     );
   }
 
-  Future<void> onSearchTap(WidgetRef ref, BuildContext context, DirectoryObjectMessage item) async {
+  Future<void> onSearchTap(WidgetRef ref, BuildContext context, DirectoryObjectMessage item, Search searcher) async {
     final favItem = item.mapToFavourite();
     switch (markerType) {
       // Every live caller of FavouritesSearchRoute passes home/work only.
@@ -96,6 +94,11 @@ class FavouritesSearchResults extends ConsumerWidget {
       case FavouriteItemMarkerType.work:
         await ref.read(homeWorkFavoritesActionsProvider.notifier).setWork(favItem);
     }
+    // Reset the (autoDispose) search state right before popping — in the same
+    // tick, with no `await` in between — so a stale SearchStateResults isn't
+    // handed to the next FavouritesSearchRoute, without unmounting this
+    // subtree before `setHome`/`setWork` finished (BE-88).
+    searcher.clear();
     if (context.mounted && context.router.canPop()) {
       context.router.pop(favItem);
     }

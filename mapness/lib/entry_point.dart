@@ -558,8 +558,12 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> with Widg
   @override
   Widget build(BuildContext context) {
     ref.listen(darkModeProvider, (prev, next) {
+      if (prev?.value == next.value) {
+        return;
+      }
+      final nextValue = next.value;
       WidgetsBinding.instance.addPostFrameCallback((_) {
-        _themeChanged(isDark: next.value?.isDark == true);
+        _themeChanged(isDark: nextValue?.isDark == true);
       });
     });
 

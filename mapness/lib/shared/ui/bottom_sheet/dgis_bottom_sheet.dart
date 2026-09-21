@@ -689,19 +689,29 @@ class _DgisBottomSheetState extends State<DgisBottomSheet>
 
     final visibleHeight = _visibleHeightByExpansion(expansion);
 
+    // Reflect the intended target immediately, not only once the transition
+    // settles (previously set only at the very end of this method, after an
+    // animation's `await`). Otherwise a `WidgetSizeNotifier.onSizeChanged`
+    // firing while a previous `setExpansion` animation is still in flight
+    // reads a stale `_expansion` (its pre-animation value) via its own
+    // `setExpansion(_expansion, animate: false)` call and redirects the sheet
+    // toward the wrong expansion — observed collapsing a freshly opened
+    // sheet to `Expansion.hidden` (BE-88).
+    final expansionChanged = _expansion != expansion;
+    if (expansionChanged) {
+      setState(() {
+        _expansion = expansion;
+      });
+    }
+
     // если желаемая высота совпадает с текущей, нам не нужно запускать никаких анимаций
     if (_visibleHeight == visibleHeight) {
       _printDebugLog('_visibleHeight == visibleHeight -> just update expansion if needed');
-      // но не забываем обновить expansion если оно изменилось
       // попадаем сюда когда юзер вручную подвинул bottom sheet
       // и не нужно доскраливать до близжайшего значения expansion
       // самый частый случай - expanded
       // другие реальны, но крайне мало вероятны
-      if (_expansion != expansion) {
-        _printDebugLog('setExpansion. update _expansion with setState and return');
-        setState(() {
-          _expansion = expansion;
-        });
+      if (expansionChanged) {
         _notifyExpansion(expansion, byUser: byUser);
       }
       return;
@@ -777,10 +787,6 @@ class _DgisBottomSheetState extends State<DgisBottomSheet>
 
     // TODO: поддержать полное закрытие
 
-    // не забываем обновить expansion
-    setState(() {
-      _expansion = expansion;
-    });
     _notifyExpansion(expansion, byUser: byUser);
   }
 
