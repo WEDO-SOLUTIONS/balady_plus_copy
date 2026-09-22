@@ -16,6 +16,7 @@ import 'package:balady_plus/app/features/volunteer_profile/domain/use_cases/get_
 import 'package:balady_plus/app/features/volunteer_profile/domain/use_cases/get_skills.dart';
 import 'package:balady_plus/app/features/volunteer_profile/domain/use_cases/get_specializations.dart';
 import 'package:balady_plus/app/features/volunteer_profile/domain/use_cases/get_volunteering_fields.dart';
+import 'package:balady_plus/app/features/volunteer_profile/domain/use_cases/get_volunteering_services.dart';
 import 'package:balady_plus/app/features/volunteer_profile/domain/use_cases/submit_profile.dart';
 import 'package:balady_plus/app/features/volunteer_profile/domain/use_cases/upload_cv.dart';
 
@@ -36,6 +37,7 @@ class VolunteerProfileInjection {
         getLvls: slVolunteer<GetLvls>(),
         getInterests: slVolunteer<GetInterests>(),
         getVolunteeringFields: slVolunteer<GetVolunteeringFields>(),
+        getVolunteeringServices: slVolunteer<GetVolunteeringServices>(),
         getBloodTypes: slVolunteer<GetBloodTypes>(),
         getDiseases: slVolunteer<GetDiseases>(),
         uploadCV: slVolunteer<UploadCV>(),
@@ -82,6 +84,11 @@ class VolunteerProfileInjection {
 
     slVolunteer.registerLazySingleton<GetVolunteeringFields>(
       () => GetVolunteeringFields(
+          repository: slVolunteer<VolunteerProfileRepository>()),
+    );
+
+    slVolunteer.registerLazySingleton<GetVolunteeringServices>(
+      () => GetVolunteeringServices(
           repository: slVolunteer<VolunteerProfileRepository>()),
     );
 

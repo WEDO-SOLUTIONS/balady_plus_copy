@@ -17,6 +17,25 @@ class BaldayDeeplink {
   static const String miniAppItemId = 'dt_Id';
   static const String cityEvent = 'cityEvent';
 
+  /// Draw a route from the current location to the point in [qKey].
+  /// Example: `baladyplus://?q=24.7009,46.6760&navigate=yes`
+  static const String navigateKey = 'navigate';
+
+  /// Free-text search query, used for addresses coming from other apps
+  /// (e.g. a contact's address). Example: `baladyplus://?s=King%20Fahd%20Road`
+  static const String searchTextKey = 's';
+
+  /// Parsed permissively so partner integrations that send `1`/`true`, or the
+  /// bare `?navigate` flag, behave the same as the documented `navigate=yes`.
+  /// An explicit negative value (`no`/`false`/`0`) keeps navigation disabled.
+  static bool isNavigateEnabled(String? value) {
+    if (value == null) {
+      return false;
+    }
+    final normalized = value.trim().toLowerCase();
+    return normalized.isEmpty || normalized == 'yes' || normalized == 'true' || normalized == '1';
+  }
+
   static String get baseAuthorityWithScheme => 'https://$baseAuthority';
 
   // By coordinates

@@ -177,6 +177,55 @@
             </intent-filter>
         </receiver>
 
+        <!--
+            Saudi National Day alternate launcher icon.
+
+            Android has no first-class alternate-icon API, so the icon is
+            swapped by toggling this alias against the default one below.
+            Both are LAUNCHER entries and exactly one is ever enabled:
+            `.MainActivityDefault` ships enabled, this one ships disabled,
+            and SaudiNationalDayAppIcon (Dart) flips them from remote config.
+
+            Caveats, deliberately accepted:
+              * Disabling the currently-active alias can kill the running task,
+                so the swap is only ever applied at startup — never while the
+                user is mid-session.
+              * Homescreen shortcuts pinned to the disabled alias are dropped
+                by the launcher. This is inherent to the activity-alias
+                approach and cannot be worked around.
+        -->
+        <activity-alias
+            android:name=".MainActivityNationalDay"
+            android:enabled="false"
+            android:exported="true"
+            android:icon="@mipmap/ic_launcher_national_day"
+            android:label="@string/app_name"
+            android:targetActivity=".MainActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity-alias>
+
+        <!--
+            Default launcher icon, expressed as an alias so it can be disabled
+            symmetrically with the National Day one. MainActivity itself keeps
+            no LAUNCHER intent-filter (see below), otherwise it would always
+            show a third, un-disableable icon.
+        -->
+        <activity-alias
+            android:name=".MainActivityDefault"
+            android:enabled="true"
+            android:exported="true"
+            android:icon="@mipmap/ic_launcher"
+            android:label="@string/app_name"
+            android:targetActivity=".MainActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity-alias>
+
         <activity
             android:name=".MainActivity"
             android:configChanges="orientation|keyboardHidden|keyboard|screenSize|smallestScreenSize|locale|layoutDirection|fontScale|screenLayout|density|uiMode"
@@ -203,9 +252,27 @@
             <meta-data
                 android:name="android.app.shortcuts"
                 android:resource="@xml/shortcuts" />
+            <!--
+                The visible launcher entries are the two activity-aliases
+                above; exactly one is enabled at a time. MainActivity itself
+                must NOT be a launcher entry, otherwise a third icon appears
+                that neither alias can disable.
+
+                The MAIN/LAUNCHER filter below exists ONLY for the Flutter
+                tooling. `flutter run` / `flutter install` pick the activity to
+                start by scanning <activity> elements (never <activity-alias>)
+                for a filter naming MAIN + LAUNCHER, and abort with "package
+                identifier or launch activity not found" otherwise. The <data>
+                scheme makes this filter unmatchable by any real launcher: a
+                launcher's MAIN/LAUNCHER query carries no data URI, so the
+                filter's data test fails and this activity is never listed.
+                The tooling's explicit-component `am start ... .MainActivity`
+                bypasses filter matching entirely, so it still launches.
+            -->
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
+                <data android:scheme="balady-flutter-tooling-launch" />
             </intent-filter>
 
             <!-- Deep linking -->
@@ -256,6 +323,18 @@
                 <data android:host="apps.balady.gov.sa" />
             </intent-filter>
 
+            <intent-filter android:autoVerify="true">
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data android:scheme="http" />
+                <data android:scheme="https" />
+                <data android:host="baladyplus.sa" />
+                <data android:host="www.baladyplus.sa" />
+            </intent-filter>
+
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
 
@@ -270,6 +349,15 @@
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
                 <data android:scheme="insiderbaladyapp" />
+            </intent-filter>
+
+            <!-- Public app scheme shared with partners (e.g. WhatsApp location sharing):
+                 baladyplus://?q=<lat>,<lon> -->
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="baladyplus" />
             </intent-filter>
 
         </activity>

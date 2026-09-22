@@ -4,9 +4,11 @@ import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart' as balady_ctx;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mapness/_generated/assets/assets.gen.dart';
 import 'package:mapness/features/makkah_places/makkah_places_layer_provider.dart';
 import 'package:mapness/features/special_themes/core/special_theme_mode.dart';
 import 'package:mapness/features/special_themes/modes/mekkah_base/makkah_poi_constants.dart';
+import 'package:mapness/features/special_themes/modes/saudi_national_day/saudi_national_day_resolved_config.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/providers/dark_mode.dart';
 import 'package:mapness/widgets/landing/dashboard/national_flag.dart';
@@ -16,6 +18,17 @@ import 'package:sheetify/sheetify.dart';
 ///
 /// Used by [MapHiddenStateControls] to render event-specific UI above
 /// the quick search bar, without hard-coding per-event logic there.
+
+/// Height of the special-theme banner strip.
+///
+/// Not on the [Spacing] scale — the design calls for 60, which sits between
+/// `$12x` (48) and `$16x` (64).
+const double _kBannerHeight = 60;
+
+/// Intrinsic height of `ksa_national_day_header.svg` (552x19). The artwork is
+/// stretched to the banner width, so the drawn height is derived from the
+/// available width rather than hard-coded.
+const double _kNationalDayHeaderAspect = 552 / 19;
 
 class SpecialThemeHeader extends ConsumerWidget {
   const SpecialThemeHeader({
@@ -32,7 +45,10 @@ class SpecialThemeHeader extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final isDark = ref.watch(darkModeProvider).value?.isDark ?? false;
-    final banner = _buildBanner(context, isDark: isDark);
+    // Anniversary number is remote-driven, so a wrong year is a Console edit
+    // rather than an app release.
+    final anniversary = ref.watch(saudiNationalDayResolvedConfigProvider).anniversary;
+    final banner = _buildBanner(context, isDark: isDark, anniversary: anniversary);
     final flag = _buildFlag();
 
     if (banner == null && flag == null) {
@@ -46,7 +62,7 @@ class SpecialThemeHeader extends ConsumerWidget {
     );
   }
 
-  Widget? _buildBanner(BuildContext context, {required bool isDark}) {
+  Widget? _buildBanner(BuildContext context, {required bool isDark, required int anniversary}) {
     final bool hasBanner =
         mode == SpecialThemeMode.nationalDay || mode == SpecialThemeMode.mekkahBase || mode == SpecialThemeMode.ramadan;
     if (!hasBanner) return null;
@@ -54,11 +70,11 @@ class SpecialThemeHeader extends ConsumerWidget {
     final BoxDecoration bannerDecoration;
     if (mode == SpecialThemeMode.mekkahBase) {
       if (isDark) {
-        bannerDecoration = BoxDecoration(
-          borderRadius: const BorderRadius.vertical(
+        bannerDecoration = const BoxDecoration(
+          borderRadius: BorderRadius.vertical(
             top: Radius.circular(RadiusBorder.xl),
           ),
-          gradient: const LinearGradient(
+          gradient: LinearGradient(
             begin: Alignment.centerLeft,
             end: Alignment.centerRight,
             colors: [
@@ -68,7 +84,7 @@ class SpecialThemeHeader extends ConsumerWidget {
             ],
             stops: [0.0, 0.53, 1.0],
           ),
-          image: const DecorationImage(
+          image: DecorationImage(
             image: AssetImage('assets/images/themes/makkah/ribbon_pattern_dark.png'),
             fit: BoxFit.cover,
             alignment: Alignment.center,
@@ -76,11 +92,11 @@ class SpecialThemeHeader extends ConsumerWidget {
           ),
         );
       } else {
-        bannerDecoration = BoxDecoration(
-          borderRadius: const BorderRadius.vertical(
+        bannerDecoration = const BoxDecoration(
+          borderRadius: BorderRadius.vertical(
             top: Radius.circular(RadiusBorder.xl),
           ),
-          gradient: const LinearGradient(
+          gradient: LinearGradient(
             begin: Alignment.centerLeft,
             end: Alignment.centerRight,
             colors: [
@@ -92,7 +108,7 @@ class SpecialThemeHeader extends ConsumerWidget {
             ],
             stops: [0.03, 0.19, 0.33, 0.46, 1.0],
           ),
-          image: const DecorationImage(
+          image: DecorationImage(
             image: AssetImage('assets/images/themes/makkah/qiblah_header.png'),
             fit: BoxFit.cover,
             alignment: Alignment.center,
@@ -101,11 +117,11 @@ class SpecialThemeHeader extends ConsumerWidget {
         );
       }
     } else if (mode == SpecialThemeMode.ramadan) {
-      bannerDecoration = BoxDecoration(
-        borderRadius: const BorderRadius.vertical(
+      bannerDecoration = const BoxDecoration(
+        borderRadius: BorderRadius.vertical(
           top: Radius.circular(RadiusBorder.xl),
         ),
-        gradient: const LinearGradient(
+        gradient: LinearGradient(
           begin: Alignment.centerLeft,
           end: Alignment.centerRight,
           colors: [
@@ -119,7 +135,7 @@ class SpecialThemeHeader extends ConsumerWidget {
           ],
           stops: [0.03, 0.21, 0.42, 0.54, 0.69, 0.91, 1.0],
         ),
-        image: const DecorationImage(
+        image: DecorationImage(
           image: AssetImage('assets/images/themes/ramadan/ramadan_header.png'),
           fit: BoxFit.cover,
           alignment: Alignment.center,
@@ -144,18 +160,30 @@ class SpecialThemeHeader extends ConsumerWidget {
         child: GestureDetector(
           onTap: () => controller.setState(ThreeStateSheet.open),
           child: SizedBox(
-            height: Spacing.$12x * (state == ThreeStateSheet.hidden ? clampDouble(interpolation * 3, 0, 1) : 1.0),
+            height: _kBannerHeight * (state == ThreeStateSheet.hidden ? clampDouble(interpolation * 3, 0, 1) : 1.0),
             width: double.infinity,
             child: DecoratedBox(
               decoration: bannerDecoration,
-              child: Align(
-                alignment: Alignment.centerRight,
-                child: Padding(
-                  padding: const EdgeInsets.only(
-                    right: Spacing.$4x,
-                    bottom: Spacing.$4x,
-                  ),
-                  child: _buildBannerText(context),
+              // Clip so the header artwork follows the banner's rounded top
+              // corners instead of painting into them.
+              child: ClipRRect(
+                borderRadius: const BorderRadius.vertical(
+                  top: Radius.circular(RadiusBorder.xl),
+                ),
+                child: Stack(
+                  children: [
+                    if (mode == SpecialThemeMode.nationalDay) _buildNationalDayHeader(),
+                    Align(
+                      alignment: Alignment.centerRight,
+                      child: Padding(
+                        padding: const EdgeInsets.only(
+                          right: Spacing.$4x,
+                          bottom: Spacing.$4x,
+                        ),
+                        child: _buildBannerText(context, anniversary),
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ),
@@ -165,10 +193,27 @@ class SpecialThemeHeader extends ConsumerWidget {
     );
   }
 
-  Widget _buildBannerText(BuildContext context) {
+  /// Pixel-pattern strip that sits flush against the top edge of the banner.
+  ///
+  /// Deliberately avoids [LayoutBuilder]: this widget is the sheet's
+  /// `topHeader`, whose height the sheet measures during layout. Adding a
+  /// layout callback here mutates the tree mid-layout and trips the
+  /// `!semantics.parentDataDirty` assertion. [AspectRatio] keeps the 552:19
+  /// artwork proportional without needing the incoming constraints.
+  Widget _buildNationalDayHeader() => Positioned(
+    top: 0,
+    left: 0,
+    right: 0,
+    child: AspectRatio(
+      aspectRatio: _kNationalDayHeaderAspect,
+      child: Assets.imagesSvg.ksaNationalDayHeader.svg(fit: BoxFit.fill),
+    ),
+  );
+
+  Widget _buildBannerText(BuildContext context, int anniversary) {
     if (mode == SpecialThemeMode.nationalDay) {
       return Text(
-        context.l10n.happy95thYears,
+        context.l10n.happyNationalDayYears(anniversary),
         style:
             balady_ctx.BuildContextExt(
               context,
