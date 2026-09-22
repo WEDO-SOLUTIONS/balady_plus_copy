@@ -94,7 +94,7 @@ class EnvironmentConfig {
     bssApi: json['bssApi'] as String,
     saudiPassApi: json['saudiPassApi'] as String,
     favoriteListsApi:
-        json['favoriteListsApi'] as String? ?? 'https://urbi-lifestyle-stg.momah.gov.sa/1.0/api/v1/favorite',
+        json['favoriteListsApi'] as String? ?? 'https://urbi-lifestyle.momah.gov.sa/1.0/api/v1/favorite',
     cityscapeDateTimeRange: CityEventDateRange.fromJson(
       json['cityscapeDateTimeRange'] as Map<String, dynamic>?,
       CityEventDateRange.cityscapeDefault(),
@@ -210,7 +210,7 @@ class EnvironmentConfig {
     bssApi: 'https://s1.bss.2gis.com',
     baladyBusinessUrl: 'https://business.balady.gov.sa',
     saudiPassApi: 'https://apiservices.balady.gov.sa/',
-    favoriteListsApi: 'https://urbi-lifestyle-stg.momah.gov.sa/1.0/api/v1/favorite',
+    favoriteListsApi: 'https://urbi-lifestyle.momah.gov.sa/1.0/api/v1/favorite',
     cityscapeDateTimeRange: CityEventDateRange.cityscapeDefault(),
     saudiNationalDayDateRange: CityEventDateRange.saudiNationalDayDefault(),
     foundingDayDateRange: CityEventDateRange.foundingDayDefault(),
