@@ -1,91 +1,124 @@
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mapness/features/saudi_national_day/saudi_national_day.dart';
+import 'package:mapness/entities/city_event/city_event.dart';
+import 'package:mapness/features/special_themes/modes/saudi_national_day/saudi_national_day_config.dart';
 
 void main() {
-  group('Saudi National Day Providers', () {
-    late ProviderContainer container;
+  group('SaudiNationalDayRemoteConfig', () {
+    SaudiNationalDayRemoteConfig configWith({bool enabled = true, bool appIconEnabled = true}) =>
+        SaudiNationalDayRemoteConfig(
+          enabled: enabled,
+          startDate: DateTime(2026, 9, 22),
+          endDate: DateTime(2026, 9, 24, 23, 59, 59),
+          anniversary: 96,
+          appIconEnabled: appIconEnabled,
+        );
 
-    setUp(() {
-      container = ProviderContainer();
-    });
+    group('isActiveAt', () {
+      test('is active on every day of the window, including both bounds', () {
+        final config = configWith();
 
-    tearDown(() {
-      container.dispose();
-    });
-
-    group('saudiNationalDaySimpleProvider', () {
-      test('returns boolean value', () {
-        final result = SaudiNationalDay.isNow();
-        expect(result, isA<bool>());
+        expect(config.isActiveAt(DateTime(2026, 9, 22)), isTrue, reason: 'start bound is inclusive');
+        expect(config.isActiveAt(DateTime(2026, 9, 23, 12)), isTrue);
+        expect(config.isActiveAt(DateTime(2026, 9, 24, 23, 59, 58)), isTrue, reason: 'end bound is inclusive');
       });
 
-      test('returns false for non-Saudi National Day dates', () {
-        // Test with various dates that are not Saudi National Day
-        final testDates = [
-          DateTime(2025, 1, 1), // New Year
-          DateTime(2025, 6, 15), // Random summer date
-          DateTime(2025, 12, 25), // Christmas
-          DateTime(2025, 9, 22), // Day before Saudi National Day
-          DateTime(2025, 9, 28), // Day after Saudi National Day
+      test('is inactive outside the window', () {
+        final config = configWith();
+
+        final outside = [
+          DateTime(2026, 9, 21, 23, 59, 59), // moment before start
+          DateTime(2026, 9, 25), // moment after end
+          DateTime(2026, 1, 1),
+          DateTime(2025, 9, 23), // last year's National Day
+          DateTime(2027, 9, 23), // next year's
         ];
 
-        for (final date in testDates) {
-          // Test the actual logic by checking if the date is within the Saudi National Day range
-          final isInRange =
-              date.isAfter(SaudiNationalDayConfig.startDate) && date.isBefore(SaudiNationalDayConfig.endDate);
-          expect(isInRange, false, reason: 'Date ${date.toString()} should not be Saudi National Day');
+        for (final date in outside) {
+          expect(config.isActiveAt(date), isFalse, reason: '$date should be outside the window');
         }
       });
 
-      test('returns true for Saudi National Day date', () {
-        // Test the logic with September 23rd, 2025
-        final saudiNationalDay = DateTime(2025, 9, 24);
-        final isInRange = saudiNationalDay.isAfter(SaudiNationalDayConfig.startDate) &&
-            saudiNationalDay.isBefore(SaudiNationalDayConfig.endDate);
-        expect(isInRange, true);
-      });
-
-      test('returns false for days that is not in interval of Saudi National Day dates', () {
-        // Test dates that are clearly outside the Saudi National Day interval (Sept 23-27, 2025)
-        final testDates = [
-          DateTime(2025, 9, 20), // 3 days before start
-          DateTime(2025, 9, 21), // 2 days before start
-          DateTime(2025, 9, 22), // 1 day before start
-          DateTime(2025, 9, 28), // 1 day after end
-          DateTime(2025, 9, 29), // 2 days after end
-          DateTime(2025, 9, 30), // 3 days after end
-          DateTime(2025, 10, 1), // Different month
-          DateTime(2026, 9, 23), // Different year
-        ];
-
-        for (final date in testDates) {
-          // Test the actual logic by checking if the date is within the Saudi National Day range
-          final isInRange =
-              date.isAfter(SaudiNationalDayConfig.startDate) && date.isBefore(SaudiNationalDayConfig.endDate);
-          expect(isInRange, false, reason: 'Date ${date.toString()} should not be in Saudi National Day interval');
-        }
+      test('the enabled flag kills the theme without moving the dates', () {
+        final config = configWith(enabled: false);
+        expect(config.isActiveAt(DateTime(2026, 9, 23)), isFalse);
       });
     });
 
-    group('saudiNationalDayCountdownProvider', () {
-      test('returns correct type', () {
-        final result = SaudiNationalDay.countdown();
-        expect(result != null, isTrue);
+    group('isAppIconActiveAt', () {
+      test('requires both the window and the icon gate', () {
+        final midWindow = DateTime(2026, 9, 23);
+
+        expect(configWith().isAppIconActiveAt(midWindow), isTrue);
+        expect(configWith(appIconEnabled: false).isAppIconActiveAt(midWindow), isFalse);
+        expect(configWith(enabled: false).isAppIconActiveAt(midWindow), isFalse);
       });
 
-      test('returns null for past dates', () {
-        // Test with a date after Saudi National Day
-        final pastDate = DateTime(2025, 9, 28);
-        final expectedCountdown = SaudiNationalDay.countdownFromDate(pastDate);
-        expect(expectedCountdown, null);
+      test('is inactive outside the window even when the icon gate is on', () {
+        expect(configWith().isAppIconActiveAt(DateTime(2026, 9, 25)), isFalse);
+      });
+    });
+
+    group('CityEventDateRange mapping', () {
+      // Mirrors the mapping in saudiNationalDayResolvedConfigProvider: the
+      // remote `to` is an inclusive date-only bound, so it must be extended
+      // to the last instant of that day.
+      SaudiNationalDayRemoteConfig fromRange(CityEventDateRange range) => SaudiNationalDayRemoteConfig(
+        enabled: range.enabled ?? true,
+        startDate: DateTime(range.from.year, range.from.month, range.from.day),
+        endDate: DateTime(range.to.year, range.to.month, range.to.day, 23, 59, 59),
+        anniversary: SaudiNationalDayRemoteConfig.bundledDefault.anniversary,
+        appIconEnabled: SaudiNationalDayRemoteConfig.bundledDefault.appIconEnabled,
+      );
+
+      test('parses the dd-MM-yy remote format used by app_env_config', () {
+        final range = CityEventDateRange.fromJson({
+          'from': '22-09-26',
+          'to': '24-09-26',
+          'enabled': true,
+        }, CityEventDateRange.saudiNationalDayDefault());
+
+        expect(range.from, DateTime(2026, 9, 22));
+        expect(range.to, DateTime(2026, 9, 24));
       });
 
-      test('returns Duration.zero for Saudi National Day', () {
-        // Test with Saudi National Day
-        final saudiNationalDay = DateTime(2025, 9, 23);
-        final expectedCountdown = SaudiNationalDay.countdownFromDate(saudiNationalDay);
-        expect(expectedCountdown, Duration.zero);
+      test('keeps the whole final day of the window active', () {
+        final config = fromRange(CityEventDateRange(DateTime(2026, 9, 22), DateTime(2026, 9, 24)));
+
+        expect(config.isActiveAt(DateTime(2026, 9, 24, 20)), isTrue, reason: 'last day must stay active');
+        expect(config.isActiveAt(DateTime(2026, 9, 25)), isFalse);
+      });
+
+      test('an absent enabled flag means "just use the dates"', () {
+        final config = fromRange(CityEventDateRange(DateTime(2026, 9, 22), DateTime(2026, 9, 24)));
+
+        expect(config.enabled, isTrue);
+        expect(config.isActiveAt(DateTime(2026, 9, 23)), isTrue);
+      });
+
+      test('enabled:false switches the theme off inside its own window', () {
+        final config = fromRange(CityEventDateRange(DateTime(2026, 9, 22), DateTime(2026, 9, 24), enabled: false));
+
+        expect(config.isActiveAt(DateTime(2026, 9, 23)), isFalse);
+      });
+
+      test('falls back to the bundled default when the remote key is absent', () {
+        final range = CityEventDateRange.fromJson(null, CityEventDateRange.saudiNationalDayDefault());
+
+        // The shipped default is year-relative, so it must at least parse and
+        // produce a usable window rather than throwing.
+        expect(range.from.month, 9);
+        expect(range.to.month, 9);
+      });
+    });
+
+    group('bundled default', () {
+      test('targets the 2026 window agreed for this release', () {
+        final config = SaudiNationalDayRemoteConfig.bundledDefault;
+
+        expect(config.startDate, DateTime(2026, 9, 22));
+        expect(config.endDate, DateTime(2026, 9, 24, 23, 59, 59));
+        expect(config.anniversary, 96);
+        expect(config.isActiveAt(DateTime(2026, 9, 23)), isTrue);
       });
     });
   });
