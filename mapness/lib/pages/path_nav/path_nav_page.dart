@@ -583,7 +583,9 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
                   endTripAndBuildAnotherRoute: _endTripAndBuildAnotherRoute,
                   onSearchPressed: _onSearchPressed,
                   onTapRoute: _onShowRoutePressed,
-                  onEndTripPressed: () => _endTripAndShowFeedback(context, returnToRoute: _routeToReturnTo()),
+                  onEndTripPressed: () => _navigationState.value == PathNavState.finished
+                      ? _endTripAndShowFeedback(context)
+                      : _endTripAndReturnToRoute(),
                   sheetController: sheetController,
                   isLandscape: !isPortrait,
                   isHomeOrWork: widget.isHomeOrWork,
@@ -746,13 +748,33 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
     }
   }
 
-  /// The route to rebuild after the trip is ended. Arriving keeps the old flow,
-  /// and so does a navigation restored after a restart, which has no points.
-  CurrentRouteState? _routeToReturnTo() =>
-      _navigationState.value == PathNavState.finished ? null : ref.read(currentRouteProvider);
+  /// Ending a running trip by hand returns to the route preview and shows
+  /// nothing else. A navigation restored after a restart has no route to return
+  /// to, so it just goes back to the map.
+  Future<void> _endTripAndReturnToRoute() async {
+    final routeState = ref.read(currentRouteProvider);
+
+    await ref.read(urbiAnalyticsProvider).track(MapnessConstants.analyticsTripStopped);
+
+    await _parkingCheck();
+
+    await _endTrip();
+
+    if (!mounted) {
+      return;
+    }
+
+    context.router.popUntilRouteWithName(BottomMenuRoute.name);
+
+    if (!mounted || routeState == null) {
+      return;
+    }
+
+    await _showRouteAfterTrip(routeState);
+  }
 
   // Show the feedback page after the trip is finished manually
-  Future<void> _endTripAndShowFeedback(BuildContext ctx, {CurrentRouteState? returnToRoute}) async {
+  Future<void> _endTripAndShowFeedback(BuildContext ctx) async {
     await ref.read(urbiAnalyticsProvider).track(MapnessConstants.analyticsTripStopped);
 
     await _parkingCheck();
@@ -807,16 +829,9 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
       return;
     }
 
-    final isLandscape = MediaQuery.of(context).orientation == Orientation.landscape;
-
-    if (returnToRoute != null) {
-      await _showRouteAfterTrip(returnToRoute);
-    }
-
     // We don't show the feedback page in landscape mode
-    if (!isLandscape) {
-      // `ctx` belongs to this page, which is gone once the route above is pushed
-      await (rootNavigatorKey.currentContext ?? ctx).router.push(AppFeedbackSheet(source: const FeedbackSource.navi()));
+    if (MediaQuery.of(context).orientation != Orientation.landscape) {
+      await ctx.router.push(AppFeedbackSheet(source: const FeedbackSource.navi()));
     }
   }
 
