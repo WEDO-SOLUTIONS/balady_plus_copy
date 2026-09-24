@@ -25,6 +25,8 @@ import 'package:mapness/pages/routing/ui/routing_map_controls.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/hooks/toggle_sheet_controller_hook.dart';
 import 'package:mapness/shared/providers/location.dart';
+import 'package:mapness/shared/providers/map/camera_padding.dart';
+import 'package:mapness/shared/providers/map/camera_position.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:mapness/shared/providers/map/object_manager.dart';
 import 'package:provider/provider.dart' as provider;
@@ -44,15 +46,22 @@ class RoutingRoutesPage extends StatefulHookConsumerWidget {
 }
 
 class _RoutingRoutesPageState extends ConsumerState<RoutingRoutesPage> {
+  /// Same zoom a POI tap uses, applied when the map zoom is not known yet.
+  static const _poiReturnZoom = 17.0;
+
   late List<RouteParamsPointWithLabel> points;
   DgisMapController? _dgisController;
   bool _permissionRequested = false;
   RouteSearchOptionsMessage? _navType;
   int? _activeRouteIndex;
+  double? _returnZoom;
 
   @override
   void initState() {
     super.initState();
+    // Read before the calculated routes pull the camera to their overview:
+    // closing the screen brings the map back to this zoom.
+    _returnZoom = ref.read(cameraPositionProvider)?.zoom;
     _initialize();
   }
 
@@ -345,8 +354,36 @@ class _RoutingRoutesPageState extends ConsumerState<RoutingRoutesPage> {
       return;
     }
 
-    if (context.mounted) {
-      context.router.pop();
+    if (!context.mounted) {
+      return;
     }
+
+    final finishPoint = _openedFromPoiCard ? points.last.value : null;
+    if (finishPoint == null) {
+      context.router.pop();
+      return;
+    }
+
+    // Notifiers of keepAlive providers stay usable once this page is gone,
+    // unlike `ref` and `context`.
+    final cameraPadding = ref.read(cameraPaddingProvider.notifier);
+    final cameraPosition = ref.read(cameraPositionProvider.notifier);
+    final zoom = _returnZoom ?? _poiReturnZoom;
+
+    context.router.pop();
+
+    await cameraPadding.resetPadding();
+    await cameraPosition.animateTo(
+      CameraPositionMessage(point: finishPoint.geoPoint, zoom: zoom, tilt: 0, bearing: 0),
+    );
+  }
+
+  /// The POI card this screen was opened from is kept right underneath it.
+  bool get _openedFromPoiCard {
+    final routeData = context.routeData;
+    final stack = context.router.stack;
+    final index = stack.indexWhere((page) => identical(page.routeData, routeData));
+
+    return index > 0 && stack[index - 1].name == PoiCardWidgetRoute.name;
   }
 }
