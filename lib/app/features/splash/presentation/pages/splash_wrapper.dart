@@ -9,10 +9,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 class SplashWrapper extends StatelessWidget {
   final Widget child;
 
-  const SplashWrapper({
-    super.key,
-    required this.child,
-  });
+  const SplashWrapper({super.key, required this.child});
 
   void _navigateToForceUpdate() {
     NavigationService.pushAndReplaceForceUpdate();
