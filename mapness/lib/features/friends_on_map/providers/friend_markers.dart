@@ -2,14 +2,13 @@ import 'dart:async';
 
 import 'package:dgis_map/library.dart';
 import 'package:image/image.dart' as img;
-import 'package:mapness/_generated/assets/assets.gen.dart';
 import 'package:mapness/app/auto_route/app_routes.dart';
 import 'package:mapness/features/friends_on_map/friend_elapsed_time.dart';
+import 'package:mapness/features/friends_on_map/friend_marker_illustration.dart';
 import 'package:mapness/features/friends_on_map/models/friend.dart';
 import 'package:mapness/features/friends_on_map/providers/friends_list.dart';
 import 'package:mapness/features/friends_on_map/providers/friends_on_map_layer_visible.dart';
 import 'package:mapness/features/friends_on_map/ui/widgets/friend_card_sheet.dart';
-import 'package:mapness/features/share_eta/helpers/utils.dart';
 import 'package:mapness/l10n/generated/app_localizations.dart';
 import 'package:mapness/shared/providers/app_language.dart';
 import 'package:mapness/shared/providers/map/object_manager.dart';
@@ -18,8 +17,17 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'friend_markers.g.dart';
 
-const int _kMarkerSizePx = 48;
+// _kMarkerSize is the logical on-map marker width the SDK sees (iconWidth) —
+// never change this to fix blur, it's not a resolution knob. The native
+// bridge (both platforms, urbi_map/dgis_map/{ios,android}) already scales
+// whatever raw pixels it's given up to _kMarkerSize * device pixel ratio;
+// handing it a flat 48x48 PNG means it upscales 2-3x from nothing, which is
+// exactly the blur/softness a real-device pass found. _kMarkerIconPixelSize
+// is the actual raster resolution buildFriendMarkerIcon renders at — 3x
+// covers 2x/3x screens with margin (the bundled illustrations are 128px,
+// comfortably above the 114px avatar window this resolves to).
 const double _kMarkerSize = 48;
+const int _kMarkerIconPixelSize = 144;
 
 // R-49/R-50 (Appendix B's 15-minute freshness threshold, applied via
 // friendPositionIsStale): a neutral caption color while fresh, an amber one
@@ -129,14 +137,14 @@ class FriendMarkers extends _$FriendMarkers {
       longitude: friend.longitude!,
       elevation: 0,
     );
-    final pictureUrl = friend.profilePictureUrl;
-
-    final icon = pictureUrl == null
-        ? SvgMarkerIcon(svgPath: Assets.icons.svg.icProfile2.keyName, width: _kMarkerSize)
-        : PngBytesMarkerIcon(
-            pngData: img.encodePng(await EtaUtils.processImage(pictureUrl, _kMarkerSizePx)),
-            width: _kMarkerSize,
-          );
+    // The map pin always shows the friend's assigned themed illustration
+    // (falcon/palm tree/camel/...), not their real profile photo — that's
+    // purely a map-pin visual identity; `profilePictureUrl` keeps being used
+    // as-is everywhere else (list row, request row, FriendCardSheet header).
+    final icon = PngBytesMarkerIcon(
+      pngData: img.encodePng(await buildFriendMarkerIcon(friend.id, _kMarkerIconPixelSize)),
+      width: _kMarkerSize,
+    );
 
     return Marker(
       id: 'friend_marker_${friend.id}',

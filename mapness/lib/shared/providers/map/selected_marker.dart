@@ -13,6 +13,15 @@ class SelectedMarker extends _$SelectedMarker {
   final searchSettings = MapObjectManagerSettings.search();
   Marker? _hiddenMarker;
 
+  // Generation guard: for overlapping async requests, only the latest one
+  // is allowed to apply its result — see this subtree's own AGENTS.md.
+  // Without it, two overlapping `showMarker` calls (e.g. a marker/pin tap
+  // fired twice for the same id) both call `removeAllMarkers()` before
+  // either reaches `addMarker()`, leaving two native markers behind for the
+  // same id — neither removed — so a single physical tap on the resulting
+  // (visually coincident) pin fires its `onTap` once per duplicate.
+  int _generation = 0;
+
   @override
   Marker? build() => null;
 
@@ -24,6 +33,7 @@ class SelectedMarker extends _$SelectedMarker {
   );
 
   Future<void> showMarker(Marker marker, {MapObjectManagerSettings? settings, int? objectId}) async {
+    final generation = ++_generation;
     final searchObjectManager = ref.read(
       mapObjectManagerProvider(
         named: settings?.name ?? searchSettings.name,
@@ -42,21 +52,44 @@ class SelectedMarker extends _$SelectedMarker {
     }
 
     await mapObjectManager.removeAllMarkers();
+    if (generation != _generation) {
+      return;
+    }
     await mapObjectManager.removeAllModels();
+    if (generation != _generation) {
+      return;
+    }
     await mapObjectManager.addMarker(marker);
+    if (generation != _generation) {
+      return;
+    }
     state = marker;
   }
 
   Future<void> removeMarker(String id) async {
+    final generation = ++_generation;
     _showHiddenMarkerIfPresent();
     await mapObjectManager.removeMarkerById(id);
+    if (generation != _generation) {
+      return;
+    }
     await mapObjectManager.removeAllModels();
+    if (generation != _generation) {
+      return;
+    }
     state = null;
   }
 
   Future<void> removeAllMarkers() async {
+    final generation = ++_generation;
     await mapObjectManager.removeAllMarkers();
+    if (generation != _generation) {
+      return;
+    }
     await mapObjectManager.removeAllModels();
+    if (generation != _generation) {
+      return;
+    }
     _showHiddenMarkerIfPresent();
     state = null;
   }
@@ -82,8 +115,15 @@ class SelectedMarker extends _$SelectedMarker {
   }
 
   Future<void> clear() async {
+    final generation = ++_generation;
     await mapObjectManager.removeAllMarkers();
+    if (generation != _generation) {
+      return;
+    }
     await mapObjectManager.removeAllModels();
+    if (generation != _generation) {
+      return;
+    }
     _showHiddenMarkerIfPresent();
     state = null;
   }

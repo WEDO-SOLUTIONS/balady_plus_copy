@@ -30,6 +30,7 @@ class FriendListEmptyState extends StatelessWidget {
         AppButton(
           buttonColorScheme: ButtonColorScheme.accentSecondary,
           size: ButtonSize.large,
+          innerPadding: const EdgeInsets.symmetric(horizontal: Spacing.$16x),
           primaryLabel: context.l10n.friendListEmptyAddCta,
           onTap: () => context.router.push(const AddFriendRoute()),
         ),

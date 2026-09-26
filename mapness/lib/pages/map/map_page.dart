@@ -16,6 +16,7 @@ import 'package:mapness/features/friends_on_map/providers/friend_markers.dart';
 import 'package:mapness/features/friends_on_map/providers/friends_on_map_activation.dart';
 import 'package:mapness/features/friends_on_map/providers/friends_on_map_position_reporter.dart';
 import 'package:mapness/features/friends_on_map/providers/meetups_list.dart';
+import 'package:mapness/features/friends_on_map/ui/open_meetup_on_map.dart';
 import 'package:mapness/features/lifestyle_layers/providers/layers_controls.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/providers/first_start.dart';
@@ -111,17 +112,38 @@ class _MapPageState extends ConsumerState<MapPage>
           );
         }
       })
-      // S-17: a toast the moment a new place is shared with the user — no
-      // unread badge/count exists (no read-state is modeled server-side),
-      // so this only fires once a first successful list is already in hand
-      // (previous?.value != null), never for meetups that were already
-      // there on cold start.
+      // S-17: a toast the moment a new place is shared with the user, with a
+      // "View" action that opens it — no unread badge/count exists (no
+      // read-state is modeled server-side), so this only fires once a first
+      // successful list is already in hand (previous?.value != null), never
+      // for meetups that were already there on cold start. Diffs by id
+      // (not just list length) so the toast/View action can name and target
+      // the actual new meetup; if more than one arrives at once, only the
+      // newest is referenced.
       ..listen<AsyncValue<List<Meetup>>>(receivedMeetupsProvider, (previous, next) {
-        final previousCount = previous?.value?.length;
-        final nextCount = next.value?.length;
-        if (previousCount != null && nextCount != null && nextCount > previousCount) {
-          ToastOverlay.of(context).show(title: context.l10n.meetupReceivedToast, isDismissible: true);
+        final previousMeetups = previous?.value;
+        final nextMeetups = next.value;
+        if (previousMeetups == null || nextMeetups == null) {
+          return;
         }
+        final previousIds = previousMeetups.map((m) => m.id).toSet();
+        final newMeetups = nextMeetups.where((m) => !previousIds.contains(m.id)).toList();
+        if (newMeetups.isEmpty) {
+          return;
+        }
+        final newest = newMeetups.first;
+        ToastOverlay.of(context).show(
+          title: newest.label != null
+              ? context.l10n.meetupReceivedToastWithPlace(newest.senderDisplayName, newest.label!)
+              : context.l10n.meetupReceivedToast(newest.senderDisplayName),
+          isDismissible: true,
+          actions: [
+            ToastAction(
+              title: context.l10n.meetupReceivedToastView,
+              onTap: () => openMeetupOnMap(ref, newest),
+            ),
+          ],
+        );
       })
       // R-13: keeps the position-reporting Timer alive for as long as
       // activation status says it should, independent of whether the

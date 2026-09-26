@@ -219,6 +219,7 @@ flutter:
     - assets/icons/svg/intermediate_stop_numbers/
     - assets/icons/svg/dynamic_poi/glyphs/
     - assets/images/
+    - assets/images/friend_avatars/
     - assets/images/layers/
     - assets/images/makkah_quick_actions/
     - assets/images/makkah_quick_actions/dark/

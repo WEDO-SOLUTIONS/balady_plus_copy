@@ -10,9 +10,17 @@ import 'package:mapness/shared/extensions/build_context_ext.dart';
 /// an unhandled async error — the failure mode every mutation call site in
 /// this feature had before this file existed (a bare `VoidCallback`
 /// discarding the returned `Future`).
-Future<void> runFriendsOnMapAction(BuildContext context, Future<void> Function() action) async {
+///
+/// [onSuccess], if given, only runs when [action] completes without
+/// throwing a [FriendsOnMapApiException].
+Future<void> runFriendsOnMapAction(
+  BuildContext context,
+  Future<void> Function() action, {
+  VoidCallback? onSuccess,
+}) async {
   try {
     await action();
+    onSuccess?.call();
   } on FriendsOnMapApiException catch (e) {
     if (context.mounted) {
       await showFriendsOnMapLimitDialog(context, e);

@@ -146,6 +146,13 @@ class $AssetsImagesGen {
   /// File path: assets/images/founding_day_national_museum.png
   AssetGenImage get foundingDayNationalMuseum => const AssetGenImage('assets/images/founding_day_national_museum.png');
 
+  /// Directory path: assets/images/friend_avatars
+  $AssetsImagesFriendAvatarsGen get friendAvatars => const $AssetsImagesFriendAvatarsGen();
+
+  /// File path: assets/images/friends_on_map_promo_background.png
+  AssetGenImage get friendsOnMapPromoBackground =>
+      const AssetGenImage('assets/images/friends_on_map_promo_background.png');
+
   /// File path: assets/images/gaussian_splatting_entry_point_dark_ar.png
   AssetGenImage get gaussianSplattingEntryPointDarkAr =>
       const AssetGenImage('assets/images/gaussian_splatting_entry_point_dark_ar.png');
@@ -287,6 +294,7 @@ class $AssetsImagesGen {
     foundingDayHistoricalDirYiyah,
     foundingDayLogo,
     foundingDayNationalMuseum,
+    friendsOnMapPromoBackground,
     gaussianSplattingEntryPointDarkAr,
     gaussianSplattingEntryPointDarkEn,
     gaussianSplattingEntryPointLightAr,
@@ -1007,6 +1015,54 @@ class $AssetsImagesAudioPlaceholdersGen {
 
   /// List of all assets
   List<AssetGenImage> get values => [arabiya, arabiyaFm, arriving, hoda, mbcFm, mbcLoud, non, panorama, sweet];
+}
+
+class $AssetsImagesFriendAvatarsGen {
+  const $AssetsImagesFriendAvatarsGen();
+
+  /// File path: assets/images/friend_avatars/bougainvillea.png
+  AssetGenImage get bougainvillea => const AssetGenImage('assets/images/friend_avatars/bougainvillea.png');
+
+  /// File path: assets/images/friend_avatars/camel.png
+  AssetGenImage get camel => const AssetGenImage('assets/images/friend_avatars/camel.png');
+
+  /// File path: assets/images/friend_avatars/dates.png
+  AssetGenImage get dates => const AssetGenImage('assets/images/friend_avatars/dates.png');
+
+  /// File path: assets/images/friend_avatars/desert_sunset.png
+  AssetGenImage get desertSunset => const AssetGenImage('assets/images/friend_avatars/desert_sunset.png');
+
+  /// File path: assets/images/friend_avatars/falcon.png
+  AssetGenImage get falcon => const AssetGenImage('assets/images/friend_avatars/falcon.png');
+
+  /// File path: assets/images/friend_avatars/gazelle.png
+  AssetGenImage get gazelle => const AssetGenImage('assets/images/friend_avatars/gazelle.png');
+
+  /// File path: assets/images/friend_avatars/horse.png
+  AssetGenImage get horse => const AssetGenImage('assets/images/friend_avatars/horse.png');
+
+  /// File path: assets/images/friend_avatars/jasmine.png
+  AssetGenImage get jasmine => const AssetGenImage('assets/images/friend_avatars/jasmine.png');
+
+  /// File path: assets/images/friend_avatars/madain_saleh.png
+  AssetGenImage get madainSaleh => const AssetGenImage('assets/images/friend_avatars/madain_saleh.png');
+
+  /// File path: assets/images/friend_avatars/palm_tree.png
+  AssetGenImage get palmTree => const AssetGenImage('assets/images/friend_avatars/palm_tree.png');
+
+  /// List of all assets
+  List<AssetGenImage> get values => [
+    bougainvillea,
+    camel,
+    dates,
+    desertSunset,
+    falcon,
+    gazelle,
+    horse,
+    jasmine,
+    madainSaleh,
+    palmTree,
+  ];
 }
 
 class $AssetsImagesLayersGen {

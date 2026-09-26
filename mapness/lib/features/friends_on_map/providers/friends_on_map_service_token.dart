@@ -8,6 +8,14 @@ part 'friends_on_map_service_token.g.dart';
 
 const String _prefsKey = 'friends_on_map_service_token';
 
+/// Also written by [FriendsOnMapServiceToken.build] — read by
+/// `providers/friends_on_map_account_id.dart`. This is the server-assigned
+/// account id (`acc.ID` on the backend), the exact value a friend's device
+/// receives as `Friend.id` — distinct from both the token above and the raw
+/// device [uuidProviderProvider] sent as `username`. Public (not `_`-prefixed)
+/// so that sibling provider can read it without duplicating the string.
+const String friendsOnMapAccountIdPrefsKey = 'friends_on_map_account_id';
+
 /// The real Friends on Map backend has no real SSO — it only understands its
 /// own test login (`POST /test/login {username}` → a token that's stable
 /// per username, see `~/Downloads/friends-on-map/GO_BACKEND_SPEC.md`). The
@@ -24,16 +32,24 @@ class FriendsOnMapServiceToken extends _$FriendsOnMapServiceToken {
   @override
   Future<String> build() async {
     final prefs = ref.watch(sharedPrefsProvider);
-    final cached = prefs.getString(_prefsKey);
-    if (cached != null) {
-      return cached;
+    final cachedToken = prefs.getString(_prefsKey);
+    final cachedAccountId = prefs.getString(friendsOnMapAccountIdPrefsKey);
+    // Both must be cached, not just the token — an install that logged in
+    // before the account id was added to the login response would otherwise
+    // never fetch it. Re-login is safe: the mock server's login is
+    // idempotent per username (same username always resolves to the same
+    // account), so this never creates a duplicate account.
+    if (cachedToken != null && cachedAccountId != null) {
+      return cachedToken;
     }
 
     final uuid = ref.watch(uuidProviderProvider);
     final dio = Dio(BaseOptions(baseUrl: friendsOnMapApiBaseUrl));
     final response = await dio.post<Map<String, dynamic>>('/test/login', data: {'username': uuid});
     final token = response.data!['token'] as String;
+    final accountId = response.data!['accountId'] as String;
     await prefs.setString(_prefsKey, token);
+    await prefs.setString(friendsOnMapAccountIdPrefsKey, accountId);
     return token;
   }
 }

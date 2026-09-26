@@ -60,11 +60,14 @@ class ProfileImageWidget extends ConsumerWidget {
         data: AvatarDataEmpty(value: abbreviatedName, style: style),
       );
     }
-    return Assets.icons.svg.icProfile2.svg(
-      colorFilter: ColorFilter.mode(
-        isSelected ? context.colors.accentDefault : context.colors.neutralDefault,
-        BlendMode.srcIn,
-      ),
+    // No photo, no abbreviated name to fall back to — DefaultProfileImage
+    // was already written for exactly this case (a circular placeholder,
+    // matching Avatar's own circular shape above) but was never wired up
+    // here; the bare icProfile2 SVG it replaces had no circular
+    // background/clip at all, unlike every other branch above.
+    return DefaultProfileImage(
+      dimension: dimension.size,
+      color: isSelected ? context.colors.accentDefault : context.colors.neutralDefault,
     );
   }
 }

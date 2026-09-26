@@ -18,7 +18,17 @@ import 'package:mapness/shared/providers/map/selected_marker.dart';
 /// never a context/ref captured from that page, same lesson this feature's
 /// other marker `onTap`s (`friend_markers.dart`) and confirm sheets
 /// (`friend_card_sheet.dart`) already learned.
+bool _isMeetupMarkerInfoSheetOpen = false;
+
 void showMeetupMarkerInfoSheet(BuildContext context, Meetup meetup) {
+  // Defensive re-entrancy guard, same shape as friend_card_sheet.dart's
+  // `showFriendCardSheet` — belt-and-suspenders against a duplicate `onTap`
+  // dispatch (e.g. from a race in `SelectedMarker.showMarker`, now guarded
+  // separately) opening more than one stacked sheet.
+  if (_isMeetupMarkerInfoSheetOpen) {
+    return;
+  }
+  _isMeetupMarkerInfoSheetOpen = true;
   showModalBottomSheet<void>(
     backgroundColor: Colors.transparent,
     context: context,
@@ -44,5 +54,5 @@ void showMeetupMarkerInfoSheet(BuildContext context, Meetup meetup) {
           ),
       ],
     ),
-  );
+  ).whenComplete(() => _isMeetupMarkerInfoSheetOpen = false);
 }

@@ -111,7 +111,7 @@ class _MyCodeTab extends StatelessWidget {
         Text(
           context.l10n.addFriendShareNote,
           textAlign: TextAlign.center,
-          style: context.textStyles.bodySmallRegular.copyWith(color: context.colors.foregroundMuted),
+          style: context.textStyles.bodySmallRegular.copyWith(color: context.colors.foregroundSoft),
         ),
         const SizedBox(height: Spacing.$4x),
         const InviteCard(),

@@ -345,9 +345,13 @@ class ObjectTapHandler(
                 )
                 markerImage = getPngImageFromAsset(pngPath, iconOptions.width.toInt(), callback)
             } else if (pngData != null) {
-
+                // Same density fix as getPngImageFromAsset above: pngData
+                // was scaled to the raw logical width, with no density
+                // multiplier, then stretched by the SDK to iconWidth logical
+                // points on-screen — blurry/pixelated on hi-DPI screens.
                 val data = pngData
-                markerImage = getImageFromBytes(data, iconOptions.width.toInt())
+                val pixelSize = (iconOptions.width * androidContext.resources.displayMetrics.density).toInt()
+                markerImage = getImageFromBytes(data, if (pixelSize > 0) pixelSize else iconOptions.width.toInt())
             }
         }
 
@@ -410,8 +414,10 @@ class ObjectTapHandler(
                 )
                 markerImage = getPngImageFromAsset(pngPath, iconOptions.width.toInt(), callback)
             } else if (pngData != null) {
+                // Same density fix as mapMarker's pngData branch above.
                 val data = pngData
-                markerImage = getImageFromBytes(data, iconOptions.width.toInt())
+                val pixelSize = (iconOptions.width * androidContext.resources.displayMetrics.density).toInt()
+                markerImage = getImageFromBytes(data, if (pixelSize > 0) pixelSize else iconOptions.width.toInt())
             }
         }
 

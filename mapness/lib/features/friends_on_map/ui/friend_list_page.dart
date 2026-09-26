@@ -12,6 +12,7 @@ import 'package:mapness/features/friends_on_map/providers/friends_list.dart';
 import 'package:mapness/features/friends_on_map/ui/meetup_share_flow.dart';
 import 'package:mapness/features/friends_on_map/ui/widgets/friend_list_empty_state.dart';
 import 'package:mapness/features/friends_on_map/ui/widgets/friend_list_item.dart';
+import 'package:mapness/features/friends_on_map/ui/widgets/friends_on_map_promo_banner.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 
 /// R-41/R-42/R-46: the friend list — header + count, search, empty state.
@@ -48,62 +49,92 @@ class FriendListPage extends ConsumerWidget {
           body: SafeArea(
             child: Column(
               children: [
-                // R-36: reachable regardless of whether the friend list
-                // itself is empty — pending requests are independent of
-                // current friend count. Shown only when any exist.
-                incomingRequestsAsync.maybeWhen(
-                  data: (requests) => requests.isEmpty
-                      ? const SizedBox.shrink()
-                      : ContentWrapper(
-                          color: context.colors.backgroundSurface1,
-                          children: [
-                            ContentRow(
-                              onTap: () => context.router.push(const FriendRequestsRoute()),
-                              text: ContentRowTextOptions(
-                                title: context.l10n.friendListRequestsRow(requests.length),
-                              ),
-                            ),
-                          ],
+                const Padding(
+                  padding: EdgeInsets.fromLTRB(Spacing.$4x, Spacing.$3x, Spacing.$4x, 0),
+                  child: FriendsOnMapPromoBanner(),
+                ),
+                const SizedBox(height: Spacing.$3x),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x),
+                  child: ContentWrapper(
+                    color: context.colors.backgroundSurface1,
+                    children: [
+                      // R-36: reachable regardless of whether the friend
+                      // list itself is empty — pending requests are
+                      // independent of current friend count. Shown only
+                      // when any exist.
+                      ...incomingRequestsAsync.maybeWhen(
+                        data: (requests) => requests.isEmpty
+                            ? const <Widget>[]
+                            : [
+                                ContentRow(
+                                  isDividerEnabled: true,
+                                  onTap: () => context.router.push(const FriendRequestsRoute()),
+                                  leading: Icon(GeneralIcons.queue, color: context.colors.accentDefault, size: 24),
+                                  text: ContentRowTextOptions(title: context.l10n.friendListRequestsTitle),
+                                  trailing: ContentRowTextTrailingOptions(
+                                    text: '${requests.length}',
+                                    icon: SystemIcons.arrowCornerRightSmall,
+                                    iconColor: context.colors.foregroundMuted,
+                                  ),
+                                ),
+                              ],
+                        orElse: () => const <Widget>[],
+                      ),
+                      ContentRow(
+                        isDividerEnabled: true,
+                        onTap: () async {
+                          final recipients = await context.router.push<List<Friend>>(
+                            const MeetupFriendPickerRoute(),
+                          );
+                          if (recipients == null || recipients.isEmpty || !context.mounted) {
+                            return;
+                          }
+                          await startMeetupShareFlow(context, recipients);
+                        },
+                        leading: Icon(GeneralIcons.map, color: context.colors.accentDefault, size: 24),
+                        text: ContentRowTextOptions(title: context.l10n.friendListShareMeetupRow),
+                        trailing: ContentRowTextTrailingOptions(
+                          icon: SystemIcons.arrowCornerRightSmall,
+                          iconColor: context.colors.foregroundMuted,
                         ),
-                  orElse: () => const SizedBox.shrink(),
-                ),
-                // R-45: always reachable, unlike the requests row above,
-                // since a privacy-adjacent entry point shouldn't depend on
-                // whether anyone is currently blocked.
-                ContentWrapper(
-                  color: context.colors.backgroundSurface1,
-                  children: [
-                    ContentRow(
-                      onTap: () => context.router.push(const BlockedUsersRoute()),
-                      text: ContentRowTextOptions(title: context.l10n.friendListBlockedUsersRow),
-                    ),
-                  ],
-                ),
-                // S-17: always visible, same as Blocked Users above (no
-                // "unread" concept to gate on, unlike the requests row).
-                ContentWrapper(
-                  color: context.colors.backgroundSurface1,
-                  children: [
-                    ContentRow(
-                      onTap: () async {
-                        final recipients = await context.router.push<List<Friend>>(const MeetupFriendPickerRoute());
-                        if (recipients == null || recipients.isEmpty || !context.mounted) {
-                          return;
-                        }
-                        await startMeetupShareFlow(context, recipients);
-                      },
-                      text: ContentRowTextOptions(title: context.l10n.friendListShareMeetupRow),
-                    ),
-                    ContentRow(
-                      onTap: () => context.router.push(const MeetupListRoute()),
-                      text: ContentRowTextOptions(title: context.l10n.friendListMeetupsRow),
-                    ),
-                    // S-18: always visible, same reasoning as the meetup rows above.
-                    ContentRow(
-                      onTap: () => context.router.push(const SharedListsRoute()),
-                      text: ContentRowTextOptions(title: context.l10n.friendListSharedListsRow),
-                    ),
-                  ],
+                      ),
+                      ContentRow(
+                        isDividerEnabled: true,
+                        onTap: () => context.router.push(const MeetupListRoute()),
+                        leading: Icon(GeneralIcons.location, color: context.colors.accentDefault, size: 24),
+                        text: ContentRowTextOptions(title: context.l10n.friendListMeetupsRow),
+                        trailing: ContentRowTextTrailingOptions(
+                          icon: SystemIcons.arrowCornerRightSmall,
+                          iconColor: context.colors.foregroundMuted,
+                        ),
+                      ),
+                      // S-18: always visible, same reasoning as the meetup rows above.
+                      ContentRow(
+                        isDividerEnabled: true,
+                        onTap: () => context.router.push(const SharedListsRoute()),
+                        leading: Icon(SystemIcons.menu, color: context.colors.accentDefault, size: 24),
+                        text: ContentRowTextOptions(title: context.l10n.friendListSharedListsRow),
+                        trailing: ContentRowTextTrailingOptions(
+                          icon: SystemIcons.arrowCornerRightSmall,
+                          iconColor: context.colors.foregroundMuted,
+                        ),
+                      ),
+                      // R-45: always reachable — a privacy-adjacent entry
+                      // point shouldn't depend on whether anyone is
+                      // currently blocked. Always the last row, so no
+                      // trailing divider.
+                      ContentRow(
+                        onTap: () => context.router.push(const BlockedUsersRoute()),
+                        leading: Icon(GeneralIcons.block, color: context.colors.accentDefault, size: 24),
+                        text: ContentRowTextOptions(title: context.l10n.friendListBlockedUsersRow),
+                        trailing: ContentRowTextTrailingOptions(
+                          icon: SystemIcons.arrowCornerRightSmall,
+                          iconColor: context.colors.foregroundMuted,
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
                 Expanded(
                   child: friendsAsync.when(
@@ -131,23 +162,27 @@ class FriendListPage extends ConsumerWidget {
       children: [
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x, vertical: Spacing.$3x),
-          child: Text(
-            context.l10n.friendListCount(friends.length),
-            style: context.textStyles.h4SemiBold.copyWith(color: context.colors.foregroundDefault),
+          child: Row(
+            children: [
+              Text(
+                context.l10n.friendListMyFriendsTitle,
+                style: context.textStyles.h4SemiBold.copyWith(color: context.colors.foregroundDefault),
+              ),
+              const Spacer(),
+              Text(
+                context.l10n.friendListCount(friends.length),
+                style: context.textStyles.bodySmallRegular.copyWith(color: context.colors.foregroundSoft),
+              ),
+            ],
           ),
         ),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x),
-          child: TextField(
-            onChanged: (value) => ref.read(friendSearchQueryProvider.notifier).query = value,
-            decoration: InputDecoration(
+          child: BaladyTextInput.search(
+            config: BaladyInputConfig(
               hintText: context.l10n.friendListSearchHint,
-              filled: true,
-              fillColor: context.colors.backgroundSurface1,
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(RadiusBorder.l),
-                borderSide: BorderSide.none,
-              ),
+              hintColor: context.colors.foregroundSoft,
+              onChanged: (value) => ref.read(friendSearchQueryProvider.notifier).query = value,
             ),
           ),
         ),

@@ -124,7 +124,7 @@ class _Section extends StatelessWidget {
                 padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x),
                 child: Text(
                   emptyText,
-                  style: context.textStyles.bodyLargeRegular.copyWith(color: context.colors.foregroundMuted),
+                  style: context.textStyles.bodyLargeRegular.copyWith(color: context.colors.foregroundSoft),
                 ),
               )
             : Column(children: requests.map(itemBuilder).toList()),

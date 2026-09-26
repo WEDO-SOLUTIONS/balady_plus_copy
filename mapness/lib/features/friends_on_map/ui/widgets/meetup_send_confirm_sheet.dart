@@ -8,6 +8,7 @@ import 'package:mapness/features/friends_on_map/providers/meetups_controller.dar
 import 'package:mapness/features/friends_on_map/ui/friends_on_map_error_dialog.dart';
 import 'package:mapness/features/share_eta/ui/eta_share_control_sheet/eta_share_sheet.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
+import 'package:mapness/shared/ui/toast/toast_overlay.dart';
 
 /// S-17's final "send?" step. Same `ProviderScope.containerOf`-in-onConfirm
 /// pattern as `friend_confirm_sheet.dart` — never closes over a `WidgetRef`
@@ -40,6 +41,10 @@ void showMeetupSendConfirmSheet(
           () => ProviderScope.containerOf(rootNavigatorKey.currentContext!, listen: false)
               .read(meetupsControllerProvider.notifier)
               .create(recipientIds: recipientIds, latitude: latitude, longitude: longitude, label: label),
+          onSuccess: () => ToastOverlay.of(rootNavigatorKey.currentContext!).show(
+            title: l10n.meetupSentToast(recipientIds.length),
+            icon: const ToastIconData(GeneralIcons.checkmarkCircle),
+          ),
         );
       },
       contentBuilder: (context) => [

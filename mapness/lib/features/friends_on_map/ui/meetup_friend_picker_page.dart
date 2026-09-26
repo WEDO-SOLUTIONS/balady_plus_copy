@@ -6,7 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/_features/common/providers/ui_direction.dart';
 import 'package:mapness/features/friends_on_map/models/friend.dart';
 import 'package:mapness/features/friends_on_map/providers/friends_list.dart';
-import 'package:mapness/features/friends_on_map/ui/widgets/friend_avatar.dart';
+import 'package:mapness/features/friends_on_map/ui/widgets/friend_marker_avatar.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 
 /// S-17: pick one or more friends to share a place with (R-69's "one or more
@@ -99,7 +99,7 @@ class _EmptyState extends StatelessWidget {
       child: Text(
         context.l10n.meetupFriendPickerEmpty,
         textAlign: TextAlign.center,
-        style: context.textStyles.bodyLargeRegular.copyWith(color: context.colors.foregroundMuted),
+        style: context.textStyles.bodyLargeRegular.copyWith(color: context.colors.foregroundSoft),
       ),
     ),
   );
@@ -119,7 +119,7 @@ class _FriendPickerRow extends StatelessWidget {
       padding: const EdgeInsets.symmetric(vertical: Spacing.$2x, horizontal: Spacing.$4x),
       child: Row(
         children: [
-          FriendAvatar(displayName: friend.displayName, profilePictureUrl: friend.profilePictureUrl),
+          FriendMarkerAvatar(friendId: friend.id),
           const SizedBox(width: Spacing.$3x),
           Expanded(
             child: Text(

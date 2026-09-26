@@ -342,12 +342,21 @@ class ObjectTapHandler {
             markerImage = getImage(fromAsset: pngPath, isSvg: false, size: pixelSize, completion: completion)
         }
         else if let pngData = marker.options.icon?.pngData {
+            // Same fix as getImage(fromAsset:)'s pngPath branch above: raw
+            // make(pngData:size:) either silently fails or rasterises in
+            // logical-pt pixels, clipping/zooming on hi-DPI screens.
+            // UIImage(data:scale:) carries the correct logical-px <->
+            // physical-px ratio, and make(image:) honours it.
             let data = pngData.data
-            let scale = UIScreen.main.scale
-            markerImage = imageFactory.make(pngData: data, size: CGSize(
-                width: marker.options.icon!.width * Double(scale),
-                height: marker.options.icon!.width * Double(scale)
-            ))
+            let scale = UIScreen.main.scale > 0 ? UIScreen.main.scale : 1.0
+            if let uiImage = UIImage(data: data, scale: scale) {
+                markerImage = imageFactory.make(image: uiImage)
+            } else {
+                markerImage = imageFactory.make(pngData: data, size: CGSize(
+                    width: marker.options.icon!.width * Double(scale),
+                    height: marker.options.icon!.width * Double(scale)
+                ))
+            }
         }
         else {
             completion(Result.failure(
@@ -432,12 +441,17 @@ class ObjectTapHandler {
             markerImage = getImage(fromAsset: pngPath, isSvg: false, size: pixelSize, completion: completion)
         }
         else if let pngData = options.icon?.pngData {
+            // Same fix as mapMarker's pngData branch above.
             let data = pngData.data
-            let scale = UIScreen.main.scale
-            markerImage = imageFactory.make(pngData: data, size: CGSize(
-                width: options.icon!.width * Double(scale),
-                height: options.icon!.width * Double(scale)
-            ))
+            let scale = UIScreen.main.scale > 0 ? UIScreen.main.scale : 1.0
+            if let uiImage = UIImage(data: data, scale: scale) {
+                markerImage = imageFactory.make(image: uiImage)
+            } else {
+                markerImage = imageFactory.make(pngData: data, size: CGSize(
+                    width: options.icon!.width * Double(scale),
+                    height: options.icon!.width * Double(scale)
+                ))
+            }
         }
         
         if let position = options.position {

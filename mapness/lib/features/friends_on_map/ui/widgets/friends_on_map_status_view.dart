@@ -42,72 +42,99 @@ class FriendsOnMapStatusView extends ConsumerWidget {
       bodyColor = context.colors.foregroundMuted;
     }
 
+    if (revoked) {
+      return Padding(
+        padding: const EdgeInsets.all(Spacing.$4x),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              title,
+              textAlign: TextAlign.center,
+              style: context.textStyles.h3SemiBold.copyWith(color: context.colors.foregroundDefault),
+            ),
+            const SizedBox(height: Spacing.$2x),
+            Text(
+              body,
+              textAlign: TextAlign.center,
+              style: context.textStyles.bodyLargeRegular.copyWith(color: bodyColor),
+            ),
+          ],
+        ),
+      );
+    }
+
     return Padding(
       padding: const EdgeInsets.all(Spacing.$4x),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
-        mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Text(
-            title,
-            textAlign: TextAlign.center,
-            style: context.textStyles.h3SemiBold.copyWith(color: context.colors.foregroundDefault),
+          ContentWrapper(
+            color: context.colors.backgroundSurface1,
+            children: [
+              // Temporary entry point ahead of BR-05's "friend list is the
+              // single hub" restructuring — see friends_on_map/AGENTS.md.
+              ContentRow(
+                onTap: () => context.router.push(const FriendListRoute()),
+                leading: Icon(GeneralIcons.user, color: context.colors.accentDefault, size: 24),
+                text: ContentRowTextOptions(title: context.l10n.friendsOnMapFriendsCta),
+                trailing: ContentRowTextTrailingOptions(
+                  icon: SystemIcons.arrowCornerRightLarge,
+                  iconColor: context.colors.foregroundMuted,
+                ),
+              ),
+            ],
           ),
-          const SizedBox(height: Spacing.$2x),
+          const SizedBox(height: Spacing.$3x),
           Text(
             body,
-            textAlign: TextAlign.center,
-            style: context.textStyles.bodyLargeRegular.copyWith(color: bodyColor),
+            style: context.textStyles.bodySmallRegular.copyWith(color: context.colors.foregroundSoft),
           ),
-          if (!revoked && !backgroundActive) ...[
+          const SizedBox(height: Spacing.$3x),
+          Text(
+            context.l10n.sharing,
+            style: context.textStyles.h4SemiBold.copyWith(color: context.colors.foregroundDefault),
+          ),
+          const SizedBox(height: Spacing.$3x),
+          ContentWrapper(
+            color: context.colors.backgroundSurface1,
+            children: [
+              ContentRow(
+                isDividerEnabled: true,
+                text: ContentRowTextOptions(title: context.l10n.friendsOnMapPauseToggleLabel),
+                trailing: ContentRowToggleTrailingOptions(
+                  value: ref.watch(friendsOnMapPausedProvider),
+                  onChanged: (value) => ref.read(friendsOnMapPausedProvider.notifier).setPaused(paused: value),
+                ),
+              ),
+              // R-97/R-98 (D-13 fallback): display-only — doesn't touch
+              // reporting, visibility rules, links, or notifications.
+              ContentRow(
+                text: ContentRowTextOptions(title: context.l10n.friendsOnMapLayerToggleLabel),
+                trailing: ContentRowToggleTrailingOptions(
+                  value: ref.watch(friendsOnMapLayerVisibleProvider),
+                  onChanged: (value) => ref.read(friendsOnMapLayerVisibleProvider.notifier).setVisible(visible: value),
+                ),
+              ),
+            ],
+          ),
+          if (!backgroundActive) ...[
             const SizedBox(height: Spacing.$1_5x),
             Text(
               context.l10n.friendsOnMapForegroundOnlyWarning,
-              textAlign: TextAlign.center,
               style: context.textStyles.bodySmallRegular.copyWith(color: context.colors.foregroundMuted),
             ),
           ],
-          if (!revoked) ...[
-            const SizedBox(height: Spacing.$4x),
-            ContentWrapper(
-              color: context.colors.backgroundSurface1,
-              children: [
-                // Temporary entry point ahead of BR-05's "friend list is the
-                // single hub" restructuring — see friends_on_map/AGENTS.md.
-                ContentRow(
-                  isDividerEnabled: true,
-                  onTap: () => context.router.push(const FriendListRoute()),
-                  text: ContentRowTextOptions(title: context.l10n.friendsOnMapFriendsCta),
-                ),
-                ContentRow(
-                  isDividerEnabled: true,
-                  text: ContentRowTextOptions(title: context.l10n.friendsOnMapPauseToggleLabel),
-                  trailing: ContentRowToggleTrailingOptions(
-                    value: ref.watch(friendsOnMapPausedProvider),
-                    onChanged: (value) => ref.read(friendsOnMapPausedProvider.notifier).setPaused(paused: value),
-                  ),
-                ),
-                // R-97/R-98 (D-13 fallback): display-only — doesn't touch
-                // reporting, visibility rules, links, or notifications.
-                ContentRow(
-                  text: ContentRowTextOptions(title: context.l10n.friendsOnMapLayerToggleLabel),
-                  trailing: ContentRowToggleTrailingOptions(
-                    value: ref.watch(friendsOnMapLayerVisibleProvider),
-                    onChanged: (value) =>
-                        ref.read(friendsOnMapLayerVisibleProvider.notifier).setVisible(visible: value),
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: Spacing.$3x),
-            AppButton(
-              buttonColorScheme: ButtonColorScheme.accentSecondary,
-              buttonType: ButtonType.secondary,
-              size: ButtonSize.large,
-              primaryLabel: context.l10n.friendsOnMapDeactivateCta,
-              onTap: () => ref.read(friendsOnMapActivationProvider.notifier).deactivate(),
-            ),
-          ],
+          const SizedBox(height: Spacing.$5x),
+          AppButton(
+            buttonColorScheme: ButtonColorScheme.accent,
+            buttonType: ButtonType.secondary,
+            size: ButtonSize.large,
+            borderRadius: RadiusBorder.xs,
+            primaryLabel: context.l10n.friendsOnMapDeactivateCta,
+            onTap: () => ref.read(friendsOnMapActivationProvider.notifier).deactivate(),
+          ),
         ],
       ),
     );

@@ -16,20 +16,26 @@ class FriendsOnMapBackgroundPromptView extends StatelessWidget {
     padding: const EdgeInsets.all(Spacing.$4x),
     child: Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
-      mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        Text(
-          context.l10n.friendsOnMapBackgroundPromptTitle,
-          textAlign: TextAlign.center,
-          style: context.textStyles.h3SemiBold.copyWith(color: context.colors.foregroundDefault),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                context.l10n.friendsOnMapBackgroundPromptTitle,
+                textAlign: TextAlign.center,
+                style: context.textStyles.h3SemiBold.copyWith(color: context.colors.foregroundDefault),
+              ),
+              const SizedBox(height: Spacing.$2x),
+              Text(
+                context.l10n.friendsOnMapBackgroundPromptBody,
+                textAlign: TextAlign.center,
+                style: context.textStyles.bodyLargeRegular.copyWith(color: context.colors.foregroundMuted),
+              ),
+            ],
+          ),
         ),
-        const SizedBox(height: Spacing.$2x),
-        Text(
-          context.l10n.friendsOnMapBackgroundPromptBody,
-          textAlign: TextAlign.center,
-          style: context.textStyles.bodyLargeRegular.copyWith(color: context.colors.foregroundMuted),
-        ),
-        const SizedBox(height: Spacing.$4x),
         AppButton(
           buttonColorScheme: ButtonColorScheme.accentSecondary,
           size: ButtonSize.large,
