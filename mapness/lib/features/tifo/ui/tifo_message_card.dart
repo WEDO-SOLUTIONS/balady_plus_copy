@@ -136,12 +136,14 @@ class TifoMessageCard extends ConsumerWidget {
               ],
             ],
           ),
-          const SizedBox(height: 8),
-          Text(
-            body,
-            textAlign: TextAlign.start,
-            style: TifoText.bodyL.copyWith(color: context.colors.foregroundSoft),
-          ),
+          if (body.isNotEmpty) ...[
+            const SizedBox(height: 8),
+            Text(
+              body,
+              textAlign: TextAlign.start,
+              style: TifoText.bodyL.copyWith(color: context.colors.foregroundSoft),
+            ),
+          ],
           if (primaryAction != null || secondaryAction != null) ...[
             const SizedBox(height: 24),
             if (secondaryAction != null && primaryAction != null)
