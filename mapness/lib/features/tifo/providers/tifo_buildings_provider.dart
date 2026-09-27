@@ -187,6 +187,26 @@ class TifoBuildingsController extends Notifier<TifoBuildingsState> {
   void clearViewport() => state = state.copyWith(visibleIds: const {});
 
   void clear() => state = const TifoBuildingsState();
+
+  /// Language switch (BALADY-3959): building names ride inside the cached
+  /// `/buildings` payloads, so the cache is dropped and the map layer
+  /// re-fetches the viewport in the new language (see
+  /// `TifoBuildingsMapLayer.relocalize`). A viewport request still in flight
+  /// was built with the old `locale` and is cancelled. The on-screen entries
+  /// are kept until that refetch replaces them, so the polygons do not blink
+  /// off; everything off-screen is re-fetched when the camera gets back to it.
+  void resetForLocale() {
+    _inFlight?.cancel('language changed');
+    _inFlight = null;
+    final byId = state.byId;
+    state = state.copyWith(
+      byId: {
+        for (final id in state.visibleIds)
+          if (byId[id] case final building?) id: building,
+      },
+      isLoading: false,
+    );
+  }
 }
 
 final tifoBuildingsProvider = NotifierProvider<TifoBuildingsController, TifoBuildingsState>(

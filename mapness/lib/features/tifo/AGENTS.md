@@ -36,11 +36,15 @@ lives in `penalty/` — everything else in this folder is the map/BRD layer.
   building and district names come back localized. Anything cached across
   requests therefore has to be re-fetched on a language switch — see
   `AppLanguage.update`, which calls `tifoSessionProvider.forceRefresh()`
-  (roster) and `tifoDistrictsProvider.forceRefresh()` (district names, which
-  ride inside the otherwise once-per-run `/districts` geometry payload —
-  BALADY-3959). `TifoDistrictsController` also tags its geometry cache with
-  the locale it was fetched with, so `ensureGeometry()` self-heals. Buildings
-  need no hook: the 20 s `by-ids` poller and every bbox fetch overwrite them.
+  (roster) and `tifoBuildingsMapLayerProvider.relocalize()` (BALADY-3959).
+  `relocalize` drops the district geometry cache (`resetForLocale`, which also
+  bumps a generation so a response still in flight for the old language is
+  discarded) and the off-screen buildings cache, then re-fetches the current
+  viewport. Map tap handlers resolve the district/building from the provider
+  at TAP time — unchanged polygons keep their drawn-time closure, so reading
+  the captured object would show the old-language name. Staging has been
+  seen to hang `/districts?locale=ar` for minutes: a failed reload leaves the
+  cache empty, and the next `ensureGeometry()` retries it.
 - `TifoApi` owns a private `Dio`, so its traffic does NOT appear in the app's
   http logger. All TIFO diagnostics go through `logger.log` with a `[tifo]` /
   `[tifo-map]` prefix — grep the console for that.

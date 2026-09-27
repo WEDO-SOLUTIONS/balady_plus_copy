@@ -674,6 +674,35 @@ class TifoBuildingsMapLayer extends Notifier<bool> {
     await _applyForViewport(bbox);
   }
 
+  /// Language switch (BALADY-3959), called from `AppLanguage.update`. Every
+  /// name the game shows — districts and buildings — rides inside a cached
+  /// payload, so both caches are dropped and the current viewport is re-fetched
+  /// in the new language instead of waiting for the camera to move.
+  ///
+  /// `_lastBbox` is cleared even while the layer is off or suspended: the
+  /// buildings fetch is skipped for an unchanged bbox, and the first viewport
+  /// after a re-enable/resume would otherwise keep the old-language cache.
+  Future<void> relocalize() async {
+    ref.read(tifoBuildingsProvider.notifier).resetForLocale();
+    final districts = ref.read(tifoDistrictsProvider.notifier).resetForLocale();
+    _lastBbox = null;
+    if (!_painting) {
+      return districts;
+    }
+    String? bbox;
+    try {
+      bbox = await _currentBbox(await ref.read(dgisControllerProvider.future));
+    } catch (_) {
+      // Map gone — `_applyForViewport` bails on `_painting` anyway.
+    }
+    if (!_painting) {
+      return districts;
+    }
+    logger.log('[tifo-map] language changed → re-fetching ${_lod.name} tier');
+    await _applyForViewport(bbox);
+    await districts;
+  }
+
   Future<void> _onViewport(VisibleRect rect) async {
     final sw = Stopwatch()..start();
     final from = _lod;
@@ -1568,15 +1597,26 @@ class TifoBuildingsMapLayer extends Notifier<bool> {
     } catch (_) {}
   }
 
-  /// District details sheet (BRD US-06, Figma node 696:119272). The summary is
-  /// read at TAP time — unchanged polygons keep their original onTap closure
-  /// across diff repaints, so a captured summary would go stale.
-  void _onDistrictTap(TifoDistrict district) {
+  /// District details sheet (BRD US-06, Figma node 696:119272). The summary AND
+  /// the district itself are read at TAP time — unchanged polygons keep their
+  /// original onTap closure across diff repaints, so a captured summary would
+  /// go stale, and so would the captured district's name after a language
+  /// switch re-fetches the geometry (BALADY-3959): the fill does not change,
+  /// the polygon is not re-added, and the closure still holds the old object.
+  void _onDistrictTap(TifoDistrict tapped) {
     final context = rootNavigatorKey.currentContext;
     if (context == null || !_acquireSheetGate()) {
       return;
     }
-    final summary = ref.read(tifoDistrictsProvider).summaries[district.id];
+    final st = ref.read(tifoDistrictsProvider);
+    var district = tapped;
+    for (final d in st.districts) {
+      if (d.id == tapped.id) {
+        district = d;
+        break;
+      }
+    }
+    final summary = st.summaries[district.id];
     unawaited(
       showTifoDistrictSheet(context, district: district, summary: summary).whenComplete(() => _sheetShowing = false),
     );

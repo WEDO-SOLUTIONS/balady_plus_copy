@@ -88,6 +88,10 @@ class TifoDistrictsController extends Notifier<TifoDistrictsState> {
   /// (BALADY-3959). Compared against [_locale] on every [ensureGeometry].
   String? _geometryLocale;
 
+  /// Bumped by [resetForLocale]; a load that finishes under an older value was
+  /// fired for the previous language and must not touch [state].
+  int _generation = 0;
+
   /// See [_timing].
   Duration? get requestDuration => _timing.total;
 
@@ -124,18 +128,32 @@ class TifoDistrictsController extends Notifier<TifoDistrictsState> {
   /// player pinches out to the district tier, geometry is already in memory.
   Future<void> prefetch() => Future.wait([ensureGeometry(), refreshSummaries()]);
 
-  /// Re-fetches both halves in the app's current language, called from
-  /// `AppLanguage.update` alongside the roster refresh. Named strings only
-  /// live in the payloads, so nothing short of a refetch re-localizes them.
-  /// No-op until something has been loaded: an untouched cache is filled by
-  /// the next [ensureGeometry] in the new locale anyway.
-  Future<void> forceRefresh() {
-    if (!state.hasGeometry && state.summaries.isEmpty) {
+  /// Language switch (BALADY-3959): drops the geometry cache outright and
+  /// reloads it in the app's new language, driven by
+  /// `TifoBuildingsMapLayer.relocalize`. District names only live inside the
+  /// payloads, so nothing short of a refetch re-localizes them.
+  ///
+  /// Bumping [_generation] detaches any request still in flight for the OLD
+  /// language — its response is thrown away instead of landing on top of the
+  /// reload (staging has been seen to hang `/districts` for minutes, well past
+  /// the 20 s receive timeout). Standings are kept on screen while they are
+  /// re-fetched: their colors are locale-independent, and clearing them would
+  /// flash every district grey until `/districts/summary` answers.
+  ///
+  /// No reload when nothing had been loaded yet — the next [ensureGeometry]
+  /// fills the cache in the new language anyway.
+  Future<void> resetForLocale() {
+    final hadData = state.hasGeometry || state.summaries.isNotEmpty || _geometryRequest != null;
+    _generation++;
+    _geometryRequest = null;
+    _summariesRequest = null;
+    _geometryLocale = null;
+    state = TifoDistrictsState(summaries: state.summaries);
+    if (!hadData) {
       return Future<void>.value();
     }
-    // Polygons stay on screen while the new payload lands — only the names
-    // are stale, the rings and the standings are locale-independent.
-    return Future.wait([ensureGeometry(), refreshSummaries()]);
+    logger.log('[tifo] districts cache dropped for locale $_locale, reloading');
+    return prefetch();
   }
 
   Future<void> _loadGeometry() async {
@@ -143,10 +161,11 @@ class TifoDistrictsController extends Notifier<TifoDistrictsState> {
     // leave the cache marked with the locale the response actually carries, so
     // the next `ensureGeometry` refetches instead of trusting it.
     final locale = _locale;
+    final generation = _generation;
     state = state.copyWith(isLoadingGeometry: true, error: null);
     try {
       final districts = await _api.getDistricts(timing: _timing);
-      if (!ref.mounted) {
+      if (!ref.mounted || generation != _generation) {
         return;
       }
       logger.log('[tifo] districts geometry loaded: ${districts.length} (locale: $locale)');
@@ -154,7 +173,7 @@ class TifoDistrictsController extends Notifier<TifoDistrictsState> {
       _geometryLocale = locale;
       state = state.copyWith(districts: districts, isLoadingGeometry: false);
     } catch (e) {
-      if (!ref.mounted) {
+      if (!ref.mounted || generation != _generation) {
         return;
       }
       // `tifo_blocked {reason: error, surface: district}`: without geometry the mosaic paints
@@ -169,16 +188,20 @@ class TifoDistrictsController extends Notifier<TifoDistrictsState> {
       );
     } finally {
       // Cleared even on failure, so the next zoom-out retries instead of
-      // awaiting a future that already completed.
-      _geometryRequest = null;
+      // awaiting a future that already completed. Only for the current
+      // generation: a stale load must not null out the reload's request.
+      if (generation == _generation) {
+        _geometryRequest = null;
+      }
     }
   }
 
   Future<void> _loadSummaries() async {
+    final generation = _generation;
     state = state.copyWith(isLoadingSummaries: true);
     try {
       final summaries = await _api.getDistrictsSummary(timing: _timing);
-      if (!ref.mounted) {
+      if (!ref.mounted || generation != _generation) {
         return;
       }
       // Only when geometry has not answered yet: a standings poll must not
@@ -187,11 +210,13 @@ class TifoDistrictsController extends Notifier<TifoDistrictsState> {
       state = state.copyWith(summaries: summaries, isLoadingSummaries: false);
     } catch (_) {
       // Keep stale standings — a dropped poll must not un-color the map.
-      if (ref.mounted) {
+      if (ref.mounted && generation == _generation) {
         state = state.copyWith(isLoadingSummaries: false);
       }
     } finally {
-      _summariesRequest = null;
+      if (generation == _generation) {
+        _summariesRequest = null;
+      }
     }
   }
 }
