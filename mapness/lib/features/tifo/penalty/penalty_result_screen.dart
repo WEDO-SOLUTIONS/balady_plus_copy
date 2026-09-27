@@ -34,13 +34,14 @@ class TifoPenaltyResultScreen extends StatelessWidget {
     final suffix = isEnglish ? '_en' : '';
     return switch (result.outcome) {
       TifoOutcome.claimed || TifoOutcome.taken => 'result_win_${winnerColorKey ?? 'blue'}$suffix.png',
-      TifoOutcome.failed =>
+      // A voided (expired) session captured nothing, which BRD FR-17 calls a
+      // loss — the player gets the same "So close!" hero as a lost match.
+      TifoOutcome.failed || TifoOutcome.voided =>
         buildingOwnerColorKeyBeforePlay != null
             ? 'result_lose_$buildingOwnerColorKeyBeforePlay$suffix.png'
             : 'result_lose_unclaimed$suffix.png',
-      // No dedicated art for these edge cases (expired/rejected session) —
-      // fall back to the old neutral background.
-      TifoOutcome.voided || TifoOutcome.unknown => 'result_draw.jpg',
+      // No dedicated art for an unrecognized outcome — neutral background.
+      TifoOutcome.unknown => 'result_draw.jpg',
     };
   }
 

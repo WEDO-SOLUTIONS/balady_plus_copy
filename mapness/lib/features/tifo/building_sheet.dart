@@ -676,45 +676,59 @@ class _TifoBuildingSheetState extends ConsumerState<_TifoBuildingSheet> {
       }
       unawaited(container.read(tifoSessionProvider.notifier).refreshProfile());
       // Fullscreen Win/Loss/voided hero (US-14); errors keep the small dialog.
-      final ctx = rootNavigatorKey.currentContext;
-      if (ctx != null) {
-        _playPhase = TifoPlayPhase.resultShown;
-        _reportPlayExit(TifoPlayExitReason.completed, outcome: _analyticsOutcome(result.outcome));
-        unawaited(
-          showTifoPenaltyResult(
-            ctx,
-            result,
-            winnerColorKey: tifoResultColorKeyFor(container.read(tifoSessionProvider).myClub?.id),
-            // Building's owner BEFORE this attempt — `applyOwnership` above only
-            // mutates `tifoBuildingsProvider`'s map, not this widget's own
-            // `_building` field, so this still reads the pre-capture value.
-            buildingOwnerColorKeyBeforePlay: tifoResultColorKeyFor(_building.ownerClubSlug),
-          ).whenComplete(() {
-            // TFS 86070. The `refreshProfile()` above races the hero: it is
-            // fired the moment the submit returns, so whether the new score and
-            // match count have landed by the time the player dismisses the hero
-            // depends on how fast `/me` answers — and on the backend having
-            // committed the result before it was asked. Asking again ON
-            // DISMISSAL is what makes the Profile tiles right when the player
-            // actually looks at them. `container` (not `ref`) on purpose: this
-            // fires after the sheet may be gone.
-            unawaited(container.read(tifoSessionProvider.notifier).refreshProfile());
-          }),
-        );
-      }
+      _reportPlayExit(TifoPlayExitReason.completed, outcome: _analyticsOutcome(result.outcome));
+      _showResultHero(container, result);
     } catch (e) {
       final message = e is TifoApiException ? e.message : e.toString();
       // The backend voids a session that outlived `expiresAt` and keeps the
-      // token (FR-16). Say so plainly — "Submit failed" reads like a bug and
-      // sends testers hunting for one.
+      // token (FR-16).
       final expired = message.toLowerCase().contains('expired');
       if (expired) {
         // The backend voided a session that outlived `expiresAt` — the client
         // half of the same story `tifo_play_exit` exists to tell.
         _reportPlayExit(TifoPlayExitReason.timeout);
+        logger.log('[tifo] submit rejected, session expired: $message');
+        // The player DID finish the match — typically after the app sat in the
+        // background past the 30 s live-lock and they tapped "Continue" on the
+        // "Still playing?" prompt. A "Connection lost" sheet over the map for
+        // that read as a network bug (TIFO QA: "connection error after
+        // resuming from 30 min idle"). BRD FR-17 defines only two results —
+        // captured or not captured — and a voided session captures nothing,
+        // so show the regular loss hero ("So close!").
+        _showResultHero(container, TifoPlayResult(outcome: TifoOutcome.voided, yourScore: outcome.goals));
+        return;
       }
       logger.log('[tifo] submit failed${expired ? ' (session expired)' : ''}: $message');
       _showResult('Submit failed: $message', connectionLost: expired, onRetry: _onPlayPressed);
+    }
+  }
+
+  /// Fullscreen Win/Loss hero (US-14) for [result], on the root navigator.
+  void _showResultHero(ProviderContainer container, TifoPlayResult result) {
+    final ctx = rootNavigatorKey.currentContext;
+    if (ctx != null) {
+      _playPhase = TifoPlayPhase.resultShown;
+      unawaited(
+        showTifoPenaltyResult(
+          ctx,
+          result,
+          winnerColorKey: tifoResultColorKeyFor(container.read(tifoSessionProvider).myClub?.id),
+          // Building's owner BEFORE this attempt — `applyOwnership` above only
+          // mutates `tifoBuildingsProvider`'s map, not this widget's own
+          // `_building` field, so this still reads the pre-capture value.
+          buildingOwnerColorKeyBeforePlay: tifoResultColorKeyFor(_building.ownerClubSlug),
+        ).whenComplete(() {
+          // TFS 86070. The `refreshProfile()` above races the hero: it is
+          // fired the moment the submit returns, so whether the new score and
+          // match count have landed by the time the player dismisses the hero
+          // depends on how fast `/me` answers — and on the backend having
+          // committed the result before it was asked. Asking again ON
+          // DISMISSAL is what makes the Profile tiles right when the player
+          // actually looks at them. `container` (not `ref`) on purpose: this
+          // fires after the sheet may be gone.
+          unawaited(container.read(tifoSessionProvider.notifier).refreshProfile());
+        }),
+      );
     }
   }
 
