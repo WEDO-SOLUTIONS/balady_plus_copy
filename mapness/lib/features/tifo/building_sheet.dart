@@ -40,6 +40,9 @@ enum TifoBuildingCta {
   cooldown,
 }
 
+/// Why `play/start` failed, as far as the sheet needs to tell the player.
+enum _StartFailure { locked, ownBuilding, noTokens, other }
+
 /// Derives the sheet's CTA state. Pure on purpose: `build()` renders it and
 /// `tifo_blocked` reports it, so the event can never disagree with what the
 /// player is actually looking at.
@@ -524,9 +527,10 @@ class _TifoBuildingSheetState extends ConsumerState<_TifoBuildingSheet> {
     // up so its bridge calls don't compete with Flame's per-frame rendering.
     container.read(tifoBuildingsPollerProvider.notifier).stop();
     var handled = false;
+    late final MaterialPageRoute<void> route;
     unawaited(
       navigator.push<void>(
-        MaterialPageRoute<void>(
+        route = MaterialPageRoute<void>(
           fullscreenDialog: true,
           builder: (_) => PenaltyApp(
             missesAllowed: missesAllowed,
@@ -542,9 +546,20 @@ class _TifoBuildingSheetState extends ConsumerState<_TifoBuildingSheet> {
             // from reporting a second time.
             onBackgrounded: () => _reportPlayExit(TifoPlayExitReason.backgrounded),
             onReady: (arm) => unawaited(
-              _openSession(container).then((session) {
+              _openSession(container, route).then((session) {
                 if (session == null) {
                   return; // start failed — the game route is already gone
+                }
+                // TFS 86713: the player left the pitch (X or system back)
+                // while play/start was in flight. The token is spent and the
+                // building stays live-locked until the server timeout, so the
+                // next Challenge on it within that window got a 409 that
+                // surfaced as a random "Something went wrong". Close the
+                // session right away instead of leaving it dangling.
+                if (handled || !route.isActive) {
+                  handled = true;
+                  unawaited(_releaseAbandonedSession(container, session, missesAllowed));
+                  return;
                 }
                 playSession = session;
                 arm();
@@ -567,12 +582,23 @@ class _TifoBuildingSheetState extends ConsumerState<_TifoBuildingSheet> {
               logger.log('[tifo] shootout abandoned: device went offline mid-session');
               _reportPlayExit(TifoPlayExitReason.connectionLost);
               container.read(tifoBuildingsPollerProvider.notifier).start();
-              rootNavigatorKey.currentState?.pop();
+              _closeGameRoute(route);
               _showResult('connection lost mid-shootout', connectionLost: true);
             },
             onComplete: (outcome) {
+              if (handled) {
+                return;
+              }
               final session = playSession;
-              if (handled || session == null) {
+              if (session == null) {
+                // Forfeited (X → Leave) before play/start answered: nothing to
+                // submit yet. Leave the pitch now; `onReady` releases the
+                // session if it still opens (see above). Previously this
+                // returned silently and left the player on a dead pitch.
+                handled = true;
+                _reportPlayExit(TifoPlayExitReason.userQuit);
+                container.read(tifoBuildingsPollerProvider.notifier).start();
+                _closeGameRoute(route);
                 return;
               }
               handled = true;
@@ -593,7 +619,7 @@ class _TifoBuildingSheetState extends ConsumerState<_TifoBuildingSheet> {
               // Short beat so the last GOAL!/MISS! flash is readable, then
               // submit — kept tight because the clock is still running.
               Future<void>.delayed(const Duration(seconds: 2), () {
-                rootNavigatorKey.currentState?.pop();
+                _closeGameRoute(route);
                 unawaited(_submit(playSession: session, outcome: outcome));
               });
             },
@@ -606,17 +632,151 @@ class _TifoBuildingSheetState extends ConsumerState<_TifoBuildingSheet> {
   /// Deducts the token and opens the session. On failure the game route is
   /// closed and the reason is shown — the player never gets a pitch they
   /// can't legally kick on.
-  Future<TifoPlaySession?> _openSession(ProviderContainer container) async {
+  Future<TifoPlaySession?> _openSession(ProviderContainer container, Route<void> gameRoute) async {
     try {
       final session = await container.read(tifoApiProvider).startPlay(_building.id);
       // Token was just spent; refresh the balance shown elsewhere.
       unawaited(container.read(tifoSessionProvider.notifier).refreshProfile());
       return session;
     } catch (e) {
-      rootNavigatorKey.currentState?.pop();
-      _showResult(e is TifoApiException ? e.message : e.toString(), onRetry: _onPlayPressed);
+      // `_runShootout` paused the poller for the game; without this a failed
+      // start left it off for the rest of the app session, so building
+      // statuses went stale and the next Challenge hit the same refusal.
+      container.read(tifoBuildingsPollerProvider.notifier).start();
+      final wasOnPitch = gameRoute.isActive;
+      _closeGameRoute(gameRoute);
+      final code = e is TifoApiException ? e.statusCode : null;
+      final message = e is TifoApiException ? e.message : e.toString();
+      final detail = 'play/start failed ($code): $message';
+      if (!wasOnPitch) {
+        // The player already left; don't pop a dialog over whatever is there now.
+        logger.log('[tifo] $detail (pitch already closed, not shown)');
+        return null;
+      }
+      final failure = _classifyStartFailure(e);
+      switch (failure) {
+        case _StartFailure.locked:
+        case _StartFailure.ownBuilding:
+          // The cached status was stale (the poller is paused while a game is
+          // up and only runs every 20 s): someone is playing this building, or
+          // the player's club already took it. Say that instead of a generic
+          // error, and pull fresh statuses so the sheet shows it next time.
+          unawaited(container.read(tifoBuildingsProvider.notifier).refreshVisible());
+          _showStartRefused(detail, ownBuilding: failure == _StartFailure.ownBuilding);
+        case _StartFailure.noTokens:
+          unawaited(container.read(tifoSessionProvider.notifier).refreshProfile());
+          _showStartRefused(detail, noTokens: true);
+        case _StartFailure.other:
+          _showResult(detail, onRetry: _retryPlay);
+      }
       return null;
     }
+  }
+
+  /// Closes exactly the game route — never whatever happens to be on top.
+  ///
+  /// Every exit used to be a bare `rootNavigatorKey.currentState?.pop()`: with
+  /// the "Leave challenge?" / "Still playing?" sheet open that closed the sheet
+  /// and left the game up under the error, and after a system back it popped
+  /// the route BELOW the game (the map/landing).
+  void _closeGameRoute(Route<void> route) {
+    if (!route.isActive) {
+      return;
+    }
+    final navigator = route.navigator;
+    if (route.isCurrent) {
+      navigator?.pop();
+    } else {
+      navigator?.removeRoute(route);
+    }
+  }
+
+  /// Ends a session nobody is playing on (see `onReady` in [_runShootout]):
+  /// submits a zero-goal run padded to [missesAllowed] misses — the only shape
+  /// the backend accepts — which releases the live-lock. Silent on purpose:
+  /// the player already chose to leave.
+  Future<void> _releaseAbandonedSession(
+    ProviderContainer container,
+    TifoPlaySession session,
+    int missesAllowed,
+  ) async {
+    container.read(tifoBuildingsPollerProvider.notifier).start();
+    logger.log('[tifo] releasing abandoned session ${session.sessionId} on ${_building.id}');
+    try {
+      await container
+          .read(tifoApiProvider)
+          .submitPlay(
+            buildingId: _building.id,
+            sessionId: session.sessionId,
+            score: 0,
+            events: [
+              for (var i = 0; i < missesAllowed; i++) TifoKickEvent(index: i, scored: false, atMs: 0).toJson(),
+            ],
+          );
+    } catch (e) {
+      // Nothing to show: the server times the lock out on its own.
+      logger.log('[tifo] releasing abandoned session failed: $e');
+    }
+    unawaited(container.read(tifoSessionProvider.notifier).refreshProfile());
+  }
+
+  /// "Retry" from the failure sheet. The building sheet is long gone by then
+  /// (it closes before the game opens), so this can't go through
+  /// [_onPlayPressed] — that touched `context`/`setState` on a disposed State
+  /// and threw, i.e. Retry only ever closed the dialog. The gate walk already
+  /// passed for this run; the server re-checks the balance on play/start.
+  void _retryPlay() {
+    if (_container == null) {
+      return;
+    }
+    _runShootout();
+  }
+
+  static _StartFailure _classifyStartFailure(Object e) {
+    if (e is! TifoApiException) {
+      return _StartFailure.other;
+    }
+    final message = e.message.toLowerCase();
+    if (e.statusCode == 402 || message.contains('insufficient') || message.contains('not enough')) {
+      return _StartFailure.noTokens;
+    }
+    if (e.statusCode == 409 || e.statusCode == 423) {
+      return message.contains('already') || message.contains('own') ? _StartFailure.ownBuilding : _StartFailure.locked;
+    }
+    return _StartFailure.other;
+  }
+
+  /// A play/start the server refused for a game reason — not an error, so no
+  /// Retry: retrying immediately gets the same answer.
+  void _showStartRefused(String detail, {bool ownBuilding = false, bool noTokens = false}) {
+    final ctx = rootNavigatorKey.currentContext;
+    if (ctx == null) {
+      return;
+    }
+    logger.log('[tifo] play/start refused: $detail');
+    // Own building is a rule, not friction — `_reportOpenBlock` skips it too.
+    if (!ownBuilding) {
+      unawaited(
+        TifoEvents.blocked(
+          reason: noTokens ? TifoBlockReason.noTokens : TifoBlockReason.buildingLocked,
+          surface: TifoSurface.building,
+        ),
+      );
+    }
+    final l10n = AppLocalizations.of(ctx);
+    unawaited(
+      showTifoMessageDialog<void>(
+        ctx,
+        card: TifoMessageCard(
+          showIllustration: true,
+          title: noTokens
+              ? l10n.tifoNotEnoughTokensTitle
+              : (ownBuilding ? l10n.tifoOwnBuildingHint : l10n.tifoBuildingLiveHint),
+          body: noTokens ? l10n.tifoNotEnoughTokensBody : '',
+          onClose: () => Navigator.of(ctx).pop(),
+        ),
+      ),
+    );
   }
 
   Future<void> _submit({required TifoPlaySession playSession, required TifoShootoutOutcome outcome}) async {
@@ -714,7 +874,7 @@ class _TifoBuildingSheetState extends ConsumerState<_TifoBuildingSheet> {
         _reportPlayExit(TifoPlayExitReason.timeout);
       }
       logger.log('[tifo] submit failed${expired ? ' (session expired)' : ''}: $message');
-      _showResult('Submit failed: $message', connectionLost: expired, onRetry: _onPlayPressed);
+      _showResult('Submit failed: $message', connectionLost: expired, onRetry: _retryPlay);
     }
   }
 
