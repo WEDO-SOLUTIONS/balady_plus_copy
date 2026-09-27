@@ -742,7 +742,9 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
                   endTripAndBuildAnotherRoute: _endTripAndBuildAnotherRoute,
                   onSearchPressed: _onSearchPressed,
                   onTapRoute: _onShowRoutePressed,
-                  onEndTripPressed: () => _endTripAndShowFeedback(context),
+                  onEndTripPressed: () => _navigationState.value == PathNavState.finished
+                      ? _endTripAndShowFeedback(context)
+                      : _endTripAndReturnToRoute(),
                   sheetController: sheetController,
                   isLandscape: !isPortrait,
                   isHomeOrWork: widget.isHomeOrWork,
@@ -917,6 +919,31 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
     // State's context - 1.1k events / 816 users on 3.13.5).
   }
 
+  /// Ending a running trip by hand returns to the route preview and shows
+  /// nothing else. A navigation restored after a restart has no route to return
+  /// to, so it just goes back to the map.
+  Future<void> _endTripAndReturnToRoute() async {
+    final routeState = ref.read(currentRouteProvider);
+
+    await ref.read(urbiAnalyticsProvider).track(MapnessConstants.analyticsTripStopped);
+
+    await _parkingCheck();
+
+    await _endTrip();
+
+    if (!mounted) {
+      return;
+    }
+
+    context.router.popUntilRouteWithName(BottomMenuRoute.name);
+
+    if (!mounted || routeState == null) {
+      return;
+    }
+
+    await _showRouteAfterTrip(routeState);
+  }
+
   // Show the feedback page after the trip is finished manually
   Future<void> _endTripAndShowFeedback(BuildContext ctx) async {
     Metrics.logEventAdvanced(
@@ -982,6 +1009,37 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
     // We don't show the feedback page in landscape mode
     if (MediaQuery.of(context).orientation != Orientation.landscape) {
       await ctx.router.push(AppFeedbackSheet(source: const FeedbackSource.navi()));
+    }
+  }
+
+  /// Rebuilds the ended trip's route on the route preview screen.
+  Future<void> _showRouteAfterTrip(CurrentRouteState routeState) async {
+    final isHomeOrWork = widget.isHomeOrWork;
+    final router = rootNavigatorKey.currentContext?.router;
+    if (router == null) {
+      return;
+    }
+
+    // [NavigationGuard] reads the router stack: pushing while the popped
+    // navigation page is still on it asks the user to exit navigation again.
+    await _waitForStack(router, (stack) => stack.every((page) => page.name != PathNavRoute.name));
+
+    // Not awaited: the push future completes only once the route is popped again.
+    unawaited(
+      router.push(
+        RoutingRoutesRoute(points: routeState.points, navType: routeState.navType, isHomeOrWork: isHomeOrWork),
+      ),
+    );
+
+    await _waitForStack(router, (stack) => stack.any((page) => page.name == RoutingRoutesRoute.name));
+  }
+
+  /// Route transitions and guards settle the stack without notifying listeners,
+  /// so it is polled instead.
+  Future<void> _waitForStack(StackRouter router, bool Function(List<AutoRoutePage>) isSettled) async {
+    final deadline = DateTime.now().add(const Duration(seconds: 1));
+    while (!isSettled(router.stack) && DateTime.now().isBefore(deadline)) {
+      await Future<void>.delayed(const Duration(milliseconds: 16));
     }
   }
 
