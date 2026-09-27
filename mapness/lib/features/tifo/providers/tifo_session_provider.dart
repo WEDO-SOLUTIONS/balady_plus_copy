@@ -74,11 +74,11 @@ class TifoSessionState {
   /// gates the team confirmation, US-04/BT-23), then team select → ready.
   TifoJourneyStep get nextStep {
     final p = profile;
-    if (p == null || !p.tutorialCompleted) {
-      return TifoJourneyStep.tutorial;
-    }
     if (isGuest) {
       return TifoJourneyStep.login;
+    }
+    if (p == null || !p.tutorialCompleted) {
+      return TifoJourneyStep.tutorial;
     }
     if (!p.hasClub) {
       return TifoJourneyStep.teamSelect;
