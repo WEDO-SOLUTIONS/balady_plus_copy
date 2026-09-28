@@ -4,6 +4,7 @@ import 'package:dgis_map/library.dart';
 import 'package:flutter/foundation.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:mapness/entities/routing/route_params_point.dart';
+import 'package:mapness/shared/lib/common_functions.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'current_route.freezed.dart';
@@ -16,6 +17,9 @@ enum NavigationTripSource { phone, carplay, androidAuto }
 
 /// Same limit as "Add stop" on the route preview.
 const maxIntermediateStops = 10;
+
+/// A tapped place this close to a route point without a directory object is that point.
+const samePlaceRadiusMeters = 30;
 
 /// This provider stores current route state
 @Riverpod(keepAlive: true)
@@ -68,6 +72,20 @@ class _CurrentRoute extends _$CurrentRoute {
   void seedFromNativeTrip(CurrentRouteState routeState) {
     state ??= routeState;
   }
+
+  /// Names the finish once its directory object is known, if it is still the route finish.
+  void renameFinish(RouteParamsPoint finish, String label) {
+    final routeState = state;
+    if (routeState == null || routeState.finishPoint?.value != finish) {
+      return;
+    }
+    state = routeState.copyWith(
+      points: [
+        ...routeState.points.sublist(0, routeState.points.length - 1),
+        RouteParamsPointWithLabel(value: finish, label: label),
+      ],
+    );
+  }
 }
 
 @freezed
@@ -94,6 +112,14 @@ abstract class CurrentRouteState with _$CurrentRouteState {
   int get stopsCount => points.length > 2 ? points.length - 2 : 0;
 
   bool containsPOI(int objectId) => points.any((e) => e.value?.objectId == objectId);
+
+  /// A point without a directory object (a coordinate from a head unit) matches by distance.
+  bool hasPointWithoutObjectNear({required double latitude, required double longitude}) => points.any((e) {
+    final point = e.value;
+    return point != null &&
+        point.objectId == null &&
+        CommonFunctions.distance(point.latitude, point.longitude, latitude, longitude) * 1000 <= samePlaceRadiusMeters;
+  });
 
   /// Keeps only the last [remainingStops] stops: native guidance drives them in order.
   CurrentRouteState withoutPassedStops(int? remainingStops) {

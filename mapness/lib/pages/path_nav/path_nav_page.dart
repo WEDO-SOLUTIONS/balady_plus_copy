@@ -108,6 +108,8 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
 
   late final MapTapHandler _mapTapHandler;
   bool _isAddStopFlowActive = false;
+  // Rebuild of the Flutter route for a trip started outside Flutter, see [_seedRouteFromNative].
+  Future<void>? _routeSeed;
   // Non-null while guidance restarts on a new route (a stop was added).
   Completer<void>? _navigationRestart;
   static const _navigationRestartSettleTime = Duration(seconds: 3);
@@ -244,7 +246,7 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
 
       final hasActiveNavigation = navState.state == NavigationState.navigation && navState.routeSearchOptions != null;
       if (hasActiveNavigation) {
-        unawaited(_seedRouteFromNative(dgisController, navState));
+        _routeSeed = _seedRouteFromNative(dgisController, navState);
         return true;
       }
 
@@ -258,7 +260,7 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
     final state = base64.decode(savedState);
     try {
       await dgisController.restoreNavigationState(state, NavigationConstants.navigationSpeedRangeZooms);
-      unawaited(_seedRouteFromNative(dgisController));
+      _routeSeed = _seedRouteFromNative(dgisController);
       return true;
     } catch (e) {
       if (!mounted) {
@@ -286,7 +288,6 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
       if (finish == null || navType == null) {
         return;
       }
-      final finishTitle = await _objectTitle(dgisController, finish);
       final carConnected = await _isCarConnected();
       if (!mounted) {
         return;
@@ -303,7 +304,7 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
                     value: RouteParamsPoint(latitude: stop.latitude, longitude: stop.longitude),
                     label: l10n.intermediatePointNumberedName(index + 1),
                   ),
-                RouteParamsPointWithLabel(value: finish, label: finishTitle ?? l10n.destination),
+                RouteParamsPointWithLabel(value: finish, label: l10n.destination),
               ],
               navType: navType,
               route: null,
@@ -315,8 +316,16 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
             ),
           );
       ref.read(currentNavigationDestinationProvider.notifier).state ??= finish;
+      unawaited(_nameSeededFinish(dgisController, finish));
     } catch (e) {
       logger.log('Route seed from native navigation failed: $e', logLevel: MapnessLogLevel.error);
+    }
+  }
+
+  Future<void> _nameSeededFinish(DgisMapController dgisController, RouteParamsPoint finish) async {
+    final title = await _objectTitle(dgisController, finish);
+    if (title != null && mounted) {
+      ref.read(currentRouteProvider.notifier).renameFinish(finish, title);
     }
   }
 
@@ -1261,12 +1270,18 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
   Future<void> _promptAddStop(ObjectTapEvent event) async {
     _isAddStopFlowActive = true;
     try {
+      await _routeSeed?.timeout(const Duration(seconds: 1), onTimeout: () {});
       final remainingStops = await _remainingStopsCount();
       if (!mounted) {
         return;
       }
       final route = ref.read(currentRouteProvider)?.withoutPassedStops(remainingStops);
-      final prompt = AddStopPrompt.forPoi(objectId: event.dgisObjectId.objectId, navType: widget.navType, route: route);
+      final prompt = AddStopPrompt.forPoi(
+        objectId: event.dgisObjectId.objectId,
+        position: event.latLng,
+        navType: widget.navType,
+        route: route,
+      );
       final stop = await context.router.push<RouteParamsPointWithLabel>(
         NavAddStopSheetRoute(objectId: event.dgisObjectId.objectId, tapPoint: event.latLng, prompt: prompt),
       );

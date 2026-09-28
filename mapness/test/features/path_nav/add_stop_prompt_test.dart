@@ -22,8 +22,26 @@ CurrentRouteState _route({int stops = 0, NavigationTripSource source = Navigatio
       tripSource: source,
     );
 
-AddStopPrompt _prompt(CurrentRouteState? route, int objectId) =>
-    AddStopPrompt.forPoi(objectId: objectId, navType: RouteSearchOptionsMessage.car, route: route);
+// Far from every test point, so only the object id can match.
+const _elsewhere = LatLng(latitude: 21.5, longitude: 39.2);
+
+AddStopPrompt _prompt(CurrentRouteState? route, int objectId, {LatLng position = _elsewhere}) =>
+    AddStopPrompt.forPoi(objectId: objectId, position: position, navType: RouteSearchOptionsMessage.car, route: route);
+
+// A finish picked on a head unit by coordinates only: native object id 0.
+CurrentRouteState _coordinateFinishRoute() => const CurrentRouteState(
+  points: [
+    _myLocation,
+    RouteParamsPointWithLabel(value: RouteParamsPoint(latitude: 24.7, longitude: 46.6), label: 'Destination'),
+  ],
+  navType: RouteSearchOptionsMessage.car,
+  route: null,
+  tripSource: NavigationTripSource.carplay,
+);
+
+// ~0.00009 deg of latitude is ~10 m, ~0.0005 deg is ~55 m.
+const _tenMetersFromFinish = LatLng(latitude: 24.70009, longitude: 46.6);
+const _fiftyFiveMetersFromFinish = LatLng(latitude: 24.7005, longitude: 46.6);
 
 void main() {
   group('AddStopPrompt', () {
@@ -59,12 +77,44 @@ void main() {
       expect(_prompt(_route(stops: maxIntermediateStops - 1), 500).canAddStop, isTrue);
     });
 
-    test('offers nothing when the trip route is unknown', () {
+    test('shows a disabled "Add stop" while the trip route is not rebuilt yet', () {
       final prompt = _prompt(null, 500);
 
-      expect(prompt.showAddStop, isFalse);
+      expect(prompt.showAddStop, isTrue);
       expect(prompt.canAddStop, isFalse);
       expect(prompt.tripSource, NavigationTripSource.phone);
+    });
+
+    test('a finish without an object matches a place tapped within 30 m', () {
+      final near = _prompt(_coordinateFinishRoute(), 500, position: _tenMetersFromFinish);
+      final far = _prompt(_coordinateFinishRoute(), 500, position: _fiftyFiveMetersFromFinish);
+
+      expect(near.poiInRoute, isTrue);
+      expect(near.showAddStop, isFalse);
+      expect(far.poiInRoute, isFalse);
+      expect(far.canAddStop, isTrue);
+    });
+
+    test('the POI position from the directory can reveal the coordinate-only finish', () {
+      final prompt = _prompt(_coordinateFinishRoute(), 500, position: _fiftyFiveMetersFromFinish);
+
+      final atFinish = prompt.withPoiPosition(
+        GeoPointWithElevationMessage(latitude: 24.7, longitude: 46.6, elevation: 0),
+      );
+      expect(atFinish.showAddStop, isFalse);
+      expect(prompt.withPoiPosition(null), same(prompt));
+    });
+
+    test('a finish with an object is matched by object id, not by distance', () {
+      final route = _route();
+      final finish = route.finishPoint!.value!;
+      final prompt = _prompt(
+        route,
+        500,
+        position: LatLng(latitude: finish.latitude, longitude: finish.longitude),
+      );
+
+      expect(prompt.poiInRoute, isFalse);
     });
 
     test('keeps who started the trip', () {
@@ -95,6 +145,22 @@ void main() {
       final route = _route(stops: 3).withoutPassedStops(1).withStopBeforeFinish(_point(500));
 
       expect(route.points, [_myLocation, _point(3), _point(500), _point(_finishId)]);
+    });
+
+    test('renameFinish names the finish only while it is still the route finish', () {
+      final container = ProviderContainer();
+      addTearDown(container.dispose);
+      final notifier = container.read(currentRouteProvider.notifier)..seedFromNativeTrip(_coordinateFinishRoute());
+      final finish = _coordinateFinishRoute().finishPoint!.value!;
+
+      notifier.renameFinish(const RouteParamsPoint(latitude: 1, longitude: 1), 'Elsewhere');
+      expect(container.read(currentRouteProvider)!.finishPoint!.label, 'Destination');
+
+      notifier.renameFinish(finish, 'Kingdom Centre');
+      expect(
+        container.read(currentRouteProvider)!.finishPoint,
+        RouteParamsPointWithLabel(value: finish, label: 'Kingdom Centre'),
+      );
     });
 
     test('seedFromNativeTrip fills an empty route and keeps a known one', () {
