@@ -299,6 +299,11 @@ class NavigationHandler {
             return
         }
         
+        // HB-122: a restart over live guidance (a stop added) keeps its location source;
+        // swapping it once more could leave the previous pin drawn next to the new one.
+        let isRestart = self.navigationManager.uiModel.state != .disabled
+            && self.navigationManager.uiModel.route.routeBuildOptions != nil
+
         do {
             let isPublicTransport = options == .publicTransport(PublicTransportRouteSearchOptions())
             if !isPublicTransport {
@@ -323,17 +328,17 @@ class NavigationHandler {
             return
         }
         
-        let oldSource = map.sources.first(where: { $0 is MyLocationMapObjectSource })!
-        
-        map.removeSource(source: oldSource)
-        
-        map.addSource(source: MyLocationMapObjectSource(
-            context: context,
-            controllerSettings:  MyLocationControllerSettings(
-                coordinatesThreshold: Meter(value: 10),
-                bearingThreshold: Bearing(value: 90)
-            )
-        ))
+        if !isRestart, let oldSource = map.sources.first(where: { $0 is MyLocationMapObjectSource }) {
+            map.removeSource(source: oldSource)
+
+            map.addSource(source: MyLocationMapObjectSource(
+                context: context,
+                controllerSettings:  MyLocationControllerSettings(
+                    coordinatesThreshold: Meter(value: 10),
+                    bearingThreshold: Bearing(value: 90)
+                )
+            ))
+        }
         
         completion(Result.success(()))
     }

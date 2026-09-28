@@ -277,11 +277,9 @@ class NavigationHandler(
                                 NavigationStateMessage(
                                         state = state,
                                         routeSearchOptions =
-                                                buildOptions?.routeSearchOptions?.toRouteSearchOptionsMessage(),
-                                        finishPoint = buildOptions?.finishPoint?.toMessage(),
-                                        remainingIntermediatePoints =
-                                                if (buildOptions == null) null
-                                                else remainingIntermediatePoints(),
+                                                buildOptions?.let { it.routeSearchOptions.toRouteSearchOptionsMessage() },
+                                        finishPoint = buildOptions?.let { it.finishPoint.toMessage() },
+                                        remainingIntermediatePoints = buildOptions?.let { remainingIntermediatePoints() },
                                 )
                         )
                 )
@@ -289,7 +287,7 @@ class NavigationHandler(
 
         private fun remainingIntermediatePoints(): List<GeoPointMessage> {
                 val model = navigationManager.uiModel
-                val passedMillimeters = model.routePosition?.distance?.millimeters ?: -1
+                val passedMillimeters = model.routePosition?.let { it.distance.millimeters } ?: -1
                 return model.route.route.intermediatePoints.entries
                         .filter { it.point.distance.millimeters > passedMillimeters }
                         .map { it.value.toMessage() }
