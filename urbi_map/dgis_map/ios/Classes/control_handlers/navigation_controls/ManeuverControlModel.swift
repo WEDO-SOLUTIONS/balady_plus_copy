@@ -183,7 +183,23 @@ class ManeuverControlModel {
         }
 
         let instructionType = getInstructionManeuver(extraInstructionInfo: instruction.extraInstructionInfo)
-        
+
+        // SDK callback thread: a synchronous post waits for main-queue observers and can
+        // deadlock against main-thread calls into the SDK — post async on main instead,
+        // capturing plain values so no SDK object is touched off this callback.
+        let tickUserInfo: [String: Any] = [
+            "distanceMm": Double(distance),
+            "roadName": instruction.roadName,
+            "instruction": instructionType.name()
+        ]
+        DispatchQueue.main.async {
+            NotificationCenter.default.post(
+                name: .dgisNavigationManeuverTick,
+                object: nil,
+                userInfo: tickUserInfo
+            )
+        }
+
         return eventChannel.success([
             "event": ManeuverEvents.maneuverEvent,
             "type": ManeuverEvents.nextManeuver,

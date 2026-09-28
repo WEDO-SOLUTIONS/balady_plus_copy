@@ -217,11 +217,22 @@ class MapObjectManager extends _$MapObjectManager {
   /// --- POLYLINE ---
 
   Future<void> addPolyLines(List<Polyline> polylines) async {
-    await ref.read(dgisControllerProvider).value?.addPolylines(polylines, toManager: await future);
+    final manager = await future;
+    // The autoDispose manager can be torn down while a caller is between
+    // awaits; touching ref then throws UnmountedRefException. The native
+    // manager is already removed by build()'s onDispose - nothing to draw on.
+    if (!ref.mounted) {
+      return;
+    }
+    await ref.read(dgisControllerProvider).value?.addPolylines(polylines, toManager: manager);
   }
 
   Future<void> removeAllPolyLines() async {
-    await ref.read(dgisControllerProvider).value?.removeAllPolylines(fromManager: await future);
+    final manager = await future;
+    if (!ref.mounted) {
+      return;
+    }
+    await ref.read(dgisControllerProvider).value?.removeAllPolylines(fromManager: manager);
   }
 
   /// --- POLYGON ---

@@ -57,8 +57,8 @@ class _MiniAppsMainScreenState extends ConsumerState<MiniAppsMainScreen> {
     // Hide floating player and prepare for mini app navigation
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final audioProvider = ref.read(streamAudioProvider);
-      audioProvider.setInWeb(true);
-      audioProvider.setFloatingPlayerVisibility(false);
+      audioProvider.setInWeb(inWeb: true);
+      audioProvider.setFloatingPlayerVisibility(isVisible: false);
       audioProvider.prepareForMiniAppNavigation();
     });
   }
@@ -113,8 +113,8 @@ class _MiniAppsMainScreenState extends ConsumerState<MiniAppsMainScreen> {
           if (shouldExit && context.mounted) {
             // Show floating player when mini app is closed
             final audioProvider = ref.read(streamAudioProvider);
-            audioProvider.setInWeb(false);
-            audioProvider.setFloatingPlayerVisibility(true);
+            audioProvider.setInWeb(inWeb: false);
+            audioProvider.setFloatingPlayerVisibility(isVisible: true);
             Navigator.of(context).pop();
           }
         },
@@ -137,8 +137,8 @@ class _MiniAppsMainScreenState extends ConsumerState<MiniAppsMainScreen> {
                   if (shouldExit && context.mounted) {
                     // Show floating player when mini app is closed
                     final audioProvider = ref.read(streamAudioProvider);
-                    audioProvider.setInWeb(false);
-                    audioProvider.setFloatingPlayerVisibility(true);
+                    audioProvider.setInWeb(inWeb: false);
+                    audioProvider.setFloatingPlayerVisibility(isVisible: true);
                     Navigator.of(context).pop();
                   }
                 },
@@ -259,8 +259,8 @@ class _MiniAppsMainScreenState extends ConsumerState<MiniAppsMainScreen> {
     // Restore audio provider and show floating player when mini app is closed
     if (mounted) {
       try {
-        ref.read(streamAudioProvider).setInWeb(false);
-        ref.read(streamAudioProvider).setFloatingPlayerVisibility(true);
+        ref.read(streamAudioProvider).setInWeb(inWeb: false);
+        ref.read(streamAudioProvider).setFloatingPlayerVisibility(isVisible: true);
       } catch (e) {
         debugPrint('MiniAppsMainScreen: Error restoring audio provider: $e');
       }
