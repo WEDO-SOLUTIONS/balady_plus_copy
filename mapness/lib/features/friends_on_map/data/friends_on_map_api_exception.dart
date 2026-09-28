@@ -37,7 +37,11 @@ enum FriendsOnMapLimitCode {
 
   /// S-18, Appendix B: entries per shared list = 200. `POST
   /// /v1/lists/{id}/places`, HTTP 409.
-  listItemLimitReached;
+  listItemLimitReached,
+
+  /// S-19, Appendix B: concurrent active sharing links per user = 5 (AC-10).
+  /// `POST /v1/shares`, HTTP 409, `subject` always `self`.
+  shareLimitReached;
 
   static FriendsOnMapLimitCode? fromWire(String? value) => switch (value) {
     'friend_limit_reached' => friendLimitReached,
@@ -48,6 +52,7 @@ enum FriendsOnMapLimitCode {
     'list_limit_reached' => listLimitReached,
     'list_member_limit_reached' => listMemberLimitReached,
     'list_item_limit_reached' => listItemLimitReached,
+    'share_limit_reached' => shareLimitReached,
     _ => null,
   };
 }

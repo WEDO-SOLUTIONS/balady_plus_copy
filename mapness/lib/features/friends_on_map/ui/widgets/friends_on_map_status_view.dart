@@ -4,9 +4,12 @@ import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
+import 'package:mapness/features/friends_on_map/providers/active_shares_controller.dart';
 import 'package:mapness/features/friends_on_map/providers/friends_on_map_activation.dart';
 import 'package:mapness/features/friends_on_map/providers/friends_on_map_layer_visible.dart';
 import 'package:mapness/features/friends_on_map/providers/friends_on_map_paused.dart';
+import 'package:mapness/features/friends_on_map/ui/widgets/active_shares_sheet.dart';
+import 'package:mapness/features/friends_on_map/ui/widgets/share_duration_sheet.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 
 /// Renders whichever active/revoked variant applies once activation has
@@ -111,10 +114,46 @@ class FriendsOnMapStatusView extends ConsumerWidget {
               // R-97/R-98 (D-13 fallback): display-only — doesn't touch
               // reporting, visibility rules, links, or notifications.
               ContentRow(
+                isDividerEnabled: true,
                 text: ContentRowTextOptions(title: context.l10n.friendsOnMapLayerToggleLabel),
                 trailing: ContentRowToggleTrailingOptions(
                   value: ref.watch(friendsOnMapLayerVisibleProvider),
                   onChanged: (value) => ref.read(friendsOnMapLayerVisibleProvider.notifier).setVisible(visible: value),
+                ),
+              ),
+              // S-19 (R-78/R-80): temporary placement alongside the toggles
+              // above — same "no real hub yet" convention as every other
+              // row in this file (see the BR-05 tension note in
+              // friends_on_map/AGENTS.md).
+              ContentRow(
+                isDividerEnabled: true,
+                onTap: () => showModalBottomSheet<void>(
+                  backgroundColor: Colors.transparent,
+                  context: context,
+                  isScrollControlled: true,
+                  builder: (_) => const ShareDurationSheet(),
+                ),
+                text: ContentRowTextOptions(title: context.l10n.friendsOnMapShareLocationCta),
+                trailing: ContentRowTextTrailingOptions(
+                  icon: SystemIcons.arrowCornerRightLarge,
+                  iconColor: context.colors.foregroundMuted,
+                ),
+              ),
+              ContentRow(
+                onTap: () => showModalBottomSheet<void>(
+                  backgroundColor: Colors.transparent,
+                  context: context,
+                  isScrollControlled: true,
+                  builder: (_) => const ActiveSharesSheet(),
+                ),
+                text: ContentRowTextOptions(
+                  title: context.l10n.friendsOnMapMyActiveSharesCta(
+                    ref.watch(activeSharesControllerProvider).value?.length ?? 0,
+                  ),
+                ),
+                trailing: ContentRowTextTrailingOptions(
+                  icon: SystemIcons.arrowCornerRightLarge,
+                  iconColor: context.colors.foregroundMuted,
                 ),
               ),
             ],

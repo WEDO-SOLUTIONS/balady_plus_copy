@@ -57,6 +57,7 @@ import 'package:mapness/features/favourites/data/models/favorite_cache_item.dart
 import 'package:mapness/features/favourites/mappers/favourite_item_mapper.dart';
 import 'package:mapness/features/favourites/providers/favourite_cache.dart';
 import 'package:mapness/features/founding_day/founding_day.dart';
+import 'package:mapness/features/friends_on_map/helpers/share_link_utils.dart';
 import 'package:mapness/features/friends_on_map/providers/invite_resolution_flow.dart';
 import 'package:mapness/features/leap/leap.dart';
 import 'package:mapness/features/lifestyle_layers/providers/layers_controls.dart';
@@ -1043,6 +1044,17 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> with Widg
         latitude: latitude,
         longitude: longitude,
       )) {
+        return;
+      }
+    }
+
+    // S-19: a distinct query-param scheme (BaldayDeeplink.shareTokenKey)
+    // from share_eta's tokenId/streamId pair above — see
+    // BaldayDeeplink.baseShareUri's doc comment for why the two link shapes
+    // must never collide.
+    final shareToken = url.queryParameters[BaldayDeeplink.shareTokenKey];
+    if (shareToken != null) {
+      if (await ShareLinkUtils.processShareLink(ref, token: shareToken, mode: type)) {
         return;
       }
     }

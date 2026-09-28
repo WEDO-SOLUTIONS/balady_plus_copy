@@ -11,13 +11,19 @@ import 'package:mapness/app/auto_route/app_routes.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/features/friends_on_map/models/friends_on_map_activation_status.dart';
 import 'package:mapness/features/friends_on_map/models/meetup.dart';
+import 'package:mapness/features/friends_on_map/providers/active_shares_position_reporter.dart';
 import 'package:mapness/features/friends_on_map/providers/friends_on_map_activated.dart';
 import 'package:mapness/features/friends_on_map/providers/friend_markers.dart';
 import 'package:mapness/features/friends_on_map/providers/friends_on_map_activation.dart';
 import 'package:mapness/features/friends_on_map/providers/friends_on_map_position_reporter.dart';
 import 'package:mapness/features/friends_on_map/providers/meetups_list.dart';
+import 'package:mapness/features/friends_on_map/providers/share_watch_marker.dart';
+import 'package:mapness/features/friends_on_map/providers/share_watcher.dart';
+import 'package:mapness/features/friends_on_map/models/share_mode.dart';
+import 'package:mapness/features/friends_on_map/models/share_watch_state.dart';
 import 'package:mapness/features/friends_on_map/ui/open_meetup_on_map.dart';
 import 'package:mapness/features/lifestyle_layers/providers/layers_controls.dart';
+import 'package:mapness/features/share_eta/ui/eta_share_expired.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/providers/first_start.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
@@ -154,7 +160,34 @@ class _MapPageState extends ConsumerState<MapPage>
       // R-48/R-97: draws/clears friend markers whenever the friend list or
       // the layer-visibility toggle changes — same "always-mounted root
       // route" rationale as the position reporter above.
-      ..watch(friendMarkersProvider);
+      ..watch(friendMarkersProvider)
+      // S-19: pushes position/ETA for every currently-active share,
+      // regardless of which screen is focused — same rationale as the
+      // position reporter above.
+      ..watch(activeSharesPositionReporterProvider)
+      // S-19: draws the recipient-side live-mode watch marker, same
+      // always-mounted rationale.
+      ..watch(shareWatchMarkerProvider)
+      // S-19/R-84 (BR-04): tell a live-mode recipient the instant their
+      // watch expires — the marker itself already clears silently
+      // (`ShareWatchMarker`'s own `showMarker` check), but BRD requires the
+      // expiry *state* to be shown, not just the marker disappearing. Live
+      // mode has no other always-visible surface for this (unlike eta mode,
+      // where `ShareArrivalCard` is already open and reacts to `status`
+      // inline) — the "stop watching" sheet is only shown transiently right
+      // after the link opens, so this can't be caught in `build()` there.
+      ..listen<ShareWatchState>(shareWatcherProvider, (previous, next) {
+        final wasExpired = previous?.status == ShareWatchStatus.expired;
+        if (next.status == ShareWatchStatus.expired && !wasExpired && next.mode == ShareMode.live) {
+          showModalBottomSheet<void>(
+            backgroundColor: Colors.transparent,
+            context: context,
+            isScrollControlled: true,
+            builder: (_) =>
+                EtaShareExpired(title: context.l10n.shareExpiredTitle, subtitle: context.l10n.shareExpiredBody),
+          );
+        }
+      });
 
     final dgisController = ref.watch(dgisControllerProvider.notifier);
 

@@ -76,6 +76,13 @@ class MapObjectManagerSettings {
   factory MapObjectManagerSettings.friends() =>
       const MapObjectManagerSettings._(name: 'friends', layerId: MapObjectLayers.priorityLayerId);
 
+  /// S-19's recipient-side watch marker — its own manager, deliberately not
+  /// sharing `.eta()`'s (the unrelated `share_eta` engine), so this
+  /// mechanism's `removeAllMarkers()` can never fight the old engine's if
+  /// both ever ran on one device at once.
+  factory MapObjectManagerSettings.shareWatch() =>
+      const MapObjectManagerSettings._(name: 'share-watch', layerId: MapObjectLayers.priorityLayerId);
+
   factory MapObjectManagerSettings.jobs() =>
       const MapObjectManagerSettings._(name: 'jobs', layerId: MapObjectLayers.defaultLayerId);
 

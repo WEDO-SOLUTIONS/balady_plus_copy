@@ -11,6 +11,11 @@ class BaldayDeeplink {
   static const String baseAuthority = 'plus.balady.gov.sa';
   static const String streamId = 'streamId';
   static const String tokenId = 'tokenId';
+
+  /// S-19 (R-80/R-81): the anonymous recipient-facing secret for a
+  /// temporary location/ETA share link — distinct from [tokenId]/[streamId]
+  /// above, which are `share_eta`'s own, unrelated engine.
+  static const String shareTokenKey = 'token';
   static const String homeWidget = 'homeWidget';
   static const String serviceKey = 'serviceKey';
   static const String miniAppPath = 'pt';
@@ -58,6 +63,12 @@ class BaldayDeeplink {
   // POI
   static String get basePoiUri => '$baseAuthorityWithScheme/#/poi-map';
   static String get baseGeoSharingUri => '$baseAuthorityWithScheme/#/geo-sharing';
+
+  /// S-19: deliberately a distinct path segment from [baseGeoSharingUri]
+  /// (`share_eta`'s own, unrelated link shape) so `entry_point.dart`'s
+  /// dispatch can tell the two apart unambiguously without sniffing query
+  /// param shapes.
+  static String get baseShareUri => '$baseAuthorityWithScheme/#/share';
 
   // Helper
   static String urlWithQuery(String baseUrl, Map<String, dynamic> map) {

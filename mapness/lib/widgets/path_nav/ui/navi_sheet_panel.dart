@@ -10,6 +10,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/entities/path_nav/models/path_nav_state.dart';
+import 'package:mapness/features/friends_on_map/ui/widgets/friends_on_map_eta_share_btn.dart';
 import 'package:mapness/features/map_tap_handler/map_tap_handler_provider.dart';
 import 'package:mapness/features/path_nav/providers/path_nav_eta.dart';
 import 'package:mapness/features/path_nav/providers/path_nav_message.dart';
@@ -214,6 +215,13 @@ class _NaviPanelLandscapeState extends ConsumerState<NaviSheetPanel> {
               durationMinutes: int.tryParse(eta?.timeEta ?? '') ?? 0,
             ),
             Spacing.$3x.heightBox,
+            // S-19/R-85: a second, new ETA-mode share entry point alongside
+            // the existing button above — see friends_on_map/AGENTS.md's
+            // S-19 slice notes for why both coexist for now.
+            if (currentRoute?.finishPoint?.value case final destination?) ...[
+              FriendsOnMapEtaShareBtn(destLat: destination.latitude, destLon: destination.longitude),
+              Spacing.$3x.heightBox,
+            ],
           ],
           ContentWrapper.single(
             color: colors.backgroundSurface1,
