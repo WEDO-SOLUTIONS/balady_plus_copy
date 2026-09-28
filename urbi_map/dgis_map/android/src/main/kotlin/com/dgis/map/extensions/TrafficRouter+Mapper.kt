@@ -76,6 +76,15 @@ fun RouteSearchPointMessage.toRouteSearchPoint(): RouteSearchPoint {
     )
 }
 
+fun RouteSearchPoint.toMessage(): RouteSearchPointMessage {
+    return RouteSearchPointMessage(
+        coordinates = coordinates.toMessage(),
+        course = course?.let { BearingMessage(value = it.value) },
+        objectId = objectId.toMessage(),
+        levelId = levelId?.let { LevelIdMessage(value = it.value) },
+    )
+}
+
 fun BriefExtraRouteInfo.toBriefExtraRouteInfoMessage(): BriefExtraRouteInfoMessage {
     val distanceValue = when {
         isCar -> asCar?.length?.millimeters ?: 0

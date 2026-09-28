@@ -270,14 +270,28 @@ class NavigationHandler(
                                 State.FINISHED -> NavigationState.FINISH
                                 State.DISABLED -> NavigationState.DISABLED
                         }
-                val options =
-                        navigationManager.uiModel.route.routeBuildOptions?.routeSearchOptions
-                                ?.toRouteSearchOptionsMessage()
+                val buildOptions = navigationManager.uiModel.route.routeBuildOptions
                 callback(
                         Result.success(
-                                NavigationStateMessage(state = state, routeSearchOptions = options)
+                                NavigationStateMessage(
+                                        state = state,
+                                        routeSearchOptions =
+                                                buildOptions?.routeSearchOptions?.toRouteSearchOptionsMessage(),
+                                        finishPoint = buildOptions?.finishPoint?.toMessage(),
+                                        remainingIntermediatePoints =
+                                                if (buildOptions == null) null
+                                                else remainingIntermediatePoints(),
+                                )
                         )
                 )
+        }
+
+        private fun remainingIntermediatePoints(): List<GeoPointMessage> {
+                val model = navigationManager.uiModel
+                val passedMillimeters = model.routePosition?.distance?.millimeters ?: -1
+                return model.route.route.intermediatePoints.entries
+                        .filter { it.point.distance.millimeters > passedMillimeters }
+                        .map { it.value.toMessage() }
         }
 
         fun startNavigation(

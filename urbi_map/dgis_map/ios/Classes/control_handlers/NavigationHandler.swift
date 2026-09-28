@@ -452,11 +452,24 @@ class NavigationHandler {
         case  .disabled: NavigationState.disabled
         default: NavigationState.disabled
         }
-        let options = self.navigationManager.uiModel.route.routeBuildOptions?.routeSearchOptions.toRouteSearchOptions()
+        let buildOptions = self.navigationManager.uiModel.route.routeBuildOptions
+        let options = buildOptions?.routeSearchOptions.toRouteSearchOptions()
         completion(
-            Result.success(NavigationStateMessage(state: state, routeSearchOptions: options))
-        
+            Result.success(NavigationStateMessage(
+                state: state,
+                routeSearchOptions: options,
+                finishPoint: buildOptions?.finishPoint.toMessage(),
+                remainingIntermediatePoints: buildOptions == nil ? nil : remainingIntermediatePoints()
+            ))
         )
+    }
+
+    private func remainingIntermediatePoints() -> [GeoPointMessage] {
+        let model = self.navigationManager.uiModel
+        let passedMillimeters = model.routePosition?.distance.millimeters ?? -1
+        return model.route.route.intermediatePoints.entries
+            .filter { $0.point.distance.millimeters > passedMillimeters }
+            .map { $0.value.toMessage() }
     }
 
     func startFreeRoam(speedRangeZoom: [SpeedRangeZoom], completion: (Result<Void, any Error>) -> Void) {

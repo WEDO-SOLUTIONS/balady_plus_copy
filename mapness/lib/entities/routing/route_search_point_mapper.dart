@@ -25,3 +25,17 @@ extension DirectoryObjectMessageMapper on DirectoryObjectMessage {
         value: toRouteParamsPoint(),
       );
 }
+
+extension RouteSearchPointMessageMapper on RouteSearchPointMessage {
+  /// Native points use object id 0 for a bare coordinate.
+  RouteParamsPoint toRouteParamsPoint() {
+    final id = objectId.objectId == 0 ? null : objectId;
+    return RouteParamsPoint(
+      latitude: coordinates.latitude,
+      longitude: coordinates.longitude,
+      objectId: id?.objectId,
+      entranceId: id?.entranceId,
+      levelId: levelId?.value,
+    );
+  }
+}

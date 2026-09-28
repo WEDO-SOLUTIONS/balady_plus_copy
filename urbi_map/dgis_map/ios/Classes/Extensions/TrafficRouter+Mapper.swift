@@ -79,6 +79,17 @@ extension RouteSearchPointMessage {
     }
 }
 
+extension RouteSearchPoint {
+    func toMessage() -> RouteSearchPointMessage {
+        return RouteSearchPointMessage(
+            coordinates: coordinates.toMessage(),
+            course: course.map { BearingMessage(value: $0.value) },
+            objectId: objectId.toMessage(),
+            levelId: levelId.map { LevelIdMessage(value: Int64($0.value)) }
+        )
+    }
+}
+
 extension BriefExtraRouteInfo {
     func toBriefExtraRouteInfoMessage() -> BriefExtraRouteInfoMessage {
         switch self {

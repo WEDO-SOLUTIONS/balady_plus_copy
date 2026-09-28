@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:auto_route/auto_route.dart';
 import 'package:balady_plus/app/core/utils/common_functions.dart';
@@ -17,6 +18,7 @@ import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/entities/app_feedback/feedback_source.dart';
 import 'package:mapness/entities/path_nav/models/path_nav_state.dart';
 import 'package:mapness/entities/routing/route_params_point.dart';
+import 'package:mapness/entities/routing/route_search_point_mapper.dart';
 import 'package:mapness/features/advert_metrics/advert_metrics.dart';
 import 'package:mapness/features/app_analytics/app_analytics.dart';
 import 'package:mapness/features/balady_analytics/events/navigation_events.dart';
@@ -230,6 +232,7 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
 
       final hasActiveNavigation = navState.state == NavigationState.navigation && navState.routeSearchOptions != null;
       if (hasActiveNavigation) {
+        unawaited(_seedRouteFromNative(dgisController, navState));
         return true;
       }
 
@@ -243,6 +246,7 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
     final state = base64.decode(savedState);
     try {
       await dgisController.restoreNavigationState(state, NavigationConstants.navigationSpeedRangeZooms);
+      unawaited(_seedRouteFromNative(dgisController));
       return true;
     } catch (e) {
       if (!mounted) {
@@ -252,6 +256,75 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
       if (mounted && context.router.canPop()) {
         context.router.pop();
       }
+      return false;
+    }
+  }
+
+  /// A trip started on a head unit or before an app restart has no Flutter route:
+  /// rebuild it from native guidance so the trip can take a stop.
+  Future<void> _seedRouteFromNative(DgisMapController dgisController, [NavigationStateMessage? knownState]) async {
+    if (!mounted || ref.read(currentRouteProvider) != null) {
+      return;
+    }
+    final l10n = context.l10n;
+    try {
+      final navState = knownState ?? await dgisController.getCurrentNavigationState();
+      final finish = navState.finishPoint?.toRouteParamsPoint();
+      final navType = navState.routeSearchOptions;
+      if (finish == null || navType == null) {
+        return;
+      }
+      final finishTitle = await _objectTitle(dgisController, finish);
+      final carConnected = await _isCarConnected();
+      if (!mounted) {
+        return;
+      }
+      final stops = navState.remainingIntermediatePoints ?? const [];
+      ref
+          .read(currentRouteProvider.notifier)
+          .seedFromNativeTrip(
+            CurrentRouteState(
+              points: [
+                RouteParamsPointWithLabel(value: null, label: l10n.myLocation),
+                for (final (index, stop) in stops.indexed)
+                  RouteParamsPointWithLabel(
+                    value: RouteParamsPoint(latitude: stop.latitude, longitude: stop.longitude),
+                    label: l10n.intermediatePointNumberedName(index + 1),
+                  ),
+                RouteParamsPointWithLabel(value: finish, label: finishTitle ?? l10n.destination),
+              ],
+              navType: navType,
+              route: null,
+              tripSource: !carConnected
+                  ? NavigationTripSource.phone
+                  : Platform.isIOS
+                  ? NavigationTripSource.carplay
+                  : NavigationTripSource.androidAuto,
+            ),
+          );
+      ref.read(currentNavigationDestinationProvider.notifier).state ??= finish;
+    } catch (e) {
+      logger.log('Route seed from native navigation failed: $e', logLevel: MapnessLogLevel.error);
+    }
+  }
+
+  Future<String?> _objectTitle(DgisMapController dgisController, RouteParamsPoint point) async {
+    final objectId = point.dgisObjectId;
+    if (objectId == null) {
+      return null;
+    }
+    try {
+      final object = await dgisController.searchByObjectId(objectId).timeout(const Duration(seconds: 5));
+      return object.title.trim().isEmpty ? null : object.title;
+    } catch (_) {
+      return null;
+    }
+  }
+
+  Future<bool> _isCarConnected() async {
+    try {
+      return await ref.read(carConnectionProvider.future);
+    } catch (_) {
       return false;
     }
   }
@@ -904,7 +977,7 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
     // TIFO US-16: a completed trip earns tokens. Fire-and-forget — the backend
     // validates and rewards; a signed-out user or a failed call is a no-op.
     // Read the route's distance now, before `clearRoute()` below wipes it.
-    final tripDistanceKm = (ref.read(currentRouteProvider)?.route.distance ?? 0) / 1000;
+    final tripDistanceKm = (ref.read(currentRouteProvider)?.route?.distance ?? 0) / 1000;
     unawaited(reportTifoTripCompleted(ref, distanceKm: tripDistanceKm));
     _navigationState.value = PathNavState.finished;
     await Future.delayed(const Duration(milliseconds: 500));

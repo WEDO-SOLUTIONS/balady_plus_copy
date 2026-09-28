@@ -1420,10 +1420,16 @@ class SpeedRangeZoom {
 enum NavigationState { navigation, finish, disabled }
 
 class NavigationStateMessage {
-  NavigationStateMessage(this.state, this.routeSearchOptions);
+  NavigationStateMessage(this.state, this.routeSearchOptions, this.finishPoint, this.remainingIntermediatePoints);
 
   final NavigationState state;
   final RouteSearchOptionsMessage? routeSearchOptions;
+
+  /// Destination of the active route; null in free roam or when navigation is off.
+  final RouteSearchPointMessage? finishPoint;
+
+  /// Stops of the active route not passed yet, in driving order.
+  final List<GeoPointMessage>? remainingIntermediatePoints;
 }
 
 /// Represents the types of sound toggles.

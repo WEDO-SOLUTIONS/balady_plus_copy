@@ -11,6 +11,9 @@ part 'current_route.g.dart';
 
 final currentRouteProvider = _currentRouteProvider;
 
+/// Who started the trip that is currently in guidance.
+enum NavigationTripSource { phone, carplay, androidAuto }
+
 /// This provider stores current route state
 @Riverpod(keepAlive: true)
 class _CurrentRoute extends _$CurrentRoute {
@@ -57,6 +60,11 @@ class _CurrentRoute extends _$CurrentRoute {
   Future<void> setNavigationState(CurrentRouteState routeState) async {
     state = routeState;
   }
+
+  /// Fills the route of a trip Flutter did not start (head unit, app restart); a known route wins.
+  void seedFromNativeTrip(CurrentRouteState routeState) {
+    state ??= routeState;
+  }
 }
 
 @freezed
@@ -64,8 +72,10 @@ abstract class CurrentRouteState with _$CurrentRouteState {
   const factory CurrentRouteState({
     required List<RouteParamsPointWithLabel> points,
     required RouteSearchOptionsMessage navType,
-    required RouteInfo route,
+    // Null for a trip picked up from native navigation: its planned route is unknown.
+    required RouteInfo? route,
     int? activeIndex,
+    @Default(NavigationTripSource.phone) NavigationTripSource tripSource,
   }) = _CurrentRouteState;
 
   const CurrentRouteState._();
