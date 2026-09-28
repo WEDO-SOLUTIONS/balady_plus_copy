@@ -1274,8 +1274,14 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
         return;
       }
       await _clearPoiSelection();
-      if (stop != null && route != null && mounted) {
-        await _addStopMidTrip(route.withNextStop(stop));
+      if (stop == null) {
+        return;
+      }
+      // Stops may have been passed while the sheet was open.
+      final remainingNow = await _remainingStopsCount();
+      final routeNow = ref.read(currentRouteProvider)?.withoutPassedStops(remainingNow);
+      if (routeNow != null && mounted) {
+        await _addStopMidTrip(routeNow.withStopBeforeFinish(stop));
       }
     } finally {
       _isAddStopFlowActive = false;
@@ -1310,7 +1316,6 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
       }
       await ref.read(currentRouteProvider.notifier).setNavigationState(newRoute);
       _navigationState.value = PathNavState.running;
-      await _moveCameraToUser();
       await dgisController.followNavigation();
       await dgisController.hideRoutes();
       await saveNavigationState();

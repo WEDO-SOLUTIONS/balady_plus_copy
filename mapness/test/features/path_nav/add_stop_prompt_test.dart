@@ -84,11 +84,17 @@ void main() {
       expect(route.withoutPassedStops(null), route);
     });
 
-    test('withNextStop puts the new stop right after the start', () {
-      final route = _route(stops: 2).withNextStop(_point(500));
+    test('withStopBeforeFinish adds the stop right before the finish', () {
+      final route = _route(stops: 2).withStopBeforeFinish(_point(500));
 
-      expect(route.points, [_myLocation, _point(500), _point(1), _point(2), _point(_finishId)]);
+      expect(route.points, [_myLocation, _point(1), _point(2), _point(500), _point(_finishId)]);
       expect(route.stopsCount, 3);
+    });
+
+    test('a stop added after passing others keeps only the stops ahead', () {
+      final route = _route(stops: 3).withoutPassedStops(1).withStopBeforeFinish(_point(500));
+
+      expect(route.points, [_myLocation, _point(3), _point(500), _point(_finishId)]);
     });
 
     test('seedFromNativeTrip fills an empty route and keeps a known one', () {

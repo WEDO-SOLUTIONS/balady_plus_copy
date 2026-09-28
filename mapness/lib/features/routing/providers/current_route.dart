@@ -103,12 +103,12 @@ abstract class CurrentRouteState with _$CurrentRouteState {
     return copyWith(points: [points.first, ...points.sublist(points.length - 1 - remainingStops)]);
   }
 
-  /// Makes [stop] the next place to drive to, ahead of the other stops.
-  CurrentRouteState withNextStop(RouteParamsPointWithLabel stop) {
+  /// Adds [stop] as the last stop before the finish, as "Add stop" on the route preview does.
+  CurrentRouteState withStopBeforeFinish(RouteParamsPointWithLabel stop) {
     if (points.length < 2) {
       return this;
     }
-    return copyWith(points: [points.first, stop, ...points.sublist(1)]);
+    return copyWith(points: [...points.sublist(0, points.length - 1), stop, points.last]);
   }
 
   bool containsIntermediatePOI(int objectId) =>
