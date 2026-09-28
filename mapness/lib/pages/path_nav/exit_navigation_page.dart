@@ -6,7 +6,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:mapness/_features/common/widgets/dragger.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/hooks/toggle_sheet_controller_hook.dart';
-import 'package:mapness/widgets/timed_fill_button.dart';
+import 'package:mapness/widgets/timed_cancel_button.dart';
 import 'package:sheetify/sheetify.dart';
 
 @RoutePage()
@@ -76,42 +76,11 @@ class ExitNavigationPage extends HookConsumerWidget {
                 },
               ),
               const SizedBox(height: Spacing.$3x),
-              SizedBox(
-                height: 48,
-                child: TimedFillButton(
-                  duration: const Duration(seconds: 4),
-                  onCompleted: cancel,
-                  background: _CancelButton(onTap: cancel),
-                  fill: _CancelButton(
-                    bgColor: context.colors.neutralOnContainer,
-                    textColor: context.colors.accentSecondaryOnAccentSecondary,
-                    onTap: cancel,
-                  ),
-                ),
-              ),
+              TimedCancelButton(duration: const Duration(seconds: 4), onPressed: cancel, onTimeout: cancel),
             ],
           ),
         ),
       ],
     );
   }
-}
-
-class _CancelButton extends StatelessWidget {
-  final VoidCallback? onTap;
-  final Color? bgColor;
-  final Color? textColor;
-
-  const _CancelButton({this.onTap, this.bgColor, this.textColor});
-
-  @override
-  Widget build(BuildContext context) => AppButton(
-    buttonColorScheme: ButtonColorScheme.accentSecondary,
-    size: ButtonSize.large,
-    color: bgColor,
-    buttonType: ButtonType.secondary,
-    textColor: textColor,
-    primaryLabel: context.l10n.cancel,
-    onTap: onTap,
-  );
 }

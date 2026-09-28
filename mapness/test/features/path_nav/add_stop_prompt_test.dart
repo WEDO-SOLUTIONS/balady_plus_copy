@@ -95,16 +95,6 @@ void main() {
       expect(far.canAddStop, isTrue);
     });
 
-    test('the POI position from the directory can reveal the coordinate-only finish', () {
-      final prompt = _prompt(_coordinateFinishRoute(), 500, position: _fiftyFiveMetersFromFinish);
-
-      final atFinish = prompt.withPoiPosition(
-        GeoPointWithElevationMessage(latitude: 24.7, longitude: 46.6, elevation: 0),
-      );
-      expect(atFinish.showAddStop, isFalse);
-      expect(prompt.withPoiPosition(null), same(prompt));
-    });
-
     test('a finish with an object is matched by object id, not by distance', () {
       final route = _route();
       final finish = route.finishPoint!.value!;

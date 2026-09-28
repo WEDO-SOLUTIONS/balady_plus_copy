@@ -12,7 +12,6 @@ class AddStopPrompt {
     required this.limitReached,
     required this.poiInRoute,
     required this.routeKnown,
-    this.route,
   });
 
   /// [route] is the trip route without the stops already passed; [position] is where the POI was tapped.
@@ -30,7 +29,6 @@ class AddStopPrompt {
         (route?.containsPOI(objectId) ?? false) ||
         (route?.hasPointWithoutObjectNear(latitude: position.latitude, longitude: position.longitude) ?? false),
     routeKnown: route != null,
-    route: route,
   );
 
   final RouteSearchOptionsMessage navType;
@@ -41,28 +39,9 @@ class AddStopPrompt {
 
   /// False while the route of a trip started outside Flutter is not rebuilt yet.
   final bool routeKnown;
-  final CurrentRouteState? route;
 
   /// A POI already on the route (stop or finish) gets no "Add stop" at all.
   bool get showAddStop => !poiInRoute;
 
   bool get canAddStop => routeKnown && showAddStop && !limitReached;
-
-  /// The POI position from the directory can reveal a coordinate-only route point missed by the tap point.
-  AddStopPrompt withPoiPosition(GeoPointWithElevationMessage? position) {
-    final isRoutePoint =
-        position != null &&
-        (route?.hasPointWithoutObjectNear(latitude: position.latitude, longitude: position.longitude) ?? false);
-    return poiInRoute || !isRoutePoint
-        ? this
-        : AddStopPrompt(
-            navType: navType,
-            tripSource: tripSource,
-            stopsCount: stopsCount,
-            limitReached: limitReached,
-            poiInRoute: true,
-            routeKnown: routeKnown,
-            route: route,
-          );
-  }
 }

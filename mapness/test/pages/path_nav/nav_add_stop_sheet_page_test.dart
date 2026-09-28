@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:auto_route/auto_route.dart';
 import 'package:balady_uikit/core/colorsV2/themes.dart';
 import 'package:balady_uikit/core/typography/text_theme_styles_v3.dart';
@@ -86,7 +88,12 @@ void main() {
       .map((e) => e.properties['result'] as String?)
       .toList();
 
-  Future<_TestRouter> openSheet(WidgetTester tester, AddStopPrompt prompt, {Locale locale = const Locale('en')}) async {
+  Future<_TestRouter> openSheet(
+    WidgetTester tester,
+    AddStopPrompt prompt, {
+    Locale locale = const Locale('en'),
+    Future<DirectoryObjectMessage?>? poiLookup,
+  }) async {
     final router = _TestRouter(prompt);
     await tester.pumpWidget(
       ProviderScope(
@@ -95,7 +102,7 @@ void main() {
             const DgisObjectId(objectId: _objectId, entranceId: 0),
             _tapPoint,
             BaladyAppThemes.light,
-          ).overrideWith((ref) async => null),
+          ).overrideWith((ref) => poiLookup ?? Future.value()),
         ],
         child: provider.ChangeNotifierProvider(
           create: (_) => ThemeController(),
@@ -157,7 +164,7 @@ void main() {
 
   testWidgets('at the stop limit "Add stop" is disabled and the limit is explained', (tester) async {
     final router = await openSheet(tester, _prompt(limitReached: true));
-    expect(find.text('You have reached the maximum number of stops.'), findsOneWidget);
+    expect(find.text(lookupAppLocalizations(const Locale('en')).addStopLimitReachedMessage), findsOneWidget);
 
     await tester.tap(find.text('Add stop'));
     await tester.pump();
@@ -178,10 +185,47 @@ void main() {
 
   testWidgets('shows the Arabic texts', (tester) async {
     await openSheet(tester, _prompt(limitReached: true), locale: const Locale('ar'));
+    final ar = lookupAppLocalizations(const Locale('ar'));
 
-    expect(find.text('إضافة نقطة توقف'), findsOneWidget);
-    expect(find.text('لقد وصلت إلى الحد الأقصى لعدد نقاط التوقف.'), findsOneWidget);
+    expect(find.text(ar.addStop), findsOneWidget);
+    expect(find.text(ar.addStopLimitReachedMessage), findsOneWidget);
     await tester.pump(NavAddStopSheetPage.timeout);
     await tester.pumpAndSettle();
+  });
+
+  testWidgets('"Add stop" works before the POI lookup ends, which gives up after 3 s', (tester) async {
+    final lookup = Completer<DirectoryObjectMessage?>();
+    final router = await openSheet(tester, _prompt(), poiLookup: lookup.future);
+    expect(find.text('Point on map'), findsNothing);
+
+    await tester.pump(NavAddStopSheetPage.lookupTimeout);
+    expect(find.text('Point on map'), findsOneWidget);
+
+    await tester.tap(find.text('Add stop'));
+    await tester.pumpAndSettle();
+    final stop = router.sheetResult! as RouteParamsPointWithLabel;
+    expect(stop.value?.objectId, _objectId);
+    expect(results(), ['add_stop']);
+  });
+
+  testWidgets('a swipe down closes the sheet with exactly one dismissed', (tester) async {
+    final router = await openSheet(tester, _prompt());
+
+    await tester.fling(find.text('Point on map'), const Offset(0, 400), 2000);
+    await tester.pumpAndSettle();
+
+    expect(find.text('Add stop'), findsNothing);
+    expect(router.sheetResult, isNull);
+    expect(results(), ['dismissed']);
+  });
+
+  testWidgets('closing the sheet from outside reports exactly one dismissed', (tester) async {
+    final router = await openSheet(tester, _prompt());
+
+    await router.maybePop();
+    await tester.pumpAndSettle();
+
+    expect(find.text('Add stop'), findsNothing);
+    expect(results(), ['dismissed']);
   });
 }

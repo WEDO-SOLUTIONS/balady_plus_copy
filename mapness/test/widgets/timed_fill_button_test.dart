@@ -5,8 +5,8 @@ import 'package:mapness/widgets/timed_fill_button.dart';
 void main() {
   const duration = Duration(seconds: 5);
 
-  Widget buildButton({VoidCallback? onCompleted}) => Directionality(
-    textDirection: TextDirection.ltr,
+  Widget buildButton({VoidCallback? onCompleted, TextDirection direction = TextDirection.ltr}) => Directionality(
+    textDirection: direction,
     child: Center(
       child: SizedBox(
         width: 200,
@@ -21,10 +21,10 @@ void main() {
     ),
   );
 
-  double fillWidth(WidgetTester tester) {
-    final clip = tester.widget<ClipRect>(find.byType(ClipRect));
-    return clip.clipper!.getClip(const Size(200, 48)).width;
-  }
+  Rect fillRect(WidgetTester tester) =>
+      tester.widget<ClipRect>(find.byType(ClipRect)).clipper!.getClip(const Size(200, 48));
+
+  double fillWidth(WidgetTester tester) => fillRect(tester).width;
 
   testWidgets('calls onCompleted once, only when the duration has run out', (tester) async {
     var completed = 0;
@@ -49,6 +49,17 @@ void main() {
 
     await tester.pump(duration ~/ 2);
     expect(fillWidth(tester), 200);
+  });
+
+  testWidgets('fills from the right in RTL', (tester) async {
+    await tester.pumpWidget(buildButton(direction: TextDirection.rtl));
+
+    await tester.pump(duration ~/ 4);
+    expect(fillRect(tester).left, closeTo(150, 0.01));
+    expect(fillRect(tester).right, 200);
+
+    await tester.pump(duration);
+    expect(fillRect(tester), const Rect.fromLTWH(0, 0, 200, 48));
   });
 
   testWidgets('does not call onCompleted after being disposed', (tester) async {

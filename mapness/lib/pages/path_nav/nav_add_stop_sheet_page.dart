@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:auto_route/auto_route.dart';
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/colorsV2/themes.dart';
@@ -15,7 +17,7 @@ import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/hooks/toggle_sheet_controller_hook.dart';
 import 'package:mapness/shared/lib/make_address.dart';
 import 'package:mapness/shared/providers/map/point_of_interest.dart';
-import 'package:mapness/widgets/timed_fill_button.dart';
+import 'package:mapness/widgets/timed_cancel_button.dart';
 import 'package:provider/provider.dart';
 import 'package:sheetify/sheetify.dart';
 import 'package:shimmer/shimmer.dart';
@@ -28,6 +30,9 @@ class NavAddStopSheetPage extends StatefulHookConsumerWidget {
 
   static const timeout = Duration(seconds: 5);
 
+  /// After this the sheet stops waiting for the POI name and shows a generic one.
+  static const lookupTimeout = Duration(seconds: 3);
+
   final int objectId;
   final LatLng tapPoint;
   final AddStopPrompt prompt;
@@ -38,11 +43,18 @@ class NavAddStopSheetPage extends StatefulHookConsumerWidget {
 
 class _NavAddStopSheetPageState extends ConsumerState<NavAddStopSheetPage> {
   late final AddStopPromptTracking _tracking;
+  late final Timer _lookupTimer;
+  bool _lookupExpired = false;
   bool _closed = false;
 
   @override
   void initState() {
     super.initState();
+    _lookupTimer = Timer(NavAddStopSheetPage.lookupTimeout, () {
+      if (mounted) {
+        setState(() => _lookupExpired = true);
+      }
+    });
     final prompt = widget.prompt;
     _tracking = BaladyNavigationEvents.trackAddStopPromptShown(
       tripSource: prompt.tripSource,
@@ -55,6 +67,7 @@ class _NavAddStopSheetPageState extends ConsumerState<NavAddStopSheetPage> {
 
   @override
   void dispose() {
+    _lookupTimer.cancel();
     // Back gesture, swipe or the guidance screen going away.
     _tracking.report(AddStopPromptResult.dismissed);
     super.dispose();
@@ -68,8 +81,6 @@ class _NavAddStopSheetPageState extends ConsumerState<NavAddStopSheetPage> {
     _tracking.report(result);
     context.router.pop(stop);
   }
-
-  void _cancel() => _close(AddStopPromptResult.cancel);
 
   RouteParamsPointWithLabel _stopFor(DirectoryObjectMessage? object) {
     final fallbackLabel = context.l10n.poi;
@@ -100,6 +111,7 @@ class _NavAddStopSheetPageState extends ConsumerState<NavAddStopSheetPage> {
       pointOfInterestProvider(DgisObjectId(objectId: widget.objectId, entranceId: 0), widget.tapPoint, theme),
     );
     final object = poi.value;
+    final isLoading = poi.isLoading && !_lookupExpired;
     final title = object?.title.trim() ?? '';
     final address = object?.makeAddress() ?? '';
 
@@ -115,7 +127,7 @@ class _NavAddStopSheetPageState extends ConsumerState<NavAddStopSheetPage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              if (poi.isLoading)
+              if (isLoading)
                 const _TitleShimmer()
               else
                 Text(
@@ -136,7 +148,7 @@ class _NavAddStopSheetPageState extends ConsumerState<NavAddStopSheetPage> {
               if (prompt.showAddStop && prompt.limitReached) ...[
                 const SizedBox(height: Spacing.$2x),
                 Text(
-                  _stopsLimitReachedText(context),
+                  l10n.addStopLimitReachedMessage,
                   style: textStyles.bodySmallRegular.copyWith(color: colors.errorDefault),
                 ),
               ],
@@ -154,7 +166,7 @@ class _NavAddStopSheetPageState extends ConsumerState<NavAddStopSheetPage> {
                     buttonType: ButtonType.secondary,
                     size: ButtonSize.large,
                     color: Colors.transparent,
-                    buttonState: prompt.canAddStop && !poi.isLoading ? ButtonState.defaultState : ButtonState.disabled,
+                    buttonState: prompt.canAddStop ? ButtonState.defaultState : ButtonState.disabled,
                     primaryLabel: l10n.addStop,
                     onTap: () => _close(AddStopPromptResult.addStop, _stopFor(object)),
                   ),
@@ -162,18 +174,10 @@ class _NavAddStopSheetPageState extends ConsumerState<NavAddStopSheetPage> {
                 const SizedBox(width: Spacing.$2x),
               ],
               Expanded(
-                child: SizedBox(
-                  height: 48,
-                  child: TimedFillButton(
-                    duration: NavAddStopSheetPage.timeout,
-                    onCompleted: () => _close(AddStopPromptResult.timeout),
-                    background: _CancelButton(onTap: _cancel),
-                    fill: _CancelButton(
-                      bgColor: colors.neutralOnContainer,
-                      textColor: colors.accentSecondaryOnAccentSecondary,
-                      onTap: _cancel,
-                    ),
-                  ),
+                child: TimedCancelButton(
+                  duration: NavAddStopSheetPage.timeout,
+                  onPressed: () => _close(AddStopPromptResult.cancel),
+                  onTimeout: () => _close(AddStopPromptResult.timeout),
                 ),
               ),
             ],
@@ -182,30 +186,6 @@ class _NavAddStopSheetPageState extends ConsumerState<NavAddStopSheetPage> {
       ],
     );
   }
-}
-
-// TODO(HB-122): switch to the Localazy key `addStopLimitReachedMessage` (EN/AR below) once published.
-String _stopsLimitReachedText(BuildContext context) => Localizations.localeOf(context).languageCode == 'ar'
-    ? 'لقد وصلت إلى الحد الأقصى لعدد نقاط التوقف.'
-    : 'You have reached the maximum number of stops.';
-
-class _CancelButton extends StatelessWidget {
-  const _CancelButton({required this.onTap, this.bgColor, this.textColor});
-
-  final VoidCallback onTap;
-  final Color? bgColor;
-  final Color? textColor;
-
-  @override
-  Widget build(BuildContext context) => AppButton(
-    buttonColorScheme: ButtonColorScheme.accentSecondary,
-    buttonType: ButtonType.secondary,
-    size: ButtonSize.large,
-    color: bgColor,
-    textColor: textColor,
-    primaryLabel: context.l10n.cancel,
-    onTap: onTap,
-  );
 }
 
 class _TitleShimmer extends StatelessWidget {
