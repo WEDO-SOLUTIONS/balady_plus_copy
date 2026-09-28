@@ -108,6 +108,9 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
 
   late final MapTapHandler _mapTapHandler;
   bool _isAddStopFlowActive = false;
+  // Non-null while guidance restarts on a new route (a stop was added).
+  Completer<void>? _navigationRestart;
+  static const _navigationRestartSettleTime = Duration(seconds: 3);
 
   static const padding = EdgeInsets.symmetric(horizontal: 12);
 
@@ -943,14 +946,20 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
   Future<void> _naviEvent(NavigationEvent event) async {
     switch (event) {
       case NavigationEvent.navigation:
+        final restart = _navigationRestart;
+        if (restart != null && !restart.isCompleted) {
+          restart.complete();
+        }
         break;
       case NavigationEvent.routeSearch:
         // The engine recalculates the route mid-guidance (off-route/reroute) —
         // counted into navigation_completed.reroutes_count.
-        BaladyNavigationEvents.trackReroute();
+        if (_navigationRestart == null) {
+          BaladyNavigationEvents.trackReroute();
+        }
         break;
       case NavigationEvent.disabled:
-        if (_isSwitchingToPedestrian) {
+        if (_isSwitchingToPedestrian || _navigationRestart != null) {
           return;
         }
         if (context.mounted && _navigationState.value != PathNavState.finished) {
@@ -1258,14 +1267,94 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
       }
       final route = ref.read(currentRouteProvider)?.withoutPassedStops(remainingStops);
       final prompt = AddStopPrompt.forPoi(objectId: event.dgisObjectId.objectId, navType: widget.navType, route: route);
-      await context.router.push<RouteParamsPointWithLabel>(
+      final stop = await context.router.push<RouteParamsPointWithLabel>(
         NavAddStopSheetRoute(objectId: event.dgisObjectId.objectId, tapPoint: event.latLng, prompt: prompt),
       );
-      if (mounted) {
-        await _clearPoiSelection();
+      if (!mounted) {
+        return;
+      }
+      await _clearPoiSelection();
+      if (stop != null && route != null && mounted) {
+        await _addStopMidTrip(route.withNextStop(stop));
       }
     } finally {
       _isAddStopFlowActive = false;
+    }
+  }
+
+  /// Rebuilds guidance through the new stop without leaving the trip,
+  /// the same way the car-to-foot switch at the finish does.
+  Future<void> _addStopMidTrip(CurrentRouteState newRoute) async {
+    final finish = newRoute.finishPoint?.value;
+    if (finish == null) {
+      return;
+    }
+    final routes = routesProvider(
+      startPoint: null,
+      finishPoint: finish,
+      navType: widget.navType,
+      intermediatePoints: newRoute.intermediatePoints,
+      showOnlyActiveRoute: true,
+    );
+    // Keeps the auto-dispose provider alive until the route is calculated.
+    final routesSubscription = ref.listenManual(routes, (_, __) {});
+    try {
+      final dgisController = await ref.read(dgisControllerProvider.future);
+      await ref.read(routes.future);
+      if (!mounted) {
+        return;
+      }
+      await _restartNavigation(dgisController);
+      if (!mounted) {
+        return;
+      }
+      await ref.read(currentRouteProvider.notifier).setNavigationState(newRoute);
+      _navigationState.value = PathNavState.running;
+      await _moveCameraToUser();
+      await dgisController.followNavigation();
+      await dgisController.hideRoutes();
+      await saveNavigationState();
+    } catch (e) {
+      logger.log('Adding a stop mid-trip failed: $e', logLevel: MapnessLogLevel.error);
+      await ref.read(dgisControllerProvider).value?.hideRoutes();
+      if (mounted) {
+        ToastOverlay.of(context).show(title: context.l10n.routeNotFoundChangeLocations);
+      }
+    } finally {
+      routesSubscription.close();
+    }
+  }
+
+  /// Starts guidance on the freshly calculated route over the running one. The SDK may
+  /// pass through `disabled` meanwhile; that is not a trip end, see [_naviEvent].
+  Future<void> _restartNavigation(DgisMapController dgisController) async {
+    final restart = _navigationRestart = Completer<void>();
+    try {
+      await dgisController.startNavigation(NavigationConstants.navigationSpeedRangeZooms);
+    } catch (_) {
+      _navigationRestart = null;
+      rethrow;
+    }
+    unawaited(_releaseNavigationRestart(dgisController, restart));
+  }
+
+  Future<void> _releaseNavigationRestart(DgisMapController dgisController, Completer<void> restart) async {
+    try {
+      await restart.future.timeout(_navigationRestartSettleTime, onTimeout: () {});
+    } finally {
+      if (identical(_navigationRestart, restart)) {
+        _navigationRestart = null;
+      }
+    }
+    // A real stop could have been swallowed while the guard was up.
+    try {
+      final navState = await dgisController.getCurrentNavigationState();
+      final stopped = navState.state == NavigationState.disabled;
+      if (mounted && stopped && _navigationState.value != PathNavState.finished && !_isEndingTrip) {
+        unawaited(_endTripAndShowHome());
+      }
+    } catch (e) {
+      logger.log('Navigation state check after restart failed: $e', logLevel: MapnessLogLevel.error);
     }
   }
 

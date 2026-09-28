@@ -103,6 +103,14 @@ abstract class CurrentRouteState with _$CurrentRouteState {
     return copyWith(points: [points.first, ...points.sublist(points.length - 1 - remainingStops)]);
   }
 
+  /// Makes [stop] the next place to drive to, ahead of the other stops.
+  CurrentRouteState withNextStop(RouteParamsPointWithLabel stop) {
+    if (points.length < 2) {
+      return this;
+    }
+    return copyWith(points: [points.first, stop, ...points.sublist(1)]);
+  }
+
   bool containsIntermediatePOI(int objectId) =>
       intermediatePoints?.points.where((e) => e.value?.objectId == objectId).isNotEmpty ?? false;
 
