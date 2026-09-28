@@ -40,6 +40,7 @@ import com.dgis.FlutterProvider
 import com.dgis.map.map_api.HostFlutterApi
 import com.dgis.map.R
 import com.dgis.map.FavouritesUpdateNotifier
+import com.dgis.map.NavigationRestartGuard
 import com.dgis.map.android_auto.custom_renderer.CustomRenderer
 import com.dgis.map.android_auto.custom_renderer.CustomRendererData
 import com.dgis.map.android_auto.utils.AndroidAutoUtils
@@ -265,6 +266,11 @@ class NavigationScreen(
     }
 
     override fun onNavigationStateChanged(state: NavigationState) {
+        if (state == NavigationState.DISABLED && NavigationRestartGuard.isRestarting) {
+            // The phone restarts guidance on a new route: not a trip end, check again later.
+            recheckStateAfterRestart()
+            return
+        }
         val prevState = navigationState
         navigationState = state
 
@@ -311,6 +317,16 @@ class NavigationScreen(
             }
         }
         invalidate()
+    }
+
+    private fun recheckStateAfterRestart() {
+        coroutineScope.launch {
+            delay(NavigationRestartGuard.WINDOW_MS)
+            val stopped = mapController.getCurrentNavigationState() == NavigationState.DISABLED
+            if (stopped && navigationState != NavigationState.DISABLED) {
+                onNavigationStateChanged(NavigationState.DISABLED)
+            }
+        }
     }
 
     private fun tryPopFavouritesPreview() {

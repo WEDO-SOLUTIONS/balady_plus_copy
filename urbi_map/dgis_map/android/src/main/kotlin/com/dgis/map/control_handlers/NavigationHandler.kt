@@ -1,6 +1,7 @@
 package com.dgis.map.control_handlers
 
 import android.content.Context
+import com.dgis.map.NavigationRestartGuard
 import com.dgis.map.control_handlers.navigation_controls.DashboardControlModel
 import com.dgis.map.control_handlers.navigation_controls.ManeuverControlModel
 import com.dgis.map.control_handlers.navigation_controls.MessageControlModel
@@ -330,6 +331,10 @@ class NavigationHandler(
                 }
 
                 if (!options.isPublicTransport) {
+                        val model = navigationManager.uiModel
+                        if (model.state != State.DISABLED && model.route.routeBuildOptions != null) {
+                                NavigationRestartGuard.markRestart()
+                        }
                         navigationManager.start(
                                 routeBuildOptions =
                                         RouteBuildOptions(
