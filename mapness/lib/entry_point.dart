@@ -852,7 +852,7 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> with Widg
 
       final currentRouteName = segments.isEmpty ? null : segments.last.name;
 
-      final isNavPage = currentRouteName == PathNavRoute.name;
+      final isNavPage = currentRouteName == PathNavRoute.name || currentRouteName == NavAddStopSheetRoute.name;
       final navigation = event == NavigationEvent.navigation || event == NavigationEvent.routeSearch;
       final routeSearchOptions = (await dgisController.getCurrentNavigationState()).routeSearchOptions;
       if (!mounted) {

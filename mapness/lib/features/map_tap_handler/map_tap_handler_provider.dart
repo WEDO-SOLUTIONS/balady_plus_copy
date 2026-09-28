@@ -22,6 +22,9 @@ part 'map_tap_mixin.dart';
 
 typedef OnMapTapHandler = void Function(TapEvent event);
 
+/// Returns true when it consumed the tap; otherwise the default handling runs.
+typedef PriorityMapTapHandler = bool Function(TapEvent event);
+
 @Riverpod(keepAlive: true)
 class RoadEvents extends _$RoadEvents {
   @override
@@ -87,7 +90,7 @@ class MapTapHandler extends _$MapTapHandler with GuardTapEventMixin {
   StreamSubscription<TapEvent>? _baseStreamSubscription;
   ProviderSubscription<RoadEventSheetState?>? _poiPageClosingSubscription;
 
-  OnMapTapHandler? _priorityMapTapHandler;
+  PriorityMapTapHandler? _priorityMapTapHandler;
 
   int _pendingMakkahSuppression = 0;
   Timer? _pendingMakkahSuppressionTimer;
@@ -117,11 +120,13 @@ class MapTapHandler extends _$MapTapHandler with GuardTapEventMixin {
 
   /// Sets a high-priority tap handler that will be called before the default one.
   // ignore: avoid_setters_without_getters
-  set priorityMapTapHandler(OnMapTapHandler handler) => _priorityMapTapHandler = handler;
+  set priorityMapTapHandler(PriorityMapTapHandler handler) => _priorityMapTapHandler = handler;
 
-  /// Resets the previously set priority map tap handler, reverting to default behavior.
-  void resetPriorityMapTapHandler() {
-    _priorityMapTapHandler = null;
+  /// Resets the priority handler; with [handler] given, only if it is still the active one.
+  void resetPriorityMapTapHandler([PriorityMapTapHandler? handler]) {
+    if (handler == null || handler == _priorityMapTapHandler) {
+      _priorityMapTapHandler = null;
+    }
   }
 
   void notifyMakkahMarkerTapped() {
@@ -143,9 +148,10 @@ class MapTapHandler extends _$MapTapHandler with GuardTapEventMixin {
       return;
     }
 
-    if (_priorityMapTapHandler != null) {
-      _priorityMapTapHandler!(event);
-    } else {
+    final priorityHandler = _priorityMapTapHandler;
+    final isMakkahMarkerTap = event is ObjectTapEvent && _pendingMakkahSuppression > 0;
+    final handled = priorityHandler != null && !isMakkahMarkerTap && priorityHandler(event);
+    if (!handled) {
       _guardDefaultTap(() => _defaultOnMapClickListener(event));
     }
     _currentMapHandlers.sink.add(event);

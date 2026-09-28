@@ -26,7 +26,9 @@ import 'package:mapness/features/city_by_location/city_by_location.dart';
 import 'package:mapness/features/lifestyle_layers/providers/active_layer.dart';
 import 'package:mapness/features/lifestyle_layers/providers/layers_controls.dart';
 import 'package:mapness/features/lifestyle_layers/providers/layers_state.dart';
+import 'package:mapness/features/map_tap_handler/map_tap_handler_provider.dart';
 import 'package:mapness/features/parking_spot/parking_manage.dart';
+import 'package:mapness/features/path_nav/add_stop_prompt.dart';
 import 'package:mapness/features/path_nav/lib/enums.dart';
 import 'package:mapness/features/path_nav/providers/active_public_transport_route.dart';
 import 'package:mapness/features/path_nav/providers/path_nav_eta.dart';
@@ -53,9 +55,11 @@ import 'package:mapness/shared/providers/location.dart';
 import 'package:mapness/shared/providers/map/camera_padding.dart';
 import 'package:mapness/shared/providers/map/camera_position.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
+import 'package:mapness/shared/providers/map/highlight.dart';
 import 'package:mapness/shared/providers/map/navigator_auto_enable_parking.dart';
 import 'package:mapness/shared/providers/map/object_manager.dart';
 import 'package:mapness/shared/providers/map/parking_autoenabled_sheet_provider.dart';
+import 'package:mapness/shared/providers/map/point_of_interest.dart';
 import 'package:mapness/shared/providers/map/selected_marker.dart';
 import 'package:mapness/shared/providers/map/sound_settings.dart';
 import 'package:mapness/shared/providers/urbi_analytics.dart';
@@ -101,6 +105,9 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
 
   // Cache for indoor support check to avoid network delay on arrival
   bool? _cachedIndoorSupport;
+
+  late final MapTapHandler _mapTapHandler;
+  bool _isAddStopFlowActive = false;
 
   static const padding = EdgeInsets.symmetric(horizontal: 12);
 
@@ -160,6 +167,7 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
       })
       ..addObserver(this);
 
+    _mapTapHandler = ref.read(mapTapHandlerProvider.notifier)..priorityMapTapHandler = _onMapTapDuringTrip;
     _initNavigation();
     startControlsDisapearTimer();
     ref.read(layersControlsProvider.notifier).hideLayer(LayerType.metro);
@@ -192,6 +200,7 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
     SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
 
     WidgetsBinding.instance.removeObserver(this);
+    _mapTapHandler.resetPriorityMapTapHandler(_onMapTapDuringTrip);
     _naviEventsListener?.cancel();
     _bottomHeightNotifier.dispose();
     _betterRouteDurationProfit.dispose();
@@ -1216,6 +1225,63 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
     } catch (e) {
       logger.log(e.toString(), logLevel: MapnessLogLevel.critical);
     }
+  }
+
+  /// During guidance a POI tap offers it as a stop instead of opening its card.
+  bool _onMapTapDuringTrip(TapEvent event) {
+    if (event is! ObjectTapEvent || !mounted) {
+      return false;
+    }
+    if (_isAddStopFlowActive) {
+      return true;
+    }
+    final canPrompt =
+        widget.navType != RouteSearchOptionsMessage.publicTransport &&
+        MediaQuery.orientationOf(context) == Orientation.portrait &&
+        _navigationState.value != PathNavState.finished &&
+        !_isEndingTrip &&
+        !_isSwitchingToPedestrian &&
+        ref.read(appRouterProvider).topRoute.name == PathNavRoute.name;
+    if (!canPrompt) {
+      return false;
+    }
+    unawaited(_promptAddStop(event));
+    return true;
+  }
+
+  Future<void> _promptAddStop(ObjectTapEvent event) async {
+    _isAddStopFlowActive = true;
+    try {
+      final remainingStops = await _remainingStopsCount();
+      if (!mounted) {
+        return;
+      }
+      final route = ref.read(currentRouteProvider)?.withoutPassedStops(remainingStops);
+      final prompt = AddStopPrompt.forPoi(objectId: event.dgisObjectId.objectId, navType: widget.navType, route: route);
+      await context.router.push<RouteParamsPointWithLabel>(
+        NavAddStopSheetRoute(objectId: event.dgisObjectId.objectId, tapPoint: event.latLng, prompt: prompt),
+      );
+      if (mounted) {
+        await _clearPoiSelection();
+      }
+    } finally {
+      _isAddStopFlowActive = false;
+    }
+  }
+
+  Future<int?> _remainingStopsCount() async {
+    try {
+      final dgisController = await ref.read(dgisControllerProvider.future);
+      final navState = await dgisController.getCurrentNavigationState();
+      return navState.remainingIntermediatePoints?.length;
+    } catch (_) {
+      return null;
+    }
+  }
+
+  Future<void> _clearPoiSelection() async {
+    ref.read(highlightProvider.notifier).removeAll();
+    await ref.read(selectedMarkerProvider.notifier).removeMarker(poiPinId);
   }
 
   Future<void> _onSearchPressed(BuildContext context) async {

@@ -73,6 +73,17 @@ class AppRouter extends RootStackRouter {
           page: ExitNavigationRoute.page,
           customRouteBuilder: RouteBuilders.modalSheetBuilder,
         ),
+        // HB-122: no dimming, the guidance stays visible under the sheet.
+        CustomRoute(
+          path: 'nav_add_stop',
+          page: NavAddStopSheetRoute.page,
+          customRouteBuilder: <T>(context, child, page) => RouteBuilders.modalSheetBuilder(
+            context,
+            child,
+            page,
+            background: RouteBarrierColor.transparent,
+          ),
+        ),
         // BE-153: fade so the search sheet appears in-place (matches Google Maps),
         // instead of the default cupertino slide. Short duration keeps the tap → keyboard
         // path snappy and avoids competing with the keyboard animation.

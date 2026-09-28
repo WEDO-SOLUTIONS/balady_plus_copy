@@ -14,6 +14,9 @@ final currentRouteProvider = _currentRouteProvider;
 /// Who started the trip that is currently in guidance.
 enum NavigationTripSource { phone, carplay, androidAuto }
 
+/// Same limit as "Add stop" on the route preview.
+const maxIntermediateStops = 10;
+
 /// This provider stores current route state
 @Riverpod(keepAlive: true)
 class _CurrentRoute extends _$CurrentRoute {
@@ -87,6 +90,18 @@ abstract class CurrentRouteState with _$CurrentRouteState {
   RouteParamsPointList? get intermediatePointsWithLabels => points.getIntermediatePointsWithLabels();
 
   RouteParamsPointList? get intermediatePoints => points.map((e) => e.value).toList().getIntermediatePoints();
+
+  int get stopsCount => points.length > 2 ? points.length - 2 : 0;
+
+  bool containsPOI(int objectId) => points.any((e) => e.value?.objectId == objectId);
+
+  /// Keeps only the last [remainingStops] stops: native guidance drives them in order.
+  CurrentRouteState withoutPassedStops(int? remainingStops) {
+    if (remainingStops == null || remainingStops < 0 || remainingStops >= stopsCount) {
+      return this;
+    }
+    return copyWith(points: [points.first, ...points.sublist(points.length - 1 - remainingStops)]);
+  }
 
   bool containsIntermediatePOI(int objectId) =>
       intermediatePoints?.points.where((e) => e.value?.objectId == objectId).isNotEmpty ?? false;
