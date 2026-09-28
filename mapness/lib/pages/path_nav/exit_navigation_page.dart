@@ -6,6 +6,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:mapness/_features/common/widgets/dragger.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/hooks/toggle_sheet_controller_hook.dart';
+import 'package:mapness/widgets/timed_fill_button.dart';
 import 'package:sheetify/sheetify.dart';
 
 @RoutePage()
@@ -77,19 +78,15 @@ class ExitNavigationPage extends HookConsumerWidget {
               const SizedBox(height: Spacing.$3x),
               SizedBox(
                 height: 48,
-                child: Stack(
-                  fit: StackFit.expand,
-                  children: [
-                    _CancelButton(onTap: cancel),
-                    _AnimatedClipWidget(
-                      onAnimationCompleted: cancel,
-                      child: _CancelButton(
-                        bgColor: context.colors.neutralOnContainer,
-                        textColor: context.colors.accentSecondaryOnAccentSecondary,
-                        onTap: cancel,
-                      ),
-                    ),
-                  ],
+                child: TimedFillButton(
+                  duration: const Duration(seconds: 4),
+                  onCompleted: cancel,
+                  background: _CancelButton(onTap: cancel),
+                  fill: _CancelButton(
+                    bgColor: context.colors.neutralOnContainer,
+                    textColor: context.colors.accentSecondaryOnAccentSecondary,
+                    onTap: cancel,
+                  ),
                 ),
               ),
             ],
@@ -117,69 +114,4 @@ class _CancelButton extends StatelessWidget {
     primaryLabel: context.l10n.cancel,
     onTap: onTap,
   );
-}
-
-class _AnimatedClipWidget extends StatefulWidget {
-  final Widget child;
-  final VoidCallback? onAnimationCompleted;
-
-  const _AnimatedClipWidget({required this.child, this.onAnimationCompleted});
-
-  @override
-  _AnimatedClipWidgetState createState() => _AnimatedClipWidgetState();
-}
-
-class _AnimatedClipWidgetState extends State<_AnimatedClipWidget> with SingleTickerProviderStateMixin {
-  late AnimationController _controller;
-  late Animation<double> _animation;
-
-  @override
-  void initState() {
-    super.initState();
-    _controller = AnimationController(
-      duration: const Duration(seconds: 4),
-      vsync: this,
-    );
-    _controller.forward().then((_) => widget.onAnimationCompleted?.call());
-
-    _animation = Tween<double>(begin: 0.0, end: 1.0).animate(_controller);
-  }
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) => AnimatedBuilder(
-    animation: _animation,
-    builder: (context, child) => ClipRRect(
-      clipper: _Clipper(_animation.value),
-      borderRadius: const BorderRadius.horizontal(left: Radius.circular(Spacing.$2_5x)),
-      child: child,
-    ),
-    child: widget.child,
-  );
-}
-
-// Animates the clipping rectangle width from 0 to full size
-class _Clipper extends CustomClipper<RRect> {
-  final double progress;
-
-  _Clipper(this.progress);
-
-  @override
-  RRect getClip(Size size) {
-    if (size.width == 0 || size.height == 0) {
-      return RRect.zero;
-    }
-    return RRect.fromRectAndRadius(
-      Rect.fromPoints(Offset.zero, Offset(size.width * progress, size.height)),
-      Radius.zero,
-    );
-  }
-
-  @override
-  bool shouldReclip(covariant _Clipper oldClipper) => oldClipper.progress != progress;
 }
