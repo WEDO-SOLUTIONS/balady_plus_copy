@@ -1,5 +1,10 @@
 import CarPlay
 
+/// "You arrived" alert on the CarPlay map template.
+///
+/// BALADY-3795: the alert carries no "End trip" action — ending a trip stays an
+/// in-app action (the CarPlay "Finish" bar button, the phone UI). "New route"
+/// remains and finishes the trip on its way to the search screen.
 class ArrivedNavigationAlert {
     private let mainScreen: MainScreen
     private let navigationSessionManeuvers: NavigationSessionManeuvers
@@ -13,26 +18,9 @@ class ArrivedNavigationAlert {
     }
 
     func create() -> CPNavigationAlert {
-        let endTripTitle = NSLocalizedString(
-            "tripFinishedAlertEndTripButton", comment: ""
-        )
-
         let newRouteTitle = NSLocalizedString(
             "tripFinishedAlertNewRouteButton", comment: ""
         )
-
-        let endTripButton =
-            if hasFoundColorIssue, #available(iOS 16.0, *) {
-                CPAlertAction(
-                    title: endTripTitle, color: UIColor(10, 132, 255, 1.0),
-                    handler: onEndTripTap
-                )
-            } else {
-                CPAlertAction(
-                    title: endTripTitle, style: CPAlertAction.Style.default,
-                    handler: onEndTripTap
-                )
-            }
 
         let newRouteButton =
             if hasFoundColorIssue, #available(iOS 16.0, *) {
@@ -42,7 +30,7 @@ class ArrivedNavigationAlert {
                 )
             } else {
                 CPAlertAction(
-                    title: newRouteTitle, style: CPAlertAction.Style.cancel,
+                    title: newRouteTitle, style: CPAlertAction.Style.default,
                     handler: onNewRouteTap
                 )
             }
@@ -53,14 +41,10 @@ class ArrivedNavigationAlert {
             ],
             subtitleVariants: [],
             image: nil,
-            primaryAction: endTripButton,
-            secondaryAction: newRouteButton,
+            primaryAction: newRouteButton,
+            secondaryAction: nil,
             duration: TimeInterval(-1)
         )
-    }
-
-    func onEndTripTap(_: CPAlertAction) {
-        navigationSessionManeuvers.finish()
     }
 
     func onNewRouteTap(_: CPAlertAction) {

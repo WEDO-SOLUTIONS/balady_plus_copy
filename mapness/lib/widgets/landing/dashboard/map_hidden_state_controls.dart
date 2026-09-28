@@ -91,13 +91,16 @@ class _MapHiddenStateControlsState extends ConsumerState<MapHiddenStateControls>
     final isCityscapeDay = ref.watch(cityscapeProvider);
     final freeRoamState = ref.watch(freeRoamStarterProvider);
     ref.listen(freeRoamStarterProvider, (_, state) {
+      if (!mounted) {
+        return;
+      }
       if (widget.controller.state == ThreeStateSheet.expanded) {
         ref.read(freeRoamStarterProvider.notifier).setShown();
       } else if (state.canStart && state.isAutorun) {
         widget.controller.setState(ThreeStateSheet.hidden);
-        setState(() {
+        if (quickScrollController.isAttached) {
           quickScrollController.scrollTo(index: 0, duration: const Duration(milliseconds: 150), alignment: 0.05);
-        });
+        }
       }
     });
 

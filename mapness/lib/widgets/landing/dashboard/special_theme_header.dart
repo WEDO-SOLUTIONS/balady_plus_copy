@@ -9,7 +9,9 @@ import 'package:mapness/features/makkah_places/makkah_places_layer_provider.dart
 import 'package:mapness/features/special_themes/core/special_theme_mode.dart';
 import 'package:mapness/features/special_themes/modes/mekkah_base/makkah_poi_constants.dart';
 import 'package:mapness/features/special_themes/modes/saudi_national_day/saudi_national_day_resolved_config.dart';
+import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
+import 'package:mapness/features/balady_analytics/metrics.dart';
 import 'package:mapness/shared/providers/dark_mode.dart';
 import 'package:mapness/widgets/landing/dashboard/national_flag.dart';
 import 'package:sheetify/sheetify.dart';
@@ -85,7 +87,7 @@ class SpecialThemeHeader extends ConsumerWidget {
             stops: [0.0, 0.53, 1.0],
           ),
           image: DecorationImage(
-            image: AssetImage('assets/images/themes/makkah/ribbon_pattern_dark.png'),
+            image: AssetImage('assets/images/themes/makkah/ribbon_pattern_dark.webp'),
             fit: BoxFit.cover,
             alignment: Alignment.center,
             opacity: 0.2,
@@ -109,7 +111,7 @@ class SpecialThemeHeader extends ConsumerWidget {
             stops: [0.03, 0.19, 0.33, 0.46, 1.0],
           ),
           image: DecorationImage(
-            image: AssetImage('assets/images/themes/makkah/qiblah_header.png'),
+            image: AssetImage('assets/images/themes/makkah/qiblah_header.webp'),
             fit: BoxFit.cover,
             alignment: Alignment.center,
             opacity: 0.5,
@@ -136,7 +138,7 @@ class SpecialThemeHeader extends ConsumerWidget {
           stops: [0.03, 0.21, 0.42, 0.54, 0.69, 0.91, 1.0],
         ),
         image: DecorationImage(
-          image: AssetImage('assets/images/themes/ramadan/ramadan_header.png'),
+          image: AssetImage('assets/images/themes/ramadan/ramadan_header.webp'),
           fit: BoxFit.cover,
           alignment: Alignment.center,
           opacity: 0.5,
@@ -301,6 +303,14 @@ class _MekkahQiblahIconState extends ConsumerState<_MekkahQiblahIcon> with Singl
   }
 
   void _handleTap() {
+    // Track header icon tap
+    Metrics.logEventAdvanced(
+      MetricsConstants.themesKeys.headerIconTapped,
+      group: MetricsConstants.themesTag,
+      action: MetricAction.tap.name,
+      props: {'theme': 'mekkahBase', 'icon': 'qiblah'},
+    );
+
     scaleController
       ..value = 0
       ..animateTo(1, curve: Curves.easeOut);
@@ -312,7 +322,7 @@ class _MekkahQiblahIconState extends ConsumerState<_MekkahQiblahIcon> with Singl
   @override
   Widget build(BuildContext context) {
     final qiblahIcon = Image.asset(
-      'assets/images/themes/makkah/qiblah_icon.png',
+      'assets/images/themes/makkah/qiblah_icon.webp',
       width: MediaQuery.sizeOf(context).width * 0.35,
     );
 
@@ -381,6 +391,14 @@ class _RamadanIconState extends ConsumerState<_RamadanIcon> with SingleTickerPro
   }
 
   void _handleTap() {
+    // Track header icon tap
+    Metrics.logEventAdvanced(
+      MetricsConstants.themesKeys.headerIconTapped,
+      group: MetricsConstants.themesTag,
+      action: MetricAction.tap.name,
+      props: {'theme': 'ramadan', 'icon': 'ramadan'},
+    );
+
     scaleController
       ..value = 0
       ..animateTo(1, curve: Curves.easeOut);
@@ -392,7 +410,7 @@ class _RamadanIconState extends ConsumerState<_RamadanIcon> with SingleTickerPro
   @override
   Widget build(BuildContext context) {
     final ramadanIcon = Image.asset(
-      'assets/images/themes/ramadan/ramadan_icon.png',
+      'assets/images/themes/ramadan/ramadan_icon.webp',
       width: MediaQuery.sizeOf(context).width * 0.35,
     );
 

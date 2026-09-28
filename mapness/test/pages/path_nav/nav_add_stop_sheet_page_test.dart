@@ -16,7 +16,7 @@ import 'package:mapness/pages/path_nav/nav_add_stop_sheet_page.dart';
 import 'package:mapness/shared/providers/map/point_of_interest.dart';
 import 'package:provider/provider.dart' as provider;
 
-class _RecordingSink implements BaladyAnalyticsSink {
+class _RecordingSink extends BaladyAnalyticsSink {
   final events = <BaladyAnalyticsEvent>[];
 
   @override

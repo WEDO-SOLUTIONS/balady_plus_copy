@@ -6,6 +6,7 @@ import 'package:balady_uikit/core/widgets/dragger.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:mapness/widgets/common/network_svg.dart';
 import 'package:mapness/entities/feedback/feedback_base_entity.dart';
 import 'package:mapness/entities/feedback/fields_entity/feedback_text_type_entity.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
@@ -100,6 +101,28 @@ class _FeedbackSubChipsSelectorState extends State<_FeedbackSubChipsSelector> {
     super.dispose();
   }
 
+  // Backend occasionally sends empty or invalid icon URLs; SvgPicture.network
+  // throws on those ("No host specified in URI" / "Invalid SVG data"), so fall
+  // back to a blank placeholder of the same size instead of crashing the sheet.
+  Widget _categoryIcon(String url, Color color) {
+    final uri = Uri.tryParse(url.trim());
+    if (uri == null || !uri.hasScheme || uri.host.isEmpty) {
+      return const SizedBox.square(dimension: 24);
+    }
+    // NetworkSvg, not bare SvgPicture.network: an errorBuilder alone does not
+    // stop the telemetry flood - flutter_svg caches the failed decode
+    // permanently with no error handler, so every rebuild (each search
+    // keystroke here) re-leaked one unhandled zone error per broken icon.
+    // The blocklist makes a broken URL cost one report total.
+    return NetworkSvg(
+      uri.toString(),
+      width: 24,
+      height: 24,
+      colorFilter: ColorFilter.mode(color, BlendMode.srcIn),
+      fallback: const SizedBox.square(dimension: 24),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final variants = widget.field.variants.map(
@@ -159,12 +182,7 @@ class _FeedbackSubChipsSelectorState extends State<_FeedbackSubChipsSelector> {
                         ContentRow(
                           onTap: () => Navigator.pop(context, item),
                           leadingPadding: const EdgeInsetsDirectional.symmetric(vertical: Spacing.$3x),
-                          leading: SvgPicture.network(
-                            entry.key.icon,
-                            width: 24,
-                            height: 24,
-                            colorFilter: ColorFilter.mode(context.colors.foregroundDisabled, BlendMode.srcIn),
-                          ),
+                          leading: _categoryIcon(entry.key.icon, context.colors.foregroundDefault),
                           text: ContentRowTextOptions(title: item.label),
                         )
                   else
@@ -173,12 +191,7 @@ class _FeedbackSubChipsSelectorState extends State<_FeedbackSubChipsSelector> {
                         padding: const EdgeInsetsDirectional.symmetric(vertical: Spacing.$2x),
                         child: Row(
                           children: [
-                            SvgPicture.network(
-                              entry.key.icon,
-                              width: 24,
-                              height: 24,
-                              colorFilter: ColorFilter.mode(context.colors.foregroundDisabled, BlendMode.srcIn),
-                            ),
+                            _categoryIcon(entry.key.icon, context.colors.foregroundMuted),
                             Spacing.$1_5x.widthBox,
                             Expanded(
                               child: Text(
@@ -200,7 +213,7 @@ class _FeedbackSubChipsSelectorState extends State<_FeedbackSubChipsSelector> {
                                 padding: const EdgeInsets.symmetric(vertical: Spacing.$1_5x),
                                 child: Row(
                                   children: [
-                                    const SizedBox(width: 24),
+                                    _categoryIcon(entry.key.icon, context.colors.foregroundDefault),
                                     Spacing.$1_5x.widthBox,
                                     Expanded(
                                       child: Text(

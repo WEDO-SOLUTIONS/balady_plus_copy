@@ -4,7 +4,7 @@ import 'package:mapness/features/balady_analytics/balady_analytics.dart';
 import 'package:mapness/features/balady_analytics/events/navigation_events.dart';
 import 'package:mapness/features/routing/providers/current_route.dart';
 
-class _RecordingSink implements BaladyAnalyticsSink {
+class _RecordingSink extends BaladyAnalyticsSink {
   final events = <BaladyAnalyticsEvent>[];
 
   @override

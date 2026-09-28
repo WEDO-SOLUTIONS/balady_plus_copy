@@ -22,32 +22,37 @@ class MessageControlModel {
         cancelable.append(contentsOf: [
             model.stateChannel.sink { [weak self] state in
                 if state == State.routeSearch && self?.prevState == .navigation {
-                    self?.eventChannel.success([
-                        "event": Events.messageEvent,
-                        "state": Events.stateRouteResearch,
-                    ])
+                    self?.emit(Events.stateRouteResearch)
                 } else {
-                    self?.eventChannel.success([
-                        "event": Events.messageEvent,
-                        "state": Events.stateNone,
-                    ])
+                    self?.emit(Events.stateNone)
                 }
                 self?.prevState = state
             },
             model.locationAvailableChannel.sink { [weak self] locationAvailable in
                 if !locationAvailable && model.state != .finished && model.state != .disabled {
-                    self?.eventChannel.success([
-                        "event": Events.messageEvent,
-                        "state": Events.stateGpsLost,
-                    ])
+                    self?.emit(Events.stateGpsLost)
                 } else {
-                    self?.eventChannel.success([
-                        "event": Events.messageEvent,
-                        "state": Events.stateNone,
-                    ])
+                    self?.emit(Events.stateNone)
                 }
             }
         ])
+    }
+
+    private func emit(_ state: String) {
+        self.eventChannel.success([
+            "event": Events.messageEvent,
+            "state": state,
+        ])
+
+        // SDK callback thread: a synchronous post waits for main-queue observers and can
+        // deadlock against main-thread calls into the SDK — post async on main instead.
+        DispatchQueue.main.async {
+            NotificationCenter.default.post(
+                name: .dgisNavigationMessageTick,
+                object: nil,
+                userInfo: ["state": state]
+            )
+        }
     }
     
     func cancel() {

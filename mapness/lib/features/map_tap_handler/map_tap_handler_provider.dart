@@ -5,14 +5,17 @@ import 'package:flutter/foundation.dart';
 import 'package:mapness/app/auto_route/app_routes.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/app/auto_route/poi_card_ext.dart';
+import 'package:mapness/features/advert_metrics/advert_metrics.dart';
 import 'package:mapness/features/app_analytics/datafinder_source_tracker.dart';
 import 'package:mapness/features/app_analytics/models/datafinder_models.dart';
 import 'package:mapness/features/map_tap_handler/priority_map_tap_slot.dart';
-import 'package:mapness/features/advert_metrics/advert_metrics.dart';
 import 'package:mapness/features/poi_card/domain/model/poi_camera_config.dart';
 import 'package:mapness/features/search/providers/search.dart';
 import 'package:mapness/features/search/ui/search_scope.dart';
+import 'package:mapness/shared/constants/metrics_constants.dart';
+import 'package:mapness/features/balady_analytics/metrics.dart';
 import 'package:mapness/shared/providers/location.dart';
+import 'package:mapness/shared/providers/map/cursors_sheet_visibility_provider.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:mapness/shared/providers/map/selected_marker.dart';
 import 'package:riverpod/riverpod.dart';
@@ -39,6 +42,12 @@ class RoadEvents extends _$RoadEvents {
   }
 
   void handleTap(RoadEventTapEvent event) {
+    Metrics.logEventAdvanced(
+      MetricsConstants.poiKeys.roadEvent,
+      group: MetricsConstants.poiTag,
+      action: MetricAction.tap.toString(),
+      props: {'event': event.id.objectId, 'title': event.title},
+    );
     final nextState = RoadEventSheetState.fromEvent(event);
     final router = ref.read(appRouterProvider);
 
@@ -172,6 +181,13 @@ class MapTapHandler extends _$MapTapHandler with GuardTapEventMixin {
     // (BRD `Map-Main Page`). Carried through Directions → Go → Search → favorite.
     ref.read(dataFinderSourceTrackerProvider.notifier).stampOrigin(DataFinderOrigin.map);
 
+    Metrics.logEventAdvanced(
+      MetricsConstants.poiKeys.map,
+      group: MetricsConstants.poiTag,
+      action: MetricAction.tap.toString(),
+      props: {'objectId': event.dgisObjectId.objectId},
+    );
+
     ref
         .read(appRouterProvider)
         .replaceOrPush(
@@ -200,6 +216,26 @@ class MapTapHandler extends _$MapTapHandler with GuardTapEventMixin {
   }
 
   void _handleMyLocationTapEvent(MyLocationTapEvent event) {
+    Metrics.logEventAdvanced(
+      MetricsConstants.poiKeys.myLocation,
+      group: MetricsConstants.poiTag,
+      action: MetricAction.tap.toString(),
+    );
+    // BALADY-3764: during turn-by-turn guidance and free roam the
+    // my-location object is the 3D navigation cursor. Tapping it opens
+    // Navigator Customization (Figma 2287-3140) as a bottom sheet so the
+    // driver keeps the route context; the share-location card remains the
+    // behaviour everywhere else.
+    final router = ref.read(appRouterProvider);
+    final topRouteName = router.topRoute.name;
+    if (topRouteName == PathNavRoute.name || topRouteName == FreeRoamRoute.name) {
+      // BALADY-3960: CursorsSheet is mounted in the page Stack now, not
+      // pushed via showModalBottomSheet — opening it is just a bool flip,
+      // no BuildContext needed (reopen guard lives in CursorsSheet itself).
+      ref.read(cursorsSheetVisibilityProvider.notifier).show(value: true);
+      return;
+    }
+
     ref.read(advertMetricsProvider.notifier).sendEvent(AdvertMetricsKeys.exploreLandingEngagement);
 
     final userLocation = ref.read(locationProvider);

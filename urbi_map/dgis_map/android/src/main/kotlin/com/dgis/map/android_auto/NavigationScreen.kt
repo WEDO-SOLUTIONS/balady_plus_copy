@@ -1,5 +1,9 @@
 package com.dgis.map.android_auto
 
+import android.content.BroadcastReceiver
+import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
 import android.content.pm.PackageManager
 import android.database.ContentObserver
 import android.graphics.Color
@@ -7,6 +11,8 @@ import android.location.LocationManager
 import android.os.Handler
 import android.os.Looper
 import android.provider.Settings
+import android.util.Log
+import androidx.core.content.ContextCompat
 import androidx.car.app.AppManager
 import androidx.car.app.CarContext
 import androidx.car.app.model.Action
@@ -46,6 +52,7 @@ import com.dgis.map.android_auto.custom_renderer.CustomRendererData
 import com.dgis.map.android_auto.utils.AndroidAutoUtils
 import com.dgis.map.map_api.FavouriteItemMessage
 import com.dgis.map.map_api.FavouritesStateMessage
+import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -53,8 +60,6 @@ import kotlinx.coroutines.cancel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-import ru.dgis.sdk.DgisObjectId
 import ru.dgis.sdk.coordinates.GeoPoint
 import ru.dgis.sdk.platform.Locale as SdkLocale
 import java.util.concurrent.CompletableFuture
@@ -84,7 +89,14 @@ class NavigationScreen(
     private val appManager: AppManager
     private val hostFlutterApi: HostFlutterApi
     private var favouritesUpdateJob: Job? = null
-    private val coroutineScope = CoroutineScope(SupervisorJob() + Dispatchers.Main)
+    // The handler is what keeps a failure here from becoming a process kill: without one, an
+    // exception escaping a coroutine of this scope reaches the thread's default uncaught handler.
+    private val coroutineExceptionHandler = CoroutineExceptionHandler { _, throwable ->
+        Log.e(TAG, "Unhandled error in NavigationScreen coroutine", throwable)
+    }
+    private val coroutineScope =
+        CoroutineScope(SupervisorJob() + Dispatchers.Main + coroutineExceptionHandler)
+    private val mainHandler = Handler(Looper.getMainLooper())
     private val locationManager: LocationManager =
         carContext.getSystemService(android.content.Context.LOCATION_SERVICE) as LocationManager
 
@@ -93,8 +105,34 @@ class NavigationScreen(
             val newState = if (isLocationEnabled()) LocationState.AVAILABLE else LocationState.NOT_AVAILABLE
             if (newState != locationState) {
                 locationState = newState
+                renderCustomOverlay()
                 invalidate()
             }
+        }
+    }
+
+    private val locationModeReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context?, intent: Intent?) {
+            if (intent?.action == LocationManager.MODE_CHANGED_ACTION) {
+                checkLocationPermissionAndState()
+            }
+        }
+    }
+
+    private fun registerLocationModeReceiver() {
+        ContextCompat.registerReceiver(
+            carContext,
+            locationModeReceiver,
+            IntentFilter(LocationManager.MODE_CHANGED_ACTION),
+            ContextCompat.RECEIVER_NOT_EXPORTED
+        )
+    }
+
+    private fun unregisterLocationModeReceiver() {
+        try {
+            carContext.unregisterReceiver(locationModeReceiver)
+        } catch (_: IllegalArgumentException) {
+            // Receiver was not registered.
         }
     }
 
@@ -108,7 +146,12 @@ class NavigationScreen(
 
     private fun checkLocationPermissionAndState() {
         if (!hasLocationPermission()) {
-            if (screenManager.top !is RequestPermissionScreen) {
+            if (isNavigation || isFreeRoam) {
+                if (locationState != LocationState.NOT_AVAILABLE) {
+                    locationState = LocationState.NOT_AVAILABLE
+                    invalidate()
+                }
+            } else if (screenManager.top !is RequestPermissionScreen) {
                 screenManager.push(
                     RequestPermissionScreen(carContext) {
                         mapController.onLocationOPermissionGranted()
@@ -118,11 +161,13 @@ class NavigationScreen(
         } else if (!isLocationEnabled()) {
             if (locationState != LocationState.NOT_AVAILABLE) {
                 locationState = LocationState.NOT_AVAILABLE
+                renderCustomOverlay()
                 invalidate()
             }
         } else {
             if (locationState != LocationState.AVAILABLE) {
                 locationState = LocationState.AVAILABLE
+                renderCustomOverlay()
                 invalidate()
             }
         }
@@ -164,17 +209,20 @@ class NavigationScreen(
                 override fun onResume(owner: LifecycleOwner) {
                     checkLocationPermissionAndState()
                     registerLocationSettingsObserver()
+                    registerLocationModeReceiver()
                     tryToShowFavourites()
                 }
 
                 override fun onPause(owner: LifecycleOwner) {
                     unregisterLocationSettingsObserver()
+                    unregisterLocationModeReceiver()
                 }
 
                 override fun onDestroy(owner: LifecycleOwner) {
                     mapController.resetNavigationListener()
                     favouritesUpdateJob?.cancel()
                     unregisterLocationSettingsObserver()
+                    unregisterLocationModeReceiver()
                     coroutineScope.cancel()
                 }
             }
@@ -182,20 +230,37 @@ class NavigationScreen(
 
         getFavourites()
 
-        favouritesUpdateJob = CoroutineScope(Dispatchers.Default).launch {
-            for (favouritesMessage in FavouritesUpdateNotifier.events) {
-                withContext(Dispatchers.Main) {
+        // Collected on the screen's own main-thread scope: everything downstream touches
+        // ScreenManager, which is @MainThread. A detached CoroutineScope(Dispatchers.Default) here
+        // was a root coroutine with no exception handler, so anything that threw while handling a
+        // favourites update reached the default uncaught handler and killed the whole process —
+        // which on Android Auto means the phone app disappears and the host reports
+        // "encountered an unexpected error".
+        favouritesUpdateJob = coroutineScope.launch {
+            FavouritesUpdateNotifier.events.collect { favouritesMessage ->
+                try {
                     handleFavouritesMessage(favouritesMessage) {
                         favourites = it
-                        tryToShowFavourites(forceUpdate = true)
+                        if (mapController.isMapReady) {
+                            tryToShowFavourites(forceUpdate = true)
+                        }
                     }
+                } catch (e: Exception) {
+                    Log.e(TAG, "Failed to apply favourites update", e)
                 }
             }
         }
 
     }
 
-    private var isEndTripShown: Boolean = false
+    private var isArrivalAlertShown: Boolean = false
+
+    private var isBetterRouteAlertShown: Boolean = false
+
+    // Guards the three-way SDK response so exactly one reply is sent per offer. A user tap that
+    // lands at the same instant as the 10s host timeout, or a reply after the SDK already withdrew
+    // the offer, would otherwise answer the same offer twice — which crashes the native SDK.
+    private var betterRouteAwaitingResponse: Boolean = false
 
     private var navigationState = NavigationState.DISABLED
     private var locationState = LocationState.AVAILABLE
@@ -235,13 +300,7 @@ class NavigationScreen(
         navigationTemplate.setMapActionStrip(mapActionStrip)
         navigationTemplate.setPanModeListener(panModeListener)
 
-        if ((isNavigation || isFreeRoam) && locationState == LocationState.NOT_AVAILABLE) {
-            navigationTemplate.setNavigationInfo(
-                MessageInfo.Builder(getString(R.string.location_signal_lost_message))
-                    .build()
-            )
-            navigationTemplate.setBackgroundColor(CarColor.RED)
-        } else if (isNavigation) {
+        if (isNavigation && locationState != LocationState.NOT_AVAILABLE) {
             if (navigationState == NavigationState.REROUTING) {
                 navigationTemplate.setNavigationInfo(
                     MessageInfo.Builder(getString(R.string.rerouting_message)).build()
@@ -281,19 +340,19 @@ class NavigationScreen(
             }
 
             NavigationState.FINISHED -> {
-                CoroutineScope(Dispatchers.Main).launch {
+                coroutineScope.launch {
                     mapController.showMyLocation()
                 }
                 customRenderer.clear()
-                showEndTrip()
+                showArrivalAlert()
             }
 
             NavigationState.DISABLED -> {
-                CoroutineScope(Dispatchers.Main).launch {
+                coroutineScope.launch {
                     mapController.showMyLocation()
                 }
                 customRenderer.clear()
-                if (prevState != NavigationState.DISABLED && !isEndTripShown) {
+                if (prevState != NavigationState.DISABLED && !isArrivalAlertShown) {
                     stopNavigation()
                 }
             }
@@ -452,32 +511,40 @@ class NavigationScreen(
         if (durationProfit != null) {
             showBetterRouteAlert(durationProfit)
         } else {
-            appManager.dismissAlert(betterRouteAlertId)
+            // SDK retracted the offer: drop the alert but do NOT send a response for an offer
+            // that no longer exists.
+            betterRouteAwaitingResponse = false
+            dismissBetterRouteAlert()
         }
     }
 
     override fun onSpeedChanged(speed: Int) {
         speedInfo = speedInfo.copy(currentSpeed = speed)
-        renderSpeedInfo()
+        renderCustomOverlay()
     }
 
     override fun onSpeedLimitChanged(speedLimit: Int?) {
         speedInfo = speedInfo.copy(speedLimit = speedLimit)
-        renderSpeedInfo()
+        renderCustomOverlay()
     }
 
     override fun onSpeedLimitExceeded(exceeded: Boolean) {
         speedInfo = speedInfo.copy(speedLimitExceeded = exceeded)
-        renderSpeedInfo()
+        renderCustomOverlay()
     }
 
     fun onMapReady() {
         tryToShowFavourites()
     }
 
-    private fun renderSpeedInfo() {
+    private fun renderCustomOverlay() {
         if (!isNavigation && !isFreeRoam) return
-        customRenderer.render(CustomRendererData(speedInfo))
+        val signalLostMessage = if (locationState == LocationState.NOT_AVAILABLE) {
+            getString(R.string.location_signal_lost_message)
+        } else {
+            null
+        }
+        customRenderer.render(CustomRendererData(speedInfo, signalLostMessage))
     }
 
     private fun stopNavigation(bySystem: Boolean = false) {
@@ -488,6 +555,9 @@ class NavigationScreen(
         stepRemainingDistance = null
         destination = null
         destinationTravelEstimate = null
+        isBetterRouteAlertShown = false
+        betterRouteAwaitingResponse = false
+        dismissBetterRouteAlert()
         navigationManager.navigationEnded()
         val notification = NavigationCarAppService.getDefaultNotification(carContext)
         carNotificationManager.notify(NavigationCarAppService.notificationId, notification)
@@ -495,55 +565,71 @@ class NavigationScreen(
         if (!bySystem) {
             tryToShowFavourites()
         } else {
-            CoroutineScope(Dispatchers.Default).launch {
+            // Scoped to the screen (and already on Dispatchers.Main) so the delayed screen-stack
+            // change cannot outlive the session or escape as an uncaught exception.
+            coroutineScope.launch {
                 // We should wait until the system completes the state changes
                 delay(800)
                 if (lifecycle.currentState == Lifecycle.State.RESUMED) {
-                    withContext(Dispatchers.Main) {
-                        tryToShowFavourites()
-                    }
+                    tryToShowFavourites()
                 }
             }
         }
     }
 
-    private fun showEndTrip() {
-        isEndTripShown = true
+    /**
+     * "You arrived" banner on the head unit. BALADY-3795 — it carries no "End trip"
+     * action; the session is torn down when the banner goes away (timeout, host
+     * cancellation or dismissal), and the trip can always be ended inside the app.
+     */
+    private fun showArrivalAlert() {
+        isArrivalAlertShown = true
         val title = CarText.create(getString(R.string.end_trip_alert_title))
-        val endTripAction =
-            Action.Builder()
-                .setTitle(getString(R.string.end_trip_alert_action))
-                .setFlags(Action.FLAG_DEFAULT)
-                .setBackgroundColor(CarColor.RED)
-                .setOnClickListener {
-                    appManager.dismissAlert(endTripAlertId)
-                    stopNavigation()
-                    invalidate()
-                }
 
-        val endTripAlert = Alert.Builder(endTripAlertId, title, 10000)
+        val arrivalAlert = Alert.Builder(arrivalAlertId, title, ARRIVAL_ALERT_DURATION_MS)
 
         if (destination?.name != null) {
-            endTripAlert.setSubtitle(destination!!.name!!)
+            arrivalAlert.setSubtitle(destination!!.name!!)
         }
-        endTripAlert
-            .addAction(endTripAction.build())
-            .setCallback(
-                object : AlertCallback {
-                    override fun onCancel(reason: Int) {}
-                    override fun onDismiss() {
-                        isEndTripShown = false
-                        invalidate()
-                    }
-                }
-            )
-        appManager.showAlert(endTripAlert.build())
+        arrivalAlert.setCallback(
+            object : AlertCallback {
+                override fun onCancel(reason: Int) = finishArrival()
+                override fun onDismiss() = finishArrival()
+            }
+        )
+        try {
+            appManager.showAlert(arrivalAlert.build())
+        } catch (e: Exception) {
+            // Host can reject showAlert; the arrival banner is not worth crashing over.
+            e.printStackTrace()
+            finishArrival()
+        }
+    }
+
+    /** Ends the car-side session once the arrival banner is gone. Idempotent. */
+    private fun finishArrival() {
+        if (!isArrivalAlertShown) return
+        isArrivalAlertShown = false
+        // A new trip (or free roam) may have started while the banner was up —
+        // never tear that one down.
+        if (navigationState != NavigationState.FINISHED &&
+            navigationState != NavigationState.DISABLED
+        ) {
+            return
+        }
+        stopNavigation()
+        invalidate()
     }
 
     private fun showBetterRouteAlert(durationProfit: Int) {
-        val appManager = carContext.getCarService(AppManager::class.java)
-        val title = CarText.create(getString(R.string.better_route_alert_title))
+        // Alerts with the same id are considered equal by the host: re-posting tears the
+        // displayed alert down and re-creates it, dropping clicks that land in between. The
+        // channel re-emits while the offer is active, so keep the first alert on screen until it
+        // is answered or times out instead of replacing it on every emit.
+        if (isBetterRouteAlertShown) return
+
         val minutes = max(round(durationProfit / 60.0).toInt(), 1)
+        val title = CarText.create(getString(R.string.better_route_alert_title))
         val subtitle = CarText.create(getString(R.string.better_route_alert_subtitle, minutes))
         val closeAction =
             Action.Builder()
@@ -551,8 +637,8 @@ class NavigationScreen(
                 .setFlags(Action.FLAG_DEFAULT)
                 .setBackgroundColor(betterRouteCloseButtonColor)
                 .setOnClickListener {
-                    mapController.rejectBetterRoute()
-                    appManager.dismissAlert(betterRouteAlertId)
+                    dismissBetterRouteAlert()
+                    respondToBetterRouteOnce { mapController.rejectBetterRoute() }
                 }
         val chooseAction =
             Action.Builder()
@@ -560,8 +646,8 @@ class NavigationScreen(
                 .setFlags(Action.FLAG_PRIMARY)
                 .setBackgroundColor(CarColor.PRIMARY)
                 .setOnClickListener {
-                    mapController.acceptBetterRoute()
-                    appManager.dismissAlert(betterRouteAlertId)
+                    dismissBetterRouteAlert()
+                    respondToBetterRouteOnce { mapController.acceptBetterRoute() }
                 }
 
         val betterRouteAlert =
@@ -569,7 +655,54 @@ class NavigationScreen(
                 .setSubtitle(subtitle)
                 .addAction(closeAction.build())
                 .addAction(chooseAction.build())
-        appManager.showAlert(betterRouteAlert.build())
+                .setCallback(
+                    object : AlertCallback {
+                        override fun onCancel(reason: Int) {
+                            isBetterRouteAlertShown = false
+                            if (reason == AlertCallback.REASON_TIMEOUT) {
+                                // The SDK expects a three-way response; the stock 2GIS prompt
+                                // reports TIMEOUT when the user ignores the offer.
+                                respondToBetterRouteOnce { mapController.timeoutBetterRoute() }
+                            } else {
+                                // The host pulled the alert for another reason (replaced,
+                                // system-dismissed): stop awaiting so a later callback can't
+                                // answer an offer that is already gone.
+                                betterRouteAwaitingResponse = false
+                            }
+                        }
+
+                        override fun onDismiss() {
+                            isBetterRouteAlertShown = false
+                        }
+                    }
+                )
+        isBetterRouteAlertShown = true
+        betterRouteAwaitingResponse = true
+        try {
+            appManager.showAlert(betterRouteAlert.build())
+        } catch (e: Exception) {
+            // The host can reject showAlert (rate limiting / unsupported head unit). Roll the
+            // guards back so a later offer can still be shown, and never crash the process.
+            e.printStackTrace()
+            isBetterRouteAlertShown = false
+            betterRouteAwaitingResponse = false
+        }
+    }
+
+    // Sends at most one better-route reply per offer. Guards against a user tap racing the 10s
+    // host timeout, and against replying to an offer the SDK already withdrew.
+    private fun respondToBetterRouteOnce(response: () -> Unit) {
+        if (!betterRouteAwaitingResponse) return
+        betterRouteAwaitingResponse = false
+        response()
+    }
+
+    private fun dismissBetterRouteAlert() {
+        try {
+            appManager.dismissAlert(betterRouteAlertId)
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
     }
 
     private fun getManeuverWithExitNumberAndAngle(
@@ -613,8 +746,11 @@ class NavigationScreen(
         favourites: FavouritesStateMessage?,
         onResult: (FavouritesParams?) -> Unit,
     ) {
+        // Every onResult below goes through runOnMain: this is also called straight from a Pigeon
+        // reply callback (getFavourites), where a throw would land on the platform thread with no
+        // handler and take the process down.
         if (favourites == null) {
-            onResult(null)
+            runOnMain { onResult(null) }
             return
         }
 
@@ -622,7 +758,7 @@ class NavigationScreen(
         val home = favourites.home
         val work = favourites.work
         if (items.isEmpty() && home == null && work == null) {
-            onResult(FavouritesParams())
+            runOnMain { onResult(FavouritesParams()) }
             return
         }
 
@@ -640,56 +776,124 @@ class NavigationScreen(
                     .sortedBy { it.first }
                     .map { it.second }
             }
-            .thenAccept { results ->
-                onResult(
-                    FavouritesParams(
-                        home = home?.toFavouriteItem(),
-                        work = work?.toFavouriteItem(),
-                        items = results
-                    )
-                )
-            }
-    }
-
-
-    fun handleFavouriteItem(item: FavouriteItemMessage, onResult: (FavouriteItem) -> Unit) {
-        val locale = mapController.getLocale()
-        mapController.searchByDirectoryObjectIdWithLocale(
-            DgisObjectId(objectId = item.id.toLong()),
-            SdkLocale(locale.language, "SA"),
-            resultCallback = { directoryObject ->
-                if (directoryObject == null) {
-                    onResult(item.toFavouriteItem())
-                    return@searchByDirectoryObjectIdWithLocale
-                }
-
-                hostFlutterApi.getMarkerType(directoryObject.rubricIds.map { it.value }) { markerTypeResult ->
+            // whenComplete + runOnMain, not thenAccept: these futures are completed from 2GIS SDK
+            // and Pigeon reply callbacks, so the continuation is not guaranteed to run on the main
+            // thread — and onResult ends up in ScreenManager, which throws IllegalStateException
+            // off the main thread. A thenAccept would also have swallowed that exception into the
+            // dependent future, silently dropping the update.
+            .whenComplete { results, error ->
+                runOnMain {
+                    if (error != null || results == null) {
+                        Log.e(TAG, "Failed to resolve favourites for Android Auto", error)
+                        return@runOnMain
+                    }
                     onResult(
-                        FavouriteItem(
-                            id = item.id,
-                            title = directoryObject.title,
-                            subtitle = directoryObject.makeAddressString(),
-                            coordinates = GeoPoint(
-                                latitude = item.coordinates.latitude,
-                                longitude = item.coordinates.longitude
-                            ),
-                            iconResId = AndroidAutoUtils.getPoiIcon(markerTypeResult.getOrNull())
+                        FavouritesParams(
+                            home = home?.toFavouriteItem(),
+                            work = work?.toFavouriteItem(),
+                            items = results
                         )
                     )
                 }
-            })
+            }
+    }
+
+    /// Runs [block] on the main thread, inline when already there. Never lets an exception escape:
+    /// callers are SDK/Pigeon callbacks and detached continuations where a throw would either kill
+    /// the process or vanish without a trace.
+    private fun runOnMain(block: () -> Unit) {
+        if (Looper.myLooper() == Looper.getMainLooper()) {
+            try {
+                block()
+            } catch (e: Exception) {
+                Log.e(TAG, "Favourites update failed on main thread", e)
+            }
+        } else {
+            mainHandler.post {
+                try {
+                    block()
+                } catch (e: Exception) {
+                    Log.e(TAG, "Favourites update failed on main thread", e)
+                }
+            }
+        }
+    }
+
+    fun handleFavouriteItem(item: FavouriteItemMessage, onResult: (FavouriteItem) -> Unit) {
+        // Flutter sends the favourites entity id "<objectId>-<entranceId>", not a bare number: a
+        // plain toLong() threw NumberFormatException for every item added from the phone. Without
+        // a usable objectId there is nothing to look up — fall back to the message as-is.
+        val objectId = item.toDgisObjectIdOrNull()
+        if (objectId == null) {
+            Log.w(TAG, "Favourite ${item.id} has no numeric objectId, skipping SDK lookup")
+            onResult(item.toFavouriteItem())
+            return
+        }
+
+        val locale = mapController.getLocale()
+        // The SDK search is a native call on a handle that CarMapController closes with the
+        // session; a favourites update racing that teardown must not take the process down.
+        try {
+            mapController.searchByDirectoryObjectIdWithLocale(
+                objectId,
+                SdkLocale(locale.language, "SA"),
+                resultCallback = { directoryObject ->
+                    if (directoryObject == null) {
+                        onResult(item.toFavouriteItem())
+                        return@searchByDirectoryObjectIdWithLocale
+                    }
+
+                    hostFlutterApi.getMarkerType(directoryObject.rubricIds.map { it.value }) { markerTypeResult ->
+                        onResult(
+                            FavouriteItem(
+                                id = item.id,
+                                title = directoryObject.title,
+                                subtitle = directoryObject.makeAddressString(),
+                                coordinates = GeoPoint(
+                                    latitude = item.coordinates.latitude,
+                                    longitude = item.coordinates.longitude
+                                ),
+                                iconResId = AndroidAutoUtils.getPoiIcon(markerTypeResult.getOrNull())
+                            )
+                        )
+                    }
+                },
+                errorCallback = { e ->
+                    Log.e(TAG, "Favourite lookup failed for ${item.id}", e)
+                    onResult(item.toFavouriteItem())
+                },
+            )
+        } catch (e: Exception) {
+            // Must still report a result, otherwise the CompletableFuture for this item never
+            // completes and the whole favourites update stalls forever.
+            Log.e(TAG, "Favourite lookup could not be started for ${item.id}", e)
+            onResult(item.toFavouriteItem())
+        }
     }
 
     private fun tryToShowFavourites(forceUpdate: Boolean = false) {
         val favourites = this.favourites
         if (favourites == null) return
 
+        // Reached from async SDK/Pigeon callbacks, which can land after the session is torn down.
+        // ScreenManager.push() has no DESTROYED guard of its own (unlike pop()), so check here.
+        if (lifecycle.currentState == Lifecycle.State.DESTROYED) return
+
         if (screenManager.top is NavigationScreen && !isNavigation) {
             screenManager.push(
                 FavouritesPreviewScreen(carContext, mapController, favourites)
             )
         } else if (screenManager.top is FavouritesPreviewScreen && forceUpdate) {
+            // Replace the preview so the new data is shown. pop() synchronously resumes this
+            // screen, and onResume() above already re-pushes a preview with the updated
+            // favourites (unless navigation is running) — only push here if it did not, otherwise
+            // the stack ends up with two FavouritesPreviewScreens.
             screenManager.pop()
+            if (screenManager.top !is FavouritesPreviewScreen) {
+                screenManager.push(
+                    FavouritesPreviewScreen(carContext, mapController, favourites)
+                )
+            }
         } else if (screenManager.top is FavouritesScreen) {
             screenManager.pop()
             screenManager.push(
@@ -746,8 +950,10 @@ class NavigationScreen(
     }
 
     private companion object {
-        const val endTripAlertId = 0
+        const val TAG = "NavigationScreen"
+        const val arrivalAlertId = 0
         const val betterRouteAlertId = 1
+        const val ARRIVAL_ALERT_DURATION_MS = 10_000L
 
         fun formatDistance(meters: Double): Pair<Double, Int> {
             if (meters > 3000) {

@@ -113,8 +113,8 @@ class MiniAppsCustomTextField extends StatelessWidget {
                 hintText: hintText ?? "search2".tr(),
                 hintStyle: TextStyle(fontFamily: GeneralKey.appFontType, color: inputTheme.hintStyle?.color),
                 prefixIcon: Theme.of(context).brightness == Brightness.dark
-                    ? Image.asset("assets/icon_dark.png", scale: 25)
-                    : Image.asset("assets/icon_light.png", scale: 25),
+                    ? Image.asset("assets/icon_dark.webp", scale: 25)
+                    : Image.asset("assets/icon_light.webp", scale: 25),
 
                 enabledBorder: inputTheme.enabledBorder,
 

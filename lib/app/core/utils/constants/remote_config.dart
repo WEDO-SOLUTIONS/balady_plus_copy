@@ -148,6 +148,10 @@ class RemoteConfig {
 
   static String get baladyAnalyticsKey => dotenv.env['BALADY_ANALYTICS_KEY'] ?? '';
 
+  // UXCam session recording. Empty on dev/urbiPre — the SDK is then never
+  // started and the `uxcam` analytics channel stays unregistered.
+  static String get uxCamKey => _RemoteConfig.uxCamKey[env]!;
+
   static String get movingVeichleCategoryKey => _RemoteConfig.movingVeichleCategoryKey[env]!;
 
   static String get QaseemCategoryKey => _RemoteConfig.QaseemCategoryKey[env]!;
@@ -253,6 +257,14 @@ class _RemoteConfig {
   );
 
   /////////////////////////
+
+  static final uxCamKey = _initValues<String>(
+    devVal: "",
+    stgVal: "3i45abbyrbljp32",
+    preVal: "3i45abbyrbljp32",
+    prodVal: "2w1otnta9bvvhzo",
+    urbiPreVal: "",
+  );
 
   static final mapRadius = _initValues<double>(
     devVal: 20000000000000.0,

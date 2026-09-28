@@ -153,7 +153,7 @@ class _PoiInBuildingSliverState extends ConsumerState<PoiOrganizationsSliver> {
         .read(viewModelProvider.notifier)
         .fetchOrganizationsData(objectId: widget.objectId.objectId, page: pageKey);
 
-    final items = organizationsData?.items ?? [];
+    final items = organizationsData?.itemsFiltered ?? [];
 
     final licenseIds = items.map((e) => e.tradeLicense?.license).nonNulls.toSet();
 

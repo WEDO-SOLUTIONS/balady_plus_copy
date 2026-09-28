@@ -101,6 +101,9 @@ extension AVAudioSession {
 
         AppIconQuickActionChannel.register(messenger: sharedSingleFlutterEngine.binaryMessenger)
 
+        // Lock-screen navigation Live Activity (metadata channel + native event observers).
+        NavigationLiveUpdatesChannel.register(messenger: sharedSingleFlutterEngine.binaryMessenger)
+
         // Saudi National Day launcher icon — Dart picks the icon, this applies
         // it natively on every activation (see LauncherIconChannel.swift).
         launcherIconChannel = LauncherIconChannel(messenger: sharedSingleFlutterEngine.binaryMessenger)
