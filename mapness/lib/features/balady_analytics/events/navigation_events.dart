@@ -5,10 +5,15 @@ import 'dart:math' as math;
 import 'package:collection/collection.dart';
 import 'package:dgis_map/library.dart';
 import 'package:mapness/features/balady_analytics/balady_analytics.dart';
+import 'package:mapness/features/routing/providers/current_route.dart';
 
 /// Free roam entry points, reported as the `source` property of
 /// `free_roam_started` (docs/analytics-tracking-plan.md, Phase 1 / Navigator).
 enum BaladyFreeRoamSource { dashboard, autostart, carplay }
+
+/// How the add-stop sheet shown during guidance was closed, reported as the
+/// `result` property of `add_stop_prompt_result`.
+enum AddStopPromptResult { addStop, cancel, timeout, dismissed }
 
 /// Phase-1 navigator events of the Balady tracking plan
 /// (docs/analytics-tracking-plan.md). All navigator event names live in this
@@ -26,6 +31,8 @@ class BaladyNavigationEvents {
   static const _freeRoamStartedName = 'free_roam_started';
   static const _carplayConnectedName = 'carplay_connected';
   static const _androidAutoConnectedName = 'android_auto_connected';
+  static const _addStopPromptShownName = 'add_stop_prompt_shown';
+  static const _addStopPromptResultName = 'add_stop_prompt_result';
 
   /// `transport_mode` property value for a route search type.
   static String transportMode(RouteSearchOptionsMessage navType) =>
@@ -272,6 +279,60 @@ class BaladyNavigationEvents {
   /// (the platform decides which projection a phone can host).
   static void trackHeadUnitConnected() {
     BaladyAnalytics.instance.track(Platform.isIOS ? _carplayConnectedName : _androidAutoConnectedName);
+  }
+
+  // --- add stop during guidance ---
+
+  /// `add_stop_prompt_shown`; the returned tracking sends exactly one
+  /// `add_stop_prompt_result` for it.
+  static AddStopPromptTracking trackAddStopPromptShown({
+    required NavigationTripSource tripSource,
+    required RouteSearchOptionsMessage navType,
+    required int stopsCount,
+    required bool limitReached,
+    required bool poiInRoute,
+  }) {
+    final properties = <String, Object>{
+      'trip_source': switch (tripSource) {
+        NavigationTripSource.phone => 'phone',
+        NavigationTripSource.carplay => 'carplay',
+        NavigationTripSource.androidAuto => 'android_auto',
+      },
+      'transport_mode': transportMode(navType),
+      'stops_count': stopsCount,
+      'limit_reached': limitReached,
+    };
+    BaladyAnalytics.instance.track(_addStopPromptShownName, properties: {...properties, 'poi_in_route': poiInRoute});
+    return AddStopPromptTracking._(properties);
+  }
+}
+
+/// One shown add-stop sheet; [report] sends its result once and ignores later calls.
+class AddStopPromptTracking {
+  AddStopPromptTracking._(this._properties);
+
+  final Map<String, Object> _properties;
+  final Stopwatch _sinceShown = Stopwatch()..start();
+  bool _reported = false;
+
+  void report(AddStopPromptResult result) {
+    if (_reported) {
+      return;
+    }
+    _reported = true;
+    BaladyAnalytics.instance.track(
+      BaladyNavigationEvents._addStopPromptResultName,
+      properties: {
+        ..._properties,
+        'result': switch (result) {
+          AddStopPromptResult.addStop => 'add_stop',
+          AddStopPromptResult.cancel => 'cancel',
+          AddStopPromptResult.timeout => 'timeout',
+          AddStopPromptResult.dismissed => 'dismissed',
+        },
+        'time_to_action_ms': _sinceShown.elapsedMilliseconds,
+      },
+    );
   }
 }
 

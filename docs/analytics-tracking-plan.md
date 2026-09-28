@@ -135,6 +135,8 @@ performed(results_count=0) / performed.
 | `navigation_cancelled` | `transport_mode`, `progress_pct`, `duration_sec` | Guidance abandoned before the completed threshold |
 | `free_roam_started` | `source` (`dashboard`, `autostart`, `carplay`) | `FreeRoamRoute` pushed — free roam entered |
 | `carplay_connected` / `android_auto_connected` | — | Head unit connected |
+| `add_stop_prompt_shown` | `trip_source` (`phone`, `carplay`, `android_auto` — who started the trip in guidance), `transport_mode`, `stops_count` (stops still ahead), `limit_reached` (bool, 10 stops), `poi_in_route` (bool — the place is already a stop or the finish, so no "Add stop") | A place tapped on the phone map during guidance opened the add-stop sheet |
+| `add_stop_prompt_result` | `result` (`add_stop`, `cancel`, `timeout` — Cancel filled up after 5 s, `dismissed` — swipe, back, tap outside or the guidance screen went away), `time_to_action_ms` (int, from the sheet shown to the action; ≈5000 for `timeout`), `trip_source`, `transport_mode`, `stops_count`, `limit_reached` | The add-stop sheet closed — exactly one per `add_stop_prompt_shown` |
 
 Metrics: funnel `search → route_built → navigation_started → navigation_completed`;
 started/completed route counts (split by `end_reason`); **avg/median trip duration and
@@ -143,6 +145,13 @@ length** (`duration_sec`, `distance_m`); time-of-day and cities of navigation us
 **"Free roam only" cohort**: has `free_roam_started`, no `navigation_started` — built in
 the UI, needs no events. Free roam duration is Phase 2 (`duration_sec` on
 `FreeRoamRoute` page dispose; boundaries are explicit, no timers needed).
+**Add stop during guidance**: are taps accidental or deliberate — share of `result`
+(`add_stop` vs quick `cancel`/`timeout`/`dismissed`), `time_to_action_ms` distribution,
+breakdown by `trip_source`. `trip_source` is `phone` for a trip started from the route
+preview; a trip picked up from native guidance counts as the head unit's when one is
+connected, otherwise as `phone` (app restart mid-trip). `add_stop` rebuilds the route in
+place: it sends one more `route_built` (`alternatives_count` 1) but no new
+`navigation_started`, and the trip keeps its original planned distance/ETA.
 
 ### Stories (stakeholder showcase)
 

@@ -9,6 +9,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:mapness/_features/common/widgets/dragger.dart';
 import 'package:mapness/entities/routing/route_params_point.dart';
 import 'package:mapness/entities/routing/route_search_point_mapper.dart';
+import 'package:mapness/features/balady_analytics/events/navigation_events.dart';
 import 'package:mapness/features/path_nav/add_stop_prompt.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/hooks/toggle_sheet_controller_hook.dart';
@@ -36,15 +37,39 @@ class NavAddStopSheetPage extends StatefulHookConsumerWidget {
 }
 
 class _NavAddStopSheetPageState extends ConsumerState<NavAddStopSheetPage> {
+  late final AddStopPromptTracking _tracking;
   bool _closed = false;
 
-  void _close([RouteParamsPointWithLabel? stop]) {
+  @override
+  void initState() {
+    super.initState();
+    final prompt = widget.prompt;
+    _tracking = BaladyNavigationEvents.trackAddStopPromptShown(
+      tripSource: prompt.tripSource,
+      navType: prompt.navType,
+      stopsCount: prompt.stopsCount,
+      limitReached: prompt.limitReached,
+      poiInRoute: prompt.poiInRoute,
+    );
+  }
+
+  @override
+  void dispose() {
+    // Back gesture, swipe or the guidance screen going away.
+    _tracking.report(AddStopPromptResult.dismissed);
+    super.dispose();
+  }
+
+  void _close(AddStopPromptResult result, [RouteParamsPointWithLabel? stop]) {
     if (_closed) {
       return;
     }
     _closed = true;
+    _tracking.report(result);
     context.router.pop(stop);
   }
+
+  void _cancel() => _close(AddStopPromptResult.cancel);
 
   RouteParamsPointWithLabel _stopFor(DirectoryObjectMessage? object) {
     final fallbackLabel = context.l10n.poi;
@@ -64,7 +89,7 @@ class _NavAddStopSheetPageState extends ConsumerState<NavAddStopSheetPage> {
 
   @override
   Widget build(BuildContext context) {
-    final sheetController = useToggleSheetController(onClose: (_) => _close());
+    final sheetController = useToggleSheetController(onClose: (_) => _close(AddStopPromptResult.dismissed));
     final colors = context.colors;
     final textStyles = context.textStyles;
     final l10n = context.l10n;
@@ -83,7 +108,7 @@ class _NavAddStopSheetPageState extends ConsumerState<NavAddStopSheetPage> {
       backgroundColor: colors.backgroundSurface4,
       safeAreaColor: colors.backgroundSurface4,
       dragger: SheetDragger(backgroundColor: colors.backgroundSurface4),
-      outside: GestureDetector(onTap: _close),
+      outside: GestureDetector(onTap: () => _close(AddStopPromptResult.dismissed)),
       content: [
         Padding(
           padding: const EdgeInsets.fromLTRB(Spacing.$3x, Spacing.$2x, Spacing.$3x, 0),
@@ -131,7 +156,7 @@ class _NavAddStopSheetPageState extends ConsumerState<NavAddStopSheetPage> {
                     color: Colors.transparent,
                     buttonState: prompt.canAddStop && !poi.isLoading ? ButtonState.defaultState : ButtonState.disabled,
                     primaryLabel: l10n.addStop,
-                    onTap: () => _close(_stopFor(object)),
+                    onTap: () => _close(AddStopPromptResult.addStop, _stopFor(object)),
                   ),
                 ),
                 const SizedBox(width: Spacing.$2x),
@@ -141,12 +166,12 @@ class _NavAddStopSheetPageState extends ConsumerState<NavAddStopSheetPage> {
                   height: 48,
                   child: TimedFillButton(
                     duration: NavAddStopSheetPage.timeout,
-                    onCompleted: _close,
-                    background: _CancelButton(onTap: _close),
+                    onCompleted: () => _close(AddStopPromptResult.timeout),
+                    background: _CancelButton(onTap: _cancel),
                     fill: _CancelButton(
                       bgColor: colors.neutralOnContainer,
                       textColor: colors.accentSecondaryOnAccentSecondary,
-                      onTap: _close,
+                      onTap: _cancel,
                     ),
                   ),
                 ),
