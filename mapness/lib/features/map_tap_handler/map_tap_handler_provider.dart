@@ -7,6 +7,7 @@ import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/app/auto_route/poi_card_ext.dart';
 import 'package:mapness/features/app_analytics/datafinder_source_tracker.dart';
 import 'package:mapness/features/app_analytics/models/datafinder_models.dart';
+import 'package:mapness/features/map_tap_handler/priority_map_tap_slot.dart';
 import 'package:mapness/features/advert_metrics/advert_metrics.dart';
 import 'package:mapness/features/poi_card/domain/model/poi_camera_config.dart';
 import 'package:mapness/features/search/providers/search.dart';
@@ -21,9 +22,6 @@ part 'map_tap_handler_provider.g.dart';
 part 'map_tap_mixin.dart';
 
 typedef OnMapTapHandler = void Function(TapEvent event);
-
-/// Returns true when it consumed the tap; otherwise the default handling runs.
-typedef PriorityMapTapHandler = bool Function(TapEvent event);
 
 @Riverpod(keepAlive: true)
 class RoadEvents extends _$RoadEvents {
@@ -90,7 +88,7 @@ class MapTapHandler extends _$MapTapHandler with GuardTapEventMixin {
   StreamSubscription<TapEvent>? _baseStreamSubscription;
   ProviderSubscription<RoadEventSheetState?>? _poiPageClosingSubscription;
 
-  PriorityMapTapHandler? _priorityMapTapHandler;
+  final _priorityTaps = PriorityMapTapSlot();
 
   int _pendingMakkahSuppression = 0;
   Timer? _pendingMakkahSuppressionTimer;
@@ -120,14 +118,10 @@ class MapTapHandler extends _$MapTapHandler with GuardTapEventMixin {
 
   /// Sets a high-priority tap handler that will be called before the default one.
   // ignore: avoid_setters_without_getters
-  set priorityMapTapHandler(PriorityMapTapHandler handler) => _priorityMapTapHandler = handler;
+  set priorityMapTapHandler(PriorityMapTapHandler handler) => _priorityTaps.handler = handler;
 
   /// Resets the priority handler; with [handler] given, only if it is still the active one.
-  void resetPriorityMapTapHandler([PriorityMapTapHandler? handler]) {
-    if (handler == null || handler == _priorityMapTapHandler) {
-      _priorityMapTapHandler = null;
-    }
-  }
+  void resetPriorityMapTapHandler([PriorityMapTapHandler? handler]) => _priorityTaps.reset(handler);
 
   void notifyMakkahMarkerTapped() {
     _pendingMakkahSuppression = 2;
@@ -148,10 +142,7 @@ class MapTapHandler extends _$MapTapHandler with GuardTapEventMixin {
       return;
     }
 
-    final priorityHandler = _priorityMapTapHandler;
-    final isMakkahMarkerTap = event is ObjectTapEvent && _pendingMakkahSuppression > 0;
-    final handled = priorityHandler != null && !isMakkahMarkerTap && priorityHandler(event);
-    if (!handled) {
+    if (!_priorityTaps.dispatch(event, makkahMarkerTapPending: _pendingMakkahSuppression > 0)) {
       _guardDefaultTap(() => _defaultOnMapClickListener(event));
     }
     _currentMapHandlers.sink.add(event);
