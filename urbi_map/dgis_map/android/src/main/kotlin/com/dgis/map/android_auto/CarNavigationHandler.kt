@@ -402,7 +402,10 @@ class CarNavigationHandler(
                         // Before maneuver (<= 500 m) OR slow speed (0–60 km/h)
                         // We use very high zoom value because Android Auto clamps it down.
                         SpeedRangeToStyleZoom(
-                                range = SpeedRange(0.0, 16.67), // 0–60 km/h
+                                // Upper bound overlaps the FAR range by 1 m/s: the SDK silently
+                                // drops the whole sequence otherwise (maxSpeed[i] must be >
+                                // minSpeed[i+1]).
+                                range = SpeedRange(0.0, 17.67), // 0–~64 km/h
                                 minDistanceToManeuver = RouteDistance(0),
                                 maxDistanceToManeuver = RouteDistance(maneuverZoneMm),
                                 styleZoom = StyleZoom(19.3f) // visually this will look like ~16.5
@@ -411,7 +414,7 @@ class CarNavigationHandler(
                         // NEAR MODE:
                         // Slow speed even far from maneuver
                         SpeedRangeToStyleZoom(
-                                range = SpeedRange(0.0, 16.67), // 0–60 km/h
+                                range = SpeedRange(0.0, 17.67), // 0–~64 km/h
                                 minDistanceToManeuver = RouteDistance(maneuverZoneMm),
                                 maxDistanceToManeuver = RouteDistance(farMm),
                                 styleZoom = StyleZoom(19.3f) // still near mode
