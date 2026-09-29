@@ -9,8 +9,6 @@ protocol DgisCarPlayMapViewDelegate {
 
 class DgisCarPlayMapView: UIViewController {
     static let defaultCameraPositionPoint = CameraPositionPoint(x: 0.5, y: 0.8)
-    /// Dashboard follow point y while navigating, used when the window reports no bottom safe area.
-    static let dashboardNavigationFallbackPositionY: Float = 0.64
     static let defaultCameraPosition = GeoPoint(latitude: 24.712301, longitude: 46.674175)
     static let defaultCameraZoom = Zoom(value: 17)
     
