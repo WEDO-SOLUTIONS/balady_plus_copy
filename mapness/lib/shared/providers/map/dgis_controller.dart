@@ -37,11 +37,8 @@ const double _indoorFloorPlansMinZoom = 19;
 /// and cleared in build's onDispose.
 DgisMapController? activeDgisController;
 
-/// True when a [darkModeProvider] emission is a real day/night flip that
-/// [DgisController._setupControllerItself]'s listener should act on.
-/// BALADY-3961: the provider re-emits (loading, then data) on every resume
-/// and every ~111m location tick even when `isDark` is unchanged, and each
-/// re-emission was re-applying the map theme and the cursor model.
+/// True only for a real day/night flip. BALADY-3961: [darkModeProvider] re-emits (loading, then data) on every
+/// resume and ~111 m tick without a flip; re-applying on each one re-pushed the cursor model and made it flash.
 @visibleForTesting
 bool shouldApplyDarkModeChange(AsyncValue<DarkMapStateModel> next, {required bool appliedIsDark}) {
   if (next.isLoading) {
@@ -125,8 +122,6 @@ class DgisController extends _$DgisController {
     await controller.setAppearance(appliedIsDark ? MapAppearanceMessage.night : MapAppearanceMessage.day);
     ref
       ..listen(darkModeProvider, (previous, next) {
-        // BALADY-3961: darkModeProvider re-emits on every resume/location
-        // tick even without a real flip; only act when isDark actually changes.
         if (!shouldApplyDarkModeChange(next, appliedIsDark: appliedIsDark)) {
           return;
         }
