@@ -605,8 +605,9 @@ class DgisMapPlugin extends FlutterMapApi {
   }
 
   /// Create map object manager.
-  Future<MapObjectManagerMessage> createMapObjectManager({String? layerId}) async {
-    final result = await _api.createMapObjectManager(layerId);
+  /// With [generalization] the SDK hides markers of the same manager that are close on screen.
+  Future<MapObjectManagerMessage> createMapObjectManager({String? layerId, bool generalization = true}) async {
+    final result = await _api.createMapObjectManager(layerId, generalization);
     return result;
   }
 

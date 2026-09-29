@@ -757,8 +757,8 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
         self.objectTapHandler?.createClusteringMapObjectManager(message, layerId, completion: completion)
     }
     
-    func createMapObjectManager(layerId: String?, completion: @escaping (Result<MapObjectManagerMessage, any Error>) -> Void) {
-        self.objectTapHandler?.createMapObjectManager(layerId, completion: completion)
+    func createMapObjectManager(layerId: String?, generalization: Bool, completion: @escaping (Result<MapObjectManagerMessage, any Error>) -> Void) {
+        self.objectTapHandler?.createMapObjectManager(layerId, generalization: generalization, completion: completion)
     }
     
     func removeMapObjectManager( manager: MapObjectManagerMessage, completion: @escaping (Result<Void, any Error>) -> Void) {

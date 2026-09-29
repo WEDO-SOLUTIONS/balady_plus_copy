@@ -645,18 +645,23 @@ class ObjectTapHandler(
 
     fun createMapObjectManager(
             layerId: String?,
+            generalization: Boolean,
             callback: (Result<MapObjectManagerMessage>) -> Unit
     ) {
         val managerId = UUID.randomUUID().toString()
         val managerMessage = MapObjectManagerMessage(id = managerId)
 
         val manager =
-                MapObjectManager.withGeneralization(
-                        map = this.map,
-                        logicalPixel = LogicalPixel(value = 100f),
-                        maxZoom = Zoom(value = 18f),
-                        layerId = layerId,
-                )
+                if (generalization) {
+                    MapObjectManager.withGeneralization(
+                            map = this.map,
+                            logicalPixel = LogicalPixel(value = 100f),
+                            maxZoom = Zoom(value = 18f),
+                            layerId = layerId,
+                    )
+                } else {
+                    MapObjectManager(map = this.map, layerId = layerId)
+                }
 
         mapObjectsExecutorService.submit {
             this.managers[managerId] = manager

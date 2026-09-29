@@ -729,16 +729,18 @@ class ObjectTapHandler {
     
     // MARK: Map Object
     
-    func createMapObjectManager(_ layerId: String?, completion: @escaping (Result<MapObjectManagerMessage,any Error >) -> Void) {
+    func createMapObjectManager(_ layerId: String?, generalization: Bool, completion: @escaping (Result<MapObjectManagerMessage,any Error >) -> Void) {
         let managerId = UUID().uuidString
         let managerMessage = MapObjectManagerMessage(id: managerId)
         
-        let manager = MapObjectManager.withGeneralization(
-            map: self.map,
-            logicalPixel: LogicalPixel(value: 100),
-            maxZoom: Zoom(value: 18),
-            layerId: layerId
-        )
+        let manager = generalization
+            ? MapObjectManager.withGeneralization(
+                map: self.map,
+                logicalPixel: LogicalPixel(value: 100),
+                maxZoom: Zoom(value: 18),
+                layerId: layerId
+            )
+            : MapObjectManager(map: self.map, layerId: layerId)
         self.objectsQueue.async {
             self.managers[managerId] = manager
             completion(Result.success(managerMessage))

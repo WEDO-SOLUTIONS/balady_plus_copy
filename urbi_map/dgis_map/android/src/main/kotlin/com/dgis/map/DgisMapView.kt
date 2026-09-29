@@ -796,9 +796,10 @@ class DgisMapView(
 
     override fun createMapObjectManager(
             layerId: String?,
+            generalization: Boolean,
             callback: (Result<MapObjectManagerMessage>) -> Unit
     ) {
-        objectTapHandler?.createMapObjectManager(layerId, callback)
+        objectTapHandler?.createMapObjectManager(layerId, generalization, callback)
     }
 
     override fun removeMapObjectManager(

@@ -372,8 +372,9 @@ class DgisMapController {
   }) => _instance.createMapObjectManagerWithClustering(manager, layerId: layerId);
 
   /// Creates [MapObjectManagerMessage] without clustering.
-  Future<MapObjectManagerMessage> createMapObjectManager({String? layerId}) =>
-      _instance.createMapObjectManager(layerId: layerId);
+  /// [generalization] = false keeps every marker of the manager visible at any zoom.
+  Future<MapObjectManagerMessage> createMapObjectManager({String? layerId, bool generalization = true}) =>
+      _instance.createMapObjectManager(layerId: layerId, generalization: generalization);
 
   /// Removes [MapObjectManagerMessage].
   Future<void> removeMapObjectManager(MapObjectManagerMessage manager) => _instance.removeMapObjectManager(manager);

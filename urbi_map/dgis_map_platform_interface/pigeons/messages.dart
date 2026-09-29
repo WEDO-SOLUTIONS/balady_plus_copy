@@ -1713,8 +1713,9 @@ abstract class MapApi {
     String? layerId,
   );
 
+  /// [generalization] = false keeps every marker visible at any zoom.
   @async
-  MapObjectManagerMessage createMapObjectManager(String? layerId);
+  MapObjectManagerMessage createMapObjectManager(String? layerId, bool generalization);
 
   @async
   void removeMapObjectManager(MapObjectManagerMessage manager);
