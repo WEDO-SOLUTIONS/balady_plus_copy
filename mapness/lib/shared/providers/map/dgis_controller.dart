@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:math';
 
 import 'package:dgis_map/library.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:mapness/features/navigation_cursor/navigation_cursor_controller.dart';
@@ -35,6 +36,20 @@ const double _indoorFloorPlansMinZoom = 19;
 /// Set in [DgisController.onMapCreated] (as soon as the native map is ready)
 /// and cleared in build's onDispose.
 DgisMapController? activeDgisController;
+
+/// True when a [darkModeProvider] emission is a real day/night flip that
+/// [DgisController._setupControllerItself]'s listener should act on.
+/// BALADY-3961: the provider re-emits (loading, then data) on every resume
+/// and every ~111m location tick even when `isDark` is unchanged, and each
+/// re-emission was re-applying the map theme and the cursor model.
+@visibleForTesting
+bool shouldApplyDarkModeChange(AsyncValue<DarkMapStateModel> next, {required bool appliedIsDark}) {
+  if (next.isLoading) {
+    return false;
+  }
+  final isDark = next.value?.isDark ?? false;
+  return isDark != appliedIsDark;
+}
 
 @Riverpod(keepAlive: true)
 class DgisController extends _$DgisController {
@@ -106,12 +121,17 @@ class DgisController extends _$DgisController {
     await controller.setIndoorFloorPlansEnabled(enabled: false);
     _indoorFloorPlansEnabled = false;
     await controller.overrideLocales(ref.read(appLanguageProvider) == Language.arabic ? ['ar-SA'] : ['en-SA']);
-    await controller.setAppearance(
-      (await ref.read(darkModeProvider.future)).isDark ? MapAppearanceMessage.night : MapAppearanceMessage.day,
-    );
+    var appliedIsDark = (await ref.read(darkModeProvider.future)).isDark;
+    await controller.setAppearance(appliedIsDark ? MapAppearanceMessage.night : MapAppearanceMessage.day);
     ref
       ..listen(darkModeProvider, (previous, next) {
-        controller.setAppearance(next.value?.isDark ?? false ? MapAppearanceMessage.night : MapAppearanceMessage.day);
+        // BALADY-3961: darkModeProvider re-emits on every resume/location
+        // tick even without a real flip; only act when isDark actually changes.
+        if (!shouldApplyDarkModeChange(next, appliedIsDark: appliedIsDark)) {
+          return;
+        }
+        appliedIsDark = next.value?.isDark ?? false;
+        controller.setAppearance(appliedIsDark ? MapAppearanceMessage.night : MapAppearanceMessage.day);
         // The bundled classic car has distinct day/night meshes; the
         // navigation-cursor model is set explicitly on the my-location
         // object (BALADY-3772), so re-push it for the new appearance.
