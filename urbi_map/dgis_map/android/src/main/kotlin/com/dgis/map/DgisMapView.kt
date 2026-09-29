@@ -140,6 +140,7 @@ class DgisMapView(
      * session ends. Outside a session the model is only cached here.
      */
     private var navigationCursorModel: ModelData? = null
+    private var navigationCursorGlb: ByteArray? = null
 
     private fun reapplyNavigationCursorModel() {
         // BALADY-3972: single source of truth — never show the model outside
@@ -533,8 +534,17 @@ class DgisMapView(
             return
         }
         try {
-            val model = createModelData(sdkContext, glb)
-            navigationCursorModel = model
+            // BALADY-3961: a new ModelData makes the SDK reload the model and flash
+            // the default car; the same bytes re-pushed on resume keep the instance.
+            val cached = navigationCursorModel
+            val model = if (cached != null && navigationCursorGlb?.contentEquals(glb) == true) {
+                cached
+            } else {
+                createModelData(sdkContext, glb).also {
+                    navigationCursorModel = it
+                    navigationCursorGlb = glb
+                }
+            }
             val usesCustomCursor = navigationHandlerLazy.isInitialized() && navigationHandler.usesCustomCursor
             if (!usesCustomCursor) {
                 callback(Result.success(Unit))
