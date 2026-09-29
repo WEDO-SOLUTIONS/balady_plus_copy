@@ -75,6 +75,7 @@ class DgisCarPlayDashboardMapView: UIViewController {
         ])
         self.mapView = mapView
         addSpeedControl()
+        observeNavigationState()
         DgisMapInitializer.shared.getNavigationManager().mapManager.addMap(map: map)
         self.delegate?.viewDidLoad(with: map)
         
@@ -88,6 +89,47 @@ class DgisCarPlayDashboardMapView: UIViewController {
         myLocationControlModel.onClicked()
     }
     
+    override func viewSafeAreaInsetsDidChange() {
+        super.viewSafeAreaInsetsDidChange()
+        updateCameraPositionPoint()
+    }
+
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        updateCameraPositionPoint()
+    }
+
+    private func observeNavigationState() {
+        let model = DgisMapInitializer.shared.getNavigationManager().uiModel
+        cancellables.insert(
+            model.stateChannel.sinkOnMainThread { [weak self] _ in
+                self?.updateCameraPositionPoint()
+            }
+        )
+    }
+
+    /// Keeps the car at the default follow point of the safe area, so the system ETA bar does not cover it.
+    /// Without a bottom inset the bar is not reported, so a fixed point is used while navigating.
+    private func updateCameraPositionPoint() {
+        guard let map else { return }
+        let bounds = view.bounds
+        guard bounds.width > 0, bounds.height > 0 else { return }
+
+        let insets = view.safeAreaInsets
+        let safeArea = bounds.inset(by: insets)
+        let defaultY = CGFloat(DgisCarPlayMapView.defaultCameraPositionPoint.y)
+        var y = Float((safeArea.minY + defaultY * safeArea.height) / bounds.height)
+
+        let state = DgisMapInitializer.shared.getNavigationManager().uiModel.state
+        if insets.bottom == 0 && (state == .navigation || state == .routeSearch) {
+            y = min(y, DgisCarPlayMapView.dashboardNavigationFallbackPositionY)
+        }
+
+        let point = CameraPositionPoint(x: Float(safeArea.midX / bounds.width), y: y)
+        guard point != map.camera.positionPoint else { return }
+        try? map.camera.setPositionPoint(positionPoint: point)
+    }
+
     func addSpeedControl() {
         let model = DgisMapInitializer.shared.getNavigationManager().uiModel
         let navigationViewFactory = (try? DgisMapInitializer.shared.getSdkContainer().makeNavigationViewFactory())?.makeNavigationViewControlsFactory()
