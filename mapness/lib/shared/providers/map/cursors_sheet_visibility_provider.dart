@@ -14,4 +14,11 @@ class CursorsSheetVisibility extends _$CursorsSheetVisibility {
   void show({required bool value}) {
     state = value;
   }
+
+  /// Idempotent reset once the sheet is gone; a no-op after this provider is disposed.
+  void settleClosed() {
+    if (ref.mounted && state) {
+      state = false;
+    }
+  }
 }

@@ -1,10 +1,11 @@
+import 'dart:async';
+
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:mapness/_features/common/widgets/dragger.dart';
-import 'package:mapness/features/map_tap_handler/map_tap_handler_provider.dart';
 import 'package:mapness/pages/navigator_settings/pages/cursors_page/cursors_page_content.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/hooks/toggle_sheet_controller_hook.dart';
@@ -23,44 +24,56 @@ class CursorsSheet extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final colors = context.colors;
-    final tapDisableOwner = useRef<Object?>(null);
+    // Held for the unmount cleanup below, where `ref` is no longer usable.
+    final visibility = ref.watch(cursorsSheetVisibilityProvider.notifier);
+    final isOpen = ref.watch(cursorsSheetVisibilityProvider);
 
-    void releaseTapDisableOwner() {
-      final owner = tapDisableOwner.value;
-      if (owner == null) {
-        return;
+    final sheetController = useToggleSheetController(onClose: (_) => visibility.settleClosed());
+
+    // BALADY-3960: the flag follows the sheet's own state, not only onClose —
+    // a close path that skips the callback must not latch it true.
+    void settleIfIdleClosed() {
+      final isIdleClosed = sheetController.isClosed && !sheetController.isAnimating;
+      if (context.mounted && isIdleClosed && (ModalRoute.isCurrentOf(context) ?? true)) {
+        visibility.settleClosed();
       }
-      tapDisableOwner.value = null;
-      ref.read(mapTapHandlerProvider.notifier).releaseTapDisableOwner(owner);
     }
 
-    final sheetController = useToggleSheetController(
-      onClose: (_) {
-        // Fires once the close animation has actually landed — only then is
-        // it safe to let native onMyLocationTap reach the handler again
-        // (BALADY-3923/3960 reopen loop).
-        releaseTapDisableOwner();
-        ref.read(cursorsSheetVisibilityProvider.notifier).show(value: false);
-      },
-    );
+    useEffect(() {
+      void onSheetChanged() {
+        if (sheetController.isClosed && !sheetController.isAnimating) {
+          scheduleMicrotask(settleIfIdleClosed);
+        }
+      }
 
-    final isOpen = ref.watch(cursorsSheetVisibilityProvider);
+      sheetController.addListener(onSheetChanged);
+      return () {
+        sheetController.removeListener(onSheetChanged);
+        // Torn down while shown: this sheet's onClose will never come.
+        if (!sheetController.isClosed || sheetController.isAnimating) {
+          scheduleMicrotask(visibility.settleClosed);
+        }
+      };
+    }, const []);
+
+    // On mount and whenever this page is current again: a flag raised for
+    // another page's sheet, or while this page was covered, is dropped.
+    final isCurrentRoute = ModalRoute.isCurrentOf(context) ?? true;
+    if (isOpen && isCurrentRoute && sheetController.isClosed && !sheetController.isAnimating) {
+      WidgetsBinding.instance.addPostFrameCallback((_) => settleIfIdleClosed());
+    }
 
     ref.listen(cursorsSheetVisibilityProvider, (_, nextIsOpen) {
       if (nextIsOpen) {
-        // A tap-and-hold fires more than one native onMyLocationTap
-        // (long-press + tap-on-release); acquiring here, synchronously,
-        // makes isDisabledTapHandler gate the very next one.
-        tapDisableOwner.value ??= ref.read(mapTapHandlerProvider.notifier).acquireTapDisableOwner();
-        sheetController.open();
+        // Only the visible page opens its sheet. `open()` is a no-op while the
+        // sheet is open or animating, which absorbs repeated native taps.
+        if (ModalRoute.isCurrentOf(context) ?? true) {
+          sheetController.open();
+        }
       } else if (!sheetController.isClosed) {
         sheetController.close();
       }
     });
-
-    // Safety net: if the page itself gets torn down while the sheet is open
-    // (or still closing), don't leak the tap-disable owner.
-    useEffect(() => releaseTapDisableOwner, const []);
 
     // BALADY-3763: in landscape the sheet is pinned to the leading edge at
     // the standard navi-panel width, like EndTripModal / NaviSheetPanel;
