@@ -23,6 +23,13 @@ part 'map_tap_mixin.dart';
 
 typedef OnMapTapHandler = void Function(TapEvent event);
 
+/// BALADY-3764: during turn-by-turn guidance and free roam the my-location
+/// object is the 3D navigation cursor, and tapping it opens Navigator
+/// Customization (Figma 2287-3140); elsewhere it stays the share-location card.
+@visibleForTesting
+bool isCursorsSheetTap(TapEvent event, {required String? topRouteName}) =>
+    event is MyLocationTapEvent && (topRouteName == PathNavRoute.name || topRouteName == FreeRoamRoute.name);
+
 @Riverpod(keepAlive: true)
 class RoadEvents extends _$RoadEvents {
   @override
@@ -144,6 +151,13 @@ class MapTapHandler extends _$MapTapHandler with GuardTapEventMixin {
       return;
     }
 
+    // BALADY-3960: taken before any other handler, and only this event — the
+    // rest of the map stays tappable while the sheet is up.
+    if (isCursorsSheetTap(event, topRouteName: ref.read(appRouterProvider).topRoute.name)) {
+      ref.read(cursorsSheetVisibilityProvider.notifier).requestOpen();
+      return;
+    }
+
     if (_priorityMapTapHandler != null) {
       _priorityMapTapHandler!(event);
     } else {
@@ -204,21 +218,6 @@ class MapTapHandler extends _$MapTapHandler with GuardTapEventMixin {
   }
 
   void _handleMyLocationTapEvent(MyLocationTapEvent event) {
-    // BALADY-3764: during turn-by-turn guidance and free roam the
-    // my-location object is the 3D navigation cursor. Tapping it opens
-    // Navigator Customization (Figma 2287-3140) as a bottom sheet so the
-    // driver keeps the route context; the share-location card remains the
-    // behaviour everywhere else.
-    final router = ref.read(appRouterProvider);
-    final topRouteName = router.topRoute.name;
-    if (topRouteName == PathNavRoute.name || topRouteName == FreeRoamRoute.name) {
-      // BALADY-3960: CursorsSheet is mounted in the page Stack now, not
-      // pushed via showModalBottomSheet — opening it is just a bool flip,
-      // no BuildContext needed (reopen guard lives in CursorsSheet itself).
-      ref.read(cursorsSheetVisibilityProvider.notifier).show(value: true);
-      return;
-    }
-
     ref.read(advertMetricsProvider.notifier).sendEvent(AdvertMetricsKeys.exploreLandingEngagement);
 
     final userLocation = ref.read(locationProvider);
