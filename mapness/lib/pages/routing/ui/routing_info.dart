@@ -270,7 +270,13 @@ class _RoutingInfoState extends ConsumerState<RoutingInfo> {
 
   Future<void> _updateIntermediateStopMarkers() async {
     final settings = MapObjectManagerSettings.intermediateStops();
-    final manager = ref.read(mapObjectManagerProvider(named: settings.name, layerId: settings.layerId).notifier);
+    final manager = ref.read(
+      mapObjectManagerProvider(
+        named: settings.name,
+        layerId: settings.layerId,
+        generalization: settings.generalization,
+      ).notifier,
+    );
 
     await manager.removeAllMarkers();
 
@@ -346,6 +352,7 @@ class _RoutingInfoState extends ConsumerState<RoutingInfo> {
         mapObjectManagerProvider(
           named: intermediateStopsSettings.name,
           layerId: intermediateStopsSettings.layerId,
+          generalization: intermediateStopsSettings.generalization,
         ).notifier,
       )
       ..watch(activePublicTransportRouteProvider)
@@ -451,7 +458,13 @@ class _RoutingInfoState extends ConsumerState<RoutingInfo> {
       await Future.wait([
         for (final settings in [mapSetting, markerSettings, intermediateStopsSetting])
           ref
-              .read(mapObjectManagerProvider(named: settings.name, layerId: settings.layerId).notifier)
+              .read(
+                mapObjectManagerProvider(
+                  named: settings.name,
+                  layerId: settings.layerId,
+                  generalization: settings.generalization,
+                ).notifier,
+              )
               .removeAllMarkers(),
       ]);
 

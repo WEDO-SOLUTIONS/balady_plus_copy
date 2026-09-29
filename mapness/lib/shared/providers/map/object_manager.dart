@@ -28,7 +28,10 @@ class MapObjectManagerSettings {
   final String name;
   final String? layerId;
 
-  const MapObjectManagerSettings._({required this.name, required this.layerId});
+  /// SDK hides markers of the same manager that are close on screen (below zoom 18).
+  final bool generalization;
+
+  const MapObjectManagerSettings._({required this.name, required this.layerId, this.generalization = true});
 
   factory MapObjectManagerSettings.favourites() =>
       const MapObjectManagerSettings._(name: 'favourite-markers', layerId: MapObjectLayers.defaultLayerId);
@@ -85,8 +88,12 @@ class MapObjectManagerSettings {
   factory MapObjectManagerSettings.metro() =>
       const MapObjectManagerSettings._(name: 'metro', layerId: MapObjectLayers.metroLayerId);
 
-  factory MapObjectManagerSettings.intermediateStops() =>
-      const MapObjectManagerSettings._(name: 'intermediate-stops', layerId: MapObjectLayers.priorityLayerId);
+  /// Numbers of all stops stay visible at any zoom, even when they overlap.
+  factory MapObjectManagerSettings.intermediateStops() => const MapObjectManagerSettings._(
+    name: 'intermediate-stops',
+    layerId: MapObjectLayers.priorityLayerId,
+    generalization: false,
+  );
 
   factory MapObjectManagerSettings.makkahBus() =>
       const MapObjectManagerSettings._(name: 'makkah-bus', layerId: MapObjectLayers.defaultLayerId);
@@ -107,12 +114,13 @@ class MapObjectManager extends _$MapObjectManager {
     required String named,
     String? layerId = MapObjectLayers.defaultLayerId,
     ClusteringMapObjectManager? clustering,
+    bool generalization = true,
   }) async {
     final dgisController = await ref.watch(dgisControllerProvider.future);
 
     final manager = clustering != null
         ? await dgisController.createMapObjectManagerWithClustering(clustering, layerId: layerId)
-        : await dgisController.createMapObjectManager(layerId: layerId);
+        : await dgisController.createMapObjectManager(layerId: layerId, generalization: generalization);
 
     ref.onDispose(() async {
       await dgisController.removeAllMarkers(fromManager: manager);
