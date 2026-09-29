@@ -23,6 +23,9 @@ class ToggleSheetExtent {
 
   VoidCallback? _cancelActivity;
   bool isClosed = true;
+
+  /// BALADY-3960: onClose already fired for the current closed state.
+  bool _isCloseReported = false;
   double _offset = 0.0;
   double availablePixels;
   ToggleSheetHeightModel? heightModel;
@@ -113,6 +116,9 @@ class ToggleSheetExtent {
 
     if (clampedOffset <= maxHeight) {
       isClosed = clampedOffset >= maxHeight;
+      if (!isClosed) {
+        _isCloseReported = false;
+      }
     }
 
     if (notify) {
@@ -277,6 +283,14 @@ class ToggleSheetController extends ScrollController {
   /// Indicates whether the sheet is closed and fully hidden.
   bool get isClosed => _extent.isClosed;
 
+  /// Whether the sheet height is moving on its own: an open, close or snap
+  /// animation, or a fling of the content (BALADY-3960).
+  bool get isAnimating =>
+      _isAnimatingOpen ||
+      (_heightAnimationController?.isAnimating ?? false) ||
+      (positions.isNotEmpty &&
+          position._ballisticControllers.any((c) => c.isAnimating));
+
   /// Returns model that represent a sheet component sizes.
   SheetWidgetSizes get componentSizes => _extent.componentSizes;
 
@@ -322,6 +336,11 @@ class ToggleSheetController extends ScrollController {
   void open({Duration? duration}) {
     if (isClosed) {
       _animateOpen(duration: duration);
+    } else if (isEnabled && !isAnimating && !_extent.isAtMax) {
+      // BALADY-3960: an interrupted snap can leave the sheet neither closed nor
+      // open, and upstream open() was a no-op there for good.
+      _startAnimation(_extent.offset, _extent.minHeight, Curves.easeOutExpo,
+          duration?.inMilliseconds ?? kDefaultSheetScrollDuration.inMilliseconds);
     }
   }
 
@@ -363,12 +382,10 @@ class ToggleSheetController extends ScrollController {
         oldPosition: oldPosition,
         getExtent: () => _extent,
         isInteractive: isInteractive,
+        onDragSheet: _stopOpenAnimation,
         onClose: () {
-          if (_extent.isClosed) {
-            if (resetContentScrollOnClosed) {
-              _resetScrollPosition();
-            }
-            onClose?.call(this);
+          if (isEnabled) {
+            _reportClosed();
           }
         },
       );
@@ -411,6 +428,9 @@ class ToggleSheetController extends ScrollController {
 
   AnimationController? _heightAnimationController;
   double get _heightAnimationPosition => _heightAnimationController!.value;
+
+  /// BALADY-3960: identifies the latest height animation, see [_onHeightAnimationEnd].
+  int _heightAnimationTicket = 0;
 
   double? _updateHeightBoundings(double min, double max) {
     bool correctPosition = false;
@@ -487,6 +507,9 @@ class ToggleSheetController extends ScrollController {
     _isDragging = true;
     _lastPosition = details.localPosition.dy;
     _appliedDelta = 0.0;
+    if (isInteractive) {
+      _stopOpenAnimation();
+    }
   }
 
   /// Method to update size of the sheet viewport then user is dragging by holding a header component.
@@ -554,19 +577,15 @@ class ToggleSheetController extends ScrollController {
 
     position._stopBallisticAnimation();
 
+    // BALADY-3960: whenComplete skipped a snap cut short by another animation,
+    // and the exact `offset == maxHeight` missed float noise — onClose was lost.
+    final ticket = ++_heightAnimationTicket;
+    _isAnimatingOpen = false;
     _heightAnimationController?.stop();
     _heightAnimationController?.value = _extent.offset;
-    _heightAnimationController?.animateWith(simulation).whenComplete(() {
-      _isAnimatingOpen = false;
-      if (_extent.offset == _extent.maxHeight) {
-        _extent.isClosed = true;
-        if (resetContentScrollOnClosed) {
-          _resetScrollPosition();
-        }
-
-        onClose?.call(this);
-      }
-    });
+    _heightAnimationController
+        ?.animateWith(simulation)
+        .whenCompleteOrCancel(() => _onHeightAnimationEnd(ticket));
   }
 
   /// Method used to animating sheet from not visable state to initial state position.
@@ -587,7 +606,19 @@ class ToggleSheetController extends ScrollController {
       newPosition,
       Curves.easeOutExpo,
       _duration,
+      isOpening: true,
     );
+  }
+
+  /// BALADY-3960: a drag takes over from a still-running open "push", which
+  /// otherwise pulled the offset back to open on every frame.
+  void _stopOpenAnimation() {
+    if (!_isAnimatingOpen) {
+      return;
+    }
+    _heightAnimationTicket++;
+    _isAnimatingOpen = false;
+    _heightAnimationController?.stop();
   }
 
   void _initAnimation(TickerProvider vsync) {
@@ -598,8 +629,11 @@ class ToggleSheetController extends ScrollController {
   }
 
   void _startAnimation(
-      double startPosition, double position, Curve curve, int duration) {
+      double startPosition, double position, Curve curve, int duration,
+      {bool isOpening = false}) {
     this.position._stopBallisticAnimation();
+    final ticket = ++_heightAnimationTicket;
+    _isAnimatingOpen = isOpening;
     _heightAnimationController?.stop();
     _heightAnimationController?.value = startPosition;
     _heightAnimationController
@@ -608,18 +642,40 @@ class ToggleSheetController extends ScrollController {
       curve: curve,
       duration: Duration(milliseconds: (duration * durationMultiplier).toInt()),
     )
-        .whenCompleteOrCancel(() {
-      _isAnimatingOpen = false;
+        .whenCompleteOrCancel(() => _onHeightAnimationEnd(ticket));
+  }
 
-      if (_extent.offset == _extent.maxHeight && isEnabled) {
-        _extent.isClosed = true;
-        if (resetContentScrollOnClosed) {
-          _resetScrollPosition();
-        }
+  /// BALADY-3960: the end of a superseded height animation is ignored — the
+  /// animation that replaced it owns the outcome, so onClose is neither lost
+  /// nor reported from a stale position.
+  void _onHeightAnimationEnd(int ticket) {
+    if (ticket != _heightAnimationTicket) {
+      return;
+    }
+    _isAnimatingOpen = false;
 
-        onClose?.call(this);
-      }
-    });
+    if (isEnabled && _extent.isAtMin) {
+      _extent
+        ..updateSize(_extent.maxHeight)
+        ..isClosed = true;
+      _reportClosed();
+    }
+  }
+
+  /// BALADY-3960: single exit of every close path, so onClose fires once per
+  /// close even when a fling and a height animation both land there.
+  void _reportClosed() {
+    if (!_extent.isClosed) {
+      return;
+    }
+    if (resetContentScrollOnClosed) {
+      _resetScrollPosition();
+    }
+    if (_extent._isCloseReported) {
+      return;
+    }
+    _extent._isCloseReported = true;
+    onClose?.call(this);
   }
 
   /// Resets the scroll position when the sheet is hidden.
@@ -656,12 +712,16 @@ class _ToggleSheetScrollPosition extends ScrollPositionWithSingleContext {
 
   VoidCallback? onClose;
 
+  /// BALADY-3960: the content drag is about to move the sheet itself.
+  VoidCallback? onDragSheet;
+
   _ToggleSheetScrollPosition({
     required super.physics,
     required super.context,
     required this.getExtent,
     required this.isInteractive,
     this.onClose,
+    this.onDragSheet,
     super.oldPosition,
   });
 
@@ -700,6 +760,7 @@ class _ToggleSheetScrollPosition extends ScrollPositionWithSingleContext {
       super.applyUserOffset(delta);
     } else {
       if (isInteractive) {
+        onDragSheet?.call();
         _extent.addPixelDelta(delta);
       }
     }
@@ -735,6 +796,7 @@ class _ToggleSheetScrollPosition extends ScrollPositionWithSingleContext {
     _dragCancelCallback?.call();
     _dragCancelCallback = null;
     isDragging = false;
+    onDragSheet?.call();
 
     final simulation = SnappingSimulation(
       position: _extent.offset,

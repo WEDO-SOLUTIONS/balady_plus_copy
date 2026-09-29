@@ -44,13 +44,19 @@ layout into non-normalized constraints.
 | `lib/toggle_sheet/render_toggle_sheet.dart` | `avaliableHeight` clamped to `>= 0` so a collapsed viewport cannot produce `BoxConstraints(NOT NORMALIZED)` |
 | `lib/toggle_sheet/toggle_sheet_controller.dart` | `fraction` guarded against division by a zero `maxHeight`, clamped to `[0, 1]` |
 | `lib/multi_state_sheet/multi_state_sheet_controller.dart` | `fraction` guarded against division by a zero `viewportHeight`, clamped to `[0, 1]` |
+| `lib/toggle_sheet/toggle_sheet_controller.dart` | BALADY-3960: `_dragEnd` snap uses `whenCompleteOrCancel` and the rounded `isAtMin` check, and lands exactly on `maxHeight` when closing — a snap cut short by another animation used to lose `onClose` |
+| `lib/toggle_sheet/toggle_sheet_controller.dart` | BALADY-3960: every height animation carries a ticket; the end of a superseded one is ignored, the animation that replaced it reports the outcome |
+| `lib/toggle_sheet/toggle_sheet_controller.dart` | BALADY-3960: all close paths (height animation, content fling) go through `_reportClosed` — `onClose` fires once per close, and not once the controller is detached |
+| `lib/toggle_sheet/toggle_sheet_controller.dart` | BALADY-3960: a header drag, or a content drag that moves the sheet, stops a still-running `_animateOpen` "push" instead of fighting it frame by frame |
+| `lib/toggle_sheet/toggle_sheet_controller.dart` | BALADY-3960: `open()` on a sheet that is neither closed nor open (and not animating) snaps it open instead of doing nothing |
+| `lib/toggle_sheet/toggle_sheet_controller.dart` | BALADY-3960: public `isAnimating` — an open/close/snap animation or a content fling is in flight |
 
-Every patch is marked with `BALADY-3755` in a comment at the site.
+Every patch is marked with its ticket (`BALADY-3755`, `BALADY-3960`) in a comment at the site.
 
 ## Keeping the toolchain off this code
 
 This repo analyses at 120 columns and formats with `dart format -l 120`; upstream
-`sheetify` is formatted at 80. Reflowing it would bury the four patches above under
+`sheetify` is formatted at 80. Reflowing it would bury the patches above under
 a few hundred lines of noise and break the byte-for-byte comparison against a future
 pub.dev release. So instead:
 
@@ -94,8 +100,13 @@ to every generated `pubspec_overrides.yaml`.
   means "fully expanded", so any genuine host resize (rotation, iPad
   multitasking) snaps an open sheet to the top of the screen. Not reproduced
   here, so left alone.
-- `ToggleSheetController.open()` is a no-op when `!isClosed`, which makes it
-  useless for re-snapping a sheet that is already stuck open.
+- A content fling dies with its `ScrollPosition`: when the `Scrollable`
+  recreates the position (gesture settings, device pixel ratio or
+  `ScrollConfiguration` change), the old one disposes its fling controllers
+  mid-flight and the sheet stops between open and closed, with no `onClose`.
+  `open()` now recovers such a sheet (BALADY-3960).
+- `_stopBallisticAnimation` forgets running fling controllers without stopping
+  them, so they keep ticking and are invisible to `isAnimating`.
 
 ## Updating or removing
 
