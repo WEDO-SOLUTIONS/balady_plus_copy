@@ -38,7 +38,10 @@ class _LifestyleDataSource implements LifestyleDataSource {
       // ignore: avoid_dynamic_calls
       return points.data['data']['result']['features'] as List<dynamic>?;
     } on DioException catch (error) {
-      logger.log('[getEsriMarkers] DioError $error', logLevel: MapnessLogLevel.critical);
+      // Superseded viewport requests are cancelled on purpose; that is not a failure.
+      if (!CancelToken.isCancel(error)) {
+        logger.log('[getEsriMarkers] DioError $error', logLevel: MapnessLogLevel.critical);
+      }
       return null;
     } catch (error) {
       logger.log('[getEsriMarkers] $error', logLevel: MapnessLogLevel.critical);

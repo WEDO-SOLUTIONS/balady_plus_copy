@@ -522,7 +522,7 @@ class Search extends _$Search {
       _searchOperation = searchOperation;
       final results = await searchOperation.value;
 
-      final zoom = ref.watch(cameraPositionProvider)?.zoom ?? 0;
+      final zoom = ref.read(cameraPositionProvider)?.zoom ?? 0;
       if (zoom > 13 && state is! SearchStateSuggest) {
         await _animateToRepresentativeArea(results: results);
       }

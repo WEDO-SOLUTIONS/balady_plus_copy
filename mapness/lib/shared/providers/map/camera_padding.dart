@@ -39,10 +39,24 @@ class CameraPadding extends _$CameraPadding {
       return;
     }
 
+    // Native camera padding is a plain setter and callers (sheet listeners) resend the same value often;
+    // `CameraSetPaddingMessage` has value equality, so skip the platform-channel round trip if it is unchanged.
+    if (state == padding) {
+      return;
+    }
+
     final cameraProvider = ref.read(cameraPositionProvider.notifier);
 
     state = padding;
 
-    await cameraProvider.setPadding(padding);
+    try {
+      await cameraProvider.setPadding(padding);
+    } catch (_) {
+      // Forget the value so the next identical request is retried instead of being deduped against a failed call.
+      if (ref.mounted && state == padding) {
+        state = null;
+      }
+      rethrow;
+    }
   }
 }

@@ -100,15 +100,22 @@ class _PlaceCard extends StatelessWidget {
           width: double.infinity,
           imageUrl: item?.preview.image.url ?? '',
           fit: BoxFit.cover,
+          // Decode at display size instead of the full-resolution original. Only the height is set: with both
+          // dimensions the image would be squeezed to the box (ignoring its aspect ratio) before `BoxFit.cover`.
+          memCacheHeight: (kPlaceCardSize * MediaQuery.devicePixelRatioOf(context)).round(),
           imageBuilder: (context, imageProvider) => Stack(
             children: [
-              ShaderMask(
-                blendMode: BlendMode.srcATop,
-                shaderCallback: (bounds) => LinearGradient(
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                  colors: [const Color(0x00000000), Colors.black.withOpacity(0.6)],
-                ).createShader(bounds),
+              // A foreground gradient instead of a `ShaderMask` (`srcATop` over an opaque image is a plain src-over
+              // blend), which needed an offscreen layer for every card on each repaint of the sheet.
+              DecoratedBox(
+                position: DecorationPosition.foreground,
+                decoration: const BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    colors: [Color(0x00000000), Color(0x99000000)],
+                  ),
+                ),
                 child: ConstrainedBox(
                   constraints: const BoxConstraints.expand(),
                   child: Image(image: imageProvider, fit: BoxFit.cover),

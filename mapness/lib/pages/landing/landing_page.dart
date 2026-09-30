@@ -12,6 +12,7 @@ import 'package:mapness/entities/city_event/city_event.dart';
 import 'package:mapness/features/city_event/active_city_event.dart';
 import 'package:mapness/features/favourites/providers/favourite_markers.dart';
 import 'package:mapness/features/founding_day/founding_day.dart';
+import 'package:mapness/features/landing/landing_visibility.dart';
 import 'package:mapness/features/lifestyle_layers/providers/layers_controls.dart';
 import 'package:mapness/features/thermal_monitor/thermal_monitor.dart';
 import 'package:mapness/shared/lib/urbi_metrics_utils.dart';
@@ -69,6 +70,10 @@ class _LandingPageState extends ConsumerState<LandingPage>
   ThreeStateSheet? _lastTracedSheetState;
   ThreeStateSheet? _lastTracedClosestSheetState;
 
+  // Sheet height the camera padding was last pushed for. Sheet notifications also come from content scroll and
+  // component resizes that leave the height unchanged; those are not re-sent over the platform channel.
+  int? _lastSheetHeight;
+
   @override
   void initState() {
     super.initState();
@@ -113,6 +118,21 @@ class _LandingPageState extends ConsumerState<LandingPage>
         );
   }
 
+  /// Follows the sheet frame by frame, so the map keeps its centre in the visible area while the sheet moves.
+  void _updatePaddingIfSheetMoved() {
+    final controller = bottomSheetController;
+    if (controller == null) {
+      return;
+    }
+
+    final height = controller.sheetHeight.toInt();
+    if (height == _lastSheetHeight) {
+      return;
+    }
+    _lastSheetHeight = height;
+    _calculatePadding();
+  }
+
   void _bottomsheetListener() {
     final state = bottomSheetController?.state;
     final closestState = bottomSheetController?.closestState;
@@ -133,7 +153,7 @@ class _LandingPageState extends ConsumerState<LandingPage>
     }
 
     _syncSheetOverlayVisibility();
-    _calculatePadding();
+    _updatePaddingIfSheetMoved();
   }
 
   @override
@@ -166,6 +186,9 @@ class _LandingPageState extends ConsumerState<LandingPage>
     if (_routeCovered == value || !mounted) {
       return;
     }
+    // Deferred: route-aware callbacks can fire mid-build, where provider writes are not allowed.
+    final landingVisibility = ref.read(landingVisibleProvider.notifier);
+    Future.microtask(() => landingVisibility.setRouteCovered(covered: value));
     setState(() {
       _routeCovered = value;
       if (!value) {

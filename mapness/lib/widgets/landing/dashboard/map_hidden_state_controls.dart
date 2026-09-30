@@ -37,6 +37,11 @@ class MapHiddenStateControls extends ConsumerStatefulWidget {
 class _MapHiddenStateControlsState extends ConsumerState<MapHiddenStateControls> {
   late final ItemScrollController quickScrollController;
 
+  // Mirrors `freeRoamState.canStart`, kept in sync from build and the provider listener. `update()` runs on every
+  // sheet frame and the free-roam prompt can only be dismissed while it is showing, so this keeps the common case
+  // free of provider and sheet-state reads.
+  bool _freeRoamPromptActive = false;
+
   @override
   void initState() {
     super.initState();
@@ -60,6 +65,10 @@ class _MapHiddenStateControlsState extends ConsumerState<MapHiddenStateControls>
   }
 
   void update() {
+    if (!_freeRoamPromptActive) {
+      return;
+    }
+
     final freeRoamState = ref.read(freeRoamStarterProvider);
 
     final isLaunchingDismiss =
@@ -72,6 +81,9 @@ class _MapHiddenStateControlsState extends ConsumerState<MapHiddenStateControls>
         widget.controller.interpolation > 0.5;
 
     if (isLaunchingDismiss || isGoToNavigatorDismiss) {
+      // Flip the mirror right away so a burst of sheet notifications cannot dismiss twice before the state update
+      // reaches it.
+      _freeRoamPromptActive = false;
       ref.read(freeRoamStarterProvider.notifier).setShown();
     }
   }
@@ -90,7 +102,9 @@ class _MapHiddenStateControlsState extends ConsumerState<MapHiddenStateControls>
         specialThemeMode == SpecialThemeMode.foundationDay || (activeEvent?.isLeap ?? false);
     final isCityscapeDay = ref.watch(cityscapeProvider);
     final freeRoamState = ref.watch(freeRoamStarterProvider);
+    _freeRoamPromptActive = freeRoamState.canStart;
     ref.listen(freeRoamStarterProvider, (_, state) {
+      _freeRoamPromptActive = state.canStart;
       if (widget.controller.state == ThreeStateSheet.expanded) {
         ref.read(freeRoamStarterProvider.notifier).setShown();
       } else if (state.canStart && state.isAutorun) {

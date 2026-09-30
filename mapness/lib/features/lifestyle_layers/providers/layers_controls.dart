@@ -124,7 +124,6 @@ class LayersControls extends _$LayersControls {
   static const duration = Duration(milliseconds: 250);
   StreamSubscription? _viewPortSubscription;
   StreamSubscription? _authStateSubscription;
-  CancelToken? _cancelToken;
 
   final esriMapObjectSettings = MapObjectManagerSettings.esri();
   final favouritesMapObjectSettings = MapObjectManagerSettings.favourites();
@@ -325,7 +324,6 @@ class LayersControls extends _$LayersControls {
     final currentState = state.selectedType;
     await _viewPortSubscription?.cancel();
     await _removeAll();
-    _cancelToken?.cancel();
 
     if (currentState != LayerType.favourites) {
       // BALADY-3730: same mutual-exclusion guard as toggleParking — when
@@ -666,6 +664,8 @@ class LayersControls extends _$LayersControls {
   );
 
   Future<void> _showInvestmentOpportunities(LayerType layerType) async {
+    // `ref.watch` on the autoDispose repository and object manager below is what keeps them alive for as long as this
+    // (keepAlive) controller lives: MapObjectManager's onDispose removes its native markers. Do not turn it into read.
     final controller = ref.watch(lifestyleRepositoryProvider.notifier);
     final env = await ref.read(dgisEnvironmentProvider.future);
 
@@ -679,31 +679,26 @@ class LayersControls extends _$LayersControls {
 
     await _removeAll();
 
-    _cancelToken = CancelToken();
-
-    _viewPortSubscription = ref
-        .watch(dgisControllerProvider.notifier)
-        .visibleRectSubject
-        .whereNotNull()
-        .map((event) => event.visibleRect)
-        .debounceTime(duration)
-        .asyncMap(
-          (visibleRect) =>
-              controller.getEsriPoints(params: _createParams(visibleRect, layerType, env), cancelToken: _cancelToken),
-        )
-        .map(_makeMarkers)
-        .listen((markers) async {
-          update(isLoading: false);
-          if (state.selectedType == LayerType.invest) {
-            final stateMarkers = state.investmentsMarkers;
-            markers.retainWhere((e) => !stateMarkers.containsKey(e.id));
-            for (final element in markers) {
-              stateMarkers[element.id] = element;
-            }
-            update(investmentsMarkers: stateMarkers);
-            await map.addMarkers(markers);
+    unawaited(_viewPortSubscription?.cancel());
+    _viewPortSubscription = _latestViewportRequests(
+      (visibleRect, cancelToken) =>
+          controller.getEsriPoints(params: _createParams(visibleRect, layerType, env), cancelToken: cancelToken),
+    ).map(_makeMarkers).listen((markers) async {
+      try {
+        update(isLoading: false);
+        if (state.selectedType == LayerType.invest) {
+          final stateMarkers = state.investmentsMarkers;
+          markers.retainWhere((e) => !stateMarkers.containsKey(e.id));
+          for (final element in markers) {
+            stateMarkers[element.id] = element;
           }
-        });
+          update(investmentsMarkers: stateMarkers);
+          await map.addMarkers(markers);
+        }
+      } on Object catch (error, stackTrace) {
+        _logViewportError(error, stackTrace);
+      }
+    }, onError: _logViewportError);
   }
 
   Future<void> _tapHandler(LayerType value) async {
@@ -723,7 +718,7 @@ class LayersControls extends _$LayersControls {
       logLevel: MapnessLogLevel.info,
     );
 
-    _cancelToken?.cancel();
+    // Cancelling the subscription also cancels the request in flight (see [_latestViewportRequests]).
     await _viewPortSubscription?.cancel();
     await _hideAllSelectedMarkers();
     ref.read(poiCardClosingProvider.notifier).close();
@@ -833,43 +828,38 @@ class LayersControls extends _$LayersControls {
 
     await _removeAll();
 
-    _cancelToken = CancelToken();
-
-    _viewPortSubscription = ref
-        .watch(dgisControllerProvider.notifier)
-        .visibleRectSubject
-        .whereNotNull()
-        .debounceTime(duration)
-        .map((event) => event.visibleRect)
-        .asyncMap(
-          (visibleRect) => controller.getWhiteLands(
-            MapRequestParams(
-              layer: GISMapLayers.bsWhiteParcelS,
-              southWestLongitude: visibleRect.southWestLon,
-              southWestLatitude: visibleRect.southWestLat,
-              northEastLongitude: visibleRect.northEastLon,
-              northEastLatitude: visibleRect.northEastLat,
-              proxy: env.proxy,
-              domain: env.url,
-            ),
-            _cancelToken,
-          ),
-        )
-        .map(_makePolygons)
-        .listen((data) async {
-          update(isLoading: false);
-          await _removeAll();
-          if (state.selectedType == LayerType.fencing) {
-            final statePolygons = state.polygons;
-            data.retainWhere((e) => !statePolygons.containsKey(e.id));
-            for (final element in data) {
-              statePolygons[element.id] = element;
-            }
-            update(polygons: statePolygons);
-
-            await mapManager.addPolygons(data);
+    unawaited(_viewPortSubscription?.cancel());
+    _viewPortSubscription = _latestViewportRequests(
+      (visibleRect, cancelToken) => controller.getWhiteLands(
+        MapRequestParams(
+          layer: GISMapLayers.bsWhiteParcelS,
+          southWestLongitude: visibleRect.southWestLon,
+          southWestLatitude: visibleRect.southWestLat,
+          northEastLongitude: visibleRect.northEastLon,
+          northEastLatitude: visibleRect.northEastLat,
+          proxy: env.proxy,
+          domain: env.url,
+        ),
+        cancelToken,
+      ),
+    ).map(_makePolygons).listen((data) async {
+      try {
+        update(isLoading: false);
+        await _removeAll();
+        if (state.selectedType == LayerType.fencing) {
+          final statePolygons = state.polygons;
+          data.retainWhere((e) => !statePolygons.containsKey(e.id));
+          for (final element in data) {
+            statePolygons[element.id] = element;
           }
-        });
+          update(polygons: statePolygons);
+
+          await mapManager.addPolygons(data);
+        }
+      } on Object catch (error, stackTrace) {
+        _logViewportError(error, stackTrace);
+      }
+    }, onError: _logViewportError);
   }
 
   Future<void> _showBuildingCompliance() async {
@@ -882,36 +872,76 @@ class LayersControls extends _$LayersControls {
 
     await _removeAll();
 
-    /// Cancel API calls
-    _cancelToken = CancelToken();
-
-    _viewPortSubscription = ref
-        .watch(dgisControllerProvider.notifier)
-        .visibleRectSubject
-        .whereNotNull()
-        .debounceTime(duration)
-        .map((event) => event.visibleRect)
-        .asyncMap(
-          (visibleRect) => controller.buildingComplianceCertificate(
-            _createParams(visibleRect, LayerType.buildings, env),
-            _cancelToken,
-          ),
-        )
-        .listen((data) async {
-          update(isLoading: false);
-          await _removeAll();
-          if (state.selectedType == LayerType.buildings) {
-            final polylineList = _makePolylineWithPoint(data);
-            final statePolylines = state.polylines;
-            polylineList.retainWhere((e) => !statePolylines.containsKey(e.id));
-            for (final element in polylineList) {
-              statePolylines[element.id] = element;
-            }
-            update(polylines: statePolylines);
-            await mapObjectManager.addPolyLines(polylineList);
+    unawaited(_viewPortSubscription?.cancel());
+    _viewPortSubscription = _latestViewportRequests(
+      (visibleRect, cancelToken) => controller.buildingComplianceCertificate(
+        _createParams(visibleRect, LayerType.buildings, env),
+        cancelToken,
+      ),
+    ).listen((data) async {
+      try {
+        update(isLoading: false);
+        await _removeAll();
+        if (state.selectedType == LayerType.buildings) {
+          final polylineList = _makePolylineWithPoint(data);
+          final statePolylines = state.polylines;
+          polylineList.retainWhere((e) => !statePolylines.containsKey(e.id));
+          for (final element in polylineList) {
+            statePolylines[element.id] = element;
           }
-        });
+          update(polylines: statePolylines);
+          await mapObjectManager.addPolyLines(polylineList);
+        }
+      } on Object catch (error, stackTrace) {
+        _logViewportError(error, stackTrace);
+      }
+    }, onError: _logViewportError);
   }
+
+  /// Requests data for every visible rect the map settles on, "latest wins".
+  ///
+  /// `asyncMap` would run every request to completion, one after another: a burst of pans queues stale requests and
+  /// applies their results in order. Here a newer rect cancels the request still in flight (both its [CancelToken] and
+  /// its result), and cancelling the returned stream's subscription cancels it too.
+  ///
+  /// A failed request is logged and skipped: nothing is emitted, so the layer keeps what it shows, and the stream
+  /// stays alive for the next rect.
+  Stream<T> _latestViewportRequests<T extends Object>(
+    Future<T> Function(VisibleRect visibleRect, CancelToken cancelToken) request,
+  ) => ref
+      .read(dgisControllerProvider.notifier)
+      .visibleRectSubject
+      .whereNotNull()
+      .map((event) => event.visibleRect)
+      .debounceTime(duration)
+      .switchMap((visibleRect) {
+        final cancelToken = CancelToken();
+        return Stream.fromFuture(_guardedRequest(request, visibleRect, cancelToken))
+            .whereNotNull()
+            .doOnCancel(() => cancelToken.cancel('superseded'));
+      });
+
+  Future<T?> _guardedRequest<T extends Object>(
+    Future<T> Function(VisibleRect visibleRect, CancelToken cancelToken) request,
+    VisibleRect visibleRect,
+    CancelToken cancelToken,
+  ) async {
+    try {
+      return await request(visibleRect, cancelToken);
+    } on Object catch (error, stackTrace) {
+      if (!cancelToken.isCancelled && !(error is DioException && CancelToken.isCancel(error))) {
+        _logViewportError(error, stackTrace);
+        // Nothing will be emitted for this rect, so the listener won't clear the loading state.
+        if (ref.mounted) {
+          update(isLoading: false);
+        }
+      }
+      return null;
+    }
+  }
+
+  void _logViewportError(Object error, StackTrace stackTrace) =>
+      logger.log('Layers viewport request: $error\n$stackTrace', logLevel: MapnessLogLevel.error);
 
   List<Polyline> _makePolylineWithPoint(List<BuildingComplianceCertificate>? pointList) {
     final polylines = <Polyline>[];
@@ -994,6 +1024,8 @@ class LayersControls extends _$LayersControls {
 
   Future<void> _removeMapObjects() async {
     update(polylines: {}, polygons: {}, investmentsMarkers: {});
+    // Kept as `watch` on purpose: the autoDispose object managers must stay alive with this controller, see
+    // [_showInvestmentOpportunities].
     final map = ref.watch(
       mapObjectManagerProvider(named: esriMapObjectSettings.name, layerId: esriMapObjectSettings.layerId).notifier,
     );

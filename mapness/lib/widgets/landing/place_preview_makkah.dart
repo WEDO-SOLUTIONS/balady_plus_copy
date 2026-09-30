@@ -241,19 +241,26 @@ class _PlaceCardMakkah extends ConsumerWidget {
             width: double.infinity,
             imageUrl: item?.previewImageUrl ?? '',
             fit: BoxFit.cover,
+            // Decode at display size instead of the full-resolution original. Only the height is set: with both
+            // dimensions the image would be squeezed to the box (ignoring its aspect ratio) before `BoxFit.cover`.
+            memCacheHeight: (kPlaceCardSizeMakkah * MediaQuery.devicePixelRatioOf(context)).round(),
             imageBuilder: (context, imageProvider) => Stack(
               children: [
-                ShaderMask(
-                  blendMode: BlendMode.srcATop,
-                  shaderCallback: (bounds) => LinearGradient(
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter,
-                    colors: [
-                      overlayPeak.withOpacity(0),
-                      overlayPeak,
-                    ],
-                    stops: const [0.0, 0.96],
-                  ).createShader(bounds),
+                // A foreground gradient instead of a `ShaderMask` (`srcATop` over an opaque image is a plain src-over
+                // blend), which needed an offscreen layer for every card on each repaint of the sheet.
+                DecoratedBox(
+                  position: DecorationPosition.foreground,
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                      colors: [
+                        overlayPeak.withOpacity(0),
+                        overlayPeak,
+                      ],
+                      stops: const [0.0, 0.96],
+                    ),
+                  ),
                   child: ConstrainedBox(
                     constraints: const BoxConstraints.expand(),
                     child: Image(image: imageProvider, fit: BoxFit.cover),

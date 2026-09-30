@@ -19,7 +19,6 @@ class ParkingControl extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final result = ref.watch(parkingManageProvider(theme: context.read<ThemeController>().currentTheme)).value;
-    final cameraPosition = ref.watch(cameraPositionProvider);
 
     if (result == null) {
       return const SizedBox.shrink();
@@ -32,6 +31,7 @@ class ParkingControl extends ConsumerWidget {
         height: 28,
         child: MapButton(
           onTap: () {
+            final cameraPosition = ref.read(cameraPositionProvider);
             if (cameraPosition == null) {
               return;
             }

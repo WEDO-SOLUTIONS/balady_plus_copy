@@ -2,63 +2,138 @@ import 'dart:async';
 
 import 'package:dgis_map/library.dart';
 import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart' show listEquals;
 import 'package:geobase/geobase.dart' as gb;
 import 'package:mapness/_generated/protocol/protocol.pb.dart';
+import 'package:mapness/features/landing/landing_visibility.dart';
 import 'package:mapness/l10n/generated/app_localizations.dart';
 import 'package:mapness/shared/constants/info_mock.dart';
 import 'package:mapness/shared/lib/common_functions.dart';
 import 'package:mapness/shared/providers/app_language.dart';
 import 'package:mapness/shared/providers/dgis_network.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
+import 'package:mapness/shared/utils/app_settled.dart';
+import 'package:mapness/shared/utils/camera_refetch_gate.dart';
+import 'package:mapness/shared/utils/logger/logger.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:rxdart/rxdart.dart';
 
 part 'interesting_places.g.dart';
 
+/// Interesting places for the landing carousel, served by the backend for the map viewport
+/// (`interesting-places?bound=<WKT>`).
+///
+/// The carousel is secondary content, so the first request waits until the map has reported its viewport or the app
+/// has settled (whichever comes first): one bounded request instead of an unbounded one followed by a bounded one.
+/// Afterwards the camera only causes a request when it moved meaningfully ([CameraRefetchGate]), never more often than
+/// every few seconds, and not while the landing is covered by another route. A newer request cancels the older one; a
+/// failed request keeps the last good places.
 @riverpod
 class InterestingPlaces extends _$InterestingPlaces {
   CancelToken? _cancelToken;
-  int _requestId = 0;
 
   @override
   Future<List<InterestingPlace>> build() async {
-    state = const AsyncValue.loading();
-    ref.onDispose(() {
-      _cancelActiveRequest('interestingPlacesProvider disposed');
-    });
+    // Set when this build is disposed or superseded by a rebuild; every continuation below checks it.
+    var stale = false;
+    CameraRefetchGate? gate;
+    StreamSubscription<VisibleRectEvent?>? subscription;
+    var landingVisible = ref.read(landingVisibleProvider);
+
+    ref
+      ..listen(landingVisibleProvider, (_, visible) {
+        landingVisible = visible;
+        gate?.paused = !visible;
+      })
+      ..onDispose(() {
+        stale = true;
+        gate?.dispose();
+        unawaited(subscription?.cancel());
+        _cancelActiveRequest('interestingPlacesProvider disposed');
+      });
 
     final dio = await ref.watch(dGisNetworkProvider.future);
-    if (!ref.mounted) {
+    if (stale) {
       return const [];
     }
 
-    final subscription = ref.read(dgisControllerProvider.notifier).visibleRectSubject.listen((event) {
-      unawaited(_update(dio, event?.visibleRect));
-    });
-
-    ref.onDispose(subscription.cancel);
-
-    await _update(dio);
-    if (!ref.mounted) {
+    final rects = ref.read(dgisControllerProvider.notifier).visibleRectSubject;
+    final initialRect = await _awaitInitialRect(rects);
+    if (stale) {
       return const [];
     }
-    return state.value ?? [];
+    final loaded = await _fetch(dio, initialRect, _startRequest());
+    if (stale) {
+      return const [];
+    }
+
+    // Camera-driven updates start only once the first request is done, so they never race it. The subject replays
+    // its latest viewport, which is checked against the one the first request was made for.
+    final activeGate = CameraRefetchGate(refetch: (rect) => _refresh(dio, rect), paused: !landingVisible);
+    if (loaded != null) {
+      activeGate.markFetched(initialRect);
+    }
+    gate = activeGate;
+    subscription = rects.whereNotNull().listen((event) => activeGate.onCamera(event.visibleRect));
+
+    // A failed first request keeps what was shown before a rebuild (if anything) rather than blanking the carousel.
+    return loaded ?? state.value ?? const [];
   }
 
-  Future<void> _update(Dio dio, [VisibleRect? rect]) async {
-    if (!ref.mounted) {
-      return;
+  /// The viewport the first request is made for: the current one, else the first one the map reports, else (the app
+  /// settled and the map still has not moved) `null`, meaning no viewport.
+  Future<VisibleRect?> _awaitInitialRect(ValueStream<VisibleRectEvent?> rects) async {
+    final known = rects.valueOrNull?.visibleRect;
+    if (known != null) {
+      return known;
     }
 
-    final requestId = ++_requestId;
-    final polygon = rect != null ? CommonFunctions.getPolygonFromRect(rect) : null;
-    _cancelActiveRequest('Superseded by a newer interesting places request');
-    final cancelToken = CancelToken();
-    _cancelToken = cancelToken;
-    final data = await _fetch(dio, polygon, cancelToken);
-    if (!ref.mounted || cancelToken.isCancelled || requestId != _requestId) {
-      return;
+    final completer = Completer<VisibleRect?>();
+    final subscription = rects.whereNotNull().listen(
+      (event) {
+        if (!completer.isCompleted) {
+          completer.complete(event.visibleRect);
+        }
+      },
+      onDone: () {
+        if (!completer.isCompleted) {
+          completer.complete();
+        }
+      },
+    );
+    unawaited(
+      whenAppSettled().then((_) {
+        if (!completer.isCompleted) {
+          completer.complete();
+        }
+      }),
+    );
+    try {
+      return await completer.future;
+    } finally {
+      unawaited(subscription.cancel());
     }
-    state = AsyncValue.data(data);
+  }
+
+  /// Requests the places for [rect] and publishes them if they are still the newest and differ from what is shown.
+  Future<bool> _refresh(Dio dio, VisibleRect rect) async {
+    final cancelToken = _startRequest();
+    final places = await _fetch(dio, rect, cancelToken);
+    if (!_isCurrent(cancelToken)) {
+      return true;
+    }
+    if (places == null) {
+      return false;
+    }
+    if (!listEquals(places, state.value)) {
+      state = AsyncValue.data(places);
+    }
+    return true;
+  }
+
+  CancelToken _startRequest() {
+    _cancelActiveRequest('Superseded by a newer interesting places request');
+    return _cancelToken = CancelToken();
   }
 
   void _cancelActiveRequest(String reason) {
@@ -69,7 +144,12 @@ class InterestingPlaces extends _$InterestingPlaces {
     }
   }
 
-  Future<List<InterestingPlace>> _fetch(Dio dio, [gb.Polygon? polygon, CancelToken? cancelToken]) async {
+  bool _isCurrent(CancelToken cancelToken) =>
+      ref.mounted && !cancelToken.isCancelled && identical(_cancelToken, cancelToken);
+
+  /// Never throws: `null` means the request failed or was cancelled.
+  Future<List<InterestingPlace>?> _fetch(Dio dio, VisibleRect? rect, CancelToken cancelToken) async {
+    final polygon = rect != null ? CommonFunctions.getPolygonFromRect(rect) : null;
     final wkt = polygon != null ? polygon.toText(format: gb.WKT.geometry) : '';
 
     try {
@@ -78,14 +158,12 @@ class InterestingPlaces extends _$InterestingPlaces {
         options: defaultCacheOptions,
         cancelToken: cancelToken,
       );
-      final places = InterestingPlacesResponse.fromBuffer(response.data as List<int>).interestingPlaces;
-      return places;
-      // ignore: avoid_catches_without_on_clauses
-    } catch (error) {
-      if (error is DioException && CancelToken.isCancel(error)) {
-        return const [];
+      return InterestingPlacesResponse.fromBuffer(response.data as List<int>).interestingPlaces;
+    } on Object catch (error, stackTrace) {
+      if (!cancelToken.isCancelled && !(error is DioException && CancelToken.isCancel(error))) {
+        logger.log('Interesting places request failed: $error\n$stackTrace', logLevel: MapnessLogLevel.error);
       }
-      return [];
+      return null;
     }
   }
 }

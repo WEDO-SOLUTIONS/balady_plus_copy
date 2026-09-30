@@ -28,11 +28,12 @@ enum DarkMapStateEnum {
   off,
 }
 
+@immutable
 class DarkMapStateModel {
   final bool isDark;
   final DarkMapStateEnum currentMapMode;
 
-  DarkMapStateModel({
+  const DarkMapStateModel({
     required this.isDark,
     required this.currentMapMode,
   });
@@ -44,6 +45,16 @@ class DarkMapStateModel {
     isDark: isDark ?? this.isDark,
     currentMapMode: currentMapMode ?? this.currentMapMode,
   );
+
+  // Value equality: DarkMode rebuilds often (location precision changes, app resume, brightness changes) and
+  // Riverpod notifies listeners whenever the new value is not `==` to the old one.
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is DarkMapStateModel && other.isDark == isDark && other.currentMapMode == currentMapMode;
+
+  @override
+  int get hashCode => Object.hash(isDark, currentMapMode);
 }
 
 @Riverpod(keepAlive: true)

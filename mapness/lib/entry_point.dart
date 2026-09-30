@@ -530,33 +530,32 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> with Widg
     if (kDebugMode) {
       debugPrint('[DarkThemeDebug] _themeChanged isDark=$isDark mode=$specialThemeMode');
     }
-    baladyTheme.toggleTheme(isDark);
-    if (isDark) {
-      await themeController.setTheme(BaladyAppThemes.darkDGA);
-    } else {
-      final theme = switch (specialThemeMode) {
-        SpecialThemeMode.nationalDay => BaladyAppThemes.saudiDay,
-        SpecialThemeMode.mekkahBase || SpecialThemeMode.ramadan => BaladyAppThemes.mekkah,
-        SpecialThemeMode.foundationDay => BaladyAppThemes.foundationDay,
-        _ => BaladyAppThemes.lightDGA,
-      };
 
-      await themeController.setTheme(theme);
+    // Both `ThemeController.setTheme` and `BaladyThemeNotifier` notify listeners (and `setTheme` writes
+    // SharedPreferences) unconditionally / on every call, so only touch them when the effective value changed.
+    final targetTheme = isDark
+        ? BaladyAppThemes.darkDGA
+        : switch (specialThemeMode) {
+            SpecialThemeMode.nationalDay => BaladyAppThemes.saudiDay,
+            SpecialThemeMode.mekkahBase || SpecialThemeMode.ramadan => BaladyAppThemes.mekkah,
+            SpecialThemeMode.foundationDay => BaladyAppThemes.foundationDay,
+            _ => BaladyAppThemes.lightDGA,
+          };
+    // `null` (provider still loading) or `autoSunDependent` follow the resolved brightness.
+    final targetMode = switch (ref.read(darkModeProvider).value?.currentMapMode) {
+      DarkMapStateEnum.asInASystem => ThemeMode.system,
+      DarkMapStateEnum.alwaysEnabled => ThemeMode.dark,
+      DarkMapStateEnum.off => ThemeMode.light,
+      _ => isDark ? ThemeMode.dark : ThemeMode.light,
+    };
+
+    // Both notifiers change synchronously (before the first await) so the two theme sources flip in the same frame.
+    if (baladyTheme.themeMode != targetMode) {
+      unawaited(baladyTheme.updateThemeMode(targetMode));
     }
 
-    if (mounted) {
-      final baladyTheme = p.Provider.of<BaladyThemeNotifier>(context, listen: false);
-      final mapMode = ref.read(darkModeProvider).value?.currentMapMode;
-
-      if (mapMode == DarkMapStateEnum.asInASystem) {
-        baladyTheme.resetTheme();
-      } else if (mapMode == DarkMapStateEnum.alwaysEnabled) {
-        baladyTheme.updateThemeMode(ThemeMode.dark);
-      } else if (mapMode == DarkMapStateEnum.off) {
-        baladyTheme.updateThemeMode(ThemeMode.light);
-      } else {
-        baladyTheme.updateThemeMode(isDark ? ThemeMode.dark : ThemeMode.light);
-      }
+    if (themeController.currentTheme != targetTheme) {
+      await themeController.setTheme(targetTheme);
     }
   }
 
@@ -603,6 +602,12 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> with Widg
   @override
   Widget build(BuildContext context) {
     ref.listen(darkModeProvider, (prev, next) {
+      // Ignore the transient loading state (initial load / `invalidateSelf` rebuild): it carries no resolved value and
+      // would apply a bogus light theme. `_themeChanged` is a no-op when the resolved theme did not change.
+      if (next.isLoading || !next.hasValue) {
+        return;
+      }
+
       WidgetsBinding.instance.addPostFrameCallback((_) {
         _themeChanged(isDark: next.value?.isDark == true);
       });
