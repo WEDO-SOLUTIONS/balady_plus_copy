@@ -32,135 +32,97 @@ class _PortraitLayout extends ConsumerStatefulWidget {
 class _PortraitLayoutState extends ConsumerState<_PortraitLayout> {
   @override
   Widget build(BuildContext context) => SafeArea(
-    child: Stack(
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.end,
       children: [
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.end,
-          children: [
-            const SizedBox(height: 6, width: double.maxFinite),
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: uikit.Spacing.$3x),
-              child: widget.maneuverAndLimitWidget,
-            ),
-             const SizedBox(height: uikit.Spacing.$6x),
-            Align(
-              alignment: Alignment.centerLeft,
+        const SizedBox(height: 6, width: double.maxFinite),
+        Padding(
+          padding: const EdgeInsets.symmetric(vertical: uikit.Spacing.$3x),
+          child: widget.maneuverAndLimitWidget,
+        ),
+        const SizedBox(height: uikit.Spacing.$6x),
+        // The space left between the maneuver card and the sheet shrinks as the sheet grows; both columns drop their
+        // lowest-priority controls instead of overflowing.
+        Expanded(
+          child: ValueListenableBuilder(
+            valueListenable: widget.showControls,
+            builder: (context, isVisible, child) => GestureDetector(
+              onTap: widget.onUserActivity,
               child: Padding(
-                padding: EdgeInsets.only(left: widget.padding.left),
-                child: const SoundControl(),
-              ),
-            ),
-            Expanded(
-              child: ValueListenableBuilder(
-                valueListenable: widget.showControls,
-                builder: (context, isVisible, child) => GestureDetector(
-                  onTap: widget.onUserActivity,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    children: [
-                      AnimatedOpacity(
-                        opacity: isVisible ? 1 : 0,
-                        duration: const Duration(milliseconds: 250),
-                        child: IgnorePointer(
-                          ignoring: !isVisible,
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.end,
-                            children: [
-                              Padding(
-                                padding: widget.padding,
-                                child: const TrafficParkingControl(trafficVisible: false),
-                              ),
-                              const SizedBox(height: uikit.Spacing.$2x),
-                              Padding(
-                                padding: widget.padding,
-                                child: const DimensionControl(),
-                              ),
-                            ],
+                padding: widget.padding,
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    MapControlsColumn(
+                      children: [
+                        const MapControlsItem(priority: 80, child: SoundControl()),
+                        if (widget.navType == RouteSearchOptionsMessage.pedestrian)
+                          MapControlsItem(
+                            priority: 40,
+                            slot: MapControlsSlot.center,
+                            child: _FadeWhenHidden(visible: isVisible, child: const IndoorControl()),
                           ),
+                        MapControlsItem(
+                          priority: 30,
+                          slot: MapControlsSlot.bottom,
+                          child: _FadeWhenHidden(visible: isVisible, child: const RadioContextualButton()),
                         ),
-                      ),
-                      const Spacer(),
-                      AnimatedOpacity(
-                        opacity: isVisible ? 1 : 0,
-                        duration: const Duration(milliseconds: 250),
-                        child: IgnorePointer(
-                          ignoring: !isVisible,
-                          child: Padding(
-                            padding: widget.padding,
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                if (widget.navType == RouteSearchOptionsMessage.pedestrian) const IndoorControl(),
-                              ],
+                        MapControlsItem(
+                          priority: 70,
+                          slot: MapControlsSlot.bottom,
+                          child: _FadeWhenHidden(
+                            visible: isVisible,
+                            child: ValueListenableBuilder(
+                              valueListenable: widget.navigationState,
+                              builder: (context, state, _) {
+                                if (state == PathNavState.finished ||
+                                    state == PathNavState.paused ||
+                                    widget.onRoutePressed == null) {
+                                  return const SizedBox.shrink();
+                                }
+                                return RouteControl(onTap: widget.onRoutePressed!);
+                              },
                             ),
                           ),
                         ),
-                      ),
-                      const Spacer(),
-                      Padding(
-                        padding: widget.padding,
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.end,
-                          children: [
-                            AnimatedOpacity(
-                              opacity: isVisible ? 1 : 0,
-                              duration: const Duration(milliseconds: 250),
-                              child: IgnorePointer(
-                                ignoring: !isVisible,
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    const RadioContextualButton(),
-                                    const SizedBox(height: 10),
-                                    ValueListenableBuilder(
-                                      valueListenable: widget.navigationState,
-                                      builder: (context, state, _) {
-                                        if (state == PathNavState.finished ||
-                                            state == PathNavState.paused ||
-                                            widget.onRoutePressed == null) {
-                                          return const SizedBox.shrink();
-                                        }
-                                        return RouteControl(
-                                          onTap: widget.onRoutePressed!,
-                                        );
-                                      },
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                            const Spacer(),
-                            Column(
-                              children: [
-                                AnimatedOpacity(
-                                  opacity: isVisible ? 1 : 0,
-                                  duration: const Duration(milliseconds: 250),
-                                  child: IgnorePointer(
-                                    ignoring: !isVisible,
-                                    child: Column(
-                                      children: [
-                                        widget.compassControlWidget,
-                                        uikit.Spacing.$2x.heightBox,
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                                widget.pathNavFollowControlWidget,
-                              ],
-                            ),
-                          ],
+                      ],
+                    ),
+                    const Spacer(),
+                    MapControlsColumn(
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: [
+                        MapControlsItem(
+                          priority: 50,
+                          child: _FadeWhenHidden(
+                            visible: isVisible,
+                            child: const TrafficParkingControl(trafficVisible: false),
+                          ),
                         ),
-                      ),
-                    ],
-                  ),
+                        MapControlsItem(
+                          priority: 45,
+                          child: _FadeWhenHidden(visible: isVisible, child: const DimensionControl()),
+                        ),
+                        MapControlsItem(
+                          priority: 60,
+                          slot: MapControlsSlot.bottom,
+                          child: _FadeWhenHidden(visible: isVisible, child: widget.compassControlWidget),
+                        ),
+                        MapControlsItem(
+                          priority: 100,
+                          slot: MapControlsSlot.bottom,
+                          child: widget.pathNavFollowControlWidget,
+                        ),
+                      ],
+                    ),
+                  ],
                 ),
               ),
             ),
-            ValueListenableBuilder(
-              valueListenable: widget.bottomHeightNotifier,
-              builder: (context, value, _) => value.heightBox,
-            ),
-          ],
+          ),
+        ),
+        ValueListenableBuilder(
+          valueListenable: widget.bottomHeightNotifier,
+          builder: (context, value, _) => value.heightBox,
         ),
       ],
     ),

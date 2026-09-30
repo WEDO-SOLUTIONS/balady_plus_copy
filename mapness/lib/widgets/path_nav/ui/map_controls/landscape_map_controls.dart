@@ -35,77 +35,65 @@ class _LandscapeLayout extends StatelessWidget {
           bottom: uikit.Spacing.$3x + stableBottomInset,
           end: uikit.Spacing.$4x,
         ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Flexible(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  maneuverAndLimitWidget,
-                  const SizedBox(height: uikit.Spacing.$6x),
-                  const Padding(
-                    padding: EdgeInsetsDirectional.only(start: uikit.Spacing.$3x, top: uikit.Spacing.$6x),
-                    child: SoundControl(),
-                  ),
-                  const Spacer(),
-                  ValueListenableBuilder(
-                    valueListenable: showControls,
-                    builder: (context, isVisible, child) => AnimatedOpacity(
-                      opacity: isVisible ? 1 : 0,
-                      duration: const Duration(milliseconds: 250),
-                      child: IgnorePointer(
-                        ignoring: !isVisible,
-                        child: const RadioContextualButton(),
+        // Landscape leaves little height: both columns drop their lowest-priority controls instead of overflowing.
+        child: ValueListenableBuilder(
+          valueListenable: showControls,
+          builder: (context, isVisible, child) => Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Flexible(
+                child: Padding(
+                  padding: const EdgeInsets.only(bottom: 60),
+                  child: MapControlsColumn(
+                    children: [
+                      MapControlsItem(priority: 100, child: maneuverAndLimitWidget),
+                      const MapControlsItem(
+                        priority: 60,
+                        child: Padding(
+                          padding: EdgeInsetsDirectional.only(
+                            start: uikit.Spacing.$3x,
+                            top: uikit.Spacing.$6x * 2 - uikit.Spacing.$2x,
+                          ),
+                          child: SoundControl(),
+                        ),
                       ),
-                    ),
+                      MapControlsItem(
+                        priority: 30,
+                        slot: MapControlsSlot.bottom,
+                        child: _FadeWhenHidden(visible: isVisible, child: const RadioContextualButton()),
+                      ),
+                    ],
                   ),
-                  const SizedBox(height: 60),
-                ],
+                ),
               ),
-            ),
-            ValueListenableBuilder(
-              valueListenable: showControls,
-              builder: (context, isVisible, child) => GestureDetector(
+              GestureDetector(
                 onTap: onUserActivity,
-                child: Column(
+                child: MapControlsColumn(
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    AnimatedOpacity(
-                      opacity: isVisible ? 1 : 0,
-                      duration: const Duration(milliseconds: 250),
-                      child: IgnorePointer(
-                        ignoring: !isVisible,
-                        child: const Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            TrafficParkingControl(trafficVisible: false, parkingVisible: false),
-                            SizedBox(height: uikit.Spacing.$2x),
-                            DimensionControl(),
-                          ],
-                        ),
+                    MapControlsItem(
+                      priority: 50,
+                      child: _FadeWhenHidden(
+                        visible: isVisible,
+                        child: const TrafficParkingControl(trafficVisible: false, parkingVisible: false),
                       ),
                     ),
-                    const Spacer(),
-                    AnimatedOpacity(
-                      opacity: isVisible ? 1 : 0,
-                      duration: const Duration(milliseconds: 250),
-                      child: IgnorePointer(
-                        ignoring: !isVisible,
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            compassControlWidget,
-                            uikit.Spacing.$2x.heightBox,
-                          ],
-                        ),
-                      ),
+                    MapControlsItem(
+                      priority: 45,
+                      child: _FadeWhenHidden(visible: isVisible, child: const DimensionControl()),
                     ),
-                    pathNavFollowControlWidget,
+                    MapControlsItem(
+                      priority: 60,
+                      slot: MapControlsSlot.bottom,
+                      child: _FadeWhenHidden(visible: isVisible, child: compassControlWidget),
+                    ),
+                    MapControlsItem(priority: 100, slot: MapControlsSlot.bottom, child: pathNavFollowControlWidget),
                   ],
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

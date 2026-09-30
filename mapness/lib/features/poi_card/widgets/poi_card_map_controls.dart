@@ -1,9 +1,9 @@
 import 'package:balady_uikit/balady_uikit.dart' as ui_kit;
-import 'package:balady_uikit/core/extensions/layout_extension.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/shared/providers/app_features.dart';
+import 'package:mapness/shared/ui/map_controls/map_controls_column.dart';
 import 'package:mapness/widgets/landing/compass_control.dart';
 import 'package:mapness/widgets/landing/follow_control.dart';
 import 'package:mapness/widgets/landing/indoor_control.dart';
@@ -39,30 +39,30 @@ class PoiCardMapControls extends StatelessWidget {
               padding: PoiCardMapControls.padding,
               child: Row(
                 children: [
-                  Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                  MapControlsColumn(
                     children: [
-                      IndoorControl(objectId: objectIdForIndoorLevels),
+                      MapControlsItem(
+                        priority: 50,
+                        slot: MapControlsSlot.center,
+                        child: IndoorControl(objectId: objectIdForIndoorLevels),
+                      ),
                     ],
                   ),
                   const Spacer(),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                  const MapControlsColumn(
                     children: [
-                      const LayersControl(),
-                      const SizedBox(height: ui_kit.Spacing.$2x),
-
-                      const SizedBox(height: ui_kit.Spacing.$2x),
-                      const DimensionControl(),
-                      if (kDebugMode) ...[
-                        const Spacer(),
-                        const ZoomControl(),
-                      ],
-                      const Spacer(),
-                      const CompassControl(),
-                      ui_kit.Spacing.$3x.heightBox,
-                      const FollowControl(),
+                      MapControlsItem(priority: 80, child: LayersControl()),
+                      MapControlsItem(priority: 60, child: DimensionControl()),
+                      if (kDebugMode) MapControlsItem(priority: 10, slot: MapControlsSlot.center, child: ZoomControl()),
+                      MapControlsItem(priority: 70, slot: MapControlsSlot.bottom, child: CompassControl()),
+                      MapControlsItem(
+                        priority: 100,
+                        slot: MapControlsSlot.bottom,
+                        child: Padding(
+                          padding: EdgeInsets.only(top: ui_kit.Spacing.$3x - ui_kit.Spacing.$2x),
+                          child: FollowControl(),
+                        ),
+                      ),
                     ],
                   ),
                 ],

@@ -11,6 +11,7 @@ import 'package:mapness/features/stream_audio/ui/widgets/radio_contextual_button
 import 'package:mapness/pages/free_roam/ui/traffic_parking_control.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/extensions/path_nav_ext.dart';
+import 'package:mapness/shared/ui/map_controls/map_controls_column.dart';
 import 'package:mapness/widgets/landing/compass_control.dart';
 import 'package:mapness/widgets/landing/follow_control.dart';
 import 'package:mapness/widgets/landing/indoor_control.dart';
@@ -120,4 +121,19 @@ class PathNavMapControls extends StatelessWidget {
       },
     );
   }
+}
+
+/// Fades a map control out while navigation hides the controls for inactivity, and makes it untappable meanwhile.
+class _FadeWhenHidden extends StatelessWidget {
+  const _FadeWhenHidden({required this.visible, required this.child});
+
+  final bool visible;
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) => AnimatedOpacity(
+    opacity: visible ? 1 : 0,
+    duration: const Duration(milliseconds: 250),
+    child: IgnorePointer(ignoring: !visible, child: child),
+  );
 }

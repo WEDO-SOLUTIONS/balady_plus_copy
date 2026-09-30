@@ -8,6 +8,7 @@ import 'package:mapness/features/free_roam/free_roam_starter.dart';
 import 'package:mapness/features/special_themes/modes/saudi_national_day/saudi_national_day.dart';
 import 'package:mapness/features/tifo/providers/tifo_session_provider.dart';
 import 'package:mapness/features/tifo/tifo_buildings_map_layer.dart';
+import 'package:mapness/shared/ui/map_controls/map_controls_column.dart';
 import 'package:mapness/widgets/landing/compass_control.dart';
 import 'package:mapness/widgets/landing/complience_building_legend.dart';
 import 'package:mapness/widgets/landing/dashboard_header.dart';
@@ -60,55 +61,49 @@ class MapDashboardControls extends ConsumerWidget {
           Expanded(
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: uikit.Spacing.$3x),
+              // Both columns get whatever height the sheet leaves above it and drop their lowest-priority
+              // controls instead of overflowing while the sheet is dragged up or another sheet opens on top.
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.center,
+                  const MapControlsColumn(
                     children: [
-                      Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          const WeatherControl(),
-                          uikit.Spacing.$1_5x.heightBox,
-                          const ParkingControl(),
-                        ],
+                      MapControlsItem(
+                        priority: 90,
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            WeatherControl(),
+                            ParkingControl(),
+                          ],
+                        ),
                       ),
-                      const Spacer(),
-                      const IndoorControl(),
-                      const Spacer(),
+                      MapControlsItem(priority: 50, slot: MapControlsSlot.center, child: IndoorControl()),
                     ],
                   ),
                   const Spacer(),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.end,
+                  MapControlsColumn(
+                                        crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
-                      const LayersControl(),
-                      const SizedBox(height: uikit.Spacing.$2x),
-                      const DimensionControl(),
-                      if (ref.watch(tifoAvailableProvider)) ...[
-                        const SizedBox(height: uikit.Spacing.$2x),
-                        const TifoControl(),
-                      ],
-                      if (ref.watch(tifoBuildingsMapLayerProvider)) ...[
-                        const SizedBox(height: uikit.Spacing.$2x),
-                        const TifoLeaderboardControl(),
-                      ],
-                      const SizedBox(height: uikit.Spacing.$2x),
-                      // The debug zoom stack (2 buttons) is the one item this
-                      // column can't fit once the TIFO trophy joins it — hence
-                      // the "BOTTOM OVERFLOWED" banner on debug builds. Give
-                      // way to the game controls instead of overflowing; zoom
-                      // is still reachable by pinching.
-                      if (kDebugMode && !ref.watch(tifoBuildingsMapLayerProvider)) ...[
-                        const Spacer(),
-                        const ZoomControl(),
-                      ],
-                      const Spacer(),
-                      const CompassControl(),
-                      const SizedBox(height: uikit.Spacing.$2x),
-                      ComplianceBuildingLegend(),
+                      const MapControlsItem(priority: 80, child: LayersControl()),
+                      const MapControlsItem(priority: 60, child: DimensionControl()),
+                      if (ref.watch(tifoAvailableProvider)) const MapControlsItem(key: ValueKey('tifo'), priority: 50, child: TifoControl()),
+                      if (ref.watch(tifoBuildingsMapLayerProvider))
+                        const MapControlsItem(
+                          key: ValueKey('tifoLeaderboard'),
+                          priority: 45,
+                          child: TifoLeaderboardControl(),
+                        ),
+                      // Debug-only zoom stack is the first thing to go when space runs out; pinch still zooms.
+                      if (kDebugMode)
+                        const MapControlsItem(
+                          key: ValueKey('zoom'),
+                          priority: 10,
+                          slot: MapControlsSlot.center,
+                          child: ZoomControl(),
+                        ),
+                      const MapControlsItem(priority: 70, slot: MapControlsSlot.bottom, child: CompassControl()),
+                      MapControlsItem(priority: 30, slot: MapControlsSlot.bottom, child: ComplianceBuildingLegend()),
                     ],
                   ),
                 ],

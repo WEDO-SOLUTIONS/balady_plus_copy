@@ -293,6 +293,30 @@ class _RenderToggleSheet extends RenderBox with SlottedContainerRenderObjectMixi
 
   int outsideOpacity = 255;
 
+  bool _outsideExcludedFromSemantics = false;
+
+  /// [outside] is not laid out while it is fully transparent, so it must not
+  /// be visited for semantics either: its subtree may hold stale layout, which
+  /// trips `!renderObject._needsLayout` in the semantics flush. Flipping the
+  /// visited set requires a semantics rebuild.
+  void _syncOutsideSemantics() {
+    final excluded = outsideOpacity == 0;
+    if (excluded != _outsideExcludedFromSemantics) {
+      _outsideExcludedFromSemantics = excluded;
+      markNeedsSemanticsUpdate();
+    }
+  }
+
+  @override
+  void visitChildrenForSemantics(RenderObjectVisitor visitor) {
+    for (final child in children) {
+      if (child == outside && _outsideExcludedFromSemantics) {
+        continue;
+      }
+      visitor(child);
+    }
+  }
+
   _RenderToggleSheet({
     required ToggleSheetController scrollController,
     required Color backgroundColor,
@@ -455,6 +479,7 @@ class _RenderToggleSheet extends RenderBox with SlottedContainerRenderObjectMixi
     if (opacity != null) {
       outsideOpacity = Color.getAlphaFromOpacity(opacity.clamp(0, 1));
     }
+    _syncOutsideSemantics();
 
     innerPadding = paddingDelegate?.getValue(scrollController);
 
