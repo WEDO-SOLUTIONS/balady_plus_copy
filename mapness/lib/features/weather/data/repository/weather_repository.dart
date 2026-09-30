@@ -12,7 +12,9 @@ part 'weather_repository.g.dart';
 
 @riverpod
 class WeatherRepository extends _$WeatherRepository {
-  Future<AllWeatherInfoEntity?> getForecastWeather({
+  /// Requests the forecast and returns the raw `data.result` object, or `null` if the request failed or the
+  /// response has no forecast. Never throws except for a cancelled [cancelToken].
+  Future<Map<String, dynamic>?> fetchForecastPayload({
     required double latitude,
     required double longitude,
     required int numberOfDays,
@@ -20,6 +22,9 @@ class WeatherRepository extends _$WeatherRepository {
   }) async {
     final locale = ref.read(appLanguageProvider).locale;
     final env = await ref.read(dgisEnvironmentProvider.future);
+    // Await the data source instead of reading `state.value`: right after start-up it may still be loading, and the
+    // request would silently turn into "no weather".
+    final dataSource = await future;
 
     final weatherParams = WeatherParams(
       latitude: latitude,
@@ -30,14 +35,13 @@ class WeatherRepository extends _$WeatherRepository {
       proxy: env.proxy,
     );
 
-    final data = await state.value?.getForecastWeatherData(
-      params: weatherParams,
-      cancelToken: cancelToken,
-    );
-
-    final result = mapper(data);
-
-    return result.toDomain();
+    final data = await dataSource.getForecastWeatherData(params: weatherParams, cancelToken: cancelToken);
+    final result = data?['data'];
+    if (result is! Map<String, dynamic>) {
+      return null;
+    }
+    final payload = result['result'];
+    return payload is Map<String, dynamic> ? payload : null;
   }
 
   @override
@@ -53,3 +57,13 @@ class WeatherRepository extends _$WeatherRepository {
 }
 
 final weatherRepository = weatherRepositoryProvider;
+
+/// Parses a payload from [WeatherRepository.fetchForecastPayload]; `null` if it has no current weather.
+AllWeatherInfoEntity? forecastFromPayload(Map<String, dynamic> payload) {
+  try {
+    final forecast = AllWeatherInfoModel.fromJson(payload).toDomain();
+    return forecast.current == null ? null : forecast;
+  } catch (_) {
+    return null;
+  }
+}

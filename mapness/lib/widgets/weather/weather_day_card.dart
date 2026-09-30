@@ -1,176 +1,180 @@
-import 'package:auto_size_text/auto_size_text.dart';
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
-import 'package:balady_uikit/core/extensions/layout_extension.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:intl/intl.dart' hide TextDirection;
 import 'package:mapness/entities/weather/weather_info.dart';
-import 'package:mapness/features/weather/helpers/weather_date.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
-import 'package:mapness/shared/providers/app_language.dart';
-import 'package:mapness/widgets/weather/custom_svg_icon_widget.dart';
 import 'package:mapness/widgets/weather/expansion_tile.dart';
 
-class WeatherDayCard extends ConsumerWidget {
-  final ForecastDay? forecastDay;
-  final bool isExpanded;
-  // ignore: avoid_positional_boolean_parameters
-  final Function(bool expanded) onExpansionChanged;
+/// One forecast day; expands into the hourly forecast.
+class WeatherDayCard extends StatelessWidget {
+  const WeatherDayCard({required this.forecastDay, required this.languageCode, super.key});
 
-  const WeatherDayCard({
-    required this.forecastDay,
-    required this.isExpanded,
-    required this.onExpansionChanged,
-    super.key,
-  });
+  final ForecastDay forecastDay;
+  final String languageCode;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final locale = ref.watch(appLanguageProvider).locale;
+  Widget build(BuildContext context) {
+    final colors = context.colors;
     final styles = context.textStyles;
-    final nowTime = DateTime.now();
-    final isToday = WeatherDateFormatter.isToday(forecastDay?.date ?? '2022-01-01', locale);
+    final date = DateTime.tryParse(forecastDay.date ?? '');
+    final isToday = date != null && DateUtils.isSameDay(date, DateTime.now());
     final dayText = isToday
         ? context.l10n.today
-        : WeatherDateFormatter.getDay(forecastDay?.date ?? '2022-01-01', locale);
-    final conditionIconPath = forecastDay?.day?.condition?.iconPath ?? '';
-    final conditionText = forecastDay?.day?.condition?.text ?? '';
-
-    final maxTemp = '${forecastDay?.day?.maxTempC}º';
-
-    final minTemp = '${forecastDay?.day?.minTempC}º';
+        : date == null
+        ? ''
+        : DateFormat('EEE', languageCode).format(date);
+    final condition = forecastDay.day?.condition;
+    final maxTemp = forecastDay.day?.maxTempC?.round();
+    final minTemp = forecastDay.day?.minTempC?.round();
 
     return CustomExpansionTile(
-      collapsedBackgroundColor: context.colors.backgroundSurface1,
-      backgroundColor: context.colors.backgroundSurface1,
+      collapsedBackgroundColor: colors.backgroundSurface1,
+      backgroundColor: colors.backgroundSurface1,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(RadiusBorder.l)),
       collapsedShape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(RadiusBorder.l)),
-      key: UniqueKey(),
+      clipBehavior: Clip.antiAlias,
       hasIcon: false,
-      onExpansionChanged: onExpansionChanged,
-      initiallyExpanded: isExpanded,
       title: Padding(
         padding: const EdgeInsets.symmetric(vertical: Spacing.$4x),
         child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Expanded(
-              child: Row(
-                children: [
-                  SizedBox(
-                    width: 40,
-                    child: Text(
-                      dayText,
-                      style: styles.captionMediumRegular.copyWith(color: context.colors.foregroundDefault),
-                      maxLines: 1,
-                    ),
-                  ),
-                  const SizedBox(width: Spacing.$2x),
-                  CustomSvgIconWidget(conditionIconPath, iconSize: 24, iconColor: context.colors.accentOnContainer),
-                  const SizedBox(width: Spacing.$1x),
-                  Expanded(
-                    child: AutoSizeText(
-                      conditionText,
-                      style: styles.bodySmallSemiBold.copyWith(color: context.colors.foregroundDefault),
-                      maxLines: 1,
-                    ),
-                  ),
-                ],
+            ConstrainedBox(
+              constraints: const BoxConstraints(minWidth: 48),
+              child: Text(
+                dayText,
+                maxLines: 1,
+                style: styles.captionMediumRegular.copyWith(color: colors.foregroundDefault),
               ),
             ),
+            const SizedBox(width: Spacing.$2x),
+            _ConditionIcon(condition: condition, size: 28),
+            const SizedBox(width: Spacing.$2x),
             Expanded(
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.end,
+              child: Text(
+                condition?.text ?? '',
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: styles.bodySmallSemiBold.copyWith(color: colors.foregroundDefault),
+              ),
+            ),
+            const SizedBox(width: Spacing.$2x),
+            Text.rich(
+              TextSpan(
+                text: maxTemp == null ? '–' : '$maxTemp°',
+                style: styles.bodySmallSemiBold.copyWith(color: colors.foregroundDefault),
                 children: [
-                  Text(
-                    maxTemp,
-                    textDirection: TextDirection.ltr,
-                    style: styles.bodySmallSemiBold.copyWith(color: context.colors.foregroundDefault),
-                    maxLines: 1,
-                  ),
-                  const SizedBox(width: Spacing.$1_5x),
-                  Text(
-                    minTemp,
-                    textDirection: TextDirection.ltr,
-                    style: styles.captionMediumRegular.copyWith(color: context.colors.foregroundDefault),
-                    maxLines: 1,
+                  TextSpan(
+                    text: minTemp == null ? '' : '  $minTemp°',
+                    style: styles.captionMediumRegular.copyWith(color: colors.foregroundSoft),
                   ),
                 ],
               ),
+              maxLines: 1,
+              textDirection: TextDirection.ltr,
             ),
           ],
         ),
       ),
       children: [
-        SizedBox(
-          height: 100,
-          child: ListView(
-            padding: const EdgeInsets.only(right: Spacing.$4x, left: Spacing.$1x),
-            scrollDirection: Axis.horizontal,
-            shrinkWrap: true,
-            children: [
-              ...?forecastDay?.hour
-                  ?.where((hour) {
-                    if (isToday == false) {
-                      return true;
-                    }
-                    return DateTime.parse(hour.time ?? '').hour >= nowTime.hour;
-                  })
-                  .map<Widget>((hour) {
-                    final dateTime = DateTime.parse(hour.time ?? '');
-                    final time = DateFormat('hh:mm').format(dateTime);
-
-                    final formatter = NumberFormat()
-                      ..minimumFractionDigits = 0
-                      ..maximumFractionDigits = 1;
-                    final temperature = '${formatter.format(hour.tempC?.toInt())}ºC';
-
-                    return Padding(
-                      padding: const EdgeInsets.only(left: Spacing.$3x),
-                      child: Column(
-                        children: [
-                          Container(
-                            width: 48,
-                            height: 48,
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(12),
-                              color: context.colors.accentContainerDefault,
-                            ),
-                            child: FittedBox(
-                              fit: BoxFit.scaleDown,
-                              child: SvgPicture.asset(
-                                hour.condition?.iconPath ?? '',
-                                height: 24,
-                                width: 24,
-                                colorFilter: ColorFilter.mode(context.colors.accentOnContainer, BlendMode.srcIn),
-                              ),
-                            ),
-                          ),
-                          Spacing.$0_5x.heightBox,
-                          Center(
-                            child: Text(
-                              time,
-                              style: styles.captionMediumRegular.copyWith(color: context.colors.foregroundSoft),
-                            ),
-                          ),
-                          Spacing.$0_5x.heightBox,
-                          Center(
-                            child: Text(
-                              temperature,
-                              style: styles.bodySmallSemiBold.copyWith(color: context.colors.foregroundDefault),
-                              textDirection: TextDirection.ltr,
-                            ),
-                          ),
-                        ],
-                      ),
-                    );
-                  }),
-            ],
-          ),
+        _HourlyForecast(
+          hours: _hoursToShow(isToday: isToday),
+          languageCode: languageCode,
         ),
       ],
+    );
+  }
+
+  /// Today starts from the current hour; past hours are of no use.
+  List<Hour> _hoursToShow({required bool isToday}) {
+    final hours = forecastDay.hour ?? const <Hour>[];
+    if (!isToday) {
+      return hours;
+    }
+    final currentHour = DateTime.now().hour;
+    return [
+      for (final hour in hours)
+        if ((DateTime.tryParse(hour.time ?? '')?.hour ?? currentHour) >= currentHour) hour,
+    ];
+  }
+}
+
+class _HourlyForecast extends StatelessWidget {
+  const _HourlyForecast({required this.hours, required this.languageCode});
+
+  static const _itemWidth = 56.0;
+
+  final List<Hour> hours;
+  final String languageCode;
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = context.colors;
+    final styles = context.textStyles;
+    // Locale-aware hour ("14", "2 PM", "٢ م") — `hh:mm` dropped AM/PM and read ambiguously.
+    final timeFormat = DateFormat.j(languageCode);
+
+    return SizedBox(
+      height: 104,
+      child: ListView.separated(
+        padding: const EdgeInsets.fromLTRB(Spacing.$4x, 0, Spacing.$4x, Spacing.$3x),
+        scrollDirection: Axis.horizontal,
+        itemCount: hours.length,
+        separatorBuilder: (_, _) => const SizedBox(width: Spacing.$2x),
+        itemBuilder: (context, index) {
+          final hour = hours[index];
+          final time = DateTime.tryParse(hour.time ?? '');
+          final temperature = hour.tempC?.round();
+
+          return SizedBox(
+            width: _itemWidth,
+            child: Column(
+              children: [
+                DecoratedBox(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(RadiusBorder.m),
+                    color: colors.accentContainerDefault,
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.all(Spacing.$2x),
+                    child: _ConditionIcon(condition: hour.condition, size: 32),
+                  ),
+                ),
+                const SizedBox(height: Spacing.$1x),
+                Text(
+                  time == null ? '' : timeFormat.format(time),
+                  maxLines: 1,
+                  style: styles.captionMediumRegular.copyWith(color: colors.foregroundSoft),
+                ),
+                Text(
+                  temperature == null ? '–' : '$temperature°',
+                  maxLines: 1,
+                  textDirection: TextDirection.ltr,
+                  style: styles.bodySmallSemiBold.copyWith(color: colors.foregroundDefault),
+                ),
+              ],
+            ),
+          );
+        },
+      ),
+    );
+  }
+}
+
+/// Weather condition icon in its original colours; nothing if the forecast has no icon for it.
+class _ConditionIcon extends StatelessWidget {
+  const _ConditionIcon({required this.condition, required this.size});
+
+  final Condition? condition;
+  final double size;
+
+  @override
+  Widget build(BuildContext context) {
+    final iconPath = condition?.iconPath ?? '';
+    return SizedBox.square(
+      dimension: size,
+      child: iconPath.isEmpty ? null : SvgPicture.asset(iconPath, width: size, height: size),
     );
   }
 }

@@ -1,63 +1,42 @@
 import 'package:balady_uikit/balady_uikit.dart' show RadiusBorder, Spacing;
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
-import 'package:balady_uikit/core/extensions/layout_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/entities/weather/weather_type_ext.dart';
 import 'package:mapness/features/weather/provider/weather_map_controller.dart';
+import 'package:mapness/shared/ui/map_controls/map_controls_column.dart';
 import 'package:mapness/widgets/landing/compass_control.dart';
 import 'package:mapness/widgets/landing/follow_control.dart';
 import 'package:mapness/widgets/weather/weather_state_icon.dart';
-import 'package:sheetify/sheetify.dart';
 
-class WeatherControls extends ConsumerStatefulWidget {
-  final MultiStateSheetController<ThreeStateSheet> bottomSheetController;
-
-  const WeatherControls({required this.bottomSheetController, super.key});
-
-  @override
-  ConsumerState<WeatherControls> createState() => _WeatherControlsState();
-}
-
-class _WeatherControlsState extends ConsumerState<WeatherControls> with WidgetsBindingObserver {
-  @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      widget.bottomSheetController.addListener(() {
-        setState(() {});
-      });
-    });
-  }
+/// Map controls above the weather sheet.
+///
+/// Independent of the sheet position: the sheet fades them out via its outside opacity and gives them the space
+/// left above it, where [MapControlsColumn] drops what no longer fits instead of overflowing.
+class WeatherControls extends StatelessWidget {
+  const WeatherControls({super.key});
 
   @override
-  Widget build(BuildContext context) => Visibility(
-    visible: widget.bottomSheetController.state != ThreeStateSheet.expanded,
-    child: SafeArea(
-      bottom: false,
-      child: Padding(
-        padding: const EdgeInsets.symmetric(
-          horizontal: Spacing.$3x,
-          vertical: Spacing.$3x,
-        ).copyWith(bottom: Spacing.$4x),
-        child: Row(
-          children: [
-            const Column(children: [Spacer(), Legend()]),
-            const Spacer(),
-            Column(
-              children: [
-                const WeatherStateIcon(),
-                Spacing.$2x.heightBox,
-                const Spacer(),
-                Spacing.$2x.heightBox,
-                const CompassControl(),
-                Spacing.$2x.heightBox,
-                const FollowControl(),
-                Spacing.$2x.heightBox,
-              ],
-            ),
-          ],
-        ),
+  Widget build(BuildContext context) => const SafeArea(
+    bottom: false,
+    child: Padding(
+      padding: EdgeInsets.fromLTRB(Spacing.$3x, Spacing.$3x, Spacing.$3x, Spacing.$4x),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          MapControlsColumn(
+            children: [MapControlsItem(priority: 50, slot: MapControlsSlot.bottom, child: Legend())],
+          ),
+          Spacer(),
+          MapControlsColumn(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+              MapControlsItem(priority: 80, child: WeatherStateIcon()),
+              MapControlsItem(priority: 70, slot: MapControlsSlot.bottom, child: CompassControl()),
+              MapControlsItem(priority: 100, slot: MapControlsSlot.bottom, child: FollowControl()),
+            ],
+          ),
+        ],
       ),
     ),
   );

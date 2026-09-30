@@ -53,14 +53,15 @@ class Condition {
 
   bool get isNight => icon?.contains('night') ?? false;
 
+  /// Bundled SVG for the condition, derived from the provider's PNG icon URL; empty if there is none.
   String get iconPath {
-    if (code != null) {
-      return isNight
-          ? "assets/icons/svg/weather/night/${icon!.split("night/").last.replaceAll(".png", ".svg")}"
-          : "assets/icons/svg/weather/day/${icon!.split("day/").last.replaceAll(".png", ".svg")}";
+    final icon = this.icon;
+    if (code == null || icon == null || icon.isEmpty) {
+      return '';
     }
-
-    return '';
+    return isNight
+        ? "assets/icons/svg/weather/night/${icon.split("night/").last.replaceAll(".png", ".svg")}"
+        : "assets/icons/svg/weather/day/${icon.split("day/").last.replaceAll(".png", ".svg")}";
   }
 }
 

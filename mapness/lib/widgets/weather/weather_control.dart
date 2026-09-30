@@ -28,16 +28,16 @@ class WeatherControl extends ConsumerWidget {
     required VoidCallback onTap,
     AllWeatherInfoEntity? data,
   }) {
-    final tempC2 = data?.current?.tempC;
-    final temp = tempC2 == null ? 30 : tempC2.toInt();
+    // Until the first forecast arrives the chip shows a disabled icon rather than a made-up temperature.
+    final temperature = data?.current?.tempC?.round();
 
     return Semantics(
       label: context.l10n.a11yWeather,
-      button: true,
+      button: temperature != null,
       child: ExcludeSemantics(
         child: uikit.WeatherControl(
-          value: temp,
-          onTap: onTap,
+          value: temperature,
+          onTap: temperature == null ? null : onTap,
         ),
       ),
     );
