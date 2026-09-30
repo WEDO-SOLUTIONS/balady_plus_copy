@@ -5,6 +5,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mapness/_generated/assets/assets.gen.dart';
 import 'package:mapness/features/stream_audio/ui/providers/stream_audio_prov.dart';
 import 'package:mapness/features/stream_audio/ui/stream_audio_colors.dart';
+import 'package:mapness/shared/ui/buttons/map_button.dart';
 
 class RadioContextualButton extends ConsumerStatefulWidget {
   const RadioContextualButton({super.key});
@@ -37,10 +38,7 @@ class _RadioContextualButtonState extends ConsumerState<RadioContextualButton> {
     }
     return Row(
       children: [
-        GestureDetector(
-          onTap: () => _openAudioPlayer(context),
-          child: _buildActionButton(theme),
-        ),
+        _buildActionButton(theme),
         if (provider.isContextualMessageVisible)
           Stack(
             children: [
@@ -52,28 +50,13 @@ class _RadioContextualButtonState extends ConsumerState<RadioContextualButton> {
     );
   }
 
-  Widget _buildActionButton(StreamAudioColors theme) => Container(
-        width: 48,
-        height: 48,
-        padding: const EdgeInsets.all(12),
-        clipBehavior: Clip.antiAlias,
-        decoration: ShapeDecoration(
-          color: theme.playerBackground,
-          shape: RoundedRectangleBorder(
-            side: BorderSide(color: theme.playerBorder),
-            borderRadius: BorderRadius.circular(40),
-          ),
-          shadows: [
-            BoxShadow(
-              color: theme.playerShadow,
-              blurRadius: 16,
-              offset: const Offset(0, 8),
-              spreadRadius: -8,
-            ),
-          ],
-        ),
+  Widget _buildActionButton(StreamAudioColors theme) => MapButton(
+        onTap: () => _openAudioPlayer(context),
+        borderRadius: BorderRadius.circular(MapButton.defaultSize / 2),
         child: SvgPicture.asset(
           Assets.icons.svg.audio.audioStream.keyName,
+          width: 24,
+          height: 24,
           colorFilter: ColorFilter.mode(theme.accent, BlendMode.srcIn),
         ),
       );
