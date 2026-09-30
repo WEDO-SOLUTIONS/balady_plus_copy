@@ -69,15 +69,8 @@ class MakkahBasedDashboardContent extends ConsumerWidget {
 
     return Column(
       children: [
-        const SizedBox(height: Spacing.$3x),
-        StoriesWidget(
-          titleWidget: Padding(
-            padding: const EdgeInsets.only(bottom: Spacing.$3x),
-            child: DashboardTitle(
-              themeMode == SpecialThemeMode.ramadan ? context.l10n.whatIsNewInRamadan : context.l10n.whatIsNewInBalady,
-            ),
-          ),
-        ),
+        // The "What's new" title is the sheet header, see `Dashboard._buildHeader`.
+        const StoriesWidget(),
         const SizedBox(height: 24),
         if (showKaabaCard) ...[
           KaabaVirtualJourneyCard(

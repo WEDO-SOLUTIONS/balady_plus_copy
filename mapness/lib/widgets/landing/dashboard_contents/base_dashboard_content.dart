@@ -55,16 +55,8 @@ class BaseDashboardContent extends ConsumerWidget {
         if (isFoundingday) const FoundingDayBackground(),
         Column(
           children: [
-            Column(
-              children: [
-                StoriesWidget(
-                  titleWidget: Padding(
-                    padding: const EdgeInsets.only(bottom: Spacing.$3x),
-                    child: DashboardTitle(context.l10n.whatIsNewInBalady),
-                  ),
-                ),
-              ],
-            ),
+            // The "What's new" title is the sheet header, see `Dashboard._buildHeader`.
+            const StoriesWidget(),
             const SizedBox(height: Spacing.$6x),
             // 1. Feedback Banner (ساهم معنا)
             SizedBox(

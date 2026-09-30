@@ -9,7 +9,6 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mapness/_features/common/scroll/no_glowing_scroll_behavior.dart';
 import 'package:mapness/_features/common/widgets/dragger.dart';
 import 'package:mapness/entities/city_event/city_event.dart';
-import 'package:mapness/entities/free_roam/free_roam_start_state.dart';
 import 'package:mapness/features/city_event/active_city_event.dart';
 import 'package:mapness/features/founding_day/founding_day.dart';
 import 'package:mapness/features/free_roam/free_roam_starter.dart';
@@ -28,6 +27,7 @@ import 'package:mapness/widgets/landing/dashboard_contents/base_dashboard_conten
 import 'package:mapness/widgets/landing/dashboard_contents/dashboard_theme_config.dart';
 import 'package:mapness/widgets/landing/dashboard_contents/makkah_based_dashboard_content.dart';
 import 'package:mapness/widgets/landing/dashboard_contents/national_day_dashboard_content.dart';
+import 'package:mapness/widgets/landing/dashboard_title.dart';
 import 'package:sheetify/sheetify.dart';
 
 import 'city_event_config.dart';
@@ -47,10 +47,26 @@ class Dashboard extends ConsumerStatefulWidget {
 // Using TickerProviderStateMixin here as SingleTickerProviderStateMixin throws,
 // probably because DashboardHeaderDelegate is recreated
 class _DashboardState extends ConsumerState<Dashboard> with TickerProviderStateMixin, WidgetsBindingObserver {
-  late FreeRoamStartState freeRoamState;
   ThreeStateSheet? _lastMapControlsSheetState;
 
-  StatefulSheetDelegateFunction<double, ThreeStateSheet> _buildOutsideOpacityDelegate(bool isMakkahTheme) {
+  // sheetify compares delegates by identity and re-lays out the sheet whenever one changes, so they are cached per
+  // input instead of being recreated on every build. All inputs are part of the key (nothing is read from widget state
+  // at call time), so a flip of any of them still swaps the delegate and triggers the re-layout that recomputes the
+  // outside opacity.
+  final _outsideOpacityDelegates = <(bool, bool), StatefulSheetDelegateFunction<double, ThreeStateSheet>>{};
+
+  StatefulSheetDelegateFunction<double, ThreeStateSheet> _outsideOpacityDelegate({
+    required bool isMakkahTheme,
+    required bool isGoToNavigatorShown,
+  }) => _outsideOpacityDelegates.putIfAbsent(
+    (isMakkahTheme, isGoToNavigatorShown),
+    () => _buildOutsideOpacityDelegate(isMakkahTheme: isMakkahTheme, isGoToNavigatorShown: isGoToNavigatorShown),
+  );
+
+  StatefulSheetDelegateFunction<double, ThreeStateSheet> _buildOutsideOpacityDelegate({
+    required bool isMakkahTheme,
+    required bool isGoToNavigatorShown,
+  }) {
     const threshold = 0.4;
     final fadeMultiplier = isMakkahTheme ? 15.0 : 9.0;
 
@@ -59,8 +75,6 @@ class _DashboardState extends ConsumerState<Dashboard> with TickerProviderStateM
         final fraction = controller.fraction;
         final interpolation = controller.interpolation;
         final state = controller.state;
-
-        final isGoToNavigatorShown = freeRoamState.canStart && !freeRoamState.isAutorun;
 
         final isSheetCoversThreshold = fraction > threshold;
         final isSheetStateOpen = state == ThreeStateSheet.open;
@@ -92,6 +106,8 @@ class _DashboardState extends ConsumerState<Dashboard> with TickerProviderStateM
 
   final topHeaderOffset = const StatefulSheetDelegateValue<double>(value: -Spacing.$4x);
 
+  static const _extraDraggerHeight = 10.0;
+
   @override
   void initState() {
     super.initState();
@@ -122,7 +138,7 @@ class _DashboardState extends ConsumerState<Dashboard> with TickerProviderStateM
         widget.bottomSheetController.setState(ThreeStateSheet.hidden);
       }
     });
-    freeRoamState = ref.watch(freeRoamStarterProvider);
+    final freeRoamState = ref.watch(freeRoamStarterProvider);
     final activeEvent = ref.watch(activeCityEventProvider);
     final isNationalDay = activeEvent?.isSaudiNationalDay ?? false;
     final specialThemeMode = ref.watch(specialThemeModeProvider);
@@ -130,6 +146,9 @@ class _DashboardState extends ConsumerState<Dashboard> with TickerProviderStateM
     final themeConfig = dashboardThemeConfigFor(specialThemeMode, activeEvent, isDark: isDark);
     final isMakkahTheme =
         specialThemeMode == SpecialThemeMode.mekkahBase || specialThemeMode == SpecialThemeMode.ramadan;
+    final isGoToNavigatorShown = freeRoamState.canStart && !freeRoamState.isAutorun;
+
+    final sheetBackground = themeConfig.backgroundColor ?? context.colors.backgroundSurface2;
 
     final config = CityEventConfig.fromEventType(activeEvent);
     final eventLogo = config?.logoConfig != null && config!.hasDashboardLogo
@@ -163,10 +182,9 @@ class _DashboardState extends ConsumerState<Dashboard> with TickerProviderStateM
                 topHeader: MapHiddenStateControls(widget.bottomSheetController, widget.fireworksController),
                 topHeaderOffset: themeConfig.useTopHeaderOffset ? topHeaderOffset : null,
                 offsetOutsideWidgetByTopheader: themeConfig.offsetOutsideWidgetByTopHeader,
-                backgroundColor: themeConfig.backgroundColor ?? context.colors.backgroundSurface2,
-                dragger: SheetDragger(
-                  backgroundColor: themeConfig.backgroundColor ?? context.colors.backgroundSurface2,
-                ),
+                backgroundColor: sheetBackground,
+                dragger: _buildDragger(sheetBackground),
+                header: _buildHeader(specialThemeMode, sheetBackground),
                 footer: IgnorePointer(
                   child: SizedBox(
                     height: Spacing.$16x + Spacing.$5x,
@@ -191,7 +209,10 @@ class _DashboardState extends ConsumerState<Dashboard> with TickerProviderStateM
                   widget.bottomSheetController,
                   key: const ValueKey('MapDashboardControls'),
                 ),
-                outsideOpacityDelegate: _buildOutsideOpacityDelegate(isMakkahTheme),
+                outsideOpacityDelegate: _outsideOpacityDelegate(
+                  isMakkahTheme: isMakkahTheme,
+                  isGoToNavigatorShown: isGoToNavigatorShown,
+                ),
                 content: [
                   _buildDashboardContent(specialThemeMode, themeConfig),
                 ],
@@ -231,6 +252,40 @@ class _DashboardState extends ConsumerState<Dashboard> with TickerProviderStateM
         ref.read(mapControlsProvider.notifier).update(MapControlsStateIdle());
       }
     });
+  }
+
+  /// Taller than the default dragger so the collapsed sheet is easy to grab from above the bottom bar.
+  Widget _buildDragger(Color background) => ColoredBox(
+    color: background,
+    child: Padding(
+      padding: const EdgeInsets.only(top: _extraDraggerHeight),
+      child: SheetDragger(backgroundColor: background),
+    ),
+  );
+
+  /// The section title lives in the sheet header rather than in the scrollable content: sheetify keeps the header
+  /// visible in the hidden state (`clipByHeader`), so the collapsed sheet peeks with the title like Google Maps does,
+  /// and the peek height follows the real title height (font scale, locale) instead of a hardcoded offset.
+  ///
+  /// The header is painted over the content, hence the opaque background.
+  Widget? _buildHeader(SpecialThemeMode themeMode, Color background) {
+    final title = switch (themeMode) {
+      SpecialThemeMode.ramadan => context.l10n.whatIsNewInRamadan,
+      SpecialThemeMode.mekkahBase || SpecialThemeMode.foundationDay || SpecialThemeMode.base =>
+        context.l10n.whatIsNewInBalady,
+      SpecialThemeMode.nationalDay => null,
+    };
+    if (title == null) {
+      return null;
+    }
+
+    return ColoredBox(
+      color: background,
+      child: Padding(
+        padding: const EdgeInsets.only(top: Spacing.$1x, bottom: Spacing.$3x),
+        child: DashboardTitle(title),
+      ),
+    );
   }
 
   Widget _buildDashboardContent(SpecialThemeMode themeMode, DashboardThemeConfig themeConfig) {
