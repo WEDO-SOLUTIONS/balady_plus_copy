@@ -47,6 +47,16 @@ class AppConfigLoader {
 
   static Completer<FirebaseRemoteConfig?>? _config;
 
+  /// Network timeout of a single Remote Config fetch (Firebase's own default).
+  static const _fetchTimeout = Duration(seconds: 60);
+
+  /// How long start-up waits for the fetch when a config fetched on an earlier launch is already active.
+  static const _startupFetchWait = Duration(seconds: 3);
+
+  /// How long start-up waits for the fetch on the first launch: nothing is cached yet, and without the fetched
+  /// vendor config the map SDK starts from the bundled asset.
+  static const _firstLaunchFetchWait = Duration(seconds: 10);
+
   static Future<void> init(EnvType envType) async {
     if (_config != null) {
       await _config!.future;
@@ -64,7 +74,7 @@ class AppConfigLoader {
       /// and minimumFetchInterval is the minimum time between fetch requests
       await remoteConfig.setConfigSettings(
         RemoteConfigSettings(
-          fetchTimeout: const Duration(hours: 1),
+          fetchTimeout: _fetchTimeout,
           minimumFetchInterval: const Duration(minutes: 2),
         ),
       );
@@ -77,9 +87,9 @@ class AppConfigLoader {
         RemoteConfigConstants.baseMapSwitcherEnabled: false,
       });
 
-      /// Ensure Remote Config is initialized and activate the config values
+      /// Ensure Remote Config is initialized: this activates the values fetched on an earlier launch.
       await remoteConfig.ensureInitialized();
-      await remoteConfig.fetchAndActivate();
+      await _fetchAndActivateForStartup(remoteConfig, envType);
 
       remoteConfig.onConfigUpdated.listen(
         (event) async {
@@ -97,6 +107,34 @@ class AppConfigLoader {
     }
 
     await _saveAppConfig(await _config!.future, envType);
+  }
+
+  /// Fetches and activates the latest config, but does not hold the start-up (which waits for this before the first
+  /// frame) on a slow network for longer than needed: once a config from an earlier launch is active, the app starts
+  /// with it after [_startupFetchWait] and the fetch completes in the background, saving the fresh config for the next
+  /// launch. On a normal network the fetch finishes well within the wait and nothing changes.
+  static Future<void> _fetchAndActivateForStartup(FirebaseRemoteConfig remoteConfig, EnvType envType) async {
+    // `lastFetchTime` comes from the native SDK and is 0 until the first successful fetch on this install.
+    final hasFetchedBefore = remoteConfig.lastFetchTime.millisecondsSinceEpoch > 0;
+    final fetch = remoteConfig.fetchAndActivate();
+    try {
+      await fetch.timeout(hasFetchedBefore ? _startupFetchWait : _firstLaunchFetchWait);
+    } on TimeoutException {
+      logger.log(
+        'Remote Config fetch is slow; starting with ${hasFetchedBefore ? 'the previous' : 'the bundled'} config',
+        logLevel: MapnessLogLevel.info,
+      );
+      unawaited(
+        fetch
+            .then((_) => _saveAppConfig(remoteConfig, envType))
+            .catchError(
+              (Object e, StackTrace st) => logger.log(
+                'Background Remote Config fetch failed: $e $st',
+                logLevel: MapnessLogLevel.error,
+              ),
+            ),
+      );
+    }
   }
 
   static Future<String> getAppConfig() async {

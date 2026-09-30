@@ -4,9 +4,8 @@ import 'package:balady_plus/app/events_logs/balady_logs.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:timezone/data/latest_all.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
-import 'package:flutter_timezone/flutter_timezone.dart';
+import 'time_zones.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter_insider/flutter_insider.dart';
 import 'navigation_services.dart';
@@ -40,16 +39,12 @@ class NotificationService {
   static final StreamController<String?> selectNotificationStream =
       StreamController<String?>.broadcast();
 
-  static Future<void> init({bool initScheduled = false}) async {
+  static Future<void> init() async {
     const android = AndroidInitializationSettings("@mipmap/ic_launcher");
     const ios = DarwinInitializationSettings();
     const settings = InitializationSettings(android: android, iOS: ios);
 
-    if (initScheduled) {
-      tz.initializeTimeZones();
-      final currentTimeZone = await FlutterTimezone.getLocalTimezone();
-      tz.setLocalLocation(tz.getLocation(currentTimeZone.identifier));
-    }
+    // The time-zone database is loaded lazily, right before the first scheduled notification (see [TimeZones]).
 
     await _notifications.initialize(
       settings,
@@ -88,6 +83,7 @@ class NotificationService {
       String? body,
       String? payload,
       required DateTime scheduledDate}) async {
+    await TimeZones.ensureInitialized();
     if (scheduledDate.isAfter(tz.TZDateTime.now(tz.local))) {
       _notifications.zonedSchedule(
         id,

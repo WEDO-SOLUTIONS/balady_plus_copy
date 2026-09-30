@@ -48,7 +48,8 @@ abstract class AppEnv {
           : AdjustEnvironment.sandbox,
     );
 
-    config.logLevel = AdjustLogLevel.verbose;
+    // Verbose Adjust logging only outside production.
+    config.logLevel = type == EnvType.prod ? AdjustLogLevel.warn : AdjustLogLevel.verbose;
 
     config.fbAppId = "1668346683733303";
     if (Platform.isIOS) {
@@ -116,7 +117,7 @@ abstract class AppEnv {
     HijriCalendar.setLocal(hijriLocale);
     configLoading();
     await Initializer.init();
-    NotificationService.init(initScheduled: true);
+    NotificationService.init();
 
     FlutterHmsGmsAvailability.isGmsAvailable.then((isAvailable) async {
       if (isAvailable) {

@@ -1627,13 +1627,11 @@ Future<void> setupMapness(EnvType envType) async {
     content: vendorConfigLocal,
   );
 
+  // Verbose SDK logging costs CPU on every map frame; production keeps warnings and errors only, lower environments
+  // keep everything for QA diagnostics.
+  final sdkLogLevel = envType == EnvType.prod ? LogLevelMessage.warning : LogLevelMessage.verbose;
   await initialiseDGis(
-    logOptions: LogOptionsMessage(
-      // systemLevel: LogLevelMessage.fatal,
-      // customLevel: LogLevelMessage.fatal,
-      systemLevel: LogLevelMessage.verbose,
-      customLevel: LogLevelMessage.verbose,
-    ),
+    logOptions: LogOptionsMessage(systemLevel: sdkLogLevel, customLevel: sdkLogLevel),
     configContent: vendorConfigContentMessage,
   );
 
