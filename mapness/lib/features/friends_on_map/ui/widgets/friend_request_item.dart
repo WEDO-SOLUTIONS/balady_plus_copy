@@ -23,73 +23,88 @@ class FriendRequestItem extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) => Padding(
-    padding: const EdgeInsets.symmetric(vertical: Spacing.$2x, horizontal: Spacing.$4x),
-    child: Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Row(
-          children: [
-            FriendMarkerAvatar(friendId: request.id),
-            const SizedBox(width: Spacing.$3x),
-            Expanded(
-              child: Text(
-                request.displayName,
-                overflow: TextOverflow.ellipsis,
-                style: context.textStyles.bodyLargeMedium.copyWith(color: context.colors.foregroundDefault),
-              ),
-            ),
-          ],
+  Widget build(BuildContext context) {
+    final isIncoming = request.direction == FriendRequestDirection.incoming;
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: Spacing.$1_5x, horizontal: Spacing.$4x),
+      child: DecoratedBox(
+        decoration: BoxDecoration(
+          color: context.colors.backgroundSurface1,
+          borderRadius: BorderRadius.circular(RadiusBorder.xl),
         ),
-        const SizedBox(height: Spacing.$4x),
-        // design-lab: "Increase the button width so the full name fits
-        // comfortably" — buttons get their own full-width row instead of
-        // squeezing in next to the name.
-        if (request.direction == FriendRequestDirection.incoming)
-          Row(
+        child: Padding(
+          padding: const EdgeInsets.all(Spacing.$3x),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Expanded(
-                child: AppButton(
-                  buttonColorScheme: ButtonColorScheme.accentSecondary,
-                  buttonType: ButtonType.secondary,
-                  size: ButtonSize.large,
-                  primaryLabel: context.l10n.friendRequestDeclineCta,
-                  onTap: onDecline,
-                ),
+              Row(
+                children: [
+                  FriendMarkerAvatar(friendId: request.id),
+                  const SizedBox(width: Spacing.$3x),
+                  Expanded(
+                    child: Text(
+                      request.displayName,
+                      overflow: TextOverflow.ellipsis,
+                      style: context.textStyles.bodyLargeMedium.copyWith(color: context.colors.foregroundDefault),
+                    ),
+                  ),
+                  if (!isIncoming) ...[
+                    const SizedBox(width: Spacing.$2x),
+                    AppButton(
+                      buttonColorScheme: ButtonColorScheme.accentSecondary,
+                      buttonType: ButtonType.secondary,
+                      primaryLabel: context.l10n.friendRequestCancelCta,
+                      onTap: onCancel,
+                    ),
+                  ],
+                ],
               ),
-              const SizedBox(width: Spacing.$2x),
-              Expanded(
-                child: AppButton(
-                  buttonColorScheme: ButtonColorScheme.accentSecondary,
-                  size: ButtonSize.large,
-                  primaryLabel: context.l10n.friendRequestAcceptCta,
-                  onTap: onAccept,
+              if (isIncoming) ...[
+                const SizedBox(height: Spacing.$3x),
+                Row(
+                  children: [
+                    Expanded(
+                      child: AppButton(
+                        buttonColorScheme: ButtonColorScheme.accentSecondary,
+                        buttonType: ButtonType.secondary,
+                        size: ButtonSize.large,
+                        primaryLabel: context.l10n.friendRequestDeclineCta,
+                        onTap: onDecline,
+                      ),
+                    ),
+                    const SizedBox(width: Spacing.$2x),
+                    Expanded(
+                      child: AppButton(
+                        buttonColorScheme: ButtonColorScheme.accentSecondary,
+                        size: ButtonSize.large,
+                        primaryLabel: context.l10n.friendRequestAcceptCta,
+                        onTap: onAccept,
+                      ),
+                    ),
+                  ],
                 ),
-              ),
-              const SizedBox(width: Spacing.$2x),
-              Expanded(
-                child: AppButton(
-                  buttonColorScheme: ButtonColorScheme.error,
-                  buttonType: ButtonType.secondary,
-                  size: ButtonSize.large,
-                  primaryLabel: context.l10n.friendRequestBlockCta,
-                  onTap: onBlock,
+                // Not in the dark-theme design, kept so R-44 (block straight
+                // from a request) stays reachable — see friends_on_map/AGENTS.md.
+                const SizedBox(height: Spacing.$2x),
+                Center(
+                  child: GestureDetector(
+                    onTap: onBlock,
+                    behavior: HitTestBehavior.opaque,
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(vertical: Spacing.$1x, horizontal: Spacing.$2x),
+                      child: Text(
+                        context.l10n.friendRequestBlockCta,
+                        style: context.textStyles.bodySmallMedium.copyWith(color: context.colors.errorDefault),
+                      ),
+                    ),
+                  ),
                 ),
-              ),
+              ],
             ],
-          )
-        else
-          SizedBox(
-            width: double.infinity,
-            child: AppButton(
-              buttonColorScheme: ButtonColorScheme.accentSecondary,
-              buttonType: ButtonType.secondary,
-              size: ButtonSize.large,
-              primaryLabel: context.l10n.friendRequestCancelCta,
-              onTap: onCancel,
-            ),
           ),
-      ],
-    ),
-  );
+        ),
+      ),
+    );
+  }
 }

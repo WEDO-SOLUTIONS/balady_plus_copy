@@ -19,22 +19,21 @@ class SharedListMemberRow extends StatelessWidget {
         FriendAvatar(displayName: member.displayName, profilePictureUrl: member.profilePictureUrl),
         const SizedBox(width: Spacing.$3x),
         Expanded(
-          child: Row(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
             children: [
-              Flexible(
-                child: Text(
-                  member.displayName,
-                  overflow: TextOverflow.ellipsis,
-                  style: context.textStyles.bodyLargeMedium.copyWith(color: context.colors.foregroundDefault),
-                ),
+              Text(
+                member.displayName,
+                overflow: TextOverflow.ellipsis,
+                style: context.textStyles.bodyLargeMedium.copyWith(color: context.colors.foregroundDefault),
               ),
-              if (member.isOwner) ...[
-                const SizedBox(width: Spacing.$2x),
-                Text(
-                  context.l10n.sharedListDetailOwnerBadge,
-                  style: context.textStyles.captionLargeRegular.copyWith(color: context.colors.foregroundMuted),
-                ),
-              ],
+              Text(
+                member.isOwner
+                    ? context.l10n.sharedListDetailOwnerBadge
+                    : context.l10n.sharedListDetailParticipantBadge,
+                style: context.textStyles.captionLargeRegular.copyWith(color: context.colors.foregroundMuted),
+              ),
             ],
           ),
         ),

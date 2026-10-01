@@ -48,18 +48,12 @@ void showMeetupSendConfirmSheet(
         );
       },
       contentBuilder: (context) => [
-        Text(
-          l10n.meetupSendConfirmBody(recipientsSummary),
-          style: context.textStyles.bodyLargeRegular.copyWith(color: context.colors.foregroundMuted),
-        ),
-        if (label != null)
-          Padding(
-            padding: const EdgeInsets.only(top: Spacing.$2x),
-            child: Text(
-              label,
-              style: context.textStyles.bodySmallRegular.copyWith(color: context.colors.foregroundMuted),
-            ),
+        ContentRow(
+          text: ContentRowTextOptions(
+            title: l10n.meetupSendConfirmSharePlaceWith(label ?? l10n.meetupSendConfirmThisPlace),
+            subtitle: recipientsSummary,
           ),
+        ),
       ],
     ),
   );

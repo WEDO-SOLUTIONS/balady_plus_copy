@@ -73,7 +73,7 @@ class SharedListDetailPage extends ConsumerWidget {
       if (detail.isOwner)
         ContentRow(
           onTap: () => _inviteMembers(context, ref, detail),
-          leading: Icon(GeneralIcons.plusCircle, color: context.colors.foregroundDefault),
+          leading: Icon(GeneralIcons.plusCircleFilled, color: context.colors.accentDefault),
           text: ContentRowTextOptions(title: context.l10n.sharedListDetailInviteCta),
         ),
       ...detail.members.map(

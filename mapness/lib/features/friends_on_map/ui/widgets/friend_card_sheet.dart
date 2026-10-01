@@ -5,15 +5,14 @@ import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mapness/_features/common/widgets/dragger.dart';
 import 'package:mapness/app/auto_route/app_routes.dart';
-import 'package:mapness/features/friends_on_map/friend_elapsed_time.dart';
 import 'package:mapness/features/friends_on_map/models/friend.dart';
 import 'package:mapness/features/friends_on_map/providers/friends_controller.dart';
 import 'package:mapness/features/friends_on_map/ui/friends_on_map_error_dialog.dart';
 import 'package:mapness/features/friends_on_map/ui/meetup_share_flow.dart';
-import 'package:mapness/features/friends_on_map/ui/widgets/friend_avatar.dart';
+import 'package:mapness/features/friends_on_map/ui/widgets/friend_marker_avatar.dart';
 import 'package:mapness/features/friends_on_map/ui/widgets/friend_confirm_sheet.dart';
-import 'package:mapness/features/share_eta/ui/eta_share_control_sheet/eta_share_sheet.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/lib/common_functions.dart';
 import 'package:mapness/shared/providers/location.dart';
@@ -21,10 +20,9 @@ import 'package:mapness/shared/providers/map/camera_position.dart';
 import 'package:mapness/widgets/routing/lib/duration_distance_fmt.dart';
 
 /// S-15 (R-52/R-53/R-54/R-55, plus R-56's remove/block rows): opens on a
-/// friend marker tap. Reuses [EtaShareSheet] as a plain presentational
-/// shell (drag handle, title, close button, content rows, optional confirm
-/// button) — it carries no eta-specific logic despite living in
-/// `share_eta/`.
+/// friend marker tap. Laid out per the dark-theme design: drag handle, one
+/// card (avatar + name + distance, then the action rows), "See on map" CTA
+/// — no title/close header, so this no longer reuses `EtaShareSheet`.
 bool _isFriendCardSheetOpen = false;
 
 void showFriendCardSheet(BuildContext context, Friend friend) {
@@ -59,85 +57,121 @@ class FriendCardSheet extends ConsumerWidget {
         ? CommonFunctions.distance(ownPosition.latitude, ownPosition.longitude, friend.latitude!, friend.longitude!) *
               1000
         : null;
-    final elapsedLabel = friend.lastPositionAt == null
-        ? null
-        : friendElapsedTimeLabel(context.l10n, friend.lastPositionAt!);
     final cameraPosition = ref.watch(cameraPositionProvider);
 
-    return EtaShareSheet(
-      title: friend.displayName,
-      confirmBtnTitle: hasPosition ? context.l10n.friendCardCenterOnMapCta : null,
-      onConfirmTap: hasPosition
-          ? () {
-              Navigator.of(context).pop();
-              ref
-                  .read(cameraPositionProvider.notifier)
-                  .animateTo(
-                    CameraPositionMessage(
-                      point: GeoPointMessage(latitude: friend.latitude!, longitude: friend.longitude!),
-                      zoom: cameraPosition?.zoom ?? 17,
-                      tilt: cameraPosition?.tilt ?? 0,
-                      bearing: cameraPosition?.bearing ?? 0,
-                    ),
-                  );
-            }
-          : null,
-      contentBuilder: (context) => [
-        Row(
+    return Container(
+      decoration: BoxDecoration(
+        color: context.colors.backgroundSurface4,
+        borderRadius: const BorderRadius.only(
+          topLeft: Radius.circular(RadiusBorder.xl),
+          topRight: Radius.circular(RadiusBorder.xl),
+        ),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(Spacing.$4x).copyWith(top: 0),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
           children: [
-            FriendAvatar(displayName: friend.displayName, profilePictureUrl: friend.profilePictureUrl, radius: 32),
-            const SizedBox(width: Spacing.$3x),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  if (elapsedLabel != null)
-                    Text(
-                      elapsedLabel,
-                      style: context.textStyles.bodySmallRegular.copyWith(color: context.colors.foregroundMuted),
-                    ),
-                  if (distanceMeters != null)
-                    Text(
-                      distanceMeters.formatDistance(context.l10n),
-                      style: context.textStyles.bodySmallRegular.copyWith(color: context.colors.foregroundMuted),
-                    )
-                  else if (!hasPosition)
-                    // R-54: not currently reachable via marker tap (a
-                    // marker only ever exists for a friend with a known
-                    // position — see friends_on_map/AGENTS.md), kept for
-                    // correctness and for a future non-marker entry point.
-                    Text(
-                      context.l10n.friendCardPositionUnavailable,
-                      style: context.textStyles.bodySmallRegular.copyWith(color: context.colors.foregroundMuted),
-                    ),
-                ],
-              ),
+            const Center(child: SheetDragger()),
+            ContentWrapper(
+              color: context.colors.backgroundSurface1,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: Spacing.$3x, vertical: Spacing.$2x),
+                  child: Row(
+                    children: [
+                      FriendMarkerAvatar(friendId: friend.id, size: 40),
+                      const SizedBox(width: Spacing.$3x),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Text(
+                              friend.displayName,
+                              overflow: TextOverflow.ellipsis,
+                              style: context.textStyles.bodyLargeMedium.copyWith(
+                                color: context.colors.foregroundDefault,
+                              ),
+                            ),
+                            if (distanceMeters != null)
+                              Text(
+                                distanceMeters.formatDistance(context.l10n),
+                                style: context.textStyles.bodySmallRegular.copyWith(
+                                  color: context.colors.foregroundSoft,
+                                ),
+                              )
+                            else if (!hasPosition)
+                              // R-54: not currently reachable via marker tap (a
+                              // marker only ever exists for a friend with a known
+                              // position — see friends_on_map/AGENTS.md), kept for
+                              // correctness and for a future non-marker entry point.
+                              Text(
+                                context.l10n.friendCardPositionUnavailable,
+                                style: context.textStyles.bodySmallRegular.copyWith(
+                                  color: context.colors.foregroundSoft,
+                                ),
+                              ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                ContentRow(
+                  isDividerEnabled: true,
+                  onTap: () => _shareMeetup(context),
+                  leading: Icon(SystemIcons.share, color: context.colors.foregroundMuted),
+                  text: ContentRowTextOptions(title: context.l10n.friendCardShareMeetupCta),
+                ),
+                ContentRow(
+                  isDividerEnabled: true,
+                  onTap: () => _confirmRemove(context),
+                  leading: Icon(GeneralIcons.trash, color: context.colors.errorDefault),
+                  text: ContentRowTextOptions(
+                    title: context.l10n.friendCardRemoveCta,
+                    titleOptions: ContentRowTextOption(baseColor: context.colors.errorDefault),
+                  ),
+                ),
+                ContentRow(
+                  onTap: () => _confirmBlock(context),
+                  leading: Icon(GeneralIcons.block, color: context.colors.errorDefault),
+                  text: ContentRowTextOptions(
+                    title: context.l10n.friendCardBlockCta,
+                    titleOptions: ContentRowTextOption(baseColor: context.colors.errorDefault),
+                  ),
+                ),
+              ],
             ),
+            if (hasPosition)
+              Padding(
+                padding: const EdgeInsets.only(top: Spacing.$4x),
+                child: SizedBox(
+                  width: double.infinity,
+                  child: AppButton(
+                    buttonColorScheme: ButtonColorScheme.accentSecondary,
+                    size: ButtonSize.large,
+                    primaryLabel: context.l10n.friendCardCenterOnMapCta,
+                    onTap: () {
+                      Navigator.of(context).pop();
+                      ref
+                          .read(cameraPositionProvider.notifier)
+                          .animateTo(
+                            CameraPositionMessage(
+                              point: GeoPointMessage(latitude: friend.latitude!, longitude: friend.longitude!),
+                              zoom: cameraPosition?.zoom ?? 17,
+                              tilt: cameraPosition?.tilt ?? 0,
+                              bearing: cameraPosition?.bearing ?? 0,
+                            ),
+                          );
+                    },
+                  ),
+                ),
+              ),
+            const SizedBox(height: Spacing.$8x),
           ],
         ),
-        ContentRow(
-          onTap: () => _shareMeetup(context),
-          leading: Icon(GeneralIcons.pin, color: context.colors.foregroundDefault),
-          text: ContentRowTextOptions(title: context.l10n.friendCardShareMeetupCta),
-        ),
-        ContentRow(
-          onTap: () => _confirmRemove(context),
-          leading: Icon(GeneralIcons.trash, color: context.colors.errorDefault),
-          text: ContentRowTextOptions(
-            title: context.l10n.friendCardRemoveCta,
-            titleOptions: ContentRowTextOption(baseColor: context.colors.errorDefault),
-          ),
-        ),
-        ContentRow(
-          onTap: () => _confirmBlock(context),
-          leading: Icon(GeneralIcons.block, color: context.colors.errorDefault),
-          text: ContentRowTextOptions(
-            title: context.l10n.friendCardBlockCta,
-            titleOptions: ContentRowTextOption(baseColor: context.colors.errorDefault),
-          ),
-        ),
-      ],
+      ),
     );
   }
 

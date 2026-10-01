@@ -10,15 +10,13 @@ import 'package:mapness/features/friends_on_map/ui/widgets/friend_marker_avatar.
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 
-/// R-26: own picture + display name + QR encoding the invite link, on a
-/// card. R-27 (reset) and R-28 (share) live here as the card's actions.
+/// R-26: own picture + QR encoding the invite link, on a card. R-27 (reset) and R-28 (share) live here as the card's actions.
 class InviteCard extends ConsumerWidget {
   const InviteCard({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final linkAsync = ref.watch(friendsOnMapInviteLinkProvider);
-    final userInfo = CommonProperties.userInfo;
     // Same themed-illustration avatar friends see for each other (not a real
     // photo) — this card is reachable before login, when there's no real
     // profile photo/name to show at all. Keyed by this device's *account id*
@@ -30,29 +28,20 @@ class InviteCard extends ConsumerWidget {
     // hash to a different illustration than the one friends actually see).
     final accountIdAsync = ref.watch(friendsOnMapAccountIdProvider);
 
-    return Container(
-      padding: const EdgeInsets.all(Spacing.$4x),
-      decoration: BoxDecoration(
-        color: context.colors.backgroundSurface1,
-        borderRadius: BorderRadius.circular(RadiusBorder.l),
-      ),
+    return ConstrainedBox(
+      constraints: const BoxConstraints(maxWidth: 280),
       child: Column(
         children: [
           accountIdAsync.when(
-            data: (accountId) => FriendMarkerAvatar(friendId: accountId, size: 64),
+            data: (accountId) => FriendMarkerAvatar(friendId: accountId, size: 40),
             loading: () => const SizedBox(
-              width: 64,
-              height: 64,
+              width: 40,
+              height: 40,
               child: Center(child: CircularProgressIndicator()),
             ),
-            error: (_, _) => const SizedBox(width: 64, height: 64),
+            error: (_, _) => const SizedBox(width: 40, height: 40),
           ),
           const SizedBox(height: Spacing.$2x),
-          Text(
-            userInfo?.getFirstAndLastName() ?? '',
-            style: context.textStyles.bodyLargeSemiBold.copyWith(color: context.colors.foregroundDefault),
-          ),
-          const SizedBox(height: Spacing.$4x),
           linkAsync.when(
             data: (link) => _LinkContent(link: link),
             loading: () => const Padding(
@@ -78,35 +67,55 @@ class _LinkContent extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) => Column(
     children: [
-      Text(
-        context.l10n.addFriendScanQrCaption,
-        textAlign: TextAlign.center,
-        style: context.textStyles.bodySmallRegular.copyWith(color: context.colors.foregroundSoft),
-      ),
-      const SizedBox(height: Spacing.$3x),
-      QrImageView(data: link, size: 180),
-      const SizedBox(height: Spacing.$3x),
-      Text(
-        link,
-        textAlign: TextAlign.center,
-        style: context.textStyles.captionLargeRegular.copyWith(color: context.colors.foregroundSoft),
+      Container(
+        width: double.infinity,
+        padding: const EdgeInsets.all(Spacing.$4x),
+        decoration: BoxDecoration(
+          color: context.colors.backgroundSurface1,
+          borderRadius: BorderRadius.circular(RadiusBorder.l),
+        ),
+        child: Column(
+          children: [
+            // Kept dark-on-white (not the design's inverted white-on-dark
+            // modules): inverted QR codes aren't reliably decoded by every
+            // scanner, and this is the one thing here that has to scan.
+            Container(
+              padding: const EdgeInsets.all(Spacing.$2x),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(RadiusBorder.m),
+              ),
+              child: QrImageView(data: link, size: 180),
+            ),
+            const SizedBox(height: Spacing.$3x),
+            Text(
+              context.l10n.addFriendScanQrCaption,
+              textAlign: TextAlign.center,
+              style: context.textStyles.bodySmallRegular.copyWith(color: context.colors.foregroundSoft),
+            ),
+          ],
+        ),
       ),
       const SizedBox(height: Spacing.$4x),
-      AppButton(
-        buttonColorScheme: ButtonColorScheme.accentSecondary,
-        size: ButtonSize.large,
-        innerPadding: const EdgeInsets.symmetric(horizontal: Spacing.$16x),
-        primaryLabel: context.l10n.addFriendShareCta,
-        onTap: () => safeShareText(link, context: context),
+      SizedBox(
+        width: double.infinity,
+        child: AppButton(
+          buttonColorScheme: ButtonColorScheme.accentSecondary,
+          size: ButtonSize.large,
+          primaryLabel: context.l10n.addFriendShareCta,
+          onTap: () => safeShareText(link, context: context),
+        ),
       ),
       const SizedBox(height: Spacing.$2x),
-      AppButton(
-        buttonColorScheme: ButtonColorScheme.accentSecondary,
-        buttonType: ButtonType.secondary,
-        size: ButtonSize.large,
-        innerPadding: const EdgeInsets.symmetric(horizontal: Spacing.$16x),
-        primaryLabel: context.l10n.addFriendResetCta,
-        onTap: () => runFriendsOnMapAction(context, () => ref.read(friendsOnMapInviteLinkProvider.notifier).reset()),
+      SizedBox(
+        width: double.infinity,
+        child: AppButton(
+          buttonColorScheme: ButtonColorScheme.accentSecondary,
+          buttonType: ButtonType.secondary,
+          size: ButtonSize.large,
+          primaryLabel: context.l10n.addFriendResetCta,
+          onTap: () => runFriendsOnMapAction(context, () => ref.read(friendsOnMapInviteLinkProvider.notifier).reset()),
+        ),
       ),
     ],
   );

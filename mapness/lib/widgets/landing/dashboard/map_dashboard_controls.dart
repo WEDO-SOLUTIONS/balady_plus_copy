@@ -13,6 +13,7 @@ import 'package:mapness/widgets/landing/complience_building_legend.dart';
 import 'package:mapness/widgets/landing/dashboard_header.dart';
 import 'package:mapness/widgets/landing/eta_sharing_control.dart';
 import 'package:mapness/widgets/landing/follow_control.dart';
+import 'package:mapness/widgets/landing/friends_on_map_control.dart';
 import 'package:mapness/widgets/landing/indoor_control.dart';
 import 'package:mapness/widgets/landing/layers_control.dart';
 import 'package:mapness/widgets/landing/tifo_control.dart';
@@ -87,6 +88,8 @@ class MapDashboardControls extends ConsumerWidget {
                       const LayersControl(),
                       const SizedBox(height: uikit.Spacing.$2x),
                       const DimensionControl(),
+                      const SizedBox(height: uikit.Spacing.$2x),
+                      const FriendsOnMapControl(),
                       if (ref.watch(tifoAvailableProvider)) ...[
                         const SizedBox(height: uikit.Spacing.$2x),
                         const TifoControl(),

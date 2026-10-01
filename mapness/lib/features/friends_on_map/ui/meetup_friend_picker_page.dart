@@ -4,6 +4,7 @@ import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/_features/common/providers/ui_direction.dart';
+import 'package:mapness/features/friends_on_map/friend_elapsed_time.dart';
 import 'package:mapness/features/friends_on_map/models/friend.dart';
 import 'package:mapness/features/friends_on_map/providers/friends_list.dart';
 import 'package:mapness/features/friends_on_map/ui/widgets/friend_marker_avatar.dart';
@@ -54,6 +55,7 @@ class _MeetupFriendPickerPageState extends ConsumerState<MeetupFriendPickerPage>
     children: [
       Expanded(
         child: ListView.builder(
+          padding: const EdgeInsets.only(top: Spacing.$2x),
           itemCount: friends.length,
           itemBuilder: (context, index) {
             final friend = friends[index];
@@ -113,24 +115,27 @@ class _FriendPickerRow extends StatelessWidget {
   const _FriendPickerRow({required this.friend, required this.selected, required this.onChanged});
 
   @override
-  Widget build(BuildContext context) => InkWell(
-    onTap: () => onChanged(!selected),
-    child: Padding(
-      padding: const EdgeInsets.symmetric(vertical: Spacing.$2x, horizontal: Spacing.$4x),
-      child: Row(
+  Widget build(BuildContext context) {
+    final lastPositionAt = friend.lastPositionAt;
+
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(Spacing.$4x, 0, Spacing.$4x, Spacing.$3x),
+      child: ContentWrapper(
+        color: context.colors.backgroundSurface1,
         children: [
-          FriendMarkerAvatar(friendId: friend.id),
-          const SizedBox(width: Spacing.$3x),
-          Expanded(
-            child: Text(
-              friend.displayName,
-              overflow: TextOverflow.ellipsis,
-              style: context.textStyles.bodyLargeMedium.copyWith(color: context.colors.foregroundDefault),
+          ContentRow(
+            onTap: () => onChanged(!selected),
+            leading: FriendMarkerAvatar(friendId: friend.id),
+            text: ContentRowTextOptions(
+              title: friend.displayName,
+              subtitle: lastPositionAt == null
+                  ? null
+                  : context.l10n.friendLastSeen(friendElapsedTimeLabel(context.l10n, lastPositionAt)),
             ),
+            trailing: ContentRowToggleTrailingOptions(value: selected, onChanged: onChanged),
           ),
-          Checkbox(value: selected, onChanged: (value) => onChanged(value ?? false)),
         ],
       ),
-    ),
-  );
+    );
+  }
 }

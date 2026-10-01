@@ -2,10 +2,12 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:dgis_map/library.dart';
 import 'package:mapness/features/friends_on_map/data/friends_on_map_api_config.dart';
 import 'package:mapness/features/friends_on_map/data/friends_on_map_ipv4_http_client.dart';
 import 'package:mapness/features/friends_on_map/models/share_mode.dart';
 import 'package:mapness/features/friends_on_map/models/share_watch_state.dart';
+import 'package:mapness/shared/providers/map/camera_position.dart';
 import 'package:mapness/shared/utils/logger/logger.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -34,6 +36,10 @@ class ShareWatcher extends _$ShareWatcher {
   StreamSubscription<dynamic>? _subscription;
   Timer? _staleCheckTimer;
   DateTime? _lastFrameAt;
+  // Camera is centered on the sharer only once per watch session (first
+  // position) — re-centering on every ~8s frame would fight the user's own
+  // panning.
+  bool _didCenterCamera = false;
 
   @override
   ShareWatchState build() {
@@ -51,6 +57,7 @@ class ShareWatcher extends _$ShareWatcher {
     // `map_page.dart`'s own expiry-sheet listener (same gate), leaving a
     // failed watch indistinguishable from "still connecting" with nothing
     // in the logs either (see the onError/onDone logging added below).
+    _didCenterCamera = false;
     state = ShareWatchState(mode: mode);
     try {
       final socket = await WebSocket.connect(
@@ -135,6 +142,31 @@ class ShareWatcher extends _$ShareWatcher {
       etaArrivalAt: eta?['arrivalAt'] == null ? null : DateTime.parse(eta!['arrivalAt'] as String),
       etaDistanceMeters: (eta?['distanceMeters'] as num?)?.toDouble(),
       stale: false,
+    );
+    _centerCameraOnce();
+  }
+
+  // R-81: the holder must actually see the sharer's position — without this
+  // the marker could be drawn off-screen. Live mode only; eta mode shows an
+  // arrival card instead of a marker.
+  void _centerCameraOnce() {
+    if (_didCenterCamera || state.mode != ShareMode.live || !state.hasPosition) {
+      return;
+    }
+    _didCenterCamera = true;
+    final camera = ref.read(cameraPositionProvider);
+    unawaited(
+      ref
+          .read(cameraPositionProvider.notifier)
+          .animateTo(
+            CameraPositionMessage(
+              point: GeoPointMessage(latitude: state.lat!, longitude: state.lon!),
+              zoom: camera?.zoom ?? 16,
+              tilt: camera?.tilt ?? 0,
+              bearing: camera?.bearing ?? 0,
+            ),
+          )
+          .catchError((Object e) => logger.log('friends_on_map: share watch camera move failed: $e')),
     );
   }
 

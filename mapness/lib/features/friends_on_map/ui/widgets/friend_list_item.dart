@@ -22,7 +22,7 @@ class FriendListItem extends StatelessWidget {
   Widget build(BuildContext context) {
     final lastSeen = friend.lastPositionAt == null
         ? null
-        : friendElapsedTimeLabel(context.l10n, friend.lastPositionAt!);
+        : context.l10n.friendLastSeen(friendElapsedTimeLabel(context.l10n, friend.lastPositionAt!));
 
     return Padding(
       padding: const EdgeInsets.only(bottom: Spacing.$3x),

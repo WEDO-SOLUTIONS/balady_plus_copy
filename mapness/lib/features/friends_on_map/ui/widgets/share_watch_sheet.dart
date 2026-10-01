@@ -39,7 +39,15 @@ void showShareWatchSheet(BuildContext context) {
           Navigator.of(context).pop();
           ref.read(shareWatcherProvider.notifier).stopWatching();
         },
-        contentBuilder: (context) => [_StatusRow(ref.watch(shareWatcherProvider))],
+        contentBuilder: (context) {
+          final watchState = ref.watch(shareWatcherProvider);
+          final name = watchState.sharerDisplayName;
+          return [
+            // R-81: the link holder sees who is sharing, not just where.
+            if (name != null && name.isNotEmpty) ContentRow(text: ContentRowTextOptions(title: name)),
+            _StatusRow(watchState),
+          ];
+        },
       ),
     ),
   ).whenComplete(() => _isShareWatchSheetOpen = false);

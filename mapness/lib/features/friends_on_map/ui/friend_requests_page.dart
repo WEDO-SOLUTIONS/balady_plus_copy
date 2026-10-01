@@ -16,11 +16,18 @@ import 'package:mapness/shared/extensions/build_context_ext.dart';
 /// camera-lifecycle reason to lazy-build these as tabs the way
 /// `AddFriendPage` does for Scan.
 @RoutePage()
-class FriendRequestsPage extends ConsumerWidget {
+class FriendRequestsPage extends ConsumerStatefulWidget {
   const FriendRequestsPage({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<FriendRequestsPage> createState() => _FriendRequestsPageState();
+}
+
+class _FriendRequestsPageState extends ConsumerState<FriendRequestsPage> {
+  String _query = '';
+
+  @override
+  Widget build(BuildContext context) {
     final incomingAsync = ref.watch(incomingFriendRequestsProvider);
     final outgoingAsync = ref.watch(outgoingFriendRequestsProvider);
 
@@ -37,8 +44,27 @@ class FriendRequestsPage extends ConsumerWidget {
           body: SafeArea(
             child: ListView(
               children: [
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(Spacing.$4x, Spacing.$3x, Spacing.$4x, Spacing.$3x),
+                  child: Text(
+                    context.l10n.friendListTitle,
+                    style: context.textStyles.h4SemiBold.copyWith(color: context.colors.foregroundDefault),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x),
+                  child: BaladyTextInput.search(
+                    config: BaladyInputConfig(
+                      hintText: context.l10n.friendListSearchHint,
+                      hintColor: context.colors.foregroundSoft,
+                      onChanged: (value) => setState(() => _query = value.trim().toLowerCase()),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: Spacing.$3x),
                 _Section(
-                  title: context.l10n.friendRequestsReceivedTitle,
+                  query: _query,
+                  title: (count) => context.l10n.friendRequestsWaitingTitle(count),
                   emptyText: context.l10n.friendRequestsReceivedEmpty,
                   requestsAsync: incomingAsync,
                   itemBuilder: (request) => FriendRequestItem(
@@ -73,7 +99,8 @@ class FriendRequestsPage extends ConsumerWidget {
                 ),
                 const SizedBox(height: Spacing.$4x),
                 _Section(
-                  title: context.l10n.friendRequestsSentTitle,
+                  query: _query,
+                  title: (_) => context.l10n.friendRequestsSentTitle,
                   emptyText: context.l10n.friendRequestsSentEmpty,
                   requestsAsync: outgoingAsync,
                   itemBuilder: (request) => FriendRequestItem(
@@ -94,12 +121,14 @@ class FriendRequestsPage extends ConsumerWidget {
 }
 
 class _Section extends StatelessWidget {
-  final String title;
+  final String query;
+  final String Function(int count) title;
   final String emptyText;
   final AsyncValue<List<FriendRequest>> requestsAsync;
   final Widget Function(FriendRequest) itemBuilder;
 
   const _Section({
+    required this.query,
     required this.title,
     required this.emptyText,
     required this.requestsAsync,
@@ -107,30 +136,34 @@ class _Section extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) => Column(
-    crossAxisAlignment: CrossAxisAlignment.start,
-    children: [
-      Padding(
-        padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x),
-        child: Text(
-          title,
-          style: context.textStyles.h4SemiBold.copyWith(color: context.colors.foregroundDefault),
-        ),
-      ),
-      const SizedBox(height: Spacing.$2x),
-      requestsAsync.when(
-        data: (requests) => requests.isEmpty
-            ? Padding(
-                padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x),
-                child: Text(
-                  emptyText,
-                  style: context.textStyles.bodyLargeRegular.copyWith(color: context.colors.foregroundSoft),
-                ),
-              )
-            : Column(children: requests.map(itemBuilder).toList()),
-        loading: () => const Center(child: CircularProgressIndicator()),
-        error: (_, _) => const SizedBox.shrink(),
-      ),
-    ],
+  Widget build(BuildContext context) => requestsAsync.when(
+    data: (all) {
+      final requests = query.isEmpty ? all : all.where((r) => r.displayName.toLowerCase().contains(query)).toList();
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x),
+            child: Text(
+              title(requests.length),
+              style: context.textStyles.bodySmallRegular.copyWith(color: context.colors.foregroundSoft),
+            ),
+          ),
+          const SizedBox(height: Spacing.$1x),
+          if (requests.isEmpty)
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x, vertical: Spacing.$2x),
+              child: Text(
+                emptyText,
+                style: context.textStyles.bodyLargeRegular.copyWith(color: context.colors.foregroundSoft),
+              ),
+            )
+          else
+            Column(children: requests.map(itemBuilder).toList()),
+        ],
+      );
+    },
+    loading: () => const Center(child: CircularProgressIndicator()),
+    error: (_, _) => const SizedBox.shrink(),
   );
 }
