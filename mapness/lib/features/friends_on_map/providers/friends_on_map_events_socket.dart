@@ -4,6 +4,7 @@ import 'dart:io';
 
 import 'package:mapness/features/friends_on_map/data/friends_on_map_api_config.dart';
 import 'package:mapness/features/friends_on_map/data/friends_on_map_ipv4_http_client.dart';
+import 'package:mapness/features/friends_on_map/data/friends_on_map_json.dart';
 import 'package:mapness/features/friends_on_map/providers/chat_outbox.dart';
 import 'package:mapness/features/friends_on_map/providers/chat_thread.dart';
 import 'package:mapness/features/friends_on_map/providers/conversations.dart';
@@ -107,6 +108,8 @@ class FriendsOnMapEventsSocket extends _$FriendsOnMapEventsSocket {
             ..invalidate(outgoingFriendRequestsProvider);
         case 'meetups_changed':
           ref.invalidate(receivedMeetupsProvider);
+        case 'message_created':
+          _onMessageCreated(json);
         case 'conversations_changed':
           ref
             ..invalidate(conversationsProvider)
@@ -118,6 +121,25 @@ class FriendsOnMapEventsSocket extends _$FriendsOnMapEventsSocket {
       }
     } on Object catch (e) {
       logger.log('friends_on_map: events socket bad message: $e');
+    }
+  }
+
+  /// S-21: the event carries the message itself, so the open thread gets it
+  /// with no REST round trip (a fresh TLS connection each — seconds on a
+  /// mobile network). Only the conversation list/unread badge is refetched.
+  void _onMessageCreated(Map<String, dynamic> json) {
+    final friendId = json['friendId'] as String?;
+    final raw = json['message'];
+    ref.invalidate(conversationsProvider);
+    if (friendId == null || raw is! Map<String, dynamic> || !ref.exists(chatThreadProvider(friendId))) {
+      return;
+    }
+    if (ref.read(chatThreadProvider(friendId)).hasValue) {
+      ref.read(chatThreadProvider(friendId).notifier).upsert(chatMessageFromJson(raw));
+    } else {
+      // Still loading its first page — that fetch may have started before
+      // this message existed, so refetch rather than drop the event.
+      ref.invalidate(chatThreadProvider(friendId));
     }
   }
 

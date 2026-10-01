@@ -40,9 +40,9 @@ class ChatThread extends _$ChatThread {
     state = AsyncData(ChatThreadState(items: [...page.items, ...latest.items], nextBefore: page.nextBefore));
   }
 
-  /// Inserts or replaces one message (a just-sent message coming back from
-  /// the server), so the thread never flickers between "left the outbox" and
-  /// "arrived in the next refetch".
+  /// Inserts or replaces one message, keeping the thread in `seq` order. Used
+  /// for a just-sent message coming back from the server and for messages
+  /// pushed over the socket, so neither flickers nor needs a refetch.
   void upsert(ChatMessage message) {
     final current = state.value;
     if (current == null) {
@@ -53,7 +53,15 @@ class ChatThread extends _$ChatThread {
     if (index >= 0) {
       items[index] = message;
     } else {
-      items.add(message);
+      final seq = message.seq;
+      // Events can arrive out of order relative to a refetch: insert before
+      // the first message with a higher seq instead of blindly appending.
+      final insertAt = seq == null ? -1 : items.indexWhere((m) => (m.seq ?? 0) > seq);
+      if (insertAt >= 0) {
+        items.insert(insertAt, message);
+      } else {
+        items.add(message);
+      }
     }
     state = AsyncData(ChatThreadState(items: items, nextBefore: current.nextBefore));
   }

@@ -162,7 +162,11 @@ class _ChatPageState extends ConsumerState<ChatPage> {
     if (thread == null) {
       return const Center(child: CircularProgressIndicator());
     }
-    return _buildMessages(context, [...thread.items, ...pending]);
+    // An event can deliver the server copy of a message before the PUT
+    // response removes its outbox entry: show it once.
+    final serverClientIds = {for (final m in thread.items) ?m.clientMessageId};
+    final stillPending = pending.where((m) => !serverClientIds.contains(m.id)).toList();
+    return _buildMessages(context, [...thread.items, ...stillPending]);
   }
 
   Widget _buildMessages(BuildContext context, List<ChatMessage> messages) {

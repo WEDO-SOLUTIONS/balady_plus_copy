@@ -39,6 +39,11 @@ class ChatMessage {
   /// Server creation time; null for an outbox message.
   final DateTime? createdAt;
 
+  /// Set by the server only on the sender's own messages: lets the thread
+  /// recognise the server copy of a message the outbox is still showing as
+  /// pending (a socket event can beat the PUT response).
+  final String? clientMessageId;
+
   const ChatMessage({
     required this.id,
     required this.mine,
@@ -50,6 +55,7 @@ class ChatMessage {
     this.place,
     this.deleted = false,
     this.createdAt,
+    this.clientMessageId,
   });
 
   /// The moment shown in the thread: when the server received it, falling

@@ -109,6 +109,7 @@ ChatMessage chatMessageFromJson(Map<String, dynamic> json) {
       _ => ChatMessageStatus.sent,
     },
     deleted: json['deleted'] as bool? ?? false,
+    clientMessageId: json['clientMessageId'] as String?,
   );
 }
 
