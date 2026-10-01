@@ -6,10 +6,12 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/_features/common/providers/ui_direction.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/features/friends_on_map/models/friend.dart';
+import 'package:mapness/features/friends_on_map/providers/conversations.dart';
 import 'package:mapness/features/friends_on_map/providers/friend_requests.dart';
 import 'package:mapness/features/friends_on_map/providers/friend_search_query.dart';
 import 'package:mapness/features/friends_on_map/providers/friends_list.dart';
 import 'package:mapness/features/friends_on_map/ui/meetup_share_flow.dart';
+import 'package:mapness/features/friends_on_map/ui/widgets/conversation_list_item.dart';
 import 'package:mapness/features/friends_on_map/ui/widgets/friend_list_empty_state.dart';
 import 'package:mapness/features/friends_on_map/ui/widgets/friend_list_item.dart';
 import 'package:mapness/features/friends_on_map/ui/widgets/friends_on_map_promo_banner.dart';
@@ -28,6 +30,7 @@ class FriendListPage extends ConsumerWidget {
     final friendsAsync = ref.watch(friendsListProvider);
     final query = ref.watch(friendSearchQueryProvider);
     final incomingRequestsAsync = ref.watch(incomingFriendRequestsProvider);
+    final unreadMessages = ref.watch(conversationsProvider).value?.unreadTotal ?? 0;
 
     return Directionality(
       textDirection: ref.watch(uiDirectionProvider),
@@ -80,6 +83,19 @@ class FriendListPage extends ConsumerWidget {
                                 ),
                               ],
                         orElse: () => const <Widget>[],
+                      ),
+                      // S-21 (R-104/R-105): always visible; the count is the
+                      // server's total, capped for display (Appendix B).
+                      ContentRow(
+                        isDividerEnabled: true,
+                        onTap: () => context.router.push(const ConversationsRoute()),
+                        leading: Icon(Icons.chat_bubble_outline, color: context.colors.accentDefault, size: 24),
+                        text: ContentRowTextOptions(title: context.l10n.chatMessagesRow),
+                        trailing: ContentRowTextTrailingOptions(
+                          text: unreadMessages > 0 ? chatUnreadLabel(unreadMessages) : null,
+                          icon: SystemIcons.arrowCornerRightSmall,
+                          iconColor: context.colors.foregroundMuted,
+                        ),
                       ),
                       ContentRow(
                         isDividerEnabled: true,

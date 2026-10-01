@@ -41,7 +41,20 @@ enum FriendsOnMapLimitCode {
 
   /// S-19, Appendix B: concurrent active sharing links per user = 5 (AC-10).
   /// `POST /v1/shares`, HTTP 409, `subject` always `self`.
-  shareLimitReached;
+  shareLimitReached,
+
+  /// S-21, Appendix B: message length = 2000 characters. `PUT
+  /// /v1/conversations/{friendId}/messages/{id}`, HTTP 400.
+  messageTooLong,
+
+  /// S-21, Appendix B: messages per user per rolling hour = 300 (R-110). Same
+  /// route, HTTP 429 + Retry-After.
+  messageRateLimited,
+
+  /// S-21, Appendix B: window for deleting a sent message = 60 minutes
+  /// (R-107). `DELETE /v1/messages/{id}`, HTTP 409; `limit` is the window in
+  /// minutes.
+  messageDeleteWindowExpired;
 
   static FriendsOnMapLimitCode? fromWire(String? value) => switch (value) {
     'friend_limit_reached' => friendLimitReached,
@@ -53,6 +66,9 @@ enum FriendsOnMapLimitCode {
     'list_member_limit_reached' => listMemberLimitReached,
     'list_item_limit_reached' => listItemLimitReached,
     'share_limit_reached' => shareLimitReached,
+    'message_too_long' => messageTooLong,
+    'message_rate_limited' => messageRateLimited,
+    'message_delete_window_expired' => messageDeleteWindowExpired,
     _ => null,
   };
 }

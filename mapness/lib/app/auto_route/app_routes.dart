@@ -344,6 +344,16 @@ class AppRouter extends RootStackRouter {
           customRouteBuilder: RouteBuilders.cupertinoRouteBuilder,
         ),
         CustomRoute(
+          path: 'conversations',
+          page: ConversationsRoute.page,
+          customRouteBuilder: RouteBuilders.cupertinoRouteBuilder,
+        ),
+        CustomRoute(
+          path: 'chat/:friendId',
+          page: ChatRoute.page,
+          customRouteBuilder: RouteBuilders.cupertinoRouteBuilder,
+        ),
+        CustomRoute(
           path: 'shared_lists',
           page: SharedListsRoute.page,
           customRouteBuilder: RouteBuilders.cupertinoRouteBuilder,

@@ -4,6 +4,9 @@ import 'dart:io';
 
 import 'package:mapness/features/friends_on_map/data/friends_on_map_api_config.dart';
 import 'package:mapness/features/friends_on_map/data/friends_on_map_ipv4_http_client.dart';
+import 'package:mapness/features/friends_on_map/providers/chat_outbox.dart';
+import 'package:mapness/features/friends_on_map/providers/chat_thread.dart';
+import 'package:mapness/features/friends_on_map/providers/conversations.dart';
 import 'package:mapness/features/friends_on_map/providers/friend_requests.dart';
 import 'package:mapness/features/friends_on_map/providers/friends_list.dart';
 import 'package:mapness/features/friends_on_map/providers/friends_on_map_service_token.dart';
@@ -21,7 +24,7 @@ const Duration _kMaxBackoff = Duration(seconds: 30);
 /// Live "something changed" push from the real backend's `GET /v1/events`
 /// (upgraded to a WebSocket) — see `~/dev/code/wedo/go/balady-friends-service`'s
 /// `internal/api/hub.go`. Messages are deliberately just invalidation hints
-/// (`{"type": "friends_changed" | "requests_changed" | "meetups_changed" | "lists_changed"}`), never a full
+/// (`{"type": "friends_changed" | "requests_changed" | "meetups_changed" | "lists_changed" | "conversations_changed"}`), never a full
 /// payload: the client already trusts the REST endpoints for real data, so
 /// there's no second schema to keep in sync.
 ///
@@ -69,6 +72,14 @@ class FriendsOnMapEventsSocket extends _$FriendsOnMapEventsSocket {
       }
       _socket = socket;
       _backoff = _kMinBackoff;
+      // S-21: the socket only carries invalidation hints, so anything that
+      // changed while it was down is missed — refetch the conversation views
+      // (the API description's "re-fetch the tail on reconnect") and resume
+      // the offline outbox (R-103) now that the network is evidently back.
+      ref
+        ..invalidate(conversationsProvider)
+        ..invalidate(chatThreadProvider);
+      unawaited(ref.read(chatOutboxProvider.notifier).flush());
       _subscription = socket.listen(
         _onMessage,
         onError: (Object _) => _scheduleReconnect(),
@@ -96,6 +107,10 @@ class FriendsOnMapEventsSocket extends _$FriendsOnMapEventsSocket {
             ..invalidate(outgoingFriendRequestsProvider);
         case 'meetups_changed':
           ref.invalidate(receivedMeetupsProvider);
+        case 'conversations_changed':
+          ref
+            ..invalidate(conversationsProvider)
+            ..invalidate(chatThreadProvider);
         case 'lists_changed':
           ref
             ..invalidate(sharedListsProvider)

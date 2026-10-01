@@ -1,3 +1,5 @@
+import 'package:mapness/features/friends_on_map/models/chat_message.dart';
+import 'package:mapness/features/friends_on_map/models/conversation.dart';
 import 'package:mapness/features/friends_on_map/models/friend.dart';
 import 'package:mapness/features/friends_on_map/models/friend_request.dart';
 import 'package:mapness/features/friends_on_map/models/blocked_user.dart';
@@ -82,4 +84,48 @@ SharedListDetail sharedListDetailFromJson(Map<String, dynamic> json) => SharedLi
   callerRole: json['callerRole'] == 'owner' ? SharedListRole.owner : SharedListRole.member,
   members: (json['members'] as List<dynamic>).map((e) => sharedListMemberFromJson(e as Map<String, dynamic>)).toList(),
   items: (json['items'] as List<dynamic>).map((e) => sharedListItemFromJson(e as Map<String, dynamic>)).toList(),
+);
+
+ChatMessage chatMessageFromJson(Map<String, dynamic> json) {
+  final place = json['place'] as Map<String, dynamic>?;
+  return ChatMessage(
+    id: json['id'] as String,
+    seq: (json['seq'] as num).toInt(),
+    mine: json['mine'] as bool,
+    kind: json['kind'] == 'place_card' ? ChatMessageKind.placeCard : ChatMessageKind.text,
+    body: json['body'] as String?,
+    place: place == null
+        ? null
+        : ChatPlace(
+            latitude: (place['latitude'] as num).toDouble(),
+            longitude: (place['longitude'] as num).toDouble(),
+            label: place['label'] as String?,
+          ),
+    composedAt: DateTime.parse(json['composedAt'] as String),
+    createdAt: DateTime.parse(json['createdAt'] as String),
+    status: switch (json['status']) {
+      'read' => ChatMessageStatus.read,
+      'delivered' => ChatMessageStatus.delivered,
+      _ => ChatMessageStatus.sent,
+    },
+    deleted: json['deleted'] as bool? ?? false,
+  );
+}
+
+Conversation conversationFromJson(Map<String, dynamic> json) => Conversation(
+  friendId: json['friendId'] as String,
+  displayName: json['displayName'] as String,
+  profilePictureUrl: json['profilePictureUrl'] as String?,
+  lastMessage: chatMessageFromJson(json['lastMessage'] as Map<String, dynamic>),
+  unreadCount: (json['unreadCount'] as num).toInt(),
+);
+
+ConversationList conversationListFromJson(Map<String, dynamic> json) => ConversationList(
+  items: (json['items'] as List<dynamic>).map((e) => conversationFromJson(e as Map<String, dynamic>)).toList(),
+  unreadTotal: (json['unreadTotal'] as num).toInt(),
+);
+
+ChatThreadPage chatThreadPageFromJson(Map<String, dynamic> json) => ChatThreadPage(
+  items: (json['items'] as List<dynamic>).map((e) => chatMessageFromJson(e as Map<String, dynamic>)).toList(),
+  nextBefore: (json['nextBefore'] as num?)?.toInt(),
 );
