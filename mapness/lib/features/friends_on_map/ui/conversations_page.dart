@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/_features/common/providers/ui_direction.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/features/friends_on_map/models/conversation.dart';
+import 'package:mapness/features/friends_on_map/providers/chat_presence.dart';
 import 'package:mapness/features/friends_on_map/providers/conversations.dart';
 import 'package:mapness/features/friends_on_map/ui/widgets/conversation_list_item.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
@@ -13,11 +14,39 @@ import 'package:mapness/shared/extensions/build_context_ext.dart';
 /// R-105: the conversation list, most recent activity first, reached from the
 /// friend list.
 @RoutePage()
-class ConversationsPage extends ConsumerWidget {
+class ConversationsPage extends ConsumerStatefulWidget {
   const ConversationsPage({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<ConversationsPage> createState() => _ConversationsPageState();
+}
+
+class _ConversationsPageState extends ConsumerState<ConversationsPage> {
+  late final ChatPresence _presence;
+
+  @override
+  void initState() {
+    super.initState();
+    // The list updates itself, so a new-message toast on top of it would be
+    // redundant — tell the notice logic it's open (post-frame: no provider
+    // writes during build).
+    _presence = ref.read(chatPresenceProvider.notifier);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) {
+        _presence.conversationsOpened();
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    final presence = _presence;
+    Future<void>.microtask(presence.conversationsClosed);
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final conversationsAsync = ref.watch(conversationsProvider);
 
     return Directionality(

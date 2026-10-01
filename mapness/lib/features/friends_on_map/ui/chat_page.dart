@@ -11,6 +11,7 @@ import 'package:mapness/features/friends_on_map/data/friends_on_map_api_exceptio
 import 'package:mapness/features/friends_on_map/models/chat_message.dart';
 import 'package:mapness/features/friends_on_map/providers/chat_controller.dart';
 import 'package:mapness/features/friends_on_map/providers/chat_outbox.dart';
+import 'package:mapness/features/friends_on_map/providers/chat_presence.dart';
 import 'package:mapness/features/friends_on_map/providers/chat_thread.dart';
 import 'package:mapness/features/friends_on_map/ui/friends_on_map_error_dialog.dart';
 import 'package:mapness/features/friends_on_map/ui/open_chat_place_on_map.dart';
@@ -41,20 +42,37 @@ class ChatPage extends ConsumerStatefulWidget {
   ConsumerState<ChatPage> createState() => _ChatPageState();
 }
 
-class _ChatPageState extends ConsumerState<ChatPage> {
+/// Distance (px) from the newest message beyond which the user counts as
+/// "reading history": new messages then raise the "new" pill instead of
+/// being assumed seen.
+const double _kNearBottom = 120;
+
+class _ChatPageState extends ConsumerState<ChatPage> with WidgetsBindingObserver {
   final ScrollController _scroll = ScrollController();
+  late final ChatPresence _presence;
   bool _loadingOlder = false;
   bool _markingRead = false;
+  int _newBelow = 0;
 
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
     _scroll.addListener(_onScroll);
+    // Tells the notice logic this conversation is in front of the user, so a
+    // message from this friend doesn't pop a toast on top of it. Provider
+    // writes aren't allowed while the tree builds, hence the post-frame hop.
+    _presence = ref.read(chatPresenceProvider.notifier);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) {
+        _presence.chatOpened(widget.friendId);
+      }
+    });
     // R-102: "read" is set only because the user actually has this
     // conversation open — whenever the thread changes while it is.
     ref.listenManual(
       chatThreadProvider(widget.friendId),
-      (_, next) => _maybeMarkRead(next.value),
+      (previous, next) => _onThreadChanged(previous?.value, next.value),
       fireImmediately: true,
     );
     // R-103: opening a thread is one of the triggers that resumes the outbox.
@@ -63,14 +81,57 @@ class _ChatPageState extends ConsumerState<ChatPage> {
 
   @override
   void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
     _scroll.dispose();
+    final presence = _presence;
+    final friendId = widget.friendId;
+    Future<void>.microtask(() => presence.chatClosed(friendId));
     super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    // Messages that arrived while the app was backgrounded on this screen
+    // were deliberately not marked read (see _maybeMarkRead).
+    if (state == AppLifecycleState.resumed) {
+      _maybeMarkRead(ref.read(chatThreadProvider(widget.friendId)).value);
+    }
   }
 
   void _onScroll() {
     final position = _scroll.position;
     if (position.pixels >= position.maxScrollExtent - 300) {
       unawaited(_loadOlder());
+    }
+    // Back at the newest message: nothing left below.
+    if (_newBelow > 0 && position.pixels <= _kNearBottom) {
+      setState(() => _newBelow = 0);
+    }
+  }
+
+  /// Marks read (R-102) and, if the user is reading history, counts messages
+  /// that arrived below instead of yanking the view.
+  void _onThreadChanged(ChatThreadState? previous, ChatThreadState? next) {
+    _maybeMarkRead(next);
+    if (previous == null || next == null || !_scroll.hasClients || _scroll.position.pixels <= _kNearBottom) {
+      return;
+    }
+    // New = a higher seq than anything seen before. Older pages prepended by
+    // loadOlder have lower seqs and must not count.
+    final newestSeen = previous.items.fold<int>(0, (max, m) => (m.seq ?? 0) > max ? (m.seq ?? 0) : max);
+    final arrived = next.items.where((m) => !m.mine && !m.deleted && (m.seq ?? 0) > newestSeen).length;
+    if (arrived > 0) {
+      setState(() => _newBelow += arrived);
+    }
+  }
+
+  void _scrollToBottom() {
+    if (!_scroll.hasClients) {
+      return;
+    }
+    unawaited(_scroll.animateTo(0, duration: const Duration(milliseconds: 250), curve: Curves.easeOut));
+    if (_newBelow > 0) {
+      setState(() => _newBelow = 0);
     }
   }
 
@@ -90,6 +151,13 @@ class _ChatPageState extends ConsumerState<ChatPage> {
 
   void _maybeMarkRead(ChatThreadState? thread) {
     if (thread == null || _markingRead) {
+      return;
+    }
+    // Not while the app is backgrounded/locked on this screen: nobody has
+    // actually seen the message (R-102). didChangeAppLifecycleState catches up
+    // on resume. Unknown (null) counts as foreground.
+    final lifecycle = WidgetsBinding.instance.lifecycleState;
+    if (lifecycle != null && lifecycle != AppLifecycleState.resumed) {
       return;
     }
     final hasUnread = thread.items.any((m) => !m.mine && !m.deleted && m.status != ChatMessageStatus.read);
@@ -125,7 +193,22 @@ class _ChatPageState extends ConsumerState<ChatPage> {
           ),
           body: Column(
             children: [
-              Expanded(child: _buildBody(context, threadAsync, pending.toList())),
+              Expanded(
+                child: Stack(
+                  children: [
+                    Positioned.fill(child: _buildBody(context, threadAsync, pending.toList())),
+                    if (_newBelow > 0)
+                      Positioned(
+                        bottom: Spacing.$2x,
+                        left: 0,
+                        right: 0,
+                        child: Center(
+                          child: _NewMessagesPill(count: _newBelow, onTap: _scrollToBottom),
+                        ),
+                      ),
+                  ],
+                ),
+              ),
               if (!_isUnavailable(threadAsync)) ChatInputBar(onSend: _sendText, onSendPlace: _sendPlace),
             ],
           ),
@@ -205,6 +288,7 @@ class _ChatPageState extends ConsumerState<ChatPage> {
   }
 
   void _sendText(String text) {
+    _scrollToBottom();
     unawaited(
       runFriendsOnMapAction(context, () => ref.read(chatControllerProvider.notifier).sendText(widget.friendId, text)),
     );
@@ -215,6 +299,7 @@ class _ChatPageState extends ConsumerState<ChatPage> {
     if (pick == null || !mounted) {
       return;
     }
+    _scrollToBottom();
     await runFriendsOnMapAction(
       context,
       () => ref
@@ -355,4 +440,38 @@ class _SheetAction {
   final bool destructive;
 
   const _SheetAction(this.title, this.icon, this.onTap, {this.destructive = false});
+}
+
+/// "N new messages" chip shown over the thread while the user is reading
+/// history; tapping jumps to the newest message.
+class _NewMessagesPill extends StatelessWidget {
+  final int count;
+  final VoidCallback onTap;
+
+  const _NewMessagesPill({required this.count, required this.onTap});
+
+  @override
+  Widget build(BuildContext context) => Semantics(
+    button: true,
+    child: GestureDetector(
+      onTap: onTap,
+      child: DecoratedBox(
+        decoration: BoxDecoration(color: context.colors.accentDefault, borderRadius: BorderRadius.circular(999)),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: Spacing.$3x, vertical: Spacing.$2x),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(Icons.arrow_downward, size: 16, color: context.colors.foregroundDefaultInversion),
+              const SizedBox(width: Spacing.$1x),
+              Text(
+                context.l10n.chatNewMessagesPill(count),
+                style: context.textStyles.bodySmallSemiBold.copyWith(color: context.colors.foregroundDefaultInversion),
+              ),
+            ],
+          ),
+        ),
+      ),
+    ),
+  );
 }

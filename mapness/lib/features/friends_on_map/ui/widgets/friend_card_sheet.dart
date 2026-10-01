@@ -2,17 +2,17 @@ import 'dart:async';
 
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
-import 'package:auto_route/auto_route.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/_features/common/widgets/dragger.dart';
 import 'package:mapness/app/auto_route/app_routes.dart';
-import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/features/friends_on_map/models/friend.dart';
+import 'package:mapness/features/friends_on_map/providers/chat_presence.dart';
 import 'package:mapness/features/friends_on_map/providers/friends_controller.dart';
 import 'package:mapness/features/friends_on_map/ui/friends_on_map_error_dialog.dart';
 import 'package:mapness/features/friends_on_map/ui/meetup_share_flow.dart';
+import 'package:mapness/features/friends_on_map/ui/open_chat.dart';
 import 'package:mapness/features/friends_on_map/ui/widgets/friend_marker_avatar.dart';
 import 'package:mapness/features/friends_on_map/ui/widgets/friend_confirm_sheet.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
@@ -206,14 +206,20 @@ class FriendCardSheet extends ConsumerWidget {
     unawaited(startMeetupShareFlow(rootNavigatorKey.currentContext!, [friend]));
   }
 
-  // S-21 (R-94): opens the in-app conversation. Resolves the nested MapRoute
-  // router from the root (same reasoning as open_meetup_on_map.dart) before
-  // popping, since the card is opened off the root navigator's context where
-  // `context.router` doesn't reach the stack the chat route lives in.
+  // S-21 (R-94): opens the in-app conversation. The router and presence are
+  // read before popping — this card is gone by the time we navigate — and the
+  // navigation itself goes through `openChatWith` (nested MapRoute router, and
+  // replacing an already-open chat rather than stacking another).
   void _openChat(BuildContext context, WidgetRef ref) {
-    final router = ref.read(appRouterProvider).innerRouterOf<StackRouter>(MapRoute.name);
+    final router = ref.read(appRouterProvider);
+    final openChatFriendId = ref.read(chatPresenceProvider).chatFriendId;
     Navigator.of(context).pop();
-    unawaited(router?.push(ChatRoute(friendId: friend.id, displayName: friend.displayName)));
+    openChatWith(
+      router: router,
+      openChatFriendId: openChatFriendId,
+      friendId: friend.id,
+      displayName: friend.displayName,
+    );
   }
 
   void _confirmRemove(BuildContext context) {

@@ -9,6 +9,7 @@ import 'package:mapness/features/friends_on_map/providers/chat_outbox.dart';
 import 'package:mapness/features/friends_on_map/providers/chat_thread.dart';
 import 'package:mapness/features/friends_on_map/providers/conversations.dart';
 import 'package:mapness/features/friends_on_map/providers/friend_requests.dart';
+import 'package:mapness/features/friends_on_map/providers/incoming_chat_notice.dart';
 import 'package:mapness/features/friends_on_map/providers/friends_list.dart';
 import 'package:mapness/features/friends_on_map/providers/friends_on_map_service_token.dart';
 import 'package:mapness/features/friends_on_map/providers/meetups_list.dart';
@@ -131,11 +132,22 @@ class FriendsOnMapEventsSocket extends _$FriendsOnMapEventsSocket {
     final friendId = json['friendId'] as String?;
     final raw = json['message'];
     ref.invalidate(conversationsProvider);
-    if (friendId == null || raw is! Map<String, dynamic> || !ref.exists(chatThreadProvider(friendId))) {
+    if (friendId == null || raw is! Map<String, dynamic>) {
+      return;
+    }
+    final message = chatMessageFromJson(raw);
+    ref
+        .read(incomingChatNoticeProvider.notifier)
+        .onIncoming(
+          friendId: friendId,
+          friendDisplayName: json['friendDisplayName'] as String? ?? '',
+          message: message,
+        );
+    if (!ref.exists(chatThreadProvider(friendId))) {
       return;
     }
     if (ref.read(chatThreadProvider(friendId)).hasValue) {
-      ref.read(chatThreadProvider(friendId).notifier).upsert(chatMessageFromJson(raw));
+      ref.read(chatThreadProvider(friendId).notifier).upsert(message);
     } else {
       // Still loading its first page — that fetch may have started before
       // this message existed, so refetch rather than drop the event.

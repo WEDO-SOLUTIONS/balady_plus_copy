@@ -11,6 +11,8 @@ import 'package:mapness/app/auto_route/app_routes.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/features/friends_on_map/models/friends_on_map_activation_status.dart';
 import 'package:mapness/features/friends_on_map/models/meetup.dart';
+import 'package:mapness/features/friends_on_map/providers/incoming_chat_notice.dart';
+import 'package:mapness/features/friends_on_map/ui/open_chat.dart';
 import 'package:mapness/features/friends_on_map/providers/active_shares_position_reporter.dart';
 import 'package:mapness/features/friends_on_map/providers/friends_on_map_activated.dart';
 import 'package:mapness/features/friends_on_map/providers/friend_markers.dart';
@@ -147,6 +149,31 @@ class _MapPageState extends ConsumerState<MapPage>
             ToastAction(
               title: context.l10n.meetupReceivedToastView,
               onTap: () => openMeetupOnMap(ref, newest),
+            ),
+          ],
+        );
+      })
+      // S-21: an in-app notice for a new chat message, with an "Open" action.
+      // What deserves a notice (and what doesn't: chat/list already open,
+      // navigation active, app backgrounded) is decided before it reaches this
+      // provider — see providers/incoming_chat_notice.dart.
+      ..listen<ChatNotice?>(incomingChatNoticeProvider, (previous, next) {
+        if (next == null) {
+          return;
+        }
+        final l10n = context.l10n;
+        final title = next.count > 1
+            ? l10n.chatToastMultiple(next.friendDisplayName, next.count)
+            : next.isPlace
+            ? l10n.chatToastPlace(next.friendDisplayName)
+            : l10n.chatToastMessage(next.friendDisplayName, next.preview ?? '');
+        ToastOverlay.of(context).show(
+          title: title,
+          isDismissible: true,
+          actions: [
+            ToastAction(
+              title: l10n.chatToastOpen,
+              onTap: () => openChat(ref, friendId: next.friendId, displayName: next.friendDisplayName),
             ),
           ],
         );
