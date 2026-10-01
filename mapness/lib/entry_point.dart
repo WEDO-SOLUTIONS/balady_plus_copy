@@ -155,7 +155,7 @@ class MapnessProviderScope extends StatelessWidget {
       builder: (context, ref, child) {
         // Hands the CarPlay Pigeon bridge (`_HostFlutterApi`, a singleton created before this
         // tree exists) a reference to this tree's own container — no separate container needed.
-        _hostFlutterApi?.attachProviderContainer(ProviderScope.containerOf(context, listen: false));
+        _hostFlutterApi.attachProviderContainer(ProviderScope.containerOf(context, listen: false));
         // Must run before [EagerInitWidget] — eager init shows a spinner instead of [child].
         ref.watch(appIconQuickActionsInitializerProvider);
         return EagerInitWidget(child: child!);
@@ -1900,7 +1900,7 @@ Future<void> initHive() async {
 
 // Reference to the single `_HostFlutterApi` instance created in [runMapnessApp], so
 // [MapnessProviderScope] can hand it the widget tree's provider container once it exists.
-_HostFlutterApi? _hostFlutterApi;
+late final _HostFlutterApi _hostFlutterApi;
 
 // Always holds the most recent container [MapnessProviderScope] handed over. Kept up to date on
 // every rebuild (not just the first one) because the widget tree hosting it can be torn down and
@@ -1980,7 +1980,9 @@ class _HostFlutterApi extends HostFlutterApi {
     }
     for (var attempt = 0; attempt < 2; attempt++) {
       final container = _providerContainer;
-      if (container == null) break;
+      if (container == null) {
+        break;
+      }
       try {
         // Bounded: reading from an already-disposed container can hang forever instead of
         // throwing (observed in the wild), which would otherwise stall this pigeon call — and

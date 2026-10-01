@@ -106,7 +106,7 @@ String _placesCountLabel(BuildContext context, FavoriteListDto list) {
 }
 
 class _FavoriteListPlacesContent extends ConsumerWidget {
-  const _FavoriteListPlacesContent({required this.listId, super.key});
+  const _FavoriteListPlacesContent({required this.listId});
 
   final String listId;
 

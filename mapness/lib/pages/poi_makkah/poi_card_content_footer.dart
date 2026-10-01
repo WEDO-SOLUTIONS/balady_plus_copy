@@ -106,7 +106,9 @@ class _MakkahPoiFooterPlaceholder extends ConsumerWidget {
 
   void _onBookmarkTap(BuildContext context, WidgetRef ref) {
     final objectId = data.id?.objectId;
-    if (objectId == null) return;
+    if (objectId == null) {
+      return;
+    }
     Metrics.logEventAdvanced(
       MetricsConstants.makkahPlacesKeys.placeFavorite,
       group: MetricsConstants.makkahPlacesTag,
