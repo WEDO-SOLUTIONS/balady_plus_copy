@@ -453,38 +453,52 @@ class ObjectTapHandler {
             ))
         }
         
-        if let position = options.position {
-            self.markers[id]?.0.position = position.geoPointWithElevation
+        // getImage above already invoked `completion` with the failure once loading fails —
+        // don't touch the marker or call completion again in that case.
+        let iconLoadFailed = (options.icon?.svgPath != nil || options.icon?.pngPath != nil) && markerImage == nil
+        if iconLoadFailed {
+            return
         }
-        if let markerImage {
-            self.markers[id]?.0.icon = markerImage
-        }
-        if let iconMapDirection = options.icon?.iconMapDirection {
-            self.markers[id]?.0.iconMapDirection = MapDirection(value: iconMapDirection.degree)
-        }
-        if let anchor = options.anchor {
-            self.markers[id]?.0.anchor = Anchor(x: Float(anchor.x), y: Float(anchor.y))
-        }
-        if let text = options.text {
-            self.markers[id]?.0.text = text
-        }
-        if let textStyle = options.textStyle?.textStyle {
-            self.markers[id]?.0.textStyle = textStyle
-        }
-        if let iconWidth = options.icon?.width {
-            self.markers[id]?.0.iconWidth = LogicalPixel(value: Float(iconWidth))
-        }
-        if let zIndex = options.zIndex {
-            self.markers[id]?.0.zIndex = ZIndex(value: UInt32(zIndex))
-        }
-        if let animatedAppearance = options.animatedAppearance {
-            self.markers[id]?.0.animatedAppearance = animatedAppearance
-        }
-        if let iconOpacity = options.icon?.iconOpacity {
-            self.markers[id]?.0.iconOpacity = Opacity(value: Float(iconOpacity))
-        }
-        if let isVisible = options.isVisible {
-            self.markers[id]?.0.isVisible = isVisible
+
+        // Mutating `self.markers` must happen on `objectsQueue`, the same serial queue every
+        // other mutator (addMarker(s)/removeMarker/removeAllMarkers) uses — otherwise this can
+        // race with those and silently lose the update (e.g. a visibility toggle clobbered by a
+        // concurrent add/remove on the same dictionary).
+        self.objectsQueue.async {
+            if let position = options.position {
+                self.markers[id]?.0.position = position.geoPointWithElevation
+            }
+            if let markerImage {
+                self.markers[id]?.0.icon = markerImage
+            }
+            if let iconMapDirection = options.icon?.iconMapDirection {
+                self.markers[id]?.0.iconMapDirection = MapDirection(value: iconMapDirection.degree)
+            }
+            if let anchor = options.anchor {
+                self.markers[id]?.0.anchor = Anchor(x: Float(anchor.x), y: Float(anchor.y))
+            }
+            if let text = options.text {
+                self.markers[id]?.0.text = text
+            }
+            if let textStyle = options.textStyle?.textStyle {
+                self.markers[id]?.0.textStyle = textStyle
+            }
+            if let iconWidth = options.icon?.width {
+                self.markers[id]?.0.iconWidth = LogicalPixel(value: Float(iconWidth))
+            }
+            if let zIndex = options.zIndex {
+                self.markers[id]?.0.zIndex = ZIndex(value: UInt32(zIndex))
+            }
+            if let animatedAppearance = options.animatedAppearance {
+                self.markers[id]?.0.animatedAppearance = animatedAppearance
+            }
+            if let iconOpacity = options.icon?.iconOpacity {
+                self.markers[id]?.0.iconOpacity = Opacity(value: Float(iconOpacity))
+            }
+            if let isVisible = options.isVisible {
+                self.markers[id]?.0.isVisible = isVisible
+            }
+            completion(Result.success(()))
         }
     }
     

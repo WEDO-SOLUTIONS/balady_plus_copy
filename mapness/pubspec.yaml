@@ -47,7 +47,7 @@ dependencies:
     path: ..
   balady_uikit:
     hosted: https://unpub.balady.gov.sa/
-    version: 6.0.1
+    version: ^6.1.0
 
   sheetify: ^1.1.3
   smooth_corner: ^1.1.1
@@ -217,6 +217,7 @@ flutter:
     - assets/icons/svg/places_new_saudi_day/
     - assets/icons/svg/intermediate_stop_numbers/
     - assets/icons/svg/dynamic_poi/glyphs/
+    - assets/icons/svg/favorite/
     - assets/images/
     - assets/images/layers/
     - assets/images/makkah_quick_actions/

@@ -444,32 +444,46 @@ class ObjectTapHandler(
             }
         }
 
-        options.position?.let { position ->
-            markers[id]?.first?.position = position.toGeoPointWithElevation()
+        // getImageFromAsset/getPngImageFromAsset above already invoked `callback` with the
+        // failure once loading fails — don't touch the marker or call callback again then.
+        val iconLoadFailed = (options.icon?.svgPath != null || options.icon?.pngPath != null) && markerImage == null
+        if (iconLoadFailed) {
+            return
         }
-        markerImage?.let { image -> markers[id]?.first?.icon = image }
-        options.icon?.iconMapDirection?.let { iconMapDirection ->
-            markers[id]?.first?.iconMapDirection = MapDirection(iconMapDirection.degree)
-        }
-        options.anchor?.let { anchor ->
-            markers[id]?.first?.anchor = Anchor(anchor.x.toFloat(), anchor.y.toFloat())
-        }
-        options.text?.let { text -> markers[id]?.first?.text = text }
-        options.textStyle?.let { textStyle ->
-            markers[id]?.first?.textStyle = textStyle.toTextStyle()
-        }
-        options.icon?.width?.let { iconWidth ->
-            markers[id]?.first?.iconWidth = LogicalPixel(iconWidth.toFloat())
-        }
-        options.zIndex?.let { zIndex -> markers[id]?.first?.zIndex = ZIndex(zIndex.toInt()) }
-        options.icon?.iconOpacity?.let { iconOpacity ->
-            markers[id]?.first?.iconOpacity = Opacity(iconOpacity.toFloat())
-        }
-        options.animatedAppearance?.let { animatedAppearance ->
-            markers[id]?.first?.animatedAppearance = animatedAppearance
-        }
-        options.isVisible?.let { isVisible ->
-            markers[id]?.first?.isVisible = isVisible
+
+        // Mutating `markers` must happen on `mapObjectsExecutorService`, the same single-thread
+        // executor every other mutator (addMarker(s)/removeMarker/removeAllMarkers) uses —
+        // otherwise this can race with those and silently lose the update (e.g. a visibility
+        // toggle clobbered by a concurrent add/remove on the same map).
+        mapObjectsExecutorService.submit {
+            options.position?.let { position ->
+                markers[id]?.first?.position = position.toGeoPointWithElevation()
+            }
+            markerImage?.let { image -> markers[id]?.first?.icon = image }
+            options.icon?.iconMapDirection?.let { iconMapDirection ->
+                markers[id]?.first?.iconMapDirection = MapDirection(iconMapDirection.degree)
+            }
+            options.anchor?.let { anchor ->
+                markers[id]?.first?.anchor = Anchor(anchor.x.toFloat(), anchor.y.toFloat())
+            }
+            options.text?.let { text -> markers[id]?.first?.text = text }
+            options.textStyle?.let { textStyle ->
+                markers[id]?.first?.textStyle = textStyle.toTextStyle()
+            }
+            options.icon?.width?.let { iconWidth ->
+                markers[id]?.first?.iconWidth = LogicalPixel(iconWidth.toFloat())
+            }
+            options.zIndex?.let { zIndex -> markers[id]?.first?.zIndex = ZIndex(zIndex.toInt()) }
+            options.icon?.iconOpacity?.let { iconOpacity ->
+                markers[id]?.first?.iconOpacity = Opacity(iconOpacity.toFloat())
+            }
+            options.animatedAppearance?.let { animatedAppearance ->
+                markers[id]?.first?.animatedAppearance = animatedAppearance
+            }
+            options.isVisible?.let { isVisible ->
+                markers[id]?.first?.isVisible = isVisible
+            }
+            callback(Result.success(Unit))
         }
     }
 

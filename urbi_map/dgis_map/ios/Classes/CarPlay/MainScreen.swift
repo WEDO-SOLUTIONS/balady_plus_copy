@@ -145,15 +145,22 @@ class MainScreen: NSObject, CPMapTemplateDelegate, SearchNavigation {
     }
 
     private func buildLeadButtons() {
-        hostFlutterApi.isAuthorized(completion: { result in
+        hostFlutterApi.isAuthorized(completion: { [weak self] result in
+            guard let self else { return }
             switch result {
             case .success(let isAuthorized):
                 self.isAuthorized = isAuthorized
             case .failure(let error):
                 print(error)
             }
+            self.applyLeadButtons()
         })
-        let factories = (self.isAuthorized ? [
+    }
+
+    private func applyLeadButtons() {
+        // TODO(debug): revert to `self.isAuthorized ? ...` — favorites button is temporarily
+        // always shown for CarPlay testing without logging in.
+        let factories = (true ? [
             makeFirstLeadButton(),
             makeSecondLeadButton()
         ] : [makeFirstLeadButton()]).compactMap { $0 }
@@ -247,9 +254,7 @@ class MainScreen: NSObject, CPMapTemplateDelegate, SearchNavigation {
             listTemplate: template,
             interfaceController: interfaceController,
             hostFlutterApi: hostFlutterApi,
-            searchNavigation: self,
-            trafficRouter: trafficRouter,
-            locationService: try! container.locationService
+            searchNavigation: self
         )
         screen.show()
     }
@@ -273,7 +278,7 @@ class MainScreen: NSObject, CPMapTemplateDelegate, SearchNavigation {
     
     func onAuthorizationChanged(isAuthorized: Bool) {
         self.isAuthorized = isAuthorized
-        buildLeadButtons()
+        applyLeadButtons()
     }
 
     private func closeSettingsScreen() {

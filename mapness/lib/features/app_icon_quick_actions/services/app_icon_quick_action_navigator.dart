@@ -2,6 +2,7 @@ import 'package:mapness/app/auto_route/app_routes.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/features/app_icon_quick_actions/data/app_icon_quick_actions_config_datasource.dart';
 import 'package:mapness/features/share_eta/providers/share_my_location_launch_intent.dart';
+import 'package:mapness/shared/lib/auth/auth_methods.dart';
 import 'package:mapness/shared/utils/logger/logger.dart';
 import 'package:riverpod/riverpod.dart';
 
@@ -30,7 +31,7 @@ class AppIconQuickActionNavigator {
 
     switch (path) {
       case '/favourites':
-        await router.push(const FavouritesRoute());
+        await _openFavourites();
       case '/directions':
         // Tab route — permissions are handled in [AppIconQuickActionHandler].
         await router.navigate(const BottomMenuRoute(children: [RoutingPointsRoute()]));
@@ -46,6 +47,22 @@ class AppIconQuickActionNavigator {
       default:
         throw StateError('Unsupported quick action path: $path');
     }
+  }
+
+  /// Routes through the auth gate (like every other Favourites entry point) instead of
+  /// pushing [FavoriteListsRoute] directly, so a cold-start quick action can't race the
+  /// sign-in flow and hit favorite_lists endpoints before a valid token is attached.
+  Future<void> _openFavourites() async {
+    final context = rootNavigatorKey.currentContext;
+    if (context == null || !context.mounted) {
+      return;
+    }
+    await ref
+        .read(authMethodsProvider.notifier)
+        .authAndOpen(
+          context,
+          callback: () => ref.read(appRouterProvider).push(const FavoriteListsRoute()),
+        );
   }
 
   String _resolvePath(Uri destination) {

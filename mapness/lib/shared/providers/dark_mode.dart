@@ -1,4 +1,5 @@
 import 'package:dart_suncalc/suncalc.dart';
+import 'package:equatable/equatable.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/widgets.dart';
 import 'package:mapness/_features/common/providers/shared_prefs.dart';
@@ -28,11 +29,11 @@ enum DarkMapStateEnum {
   off,
 }
 
-class DarkMapStateModel {
+class DarkMapStateModel extends Equatable {
   final bool isDark;
   final DarkMapStateEnum currentMapMode;
 
-  DarkMapStateModel({
+  const DarkMapStateModel({
     required this.isDark,
     required this.currentMapMode,
   });
@@ -44,6 +45,9 @@ class DarkMapStateModel {
     isDark: isDark ?? this.isDark,
     currentMapMode: currentMapMode ?? this.currentMapMode,
   );
+
+  @override
+  List<Object?> get props => [isDark, currentMapMode];
 }
 
 @Riverpod(keepAlive: true)

@@ -3,9 +3,10 @@ import 'package:mapness/app/auto_route/app_routes.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/app/auto_route/poi_card_ext.dart';
 import 'package:mapness/entities/favourites/favourite_item.dart';
+import 'package:mapness/features/favorite_lists/data/models/map_marker_dto.dart';
 import 'package:mapness/features/favourites/helpers/favourite_entity_id.dart';
 
-Marker constructMarker(FavouriteItem item, MarkerIconMessage icon, AppRouter router) {
+Marker constructMarker(FavouriteItem item, MarkerIconMessage icon, AppRouter router, {String? markerId}) {
   final position = GeoPointWithElevationMessage(
     latitude: item.coordinates.latitude,
     longitude: item.coordinates.longitude,
@@ -17,20 +18,46 @@ Marker constructMarker(FavouriteItem item, MarkerIconMessage icon, AppRouter rou
     if (id == null) {
       return;
     }
+    final entranceId = parseEntranceIdFromFavouriteEntityId(item.entity?.id) ?? 0;
     router.replaceOrPush(
       route: PoiCardWidgetRoute(
         objectId: DgisObjectIdMessage(
           objectId: id,
-          entranceId: 0,
+          entranceId: entranceId,
         ),
+        closestPoint: LatLng(latitude: item.coordinates.latitude, longitude: item.coordinates.longitude),
       ),
       toCompareRoutes: [PoiCardWidgetRoute.page],
     );
   };
 
   return Marker(
-    id: item.id,
+    id: markerId ?? item.id,
     options: MarkerOptionsMessage(position: position, icon: icon),
     onTap: onTapInsideOnTap,
+  );
+}
+
+String favoriteListPlaceMarkerId(String placeId) => 'favorite-list-place-$placeId';
+
+String homeWorkMarkerId(int objectId) => 'favorite-home-work-$objectId';
+
+Marker constructFavoriteListPlaceMarker(
+  MapMarkerDto marker,
+  GeoPointWithElevationMessage position,
+  MarkerIconMessage icon,
+  AppRouter router,
+) {
+  final objectId = int.tryParse(marker.placeId);
+
+  return Marker(
+    id: favoriteListPlaceMarkerId(marker.placeId),
+    options: MarkerOptionsMessage(position: position, icon: icon),
+    onTap: objectId == null
+        ? null
+        : () => router.replaceOrPush(
+            route: PoiCardWidgetRoute(objectId: DgisObjectIdMessage(objectId: objectId, entranceId: 0)),
+            toCompareRoutes: [PoiCardWidgetRoute.page],
+          ),
   );
 }

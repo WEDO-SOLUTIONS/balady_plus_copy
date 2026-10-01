@@ -9,8 +9,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
-import 'package:mapness/entities/favourites/favourite_item.dart';
-import 'package:mapness/features/favourites/providers/favourite_cache.dart';
+import 'package:mapness/features/favorite_lists/providers/favorite_list_membership.dart';
 import 'package:mapness/features/parking_spot/parking_manage.dart';
 import 'package:mapness/features/poi_card/enums/contacts_info_type.dart';
 import 'package:mapness/features/poi_card/enums/poi_card_bottom_sheet_state.dart';
@@ -35,6 +34,8 @@ ItemActionBar _footerSecondary({
   String? label,
   EdgeInsetsGeometry? innerPadding,
   ButtonType buttonType = ButtonType.secondary,
+  Color? bgColor,
+  BorderSide? border,
 }) {
   if (lifestyleStyle != null) {
     return lifestyleStyle.secondary(
@@ -43,6 +44,8 @@ ItemActionBar _footerSecondary({
       innerPadding: innerPadding,
       buttonType: buttonType,
       onPressed: onPressed,
+      bgColor: bgColor,
+      border: border,
     );
   }
 
@@ -71,7 +74,7 @@ class PoiCardFooter extends HookConsumerWidget {
   final VoidCallback onTapCar;
   final VoidCallback onAddPointToRoute;
   final VoidCallback onRemovePointFromRoute;
-  final void Function(FavouriteItem? favouriteItem) onTapFavorite;
+  final VoidCallback onTapFavorite;
   final LatLng? closestPoint;
   final MultiStateSheetController<PoiCardBottomSheetState>? bottomSheetController;
 
@@ -116,12 +119,8 @@ class PoiCardFooter extends HookConsumerWidget {
 
     final objectId = data?.id?.objectId;
 
-    ref.watch(favouriteCacheProvider).value;
     final currentRoute = ref.watch(currentRouteProvider);
-    final provider = ref.watch(favouriteCacheProvider.notifier);
-    final isFavourite = objectId != null && provider.isFavourite(objectId);
-    final favouriteItem = objectId != null ? provider.getFavouriteOrNull(objectId) : null;
-    const iconData = SystemIcons.bookmark;
+    final isFavourite = objectId != null && ref.watch(isPlaceFavoritedProvider(objectId.toString()));
 
     final hasEntrances = data?.entrances.isNotEmpty == true;
     final hasContacts = data?.contactInfos.isNotEmpty == true;
@@ -172,9 +171,11 @@ class PoiCardFooter extends HookConsumerWidget {
           if (!parkingPoi && isFavourite)
             _footerSecondary(
               lifestyleStyle: lifestyleStyle,
-              icon: iconData,
+              icon: SystemIcons.bookmark,
               buttonType: ButtonType.primary,
-              onPressed: () => onTapFavorite(favouriteItem),
+              onPressed: onTapFavorite,
+              bgColor: isFavourite ? context.colors.foregroundMuted : null,
+              border: isFavourite ? BorderSide.none : null,
             ),
           if (currentRoute != null && objectId != null && !currentRoute.isStartOrFinishPOI(objectId))
             if (!currentRoute.containsIntermediatePOI(objectId))
@@ -219,8 +220,10 @@ class PoiCardFooter extends HookConsumerWidget {
           if (!parkingPoi && !isFavourite)
             _footerSecondary(
               lifestyleStyle: lifestyleStyle,
-              icon: iconData,
-              onPressed: () => onTapFavorite(favouriteItem),
+              icon: SystemIcons.bookmark,
+              onPressed: onTapFavorite,
+              bgColor: isFavourite ? context.colors.foregroundMuted : null,
+              border: isFavourite ? BorderSide.none : null,
             ),
           _footerSecondary(
             lifestyleStyle: lifestyleStyle,

@@ -1,5 +1,6 @@
 import 'package:dgis_map/library.dart';
 import 'package:equatable/equatable.dart';
+import 'package:mapness/entities/routing/route_search_point.dart';
 
 class RouteParamsPoint extends Equatable {
   final double latitude;

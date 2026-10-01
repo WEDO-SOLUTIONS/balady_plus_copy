@@ -32,6 +32,9 @@ class EnvironmentConfig {
   final String baladyBusinessUrl;
   final String bssApi;
   final String saudiPassApi;
+
+  // TODO: replace with real per-env URLs once the backend is deployed to dev/preprod/prod
+  final String favoriteListsApi;
   final CityEventDateRange cityscapeDateTimeRange;
   final CityEventDateRange saudiNationalDayDateRange;
   final CityEventDateRange foundingDayDateRange;
@@ -60,6 +63,7 @@ class EnvironmentConfig {
     required this.baladyBusinessUrl,
     required this.bssApi,
     required this.saudiPassApi,
+    required this.favoriteListsApi,
     required this.cityscapeDateTimeRange,
     required this.saudiNationalDayDateRange,
     required this.foundingDayDateRange,
@@ -95,6 +99,8 @@ class EnvironmentConfig {
     baladyBusinessUrl: json['baladyBusinessUrl'] as String,
     bssApi: json['bssApi'] as String,
     saudiPassApi: json['saudiPassApi'] as String,
+    favoriteListsApi:
+        json['favoriteListsApi'] as String? ?? 'https://urbi-lifestyle.momah.gov.sa/1.0/api/v1/favorite',
     cityscapeDateTimeRange: CityEventDateRange.fromJson(
       json['cityscapeDateTimeRange'] as Map<String, dynamic>?,
       CityEventDateRange.cityscapeDefault(),
@@ -138,6 +144,7 @@ class EnvironmentConfig {
     'appFeedbackApi': appFeedbackApi,
     'baladyBusinessUrl': baladyBusinessUrl,
     'saudiPassApi': saudiPassApi,
+    'favoriteListsApi': favoriteListsApi,
   };
 
   factory EnvironmentConfig.urbiDev() => EnvironmentConfig(
@@ -161,6 +168,7 @@ class EnvironmentConfig {
     bssApi: 'https://casino-bss-receiver-api-qa.k8s.2gis.dev',
     baladyBusinessUrl: 'https://business-stg.balady.gov.sa',
     saudiPassApi: 'https://apiservicesstg.balady.gov.sa/',
+    favoriteListsApi: 'https://urbi-lifestyle-stg.momah.gov.sa/1.0/api/v1/favorite',
     cityscapeDateTimeRange: CityEventDateRange.cityscapeDefault(),
     saudiNationalDayDateRange: CityEventDateRange.saudiNationalDayDefault(),
     foundingDayDateRange: CityEventDateRange.foundingDayDefault(),
@@ -188,6 +196,7 @@ class EnvironmentConfig {
     bssApi: 'https://casino-bss-receiver-api-qa.k8s.2gis.dev',
     baladyBusinessUrl: 'https://business-stg.balady.gov.sa',
     saudiPassApi: 'https://apiservicesstg.balady.gov.sa/',
+    favoriteListsApi: 'https://urbi-lifestyle-stg.momah.gov.sa/1.0/api/v1/favorite',
     cityscapeDateTimeRange: CityEventDateRange.cityscapeDefault(),
     saudiNationalDayDateRange: CityEventDateRange.saudiNationalDayDefault(),
     foundingDayDateRange: CityEventDateRange.foundingDayDefault(),
@@ -215,6 +224,7 @@ class EnvironmentConfig {
     bssApi: 'https://s1.bss.2gis.com',
     baladyBusinessUrl: 'https://business.balady.gov.sa',
     saudiPassApi: 'https://apiservices.balady.gov.sa/',
+    favoriteListsApi: 'https://urbi-lifestyle.momah.gov.sa/1.0/api/v1/favorite',
     cityscapeDateTimeRange: CityEventDateRange.cityscapeDefault(),
     saudiNationalDayDateRange: CityEventDateRange.saudiNationalDayDefault(),
     foundingDayDateRange: CityEventDateRange.foundingDayDefault(),
@@ -244,6 +254,7 @@ class EnvironmentConfig {
     bssApi: 'https://casino-bss-receiver-api-qa.k8s.2gis.dev',
     baladyBusinessUrl: 'https://business-stg.balady.gov.sa',
     saudiPassApi: 'https://apiservicesstg.balady.gov.sa/',
+    favoriteListsApi: 'https://urbi-lifestyle-stg.momah.gov.sa/1.0/api/v1/favorite',
     cityscapeDateTimeRange: CityEventDateRange.cityscapeDefault(),
     saudiNationalDayDateRange: CityEventDateRange.saudiNationalDayDefault(),
     foundingDayDateRange: CityEventDateRange.foundingDayDefault(),

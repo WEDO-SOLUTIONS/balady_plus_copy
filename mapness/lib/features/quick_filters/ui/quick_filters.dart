@@ -7,7 +7,7 @@ import 'package:mapness/entities/favourites/favourite_item.dart';
 import 'package:mapness/entities/quick_filters/quick_filter.dart' as models;
 import 'package:mapness/entities/quick_filters/quick_filter.dart';
 import 'package:mapness/entities/routing/route_params_point.dart';
-import 'package:mapness/features/favourites/providers/favourite_cache.dart';
+import 'package:mapness/features/favorite_lists/providers/home_work_favorites.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/widgets/quick_filters/models/filter_item.dart';
 import 'package:mapness/widgets/quick_filters/ui/quick_filters.dart' as widgets;
@@ -37,7 +37,7 @@ class QuickFilters extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final favouritesState = ref.watch(favouriteCacheProvider);
+    final favouritesState = ref.watch(homeWorkFavoritesProvider);
 
     final favourites = <FilterItem>[
       if (favouritesState.value?.home != null)

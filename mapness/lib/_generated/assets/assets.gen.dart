@@ -521,6 +521,9 @@ class $AssetsIconsSvgGen {
   /// Directory path: assets/icons/svg/dynamic_poi
   $AssetsIconsSvgDynamicPoiGen get dynamicPoi => const $AssetsIconsSvgDynamicPoiGen();
 
+  /// Directory path: assets/icons/svg/favorite
+  $AssetsIconsSvgFavoriteGen get favorite => const $AssetsIconsSvgFavoriteGen();
+
   /// File path: assets/icons/svg/founding_day_profile.svg
   SvgGenImage get foundingDayProfile => const SvgGenImage('assets/icons/svg/founding_day_profile.svg');
 
@@ -1483,6 +1486,67 @@ class $AssetsIconsSvgDynamicPoiGen {
   $AssetsIconsSvgDynamicPoiGlyphsGen get glyphs => const $AssetsIconsSvgDynamicPoiGlyphsGen();
 }
 
+class $AssetsIconsSvgFavoriteGen {
+  const $AssetsIconsSvgFavoriteGen();
+
+  /// File path: assets/icons/svg/favorite/ic_favorite_0_default.svg
+  SvgGenImage get icFavorite0Default => const SvgGenImage('assets/icons/svg/favorite/ic_favorite_0_default.svg');
+
+  /// File path: assets/icons/svg/favorite/ic_favorite_10_heart.svg
+  SvgGenImage get icFavorite10Heart => const SvgGenImage('assets/icons/svg/favorite/ic_favorite_10_heart.svg');
+
+  /// File path: assets/icons/svg/favorite/ic_favorite_1_home.svg
+  SvgGenImage get icFavorite1Home => const SvgGenImage('assets/icons/svg/favorite/ic_favorite_1_home.svg');
+
+  /// File path: assets/icons/svg/favorite/ic_favorite_2_building.svg
+  SvgGenImage get icFavorite2Building => const SvgGenImage('assets/icons/svg/favorite/ic_favorite_2_building.svg');
+
+  /// File path: assets/icons/svg/favorite/ic_favorite_3_city.svg
+  SvgGenImage get icFavorite3City => const SvgGenImage('assets/icons/svg/favorite/ic_favorite_3_city.svg');
+
+  /// File path: assets/icons/svg/favorite/ic_favorite_4_building.svg
+  SvgGenImage get icFavorite4Building => const SvgGenImage('assets/icons/svg/favorite/ic_favorite_4_building.svg');
+
+  /// File path: assets/icons/svg/favorite/ic_favorite_5_restaurant.svg
+  SvgGenImage get icFavorite5Restaurant => const SvgGenImage('assets/icons/svg/favorite/ic_favorite_5_restaurant.svg');
+
+  /// File path: assets/icons/svg/favorite/ic_favorite_6_restaurant.svg
+  SvgGenImage get icFavorite6Restaurant => const SvgGenImage('assets/icons/svg/favorite/ic_favorite_6_restaurant.svg');
+
+  /// File path: assets/icons/svg/favorite/ic_favorite_7_coffee.svg
+  SvgGenImage get icFavorite7Coffee => const SvgGenImage('assets/icons/svg/favorite/ic_favorite_7_coffee.svg');
+
+  /// File path: assets/icons/svg/favorite/ic_favorite_8_store.svg
+  SvgGenImage get icFavorite8Store => const SvgGenImage('assets/icons/svg/favorite/ic_favorite_8_store.svg');
+
+  /// File path: assets/icons/svg/favorite/ic_favorite_9_shopping_basket.svg
+  SvgGenImage get icFavorite9ShoppingBasket =>
+      const SvgGenImage('assets/icons/svg/favorite/ic_favorite_9_shopping_basket.svg');
+
+  /// File path: assets/icons/svg/favorite/ic_favorite_pin.svg
+  SvgGenImage get icFavoritePin => const SvgGenImage('assets/icons/svg/favorite/ic_favorite_pin.svg');
+
+  /// File path: assets/icons/svg/favorite/ic_favorite_pin_frame.svg
+  SvgGenImage get icFavoritePinFrame => const SvgGenImage('assets/icons/svg/favorite/ic_favorite_pin_frame.svg');
+
+  /// List of all assets
+  List<SvgGenImage> get values => [
+    icFavorite0Default,
+    icFavorite10Heart,
+    icFavorite1Home,
+    icFavorite2Building,
+    icFavorite3City,
+    icFavorite4Building,
+    icFavorite5Restaurant,
+    icFavorite6Restaurant,
+    icFavorite7Coffee,
+    icFavorite8Store,
+    icFavorite9ShoppingBasket,
+    icFavoritePin,
+    icFavoritePinFrame,
+  ];
+}
+
 class $AssetsIconsSvgIntermediateStopNumbersGen {
   const $AssetsIconsSvgIntermediateStopNumbersGen();
 
@@ -1532,9 +1596,6 @@ class $AssetsIconsSvgLayersGen {
   /// File path: assets/icons/svg/layers/ic_fav_home.svg
   SvgGenImage get icFavHome => const SvgGenImage('assets/icons/svg/layers/ic_fav_home.svg');
 
-  /// File path: assets/icons/svg/layers/ic_fav_pin.svg
-  SvgGenImage get icFavPin => const SvgGenImage('assets/icons/svg/layers/ic_fav_pin.svg');
-
   /// File path: assets/icons/svg/layers/ic_fav_work.svg
   SvgGenImage get icFavWork => const SvgGenImage('assets/icons/svg/layers/ic_fav_work.svg');
 
@@ -1552,7 +1613,6 @@ class $AssetsIconsSvgLayersGen {
     icBuildingPin,
     icFancyPin,
     icFavHome,
-    icFavPin,
     icFavWork,
     icInvestPin,
     icJoyPin,

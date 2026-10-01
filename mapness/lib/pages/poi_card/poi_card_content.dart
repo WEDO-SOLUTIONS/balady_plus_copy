@@ -404,14 +404,16 @@ class _ContentState extends ConsumerState<_PoiCardContent> with SingleTickerProv
                   },
                   onAddPointToRoute: () => _onAddObjectPointToRoute(context, l10n, ref, widget.data),
                   onRemovePointFromRoute: () => _onRemoveObjectPointToRoute(context, l10n, ref, widget.data),
-                  onTapFavorite: (item) {
+                  onTapFavorite: () {
                     _bssOnFavouritesTap();
-                    _onFavoriteTap(context: context, ref: ref, data: widget.data, favouriteItem: item);
+                    _onFavoriteTap(context: context, ref: ref, data: widget.data);
                   },
                 ),
                 header: PoiHeader(
                   bottomSheetController: _bottomSheetController,
                   title:
+                      ref.watch(customPlaceNicknameProvider(widget.objectId.toString())).value ??
+                      ref.watch(homeWorkFavoritesProvider).value?.titleFor(widget.objectId, l10n) ??
                       widget.data.address?.buildingName ??
                       widget.poiCardDataFromGoogle?.displayName ??
                       widget.data.pinTitle(l10n),

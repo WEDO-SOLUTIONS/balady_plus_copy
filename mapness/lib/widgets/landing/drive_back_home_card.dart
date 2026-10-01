@@ -14,7 +14,7 @@ import 'package:mapness/entities/favourites/favourite_item.dart';
 import 'package:mapness/entities/routing/route_params_point.dart';
 import 'package:mapness/features/advert_metrics/advert_metrics.dart';
 import 'package:mapness/features/city_event/active_city_event.dart';
-import 'package:mapness/features/favourites/providers/favourite_cache.dart';
+import 'package:mapness/features/favorite_lists/providers/home_work_favorites.dart';
 import 'package:mapness/features/sso_auth/data/auth_provider.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
@@ -184,7 +184,7 @@ class _DriveBackHomeCardState extends ConsumerState<DriveBackHomeCard> with Auto
   Future<FavouriteItem?> getHome(StackRouter router) async {
     ref.read(advertMetricsProvider.notifier).sendEvent(AdvertMetricsKeys.exploreLandingEngagement);
 
-    final home = (await ref.read(favouriteCacheProvider.future)).home;
+    final home = (await ref.read(homeWorkFavoritesProvider.future)).home;
 
     /// If there is no home ask user to add it.
     if (home == null) {

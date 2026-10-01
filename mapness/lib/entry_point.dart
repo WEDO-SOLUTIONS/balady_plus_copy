@@ -53,6 +53,9 @@ import 'package:mapness/features/car/car_enable_free_roam.dart';
 import 'package:mapness/features/city_event/active_city_event.dart';
 import 'package:mapness/features/cityscape/cityscape.dart';
 import 'package:mapness/features/dynamic_poi/dynamic_poi_layer_provider.dart';
+import 'package:mapness/features/favorite_lists/data/favorite_lists_remote_datasource.dart';
+import 'package:mapness/features/favorite_lists/providers/favorite_lists_carplay_bridge.dart';
+import 'package:mapness/features/favorite_lists/ui/models/favorite_list_form_params.dart';
 import 'package:mapness/features/favourites/data/models/favorite_cache_item.dart';
 import 'package:mapness/features/favourites/mappers/favourite_item_mapper.dart';
 import 'package:mapness/features/favourites/providers/favourite_cache.dart';
@@ -150,6 +153,9 @@ class MapnessProviderScope extends StatelessWidget {
   Widget build(BuildContext context) => ProviderScope(
     child: Consumer(
       builder: (context, ref, child) {
+        // Hands the CarPlay Pigeon bridge (`_HostFlutterApi`, a singleton created before this
+        // tree exists) a reference to this tree's own container — no separate container needed.
+        _hostFlutterApi?.attachProviderContainer(ProviderScope.containerOf(context, listen: false));
         // Must run before [EagerInitWidget] — eager init shows a spinner instead of [child].
         ref.watch(appIconQuickActionsInitializerProvider);
         return EagerInitWidget(child: child!);
@@ -615,8 +621,12 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> with Widg
   Widget build(BuildContext context) {
     ref
       ..listen(darkModeProvider, (prev, next) {
+        if (prev?.value == next.value) {
+          return;
+        }
+        final nextValue = next.value;
         WidgetsBinding.instance.addPostFrameCallback((_) {
-          _themeChanged(isDark: next.value?.isDark == true);
+          _themeChanged(isDark: nextValue?.isDark == true);
         });
       })
       // Entering or leaving a tunnel re-runs the same resolution, which picks the
@@ -976,9 +986,46 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> with Widg
     if (pathSegments.length != 1) {
       return false;
     }
+    final code = pathSegments.first;
+
+    if (code.length == 12) {
+      try {
+        final dataSource = await ref.read(favoriteListsRemoteDataSourceProvider.future);
+        final preview = await dataSource.previewShareLink(code);
+        void showShortLinkToast(String title) {
+          final ctx = rootNavigatorKey.currentContext;
+          if (ctx != null) {
+            ToastOverlay.of(ctx).show(title: title, isDismissible: true);
+          }
+        }
+
+        if (preview.isOwnList) {
+          showShortLinkToast(ref.read(appLocaleProvider).favoriteListOwnListToast);
+          return true;
+        }
+        if (preview.alreadyAccepted) {
+          showShortLinkToast(ref.read(appLocaleProvider).favoriteListAlreadyAddedToast);
+          return true;
+        }
+        if (!preview.canAccept) {
+          showShortLinkToast(ref.read(appLocaleProvider).somethingWentWrongPleaseTryAgainLater);
+          return true;
+        }
+        ref
+            .read(appRouterProvider)
+            .push(
+              CreateOrUpdateFavoriteListRoute(
+                params: AcceptSharedFavoriteListParams(shareToken: code, preview: preview),
+              ),
+            );
+        return true;
+      } catch (e) {
+        logger.log('failed to get favorite list share link details: $e', logLevel: MapnessLogLevel.error);
+        return null;
+      }
+    }
 
     try {
-      final code = pathSegments.first;
       final response = await ref
           .read(shortLinkRepositoryProvider)
           .getLinkDetails(code)
@@ -1279,7 +1326,7 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> with Widg
 
   Future<void> _openFavourites({bool fromQuickAction = false}) async {
     if (fromQuickAction) {
-      await ref.read(appRouterProvider).push(const FavouritesRoute());
+      await ref.read(appRouterProvider).push(const FavoriteListsRoute());
       return;
     }
 
@@ -1291,7 +1338,7 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> with Widg
         .read(authMethodsProvider.notifier)
         .authAndOpen(
           context,
-          callback: () => ref.read(appRouterProvider).push(const FavouritesRoute()),
+          callback: () => ref.read(appRouterProvider).push(const FavoriteListsRoute()),
         );
   }
 
@@ -1789,6 +1836,7 @@ Future<void> runMapnessApp(
     _startupLog('runMapnessApp: Hive initialized');
 
     final hostFlutterApi = _HostFlutterApi();
+    _hostFlutterApi = hostFlutterApi;
     HostFlutterApi.setUp(hostFlutterApi);
     _startupLog('runMapnessApp: HostFlutterApi set up, waiting for runMain()...');
 
@@ -1850,12 +1898,35 @@ Future<void> initHive() async {
   }
 }
 
+// Reference to the single `_HostFlutterApi` instance created in [runMapnessApp], so
+// [MapnessProviderScope] can hand it the widget tree's provider container once it exists.
+_HostFlutterApi? _hostFlutterApi;
+
+// Always holds the most recent container [MapnessProviderScope] handed over. Kept up to date on
+// every rebuild (not just the first one) because the widget tree hosting it can be torn down and
+// rebuilt — e.g. the phone's own Activity going to the background/being destroyed during an
+// active Android Auto session — which disposes the container a caller may still be holding.
+ProviderContainer? _providerContainer;
+
+// Completed once [MapnessProviderScope] builds for the first time. Native bridge calls that need
+// Riverpod (e.g. `getFavoriteLists`) await this instead of reading a nullable field, since a
+// caller (e.g. an Android Auto session that comes up before the phone's own Activity/`runMain()`)
+// can otherwise race ahead of the widget tree ever building.
+final _firstProviderContainerReady = Completer<void>();
+
 class _HostFlutterApi extends HostFlutterApi {
   final appRunCompleter = Completer();
 
   _HostFlutterApi();
 
   bool isAppRun = false;
+
+  void attachProviderContainer(ProviderContainer container) {
+    _providerContainer = container;
+    if (!_firstProviderContainerReady.isCompleted) {
+      _firstProviderContainerReady.complete();
+    }
+  }
 
   @override
   void analyticsTrack(String event) {
@@ -1893,6 +1964,39 @@ class _HostFlutterApi extends HostFlutterApi {
       work: favouritesState.work?.message,
       items: favouritesState.items.map((item) => item.message).toList(),
     );
+  }
+
+  @override
+  Future<FavoriteListsStateMessage> getFavoriteLists() async {
+    if (_providerContainer == null) {
+      try {
+        await _firstProviderContainerReady.future.timeout(const Duration(seconds: 10));
+      } on TimeoutException {
+        return FavoriteListsStateMessage(lists: const []);
+      }
+    }
+    if (!await isAuthorized()) {
+      return FavoriteListsStateMessage(lists: const []);
+    }
+    for (var attempt = 0; attempt < 2; attempt++) {
+      final container = _providerContainer;
+      if (container == null) break;
+      try {
+        // Bounded: reading from an already-disposed container can hang forever instead of
+        // throwing (observed in the wild), which would otherwise stall this pigeon call — and
+        // with it the whole native caller — indefinitely.
+        final result = await buildFavoriteListsStateMessage(container).timeout(const Duration(seconds: 15));
+        return result;
+      } catch (e) {
+        logger.log('getFavoriteLists failed (attempt $attempt): $e', logLevel: MapnessLogLevel.error);
+        // The container may have been disposed mid-read (e.g. the widget tree hosting it just got
+        // torn down); give MapnessProviderScope a brief moment to rebuild and reattach a fresh one.
+        if (attempt == 0) {
+          await Future.delayed(const Duration(milliseconds: 500));
+        }
+      }
+    }
+    return FavoriteListsStateMessage(lists: const []);
   }
 
   @override

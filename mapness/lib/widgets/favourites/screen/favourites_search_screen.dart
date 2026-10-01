@@ -39,7 +39,7 @@ class FavouritesSearchScreen extends HookConsumerWidget {
         child: Material(
           color: context.colors.backgroundSurface4,
           child: uiss.SearchScope(
-            named: uiss.SearchScopeEnum.map,
+            named: uiss.SearchScopeEnum.favourites,
             child: CustomScrollView(
               controller: scrollController,
               physics: const ClampingScrollPhysics(),

@@ -7,11 +7,10 @@ import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:mapness/entities/favourites/favourite_item.dart';
 import 'package:mapness/entities/routing/route_params_point.dart';
 import 'package:mapness/features/app_analytics/models/datafinder_models.dart';
 import 'package:mapness/features/city_event/active_city_event.dart';
-import 'package:mapness/features/favourites/providers/favourite_cache.dart';
+import 'package:mapness/features/favorite_lists/providers/favorite_list_membership.dart';
 import 'package:mapness/features/poi_card/domain/model/poi_content/src/poi_content_contacts.dart';
 import 'package:mapness/features/poi_card/enums/contacts_info_type.dart';
 import 'package:mapness/features/poi_card/extensions/poi_content/src/poi_content_contacts.dart';
@@ -46,10 +45,8 @@ class SearchItemQuickActions extends HookConsumerWidget {
     final isDGADark = context.read<ThemeController>().currentTheme == BaladyAppThemes.darkDGA;
     final isDGAlight = context.read<ThemeController>().currentTheme == BaladyAppThemes.lightDGA;
 
-    ref.watch(favouriteCacheProvider).value;
-    final provider = ref.watch(favouriteCacheProvider.notifier);
-    final isFavourite = objectId != null && provider.isFavourite(objectId);
-    final favouriteItem = objectId != null ? provider.getFavouriteOrNull(objectId) : null;
+    final isFavourite = objectId != null && ref.watch(isPlaceFavoritedProvider(objectId.toString()));
+    // todo(claude): set icon state instead of other icon
     final iconData = isFavourite ? SystemIcons.bookmarkFill : SystemIcons.bookmark;
 
     final poiActions = ref.read(poiCardActionsProvider.notifier);
@@ -145,7 +142,6 @@ class SearchItemQuickActions extends HookConsumerWidget {
               context: context,
               ref: ref,
               data: directoryObject,
-              favouriteItem: favouriteItem,
             );
           },
         )
@@ -169,7 +165,6 @@ class SearchItemQuickActions extends HookConsumerWidget {
               context: context,
               ref: ref,
               data: directoryObject,
-              favouriteItem: favouriteItem,
             );
           },
         ),
@@ -323,15 +318,18 @@ class SearchItemQuickActions extends HookConsumerWidget {
     required BuildContext context,
     required WidgetRef ref,
     required DirectoryObjectMessage data,
-    required FavouriteItem? favouriteItem,
   }) async {
     await ref
         .read(authMethodsProvider.notifier)
         .authOrOpen(
           context,
-          callback: () {
+          callback: () async {
             BssService.instance.trackFavoriteTap(data);
-            toggleFavoriteDirectoryObject(context: context, ref: ref, data: data, favouriteItem: favouriteItem);
+            await toggleFavoriteDirectoryObject(
+              context: context,
+              ref: ref,
+              data: data,
+            );
           },
         );
   }

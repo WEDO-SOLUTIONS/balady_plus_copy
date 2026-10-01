@@ -1,7 +1,16 @@
+import 'dart:typed_data';
+
 import 'package:balady_uikit/core/colorsV2/themes.dart';
 import 'package:dgis_map/library.dart';
+import 'package:flutter/widgets.dart';
 import 'package:mapness/entities/urbi_map_x/lat_lng_x.dart';
 import 'package:mapness/features/city_event/active_city_event.dart';
+import 'package:mapness/features/favorite_lists/data/models/icon_type.dart';
+import 'package:mapness/features/favorite_lists/data/models/marker_color_code.dart';
+import 'package:mapness/features/favorite_lists/providers/favorite_list_membership.dart';
+import 'package:mapness/features/favorite_lists/providers/home_work_favorites.dart';
+import 'package:mapness/features/favourites/helpers/construct_marker.dart';
+import 'package:mapness/features/favourites/helpers/favourite_entity_id.dart';
 import 'package:mapness/features/favourites/mappers/directory_object_message_mapper.dart';
 import 'package:mapness/features/leap/leap.dart';
 import 'package:mapness/shared/constants/constants.dart';
@@ -11,6 +20,7 @@ import 'package:mapness/shared/extensions/string_ext.dart';
 import 'package:mapness/shared/providers/app_language.dart';
 import 'package:mapness/shared/providers/dark_mode.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
+import 'package:mapness/shared/providers/map/favorite_pin_marker_bitmap.dart';
 import 'package:mapness/shared/providers/map/highlight.dart';
 import 'package:mapness/shared/providers/map/rubric_marker_type_mapper.dart';
 import 'package:mapness/shared/providers/map/selected_marker.dart';
@@ -21,6 +31,11 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 part 'point_of_interest.g.dart';
 
 const poiPinId = 'poi_pin_id';
+
+// Pin-tip dot centred at (35, 61) in the shared `places_big_new` icon set's
+// 70x70 viewBox (e.g. ic_hotels.svg, ic_pin_new.svg) — anchoring here instead
+// of the icon centre makes the pin point at the coordinate with its tip.
+const _poiPinTipAnchorY = 61 / 70;
 
 @riverpod
 Future<DirectoryObjectMessage?> pointOfInterest(
@@ -49,7 +64,28 @@ Future<DirectoryObjectMessage?> pointOfInterest(
   final mapMarkerMapper = await ref
       .watch(rubricMarkerMapperProvider.notifier)
       .getMarkerPath(rubrics, objectId.objectId, closestPoint: closestPoint?.geoPoint);
-  final bigIconPath = mapMarkerMapper.$2;
+  final favoriteMarker = await ref.watch(favoritePlaceMarkerProvider(objectId.objectId.toString()).future);
+  final favoritePinBitmap = ref.read(favoritePinMarkerBitmapProvider);
+  FavoriteIconType? homeWorkIconType;
+  if (favoriteMarker == null) {
+    final homeWork = await ref.watch(homeWorkFavoritesProvider.future);
+    if (parseObjectIdFromFavouriteEntityId(homeWork.home?.entity?.id) == objectId.objectId) {
+      homeWorkIconType = FavoriteIconType.home;
+    } else if (parseObjectIdFromFavouriteEntityId(homeWork.work?.entity?.id) == objectId.objectId) {
+      homeWorkIconType = FavoriteIconType.building;
+    }
+  }
+  final isFavoritePin = favoriteMarker != null || homeWorkIconType != null;
+  Uint8List? favoriteIconBytes;
+  if (isFavoritePin) {
+    final devicePixelRatio = WidgetsBinding.instance.platformDispatcher.views.first.devicePixelRatio;
+    favoriteIconBytes = await favoritePinBitmap.renderTeardropPin(
+      tint: favoriteMarker != null ? favoriteMarker.markerColorCode.color : MarkerColorCode.green.color,
+      icon: favoriteMarker != null ? (favoriteMarker.iconType ?? FavoriteIconType.$default) : homeWorkIconType!,
+      devicePixelRatio: devicePixelRatio,
+    );
+  }
+  final bigIconPath = isFavoritePin ? null : mapMarkerMapper.$2;
 
   final markerPosition = directoryObject.markerPosition;
   final fallbackPosition = closestPoint;
@@ -103,11 +139,19 @@ Future<DirectoryObjectMessage?> pointOfInterest(
       text: showPinLabel ? directoryObject.title : null,
       textStyle: textStyle.copyWith(suppressOnOverlap: false),
       icon: bigIconPath,
+      iconBytes: favoriteIconBytes,
+      anchor: isFavoritePin
+          ? MarkerAnchorMessage(x: favoritePinBitmap.teardropAnchor.x, y: favoritePinBitmap.teardropAnchor.y)
+          : MarkerAnchorMessage(x: 0.5, y: _poiPinTipAnchorY),
+      width: isFavoritePin ? favoritePinBitmap.teardropLogicalSize : null,
       id: poiPinId,
       activeCityEvent: ref.read(activeCityEventProvider),
       isDark: isDark,
     ),
     objectId: objectId.objectId,
+    favouriteMarkerId: favoriteMarker != null
+        ? favoriteListPlaceMarkerId(objectId.objectId.toString())
+        : (homeWorkIconType != null ? homeWorkMarkerId(objectId.objectId) : null),
   );
 
   final highlightController = ref.watch(highlightProvider.notifier);

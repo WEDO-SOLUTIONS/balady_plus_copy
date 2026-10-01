@@ -23,7 +23,13 @@ class SearchHandler(
         private val locationSource: FusedLocationSource,
         private val searchHistory: SearchHistory,
 ) : AutoCloseable {
-    private var objectSearchFuture: AutoCloseable? = null
+    // Multiple concurrent searchByDirectoryObjectId calls (e.g. resolving positions for a
+    // batch of favorite places via Future.wait on the Dart side) must each keep their own
+    // future alive until completion, otherwise a later call overwriting a single field would
+    // drop the SDK's required strong reference to the earlier one and its callback would
+    // never fire (surfacing as a client-side timeout).
+    private val objectSearchFutures: MutableSet<AutoCloseable> =
+        java.util.concurrent.ConcurrentHashMap.newKeySet()
     private var searchFuture: AutoCloseable? = null
     private var itemMarkerInfosFuture: AutoCloseable? = null
     private var suggestFuture: AutoCloseable? = null
@@ -32,7 +38,8 @@ class SearchHandler(
     private var queries = mutableMapOf<String, SearchQuery>()
 
     override fun close() {
-        objectSearchFuture?.close()
+        objectSearchFutures.forEach { it.close() }
+        objectSearchFutures.clear()
         searchFuture?.close()
         suggestFuture?.close()
         itemMarkerInfosFuture?.close()
@@ -52,8 +59,10 @@ class SearchHandler(
         objectId: DgisObjectId,
         callback: (Result<DirectoryObjectMessage>)->Unit
     ) {
-        objectSearchFuture = searchManager.searchByDirectoryObjectId(objectId).apply {
+        lateinit var future: AutoCloseable
+        future = searchManager.searchByDirectoryObjectId(objectId).apply {
             onResult { response ->
+                objectSearchFutures.remove(future)
                 if (response == null) {
                     callback(Result.failure(NotFoundException("Object with id ${objectId.objectId} not found")))
                     return@onResult
@@ -61,8 +70,12 @@ class SearchHandler(
 
                 callback(Result.success(response.toMessage()))
             }
-            onError { callback(Result.failure(it)) }
+            onError {
+                objectSearchFutures.remove(future)
+                callback(Result.failure(it))
+            }
         }
+        objectSearchFutures.add(future)
     }
 
     fun search(

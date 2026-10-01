@@ -715,9 +715,22 @@ class NavigationScreen(
         return maneuver.build()
     }
 
-    private fun getFavourites(forceUpdate: Boolean = false) {
+    private fun getFavourites(forceUpdate: Boolean = false, attempt: Int = 0) {
         FlutterProvider.getHostFlutterApi(carContext).getFavourites { result ->
-            handleFavouritesMessage(result.getOrNull()) {
+            val message = result.getOrNull()
+            if (message == null && attempt == 0) {
+                // Cold-start race: the Android Auto session can be constructed before the phone's
+                // Flutter engine finishes registering the HostFlutterApi Pigeon handler, so the
+                // very first getFavourites() call can come back empty with no later retry (unlike
+                // getFavoriteLists() in entry_point.dart, which already guards against this). One
+                // bounded retry is enough to cover that startup window.
+                coroutineScope.launch {
+                    delay(1500)
+                    getFavourites(forceUpdate, attempt = 1)
+                }
+                return@getFavourites
+            }
+            handleFavouritesMessage(message) {
                 favourites = it
                 if (mapController.isMapReady) {
                     tryToShowFavourites(forceUpdate)

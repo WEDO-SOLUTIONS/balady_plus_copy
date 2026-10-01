@@ -4,8 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/entities/favourites/favourite_item.dart';
+import 'package:mapness/features/favorite_lists/providers/home_work_favorites.dart';
 import 'package:mapness/features/favourites/mappers/directory_object_message_mapper.dart';
-import 'package:mapness/features/favourites/providers/favourite_cache.dart';
 import 'package:mapness/features/search/models/search_scope.dart';
 import 'package:mapness/features/search/providers/search.dart';
 import 'package:mapness/features/search/providers/search_history.dart';
@@ -80,12 +80,16 @@ class FavouritesSearchHistory extends ConsumerWidget {
             );
 
             final favItem = object.mapToFavourite();
-            final repo = ref.read(favouriteCacheProvider.notifier);
-            await switch (markerType) {
-              FavouriteItemMarkerType.unknown || FavouriteItemMarkerType.place => repo.addItem(favItem),
-              FavouriteItemMarkerType.home => repo.setHome(favItem),
-              FavouriteItemMarkerType.work => repo.setWork(favItem),
-            };
+            switch (markerType) {
+              // Every live caller of FavouritesSearchRoute passes home/work only.
+              case FavouriteItemMarkerType.unknown:
+              case FavouriteItemMarkerType.place:
+                break;
+              case FavouriteItemMarkerType.home:
+                await ref.read(homeWorkFavoritesActionsProvider.notifier).setHome(favItem);
+              case FavouriteItemMarkerType.work:
+                await ref.read(homeWorkFavoritesActionsProvider.notifier).setWork(favItem);
+            }
             await sendHistoryTapEvent(item, index, historyList);
             if (context.mounted && context.router.canPop()) {
               context.router.pop(favItem);

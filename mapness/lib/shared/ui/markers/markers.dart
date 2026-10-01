@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import 'package:dgis_map/library.dart';
 import 'package:mapness/_generated/assets/assets.gen.dart';
 import 'package:mapness/entities/city_event/city_event.dart';
@@ -16,6 +18,7 @@ class Markers {
     GeoPointWithElevationMessage position, {
     String? id,
     String? icon,
+    Uint8List? iconBytes,
     double? width,
     double? height,
     String? text,
@@ -23,16 +26,19 @@ class Markers {
     int maxCharsPerLine = 40,
     CityEventType? activeCityEvent,
     bool isDark = false,
+    MarkerAnchorMessage? anchor,
   }) => Marker(
     id: id ?? 'PIN-MARKER',
     options: MarkerOptionsMessage(
       position: position,
-      icon: (icon ?? activeCityEvent?.defaultPin(isDark: isDark) ?? defaultPinNew).resolvedMarkerIcon(
-        size: width ?? defaultWidth,
-      ),
+      icon: iconBytes != null
+          ? PngBytesMarkerIcon(pngData: iconBytes, width: width ?? defaultWidth)
+          : (icon ?? activeCityEvent?.defaultPin(isDark: isDark) ?? defaultPinNew).resolvedMarkerIcon(
+              size: width ?? defaultWidth,
+            ),
       text: text?.breakMarkerLabel(maxCharsPerLine: maxCharsPerLine),
       textStyle: textStyle,
-      anchor: MarkerAnchorMessage(x: 0.5, y: 1),
+      anchor: anchor ?? MarkerAnchorMessage(x: 0.5, y: 1),
       animatedAppearance: true,
       zIndex: 50,
     ),

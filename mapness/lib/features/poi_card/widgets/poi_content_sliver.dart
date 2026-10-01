@@ -12,8 +12,9 @@ import 'package:mapness/entities/routing/route_search_point.dart';
 import 'package:mapness/features/ai_summary/ui/ai_summary_section.dart';
 import 'package:mapness/features/bus_departures/providers/provider.dart';
 import 'package:mapness/features/city_event/active_city_event.dart';
+import 'package:mapness/features/favorite_lists/providers/favorite_list_membership.dart';
+import 'package:mapness/features/favorite_lists/providers/home_work_favorites.dart';
 import 'package:mapness/features/favourites/mappers/directory_object_message_mapper.dart';
-import 'package:mapness/features/favourites/providers/favourite_cache.dart';
 import 'package:mapness/features/founding_day/founding_day.dart';
 import 'package:mapness/features/jeddah_bus/repo.dart';
 import 'package:mapness/features/leap/leap.dart';
@@ -35,6 +36,7 @@ import 'package:mapness/pages/poi_card/scroll_paper_about_widget.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/features/balady_analytics/metrics.dart';
+import 'package:mapness/shared/lib/auth/auth_methods.dart';
 import 'package:mapness/shared/providers/analytic/bss_service.dart';
 import 'package:mapness/shared/providers/analytic/models/bss_request.dart';
 import 'package:mapness/shared/providers/analytic/models/extensions/directory_obj_ext.dart';
@@ -172,17 +174,25 @@ class PoiContentSliver extends ConsumerWidget {
     final routeInfos = data.routeInfos;
 
     // Favourite
-    final favouritesState = ref.watch(favouriteCacheProvider);
+    final homeWorkState = ref.watch(homeWorkFavoritesProvider);
+    final objectId = data.id?.objectId;
+    final isFavorited = objectId != null && ref.watch(isPlaceFavoritedByObjectIdProvider(objectId));
     final void Function() onFavouritePressed = () {
       Metrics.logEventAdvanced(
         MetricsConstants.poiKeys.favorites,
         group: MetricsConstants.poiTag,
         action: MetricAction.tap.toString(),
       );
-
-      context.router.push(const FavouritesRoute());
+      // Route through the auth gate instead of pushing directly, so this can't race the
+      // sign-in flow and hit favorite_lists endpoints before a valid token is attached.
+      ref
+          .read(authMethodsProvider.notifier)
+          .authAndOpen(
+            context,
+            callback: () => context.router.push(const FavoriteListsRoute()),
+          );
     };
-    final favourites = data.getFavourites(favouritesState, context.l10n, onFavouritePressed);
+    final favourites = data.getFavourites(homeWorkState, context.l10n, onFavouritePressed, isFavorited: isFavorited);
 
     // Feedback
     final feedback = PoiContentDataIncorrectModel(

@@ -135,6 +135,7 @@ class _WrapperState extends ConsumerState<_PoiCardWrapper>
       cameraConfig: widget.cameraConfig,
       closestPoint: widget.closestPoint,
       showHighlight: widget.showHighlight,
+      entranceId: widget.objectId.entranceId,
     );
     final state = ref.watch(viewModelProvider);
     ref
@@ -405,7 +406,6 @@ Future<void> _onFavoriteTap({
   required BuildContext context,
   required WidgetRef ref,
   required DirectoryObjectMessage data,
-  FavouriteItem? favouriteItem,
 }) async {
   await ref
       .read(authMethodsProvider.notifier)
@@ -419,7 +419,7 @@ Future<void> _onFavoriteTap({
             props: {'objectId': data.id?.objectId},
           );
 
-          toggleFavoriteDirectoryObject(context: context, ref: ref, data: data, favouriteItem: favouriteItem);
+          toggleFavoriteDirectoryObject(context: context, ref: ref, data: data);
         },
       );
 }

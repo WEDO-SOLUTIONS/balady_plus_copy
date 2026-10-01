@@ -110,7 +110,11 @@ class _RoutingRoutesPageState extends ConsumerState<RoutingRoutesPage> {
       ..watch(layersControlsProvider)
       ..watch(routesHelperProvider)
       ..watch(locationProvider.select((_) => null))
-      ..watch(favouriteMarkersProvider.select((value) => null))
+      ..watch(
+        favouriteMarkersProvider(
+          theme: provider.Provider.of<ThemeController>(context, listen: false).currentTheme,
+        ).select((value) => null),
+      )
       /// keep iwish markers alive when page is opened  (DO NOT DELETE UNTIL REFACOR OF LAYER CONTROLS!)
       ..watch(mapObjectManagerProvider(named: esri.name, layerId: esri.layerId).notifier)
       ..watch(mapObjectManagerProvider(named: mappness.name, layerId: mappness.layerId).notifier);

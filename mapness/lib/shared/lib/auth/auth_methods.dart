@@ -4,9 +4,10 @@ import 'package:balady_plus/app/core/utils/balady_route_observer.dart';
 import 'package:balady_plus/app/core/utils/common_functions.dart';
 import 'package:balady_plus/app/features/entry_point/presentation/cubit/auth_cubit.dart';
 import 'package:flutter/widgets.dart';
+import 'package:mapness/features/balady_analytics/metrics.dart';
 import 'package:mapness/features/sso_auth/data/auth_provider.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
-import 'package:mapness/features/balady_analytics/metrics.dart';
+import 'package:mapness/shared/ui/loading/loading_overlay.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'auth_methods.g.dart';
@@ -22,6 +23,7 @@ class AuthMethods extends _$AuthMethods {
   static StreamSubscription<EntryPointState>? _authSubscription;
 
   Timer? _loginScreenPoppedSubscription;
+
   void _initializeLoginScreenPoppedSubscription({VoidCallback? onPopped}) {
     _loginScreenPoppedSubscription?.cancel();
     _loginScreenPoppedSubscription = Timer.periodic(const Duration(seconds: 1), (timer) {
@@ -38,10 +40,29 @@ class AuthMethods extends _$AuthMethods {
   @override
   bool build() => CommonProperties.isLoggedIn;
 
+  /// Waits out the cold-start auth-session-restore window (`AuthenticationBloc` still
+  /// `AuthenticationUnknownState`) before we trust `CommonProperties.isLoggedIn`, showing a
+  /// progress overlay instead of racing straight to the login screen. Bounded by
+  /// `waitForAuthSessionReady`'s own timeout, so this can't hang forever.
+  Future<void> _waitForSessionReady(BuildContext context) async {
+    try {
+      await LoadingOverlay.of(context).makeCall(CommonProperties.waitForAuthSessionReady);
+    } catch (_) {
+      // No LoadingOverlay ancestor mounted yet — proceed with best-effort state.
+    }
+  }
+
   Future<void> authOrOpen(
     BuildContext context, {
     FutureOr<void> Function()? callback,
   }) async {
+    if (!state) {
+      if (context.mounted) {
+        await _waitForSessionReady(context);
+        state = CommonProperties.isLoggedIn;
+      }
+    }
+
     if (!state) {
       if (context.mounted) {
         await ref.read(authProvider.notifier).doAuth();
@@ -65,6 +86,16 @@ class AuthMethods extends _$AuthMethods {
     // cancels the userStateStream subscription while the user is still on
     // the login form, and the callback never runs.
     BaladyRouteObserver.resetLoginScreenPopped();
+
+    if (!state) {
+      if (!context.mounted) {
+        return;
+      }
+
+      await _waitForSessionReady(context);
+      state = CommonProperties.isLoggedIn;
+    }
+
     if (!state) {
       if (!context.mounted) {
         return;

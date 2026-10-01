@@ -211,11 +211,6 @@ class AppRouter extends RootStackRouter {
           page: FeedbackSentRoute.page,
         ),
         CustomRoute(
-          path: 'favourites',
-          page: FavouritesRoute.page,
-          customRouteBuilder: RouteBuilders.cupertinoRouteBuilder,
-        ),
-        CustomRoute(
           path: 'navi_search_favorites',
           page: NaviFavoritesRoute.page,
         ),
@@ -235,6 +230,63 @@ class AppRouter extends RootStackRouter {
           path: 'picker',
         ),
         CustomRoute(
+          path: 'favorite_lists',
+          page: FavoriteListsRoute.page,
+          fullscreenDialog: true,
+          customRouteBuilder: RouteBuilders.cupertinoRouteBuilder,
+        ),
+        CustomRoute(
+          path: 'edit_my_addresses',
+          page: EditMyAddressesRoute.page,
+          opaque: false,
+          customRouteBuilder: RouteBuilders.modalSheetBuilder,
+        ),
+        CustomRoute(
+          path: 'create_or_update_favorite_list',
+          page: CreateOrUpdateFavoriteListRoute.page,
+          opaque: false,
+          customRouteBuilder: RouteBuilders.modalSheetBuilder,
+        ),
+        CustomRoute(
+          path: 'favorite_item_menu',
+          page: FavoriteItemMenuRoute.page,
+          customRouteBuilder: RouteBuilders.modalSheetBuilder,
+        ),
+        CustomRoute(
+          path: 'confirmation_sheet',
+          page: ConfirmationSheetRoute.page,
+          customRouteBuilder: RouteBuilders.modalSheetBuilder,
+        ),
+        CustomRoute(
+          path: 'edit_favorite_list_item_name',
+          page: EditFavoriteListItemNameRoute.page,
+          customRouteBuilder: RouteBuilders.modalSheetBuilder,
+        ),
+        CustomRoute(
+          path: 'pick_favorite_list',
+          page: PickFavoriteListRoute.page,
+          opaque: false,
+          customRouteBuilder: RouteBuilders.modalSheetBuilder,
+        ),
+        CustomRoute(
+          path: 'marker_color_picker',
+          page: MarkerColorPickerRoute.page,
+          opaque: false,
+          customRouteBuilder: RouteBuilders.modalSheetBuilder,
+        ),
+        CustomRoute(
+          path: 'favorite_list_details',
+          page: FavoriteListDetailsRoute.page,
+          opaque: false,
+          customRouteBuilder: RouteBuilders.modalSheetBuilder,
+        ),
+        CustomRoute(
+          path: 'favorite_list_menu',
+          page: FavoriteListMenuRoute.page,
+          opaque: false,
+          customRouteBuilder: RouteBuilders.modalSheetBuilder,
+        ),
+        CustomRoute(
           path: 'feedback',
           page: AppFeedbackSheet.page,
           transitionsBuilder: TransitionsBuilders.slideBottom,
@@ -252,10 +304,6 @@ class AppRouter extends RootStackRouter {
           page: AppFeedbackInputSheet.page,
           opaque: false,
           fullscreenDialog: true,
-        ),
-        CustomRoute(
-          path: 'poi_favorite_dialog',
-          page: PoiFavoriteDialogRoute.page,
         ),
         CustomRoute(
           path: 'remove_history_confirmation',

@@ -91,7 +91,7 @@ All 9 match BRD V0.1 exactly; every attribute + value variation was tested live.
 - Suggestion tap (`suggestion_click`): `features/search/ui/suggest_item.dart`
 - Result tap + action buttons (`search_results_click`): `pages/{map_search,navi_search,routing}/ui/*_search_results.dart`
 - History tap (`operation_type: History`, `search_type: History`): `pages/{map_search,navi_search}/ui/*_search_history.dart`
-- Favourite add (`favorite_add`): `features/poi_card/widgets/poi_favorite_dialog.dart`
+- Favourite add (`favorite_add`): `features/favorite_lists/ui/pick_favorite_list_page.dart`
 
 ### Exposure events are PER ITEM, not arrays ⚠️
 Per BRD ("10 items shown → 10 separate events"), `suggestion_exposure` and
@@ -142,9 +142,9 @@ first touched), combined with the live navigation state.
 > Riverpod's "modify a provider during build" error.
 
 ### `favorite_add` carries full POI data
-`poi_addr` / `poi_type` / `poi_distance` are threaded from the POI card opener
-(`poi_functions.dart` and `poi_makkah/poi_card_content_footer.dart`) into the
-dialog via the route arg `favoritePoi`, since `FavouriteItem` itself drops them.
+`poi_addr` / `poi_type` / `poi_distance` are built in `PickFavoriteListPage` from its
+`DirectoryObjectMessage data` (`toDataFinderPoi`). It fires after a successful save: once
+per save with `Not Specified` when lists were added, and `Home`/`Work` on set (not on unset).
 
 ### Other notes
 - `search_param` carries `suggest_type=object` (the default suggestor mode).
