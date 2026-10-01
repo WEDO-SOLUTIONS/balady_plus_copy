@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/_features/common/providers/ui_direction.dart';
 import 'package:mapness/app/auto_route/app_routes.dart';
+import 'package:mapness/features/friends_on_map/data/friends_on_map_api_exception.dart';
 import 'package:mapness/features/friends_on_map/models/chat_message.dart';
 import 'package:mapness/features/friends_on_map/providers/chat_controller.dart';
 import 'package:mapness/features/friends_on_map/providers/chat_outbox.dart';
@@ -124,30 +125,44 @@ class _ChatPageState extends ConsumerState<ChatPage> {
           ),
           body: Column(
             children: [
-              Expanded(
-                child: threadAsync.when(
-                  data: (thread) => _buildMessages(context, [...thread.items, ...pending]),
-                  loading: () => const Center(child: CircularProgressIndicator()),
-                  // 404 after the friendship ended or a block (R-106): the
-                  // conversation is simply gone, for both parties.
-                  error: (_, _) => Center(
-                    child: Padding(
-                      padding: const EdgeInsets.all(Spacing.$4x),
-                      child: Text(
-                        context.l10n.chatUnavailable,
-                        textAlign: TextAlign.center,
-                        style: context.textStyles.bodyLargeRegular.copyWith(color: context.colors.foregroundMuted),
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-              if (!threadAsync.hasError) ChatInputBar(onSend: _sendText, onSendPlace: _sendPlace),
+              Expanded(child: _buildBody(context, threadAsync, pending.toList())),
+              if (!_isUnavailable(threadAsync)) ChatInputBar(onSend: _sendText, onSendPlace: _sendPlace),
             ],
           ),
         ),
       ),
     );
+  }
+
+  // R-106: a 404 means the friendship ended or a block is in force — the
+  // conversation is gone for both parties. Any other error (e.g. offline)
+  // keeps showing what we already have.
+  bool _isUnavailable(AsyncValue<ChatThreadState> thread) {
+    final error = thread.error;
+    return error is FriendsOnMapApiException && error.statusCode == 404;
+  }
+
+  // Renders the last known thread while a refetch is in flight: an event
+  // from the socket invalidates the provider, and `when` would otherwise
+  // flash a spinner (and lose the scroll position) on every incoming message.
+  Widget _buildBody(BuildContext context, AsyncValue<ChatThreadState> threadAsync, List<ChatMessage> pending) {
+    if (_isUnavailable(threadAsync)) {
+      return Center(
+        child: Padding(
+          padding: const EdgeInsets.all(Spacing.$4x),
+          child: Text(
+            context.l10n.chatUnavailable,
+            textAlign: TextAlign.center,
+            style: context.textStyles.bodyLargeRegular.copyWith(color: context.colors.foregroundMuted),
+          ),
+        ),
+      );
+    }
+    final thread = threadAsync.value;
+    if (thread == null) {
+      return const Center(child: CircularProgressIndicator());
+    }
+    return _buildMessages(context, [...thread.items, ...pending]);
   }
 
   Widget _buildMessages(BuildContext context, List<ChatMessage> messages) {

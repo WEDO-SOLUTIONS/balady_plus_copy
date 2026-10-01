@@ -47,7 +47,7 @@ class ChatOutbox extends _$ChatOutbox {
     items.sort((a, b) => a.composedAt.compareTo(b.composedAt));
     if (items.any((i) => !i.failed)) {
       // Resume anything left over from a previous run — after build() has
-      // resolved, since flush() reads this provider's own future.
+      // resolved, since flush() awaits this notifier's own future.
       Future<void>.microtask(() => unawaited(flush()));
     }
     return items;
@@ -58,7 +58,7 @@ class ChatOutbox extends _$ChatOutbox {
   Future<FriendsOnMapApiException?> enqueue(OutboxMessage message) async {
     final box = await ref.read(hiveProvider(_kOutboxBoxName).future);
     await box.put(message.clientMessageId, jsonEncode(message.toJson()));
-    final current = await ref.read(chatOutboxProvider.future);
+    final current = await future;
     if (!ref.mounted) {
       return null;
     }
@@ -77,7 +77,7 @@ class ChatOutbox extends _$ChatOutbox {
     final attempted = <String>{};
     try {
       while (ref.mounted) {
-        final items = await ref.read(chatOutboxProvider.future);
+        final items = await future;
         final next = items.where((i) => !i.failed && !attempted.contains(i.clientMessageId)).firstOrNull;
         if (next == null) {
           break;
@@ -140,7 +140,7 @@ class ChatOutbox extends _$ChatOutbox {
   Future<void> _remove(String clientMessageId) async {
     final box = await ref.read(hiveProvider(_kOutboxBoxName).future);
     await box.delete(clientMessageId);
-    final current = await ref.read(chatOutboxProvider.future);
+    final current = await future;
     if (!ref.mounted) {
       return;
     }
@@ -149,18 +149,19 @@ class ChatOutbox extends _$ChatOutbox {
 
   Future<void> _setFailed(String clientMessageId, {required bool failed}) async {
     final box = await ref.read(hiveProvider(_kOutboxBoxName).future);
-    final current = await ref.read(chatOutboxProvider.future);
-    final updated = [
-      for (final item in current)
-        if (item.clientMessageId == clientMessageId) item.copyWith(failed: failed) else item,
-    ];
-    final changed = updated.firstWhere((i) => i.clientMessageId == clientMessageId, orElse: () => current.first);
-    if (changed.clientMessageId == clientMessageId) {
-      await box.put(clientMessageId, jsonEncode(changed.toJson()));
+    final current = await future;
+    final target = current.where((i) => i.clientMessageId == clientMessageId).firstOrNull;
+    if (target == null) {
+      return;
     }
+    final updated = target.copyWith(failed: failed);
+    await box.put(clientMessageId, jsonEncode(updated.toJson()));
     if (!ref.mounted) {
       return;
     }
-    state = AsyncData(updated);
+    state = AsyncData([
+      for (final item in current)
+        if (item.clientMessageId == clientMessageId) updated else item,
+    ]);
   }
 }
