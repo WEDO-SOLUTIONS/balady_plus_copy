@@ -40,6 +40,7 @@ class EnvironmentConfig {
   final CityEventDateRange foundingDayDateRange;
   final CityEventDateRange leapDateRange;
   final CityEventDateRange wrcEventDateRange;
+
   // TIFO isn't a city event itself — it just reuses the same remote-config
   // shape (see CityEventDateRange.tifoDefault for the placeholder window).
   final CityEventDateRange tifoDateRange;
@@ -99,8 +100,7 @@ class EnvironmentConfig {
     baladyBusinessUrl: json['baladyBusinessUrl'] as String,
     bssApi: json['bssApi'] as String,
     saudiPassApi: json['saudiPassApi'] as String,
-    favoriteListsApi:
-        json['favoriteListsApi'] as String? ?? 'https://urbi-lifestyle.momah.gov.sa/1.0/api/v1/favorite',
+    favoriteListsApi: json['favoriteListsApi'] as String? ?? 'https://urbi-lifestyle.momah.gov.sa/1.0/api/v1/favorite',
     cityscapeDateTimeRange: CityEventDateRange.fromJson(
       json['cityscapeDateTimeRange'] as Map<String, dynamic>?,
       CityEventDateRange.cityscapeDefault(),

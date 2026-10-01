@@ -19,12 +19,12 @@ class RouteParamsPoint extends Equatable {
 
   @override
   List<Object?> get props => [
-        latitude,
-        longitude,
-        objectId,
-        entranceId,
-        levelId,
-      ];
+    latitude,
+    longitude,
+    objectId,
+    entranceId,
+    levelId,
+  ];
 
   String latLngToString() => '$latitude,$longitude';
 }
@@ -58,22 +58,22 @@ class RouteParamsPointWithLabel extends Equatable {
   });
 
   RouteParamsPointWithLabel.fromDirectoryObject(DirectoryObjectMessage object)
-      : this(
-          value: RouteParamsPoint(
-            latitude: object.markerPosition!.latitude,
-            longitude: object.markerPosition!.longitude,
-            objectId: object.id?.objectId,
-            entranceId: object.id?.entranceId,
-            levelId: object.levelId,
-          ),
-          label: object.title,
-        );
+    : this(
+        value: RouteParamsPoint(
+          latitude: object.markerPosition!.latitude,
+          longitude: object.markerPosition!.longitude,
+          objectId: object.id?.objectId,
+          entranceId: object.id?.entranceId,
+          levelId: object.levelId,
+        ),
+        label: object.title,
+      );
 
   @override
   List<Object?> get props => [
-        label,
-        value,
-      ];
+    label,
+    value,
+  ];
 }
 
 extension RouteParamsPointWithLabelListX on List<RouteParamsPointWithLabel?> {
@@ -88,16 +88,16 @@ extension RouteParamsPointWithLabelListX on List<RouteParamsPointWithLabel?> {
 
 extension GeoPoint on RouteParamsPoint {
   GeoPointMessage get geoPoint => GeoPointMessage(
-        latitude: latitude,
-        longitude: longitude,
-      );
+    latitude: latitude,
+    longitude: longitude,
+  );
 
   DgisObjectIdMessage? get dgisObjectId =>
       objectId != null ? DgisObjectIdMessage(objectId: objectId!, entranceId: entranceId ?? 0) : null;
 
   RouteEditorRoutePointMessage get pointMessage => RouteEditorRoutePointMessage(
-        point: geoPoint,
-        objectId: dgisObjectId,
-        levelId: levelId,
-      );
+    point: geoPoint,
+    objectId: dgisObjectId,
+    levelId: levelId,
+  );
 }
