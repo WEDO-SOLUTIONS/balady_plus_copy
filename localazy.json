@@ -3,7 +3,6 @@
   "readKey": "a6497558922826917704-d77b91b10a369c6d219e8003774d4db481ba9aef64097d257716c9abf397ad0c",
   "upload": {
     "type": "arb",
-    "forceCurrent": true,
     "files": {
       "pattern": "mapness/lib/l10n/app_*.arb",
       "lang": "${autodetectLang}"
