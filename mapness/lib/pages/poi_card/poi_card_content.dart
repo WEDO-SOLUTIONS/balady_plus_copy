@@ -43,6 +43,10 @@ class _ContentState extends ConsumerState<_PoiCardContent> with SingleTickerProv
   @override
   void didUpdateWidget(covariant _PoiCardContent oldWidget) {
     super.didUpdateWidget(oldWidget);
+    // The parent rebuilds for unrelated reasons (e.g. a route pushed on top); keep the tab for the same POI.
+    if (oldWidget.objectId == widget.objectId) {
+      return;
+    }
 
     final _parkingObjectId = widget.objectId == parkingObjectId;
     _tabType.value = _parkingObjectId ? PoiTabsType.parking : PoiTabsType.info;
