@@ -23,6 +23,7 @@ class _PoiCardContent extends ConsumerStatefulWidget {
 
 class _ContentState extends ConsumerState<_PoiCardContent> with SingleTickerProviderStateMixin {
   late final TabController _tabController;
+  late final List<PoiTabsType> _tabs;
   late final ValueNotifier<PoiTabsType> _tabType;
   late final PoiCardState? poiCardState = widget.poiCardState;
   PoiCardBottomSheetState? _bottomSheetPreviousState;
@@ -45,7 +46,7 @@ class _ContentState extends ConsumerState<_PoiCardContent> with SingleTickerProv
 
     final _parkingObjectId = widget.objectId == parkingObjectId;
     _tabType.value = _parkingObjectId ? PoiTabsType.parking : PoiTabsType.info;
-    _tabController.animateTo(0);
+    _tabController.animateTo(_tabs.indexOf(PoiTabsType.info));
   }
 
   @override
@@ -82,22 +83,18 @@ class _ContentState extends ConsumerState<_PoiCardContent> with SingleTickerProv
       initialState: PoiCardBottomSheetState.halfOpen,
     );
 
-    _tabController = TabController(length: 3, vsync: this);
+    _tabs = PoiTabsType.cardTabs(withReviews: ref.read(reviewsFeatureFlagProvider));
+    _tabController = TabController(length: _tabs.length, vsync: this);
 
     final _parkingObjectId = widget.objectId == parkingObjectId;
     _tabType = ValueNotifier(_parkingObjectId ? PoiTabsType.parking : PoiTabsType.info);
     _tabController.addListener(() {
       if (_tabController.indexIsChanging) {
         _bottomSheetController.position.animateTo(0, duration: Durations.medium1, curve: Curves.easeInExpo);
-        switch (_tabController.index) {
-          case 0:
-            _tabType.value = PoiTabsType.info;
-          case 1:
-            _tabType.value = PoiTabsType.photos;
-            _bottomSheetController.setState(PoiCardBottomSheetState.expanded);
-          case 2:
-            _tabType.value = PoiTabsType.organizations;
-            _bottomSheetController.setState(PoiCardBottomSheetState.expanded);
+        final type = _tabs[_tabController.index];
+        _tabType.value = type;
+        if (type != PoiTabsType.info) {
+          _bottomSheetController.setState(PoiCardBottomSheetState.expanded);
         }
       }
     });
@@ -290,6 +287,8 @@ class _ContentState extends ConsumerState<_PoiCardContent> with SingleTickerProv
     }
 
     final poiHeaderSubTitle = createPoiHeaderSubTitle();
+    final headerTitle =
+        widget.data.address?.buildingName ?? widget.poiCardDataFromGoogle?.displayName ?? widget.data.pinTitle(l10n);
 
     logger.log(
       '[PoiCardContent] Final poiHeaderSubTitle: "$poiHeaderSubTitle" for POI: ${widget.data.title}, '
@@ -384,10 +383,7 @@ class _ContentState extends ConsumerState<_PoiCardContent> with SingleTickerProv
                 ),
                 header: PoiHeader(
                   bottomSheetController: _bottomSheetController,
-                  title:
-                      widget.data.address?.buildingName ??
-                      widget.poiCardDataFromGoogle?.displayName ??
-                      widget.data.pinTitle(l10n),
+                  title: headerTitle,
                   subTitle:
                       _getParkingSubtitle(widget.data.parkingInfo, context.l10n) ??
                       (widget.objectId == 70030077050725730
@@ -423,6 +419,7 @@ class _ContentState extends ConsumerState<_PoiCardContent> with SingleTickerProv
                   parkingInfo: widget.data.parkingInfo,
                   poiCardState: poiCardState,
                   tabController: _tabController,
+                  tabs: _tabs,
                   data: poiCardState?.gisObjectIdMessage ?? widget.data,
                   onTapClose: () async {
                     await ref.read(highlightProvider.notifier).removeHighlight(widget.data.id!);
@@ -447,6 +444,10 @@ class _ContentState extends ConsumerState<_PoiCardContent> with SingleTickerProv
                               widget.closestPoint,
                             );
                           },
+                        ),
+                        PoiTabsType.reviews => PoiReviewsSliver(
+                          objectId: widget.data.id?.objectId ?? 0,
+                          poiName: headerTitle,
                         ),
                         PoiTabsType.photos => PoiPhotoCardSliver(objectId: widget.data.id?.objectId ?? 0),
                         PoiTabsType.organizations => PoiOrganizationsSliver(

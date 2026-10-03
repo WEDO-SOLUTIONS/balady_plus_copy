@@ -21,6 +21,7 @@ class _FoundingDayPoiCardContent extends ConsumerStatefulWidget {
 
 class _FoundingDayContentState extends ConsumerState<_FoundingDayPoiCardContent> with SingleTickerProviderStateMixin {
   late final TabController _tabController;
+  late final List<PoiTabsType> _tabs;
   late final ValueNotifier<PoiTabsType> _tabType;
   late final PoiCardState? poiCardState = widget.poiCardState;
   PoiCardBottomSheetState? _bottomSheetPreviousState;
@@ -55,29 +56,25 @@ class _FoundingDayContentState extends ConsumerState<_FoundingDayPoiCardContent>
 
     final _parkingObjectId = widget.objectId == parkingObjectId;
     _tabType.value = _parkingObjectId ? PoiTabsType.parking : PoiTabsType.info;
-    _tabController.animateTo(0);
+    _tabController.animateTo(_tabs.indexOf(PoiTabsType.info));
   }
 
   @override
   void initState() {
     super.initState();
 
-    _tabController = TabController(length: 3, vsync: this);
+    _tabs = PoiTabsType.cardTabs(withReviews: ref.read(reviewsFeatureFlagProvider));
+    _tabController = TabController(length: _tabs.length, vsync: this);
 
     final _parkingObjectId = widget.objectId == parkingObjectId;
     _tabType = ValueNotifier(_parkingObjectId ? PoiTabsType.parking : PoiTabsType.info);
     _tabController.addListener(() {
       if (_tabController.indexIsChanging) {
         _bottomSheetController.position.animateTo(0, duration: Durations.medium1, curve: Curves.easeInExpo);
-        switch (_tabController.index) {
-          case 0:
-            _tabType.value = PoiTabsType.info;
-          case 1:
-            _tabType.value = PoiTabsType.photos;
-            _bottomSheetController.setState(PoiCardBottomSheetState.expanded);
-          case 2:
-            _tabType.value = PoiTabsType.organizations;
-            _bottomSheetController.setState(PoiCardBottomSheetState.expanded);
+        final type = _tabs[_tabController.index];
+        _tabType.value = type;
+        if (type != PoiTabsType.info) {
+          _bottomSheetController.setState(PoiCardBottomSheetState.expanded);
         }
       }
     });
@@ -231,6 +228,7 @@ class _FoundingDayContentState extends ConsumerState<_FoundingDayPoiCardContent>
     }
 
     final poiHeaderSubTitle = createPoiHeaderSubTitle();
+    final headerTitle = widget.data.address?.buildingName ?? widget.data.title;
 
     return Directionality(
       textDirection: Directionality.of(context),
@@ -291,7 +289,7 @@ class _FoundingDayContentState extends ConsumerState<_FoundingDayPoiCardContent>
           },
         ),
         header: PoiHeader(
-          title: widget.data.address?.buildingName ?? widget.data.title,
+          title: headerTitle,
           subTitle: _getParkingSubtitle(widget.data.parkingInfo, context.l10n) ?? widget.data.subtitle,
           subTitleExtraInlineSpans: [
             if (poiHeaderSubTitle != null) ...[
@@ -319,6 +317,7 @@ class _FoundingDayContentState extends ConsumerState<_FoundingDayPoiCardContent>
           parkingInfo: widget.data.parkingInfo,
           poiCardState: poiCardState,
           tabController: _tabController,
+          tabs: _tabs,
           data: widget.data,
           onTapClose: () => closePoiCard(context, ref),
         ),
@@ -343,6 +342,7 @@ class _FoundingDayContentState extends ConsumerState<_FoundingDayPoiCardContent>
                       );
                     },
                   ),
+                  PoiTabsType.reviews => PoiReviewsSliver(objectId: widget.data.id?.objectId ?? 0, poiName: headerTitle),
                   PoiTabsType.photos => PoiPhotoCardSliver(objectId: widget.data.id?.objectId ?? 0),
                   PoiTabsType.organizations => PoiOrganizationsSliver(
                     state: poiCardState,

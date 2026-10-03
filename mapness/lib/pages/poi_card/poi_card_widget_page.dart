@@ -67,6 +67,8 @@ import 'package:mapness/features/poi_card/widgets/poi_content/src/poi_content_fe
 import 'package:mapness/features/poi_card/widgets/poi_content_sliver.dart';
 import 'package:mapness/features/poi_card/widgets/poi_inbuilding_sliver.dart';
 import 'package:mapness/features/poi_card/widgets/poi_photo_card_sliver.dart';
+import 'package:mapness/features/poi_reviews/reviews_feature_flag.dart';
+import 'package:mapness/features/poi_reviews/ui/poi_reviews_sliver.dart';
 import 'package:mapness/features/routing/lib/active_navigation_helper.dart';
 import 'package:mapness/features/routing/providers/current_route.dart';
 import 'package:mapness/features/wrc/wrc.dart';

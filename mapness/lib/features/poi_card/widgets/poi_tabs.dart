@@ -2,6 +2,7 @@ import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mapness/features/poi_card/enums/poi_tabs_type.dart';
 import 'package:mapness/features/poi_card/extensions/organizations_ext.dart';
 import 'package:mapness/features/poi_card/provider/poi_card_provider.dart';
 import 'package:mapness/features/poi_card/provider/poi_photo_provider.dart';
@@ -11,8 +12,15 @@ class PoiTabs extends ConsumerStatefulWidget {
   final PoiCardState? poiCardState;
   final int objectId;
   final TabController tabController;
+  final List<PoiTabsType> tabs;
 
-  const PoiTabs({required this.tabController, required this.objectId, super.key, this.poiCardState});
+  const PoiTabs({
+    required this.tabController,
+    required this.objectId,
+    super.key,
+    this.poiCardState,
+    this.tabs = PoiTabsType.cardTabsDefault,
+  });
 
   @override
   ConsumerState<PoiTabs> createState() => _PoiTabsState();
@@ -49,47 +57,35 @@ class _PoiTabsState extends ConsumerState<PoiTabs> {
         isScrollable: true,
         labelPadding: EdgeInsets.zero,
         tabs: [
-          Tab(
-            iconMargin: EdgeInsets.zero,
-            child: _PoiTabItem(
-              title: context.l10n.info,
-              onTap: () {
-                widget.tabController.animateTo(0);
-              },
-              isActive: widget.tabController.index == 0,
+          for (final (index, type) in widget.tabs.indexed)
+            Tab(
+              iconMargin: EdgeInsets.zero,
+              child: _buildItem(type, index, photoCount: photoCount, organizationsCount: organizationsCount),
             ),
-          ),
-          Tab(
-            iconMargin: EdgeInsets.zero,
-            child: _PoiTabItem(
-              title: context.l10n.photos,
-              count: photoCount,
-              onTap: () {
-                widget.tabController.animateTo(1);
-              },
-              isActive: widget.tabController.index == 1,
-            ),
-          ),
-          Tab(
-            iconMargin: EdgeInsets.zero,
-            child: organizationsCount > 0
-                ? _PoiTabItem(
-                    title: context.l10n.organizations,
-                    count: organizationsCount,
-                    onTap: () {
-                      if (organizationsCount == 0) {
-                        widget.tabController.index = widget.tabController.previousIndex;
-                        return;
-                      }
-                      widget.tabController.animateTo(2);
-                    },
-                    isActive: widget.tabController.index == 2,
-                  )
-                : const SizedBox.shrink(),
-          ),
         ],
       ),
     );
+  }
+
+  Widget _buildItem(PoiTabsType type, int index, {required int photoCount, required int organizationsCount}) {
+    final isActive = widget.tabController.index == index;
+    void select() => widget.tabController.animateTo(index);
+
+    return switch (type) {
+      PoiTabsType.info => _PoiTabItem(title: context.l10n.info, onTap: select, isActive: isActive),
+      PoiTabsType.reviews => _PoiTabItem(title: context.l10n.poiReviewsTab, onTap: select, isActive: isActive),
+      PoiTabsType.photos => _PoiTabItem(title: context.l10n.photos, count: photoCount, onTap: select, isActive: isActive),
+      PoiTabsType.organizations =>
+        organizationsCount > 0
+            ? _PoiTabItem(
+                title: context.l10n.organizations,
+                count: organizationsCount,
+                onTap: select,
+                isActive: isActive,
+              )
+            : const SizedBox.shrink(),
+      PoiTabsType.parking => const SizedBox.shrink(),
+    };
   }
 }
 

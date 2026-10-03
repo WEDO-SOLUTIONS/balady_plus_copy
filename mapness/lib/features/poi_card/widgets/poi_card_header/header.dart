@@ -9,7 +9,9 @@ import 'package:mapness/_features/common/providers/ui_direction.dart';
 import 'package:mapness/features/jeddah_bus/repo.dart';
 import 'package:mapness/features/parking_spot/parking_manage.dart';
 import 'package:mapness/features/poi_card/enums/poi_card_bottom_sheet_state.dart';
+import 'package:mapness/features/poi_card/enums/poi_tabs_type.dart';
 import 'package:mapness/features/poi_card/provider/poi_card_provider.dart';
+import 'package:mapness/features/poi_card/widgets/poi_card_header/rating.dart';
 import 'package:mapness/features/poi_card/widgets/poi_card_header/subtitle.dart';
 import 'package:mapness/features/poi_card/widgets/poi_card_header/tab.dart';
 import 'package:mapness/features/poi_card/widgets/poi_card_header/title.dart';
@@ -34,6 +36,9 @@ class PoiHeader extends ConsumerWidget {
   final List<InlineSpan> subTitleExtraInlineSpans;
   final PoiCardState? poiCardState;
   final TabController? tabController;
+
+  /// Tabs driven by [tabController], in its index order.
+  final List<PoiTabsType> tabs;
   final ParkingInfoMessage? parkingInfo;
   final DirectoryObjectMessage? data;
   final MultiStateSheetController<PoiCardBottomSheetState>? bottomSheetController;
@@ -47,6 +52,7 @@ class PoiHeader extends ConsumerWidget {
     required this.onTapClose,
     this.color,
     this.tabController,
+    this.tabs = PoiTabsType.cardTabsDefault,
     this.parkingInfo,
     this.data,
     this.subTitleExtraInlineSpans = const [],
@@ -75,6 +81,7 @@ class PoiHeader extends ConsumerWidget {
     final _data = data;
 
     final _parkingObjectId = _data?.id?.objectId == parkingObjectId;
+    final showRating = _tabController != null && !_parkingObjectId && tabs.contains(PoiTabsType.reviews);
 
     // Header info
     final workingHours = data?.openingHours?.toWorkingHours();
@@ -160,12 +167,14 @@ class PoiHeader extends ConsumerWidget {
                       ),
                     ),
                     if (_parkingObjectId) Spacing.$4x.heightBox,
+                    if (showRating) RatingComponent(objectId: _data?.id?.objectId ?? 0),
                     if (_tabController != null && !_parkingObjectId) ...[
                       const SizedBox(height: Spacing.$1x),
                       TabComponent(
                         tabController: _tabController,
                         objectId: _data?.id?.objectId ?? 0,
                         poiCardState: poiCardState,
+                        tabs: tabs,
                       ),
                     ],
                   ],
