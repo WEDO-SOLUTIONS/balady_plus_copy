@@ -9,7 +9,6 @@ import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/features/poi_reviews/domain/poi_review.dart';
 import 'package:mapness/features/poi_reviews/state/poi_reviews_providers.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
-import 'package:mapness/shared/ui/buttons/app_close_button.dart';
 import 'package:mapness/shared/ui/toast/toast_overlay.dart';
 import 'package:mapness/shared/utils/logger/logger.dart';
 import 'package:mapness/widgets/app_feedback/v2/rating_bar.dart';
@@ -86,7 +85,12 @@ class _PoiRateSheetPageState extends ConsumerState<PoiRateSheetPage> {
             ),
           ),
           const SizedBox(width: Spacing.$3x),
-          CustomCloseButton(padding: EdgeInsets.zero, onClose: () => context.router.pop()),
+          AppButton.close(
+            padding: EdgeInsets.zero,
+            color: context.colors.backgroundSurface1,
+            iconColor: context.colors.foregroundDefault,
+            onTap: () => context.router.pop(),
+          ),
         ],
       ),
     ),

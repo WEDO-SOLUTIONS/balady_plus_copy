@@ -76,7 +76,7 @@ class _HistogramRow extends StatelessWidget {
           child: Container(
             height: Spacing.$1_5x,
             decoration: BoxDecoration(
-              color: context.colors.neutralContainerDefault,
+              color: context.colors.foregroundMuted,
               borderRadius: BorderRadius.circular(RadiusBorder.full),
             ),
             child: FractionallySizedBox(
