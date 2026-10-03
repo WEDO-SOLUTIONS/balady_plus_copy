@@ -10,11 +10,10 @@ abstract class WeatherRemoteDataSource {
   factory WeatherRemoteDataSource({
     required Dio dio,
     required String baseUrl,
-  }) =>
-      _WeatherRemoteDataSource(
-        dio: dio,
-        baseUrl: baseUrl,
-      );
+  }) => _WeatherRemoteDataSource(
+    dio: dio,
+    baseUrl: baseUrl,
+  );
 
   Future<Map<String, dynamic>?>? getCurrentWeatherData({
     required WeatherParams params,

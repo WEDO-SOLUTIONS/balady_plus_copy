@@ -20,10 +20,10 @@ class AllWeatherInfoModel {
   Map<String, dynamic> toJson() => _$AllWeatherInfoModelToJson(this);
 
   AllWeatherInfoEntity toDomain() => AllWeatherInfoEntity(
-        current: current?.toDomain(),
-        forecast: forecast?.toDomain(),
-        location: location?.toDomain(),
-      );
+    current: current?.toDomain(),
+    forecast: forecast?.toDomain(),
+    location: location?.toDomain(),
+  );
 }
 
 @JsonSerializable(fieldRename: FieldRename.snake)
@@ -59,18 +59,18 @@ class CurrentModel {
   Map<String, dynamic> toJson() => _$CurrentModelToJson(this);
 
   Current toDomain() => Current(
-        tempC: tempC,
-        tempF: tempF,
-        isDay: isDay,
-        condition: condition?.toDomain(),
-        windMph: windMph,
-        windKph: windKph,
-        pressureMb: pressureMb,
-        pressureIn: pressureIn,
-        humidity: humidity,
-        visKm: visKm,
-        visMiles: visMiles,
-      );
+    tempC: tempC,
+    tempF: tempF,
+    isDay: isDay,
+    condition: condition?.toDomain(),
+    windMph: windMph,
+    windKph: windKph,
+    pressureMb: pressureMb,
+    pressureIn: pressureIn,
+    humidity: humidity,
+    visKm: visKm,
+    visMiles: visMiles,
+  );
 }
 
 @JsonSerializable()
@@ -90,10 +90,10 @@ class ConditionModel {
   Map<String, dynamic> toJson() => _$ConditionModelToJson(this);
 
   Condition toDomain() => Condition(
-        text: text,
-        icon: icon,
-        code: code,
-      );
+    text: text,
+    icon: icon,
+    code: code,
+  );
 }
 
 @JsonSerializable()
@@ -108,8 +108,8 @@ class ForecastModel {
   Map<String, dynamic> toJson() => _$ForecastModelToJson(this);
 
   Forecast toDomain() => Forecast(
-        forecastday: forecastDay.map((e) => e.toDomain()).toList(),
-      );
+    forecastday: forecastDay.map((e) => e.toDomain()).toList(),
+  );
 }
 
 @JsonSerializable(fieldRename: FieldRename.snake)
@@ -133,12 +133,12 @@ class ForecastDayModel {
   Map<String, dynamic> toJson() => _$ForecastDayModelToJson(this);
 
   ForecastDay toDomain() => ForecastDay(
-        date: date,
-        dateEpoch: dateEpoch,
-        day: day?.toDomain(),
-        astro: astro?.toDomain(),
-        hour: hour?.map((e) => e.toDomain()).toList(),
-      );
+    date: date,
+    dateEpoch: dateEpoch,
+    day: day?.toDomain(),
+    astro: astro?.toDomain(),
+    hour: hour?.map((e) => e.toDomain()).toList(),
+  );
 }
 
 @JsonSerializable()
@@ -183,13 +183,14 @@ class DayModel {
   Map<String, dynamic> toJson() => _$DayModelToJson(this);
 
   Day toDomain() => Day(
-      maxTempC: maxtempC,
-      maxTempF: maxtempF,
-      minTempC: mintempC,
-      minTempF: mintempF,
-      avgTempC: avgtempC,
-      avgTempF: avgtempF,
-      condition: condition?.toDomain());
+    maxTempC: maxtempC,
+    maxTempF: maxtempF,
+    minTempC: mintempC,
+    minTempF: mintempF,
+    avgTempC: avgtempC,
+    avgTempF: avgtempF,
+    condition: condition?.toDomain(),
+  );
 }
 
 @JsonSerializable(fieldRename: FieldRename.snake)
@@ -215,13 +216,13 @@ class HourModel {
   Map<String, dynamic> toJson() => _$HourModelToJson(this);
 
   Hour toDomain() => Hour(
-        tempC: tempC,
-        tempF: tempF,
-        time: time,
-        timeEpoch: timeEpoch,
-        condition: condition?.toDomain(),
-        isDay: isDay,
-      );
+    tempC: tempC,
+    tempF: tempF,
+    time: time,
+    timeEpoch: timeEpoch,
+    condition: condition?.toDomain(),
+    isDay: isDay,
+  );
 }
 
 @JsonSerializable()
@@ -253,15 +254,15 @@ class LocationModel {
   Map<String, dynamic> toJson() => _$LocationModelToJson(this);
 
   Location toDomain() => Location(
-        name: name,
-        region: region,
-        country: country,
-        lat: lat,
-        lon: lon,
-        tzId: tzId,
-        localTimeEpoch: localTimeEpoch,
-        localTime: localTime,
-      );
+    name: name,
+    region: region,
+    country: country,
+    lat: lat,
+    lon: lon,
+    tzId: tzId,
+    localTimeEpoch: localTimeEpoch,
+    localTime: localTime,
+  );
 }
 
 AllWeatherInfoModel mapper(Map<String, dynamic>? json) {
