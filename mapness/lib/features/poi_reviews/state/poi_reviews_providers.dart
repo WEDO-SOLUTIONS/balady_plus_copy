@@ -49,7 +49,10 @@ class PoiReviewsActions extends _$PoiReviewsActions {
     ref
       ..invalidate(poiMyReviewProvider(objectId))
       ..invalidate(poiReviewsSummaryProvider(objectId));
-    await Future.wait([_refetch(poiMyReviewProvider(objectId).future), _refetch(poiReviewsSummaryProvider(objectId).future)]);
+    await Future.wait([
+      _refetch(poiMyReviewProvider(objectId).future),
+      _refetch(poiReviewsSummaryProvider(objectId).future),
+    ]);
   }
 
   // Listening keeps an autoDispose provider alive until the fetch ends; its own errors are shown by the UI.
