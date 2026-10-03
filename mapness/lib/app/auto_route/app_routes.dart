@@ -254,6 +254,14 @@ class AppRouter extends RootStackRouter {
           fullscreenDialog: true,
         ),
         CustomRoute(
+          path: 'poi_rate',
+          page: PoiRateSheetRoute.page,
+          transitionsBuilder: TransitionsBuilders.slideBottom,
+          opaque: false,
+          fullscreenDialog: true,
+          customRouteBuilder: RouteBuilders.customBarrierDismissibleBuilder,
+        ),
+        CustomRoute(
           path: 'poi_favorite_dialog',
           page: PoiFavoriteDialogRoute.page,
         ),
