@@ -342,7 +342,10 @@ class _FoundingDayContentState extends ConsumerState<_FoundingDayPoiCardContent>
                       );
                     },
                   ),
-                  PoiTabsType.reviews => PoiReviewsSliver(objectId: widget.data.id?.objectId ?? 0, poiName: headerTitle),
+                  PoiTabsType.reviews => PoiReviewsSliver(
+                    objectId: widget.data.id?.objectId ?? 0,
+                    poiName: headerTitle,
+                  ),
                   PoiTabsType.photos => PoiPhotoCardSliver(objectId: widget.data.id?.objectId ?? 0),
                   PoiTabsType.organizations => PoiOrganizationsSliver(
                     state: poiCardState,

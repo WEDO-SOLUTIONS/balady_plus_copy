@@ -74,7 +74,12 @@ class _PoiTabsState extends ConsumerState<PoiTabs> {
     return switch (type) {
       PoiTabsType.info => _PoiTabItem(title: context.l10n.info, onTap: select, isActive: isActive),
       PoiTabsType.reviews => _PoiTabItem(title: context.l10n.poiReviewsTab, onTap: select, isActive: isActive),
-      PoiTabsType.photos => _PoiTabItem(title: context.l10n.photos, count: photoCount, onTap: select, isActive: isActive),
+      PoiTabsType.photos => _PoiTabItem(
+        title: context.l10n.photos,
+        count: photoCount,
+        onTap: select,
+        isActive: isActive,
+      ),
       PoiTabsType.organizations =>
         organizationsCount > 0
             ? _PoiTabItem(

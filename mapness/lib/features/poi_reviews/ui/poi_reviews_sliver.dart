@@ -64,7 +64,10 @@ class _PoiReviewsSliverState extends ConsumerState<PoiReviewsSliver> {
         padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x),
         child: myReview == null
             ? PoiRateCard(onRate: (rating) => _openRateSheet(rating: rating))
-            : PoiMyReviewCard(review: myReview, onEdit: () => _openRateSheet(review: myReview)),
+            : PoiMyReviewCard(
+                review: myReview,
+                onEdit: () => _openRateSheet(review: myReview),
+              ),
       ),
       const SizedBox(height: Spacing.$6x),
       if (summary.reviewsCount == 0)
