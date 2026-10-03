@@ -148,16 +148,20 @@ class _PoiReviewsSliverState extends ConsumerState<PoiReviewsSliver> {
   }
 
   Future<void> _openRateSheet({int rating = 0, PoiReview? review}) async {
+    // Resolved before awaiting: this sliver may be rebuilt or unmounted while the sheet is open.
+    final toast = ToastOverlay.of(context);
+    final l10n = context.l10n;
+    final starColor = context.colors.warningDefault;
     final saved = await context.router.push<bool>(
       PoiRateSheetRoute(objectId: widget.objectId, poiName: widget.poiName, initialRating: rating, review: review),
     );
-    if (saved != true || !mounted) {
+    if (saved != true) {
       return;
     }
-    ToastOverlay.of(context).show(
-      title: context.l10n.poiReviewsRatedToast,
-      icon: ToastIconData(General16Icons.starSolid, color: context.colors.warningDefault),
-      actions: [ToastAction(title: context.l10n.feedbackBreaksSheetClose)],
+    toast.show(
+      title: l10n.poiReviewsRatedToast,
+      icon: ToastIconData(General16Icons.starSolid, color: starColor),
+      actions: [ToastAction(title: l10n.feedbackBreaksSheetClose)],
       displayDuration: const Duration(seconds: 4),
     );
   }

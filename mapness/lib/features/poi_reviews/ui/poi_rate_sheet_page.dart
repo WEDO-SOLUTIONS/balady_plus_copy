@@ -170,6 +170,8 @@ class _PoiRateSheetPageState extends ConsumerState<PoiRateSheetPage> {
             maxLines: 4,
             hintText: context.l10n.poiReviewsInputHint,
             fillColor: context.colors.neutralContainerDefault,
+            // The controller belongs to this state, the input must not dispose it.
+            isDisposed: false,
           ),
         ),
       ),
@@ -193,8 +195,11 @@ class _PoiRateSheetPageState extends ConsumerState<PoiRateSheetPage> {
     setState(() => _isSaving = true);
     try {
       await ref
-          .read(poiMyReviewProvider(widget.objectId).notifier)
-          .save(MyReviewDraft(rating: _rating, text: _textController.text, imagePaths: _imagePaths));
+          .read(poiReviewsActionsProvider.notifier)
+          .saveMyReview(
+            widget.objectId,
+            MyReviewDraft(rating: _rating, text: _textController.text, imagePaths: _imagePaths),
+          );
       if (mounted) {
         context.router.pop(true);
       }
