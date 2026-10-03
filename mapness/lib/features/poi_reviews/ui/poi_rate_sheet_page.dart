@@ -8,8 +8,8 @@ import 'package:mapness/_features/common/widgets/dragger.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/features/poi_reviews/domain/poi_review.dart';
 import 'package:mapness/features/poi_reviews/state/poi_reviews_providers.dart';
+import 'package:mapness/features/poi_reviews/ui/poi_reviews_toast.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
-import 'package:mapness/shared/ui/toast/toast_overlay.dart';
 import 'package:mapness/shared/utils/logger/logger.dart';
 import 'package:mapness/widgets/app_feedback/v2/rating_bar.dart';
 import 'package:mapness/widgets/feedback/images/add_image_button.dart';
@@ -210,7 +210,7 @@ class _PoiRateSheetPageState extends ConsumerState<PoiRateSheetPage> {
     } catch (e) {
       logger.log('POI review save failed: $e', logLevel: MapnessLogLevel.error);
       if (mounted) {
-        ToastOverlay.of(context).showBaseError(onRetry: _save);
+        showRootToast((toast, _) => toast.showBaseError(onRetry: _save));
       }
     } finally {
       if (mounted) {

@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/features/poi_reviews/domain/poi_review.dart';
 import 'package:mapness/features/poi_reviews/state/poi_reviews_providers.dart';
+import 'package:mapness/features/poi_reviews/ui/poi_reviews_toast.dart';
 import 'package:mapness/features/poi_reviews/ui/widgets/poi_my_review_card.dart';
 import 'package:mapness/features/poi_reviews/ui/widgets/poi_rate_card.dart';
 import 'package:mapness/features/poi_reviews/ui/widgets/poi_review_tile.dart';
@@ -148,21 +149,19 @@ class _PoiReviewsSliverState extends ConsumerState<PoiReviewsSliver> {
   }
 
   Future<void> _openRateSheet({int rating = 0, PoiReview? review}) async {
-    // Resolved before awaiting: this sliver may be rebuilt or unmounted while the sheet is open.
-    final toast = ToastOverlay.of(context);
-    final l10n = context.l10n;
-    final starColor = context.colors.warningDefault;
     final saved = await context.router.push<bool>(
       PoiRateSheetRoute(objectId: widget.objectId, poiName: widget.poiName, initialRating: rating, review: review),
     );
     if (saved != true) {
       return;
     }
-    toast.show(
-      title: l10n.poiReviewsRatedToast,
-      icon: ToastIconData(General16Icons.starSolid, color: starColor),
-      actions: [ToastAction(title: l10n.feedbackBreaksSheetClose)],
-      displayDuration: const Duration(seconds: 4),
+    showRootToast(
+      (toast, context) => toast.show(
+        title: context.l10n.poiReviewsRatedToast,
+        icon: ToastIconData(General16Icons.starSolid, color: context.colors.warningDefault),
+        actions: [ToastAction(title: context.l10n.feedbackBreaksSheetClose)],
+        displayDuration: const Duration(seconds: 4),
+      ),
     );
   }
 }
