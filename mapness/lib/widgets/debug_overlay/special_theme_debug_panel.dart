@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/app/auto_route/app_routes.dart';
 import 'package:mapness/features/debug/recommendations_feature_flag.dart';
+import 'package:mapness/features/poi_reviews/reviews_feature_flag.dart';
 import 'package:mapness/features/special_themes/core/places_activation_config.dart';
 import 'package:mapness/features/special_themes/core/special_theme_mode.dart';
 import 'package:mapness/features/special_themes/modes/saudi_national_day/saudi_national_day_debug.dart';
@@ -388,6 +389,7 @@ class _DebugTogglesCard extends ConsumerWidget {
     final hajj = ref.watch(hajjSeasonDebugProvider);
     final pilgrimFeature = ref.watch(pilgrimFeatureDebugProvider);
     final recommendationsFeature = ref.watch(recommendationsFeatureFlagProvider);
+    final reviewsFeature = ref.watch(reviewsFeatureFlagProvider);
     final leap = ref.watch(leapDebugProvider);
 
     return _GlassCard(
@@ -460,6 +462,14 @@ class _DebugTogglesCard extends ConsumerWidget {
               ref.read(recommendationsFeatureFlagProvider.notifier).set(v);
             },
             gradient: _DebugColors.gradientGreen,
+          ),
+          _ToggleRow(
+            label: 'POI Reviews tab (mock)',
+            value: reviewsFeature,
+            onChanged: (v) {
+              ref.read(reviewsFeatureFlagProvider.notifier).enabled = v;
+            },
+            gradient: _DebugColors.gradientAmber,
           ),
           _ToggleRow(
             label: 'LEAP Event',
