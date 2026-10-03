@@ -6,13 +6,13 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/features/poi_reviews/domain/poi_review.dart';
 import 'package:mapness/features/poi_reviews/state/poi_reviews_providers.dart';
+import 'package:mapness/features/poi_reviews/ui/poi_rated_toast.dart';
 import 'package:mapness/features/poi_reviews/ui/poi_reviews_toast.dart';
 import 'package:mapness/features/poi_reviews/ui/widgets/poi_my_review_card.dart';
 import 'package:mapness/features/poi_reviews/ui/widgets/poi_rate_card.dart';
 import 'package:mapness/features/poi_reviews/ui/widgets/poi_review_tile.dart';
 import 'package:mapness/features/poi_reviews/ui/widgets/poi_reviews_summary_view.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
-import 'package:mapness/shared/ui/toast/toast_overlay.dart';
 import 'package:mapness/shared/utils/logger/logger.dart';
 
 /// Content of the POI card "Reviews" tab.
@@ -149,23 +149,13 @@ class _PoiReviewsSliverState extends ConsumerState<PoiReviewsSliver> {
   }
 
   Future<void> _openRateSheet({int rating = 0, PoiReview? review}) async {
-    final title = context.l10n.poiReviewsRatedToast;
-    final closeLabel = context.l10n.feedbackBreaksSheetClose;
-    final starColor = context.colors.warningDefault;
+    final ratedToast = PoiRatedToast.of(context);
     final saved = await context.router.push<bool>(
       PoiRateSheetRoute(objectId: widget.objectId, poiName: widget.poiName, initialRating: rating, review: review),
     );
-    if (saved != true) {
-      return;
+    if (saved == true) {
+      showPoiRatedToast(ratedToast);
     }
-    showRootToast(
-      (toast) => toast.show(
-        title: title,
-        icon: ToastIconData(General16Icons.starSolid, color: starColor),
-        actions: [ToastAction(title: closeLabel)],
-        displayDuration: const Duration(seconds: 4),
-      ),
-    );
   }
 }
 
