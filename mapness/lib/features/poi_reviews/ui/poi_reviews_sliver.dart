@@ -149,6 +149,9 @@ class _PoiReviewsSliverState extends ConsumerState<PoiReviewsSliver> {
   }
 
   Future<void> _openRateSheet({int rating = 0, PoiReview? review}) async {
+    final title = context.l10n.poiReviewsRatedToast;
+    final closeLabel = context.l10n.feedbackBreaksSheetClose;
+    final starColor = context.colors.warningDefault;
     final saved = await context.router.push<bool>(
       PoiRateSheetRoute(objectId: widget.objectId, poiName: widget.poiName, initialRating: rating, review: review),
     );
@@ -156,10 +159,10 @@ class _PoiReviewsSliverState extends ConsumerState<PoiReviewsSliver> {
       return;
     }
     showRootToast(
-      (toast, context) => toast.show(
-        title: context.l10n.poiReviewsRatedToast,
-        icon: ToastIconData(General16Icons.starSolid, color: context.colors.warningDefault),
-        actions: [ToastAction(title: context.l10n.feedbackBreaksSheetClose)],
+      (toast) => toast.show(
+        title: title,
+        icon: ToastIconData(General16Icons.starSolid, color: starColor),
+        actions: [ToastAction(title: closeLabel)],
         displayDuration: const Duration(seconds: 4),
       ),
     );

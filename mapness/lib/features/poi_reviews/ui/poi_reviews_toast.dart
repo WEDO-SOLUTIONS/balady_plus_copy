@@ -1,12 +1,11 @@
-import 'package:flutter/widgets.dart';
 import 'package:mapness/app/auto_route/app_routes.dart';
 import 'package:mapness/shared/ui/toast/toast_overlay.dart';
 
 /// The POI card and its sheets aren't below [ToastOverlay]; the root navigator is. Does nothing if unavailable.
-void showRootToast(void Function(ToastOverlayState toast, BuildContext context) show) {
-  final context = rootNavigatorKey.currentContext;
-  final toast = context?.findAncestorStateOfType<ToastOverlayState>();
-  if (context != null && toast != null) {
-    show(toast, context);
+/// Its context has no ThemeController above it: resolve colours and texts in the caller's context beforehand.
+void showRootToast(void Function(ToastOverlayState toast) show) {
+  final toast = rootNavigatorKey.currentContext?.findAncestorStateOfType<ToastOverlayState>();
+  if (toast != null) {
+    show(toast);
   }
 }

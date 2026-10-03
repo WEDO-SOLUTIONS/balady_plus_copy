@@ -210,7 +210,7 @@ class _PoiRateSheetPageState extends ConsumerState<PoiRateSheetPage> {
     } catch (e) {
       logger.log('POI review save failed: $e', logLevel: MapnessLogLevel.error);
       if (mounted) {
-        showRootToast((toast, _) => toast.showBaseError(onRetry: _save));
+        showRootToast((toast) => toast.showBaseError(onRetry: _save));
       }
     } finally {
       if (mounted) {
