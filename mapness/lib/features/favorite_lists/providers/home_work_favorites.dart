@@ -136,6 +136,12 @@ Future<FavouriteItem?> _readSlot(Ref ref, String listId) async {
 
 @riverpod
 Future<HomeWorkFavorites> homeWorkFavorites(Ref ref) async {
+  // Anonymous users have no Home/Work; skip the API (401 without a token) so POI loading
+  // and map markers don't fail for them. Rebuilds once a token appears.
+  final token = await ref.watch(tokenProvider.future);
+  if (token.isEmpty) {
+    return const HomeWorkFavorites();
+  }
   final homeId = await ref.watch(homeListIdProvider.future);
   final workId = await ref.watch(workListIdProvider.future);
   final home = await _readSlot(ref, homeId);
