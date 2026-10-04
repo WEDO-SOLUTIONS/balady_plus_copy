@@ -100,6 +100,48 @@ public class FlutterCarPlaySceneDelegate: UIResponder, CPTemplateApplicationScen
         }
     }
     
+    /// Asks the system to bring the app to the front on the car screen.
+    ///
+    /// HB-128: starting a trip on the phone with CarPlay connected left the car
+    /// screen on whatever app was already there, so the driver had to pick
+    /// Balady+ from the CarPlay home screen by hand. CarPlay itself exposes no
+    /// API for this — the generic scene-activation request is the only public
+    /// way an app can ask the system to foreground one of its own scenes, and
+    /// the CarPlay scene session is a scene session like any other.
+    ///
+    /// The request is advisory: the system may turn it down (it is the head
+    /// unit, not the app, that owns the car screen), in which case the car
+    /// screen stays where it is — today's behaviour — and the reason is logged
+    /// in debug builds.
+    /// No-op when CarPlay is not connected.
+    static func activateCarScreen() {
+        DispatchQueue.main.async {
+            guard let session = UIApplication.shared.connectedScenes
+                .first(where: { $0 is CPTemplateApplicationScene })?.session
+            else { return }
+
+            let onError: (any Error) -> Void = { error in
+                #if DEBUG
+                print("CarPlay: scene activation refused — \(error.localizedDescription)")
+                #endif
+            }
+
+            if #available(iOS 17.0, *) {
+                UIApplication.shared.activateSceneSession(
+                    for: UISceneSessionActivationRequest(session: session),
+                    errorHandler: onError
+                )
+            } else {
+                UIApplication.shared.requestSceneSessionActivation(
+                    session,
+                    userActivity: nil,
+                    options: nil,
+                    errorHandler: onError
+                )
+            }
+        }
+    }
+
     static func toggleSounds(toggleType: SoundToggleType) {
         self.mainScreen?.toggleSounds(toggleType: toggleType)
     }

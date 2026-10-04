@@ -388,9 +388,8 @@ class CarNavigationHandler(
     }
 
     /**
-     * CarPlay-style camera: normal nav zoom 14 / tilt 60; within 500 m before maneuver or speed
-     * 0–60 km/h → zoom 16.5, tilt 0; within 500 m after maneuver → smooth return. Active only when
-     * navigation is on (Go or FreeRoam).
+     * CarPlay-style camera: 0–~64 km/h → zoom ~16.5 (zoom-out-after-maneuver completes within
+     * 500 m); 60+ km/h → zoom ~14. Active only when navigation is on (Go or FreeRoam).
      */
     fun setupCamera() {
         val maneuverZoneMm = 500_000L // 500 meters
@@ -398,23 +397,17 @@ class CarNavigationHandler(
 
         val styles =
                 listOf(
-                        // NEAR MODE:
-                        // Before maneuver (<= 500 m) OR slow speed (0–60 km/h)
-                        // We use very high zoom value because Android Auto clamps it down.
+                        // NEAR MODE: slow speed (0–~64 km/h). minDistanceToManeuver/
+                        // maxDistanceToManeuver tune the approach-to-maneuver animation,
+                        // not a speed-range selector — a single range covers this bucket.
                         SpeedRangeToStyleZoom(
-                                range = SpeedRange(0.0, 16.67), // 0–60 km/h
+                                // Upper bound overlaps the FAR range by 1 m/s: the SDK silently
+                                // drops the whole sequence otherwise (maxSpeed[i] must be >
+                                // minSpeed[i+1]).
+                                range = SpeedRange(0.0, 17.67), // 0–~64 km/h
                                 minDistanceToManeuver = RouteDistance(0),
                                 maxDistanceToManeuver = RouteDistance(maneuverZoneMm),
                                 styleZoom = StyleZoom(19.3f) // visually this will look like ~16.5
-                        ),
-
-                        // NEAR MODE:
-                        // Slow speed even far from maneuver
-                        SpeedRangeToStyleZoom(
-                                range = SpeedRange(0.0, 16.67), // 0–60 km/h
-                                minDistanceToManeuver = RouteDistance(maneuverZoneMm),
-                                maxDistanceToManeuver = RouteDistance(farMm),
-                                styleZoom = StyleZoom(19.3f) // still near mode
                         ),
 
                         // FAR MODE (normal navigation):
@@ -528,11 +521,27 @@ class CarNavigationHandler(
     }
 
     fun acceptBetterRoute() {
-        navigationManager.uiModel.betterRouteResponse(BetterRouteResponse.ACCEPT)
+        respondToBetterRoute(BetterRouteResponse.ACCEPT)
     }
 
     fun rejectBetterRoute() {
-        navigationManager.uiModel.betterRouteResponse(BetterRouteResponse.REJECT)
+        respondToBetterRoute(BetterRouteResponse.REJECT)
+    }
+
+    fun timeoutBetterRoute() {
+        respondToBetterRoute(BetterRouteResponse.TIMEOUT)
+    }
+
+    private fun respondToBetterRoute(response: BetterRouteResponse) {
+        // Answering a better-route offer that the SDK has already resolved — a user tap racing the
+        // 10s alert timeout, or the offer being retracted between the channel emit and our reply —
+        // throws inside the native SDK. Swallow it so a stale response can never tear down the
+        // Android Auto process.
+        try {
+            navigationManager.uiModel.betterRouteResponse(response)
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
     }
 
     fun stopNavigation() {

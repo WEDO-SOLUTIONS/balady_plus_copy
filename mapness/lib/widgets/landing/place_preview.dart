@@ -14,7 +14,10 @@ import 'package:mapness/app/auto_route/poi_card_ext.dart';
 import 'package:mapness/features/landing/interesting_places.dart';
 import 'package:mapness/features/poi_card/domain/model/poi_camera_config.dart';
 import 'package:mapness/features/special_themes/modes/saudi_national_day/saudi_national_day.dart';
+import 'package:mapness/l10n/generated/app_localizations_en.dart';
+import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
+import 'package:mapness/features/balady_analytics/metrics.dart';
 
 const kPlaceCardSize = 300.0;
 
@@ -57,6 +60,15 @@ class _PlacePreviewState extends ConsumerState<PlacePreview> with AutomaticKeepA
               onTap: (item) {
                 final objectId = int.tryParse(item.entity.id) ?? 0;
                 final point = item.location.point;
+                Metrics.logEventAdvanced(
+                  MetricsConstants.exploreKeys.placesToVisitBanner,
+                  action: MetricAction.tap.name,
+                  group: MetricsConstants.exploreTag,
+                  props: {
+                    'id': objectId,
+                    'title': item.titleOrFallback(locale: AppLocalizationsEn()),
+                  },
+                );
 
                 context.router.replaceOrPush(
                   route: PoiCardWidgetRoute(

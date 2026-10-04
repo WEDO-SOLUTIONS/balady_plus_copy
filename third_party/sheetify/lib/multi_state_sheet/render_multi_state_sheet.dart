@@ -629,6 +629,13 @@ class _RenderMultiStateSheet<StateType> extends RenderBox
           .clamp(kStartOfTheViewport, avaliableHeight);
       final _ = _layoutChild(outside, constraints, height: outsideSize);
       _positionChild(outside, constraints, kStartOfTheViewport);
+    } else {
+      // BALADY-3978: a transparent `outside` is re-laid out with its previous
+      // constraints, or a relayout inside it stays dirty under this boundary.
+      final _outside = outside;
+      if (_outside != null && _outside.hasSize) {
+        _outside.layout(_outside.constraints, parentUsesSize: true);
+      }
     }
 
     /// Setup children's offsets

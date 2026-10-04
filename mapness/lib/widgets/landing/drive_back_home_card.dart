@@ -16,8 +16,10 @@ import 'package:mapness/features/advert_metrics/advert_metrics.dart';
 import 'package:mapness/features/city_event/active_city_event.dart';
 import 'package:mapness/features/favourites/providers/favourite_cache.dart';
 import 'package:mapness/features/sso_auth/data/auth_provider.dart';
+import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/lib/auth/auth_methods.dart';
+import 'package:mapness/features/balady_analytics/metrics.dart';
 import 'package:mapness/shared/providers/dark_mode.dart';
 import 'package:mapness/shared/providers/location.dart';
 import 'package:mapness/shared/providers/map/object_manager.dart';
@@ -266,6 +268,12 @@ class _DriveBackHomeCardState extends ConsumerState<DriveBackHomeCard> with Auto
     await ref
         .read(mapObjectManagerProvider(named: mapSetting.name, layerId: mapSetting.layerId).notifier)
         .removeAllMarkers();
+
+    Metrics.logEventAdvanced(
+      MetricsConstants.exploreKeys.driveBackHome,
+      group: MetricsConstants.exploreTag,
+      action: MetricAction.tap.toString(),
+    );
   }
 
   @override

@@ -1182,7 +1182,9 @@ class CommonFunctions {
         }
         return false;
       } else if (status != PermissionStatus.granted) {
-        Permission.location.request();
+        // No second request: the OS never re-prompts for a just-denied
+        // permission in the same pass, and the discarded Future's
+        // PlatformException used to escape as an unhandled zone error.
         return false;
       } else {
         return true;

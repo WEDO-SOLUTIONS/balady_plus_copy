@@ -1,6 +1,6 @@
 package com.dgis.map.control_handlers.navigation_controls
 
-import android.util.Log
+import com.dgis.map.live_updates.NavLiveEventBus
 import io.flutter.plugin.common.EventChannel
 import ru.dgis.sdk.navigation.Model
 import ru.dgis.sdk.navigation.State
@@ -17,19 +17,9 @@ class MessageControlModel(
         closeables.add(
             model.stateChannel.connect {
                 if (it == State.ROUTE_SEARCH && prevState == State.NAVIGATION) {
-                    eventSink.success(
-                        mapOf(
-                            "event" to Event.messageEvent.name,
-                            "state" to Event.stateRouteResearch,
-                        )
-                    )
+                    emit(Event.stateRouteResearch)
                 } else {
-                    eventSink.success(
-                        mapOf(
-                            "event" to Event.messageEvent.name,
-                            "state" to Event.stateNone,
-                        )
-                    )
+                    emit(Event.stateNone)
                 }
                 this.prevState = it
             }
@@ -37,22 +27,22 @@ class MessageControlModel(
         closeables.add(
             model.locationAvailableChannel.connect {
                 if (!it && model.state != State.FINISHED && model.state != State.DISABLED) {
-                    eventSink.success(
-                        mapOf(
-                            "event" to Event.messageEvent.name,
-                            "state" to Event.stateGpsLost,
-                        )
-                    )
+                    emit(Event.stateGpsLost)
                 } else {
-                    eventSink.success(
-                        mapOf(
-                            "event" to Event.messageEvent.name,
-                            "state" to Event.stateNone,
-                        )
-                    )
+                    emit(Event.stateNone)
                 }
             }
         )
+    }
+
+    private fun emit(state: String) {
+        eventSink.success(
+            mapOf(
+                "event" to Event.messageEvent.name,
+                "state" to state,
+            )
+        )
+        NavLiveEventBus.message.value = state
     }
 
     override fun close() {

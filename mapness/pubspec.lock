@@ -138,7 +138,7 @@ packages:
     source: hosted
     version: "2.0.6+1"
   archive:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: archive
       sha256: a96e8b390886ee8abb49b7bd3ac8df6f451c621619f52a26e815fdcf568959ff
@@ -247,7 +247,7 @@ packages:
       path: ".."
       relative: true
     source: path
-    version: "3.30.3+894"
+    version: "3.13.6+467"
   balady_uikit:
     dependency: "direct main"
     description:
@@ -608,14 +608,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.0.2"
-  cupertino_icons:
-    dependency: "direct main"
-    description:
-      name: cupertino_icons
-      sha256: ba631d1c7f7bef6b729a622b7b752645a2d076dba9976925b8f25725a30e1ee6
-      url: "https://pub.dev"
-    source: hosted
-    version: "1.0.8"
   curl_logger_dio_interceptor:
     dependency: transitive
     description:
@@ -864,7 +856,7 @@ packages:
     source: hosted
     version: "7.0.1"
   file_picker:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: file_picker
       sha256: d974b6ba2606371ac71dd94254beefb6fa81185bde0b59bdc1df09885da85fde
@@ -1511,6 +1503,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "5.0.2"
+  flutter_uxcam:
+    dependency: "direct main"
+    description:
+      name: flutter_uxcam
+      sha256: "93916e3f992521642b69d9e5fd8db4e53a4b2f59881aa2ae068732f92de47985"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.10.1"
   flutter_web_plugins:
     dependency: transitive
     description: flutter
@@ -2124,14 +2124,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.1.5"
-  linkable:
-    dependency: transitive
-    description:
-      name: linkable
-      sha256: "3cb3ccc83da8b23d27dc66b1421d5b42ed9e6e56ace045121e02a1235ee7a7e0"
-      url: "https://pub.dev"
-    source: hosted
-    version: "3.0.2"
   linkify:
     dependency: transitive
     description:
@@ -2766,21 +2758,21 @@ packages:
     source: hosted
     version: "0.3.8"
   sdga_design_system:
-    dependency: "direct overridden"
+    dependency: transitive
     description:
       name: sdga_design_system
-      sha256: "8b7c320ace05ad0489a4318aeb1f1ee2ae61867db4d315c0c5061adcd4557138"
+      sha256: "00397ddd6478701c929677d48eaf83986ac63cac80a9ae06d11b068b22e14b2e"
       url: "https://pub.dev"
     source: hosted
-    version: "1.0.0"
+    version: "1.1.0"
   sdga_icons:
     dependency: transitive
     description:
       name: sdga_icons
-      sha256: "2bbd7468749d10c9d3f0304fd9465a0e7c8a92d0b27dc4c8466b6c928c35bf59"
+      sha256: "4a9fee20f824f10fc0930e4517843c678c2e1306141c9e3a58218be47b9766c7"
       url: "https://pub.dev"
     source: hosted
-    version: "0.0.2"
+    version: "0.1.1"
   sentry:
     dependency: transitive
     description:

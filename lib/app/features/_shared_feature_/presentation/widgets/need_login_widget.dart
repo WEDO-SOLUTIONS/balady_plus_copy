@@ -28,18 +28,12 @@ class NeedLoginWidget extends StatefulWidget {
 }
 
 class _NeedLoginWidgetState extends State<NeedLoginWidget> {
-
-  @override
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    CommonFunctions.onLogin(
-      isMunicipality: true,
-      mainPage: RouteName.miniAppsMainScreen,
-    );
+    CommonFunctions.onLogin(isMunicipality: true, mainPage: RouteName.miniAppsMainScreen);
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -58,7 +52,7 @@ class _NeedLoginWidgetState extends State<NeedLoginWidget> {
             mainAxisSize: MainAxisSize.min,
             children: [
               /// Content
-              Image.asset("assets/icons/png/lockv.png", width: 73, height: 88, fit: BoxFit.cover),
+              Image.asset("assets/icons/png/lockv.webp", width: 73, height: 88, fit: BoxFit.cover),
               // const CustomSvgIconWidget(
               //   IconPath.lock,
               //   iconSize: 82,

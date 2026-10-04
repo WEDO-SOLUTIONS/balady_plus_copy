@@ -77,8 +77,10 @@ import 'package:mapness/pages/debug_overlay/debug_overlay.dart';
 import 'package:mapness/pages/landing/landing_page.dart';
 import 'package:mapness/pages/path_nav/path_nav_page.dart';
 import 'package:mapness/shared/constants/constants.dart';
+import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/lib/auth/auth_methods.dart';
 import 'package:mapness/shared/lib/deeplink_functions.dart';
+import 'package:mapness/features/balady_analytics/metrics.dart';
 import 'package:mapness/shared/lib/urbi_metrics_utils.dart';
 import 'package:mapness/shared/providers/analytic/bss_common.dart';
 import 'package:mapness/shared/providers/analytic/bss_dio.dart';
@@ -97,6 +99,7 @@ import 'package:mapness/shared/providers/map/camera_position.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:mapness/shared/providers/map/rubric_marker_type_mapper.dart';
 import 'package:mapness/shared/providers/map/selected_marker.dart';
+import 'package:mapness/shared/providers/map/tunnel_state.dart';
 import 'package:mapness/shared/providers/media_query.dart';
 import 'package:mapness/shared/providers/short_link_repository.dart';
 import 'package:mapness/shared/providers/urbi_analytics.dart';
@@ -527,13 +530,16 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> with Widg
     final themeController = context.read<ThemeController>();
     final baladyTheme = context.read<BaladyThemeNotifier>();
     final specialThemeMode = ref.read(specialThemeModeProvider);
+    // Driving through a tunnel darkens the whole app, not just the map surface, and
+    // outranks both the day/night preference and the special themes while it lasts.
+    final inTunnel = ref.read(tunnelStateProvider);
+    final effectiveDark = isDark || inTunnel;
     if (kDebugMode) {
-      debugPrint('[DarkThemeDebug] _themeChanged isDark=$isDark mode=$specialThemeMode');
+      debugPrint('[DarkThemeDebug] _themeChanged isDark=$isDark inTunnel=$inTunnel mode=$specialThemeMode');
     }
-
-    // Both `ThemeController.setTheme` and `BaladyThemeNotifier` notify listeners (and `setTheme` writes
-    // SharedPreferences) unconditionally / on every call, so only touch them when the effective value changed.
-    final targetTheme = isDark
+    // Both `ThemeController.setTheme` and `BaladyThemeNotifier` notify listeners (and write SharedPreferences) on every
+    // call, so only touch them when the effective value changed.
+    final targetTheme = effectiveDark
         ? BaladyAppThemes.darkDGA
         : switch (specialThemeMode) {
             SpecialThemeMode.nationalDay => BaladyAppThemes.saudiDay,
@@ -541,7 +547,7 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> with Widg
             SpecialThemeMode.foundationDay => BaladyAppThemes.foundationDay,
             _ => BaladyAppThemes.lightDGA,
           };
-    // `null` (provider still loading) or `autoSunDependent` follow the resolved brightness.
+    // The mode the user picked; `null` (provider still loading) or `autoSunDependent` follow the resolved brightness.
     final targetMode = switch (ref.read(darkModeProvider).value?.currentMapMode) {
       DarkMapStateEnum.asInASystem => ThemeMode.system,
       DarkMapStateEnum.alwaysEnabled => ThemeMode.dark,
@@ -550,7 +556,10 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> with Widg
     };
 
     // Both notifiers change synchronously (before the first await) so the two theme sources flip in the same frame.
-    if (baladyTheme.themeMode != targetMode) {
+    // Transient on purpose: the tunnel must not overwrite the mode the user picked, so the preference is still written
+    // underneath the override (`setTransientThemeMode` is itself a no-op when unchanged).
+    baladyTheme.setTransientThemeMode(inTunnel ? ThemeMode.dark : null);
+    if (baladyTheme.preferredThemeMode != targetMode) {
       unawaited(baladyTheme.updateThemeMode(targetMode));
     }
 
@@ -601,17 +610,28 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> with Widg
 
   @override
   Widget build(BuildContext context) {
-    ref.listen(darkModeProvider, (prev, next) {
-      // Ignore the transient loading state (initial load / `invalidateSelf` rebuild): it carries no resolved value and
-      // would apply a bogus light theme. `_themeChanged` is a no-op when the resolved theme did not change.
-      if (next.isLoading || !next.hasValue) {
-        return;
-      }
+    ref
+      ..listen(darkModeProvider, (prev, next) {
+        // Ignore the transient loading state (initial load / `invalidateSelf` rebuild): it carries no resolved value
+        // and would apply a bogus light theme. `_themeChanged` is a no-op when the resolved theme did not change.
+        if (next.isLoading || !next.hasValue) {
+          return;
+        }
 
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        _themeChanged(isDark: next.value?.isDark == true);
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          _themeChanged(isDark: next.value?.isDark == true);
+        });
+      })
+      // Entering or leaving a tunnel re-runs the same resolution, which picks the
+      // override up from `tunnelStateProvider` itself.
+      ..listen(tunnelStateProvider, (prev, next) {
+        if (prev == next) {
+          return;
+        }
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          _themeChanged(isDark: ref.read(darkModeProvider).value?.isDark ?? false);
+        });
       });
-    });
 
     final language = ref.watch(appLanguageProvider);
     final direction = ref.watch(uiDirectionProvider);
@@ -636,6 +656,23 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> with Widg
           return;
         }
 
+        // Track theme deactivation
+        if (prev != null && prev != SpecialThemeMode.base) {
+          Metrics.logEventAdvanced(
+            MetricsConstants.themesKeys.themeDeactivated,
+            group: MetricsConstants.themesTag,
+            props: {'theme': prev.name},
+          );
+        }
+
+        // Track theme activation
+        if (next != SpecialThemeMode.base) {
+          Metrics.logEventAdvanced(
+            MetricsConstants.themesKeys.themeActivated,
+            group: MetricsConstants.themesTag,
+            props: {'theme': next.name},
+          );
+        }
         final isDark = ref.read(darkModeProvider).value?.isDark ?? false;
         _themeChanged(isDark: isDark);
       })
@@ -789,6 +826,14 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> with Widg
         ..log('StackTrace: $stackTrace', logLevel: MapnessLogLevel.error);
     }
 
+    // UXCam session recording: an always-on channel, so every facade event,
+    // screen tag and identity lands on the recording. No-op on flavors with an
+    // empty key (dev, urbiPre). Registered before `configure`, which is what
+    // flushes events buffered during startup — otherwise those would miss it.
+    final uxcam = UxcamBaladyAnalyticsSink.tryCreate(appKey: RemoteConfig.uxCamKey);
+    if (uxcam != null) {
+      BaladyAnalytics.instance.registerChannel(BaladyAnalyticsChannel.uxcam, uxcam, alwaysOn: true);
+    }
     // Idempotent: the host shell may have configured the facade already.
     BaladyAnalytics.instance.configure(
       mode: BaladyAnalyticsMode.parse(RemoteConfig.baladyAnalyticsMode),
@@ -797,6 +842,7 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> with Widg
         apiKey: RemoteConfig.baladyAnalyticsKey,
       ),
     );
+    BaladyAnalytics.instance.setSessionProperty('environment', RemoteConfig.env.name);
     // First legacy stream under the facade umbrella: events tracked with
     // channels: {..., urbi} keep flowing to balady-metrics.urbi.ae.
     BaladyAnalytics.instance.registerChannel(
@@ -1291,6 +1337,11 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> with Widg
   Future<void> _openQibla() async {
     final AppRouter router = await ref.watch(appRouterProvider);
     ref.read(appAnalyticsProvider).quickActionSelected('qibla');
+    Metrics.logEventAdvanced(
+      MetricsConstants.exploreKeys.qibla,
+      action: MetricAction.tap.name,
+      group: MetricsConstants.exploreTag,
+    );
     final location = ref.read(locationProvider.notifier);
 
     await location.checkLocationPermission().then((allowed) async {
@@ -1380,6 +1431,13 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> with Widg
 
   Future<void> _openStories(String id) async {
     final AppRouter router = await ref.watch(appRouterProvider);
+
+    Metrics.logEventAdvanced(
+      MetricsConstants.exploreKeys.storyBanner,
+      group: MetricsConstants.exploreTag,
+      action: MetricAction.tap.name,
+      props: {'id': id},
+    );
 
     ref.read(storiesOpenStateProvider.notifier).open();
 

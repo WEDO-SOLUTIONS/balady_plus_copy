@@ -8,7 +8,6 @@
 "tripPreviewMoreRoutesButton" = "مسارات بديلة";
 "tripPreviewBackButton" = "رجوع";
 "tripFinishedAlertTitle" = "لقد وصلت";
-"tripFinishedAlertEndTripButton" = "إنهاء الرحلة";
 "tripFinishedAlertNewRouteButton" = "مسار جديد";
 "searchScreenGridHistory" = "تاريخ";
 "keyboardSearchScreenEmptyPlaceholderTitle" = "لم يتم العثور على شيء";
@@ -22,11 +21,13 @@
 "settingsScreenSound" = "الصوت";
 "settingsScreenParking" = "الموقف";
 "navigationRerouting" = "إعادة التوجيه…";
+"gpsSignalLost" = "‏انقطعت إشارة GPS";
 "quickFilterEatOut" = "المطاعم";
 "quickFilterMosques" = "المساجد";
 "quickFilterMarkets" = "الآسواق";
 "quickFilterHotels" = "الفنادق";
 "quickFilterFuel" = "الوقود";
+"quickFilterSearchScreenLoadMoreTitle" = "عرض المزيد من النتائج";
 "favouritesScreenTitle" = "المفضلة";
 "favouritesScreenBackButton" = "بحث";
 "favouritesScreenLoadingPlaceholder" = "جار التحميل";
@@ -37,3 +38,4 @@
 "favouritesScreenItemSubtitlePlaceholder" = "أضف عنوانًا في هاتفك";
 "favouritesScreenPlaceholderEmptyTitle" = "لا يوجد شيء هنا بعد";
 "favouritesScreenPlaceholderEmptySubtitle" = "أضف الأماكن المفضلة على تطبيق بلدي+ لاستعراضها هنا";
+"baladyMaps" = "خرائط بلدي+";
