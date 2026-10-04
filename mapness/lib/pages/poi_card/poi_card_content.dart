@@ -326,13 +326,21 @@ class _ContentState extends ConsumerState<_PoiCardContent> with SingleTickerProv
                   // we should not use objectIdForIndoorLevels if POI has levelId
                   objectIdForIndoorLevels: poiCardState?.gisObjectIdMessage?.levelId != null ? null : widget.objectId,
                 ),
-
-                topHeader: isGooglePoi
-                    ? null
-                    : PoiPhotosHeader(
+                topHeader: Column(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x).copyWith(bottom: Spacing.$4x),
+                      child: const MapAttributionLabel(),
+                    ),
+                    if (!isGooglePoi)
+                      PoiPhotosHeader(
                         objectId: widget.objectId,
                         bottomSheetController: _bottomSheetController,
                       ),
+                  ],
+                ),
                 topHeaderOffset: PoiCardStateMapper.topHeaderOffsetDelegate,
                 footer: PoiCardFooter(
                   // Animated to zero, because safeAreaColor can't be animated now
@@ -342,8 +350,27 @@ class _ContentState extends ConsumerState<_PoiCardContent> with SingleTickerProv
                   closestPoint: widget.closestPoint,
                   bottomSheetController: _bottomSheetController,
                   data: widget.data,
-                  share: () => poiActions.share(objectId: widget.objectId, markerCoords: widget.closestPoint),
+                  share: () {
+                    Metrics.logEventAdvanced(
+                      MetricsConstants.poiKeys.share,
+                      group: MetricsConstants.poiTag,
+                      action: MetricAction.tap.toString(),
+                      props: {
+                        'object_id': widget.data.id?.objectId,
+                        'closest_point': '${widget.closestPoint?.latitude},${widget.closestPoint?.longitude}',
+                      },
+                    );
+
+                    return poiActions.share(objectId: widget.objectId, markerCoords: widget.closestPoint);
+                  },
                   callPhone: () {
+                    Metrics.logEventAdvanced(
+                      MetricsConstants.poiKeys.call,
+                      group: MetricsConstants.poiTag,
+                      action: MetricAction.tap.toString(),
+                      props: {'objectId': widget.objectId},
+                    );
+
                     final phoneNumbers = widget.data.getContactsInfoModels
                         .where((e) => e.type == ContactsInfoType.phone && e.value != null)
                         .toList();

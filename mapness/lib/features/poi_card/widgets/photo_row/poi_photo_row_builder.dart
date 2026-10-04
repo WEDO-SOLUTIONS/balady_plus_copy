@@ -10,6 +10,8 @@ import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/features/poi_card/enums/poi_card_bottom_sheet_state.dart';
 import 'package:mapness/features/poi_card/widgets/photos_header/header_component.dart';
 import 'package:mapness/features/poi_card/widgets/poi_photos_stories.dart';
+import 'package:mapness/shared/constants/metrics_constants.dart';
+import 'package:mapness/features/balady_analytics/metrics.dart';
 import 'package:mapness/shared/ui/loading_image/loading_shimmer_image.dart';
 
 part 'poi_photo_few.dart';
@@ -121,6 +123,16 @@ class _PoiPhotoRowBuilderState extends ConsumerState<PoiPhotoRowBuilder> {
     final previewUrl = widget.previewUrls[index];
     return LoadingShimmerImage(
       onImageTap: (name, {isAsset}) {
+        Metrics.logEventAdvanced(
+          MetricsConstants.poiKeys.photo,
+          group: MetricsConstants.poiTag,
+          action: MetricAction.tap.toString(),
+          props: {
+            'poi_id': widget.objectId,
+            'photo_url': widget.photosUrls[index],
+          },
+        );
+
         context.router.push(
           PhotoViewerRoute(photoPaths: widget.photosUrls, previewUrls: widget.previewUrls, currentPhotoIndex: index),
         );

@@ -28,6 +28,12 @@ class FeedbackImageSelector extends _$FeedbackImageSelector {
 
   static const _maxImageResolution = 5000;
 
+  /// JPEG quality passed to image_picker. When only `maxWidth`/`maxHeight` are
+  /// given, image_picker re-encodes every picked/captured image as JPEG with
+  /// quality 100, so a 12 MP camera shot easily exceeds the 5 MB limit and
+  /// gets rejected by [_isValidImage] even though the original was within limits.
+  static const _imageQuality = 85;
+
   @override
   List<XFile> build() {
     ref.listen(feedbackImageTypeProvider, (_, next) {
@@ -84,15 +90,24 @@ class FeedbackImageSelector extends _$FeedbackImageSelector {
   Future<Size> _calculateImageDimension(String imagePath) {
     final Completer<Size> completer = Completer();
     final Image image = Image.file(File(imagePath));
-    image.image.resolve(const ImageConfiguration()).addListener(
-      ImageStreamListener(
-        (image, synchronousCall) {
-          final myImage = image.image;
-          final Size size = Size(myImage.width.toDouble(), myImage.height.toDouble());
-          completer.complete(size);
-        },
-      ),
-    );
+    image.image
+        .resolve(const ImageConfiguration())
+        .addListener(
+          ImageStreamListener(
+            (image, synchronousCall) {
+              final myImage = image.image;
+              final Size size = Size(myImage.width.toDouble(), myImage.height.toDouble());
+              completer.complete(size);
+            },
+            // Without this a file Flutter can't decode would leave the completer
+            // pending forever and the pick flow would hang silently.
+            onError: (error, stackTrace) {
+              if (!completer.isCompleted) {
+                completer.completeError(error, stackTrace);
+              }
+            },
+          ),
+        );
     return completer.future;
   }
 
@@ -101,9 +116,18 @@ class FeedbackImageSelector extends _$FeedbackImageSelector {
     final isImageFormatAccepted = acceptFormats.isNotEmpty && acceptFormats.contains(fileType);
     final size = await File(path).length();
     final isSizeAccepted = size <= maxSize;
-    final dim = await _calculateImageDimension(path);
-    final isDimAccepted = dim.width <= _maxImageResolution && dim.height <= _maxImageResolution;
+    final isDimAccepted = await _isDimensionAccepted(path);
     return isImageFormatAccepted && isSizeAccepted && isDimAccepted;
+  }
+
+  Future<bool> _isDimensionAccepted(String path) async {
+    try {
+      final dim = await _calculateImageDimension(path);
+      return dim.width <= _maxImageResolution && dim.height <= _maxImageResolution;
+    } catch (_) {
+      // Undecodable image — treat as not matching the accepted image limits.
+      return false;
+    }
   }
 
   Future<List<XFile>> _filterImages({
@@ -135,15 +159,17 @@ class FeedbackImageSelector extends _$FeedbackImageSelector {
   }
 
   Future<List<XFile>> _pickFromGallery() async => ImagePicker().pickMultiImage(
-        maxWidth: _maxImageResolution.toDouble(),
-        maxHeight: _maxImageResolution.toDouble(),
-      );
+    maxWidth: _maxImageResolution.toDouble(),
+    maxHeight: _maxImageResolution.toDouble(),
+    imageQuality: _imageQuality,
+  );
 
   Future<List<XFile>> _pickFromCamera() async {
     final image = await ImagePicker().pickImage(
       source: ImageSource.camera,
       maxWidth: _maxImageResolution.toDouble(),
       maxHeight: _maxImageResolution.toDouble(),
+      imageQuality: _imageQuality,
     );
     if (image == null) {
       return [];

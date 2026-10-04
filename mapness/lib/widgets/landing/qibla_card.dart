@@ -7,7 +7,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/_generated/assets/assets.gen.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
+import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
+import 'package:mapness/features/balady_analytics/metrics.dart';
 import 'package:mapness/shared/providers/location.dart';
 
 class QiblaCard extends ConsumerWidget {
@@ -18,6 +20,11 @@ class QiblaCard extends ConsumerWidget {
     borderRadius: BorderRadius.circular(RadiusBorder.xl),
     child: GestureDetector(
       onTap: () async {
+        Metrics.logEventAdvanced(
+          MetricsConstants.exploreKeys.qibla,
+          action: MetricAction.tap.name,
+          group: MetricsConstants.exploreTag,
+        );
         final location = ref.read(locationProvider.notifier);
 
         await location.checkLocationPermission().then((allowed) {

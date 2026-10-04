@@ -6,7 +6,9 @@ import 'package:mapness/features/poi_card/enums/poi_tabs_type.dart';
 import 'package:mapness/features/poi_card/extensions/organizations_ext.dart';
 import 'package:mapness/features/poi_card/provider/poi_card_provider.dart';
 import 'package:mapness/features/poi_card/provider/poi_photo_provider.dart';
+import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
+import 'package:mapness/features/balady_analytics/metrics.dart';
 
 class PoiTabs extends ConsumerStatefulWidget {
   final PoiCardState? poiCardState;
@@ -70,14 +72,31 @@ class _PoiTabsState extends ConsumerState<PoiTabs> {
   Widget _buildItem(PoiTabsType type, int index, {required int photoCount, required int organizationsCount}) {
     final isActive = widget.tabController.index == index;
     void select() => widget.tabController.animateTo(index);
+    void selectAndLog(String title) {
+      Metrics.logEventAdvanced(
+        MetricsConstants.poiKeys.tab,
+        group: MetricsConstants.poiTag,
+        action: MetricAction.tap.toString(),
+        props: {'tab': title},
+      );
+      select();
+    }
 
     return switch (type) {
-      PoiTabsType.info => _PoiTabItem(title: context.l10n.info, onTap: select, isActive: isActive),
-      PoiTabsType.reviews => _PoiTabItem(title: context.l10n.poiReviewsTab, onTap: select, isActive: isActive),
+      PoiTabsType.info => _PoiTabItem(
+        title: context.l10n.info,
+        onTap: () => selectAndLog(context.l10n.info),
+        isActive: isActive,
+      ),
+      PoiTabsType.reviews => _PoiTabItem(
+        title: context.l10n.poiReviewsTab,
+        onTap: () => selectAndLog(context.l10n.poiReviewsTab),
+        isActive: isActive,
+      ),
       PoiTabsType.photos => _PoiTabItem(
         title: context.l10n.photos,
         count: photoCount,
-        onTap: select,
+        onTap: () => selectAndLog(context.l10n.photos),
         isActive: isActive,
       ),
       PoiTabsType.organizations =>

@@ -1,7 +1,11 @@
+import 'dart:async';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mapness/features/balady_analytics/events/tifo_events.dart';
 import 'package:mapness/features/tifo/data/tifo_api.dart';
 import 'package:mapness/features/tifo/data/tifo_models.dart';
+import 'package:mapness/features/tifo/tifo_buildings_map_layer.dart';
 import 'package:mapness/shared/utils/logger/logger.dart';
 
 @immutable
@@ -70,6 +74,21 @@ class TifoDistrictsController extends Notifier<TifoDistrictsState> {
   Future<void>? _geometryRequest;
   Future<void>? _summariesRequest;
 
+  /// Round-trip of every district request so far — geometry and standings together, since the
+  /// tier paints once both have answered. Read once, at first paint, for
+  /// `tifo_surface_viewed`; null while served entirely from memory. Never logged.
+  final TifoRequestTiming _timing = TifoRequestTiming();
+
+  DateTime? _lastDataAt;
+
+  /// See [_timing].
+  Duration? get requestDuration => _timing.total;
+
+  /// When the payload that gates the mosaic (`/districts` geometry) finished
+  /// parsing into [state] — the start of the render clock. Standings do not
+  /// move it: they only re-tint polygons that are already on the map.
+  DateTime? get lastDataAt => _lastDataAt;
+
   @override
   TifoDistrictsState build() => const TifoDistrictsState();
 
@@ -95,15 +114,22 @@ class TifoDistrictsController extends Notifier<TifoDistrictsState> {
   Future<void> _loadGeometry() async {
     state = state.copyWith(isLoadingGeometry: true, error: null);
     try {
-      final districts = await _api.getDistricts();
+      final districts = await _api.getDistricts(timing: _timing);
       if (!ref.mounted) {
         return;
       }
       logger.log('[tifo] districts geometry loaded: ${districts.length}');
+      _lastDataAt = DateTime.now();
       state = state.copyWith(districts: districts, isLoadingGeometry: false);
     } catch (e) {
       if (!ref.mounted) {
         return;
+      }
+      // `tifo_blocked {reason: error, surface: district}`: without geometry the mosaic paints
+      // nothing — the one district failure worth an event (a dropped summary poll self-heals
+      // every 20 s, see [_loadSummaries]). Layer-off excluded: a fetch can outlive the toggle.
+      if (ref.read(tifoBuildingsMapLayerProvider)) {
+        unawaited(TifoEvents.blocked(reason: TifoBlockReason.error, surface: TifoSurface.district));
       }
       state = state.copyWith(
         isLoadingGeometry: false,
@@ -119,10 +145,13 @@ class TifoDistrictsController extends Notifier<TifoDistrictsState> {
   Future<void> _loadSummaries() async {
     state = state.copyWith(isLoadingSummaries: true);
     try {
-      final summaries = await _api.getDistrictsSummary();
+      final summaries = await _api.getDistrictsSummary(timing: _timing);
       if (!ref.mounted) {
         return;
       }
+      // Only when geometry has not answered yet: a standings poll must not
+      // restart the render clock of a mosaic that is already painted.
+      _lastDataAt ??= DateTime.now();
       state = state.copyWith(summaries: summaries, isLoadingSummaries: false);
     } catch (_) {
       // Keep stale standings — a dropped poll must not un-color the map.

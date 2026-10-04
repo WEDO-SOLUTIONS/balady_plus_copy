@@ -39,6 +39,8 @@ class ToastOverlay extends StatefulWidget {
 
 class ToastOverlayState extends State<ToastOverlay> {
   static const _betaNotificationTitleKey = 'beta_notification';
+  static const defaultDisplayDuration = Duration(seconds: 2);
+  static const actionableDisplayDuration = Duration(seconds: 10);
 
   OverlayEntry? _overlayEntry;
 
@@ -71,7 +73,7 @@ class ToastOverlayState extends State<ToastOverlay> {
     bool? isDismissible,
     bool isClosable = false,
     bool isFlipped = false,
-    Duration displayDuration = const Duration(seconds: 10),
+    Duration displayDuration = defaultDisplayDuration,
     Duration transitionDuration = const Duration(milliseconds: 200),
   }) {
     hide();
@@ -135,6 +137,7 @@ class ToastOverlayState extends State<ToastOverlay> {
         ),
       ],
       icon: const ToastIconData(SystemIcons.noServer),
+      displayDuration: actionableDisplayDuration,
     );
   }
 
@@ -166,6 +169,7 @@ class ToastOverlayState extends State<ToastOverlay> {
         ),
       ],
       icon: const ToastIconData(SystemIcons.offline),
+      displayDuration: actionableDisplayDuration,
     );
   }
 

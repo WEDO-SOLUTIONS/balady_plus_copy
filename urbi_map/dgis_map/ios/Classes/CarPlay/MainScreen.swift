@@ -96,6 +96,10 @@ class MainScreen: NSObject, CPMapTemplateDelegate, SearchNavigation {
         mapTemplate.mapButtons = []
         navigationSessionManeuvers.cancel()
         indoorControlHandler.cancel()
+        // HB-23: the map view tears itself down here, on CarPlay disconnect,
+        // and no longer on every `viewDidDisappear` — switching to another
+        // CarPlay app must leave the map attached to the navigation manager.
+        dgisCarPlayMapView.dispose()
         window.rootViewController = nil
         moveCameraCancellable?.cancel()
         
@@ -488,21 +492,19 @@ class MainScreen: NSObject, CPMapTemplateDelegate, SearchNavigation {
     }
 
     private func makePanHeaderButton() -> CPBarButton {
-        let image = UIImage(named: "Pan")!.withRenderingMode(.alwaysOriginal)
+        let image = UIImage(named: "Pan")!
         return CPBarButton(image: image, handler: onPanningBarTap)
     }
 
     private func makeMyLocationHeaderButton() -> CPBarButton {
-        let image = UIImage(named: "MyLocation")!.withRenderingMode(
-            .alwaysOriginal)
+        let image = UIImage(named: "MyLocation")!
         let button = CPBarButton(image: image, handler: onMyLocationBarTap)
         return button
     }
 
     private func makeSettingsButton() -> CPBarButton {
         return CPBarButton(
-            image: UIImage(named: "Settings")!.withRenderingMode(
-                .alwaysOriginal),
+            image: UIImage(named: "Settings")!,
             handler: onSettingsBarTap
         )
     }
@@ -768,28 +770,31 @@ class MainScreen: NSObject, CPMapTemplateDelegate, SearchNavigation {
     }
 
     private func setupCamera() {
+        // Speeds are meters per second; the SDK requires overlapping consecutive
+        // ranges (maxSpeed[i] > minSpeed[i+1]), otherwise it silently drops the
+        // whole sequence and falls back to its default speed-dependent zoom.
         let styles = [
             SpeedRangeToStyleZoom(
-                range: SpeedRange(minSpeed: 0.0, maxSpeed: 5.0),
-                minDistanceToManeuver: RouteDistance(millimeters: 0),
-                maxDistanceToManeuver: RouteDistance(millimeters: 10_000),
+                range: SpeedRange(minSpeed: 0.0, maxSpeed: 6.0),
+                minDistanceToManeuver: RouteDistance(millimeters: 30_000),
+                maxDistanceToManeuver: RouteDistance(millimeters: 30_000),
                 styleZoom: StyleZoom(value: 22.0)
             ),
             SpeedRangeToStyleZoom(
-                range: SpeedRange(minSpeed: 5.0, maxSpeed: 20.0),
-                minDistanceToManeuver: RouteDistance(millimeters: 10_000),
-                maxDistanceToManeuver: RouteDistance(millimeters: 50_000),
+                range: SpeedRange(minSpeed: 5.0, maxSpeed: 16.0),
+                minDistanceToManeuver: RouteDistance(millimeters: 100_000),
+                maxDistanceToManeuver: RouteDistance(millimeters: 100_000),
                 styleZoom: StyleZoom(value: 20.0)
             ),
             SpeedRangeToStyleZoom(
-                range: SpeedRange(minSpeed: 20.0, maxSpeed: 60.0),
-                minDistanceToManeuver: RouteDistance(millimeters: 50_000),
-                maxDistanceToManeuver: RouteDistance(millimeters: 100_000),
+                range: SpeedRange(minSpeed: 15.0, maxSpeed: 28.0),
+                minDistanceToManeuver: RouteDistance(millimeters: 200_000),
+                maxDistanceToManeuver: RouteDistance(millimeters: 200_000),
                 styleZoom: StyleZoom(value: 18.0)
             ),
             SpeedRangeToStyleZoom(
-                range: SpeedRange(minSpeed: 60.0, maxSpeed: 200.0),
-                minDistanceToManeuver: RouteDistance(millimeters: 100_000),
+                range: SpeedRange(minSpeed: 27.0, maxSpeed: 1000.0),
+                minDistanceToManeuver: RouteDistance(millimeters: 300_000),
                 maxDistanceToManeuver: RouteDistance(millimeters: 300_000),
                 styleZoom: StyleZoom(value: 16.5)
             ),

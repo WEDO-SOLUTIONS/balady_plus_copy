@@ -9,6 +9,8 @@ import 'package:mapness/features/stories/models/story_types.dart';
 import 'package:mapness/features/stories/providers/story_service.dart';
 import 'package:mapness/features/stories/ui/stories_fullscreen.dart';
 import 'package:mapness/features/stories/ui/story_args_provider.dart';
+import 'package:mapness/shared/constants/metrics_constants.dart';
+import 'package:mapness/features/balady_analytics/metrics.dart';
 import 'package:provider/provider.dart';
 
 @RoutePage()
@@ -38,6 +40,12 @@ class StoriesPage extends ConsumerStatefulWidget {
 }
 
 class _StoriesScreenState extends ConsumerState<StoriesPage> {
+  @override
+  void initState() {
+    super.initState();
+    _reportOpenMetricaEvent();
+  }
+
   void _onClose([int? index]) {
     ref.read(storyServiceProvider.notifier).resumeUpdate();
 
@@ -62,6 +70,12 @@ class _StoriesScreenState extends ConsumerState<StoriesPage> {
   }
 
   @override
+  void dispose() {
+    _reportCloseMetricsEvent();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final storyData = StoryTypedData.fromType(widget.type);
     return StoryArgsProvider(
@@ -78,5 +92,33 @@ class _StoriesScreenState extends ConsumerState<StoriesPage> {
         ),
       ),
     );
+  }
+
+  void _reportCloseMetricsEvent() {
+    if (widget.type == StoryTypes.network) {
+      Metrics.logEventAdvanced(
+        MetricsConstants.exploreKeys.storiesClose,
+        action: MetricAction.tap.name,
+        group: MetricsConstants.exploreTag,
+      );
+    }
+  }
+
+  void _reportOpenMetricaEvent() {
+    if (widget.type == StoryTypes.network) {
+      Metrics.logEventAdvanced(
+        MetricsConstants.exploreKeys.storyBanner,
+        action: MetricAction.tap.name,
+        group: MetricsConstants.exploreTag,
+      );
+      return;
+    }
+    if (widget.type == StoryTypes.route) {
+      Metrics.logEventAdvanced(
+        MetricsConstants.routesKeys.searchHistoryItem,
+        action: MetricAction.tap.name,
+        group: MetricsConstants.routesTag,
+      );
+    }
   }
 }

@@ -19,13 +19,10 @@ class SearchPage extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) => LayoutBuilder(
-    builder: (context, constrains) => MapSearchSheet(
-      initialState: initialState,
-      withClustering: withClustering,
-      biggestHeight: constrains.biggest.height,
-      requestFocus: requestFocus,
-      expansion: expansion,
-    ),
+  Widget build(BuildContext context) => MapSearchSheet(
+    initialState: initialState,
+    withClustering: withClustering,
+    requestFocus: requestFocus,
+    expansion: expansion,
   );
 }

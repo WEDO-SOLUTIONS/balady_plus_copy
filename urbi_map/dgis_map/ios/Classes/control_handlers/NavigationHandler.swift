@@ -1,6 +1,16 @@
 import DGis
 import Foundation
 
+// Cross-module contract with the Runner Live Activity controller.
+// Raw values are part of the fixed contract — do not rename.
+extension Notification.Name {
+    static let dgisNavigationDashboardTick = Notification.Name("dgis.navigation.dashboardTick")
+    static let dgisNavigationManeuverTick = Notification.Name("dgis.navigation.maneuverTick")
+    static let dgisNavigationSpeedTick = Notification.Name("dgis.navigation.speedTick")
+    static let dgisNavigationMessageTick = Notification.Name("dgis.navigation.messageTick")
+    static let dgisNavigationStateChanged = Notification.Name("dgis.navigation.stateChanged")
+}
+
 class NavigationHandler {
     private class Events {
         // event name
@@ -28,16 +38,44 @@ class NavigationHandler {
     
     private var cancelable: Array<Cancellable> = []
     private var moveCameraCancellable: DGis.Cancellable?
-    
+
     // Models to observe channels and send events to Flutter
     private let speedControlModel: SpeedControlModel
     private let dashboardControlModel: DashboardControlModel
     private let messageControlModel: MessageControlModel
     private let maneuverControlModel: ManeuverControlModel
     
-    private let oldSource: DGis.Source?
-    
+    private var oldSource: DGis.Source?
+    /// BALADY-3772: the navigation-cursor 3D model is set on the my-location
+    /// object via setModelData. The owner (DgisMapView) re-applies it whenever
+    /// that object may have (re)materialised its model: after guidance swaps
+    /// the source in, and once a session that uses the custom cursor
+    /// (turn-by-turn or, per BALADY-3924, free roam) reaches
+    /// `State.navigation` — a model set while the cursor was still the idle
+    /// dashboard marker is not shown.
+    var onMyLocationSourceReplaced: (() -> Void)?
+    /// BALADY-3772 / BALADY-3924 (regression): the custom model only applies
+    /// while a session uses it. Fired when a session ends so the owner
+    /// resets the my-location marker back to the standard style default.
+    var onNavigationSessionEnded: (() -> Void)?
+
     private(set) var isNavigating: Bool = false
+
+    /// BALADY-3772/3972: true only while a car-like guidance/simulation
+    /// session (not pedestrian, not public transport) started via
+    /// `startNavigation`/`startSimulation` is active.
+    private(set) var isTurnByTurn: Bool = false
+
+    /// BALADY-3924: true while a free-roam session started via
+    /// `startFreeRoam` is active. Free roam shows the chosen navigation
+    /// cursor too, same as turn-by-turn guidance — see `usesCustomCursor`.
+    private(set) var isFreeRoam: Bool = false
+
+    /// BALADY-3924: whichever kind of session currently wants the custom
+    /// navigation cursor instead of the standard my-location marker (route
+    /// search outside guidance keeps the standard marker). Single source of
+    /// truth so a future session type cannot forget to gate the model.
+    var usesCustomCursor: Bool { isTurnByTurn || isFreeRoam }
 
     init(map: Map, mapView: UIView & IMapView, sdk: Container, eventChannel: DgisStreamHandler, view: UIView) {
         self.context = try! sdk.context
@@ -83,10 +121,8 @@ class NavigationHandler {
         )
         
         navigationManager.mapManager.addMap(map: map)
-        
-        
     }
-    
+
     private func stateChannelListener(_ state: State) {
         switch (state) {
         case State.disabled:
@@ -95,12 +131,19 @@ class NavigationHandler {
                 "state": Events.stateDisabled
             ])
             self.isNavigating = false
+            // BALADY-3772 / BALADY-3924: defensive — a session that ends
+            // without passing stopNavigation/stopFreeRoam must not leave
+            // either custom-cursor flag armed.
+            self.isTurnByTurn = false
+            self.isFreeRoam = false
+            postStateChanged(Events.stateDisabled)
         case State.finished:
             self.eventChannel.success([
                 "event": Events.navigationEvent,
                 "state": Events.stateFinished
             ])
             self.isNavigating = false
+            postStateChanged(Events.stateFinished)
             stopNavigation()
         case State.navigation:
             self.eventChannel.success([
@@ -108,12 +151,35 @@ class NavigationHandler {
                 "state": Events.stateNavigation
             ])
             self.isNavigating = true
+            // BALADY-3772 / BALADY-3924: the my-location object switches to
+            // its navigation (3D model) representation only once the session
+            // is actually running — a model pushed earlier is not shown.
+            // Re-apply it here for any session that wants the custom cursor
+            // (turn-by-turn or free roam); route search outside guidance
+            // also raises this state and must keep the standard marker.
+            if self.usesCustomCursor {
+                onMyLocationSourceReplaced?()
+            }
+            postStateChanged(Events.stateNavigation)
         case State.routeSearch:
             self.eventChannel.success([
                 "event": Events.navigationEvent,
                 "state": Events.stateRouteSearch
             ])
             self.isNavigating = true
+            postStateChanged(Events.stateRouteSearch)
+        }
+    }
+
+    private func postStateChanged(_ state: String) {
+        // SDK callback thread: a synchronous post waits for main-queue observers and can
+        // deadlock against main-thread calls into the SDK — post async on main instead.
+        DispatchQueue.main.async {
+            NotificationCenter.default.post(
+                name: .dgisNavigationStateChanged,
+                object: nil,
+                userInfo: ["state": state]
+            )
         }
     }
     
@@ -247,13 +313,18 @@ class NavigationHandler {
             resetCamera(map: carPlayMap)
         }
         
-        if oldSource == nil { return }
+        if self.oldSource == nil { return }
         let toDelete = map.sources.first(where: { $0 is MyLocationMapObjectSource})
         
         if toDelete == nil { return }
-        
+
+        // BALADY-3972: the 3D model set via setModelData sticks to this
+        // source past removal — clear it before discarding, or the next
+        // session's fresh source still renders it (see startNavigation's swap).
+        (toDelete as? MyLocationMapObjectSource)?.item.setModelData(data: nil)
         map.removeSource(source: toDelete!)
-        map.addSource(source: oldSource!)
+        map.addSource(source: self.oldSource!)
+        self.oldSource = nil
     }
     
     func resetCamera(map: Map) {
@@ -281,6 +352,16 @@ class NavigationHandler {
         self.navigationManager.mapFollowController.followReturnDelay = 0.0
     }
     
+    /// BALADY-3972: matched by case, not by equality against a default-valued
+    /// options struct, so it stays correct regardless of the options' other
+    /// fields. Only gates the custom cursor — not `navigationManager.start`.
+    private func isPedestrianOrPublicTransport(_ options: RouteSearchOptions) -> Bool {
+        switch options {
+        case .pedestrian, .publicTransport: return true
+        default: return false
+        }
+    }
+
     func startNavigation(
         finishPoint: RouteSearchPoint?,
         options: RouteSearchOptions?,
@@ -323,17 +404,32 @@ class NavigationHandler {
             return
         }
         
-        let oldSource = map.sources.first(where: { $0 is MyLocationMapObjectSource })!
-        
-        map.removeSource(source: oldSource)
-        
-        map.addSource(source: MyLocationMapObjectSource(
-            context: context,
-            controllerSettings:  MyLocationControllerSettings(
-                coordinatesThreshold: Meter(value: 10),
-                bearingThreshold: Bearing(value: 90)
-            )
-        ))
+        // BALADY-3972: pedestrian/public-transport guidance keeps the
+        // standard style pin — only car-like sessions get the custom cursor.
+        isTurnByTurn = !isPedestrianOrPublicTransport(options)
+
+        let currentSource = map.sources.first(where: { $0 is MyLocationMapObjectSource })
+        if self.oldSource == nil, let currentSource = currentSource {
+            self.oldSource = currentSource
+            // BALADY-3972: clear before removal — the model outlives the
+            // source once removed, so a stale car-session model kept
+            // showing on the brand-new source of the next session.
+            (currentSource as? MyLocationMapObjectSource)?.item.setModelData(data: nil)
+            map.removeSource(source: currentSource)
+
+            // BALADY-3744: bearingThreshold 90° held a stale heading until course
+            // drift exceeded it, reading as "driving sideways". iOS twin of
+            // HB-113 (Android, verified on device) - use SDK defaults (0.1m/1°).
+            map.addSource(source: MyLocationMapObjectSource(
+                context: context,
+                controllerSettings: MyLocationControllerSettings()
+            ))
+            onMyLocationSourceReplaced?()
+        }
+
+        // HB-128: the trip was started from the phone; if CarPlay is connected
+        // the driver expects the car screen to switch to Balady+ on its own.
+        FlutterCarPlaySceneDelegate.activateCarScreen()
         
         completion(Result.success(()))
     }
@@ -399,15 +495,24 @@ class NavigationHandler {
             )))
             return
         }
-        
+
+        // BALADY-3972: same car-like-only gate as startNavigation, so
+        // pedestrian/public-transport simulation keeps the standard pin.
+        isTurnByTurn = !isPedestrianOrPublicTransport(options)
+
         completion(Result.success(()))
     }
     
     func stopNavigation() {
         self.navigationManager.stop()
         resetCamera()
+        // BALADY-3772 / BALADY-3924 (regression): the session is over — drop
+        // the custom cursor model so the marker returns to the standard one.
+        isTurnByTurn = false
+        isFreeRoam = false
+        onNavigationSessionEnded?()
     }
-    
+
     func saveNavigationState(completion: @escaping (Result<FlutterStandardTypedData, any Error>) -> Void) {
         let state = PackedNavigationState.fromModel(model: self.navigationManager.uiModel)
         completion(
@@ -462,6 +567,11 @@ class NavigationHandler {
     func startFreeRoam(speedRangeZoom: [SpeedRangeZoom], completion: (Result<Void, any Error>) -> Void) {
         do {
             setupCamera(speedRangeZoom: speedRangeZoom)
+            // BALADY-3924: arm the flag before the session reaches
+            // `State.navigation` so the reapply in stateChannelListener
+            // picks it up — free roam has no source swap of its own to hang
+            // a direct re-apply off, unlike startNavigation.
+            isFreeRoam = true
             try self.navigationManager.start()
         } catch {
             completion(
@@ -478,8 +588,25 @@ class NavigationHandler {
     }
 
     func stopFreeRoam() {
+        // Free roam has to leave the camera at the last roaming position instead of
+        // snapping back to the user location, the same way Android behaves (TFS #34904).
+        // The behaviour stored by `setupCamera` may be a following one (the map usually
+        // follows the location before free roam starts), so restoring it would pull the
+        // camera back to the current location right after the trip is ended.
+        let wasActive = self.navigationManager.uiModel.state != .disabled
         self.navigationManager.stop()
+        stopFollowNavigation()
         resetCamera()
+        // BALADY-3772 / BALADY-3924 (regression): see stopNavigation. Drops
+        // the custom cursor model (free roam may have applied it) so the
+        // marker returns to the standard one.
+        isTurnByTurn = false
+        isFreeRoam = false
+        onNavigationSessionEnded?()
+
+        guard wasActive else { return }
+
+        self.map.camera.setBehaviour(behaviour: CameraBehaviour(position: nil))
     }
 
     func toggleSounds(toggleType: SoundToggleType) {
