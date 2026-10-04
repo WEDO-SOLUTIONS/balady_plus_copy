@@ -40,6 +40,46 @@ class _ChatInputBarState extends State<ChatInputBar> {
     widget.onSend(text);
   }
 
+  void _insertNewline() {
+    final value = _controller.value;
+    final selection = value.selection;
+    final start = selection.isValid ? selection.start : value.text.length;
+    final end = selection.isValid ? selection.end : value.text.length;
+    final text = value.text.replaceRange(start, end, '\n');
+    if (text.length > kChatMessageMaxLength) {
+      return;
+    }
+    _controller.value = value.copyWith(
+      text: text,
+      selection: TextSelection.collapsed(offset: start + 1),
+      composing: TextRange.empty,
+    );
+  }
+
+  /// Hardware keyboard: Enter sends, Cmd/Shift/Ctrl+Enter inserts a line break.
+  /// The soft keyboard is untouched (its Enter key still adds a new line).
+  KeyEventResult _onKeyEvent(FocusNode node, KeyEvent event) {
+    final isEnter = event.logicalKey == LogicalKeyboardKey.enter || event.logicalKey == LogicalKeyboardKey.numpadEnter;
+    if (!isEnter || event is KeyUpEvent) {
+      return KeyEventResult.ignored;
+    }
+    // Don't send while an IME composition (e.g. Arabic/CJK candidate) is active.
+    if (_controller.value.composing.isValid && !_controller.value.composing.isCollapsed) {
+      return KeyEventResult.ignored;
+    }
+    final keys = HardwareKeyboard.instance;
+    if (keys.isMetaPressed || keys.isShiftPressed || keys.isControlPressed) {
+      if (event is KeyDownEvent || event is KeyRepeatEvent) {
+        _insertNewline();
+      }
+      return KeyEventResult.handled;
+    }
+    if (event is KeyDownEvent) {
+      _send();
+    }
+    return KeyEventResult.handled;
+  }
+
   @override
   Widget build(BuildContext context) => ColoredBox(
     color: context.colors.backgroundSurface1,
@@ -56,17 +96,20 @@ class _ChatInputBarState extends State<ChatInputBar> {
               icon: Icon(GeneralIcons.location, color: context.colors.accentDefault),
             ),
             Expanded(
-              child: TextField(
-                controller: _controller,
-                minLines: 1,
-                maxLines: 5,
-                textInputAction: TextInputAction.newline,
-                inputFormatters: [LengthLimitingTextInputFormatter(kChatMessageMaxLength)],
-                style: context.textStyles.bodyLargeRegular.copyWith(color: context.colors.foregroundDefault),
-                decoration: InputDecoration(
-                  hintText: context.l10n.chatInputHint,
-                  hintStyle: context.textStyles.bodyLargeRegular.copyWith(color: context.colors.foregroundSoft),
-                  border: InputBorder.none,
+              child: Focus(
+                onKeyEvent: _onKeyEvent,
+                child: TextField(
+                  controller: _controller,
+                  minLines: 1,
+                  maxLines: 5,
+                  textInputAction: TextInputAction.newline,
+                  inputFormatters: [LengthLimitingTextInputFormatter(kChatMessageMaxLength)],
+                  style: context.textStyles.bodyLargeRegular.copyWith(color: context.colors.foregroundDefault),
+                  decoration: InputDecoration(
+                    hintText: context.l10n.chatInputHint,
+                    hintStyle: context.textStyles.bodyLargeRegular.copyWith(color: context.colors.foregroundSoft),
+                    border: InputBorder.none,
+                  ),
                 ),
               ),
             ),
