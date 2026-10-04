@@ -3,6 +3,7 @@ import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mapness/features/poi_reviews/ui/poi_reviews_format.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/features/poi_reviews/domain/poi_review.dart';
 import 'package:mapness/features/poi_reviews/state/poi_reviews_providers.dart';
@@ -176,7 +177,7 @@ class _ListHeader extends StatelessWidget {
         children: [
           Expanded(
             child: Text(
-              context.l10n.poiReviewsReviewsCount(reviewsCount),
+              formatPoiReviewsCount(reviewsCount, context.l10n),
               style: context.textStyles.h4SemiBold.copyWith(color: context.colors.foregroundDefault),
             ),
           ),

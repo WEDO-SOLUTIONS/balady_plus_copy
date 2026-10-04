@@ -47,7 +47,7 @@ class PoiReviewTile extends StatelessWidget {
                     style: context.textStyles.bodyLargeMedium.copyWith(color: context.colors.foregroundDefault),
                   ),
                   Text(
-                    l10n.poiReviewsReviewsCount(review.authorReviewsCount),
+                    formatPoiReviewsCount(review.authorReviewsCount, l10n),
                     style: context.textStyles.captionMediumRegular.copyWith(color: context.colors.foregroundSoft),
                   ),
                 ],

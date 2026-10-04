@@ -28,3 +28,10 @@ String poiReviewAuthorInitials(String name) {
   }
   return (words.first.characters.first + words[1].characters.first).toUpperCase();
 }
+
+// Localazy rejects plural sources with an `=0` form, so zero has its own keys.
+String formatPoiRatingsCount(int count, AppLocalizations l10n) =>
+    count == 0 ? l10n.poiReviewsNoRatings : l10n.poiReviewsRatingsTotal(count);
+
+String formatPoiReviewsCount(int count, AppLocalizations l10n) =>
+    count == 0 ? l10n.poiReviewsNoReviews : l10n.poiReviewsReviewsTotal(count);

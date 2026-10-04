@@ -40,7 +40,7 @@ class RatingComponent extends ConsumerWidget {
           const SizedBox(width: Spacing.$2x),
           Flexible(
             child: Text(
-              l10n.poiReviewsRatingsCount(value.ratingsCount),
+              formatPoiRatingsCount(value.ratingsCount, l10n),
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
               style: context.textStyles.bodySmallRegular.copyWith(color: context.colors.foregroundSoft),

@@ -29,7 +29,7 @@ class PoiReviewsSummaryView extends StatelessWidget {
               PoiReviewStars(rating: summary.average, size: 16),
               const SizedBox(height: Spacing.$1_5x),
               Text(
-                l10n.poiReviewsRatingsCount(summary.ratingsCount),
+                formatPoiRatingsCount(summary.ratingsCount, l10n),
                 style: context.textStyles.captionMediumRegular.copyWith(color: context.colors.foregroundSoft),
               ),
             ],
