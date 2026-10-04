@@ -13,6 +13,11 @@ final class PoiCardStateMapper implements SheetStateMapper<PoiCardBottomSheetSta
   @override
   int index(PoiCardBottomSheetState state) => state.index;
 
+  /// Full-height state of the sheet. Without the photo snap offset the ladder has
+  /// only three offsets, so [PoiCardBottomSheetState.expanded] does not exist there.
+  static PoiCardBottomSheetState fullState({required bool hasPhotoSnap}) =>
+      hasPhotoSnap ? PoiCardBottomSheetState.expanded : PoiCardBottomSheetState.open;
+
   @override
   bool shouldPopOn(MultiStateSheetController<PoiCardBottomSheetState> controller) {
     switch (controller.closestState) {

@@ -81,6 +81,8 @@ class _ContentState extends ConsumerState<_PoiCardContent> with SingleTickerProv
       stateMapper: const PoiCardStateMapper(),
       initialState: PoiCardBottomSheetState.halfOpen,
     );
+    // The snap ladder is fixed here, so photos loaded later must not change the target state.
+    final fullState = PoiCardStateMapper.fullState(hasPhotoSnap: hasPhotos);
 
     _tabController = TabController(length: 3, vsync: this);
 
@@ -94,10 +96,10 @@ class _ContentState extends ConsumerState<_PoiCardContent> with SingleTickerProv
             _tabType.value = PoiTabsType.info;
           case 1:
             _tabType.value = PoiTabsType.photos;
-            _bottomSheetController.setState(PoiCardBottomSheetState.expanded);
+            _bottomSheetController.setState(fullState);
           case 2:
             _tabType.value = PoiTabsType.organizations;
-            _bottomSheetController.setState(PoiCardBottomSheetState.expanded);
+            _bottomSheetController.setState(fullState);
         }
       }
     });
