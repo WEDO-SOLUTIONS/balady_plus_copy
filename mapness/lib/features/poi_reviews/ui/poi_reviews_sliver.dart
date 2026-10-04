@@ -72,9 +72,10 @@ class _PoiReviewsSliverState extends ConsumerState<PoiReviewsSliver> {
               ),
       ),
       const SizedBox(height: Spacing.$6x),
-      if (summary.reviewsCount == 0)
-        const _EmptyView()
-      else ...[
+      if (summary.reviewsCount == 0) ...[
+        // "Be the first" no longer applies once the user has rated.
+        if (myReview == null) const _EmptyView(),
+      ] else ...[
         _ListHeader(
           reviewsCount: summary.reviewsCount,
           isExpanded: _isListExpanded,
