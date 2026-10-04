@@ -70,7 +70,9 @@ void main() {
     semantics.dispose();
   });
 
-  testWidgets('a transparent sheet outside is skipped by semantics while its layout is stale', (tester) async {
+  testWidgets('a control animating under a transparent sheet outside does not break the semantics flush', (
+    tester,
+  ) async {
     final semantics = tester.ensureSemantics();
     final controller = MultiStateSheetController<ThreeStateSheet>(
       initialState: ThreeStateSheet.open,
@@ -85,7 +87,7 @@ void main() {
           body: MultiStateSheet<ThreeStateSheet>(
             scrollController: controller,
             outside: const Align(alignment: Alignment.topLeft, child: _Pulsing()),
-            // Fully transparent: the sheet does not lay the outside out at all.
+            // Fully transparent from the first frame (BALADY-3978 / BALADY-3958 in the vendored sheetify).
             outsideOpacityDelegate: const StatefulSheetDelegateValue<double>(value: 0),
             content: const [SizedBox(height: 400)],
           ),

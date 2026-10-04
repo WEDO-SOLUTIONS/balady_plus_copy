@@ -46,8 +46,10 @@ layout into non-normalized constraints.
 | `lib/multi_state_sheet/multi_state_sheet_controller.dart` | `fraction` guarded against division by a zero `viewportHeight`, clamped to `[0, 1]` |
 | `lib/multi_state_sheet/state_snapping/behaviors/snapping_behavior.dart` | `stateToIndex` clamped to the offsets-list bounds: the deduplicated `snappingOffsets` set can transiently hold fewer entries than the sheet has states, and the negative index used to reach `elementAtOrNull`, which throws `RangeError` (crashed layout in release; the removed assert fired for the same legitimate geometry). Regression test: `test/bugfixes/balady_3914_snapping_state_clamp_test.dart` in the repo root |
 | `lib/multi_state_sheet/render_multi_state_sheet.dart` | A transparent `outside` is re-laid out with its previous constraints instead of being skipped, which left a relayout inside it dirty under the sheet's relayout boundary and tripped `_debugRelayoutBoundaryAlreadyMarkedNeedsLayout` on the next one. Regression test: `test/bugfixes/balady_3978_sheet_outside_layout_test.dart` in the repo root |
+| `lib/toggle_sheet/render_toggle_sheet.dart` | The BALADY-3978 fix ported to `ToggleSheet` (BALADY-3958): a transparent `outside` is re-laid out with its previous constraints |
+| `lib/multi_state_sheet/render_multi_state_sheet.dart`, `lib/toggle_sheet/render_toggle_sheet.dart` | BALADY-3958: an `outside` that is transparent from the first layout (so has no previous constraints for BALADY-3978 to keep) is laid out as if visible. Map controls animating their size under it tripped `!childSemantics.renderObject._needsLayout` in the semantics flush. Regression tests: `test/bugfixes/balady_3958_toggle_sheet_outside_layout_test.dart` in the repo root and `mapness/test/shared/ui/map_controls_semantics_test.dart` |
 
-Every patch is marked with its ticket ID (`BALADY-3755`, `BALADY-3914`, `BALADY-3978`) in a comment at the site.
+Every patch is marked with its ticket ID (`BALADY-3755`, `BALADY-3914`, `BALADY-3978`, `BALADY-3958`) in a comment at the site.
 
 ## Keeping the toolchain off this code
 

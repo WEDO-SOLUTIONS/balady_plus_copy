@@ -293,30 +293,6 @@ class _RenderToggleSheet extends RenderBox with SlottedContainerRenderObjectMixi
 
   int outsideOpacity = 255;
 
-  bool _outsideExcludedFromSemantics = false;
-
-  /// [outside] is not laid out while it is fully transparent, so it must not
-  /// be visited for semantics either: its subtree may hold stale layout, which
-  /// trips `!renderObject._needsLayout` in the semantics flush. Flipping the
-  /// visited set requires a semantics rebuild.
-  void _syncOutsideSemantics() {
-    final excluded = outsideOpacity == 0;
-    if (excluded != _outsideExcludedFromSemantics) {
-      _outsideExcludedFromSemantics = excluded;
-      markNeedsSemanticsUpdate();
-    }
-  }
-
-  @override
-  void visitChildrenForSemantics(RenderObjectVisitor visitor) {
-    for (final child in children) {
-      if (child == outside && _outsideExcludedFromSemantics) {
-        continue;
-      }
-      visitor(child);
-    }
-  }
-
   _RenderToggleSheet({
     required ToggleSheetController scrollController,
     required Color backgroundColor,
@@ -479,7 +455,6 @@ class _RenderToggleSheet extends RenderBox with SlottedContainerRenderObjectMixi
     if (opacity != null) {
       outsideOpacity = Color.getAlphaFromOpacity(opacity.clamp(0, 1));
     }
-    _syncOutsideSemantics();
 
     innerPadding = paddingDelegate?.getValue(scrollController);
 
@@ -593,11 +568,22 @@ class _RenderToggleSheet extends RenderBox with SlottedContainerRenderObjectMixi
     );
 
     /// Layout outside widget
-    if (outsideOpacity > 0) {
+    // BALADY-3958: a transparent `outside` that was never laid out has no
+    // previous constraints to keep (see below), so it is laid out as if
+    // visible, or its subtree stays dirty for the semantics flush.
+    if (outsideOpacity > 0 || outside?.hasSize == false) {
       final _ = _layoutChild(outside, constraints,
           height: math.max(
               draggedSheetOffset - (offsetOutsideWidgetByTopheader ? topLayoutExtend : kStartOfTheViewport), 0.0));
       _positionChild(outside, constraints, kStartOfTheViewport);
+    } else {
+      // BALADY-3958 (same as BALADY-3978 in MultiStateSheet): a transparent
+      // `outside` is re-laid out with its previous constraints, or a relayout
+      // inside it stays dirty under this boundary.
+      final _outside = outside;
+      if (_outside != null && _outside.hasSize) {
+        _outside.layout(_outside.constraints, parentUsesSize: true);
+      }
     }
   }
 

@@ -689,25 +689,26 @@ class LayersControls extends _$LayersControls {
     await _removeAll();
 
     unawaited(_viewPortSubscription?.cancel());
-    _viewPortSubscription = _latestViewportRequests(
-      (visibleRect, cancelToken) =>
-          controller.getEsriPoints(params: _createParams(visibleRect, layerType, env), cancelToken: cancelToken),
-    ).map(_makeMarkers).listen((markers) async {
-      try {
-        update(isLoading: false);
-        if (state.selectedType == LayerType.invest) {
-          final stateMarkers = state.investmentsMarkers;
-          markers.retainWhere((e) => !stateMarkers.containsKey(e.id));
-          for (final element in markers) {
-            stateMarkers[element.id] = element;
+    _viewPortSubscription =
+        _latestViewportRequests(
+          (visibleRect, cancelToken) =>
+              controller.getEsriPoints(params: _createParams(visibleRect, layerType, env), cancelToken: cancelToken),
+        ).map(_makeMarkers).listen((markers) async {
+          try {
+            update(isLoading: false);
+            if (state.selectedType == LayerType.invest) {
+              final stateMarkers = state.investmentsMarkers;
+              markers.retainWhere((e) => !stateMarkers.containsKey(e.id));
+              for (final element in markers) {
+                stateMarkers[element.id] = element;
+              }
+              update(investmentsMarkers: stateMarkers);
+              await map.addMarkers(markers);
+            }
+          } on Object catch (error, stackTrace) {
+            _logViewportError(error, stackTrace);
           }
-          update(investmentsMarkers: stateMarkers);
-          await map.addMarkers(markers);
-        }
-      } on Object catch (error, stackTrace) {
-        _logViewportError(error, stackTrace);
-      }
-    }, onError: _logViewportError);
+        }, onError: _logViewportError);
   }
 
   Future<void> _tapHandler(LayerType value) async {
@@ -838,37 +839,38 @@ class LayersControls extends _$LayersControls {
     await _removeAll();
 
     unawaited(_viewPortSubscription?.cancel());
-    _viewPortSubscription = _latestViewportRequests(
-      (visibleRect, cancelToken) => controller.getWhiteLands(
-        MapRequestParams(
-          layer: GISMapLayers.bsWhiteParcelS,
-          southWestLongitude: visibleRect.southWestLon,
-          southWestLatitude: visibleRect.southWestLat,
-          northEastLongitude: visibleRect.northEastLon,
-          northEastLatitude: visibleRect.northEastLat,
-          proxy: env.proxy,
-          domain: env.url,
-        ),
-        cancelToken,
-      ),
-    ).map(_makePolygons).listen((data) async {
-      try {
-        update(isLoading: false);
-        await _removeAll();
-        if (state.selectedType == LayerType.fencing) {
-          final statePolygons = state.polygons;
-          data.retainWhere((e) => !statePolygons.containsKey(e.id));
-          for (final element in data) {
-            statePolygons[element.id] = element;
-          }
-          update(polygons: statePolygons);
+    _viewPortSubscription =
+        _latestViewportRequests(
+          (visibleRect, cancelToken) => controller.getWhiteLands(
+            MapRequestParams(
+              layer: GISMapLayers.bsWhiteParcelS,
+              southWestLongitude: visibleRect.southWestLon,
+              southWestLatitude: visibleRect.southWestLat,
+              northEastLongitude: visibleRect.northEastLon,
+              northEastLatitude: visibleRect.northEastLat,
+              proxy: env.proxy,
+              domain: env.url,
+            ),
+            cancelToken,
+          ),
+        ).map(_makePolygons).listen((data) async {
+          try {
+            update(isLoading: false);
+            await _removeAll();
+            if (state.selectedType == LayerType.fencing) {
+              final statePolygons = state.polygons;
+              data.retainWhere((e) => !statePolygons.containsKey(e.id));
+              for (final element in data) {
+                statePolygons[element.id] = element;
+              }
+              update(polygons: statePolygons);
 
-          await mapManager.addPolygons(data);
-        }
-      } on Object catch (error, stackTrace) {
-        _logViewportError(error, stackTrace);
-      }
-    }, onError: _logViewportError);
+              await mapManager.addPolygons(data);
+            }
+          } on Object catch (error, stackTrace) {
+            _logViewportError(error, stackTrace);
+          }
+        }, onError: _logViewportError);
   }
 
   Future<void> _showBuildingCompliance() async {
@@ -882,29 +884,30 @@ class LayersControls extends _$LayersControls {
     await _removeAll();
 
     unawaited(_viewPortSubscription?.cancel());
-    _viewPortSubscription = _latestViewportRequests(
-      (visibleRect, cancelToken) => controller.buildingComplianceCertificate(
-        _createParams(visibleRect, LayerType.buildings, env),
-        cancelToken,
-      ),
-    ).listen((data) async {
-      try {
-        update(isLoading: false);
-        await _removeAll();
-        if (state.selectedType == LayerType.buildings) {
-          final polylineList = _makePolylineWithPoint(data);
-          final statePolylines = state.polylines;
-          polylineList.retainWhere((e) => !statePolylines.containsKey(e.id));
-          for (final element in polylineList) {
-            statePolylines[element.id] = element;
+    _viewPortSubscription =
+        _latestViewportRequests(
+          (visibleRect, cancelToken) => controller.buildingComplianceCertificate(
+            _createParams(visibleRect, LayerType.buildings, env),
+            cancelToken,
+          ),
+        ).listen((data) async {
+          try {
+            update(isLoading: false);
+            await _removeAll();
+            if (state.selectedType == LayerType.buildings) {
+              final polylineList = _makePolylineWithPoint(data);
+              final statePolylines = state.polylines;
+              polylineList.retainWhere((e) => !statePolylines.containsKey(e.id));
+              for (final element in polylineList) {
+                statePolylines[element.id] = element;
+              }
+              update(polylines: statePolylines);
+              await mapObjectManager.addPolyLines(polylineList);
+            }
+          } on Object catch (error, stackTrace) {
+            _logViewportError(error, stackTrace);
           }
-          update(polylines: statePolylines);
-          await mapObjectManager.addPolyLines(polylineList);
-        }
-      } on Object catch (error, stackTrace) {
-        _logViewportError(error, stackTrace);
-      }
-    }, onError: _logViewportError);
+        }, onError: _logViewportError);
   }
 
   /// Requests data for every visible rect the map settles on, "latest wins".
@@ -925,9 +928,9 @@ class LayersControls extends _$LayersControls {
       .debounceTime(duration)
       .switchMap((visibleRect) {
         final cancelToken = CancelToken();
-        return Stream.fromFuture(_guardedRequest(request, visibleRect, cancelToken))
-            .whereNotNull()
-            .doOnCancel(() => cancelToken.cancel('superseded'));
+        return Stream.fromFuture(
+          _guardedRequest(request, visibleRect, cancelToken),
+        ).whereNotNull().doOnCancel(() => cancelToken.cancel('superseded'));
       });
 
   Future<T?> _guardedRequest<T extends Object>(
