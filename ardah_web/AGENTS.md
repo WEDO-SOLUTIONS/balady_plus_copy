@@ -90,6 +90,13 @@ decision it exists to settle: [`docs/ardah-concept.md`](../docs/ardah-concept.md
   belong musically and let it decide what that means when the groove is already
   there. If the safety limiter in `audio.js` ever engages, look for this first:
   it is set so that the loudest moment in the song passes under it untouched.
+- **The tracers must stay byte-reproducible.** Every "random" value comes from
+  a seeded PRNG, and `make_*.js` + `export_assets.py` reproduce every committed
+  asset exactly. Defaults are the values that ship — `make_runway.js` used to
+  default to 1024x768 while the committed master was 1280x900, made by passing
+  flags by hand that were written down nowhere, so a fresh clone silently got a
+  blurrier deck. If a generator needs a flag to reproduce what is in `assets/`,
+  the flag is wrong; change the default.
 - **The drums are modelled, not sampled or generated.** Inharmonic Bessel
   modes, a pitch drop at the strike, a transient that is not the skin, a body.
   Anything added to the section is a call to `_skin()` with those four, not a

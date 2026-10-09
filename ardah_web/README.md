@@ -831,6 +831,31 @@ drums landed on the same sample — 6 dB up, perfectly in phase. It read as "the
 flourish is loud". `pushDrum()` now merges anything of the same voice inside
 12 ms and keeps the louder, because two hits that close are not two hits.
 
+## Rebuilding the artwork
+
+Nothing in `assets/` is hand-drawn except two files, so almost all of it can be
+rebuilt from this repository:
+
+```bash
+node deck/make_notes.js        # the 8 note variants, 3 keycaps, 18 debris pieces
+node deck/make_glyphs.js       # the A / S / D / dot glyphs
+node deck/make_runway.js       # the deck
+node deck/make_fx.js           # the 4 effect fields
+python3 deck/export_assets.py  # masters in assets/hd/ -> the webp the game loads
+```
+
+The tracers are deterministic — every "random" value comes from a seeded PRNG —
+so this reproduces the committed files **byte for byte**, all 39 masters and the
+39 webp they export to. That is the property worth protecting: if a change to
+`deck/lib/shade.js` moves a pixel, the diff says so.
+
+**The two exceptions are `bg_stage` and `ui_plaque`.** They are not traced; they
+are cut out of the approved concept image by `assets/extract.py`, which expects
+it at `ardah_ref/Ardah final.png`. That file is **not in this repository** — it
+is commissioned artwork and travels separately. Without it the two can be
+re-cut only if you have the image; the other 39 need nothing but node and
+Pillow.
+
 ## Inside the superapp
 
 The page detects `window.dsBridge` and adapts; in a browser every host call is

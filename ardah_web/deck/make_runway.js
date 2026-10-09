@@ -23,7 +23,7 @@
    halfAt(z) = halfNear / z, so the field is one unit wide at any depth), the
    lane dividers sit at x = +/- 1/3, and Z_LIP / Z_FAR bound the depth.
 
-   Run: node deck/make_runway.js [--w 1024] [--h 768] [--ss 3]  */
+   Run: node deck/make_runway.js [--w 1280] [--h 900] [--ss 3]  */
 
 'use strict';
 
@@ -35,8 +35,14 @@ const png = require('./lib/png');
 const OUT = path.join(__dirname, '..', 'assets', 'hd');
 const argv = process.argv.slice(2);
 const arg = (k, d) => { const i = argv.indexOf(k); return i < 0 ? d : Number(argv[i + 1]); };
-const TW = arg('--w', 1024);
-const TH = arg('--h', 768);
+/* 1280x900, which is what ships, because export_assets.py exports the deck at
+   a longest side of 1280: a smaller master is upscaled on the way out and the
+   lozenge lattice goes soft. The default used to be 1024x768 and the shipped
+   master was made by passing --w 1280 --h 900 by hand, which was recorded
+   nowhere -- so a fresh clone that ran the documented command got a blurrier
+   runway than the one in the repository and no way to know why. */
+const TW = arg('--w', 1280);
+const TH = arg('--h', 900);
 const SS = arg('--ss', 3);
 
 const Z_LIP = 0.86, Z_FAR = 5.0;          // from js/render.js
