@@ -9,7 +9,7 @@
 
    Same notch and viewport as capture.js, so the frames drop straight into the
    same device shells. */
-const { chromium } = require('/opt/node22/lib/node_modules/playwright');
+const { chromium } = require('./lib/pw');
 const path = require('path');
 const OUT = path.join(__dirname, 'frames');
 const URL = 'http://localhost:8123/index.html';

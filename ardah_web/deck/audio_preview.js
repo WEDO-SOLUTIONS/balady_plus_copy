@@ -13,7 +13,7 @@
      node deck/audio_preview.js                 # needs the game served on 8123
 
    Writes deck/out/ardah_<section>.wav. */
-const { chromium } = require('/opt/node22/lib/node_modules/playwright');
+const { chromium } = require('./lib/pw');
 const fs = require('fs');
 const path = require('path');
 

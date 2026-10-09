@@ -16,7 +16,7 @@
 
 'use strict';
 
-const { chromium } = require('/opt/node22/lib/node_modules/playwright');
+const { chromium } = require('./lib/pw');
 const fs = require('fs');
 const path = require('path');
 const { LIGHTS, env, schlick, reflect, directSpec, toSRGB } = require('./lib/shade');

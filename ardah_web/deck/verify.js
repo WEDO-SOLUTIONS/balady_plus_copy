@@ -4,7 +4,7 @@
    ardah_web directory, runs the actual engine, and screenshots what a player
    would see. It also reports console errors, failed asset loads and a measured
    frame rate, because "it looks right" and "it runs" are different claims. */
-const { chromium } = require('/opt/node22/lib/node_modules/playwright');
+const { chromium } = require('./lib/pw');
 const http = require('http');
 const fs = require('fs');
 const path = require('path');

@@ -1,4 +1,4 @@
-const { chromium } = require('/opt/node22/lib/node_modules/playwright');
+const { chromium } = require('./lib/pw');
 const OUT = require('path').join(__dirname, 'frames');
 const URL = 'http://localhost:8123/index.html';
 

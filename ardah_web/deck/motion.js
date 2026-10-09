@@ -1,6 +1,6 @@
 /* Capture (a) a note travelling the runway frame by frame, and (b) the strip
    under the lanes, straight from the running game. */
-const { chromium } = require('/opt/node22/lib/node_modules/playwright');
+const { chromium } = require('./lib/pw');
 const OUT = require('path').join(__dirname, 'sheets');
 
 (async () => {

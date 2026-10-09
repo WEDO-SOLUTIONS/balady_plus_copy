@@ -1,7 +1,7 @@
 /* Export the elements that move but are NOT image files, by drawing them onto a
    canvas of our own — the game's own canvas is repainted every frame, so
    anything drawn into it is gone before a screenshot lands. */
-const { chromium } = require('/opt/node22/lib/node_modules/playwright');
+const { chromium } = require('./lib/pw');
 const OUT = require('path').join(__dirname, 'sheets');
 
 (async () => {

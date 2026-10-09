@@ -3,7 +3,7 @@
    No screenshots while measuring: capturing a frame stalls the compositor and
    makes the number meaningless. The robot runs the whole time so the effect
    path is actually exercised. */
-const { chromium } = require('/opt/node22/lib/node_modules/playwright');
+const { chromium } = require('./lib/pw');
 const http = require('http');
 const fs = require('fs');
 const path = require('path');

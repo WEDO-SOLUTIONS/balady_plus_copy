@@ -1,5 +1,5 @@
 /* Capture the deck's frames at iPhone 17 Pro Max logical size (440x956 @3x). */
-const { chromium } = require('/opt/node22/lib/node_modules/playwright');
+const { chromium } = require('./lib/pw');
 const OUT = require('path').join(__dirname, 'frames');
 const VIEW = { width: 440, height: 956 };
 const URL = 'http://localhost:8123/index.html';
